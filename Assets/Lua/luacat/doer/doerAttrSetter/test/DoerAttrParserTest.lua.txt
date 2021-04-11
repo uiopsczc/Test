@@ -1,0 +1,16 @@
+local DoerAttrParserTest = {}
+
+
+function DoerAttrParserTest.Test()
+  ---@type DoerAttrSetter
+  local doerAttrSetter = DoerAttrSetter.New(nil, DoerAttrParser.New(Client.instance.user))
+  --doerAttrSetter:Set("u.hp","{eval(4+5)}",false)
+
+  local dict = {}
+  local dict_tmp = {}
+  user:DoSave(dict, dict_tmp)
+  log(dict, dict_tmp)
+end
+
+
+return DoerAttrParserTest

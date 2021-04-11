@@ -1,0 +1,51 @@
+---@class EaseCat_Expo
+local EaseCat_Expo = {}
+
+function EaseCat_Expo.EaseIn(t, b, c, d)
+  if t == 0 then
+    return b
+  else
+    return c * math.Pow(2, 10 * (t / d - 1)) + b - c * 0.001
+  end
+end
+
+function EaseCat_Expo.EaseOut(t, b, c, d)
+  if t == d then
+    return b + c
+  else
+    return c * (-math.Pow(2, -10 * t / d) + 1) + b
+  end
+end
+
+
+function EaseCat_Expo.EaseInOut(t, b, c, d)
+  if t == 0 then
+    return b
+  end
+  if t == d then
+    return b + c
+  end
+  t = t/( d / 2)
+  if t < 1 then
+    return c / 2 * math.Pow(2, 10 * (t - 1)) + b
+  end
+  t = t -1
+  return c / 2 * (-math.Pow(2, -10 * t) + 2) + b
+end
+
+-------------------------------------------------------------------------
+function EaseCat_Expo.EaseIn2(start_value, end_value, pct)
+  return EaseCat_Expo.EaseIn(pct, start_value, end_value - start_value, 1)
+end
+
+
+function EaseCat_Expo.EaseOut2(start_value, end_value, pct)
+  return EaseCat_Expo.EaseOut(pct, start_value, end_value - start_value, 1)
+end
+
+
+function EaseCat_Expo.EaseInOut2(start_value, end_value, pct)
+  return EaseCat_Expo.EaseInOut(pct, start_value, end_value - start_value, 1)
+end
+
+return EaseCat_Expo

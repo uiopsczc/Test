@@ -1,0 +1,6 @@
+function GetSingletonInstance(class, ...)
+  if rawget(class, "Instance") == nil then
+    rawset(class, "Instance", class.New(...))
+  end
+  return class.Instance
+end

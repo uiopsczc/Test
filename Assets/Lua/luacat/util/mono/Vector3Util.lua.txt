@@ -1,0 +1,29 @@
+---@class Vector3Util
+Vector3Util = {}
+
+
+function Vector3Util.ToVector2(vector3,format )
+  format = format or "x,y"
+  local formats = string.Split(format,",")
+  local x = Vector3Util.GetFormat(vector3, formats[1])
+  local y = Vector3Util.GetFormat(vector3, formats[2])
+  return Vector2(x,y)
+end
+
+function Vector3Util.Multiply(v1,  v2)
+  return Vector3(v1.x * v2.x, v1.y * v2.y, v1.z * v2.z)
+end
+
+function Vector3Util.GetFormat(vector3, format)
+  format = string.lower(format)
+  if format == "x" then
+    return vector3.x
+  elseif format == "y" then
+    return vector3.y
+  elseif format == "z" then
+    return vector3.z
+  else
+    return tonumber(format)
+  end
+end
+

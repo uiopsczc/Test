@@ -1,0 +1,28 @@
+---@class RandomUtil
+RandomUtil = {}
+---@type RandomManager
+local randomManager = require("luacat.random.RandomManager").New()
+
+function RandomUtil.RandomBoolean()
+  return randomManager:RandomBoolean()
+end
+
+
+function RandomUtil.RandomInt(m, n)
+  return randomManager:RandomInt(m,n)
+end
+
+function RandomUtil.RandomFloat(m, n)
+  return randomManager:RandomFloat(m,n)
+end
+
+function RandomUtil.Random()
+  return randomManager:_Random()
+end
+
+function RandomUtil.RandomSelect(array, count,is_unique)
+  return randomManager:RandomSelect(array, count,is_unique)
+end
+
+
+

@@ -1,0 +1,94 @@
+--unity 对象判断为空, 如果你有些对象是在c#删掉了，lua 不知道
+--判断这种对象为空时可以用下面这个函数。
+function IsNil(v)
+  if v == nil then
+    return true
+  end
+
+  if type(v) == "userdata" and v.IsNil ~= nil then
+    return v:IsNil()
+  end
+
+  return false
+end
+
+function IsNotNil(v)
+  return not IsNil(v)
+end
+
+function IsUnit(v)
+  return IsInstanceOf(v,"Unit")
+end
+
+function IsIPosition(v)
+  return IsInstanceOf(v,"IsIPosition")
+end
+
+function IsBoolean(v)
+  return type(v) == "boolean"
+end
+
+
+function IsNumber(v)
+  return type(v) == "number"
+end
+
+function IsString(v)
+  return type(v) == "string"
+end
+
+function IsTable(v)
+  return type(v) == "table"
+end
+
+function IsFunction(v)
+  return type(v) == "function"
+end
+
+function IsThread(v)
+  return type(v) == "thread"
+end
+
+function IsUserData(v)
+  return type(v) == "userdata"
+end
+
+function IsVector3(v)
+  return IsInstanceOf(v,"Vector3")
+end
+
+function IsGameObject(v)
+  if not v then
+    return false
+  end
+  return v:GetType() == typeof(CS.UnityEngine.GameObject)
+end
+
+function IsTransform(v)
+  if not v then
+    return false
+  end
+  ---@type CS.System.Type
+  local type = v:GetType()
+  return type:IsSubclassOf(typeof(CS.UnityEngine.Transform))
+end
+
+function IsISpawnable(v)
+  if not v then
+    return false
+  end
+  ---@type CS.System.Type
+  local type = v:GetType()
+  return type:IsSubclassOf(typeof(CS.CsCat.ISpawnable))
+end
+
+
+function IsVector3(v)
+  return IsInstanceOf(v,"Vector3")
+end
+
+
+function IsVector2(v)
+  return IsInstanceOf(v,"Vector2")
+end
+--endregion

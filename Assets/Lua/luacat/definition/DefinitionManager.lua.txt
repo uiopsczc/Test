@@ -1,0 +1,60 @@
+---@class DefinitionManager:Class
+local DefinitionManager = Class("DefinitionManager")
+
+---全部的Definition(除了IdDefinition)都有id_list字段，显示id列表
+DefinitionManager.id_list_string = "id_list"
+function DefinitionManager:Init()
+  ---@type IdDefinition
+  self.idDefinition = MetatableUtil.NewReadOnlyTable("game.definition.export.IdDefinition")
+  ---@type table<string,RoleDefinition>
+  self.roleDefinition = MetatableUtil.NewReadOnlyTableWithIdListDict("game.definition.export.RoleDefinition",self.idDefinition)
+  ---@type table<string,BuffDefinition>
+  self.buffDefinition = MetatableUtil.NewReadOnlyTableWithIdListDict("game.definition.export.BuffDefinition",self.idDefinition)
+  ---@type table<string,BuffStateDefinition>
+  self.buffStateDefinition = MetatableUtil.NewReadOnlyTableWithIdListDict("game.definition.export.BuffStateDefinition",self.idDefinition)
+  ---@type table<string,EffectDefinition>
+  self.effectDefinition = MetatableUtil.NewReadOnlyTableWithIdListDict("game.definition.export.EffectDefinition",self.idDefinition)
+  ---@type table<string,ItemDefinition>
+  self.itemDefinition = MetatableUtil.NewReadOnlyTableWithIdListDict("game.definition.export.ItemDefinition",self.idDefinition)
+  ---@type table<string,PropertyDefinition>
+  self.propertyDefinition = MetatableUtil.NewReadOnlyTableWithIdListDict("game.definition.export.PropertyDefinition",self.idDefinition)
+  ---@type table<string,QualityDefinition>
+  self.qualityDefinition = MetatableUtil.NewReadOnlyTableWithIdListDict("game.definition.export.QualityDefinition",self.idDefinition)
+  ---@type table<string,MissionDefinition>
+  self.missionDefinition = MetatableUtil.NewReadOnlyTableWithIdListDict("game.definition.export.MissionDefinition",self.idDefinition)
+  ---@type table<string,DoerEventDefinition>
+  self.doerEventDefinition = MetatableUtil.NewReadOnlyTableWithIdListDict("game.definition.export.DoerEventDefinition",self.idDefinition)
+  ---@type table<string,DoerEventStepDefinition>
+  self.doerEventStepDefinition = MetatableUtil.NewReadOnlyTableWithIdListDict("game.definition.export.DoerEventStepDefinition",self.idDefinition)
+  ---@type table<string,SceneDefinition>
+  self.sceneDefinition = MetatableUtil.NewReadOnlyTableWithIdListDict("game.definition.export.SceneDefinition",self.idDefinition)
+  ---@type table<string,UnitDefinition>
+  self.unitDefinition = MetatableUtil.NewReadOnlyTableWithIdListDict("game.definition.export.UnitDefinition",self.idDefinition)
+  ---@type table<string,SpellDefinition>
+  self.spellDefinition = MetatableUtil.NewReadOnlyTableWithIdListDict("game.definition.export.SpellDefinition",self.idDefinition)
+  ---@type table<string,SpellTriggerDefinition>
+  self.spellTriggerDefinition = MetatableUtil.NewReadOnlyTableWithIdListDict("game.definition.export.SpellTriggerDefinition",self.idDefinition)
+
+
+  ---@type table<string,TestDefinition>
+  self.testDefinition = MetatableUtil.NewReadOnlyTableWithIdListDict("game.definition.export.test.TestDefinition",self.idDefinition)
+  self:PostInit()
+end
+
+function DefinitionManager:PostInit()
+end
+
+---@return SceneMapInfo
+function DefinitionManager:GetSceneMapInfo(scene_id)
+  local definition = self.sceneDefinition[scene_id]
+  local sceneMapInfo = definition:GetSceneMapInfo()
+  return sceneMapInfo
+end
+
+---@return SpellDefinition
+function DefinitionManager:GetSpellDefinition(spell_id)
+  return self.spellDefinition[spell_id]
+end
+
+
+return DefinitionManager

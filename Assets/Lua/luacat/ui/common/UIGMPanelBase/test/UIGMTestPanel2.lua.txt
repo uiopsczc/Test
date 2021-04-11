@@ -1,0 +1,28 @@
+local UIGMPanelBase = require("luacat.ui.common.UIGMPanelBase.UIGMPanelBase")
+
+---@class UIGMTestPanel2:UIGMPanelBase
+local UIGMTestPanel2 = Class("UIGMTestPanel2",UIGMPanelBase)
+
+function UIGMTestPanel2:Init()
+  UIGMTestPanel2.super.Init(self)
+end
+
+function UIGMTestPanel2:InitGameObjectChildren()
+  UIGMTestPanel2.super.InitGameObjectChildren(self)
+  --self:AddChild(nil, UIHUDText, self.transform):SetText("ddf")
+end
+
+function UIGMTestPanel2:InitConfigList()
+  UIGMTestPanel2.super.InitConfigList(self)
+  table.insert(self.config_list,{
+    type = "input_item",
+    desc = "YYYY",
+    yes_callback = function() self:GMTest() end
+  })
+end
+
+function UIGMTestPanel2:GMTest()
+  log("Hello,lua YYY")
+end
+
+return UIGMTestPanel2

@@ -1,0 +1,938 @@
+---@class AbstractEntity:Class
+---@field key string
+---@field parent AbstractEntity
+---@field __is_destroyed boolean
+---@field is_key_using_parent_idPool boolean
+---@field is_paused boolean
+---@field is_not_delete_child_relationShip_immediately boolean @是否不立刻将child从child_key_list和children_dict中删除关联关系
+---@field is_not_delete_component_relationShip_immediately boolean @是否不立刻将component从component_list和component_dict中删除关联关系
+---@field is_has_destroyed_child boolean @是否【子孙】child中有要从child_key_list和children_dict中删除关联关系
+---@field is_has_destroyed_child_component boolean @是否【子孙】child中有要从component_list和component_dict中删除关联关系
+---@field is_has_destroyed_component boolean @是否有compoent是要从component_list和component_dict中删除关联关系
+---@field is_enabled boolean
+--------注意创建后记得设置key
+local AbstractEntity = Class("AbstractEntity")
+
+-----注意创建后记得设置key
+function AbstractEntity:Init()
+  ---@type table<string, AbstractEntity>
+  self.key_to_child_dict = {}
+  ---@type table<string,AbstractEntity[]>
+  self.className_to_childList_dict = {}--准确的类型
+  ---@type string[]
+  self.child_key_list = {}
+  ---@type string[]
+  self.child_className_list = {}
+  ---@type IdPool
+  self.child_key_idPool = IdPool.New()
+
+  ---@type table<string, AbstractComponent>
+  self.key_to_component_dict = {}
+  ---@type table<string, AbstractComponent[]>
+  self.className_to_componentList_dict = {}
+  ---@type string[]
+  self.component_key_list = {}
+  ---@type string[]
+  self.component_className_list = {}
+  ---@type IdPool
+  self.component_key_idPool = IdPool.New()
+
+  self.destroy_callback = {}
+  self.reset_callback = {}
+
+  ---@type Cache
+  self.cache = Cache.New()
+end
+
+function AbstractEntity:PostInit()
+end
+
+function AbstractEntity:Start(...)
+end
+
+function AbstractEntity:Refresh(...)
+end
+
+function AbstractEntity:__OnDespawn_()
+  self.is_has_destroyed_child = false
+  self.is_has_destroyed_child_component = false
+  self.is_has_destroyed_component = false
+
+  self.cache:Clear()
+end
+
+----------------------------------------------------------------------
+-- child相关 ForeachChild
+----------------------------------------------------------------------
+function AbstractEntity:ForeachChild()
+  return self.__ForeachChild, { children_dict = self.key_to_child_dict, child_key_list = self.child_key_list, count = #self.child_key_list }, 0
+end
+
+---@param i number
+function AbstractEntity.__ForeachChild(children_info, i)
+  ---@type AbstractEntity
+  local child
+  local children_dict = children_info.children_dict
+  local child_key_list = children_info.child_key_list
+  local count = children_info.count
+  while i < count and i <= #child_key_list do
+    i = i + 1
+    child = children_dict[child_key_list[i]]
+    if not child:IsDestroyed() then
+      return i, child
+    end
+  end
+end
+
+---@class AbstractEntity_children_info
+---@field className_to_childList_dict table<string,AbstractEntity[]>
+---@field child_class_type Class
+---@field child_className_list string[]
+---@field m number
+---@field n number
+local AbstractEntity_children_info
+---@param child_class_type Class
+function AbstractEntity:ForeachChildOfType(child_class_type)
+  return self.__ForeachChildOfType,
+    ---@type AbstractEntity_children_info
+    {
+      className_to_childList_dict = self.className_to_childList_dict,
+      child_class_type = child_class_type,
+      child_className_list = self.child_className_list,
+      m = 1,
+      n = 1
+    },
+  0
+end
+
+---@param i number
+---@param children_info AbstractEntity_children_info
+function AbstractEntity.__ForeachChildOfType(children_info, i)
+  local className_to_childList_dict = children_info.className_to_childList_dict
+  local child_className_list = children_info.child_className_list
+  local child_class_type = children_info.child_class_type
+  while children_info.m <= #child_className_list do
+    local child_className = child_className_list[children_info.m]
+    local childList = className_to_childList_dict[child_className]
+    if IsSubClassOf(child_className, child_class_type.__class_name) and children_info.n <= #childList then
+      while children_info.n <= #childList do
+        local child = childList[children_info.n]
+        children_info.n = children_info.n + 1
+        if children_info.n == #childList+1 then
+          children_info.m = children_info.m + 1
+          children_info.n = 1
+        end
+        if not child:IsDestroyed() then
+          return i, child
+        end
+      end
+    else
+      children_info.m = children_info.m + 1
+    end
+  end
+end
+
+function AbstractEntity:__OnDespawn_Child()
+  table.Clear(self.key_to_child_dict)
+  table.Clear(self.className_to_childList_dict)
+  table.Clear(self.child_key_list)
+  table.Clear(self.child_className_list)
+  self.parent = nil
+  self.is_key_using_parent_idPool = false
+end
+
+----------------------------------------------------------------------
+-- child相关 AddChild
+----------------------------------------------------------------------
+---@param child_key string
+---@param child_class_type Class @例如: require("luacat.ecs.entity.AbstractEntity")
+---@return AbstractEntity
+function AbstractEntity:AddChildWithoutInit(child_key, child_class_type)
+  if child_key and self.key_to_child_dict[child_key] then
+    Error("duplicate add child:", child_key, child_class_type.__class_name)
+    return
+  end
+  local is_key_using_parent_idPool = not child_key
+  if is_key_using_parent_idPool then
+    child_key = tostring(self.child_key_idPool:Get())
+    --再次检查键值
+    if self.key_to_child_dict[child_key] then
+      Error("duplicate add child:", child_key, child_class_type.__class_name)
+      return
+    end
+  end
+  ---@type AbstractEntity
+  local child = PoolCatManagerUtil.Spawn(child_class_type)
+  child.key = child_key
+  child.is_key_using_parent_idPool = is_key_using_parent_idPool
+  return self:AddChild2(child)
+end
+
+
+function AbstractEntity:AddChildWithoutInitTmp(child_key, child_class_type)
+  if child_key and self.key_to_child_dict[child_key] then
+    Error("duplicate add child:", child_key, child_class_type.__class_name)
+    return
+  end
+  local is_key_using_parent_idPool = not child_key
+  if is_key_using_parent_idPool then
+    child_key = tostring(self.child_key_idPool:Get())
+    --再次检查键值
+    if self.key_to_child_dict[child_key] then
+      Error("duplicate add child:", child_key, child_class_type.__class_name)
+      return
+    end
+  end
+  ---@type AbstractEntity
+  local child = PoolCatManagerUtil.Spawn(child_class_type)
+  child.key = child_key
+  child.is_key_using_parent_idPool = is_key_using_parent_idPool
+  child.parent = self
+  self:__AddChildRelationship(child)
+end
+
+---@generic T:AbstractEntity
+---@param child T
+---@return T
+function AbstractEntity:AddChild2(child)
+  if self.key_to_child_dict[child.key] then
+    Error("duplicate add child:", child.key, child.__class_name)
+    return
+  end
+  child.parent = self
+  self:__AddChildRelationship(child)
+  return child
+end
+
+---@param child_key string
+---@param child_class_type Class @例如: require("luacat.ecs.entity.AbstractEntity")
+---@return AbstractEntity
+function AbstractEntity:AddChild(child_key, child_class_type, ...)
+  local child = self:AddChildWithoutInit(child_key, child_class_type)
+  if not child then
+    --没有加成功
+    return nil
+  end
+
+  child:Init(...)
+  child:PostInit()
+  child:SetIsEnabled(true, false)
+  return child
+end
+
+---@param child AbstractEntity
+function AbstractEntity:__AddChildRelationship(child)
+  self.key_to_child_dict[child.key] = child
+  local className_to_childList = table.GetOrAddDefault_Dict(self.className_to_childList_dict, child.__class_name, function() return {} end)
+  table.insert(className_to_childList, child)
+  table.insert(self.child_key_list, child.key)
+  if not table.ContainsValue(self.child_className_list, child.__class_name) then
+    table.insert(self.child_className_list, child.__class_name)
+  end
+end
+
+----------------------------------------------------------------------
+-- child相关 GetChild
+----------------------------------------------------------------------
+---@param child_key string
+---@return AbstractEntity
+function AbstractEntity:GetChild(child_key)
+  if not self.key_to_child_dict[child_key] then
+    return nil
+  end
+  if self.key_to_child_dict[child_key]:IsDestroyed() then
+    return nil
+  end
+  return self.key_to_child_dict[child_key]
+end
+
+---@param child_class_type Class
+---@return AbstractEntity
+function AbstractEntity:GetChildByType(child_class_type)
+  for _, child in self:ForeachChildOfType(child_class_type) do
+    return child
+  end
+  return nil
+end
+
+--效率问题引入的
+---@param child_class_type Class
+---@return AbstractEntity
+function AbstractEntity:GetChildStrictlyByType(child_class_type)
+  if not self.className_to_childList_dict[child_class_type.__class_name] then
+    return
+  end
+  for _, child in ipairs(self.className_to_childList_dict[child_class_type.__class_name]) do
+    if not child:IsDestroyed() then
+      return child
+    end
+  end
+  return nil
+end
+
+---@param child_class_type Class
+---@return AbstractEntity[]
+function AbstractEntity:GetChildrenByType(child_class_type)
+  ---@type AbstractEntity[]
+  local result = {}
+  for _, child in self:ForeachChildOfType(child_class_type) do
+    table.insert(result, child)
+  end
+  return result
+end
+
+---@param child_class_type Class
+---@return AbstractEntity[]
+function AbstractEntity:GetChildrenStrictlyByType(child_class_type)
+  ---@type AbstractEntity[]
+  local result = {}
+  if not self.className_to_childList_dict[child_class_type.__class_name] then
+    return result
+  end
+  for _, child in self.className_to_childList_dict[child_class_type.__class_name] do
+    if not child:IsDestroyed() then
+      table.insert(result, child)
+    end
+  end
+  return result
+end
+
+----------------------------------------------------------------------
+-- child相关 RemoveChild
+----------------------------------------------------------------------
+---@param child_key string
+---@return AbstractEntity
+function AbstractEntity:RemoveChild(child_key)
+  if not self.key_to_child_dict[child_key] then
+    return nil
+  end
+  local child = self.key_to_child_dict[child_key]
+  return self:RemoveChild2(child)
+end
+
+---@param child AbstractEntity
+---@return AbstractEntity
+function AbstractEntity:RemoveChild2(child)
+  if child:IsDestroyed() then
+    return nil
+  end
+  child:Destroy()
+  if not self.is_not_delete_child_relationShip_immediately then
+    self:__RemoveChildRelationship(child)
+    self:__DespawnChildKey(child)
+    PoolCatManagerUtil:Despawn(child)
+  else
+    self:__MarkHasDestroyedChild()
+  end
+  return child
+end
+
+---@param child_class_type Class
+---@return AbstractEntity
+function AbstractEntity:RemoveChildByType(child_class_type)
+  local child = self:GetChildByType(child_class_type)
+  if child ~= nil then
+    self:RemoveChild2(child)
+  end
+  return child
+end
+
+---@param child_class_type Class
+---@return AbstractEntity
+function AbstractEntity:RemoveChildStrictlyByType(child_class_type)
+  local child = self:GetChildStrictlyByType(child_class_type)
+  if child ~= nil then
+    self:RemoveChild2(child)
+  end
+  return child
+end
+
+---@param child_class_type Class
+---@return AbstractEntity
+function AbstractEntity:RemoveChildrenByType(child_class_type)
+  local children = self:GetChildrenByType(child_class_type)
+  if not table.IsNilOrEmpty(children) then
+    for _, child in ipairs(children) do
+      self:RemoveChild2(child)
+    end
+  end
+  return children
+end
+
+---@param child_class_type Class
+---@return AbstractEntity
+function AbstractEntity:RemoveChildrenStrictlyByType(child_class_type)
+  local children = self:GetChildrenStrictlyByType(child_class_type)
+  if not table.IsNilOrEmpty(children) then
+    for _, child in ipairs(children) do
+      self:RemoveChild2(child)
+    end
+  end
+  return children
+end
+
+function AbstractEntity:RemoveAllChildren()
+  local to_remove_child_key_list = table.Clone(self.child_key_list)
+  for _, child_key in ipairs(to_remove_child_key_list) do
+    self:RemoveChild(child_key)
+  end
+end
+
+----------------------------------------------------------------------
+function AbstractEntity:__MarkHasDestroyedChild()
+  if not self.is_has_destroyed_child then
+    self.is_has_destroyed_child = true
+    if self.parent then
+      self.parent:__MarkHasDestroyedChild()
+    end
+  end
+end
+
+---@param child AbstractEntity
+function AbstractEntity:__RemoveChildRelationship(child)
+  self.key_to_child_dict[child.key] = nil
+  table.RemoveByValue_Array(self.child_key_list, child.key)
+  table.RemoveByValue_Array(self.className_to_childList_dict[child.__class_name], child)
+end
+
+---@param child AbstractEntity
+function AbstractEntity:__DespawnChildKey(child)
+  if child.is_key_using_parent_idPool then
+    self.child_key_idPool:Despawn(child.key)
+    child.is_key_using_parent_idPool = false
+  end
+end
+
+function AbstractEntity:CheckDestroyed()
+  --有【子孙】child中有要从child_key_list和children_dict中删除关联关系
+  --或者有【子孙】child的component要从从component_list和component_dict中删除关联关系
+  if self.is_has_destroyed_child or self.is_has_destroyed_child_component then
+    local child_key
+    ---@type AbstractEntity
+    local child
+    for i = #self.child_key_list, 1, -1 do
+      child_key = self.child_key_list[i]
+      child = self.key_to_child_dict[child_key]
+      child:CheckDestroyed()
+      if child:IsDestroyed() then
+        -- 该child自身要被delete
+        self:__RemoveChildRelationship(child)
+        self:__DespawnChildKey(child)
+        PoolCatManagerUtil.Despawn(child)
+      end
+    end
+
+    self.is_has_destroyed_child = false
+    self.is_has_destroyed_child_component = false
+  end
+
+  if self.is_has_destroyed_component then
+    self:__CheckDestroyedComponents()
+    self.is_has_destroyed_component = false
+  end
+end
+
+----------------------------------------------------------------------
+-- component相关 ForeachComponent 按加入的顺序遍历
+----------------------------------------------------------------------
+-- 按加入的顺序遍历
+function AbstractEntity:ForeachComponent()
+  return self.__ForeachComponent, { key_to_component_dict = self.key_to_component_dict, component_key_list = self.component_key_list, count = #self.component_key_list }, 0
+end
+
+-- 按加入的顺序遍历
+---@param i number
+function AbstractEntity.__ForeachComponent(component_info, i)
+  ---@type AbstractComponent
+  local component
+  local component_key_list = component_info.component_key_list
+  local key_to_component_dict = component_info.key_to_component_dict
+  local count = component_info.count
+  while i < count do
+    i = i + 1
+    local component_key = component_key_list[i]
+    component = key_to_component_dict[component_key]
+    if not component:IsDestroyed() then
+      return i, component
+    end
+  end
+end
+
+function AbstractEntity:ForeachComponentOfType(component_class_type)
+  return self.__ForeachComponentOfType, { className_to_componentList_dict = self.className_to_componentList_dict, component_class_type = component_class_type, component_className_list = self.component_className_list, m = 1, n = 1 }, 0
+end
+
+---@param i number
+function AbstractEntity.__ForeachComponentOfType(component_info, i)
+  ---@type table<string,AbstractComponent[]>
+  local className_to_componentList_dict = component_info.className_to_componentList_dict
+  ---@type string[]
+  local component_className_list = component_info.component_className_list
+  ---@type Class
+  local component_class_type = component_info.component_class_type
+  while component_info.m <= #component_className_list do
+    local component_className = component_className_list[component_info.m]
+    local componentList = className_to_componentList_dict[component_className]
+    if IsSubClassOf(component_className, component_class_type.__class_name) and component_info.n <= #componentList then
+      while component_info.n <= #componentList do
+        local component = componentList[component_info.n]
+        component_info.n = component_info.n + 1
+        if component_info.n == #componentList+1 then
+          component_info.m = component_info.m + 1
+          component_info.n = 1
+        end
+        if not component:IsDestroyed() then
+          return i, component
+        end
+      end
+    else
+      component_info.m = component_info.m + 1
+    end
+  end
+end
+
+function AbstractEntity:__OnDespawn_Component()
+  table.Clear(self.key_to_component_dict)
+  table.Clear(self.className_to_componentList_dict)
+  table.Clear(self.component_key_list)
+  table.Clear(self.component_className_list)
+end
+
+----------------------------------------------------------------------
+-- component相关 AddComponent
+----------------------------------------------------------------------
+---@param component_key string
+---@param component_class_type Class
+---@return AbstractComponent
+function AbstractEntity:AddComponentWithoutInit(component_key, component_class_type)
+  ---@type AbstractComponent
+  local component = PoolCatManagerUtil.Spawn(component_class_type)
+  return self:AddComponent2(component, component_key)
+end
+
+---@param component AbstractComponent
+---@param component_key string
+---@return AbstractComponent
+function AbstractEntity:AddComponent2(component, component_key)
+  if component_key then
+    component.key = component_key
+  end
+  if component.key and self.key_to_component_dict[component.key] then
+    Error("duplicate add component:", component.key, component.__class_name)
+    return nil
+  end
+
+  local is_key_using_parent_idPool = not component_key
+  if is_key_using_parent_idPool then
+    component_key = tostring(self.component_key_idPool:Get())
+    --再次检查键值
+    if component_key and self.key_to_component_dict[component_key] then
+      Error("duplicate add component:", component_key, component.__class_name)
+      return nil
+    end
+  end
+  component.key = component_key
+  component.is_key_using_parent_idPool = is_key_using_parent_idPool
+  component.entity = self
+
+  self:__AddComponentRelationship(component)
+  return component
+end
+
+---@param component_key string
+---@param component_class_type Class
+---@param AbstractComponent
+function AbstractEntity:AddComponent(component_key, component_class_type, ...)
+  local component = self:AddComponentWithoutInit(component_key, component_class_type)
+  if not component then
+    --没有加成功
+    return nil
+  end
+  component:Init(...)
+  component.PostInit()
+  component:SetIsEnabled(true)
+  return component
+end
+
+---@param component AbstractComponent
+function AbstractEntity:__AddComponentRelationship(component)
+  self.key_to_component_dict[component.key] = component
+  local className_to_componentList = table.GetOrAddDefault_Dict(self.className_to_componentList_dict, component.__class_name, function()
+    return {}
+  end)
+  table.insert(className_to_componentList, component)
+  table.insert(self.component_key_list, component.key)
+  if not table.ContainsValue(self.component_className_list, component.__class_name) then
+    table.insert(self.component_className_list, component.__class_name)
+  end
+end
+
+----------------------------------------------------------------------
+-- component相关 GetComponent
+----------------------------------------------------------------------
+---@param component_key string
+---@return AbstractComponent
+function AbstractEntity:GetComponent(component_key)
+  if not self.key_to_component_dict[component_key] then
+    return nil
+  end
+  if self.key_to_component_dict[component_key]:IsDestroyed() then
+    return nil
+  end
+  return self.key_to_component_dict[component_key]
+end
+
+---@param component_class_type Class
+---@return AbstractEntity
+function AbstractEntity:GetComponentByType(component_class_type)
+  for _, component in self:ForeachComponentOfType(component_class_type) do
+    return component
+  end
+  return nil
+end
+
+function AbstractEntity:GetComponentStrictlyByType(component_class_type)
+  if not self.className_to_componentList_dict[component_class_type.__class_name] then
+    return nil
+  end
+  for _, component in self.className_to_componentList_dict[component_class_type.__class_name] do
+    if not component:IsDestroyed() then
+      return component
+    end
+  end
+  return nil
+end
+
+---@param component_class_type Class
+---@return AbstractEntity[]
+function AbstractEntity:GetComponentsByType(component_class_type)
+  ---@type AbstractEntity[]
+  local result = {}
+  for _, component in self:ForeachComponentOfType(component_class_type) do
+    table.insert(result, component)
+  end
+  return result
+end
+
+---@param component_class_type Class
+---@return AbstractEntity[]
+function AbstractEntity:GetComponentsStrictlyByType(component_class_type)
+  ---@type AbstractEntity[]
+  local result = {}
+  if not self.className_to_componentList_dict[component_class_type.__class_name] then
+    return result
+  end
+  for _, component in self.className_to_componentList_dict[component_class_type.__class_name] do
+    if not component:IsDestroyed() then
+      table.insert(result, component)
+    end
+  end
+  return result
+end
+----------------------------------------------------------------------
+-- component相关 RemoveComponent
+----------------------------------------------------------------------
+---@param component_key string
+---@return AbstractComponent
+function AbstractEntity:RemoveComponent(component_key)
+  if not self.key_to_component_dict[component_key] then
+    return nil
+  end
+  local component = self.key_to_component_dict[component_key]
+  return self:RemoveComponent2(component)
+end
+
+---@generic T:AbstractComponent
+---@param component T
+---@return T
+function AbstractEntity:RemoveComponent2(component)
+  if component:IsDestroyed() then
+    return nil
+  end
+  component:Destroy()
+  if not self.is_not_delete_component_relationShip_immediately then
+    self:__RemoveComponentRelationship(component)
+    self:__DespawnComponentKey(component)
+    PoolCatManagerUtil.Despawn(component)
+  else
+    self:__MarkHasDestroyedComponent()
+  end
+  return component
+end
+
+---@param component_class_type AbstractComponent
+function AbstractEntity:RemoveComponentByType(component_class_type)
+  local component = self:GetComponentByType(component_class_type)
+  if component then
+    self:RemoveComponent2(component)
+  end
+  return component
+end
+
+---@param component_class_type AbstractComponent
+function AbstractEntity:RemoveComponentStrictlyByType(component_class_type)
+  local component = self:GetComponentStrictlyByType(component_class_type)
+  if component then
+    self:RemoveComponent2(component)
+  end
+  return component
+end
+
+---@param component_class_type Class @如 require("luacat.ecs.component.impl.AbstractObjectComponent")
+---@return AbstractComponent
+function AbstractEntity:RemoveComponentsByType(component_class_type)
+  local components = self:GetComponentsByType(component_class_type)
+  if not table.IsNilOrEmpty(components) then
+    for _, component in ipairs(components) do
+      self:RemoveComponent2(component)
+    end
+  end
+  return components
+end
+
+---@param component_class_type Class @如 require("luacat.ecs.component.impl.AbstractObjectComponent")
+---@return AbstractComponent
+function AbstractEntity:RemoveComponentsStrictlyByType(component_class_type)
+  local components = self:GetComponentsStrictlyByType(component_class_type)
+  if not table.IsNilOrEmpty(components) then
+    for _, component in ipairs(components) do
+      self:RemoveComponent2(component)
+    end
+  end
+  return components
+end
+
+function AbstractEntity:RemoveAllComponents()
+  local to_remove_component_key_list = table.Clone(self.component_key_list)
+  for _, component_key in ipairs(to_remove_component_key_list) do
+    self:RemoveComponent(component_key)
+  end
+end
+
+----------------------------------------------------------------------
+function AbstractEntity:__MarkHasDestroyedComponent()
+  if not self.is_has_destroyed_component then
+    self.is_has_destroyed_component = true
+    if self.parent then
+      self.parent:__MarkHasDestroyedChildComponent()
+    end
+  end
+end
+
+function AbstractEntity:__MarkHasDestroyedChildComponent()
+  if not self.is_has_destroyed_child_component then
+    self.is_has_destroyed_child_component = true
+    if self.parent then
+      self.parent:__MarkHasDestroyedChildComponent()
+    end
+  end
+end
+
+---@param component AbstractComponent
+function AbstractEntity:__RemoveComponentRelationship(component)
+  self.key_to_component_dict[component.key] = nil
+  table.RemoveByValue_Array(self.className_to_componentList_dict[component.__class_name], component)
+  table.RemoveByValue_Array(self.component_key_list, component.key)
+end
+
+---@param component AbstractComponent
+function AbstractEntity:__DespawnComponentKey(component)
+  if component.is_key_using_parent_idPool then
+    self.component_key_idPool:Despawn(component.key)
+    component.is_key_using_parent_idPool = false
+  end
+end
+
+--主要作用是将IsDestroyed的component从component_list和component_dict中删除
+function AbstractEntity:__CheckDestroyedComponents()
+  ---@type AbstractComponent
+  local component
+  local component_key
+  for i = #self.component_key_list, 1, -1 do
+    component_key = self.component_key_list[i]
+    component = self.key_to_component_dict[component_key]
+    if component:IsDestroyed() then
+      self:__RemoveComponentRelationship(component)
+      self:__DespawnComponentKey(component)
+      PoolCatManagerUtil.Despawn(component)
+    end
+  end
+end
+
+
+
+
+
+----------------------------------------------------------------------
+-- Update相关
+----------------------------------------------------------------------
+function AbstractEntity:IsCanUpdate()
+  return self:GetIsEnabled() and not self:GetIsPaused() and not self:IsDestroyed()
+end
+
+
+----------------------------------------------------------------------
+-- pause相关
+----------------------------------------------------------------------
+
+function AbstractEntity:SetIsPaused(is_paused, is_loop_children)
+  if self:GetIsPaused() == is_paused then
+    return
+  end
+  self.is_paused = is_paused
+  if is_loop_children then
+    self:SetAllChildrenIsPaused(is_paused)
+  end
+  self:SetAllComponentsIsPaused(is_paused)
+  self:__SetIsPaused(is_paused)
+end
+
+function AbstractEntity:__SetIsPaused(is_paused)
+end
+
+function AbstractEntity:SetAllChildrenIsPaused(is_paused)
+  for _, child in self:ForeachChild() do
+    child:SetIsPaused(is_paused, true)
+  end
+end
+
+function AbstractEntity:SetAllComponentsIsPaused(is_paused)
+  for _, component in self:ForeachComponent() do
+    component:SetIsPaused(is_paused)
+  end
+end
+
+function AbstractEntity:GetIsPaused()
+  return self.is_paused or false
+end
+
+function AbstractEntity:__OnDespawn_Pause()
+  self.is_paused = false
+end
+
+----------------------------------------------------------------------
+-- Enable相关
+----------------------------------------------------------------------
+---@param is_enabled boolean
+function AbstractEntity:SetIsEnabled(is_enabled, is_loop_children)
+  if self:GetIsEnabled() == is_enabled then
+    return
+  end
+  if is_loop_children then
+    for _, child in self:ForeachChild() do
+      child:SetIsEnabled(is_enabled, true)
+    end
+  end
+  for _, component in self:ForeachComponent() do
+    component:SetIsEnabled(is_enabled)
+  end
+
+  self.is_enabled = is_enabled
+  self:__SetIsEnabled(is_enabled)
+  if is_enabled then
+    self:OnEnable()
+  else
+    self:OnDisable()
+  end
+end
+
+function AbstractEntity:__SetIsEnabled(is_enabled)
+end
+
+function AbstractEntity:GetIsEnabled()
+  return self.is_enabled or false
+end
+
+function AbstractEntity:OnEnable()
+end
+
+function AbstractEntity:OnDisable()
+end
+
+function AbstractEntity:__OnDespawn_Enable()
+  self.is_enabled = false
+end
+
+----------------------------------------------------------------------
+-- Reset相关
+----------------------------------------------------------------------
+---@param is_loop_children boolean
+function AbstractEntity:Reset(is_loop_children)
+  if is_loop_children then
+    self:ResetAllChildren()
+  end
+  self:ResetAllComponents()
+  self:__Reset()
+  self:__PostReset()
+end
+
+function AbstractEntity:__Reset()
+end
+
+function AbstractEntity:__PostReset()
+  DelegateUtil.InvokeCallback(self.reset_callback)
+  self.reset_callback = {}
+end
+
+function AbstractEntity:ResetAllChildren()
+  for _, child in self:ForeachChild() do
+    child:Reset(true)
+  end
+end
+
+function AbstractEntity:ResetAllComponents()
+  for _, component in self:ForeachComponent() do
+    component:Reset()
+  end
+end
+
+function AbstractEntity:__OnDespawn_Reset()
+  self.reset_callback = nil
+end
+
+----------------------------------------------------------------------
+-- Destroy相关
+----------------------------------------------------------------------
+function AbstractEntity:IsDestroyed()
+  return self.__is_destroyed or false
+end
+
+function AbstractEntity:Destroy()
+  if self:IsDestroyed() then
+    return
+  end
+  self:RemoveAllChildren()
+  self:SetIsEnabled(false, false)
+  self:SetIsPaused(false, false)
+  self:RemoveAllComponents()
+  self:__Destroy()
+  self.__is_destroyed = true
+  self:__PostDestroy()
+  self.cache:Clear()
+end
+
+function AbstractEntity:__Destroy()
+
+end
+
+function AbstractEntity:__PostDestroy()
+  DelegateUtil.InvokeCallback(self.destroy_callback)
+  self.destroy_callback = {}
+end
+
+function AbstractEntity:__OnDespawn_Destroy()
+  self.__is_destroyed = false
+  self.key = nil
+end
+
+function AbstractEntity:OnDespawn()
+  self:__OnDespawn_()
+  self:__OnDespawn_Child()
+  self:__OnDespawn_Component()
+  self:__OnDespawn_Destroy()
+  self:__OnDespawn_Enable()
+  self:__OnDespawn_Pause()
+  self:__OnDespawn_Reset()
+end
+
+return AbstractEntity

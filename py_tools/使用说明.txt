@@ -1,0 +1,3 @@
+pip install chardet
+pip install openpyxl
+pip install win32api

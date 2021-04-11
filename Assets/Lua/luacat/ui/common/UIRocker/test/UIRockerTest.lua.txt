@@ -1,0 +1,29 @@
+local UIRockerTest = {}
+
+
+function UIRockerTest.Test()
+  ---@type CS.UnityEngine.GameObject
+  UIRockerTest.unit_gameObject = GameObject.Find("UITestPanel"):NewChildWithImage("unit").gameObject
+  UIRockerTest.unit_text = UIRockerTest.unit_gameObject:NewChildWithText("state",nil,40,nil,CS.UnityEngine.TextAnchor.MiddleCenter)
+  UIRockerTest.unit_text.alignment = 4 -- middle_center
+  UIRockerTest.unit_text.fontSize = 40
+  UIRockerTest.unit_rectTransform = UIRockerTest.unit_gameObject:GetComponent(typeof(CS.UnityEngine.RectTransform))
+  ---@type UIRockerInput
+  UIRockerTest.uiRockerInput = global.client:AddChild(nil, UIRockerInput,"Rocker1")
+  UIRockerTest.uiRocker = global.client:AddChild(nil,UIRocker,nil, GameObject.Find("UITestPanel").transform, UIRockerTest.uiRockerInput)
+
+  global.client:AddListener(UIRockerTest.uiRockerInput.event_name_move_pct,function(x, y) UIRockerTest.MovePct(x,y) end)
+  global.client:AddListener(UIRockerTest.uiRockerInput.event_name_move_stop,function () UIRockerTest.MoveStop() end)
+end
+
+function UIRockerTest.MovePct(pct_x, pct_y)
+  local localPosition = UIRockerTest.unit_rectTransform.localPosition
+  UIRockerTest.unit_rectTransform.localPosition = Vector3.New(localPosition.x + pct_x, localPosition.y + pct_y,localPosition.z)
+  UIRockerTest.unit_text.text = "Move"
+end
+
+function UIRockerTest.MoveStop()
+  UIRockerTest.unit_text.text = "Stop"
+end
+
+return UIRockerTest

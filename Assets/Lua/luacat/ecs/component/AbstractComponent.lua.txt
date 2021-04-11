@@ -1,0 +1,184 @@
+---@class AbstractComponent:Class
+---@field key string
+---@field is_key_using_parent_idPool boolean
+---@field entity AbstractEntity
+---@field is_paused boolean
+---@field __is_destroyed boolean
+---@field is_enabled boolean
+-----注意创建后记得设置key和entity
+local AbstractComponent = Class("AbstractComponent")
+
+
+-----注意创建后记得设置key和entity
+function AbstractComponent:Init()
+  self.destroy_callback =  {}
+  self.reset_callback = {}
+  ---@type Cache
+  self.cache = Cache.New()
+end
+
+function AbstractComponent:PostInit()
+end
+
+function AbstractComponent:__OnDespawn_()
+  self.key = nil
+  self.entity = nil
+  self.is_key_using_parent_idPool = nil
+  self.cache:Clear()
+end
+
+----------------------------------------------------------------------
+-- Update相关
+----------------------------------------------------------------------
+function AbstractComponent:IsCanUpdate()
+  return self:GetIsEnabled() and not self:GetIsPaused() and not self:IsDestroyed()
+end
+
+function AbstractComponent:Update(deltaTime, unscaledDeltaTime)
+  if not self:IsCanUpdate() then
+    return
+  end
+  self:__Update(deltaTime, unscaledDeltaTime)
+end
+
+function AbstractComponent:FixedUpdate(deltaTime, unscaledDeltaTime)
+  if not self:IsCanUpdate() then
+    return
+  end
+  self:__FixedUpdate(deltaTime, unscaledDeltaTime)
+end
+
+function AbstractComponent:LateUpdate(deltaTime, unscaledDeltaTime)
+  if not self:IsCanUpdate() then
+    return
+  end
+  self:__LateUpdate(deltaTime, unscaledDeltaTime)
+end
+
+function AbstractComponent:__Update(deltaTime, unscaledDeltaTime)
+end
+
+function AbstractComponent:__FixedUpdate(deltaTime, unscaledDeltaTime)
+end
+
+function AbstractComponent:__LateUpdate(deltaTime, unscaledDeltaTime)
+end
+
+
+----------------------------------------------------------------------
+-- Enable相关
+----------------------------------------------------------------------
+function AbstractComponent:SetIsEnabled(is_enabled)
+  if self:GetIsEnabled() == is_enabled then
+    return
+  end
+  self.is_enabled = is_enabled
+  self:__SetIsEnabled(is_enabled)
+  if is_enabled then
+    self:OnEnable()
+  else
+    self:OnDisable()
+  end
+end
+
+function AbstractComponent:GetIsEnabled()
+  return self.is_enabled or false
+end
+
+function AbstractComponent:__SetIsEnabled(is_enabled)
+end
+
+function AbstractComponent:OnEnable()
+end
+
+function AbstractComponent:OnDisable()
+end
+
+function AbstractComponent:__OnDespawn_Enable()
+  self.is_enabled = false
+end
+
+----------------------------------------------------------------------
+-- Pause相关
+----------------------------------------------------------------------
+function AbstractComponent:SetIsPaused(is_paused)
+  if self:GetIsPaused() == is_paused then
+    return
+  end
+  self.is_paused = is_paused
+  self:__SetIsPaused(is_paused)
+end
+
+function AbstractComponent:__SetIsPaused(is_paused)
+
+end
+
+function AbstractComponent:GetIsPaused()
+  return self.is_paused or false
+end
+
+function AbstractComponent:__OnDespawn_Pause()
+  self._is_paused = false
+end
+----------------------------------------------------------------------
+-- Reset相关
+----------------------------------------------------------------------
+function AbstractComponent:Reset()
+  self:__Reset()
+  self:__PostReset()
+end
+
+function AbstractComponent:__Reset()
+end
+
+function AbstractComponent:__PostReset()
+  DelegateUtil.InvokeCallback(self.reset_callback)
+  self.reset_callback ={}
+end
+
+function AbstractComponent:__OnDespawn_Reset()
+  self.reset_callback = nil
+end
+
+----------------------------------------------------------------------
+-- Destroy相关
+----------------------------------------------------------------------
+function AbstractComponent:IsDestroyed()
+  return self.__is_destroyed or false
+end
+
+function AbstractComponent:Destroy()
+  if self:IsDestroyed() then
+    return
+  end
+  self:SetIsEnabled(false)
+  self:SetIsPaused(false)
+  self:__Destroy()
+  self.__is_destroyed = true
+  self:__PostDestroy()
+  self.cache:Clear()
+end
+
+function AbstractComponent:__Destroy()
+end
+
+function AbstractComponent:__PostDestroy()
+  DelegateUtil.InvokeCallback(self.destroy_callback)
+  self.destroy_callback ={}
+end
+
+function AbstractComponent:__OnDespawn_Destroy()
+  self.__is_destroyed = false
+  self.destroy_callback = nil
+end
+
+
+function AbstractComponent:OnDespawn()
+  self:__OnDespawn_()
+  self:__OnDespawn_Destroy()
+  self:__OnDespawn_Enable()
+  self:__OnDespawn_Pause()
+  self:__OnDespawn_Reset()
+end
+
+return AbstractComponent

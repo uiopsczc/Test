@@ -1,0 +1,9 @@
+<component name="libraryTable">
+  <library name="UnityLuaAPI" type="Lua">
+    <CLASSES>
+      <root url="jar://$PROJECT_DIR$/../../UnityLuaAPI.zip!/" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES />
+  </library>
+</component>

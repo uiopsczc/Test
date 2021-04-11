@@ -1,0 +1,18 @@
+---@class PhysicsEventNameConst
+local PhysicsEventNameConst = {}
+
+PhysicsEventNameConst.OnRaycast = "OnRaycast"
+PhysicsEventNameConst.OnCollisionEnter2D = "OnCollisionEnter2D"
+PhysicsEventNameConst.OnCollisionExit2D = "OnCollisionExit2D"
+PhysicsEventNameConst.OnCollisionStay2D = "OnCollisionStay2D"
+PhysicsEventNameConst.OnTriggerEnter2D = "OnTriggerEnter2D"
+PhysicsEventNameConst.OnTriggerStay2D = "OnTriggerStay2D"
+PhysicsEventNameConst.OnTriggerExit2D = "OnTriggerExit2D"
+PhysicsEventNameConst.OnCollisionEnter = "OnCollisionEnter"
+PhysicsEventNameConst.OnCollisionExit = "OnCollisionExit"
+PhysicsEventNameConst.OnCollisionStay = "OnCollisionStay"
+PhysicsEventNameConst.OnTriggerEnter = "OnTriggerEnter"
+PhysicsEventNameConst.OnTriggerStay = "OnTriggerStay"
+PhysicsEventNameConst.OnTriggerExit = "OnTriggerExit"
+
+return PhysicsEventNameConst

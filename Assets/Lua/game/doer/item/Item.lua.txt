@@ -1,0 +1,197 @@
+---@class Item:Thing
+local Item = Class("Item", Thing)
+
+function Item:OnInit()
+  Item.super.OnInit(self)
+  self:SetCount(1)
+  ---@type Embeds
+  self.o_embeds = Embeds.New(self,"o_embeds")
+end
+
+------------------------DoXXX--------------------------------
+-- 卸载
+function Item:DoRelease()
+  --销毁镶物
+  self.o_embeds:DoRelease()
+  Item.super.DoRelease(self)
+end
+
+-- 保存
+function Item:DoSave(dict, dict_tmp)
+  Item.super.DoSave(self,dict, dict_tmp)
+  -- 存储镶物
+  self.o_embeds:DoSave(dict, dict_tmp)
+end
+
+-- 还原
+function Item:DoRestore(dict, dict_tmp)
+  -- 导还原镶物
+  self.o_embeds:DoRestore(dict, dict_tmp)
+  Item.super.DoRestore(self,dict, dict_tmp)
+end
+
+
+--------------------------OnXXX-------------------
+function Item:OnCheckUseItem(critter)
+  return true
+end
+
+function Item:OnUseItem(critter)
+  return true
+end
+
+--region 镶物容器
+-----------------镶物容器---------------------
+-- 获得指定的镶物
+---@return Item[]
+function Item:GetEmbeds( id)
+  return self.o_embeds:GetEmbeds(id)
+end
+
+-- 是否有镶物
+function Item:HasEmbeds()
+  return self.o_embeds:HasEmbeds()
+end
+
+function Item:GetEmbedsCount()
+  return self.o_embeds:GetEmbedsCount()
+end
+
+-- 获得指定的镶物
+---@return Item
+function Item:GetEmbed(id_or_rid)
+  return self.o_embeds:GetEmbed(id_or_rid)
+end
+
+-- 清除所有镶物
+function Item:ClearEmbeds()
+  self.o_embeds:ClearEmbeds()
+end
+
+-- 检测镶入镶物
+---@param embed Item
+function Item:CheckEmbedOn(embed)
+  return self:OnCheckEmbedOn(embed) and embed:OnCheckEmbedOn(self)
+end
+
+---@param embed Item
+function Item:EmbedOn( embed)
+  local env = embed:GetEnv()
+  if env then
+    error2(string.format("%s still in %s", embed, env))
+    return false
+  end
+  local list = self.o_embeds:GetEmbeds_ToEdit()
+  if table.ContainsValue(list, embed) then
+    error2(string.format("%s already embed on %s", self, embed))
+    return false
+  end
+  if not (self:OnEmbedOn(embed) and embed:OnEmbedOn(self)) then
+    return false
+  end
+  embed:SetEnv(self)
+  table.insert(list, embed)
+
+  return true
+end
+
+
+-- 检测卸下镶物
+---@param embed Item
+function Item:CheckEmbedOff(embed)
+  return self:OnCheckEmbedOff(embed) and embed:OnCheckEmbedOff(self)
+end
+
+-- 卸下镶物
+---@param embed Item
+function Item:EmbedOff(embed)
+  local list = self.o_embeds:GetEmbeds_ToEdit()
+  if not table.ContainsValue(list, embed) then
+    error2(string.format("%s not contains embed:%s", self, embed))
+    return false
+  end
+  if not (self:OnEmbedOff(embed) and embed:OnEmbedOff(self)) then
+    return false
+  end
+  table.RemoveByValue_Array(list, embed)
+  embed:SetEnv(nil)
+  return true
+end
+
+--------------------------OnXXX-------------------
+function Item:OnCheckEmbedOn(embed)
+  return true
+end
+
+function Item:OnEmbedOn(embed)
+  return true
+end
+
+function Item:OnCheckEmbedOff(embed)
+  return true
+end
+
+function Item:OnEmbedOff(embed)
+  return true
+end
+
+--endregion
+
+--region 装备
+--------------------------OnXXX-------------------
+function Item:OnCheckPutOnEquip(critter)
+  return true
+end
+
+function Item:OnPutOnEquip(critter)
+  return true
+end
+
+function Item:OnCheckTakeOffEquip(critter)
+  return true
+end
+
+function Item:OnTakeOffEquip(critter)
+  return true
+end
+--endregion
+
+
+
+-------------------Util-------------------------------
+function Item:IsWeapon()
+  return self:IsType1(ItemConst.Item_Type1_Weapon)
+end
+
+function Item:IsArmor()
+  return self:IsType1(ItemConst.Item_Type1_Armor)
+end
+
+function Item:IsEmb()
+  return self:IsType1(ItemConst.Item_Type1_Embed)
+end
+
+function Item:IsEquip()
+  return self:IsWeapon() or self:IsArmor()
+end
+
+function Item:IsType1(type_1)
+  return type_1 == self:GetType1()
+end
+
+function Item:IsType2(type_2)
+  return type_2 == self:GetType2()
+end
+
+
+function Item:IsPutOn()
+  return self:GetTmp("o_is_put_on")
+end
+
+function Item:SetIsPutOn(is_put_on)
+  return self:SetTmp("o_is_put_on", is_put_on)
+end
+
+
+
+return Item

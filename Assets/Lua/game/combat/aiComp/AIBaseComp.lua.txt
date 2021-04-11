@@ -1,0 +1,230 @@
+---@class AIBaseComp:TickObject
+local AIBaseComp = Class("AIBaseComp", TickObject)
+
+---@param unit Unit
+function AIBaseComp:Init(unit)
+  AIBaseComp.super.Init(self, unit)
+  self.unit = unit
+  self.use_skill_interval = 6 -- ai攻击间隔
+  self.last_use_skill_time = CombatUtil.GetTime()
+  self.use_skill_next_index = 1
+end
+
+function AIBaseComp:__Update(deltaTime, unscaledDeltaTime)
+  AIBaseComp.super.__Update(self, deltaTime, unscaledDeltaTime)
+  self:DoBehavior(deltaTime)
+end
+
+-- 子类重写此方法实现该AI行为
+function AIBaseComp:DoBehavior(deltaTime)
+end
+
+---@param target_unit_list Unit[]
+---@param is_no_normal_attack boolean @是否不普通攻击
+function AIBaseComp:Attack(target_unit_list, is_no_normal_attack)
+  -- 先尝试释放技能
+  if CombatUtil.GetTime() - self.last_use_skill_time >= self.use_skill_interval then
+    for i = 1, #self.unit.skill_id_list do
+      self.use_skill_next_index = self.use_skill_next_index + 1
+      if self.use_skill_next_index > #self.unit.skill_id_list then
+        self.use_skill_next_index = 1
+      end
+      local skill_id = self.unit.skill_id_list[self.use_skill_next_index]
+      -- 如果当前技能不能施放，则放下一个。
+      -- 且保存着已经施放技能index在self.use_spell_next_index，
+      -- 以使每个技能都有机会施放
+      if self:TryCastSkill(skill_id, target_unit_list) then
+        -- 成功施放了技能才记录最后一次使用技能的时间，以保证三个技能都不能施放时，
+        -- 下一帧继续尝试施放
+        self.last_use_skill_time = CombatUtil.GetTime()
+        return true
+      end
+    end
+  end
+
+  if is_no_normal_attack then
+    return false
+  end
+  -- 再尝试普攻
+  return self:TryNormalAttack(target_unit_list)
+end
+
+
+-- 一般情况不要直接使用这个方法
+-- 返回参数第二个为true时表示“不是真的成功施放了技能”，只有第一个参数返回true时，第二个参数才有意义
+-- 一般情况下请不要使用第二个参数作判断
+-- 第一个参数返回true时，请注意第二个参数值的返回
+---@param target_unit_list Unit[]
+function AIBaseComp:TryCastSkill(spell_id, target_unit_list, is_can_attack_without_seeing_target)
+  if not spell_id or not self.unit:IsCanCastSkill() then
+    return false
+  end
+  --  如果没到释放的时机，直接就返回false
+  if not self.unit:IsTimeToCastSpell(spell_id) then
+    return false
+  end
+
+  local spellDefinition = global.definitionManager:GetSpellDefinition(spell_id)
+  local attack_range = spellDefinition.range
+  local target_unit = global.client.combat.spellManager:RecommendCast(self.unit, spell_id, target_unit_list, is_can_attack_without_seeing_target)[1]
+
+  if not target_unit then
+    return false
+  end
+
+  if is_can_attack_without_seeing_target then
+    -- 玩家可以没有见到目标就放技能
+    return self.unit:CastSpell(spell_id, target_unit, is_can_attack_without_seeing_target)
+  end
+  -- ai需要有目标才放技能放技能
+  --  如果技能填了不强制面向目标，则控制的时候不走去攻击范围，但ai还是会走去攻击范围
+  if (not attack_range) or (is_can_attack_without_seeing_target and spellDefinition.is_not_face_to_target) or
+      not self:IsNeedGotoAttackRange(target_unit, attack_range) then
+    return self.unit:CastSpell(spell_id, target_unit, is_can_attack_without_seeing_target)
+  end
+  return false
+end
+
+---@param is_can_attack_without_seeing_target @是否能没有见到目标就攻击
+---@param target_unit_list Unit[]
+function AIBaseComp:TryNormalAttack(target_unit_list, is_can_attack_without_seeing_target)
+  local attack_id = self.unit:GetNormalAttackId()
+  if not attack_id or not self.unit:IsCanNormalAttack() then
+    return
+  end
+  local spellDefinition = global.definitionManager:GetSpellDefinition(attack_id)
+  local attack_range = spellDefinition.range
+  local target_unit = global.client.combat.spellManager:RecommendCast(self.unit, attack_id, target_unit_list, is_can_attack_without_seeing_target)[1]
+
+  if not target_unit then
+    return
+  end
+
+  if is_can_attack_without_seeing_target then
+    -- 玩家可以没有见到目标就放技能
+    return self.unit:NormalAttack(target_unit)
+  end
+  -- ai需要有目标才放技能
+  --  如果有目标，但是没到释放的时机，走去攻击区域
+  if not self.unit:IsTimeToCastSpell(attack_id) then
+    self:IsNeedGotoAttackRange(target_unit, attack_range)
+    return true, true
+  elseif (not attack_range) or not self:IsNeedGotoAttackRange(target_unit, attack_range) then
+    self.unit:LookAt(target_unit, AnimationNameConst.attack)
+    return self.unit:NormalAttack(target_unit)
+  else
+    return true,true
+  end
+end
+
+
+-- 走到攻击范围内，正在走返回true，到达之后返回false
+-- 小兵会选择一个合适的攻击位置，相互不重叠
+---@param target_unit Unit
+function AIBaseComp:IsNeedGotoAttackRange(target_unit, attack_range)
+  local unit = self.unit
+  local distance = unit:Distance(target_unit)
+  if unit.is_move_occupy and distance <= attack_range then
+    return false
+  end
+
+  local new_target_pos = self:__FindPlaceInAttackRange(target_unit, attack_range)
+
+  if new_target_pos then
+    -- 找到空位uni
+    if unit:GetPosition():Distance(new_target_pos) < 0.01 then
+      unit.is_move_occupy = true
+      unit:MoveStop()
+      return false
+    else
+      unit:Move(new_target_pos)
+      return true
+    end
+  else
+    -- 找不到空位时，已在范围内直接可攻击，不再范围内直接朝原目标点前进
+    if distance <= attack_range then
+      unit.is_move_occupy = true
+      return false
+    end
+    return true
+  end
+end
+
+-- 检查位置是否被占用
+function AIBaseComp:__HasConflict(pos, radius)
+  for _, unit in global.client.combat.unitManager:GetUnitDict() do
+    if unit ~= self.unit and unit.is_move_occupy and unit:Distance(pos) < radius * 0.9 then
+      return true
+    end
+  end
+end
+
+-- 给小兵选择一个合适的攻击位置，相互不重叠
+-- 找到返回路径，否则返回false
+---@param target_unit Unit
+function AIBaseComp:__FindPlaceInAttackRange(target_unit, attack_range)
+  local unit = self.unit
+  local self_unit_pos = unit:GetPosition()
+  local self_unit_radius = unit:GetRadius()
+  local target_unit_pos = target_unit:GetPosition()
+  local target_unit_radius = target_unit:GetRadius()
+  local both_radius = self_unit_radius + target_unit_radius
+
+  -- 检查位置是否可以站在这个位置
+  local function __CanStand(pos)
+    if pos:Distance(target_unit_pos) > attack_range + both_radius
+        or self:__HasConflict(pos, self_unit_radius) then
+      return false
+    end
+    self.__find_target_unit_pos = target_unit_pos
+    self.__find_stand_pos = pos
+    return true
+  end
+
+  local distance = Vector3.Distance(self_unit_pos, target_unit_pos)
+  -- 目前位置就可以站位
+  if distance < attack_range + both_radius and not self:__HasConflict(self_unit_pos, self_unit_radius) then
+    return self_unit_pos
+  end
+  if self.__find_target_unit_pos == target_unit:GetPosition() and
+      not self:__HasConflict(self.__find_stand_pos, self_unit_radius) then
+    return self.__find_stand_pos
+  end
+
+  local base_distance = math.min(distance, both_radius + attack_range - 0.1)
+  local base_dir = (self_unit_pos - target_unit_pos):Normalize()
+  local base_pos = target_unit_pos + base_dir * base_distance
+
+  -- 测试直线走过去的位置
+  if __CanStand(base_pos) then
+    return base_pos
+  end
+  local angle = 0
+  --计算 delta_angle
+  -- 原理见图片 Assets/代码辅助资料/AIComp_001.JPG
+  -- 已知道三边（base_distance,base_distance,self_unit_radius*2），求角度(公式为：a^2=b^2+c^2-2bc*cosA)
+  local a = base_distance
+  local b = base_distance
+  local c = self_unit_radius * 2
+  local delta_angle = math.acos((a^2 - b^2 - c^2) / (-2 * b * c)) * math.Rad2Deg
+  local left_pos, right_pos
+
+  while true do
+    angle = angle + delta_angle
+    if angle >= 180 then
+      break
+    end
+    left_pos = target_unit_pos + base_dir*base_distance * Quaternion.AngleAxis(angle, Vector3.up)
+    if __CanStand(left_pos) then
+      return left_pos
+    end
+
+    right_pos = target_unit_pos + base_dir*base_distance * Quaternion.AngleAxis(-angle, Vector3.up)
+    if __CanStand(right_pos) then
+      return right_pos
+    end
+  end
+  return false
+end
+
+return AIBaseComp

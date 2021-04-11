@@ -1,0 +1,7 @@
+<SelectorNode>
+	<RefNode ref="move"/>
+	<SequenceNode>
+	<Condition codition/>
+	</SequenceNode>
+	<RefNode ref="idle"/>
+</SelectorNode>

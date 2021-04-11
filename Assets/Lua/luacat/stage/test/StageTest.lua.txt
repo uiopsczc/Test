@@ -1,0 +1,25 @@
+---@class StageTest:StageBase
+local StageTest = Class("StageTest",StageBase)
+
+function StageTest:Init()
+  StageTest.super.Init(self)
+  self.is_show_fade = true
+  self.is_show_loading = false
+  self.stage_name = "StageTest"
+  self.scene_path = "Assets/Resources/common/ui/scene/StageTestScene.unity"
+end
+
+function StageTest:LoadPanels()
+  StageTest.super.LoadPanels(self)
+  table.insert(self.panel_list,global.client.uiManager:CreateChildPanel("UITestPanel", require("luacat.ui.common.UITest.UITestPanel")))
+end
+
+function StageTest:Show()
+  StageTest.super.Show(self)
+  self:HideFade()
+end
+
+
+
+
+return StageTest

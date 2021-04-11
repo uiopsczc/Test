@@ -1,0 +1,430 @@
+local Timer = require("luacat.timer.Timer")
+
+
+-- 1、主线程使用coroutine.start启动协程，协程启动以后，首次挂起时主线程继续往下执行，这里和Unity侧表现是一致的
+-- 2、协程里可以再次使用coroutine.start启动协程，和在Unity侧协程中使用StartCoroutine表现一致
+-- 3、协程里启动子级协程并等待其执行完毕，在Unity侧是yield return StartCoroutine，但是在Lua不需要另外启动协程，直接调用函数即可
+-- 4、如果lua侧协程不使用本脚本的扩展函数，则无法实现分帧；lua侧启动协程以后不管协程函数调用栈多深，不管使用多少次本脚本扩展函数，都运行在一个协程
+-- 5、使用coroutine.waitforframes(1)来等待一帧，千万不要用coroutine.yield，否则整个协程将永远不被唤醒===>***很重要，除非你在其它地方手动唤醒它
+-- 6、子级协同在lua侧等同于普通函数调用，和普通函数一样可在退出函数时带任意返回值，而Unity侧协同不能获取子级协同退出时的返回值
+-- 7、理论上任何协同都可以用回调方式去做，但是对于异步操作，回调方式也需要每帧去检测异步操作是否完成，消耗相差不多，而使用协同可以简单很多，清晰很多
+-- 8、协程所有等待时间的操作，如coroutine.waitforseconds误差由帧率决定，循环等待时有累积误差，所以最好只是用于分帧，或者等待异步操作
+-- 9、yieldstart、yieldreturn、yieldbreak实际上是用lua不对称协程实现对称协同，使用方式和Unity侧协同类似，注意点看相关函数头说明
+
+Coroutine = {}
+
+
+-- 协程内部使用定时器实现，定时器是weak表，所以这里必须缓存Action，否则会被GC回收
+---@type table<thread,CoroutineAction>
+local action_dict = {}
+-- 用于子级协程YieldReturn时寻找父级协程
+---@type CoroutineParentDict[]
+local yield_child_co_2_parent_dict = {}
+
+-- 用于父协程寻找子协程
+local yield_co_2_child_co_dict = {}
+
+--local co_pool_name = "coroutine_co_pool"
+--Coroutine.co_pool_name = co_pool_name
+local action_pool_name = "coroutine_action_pool"
+local yield_parent_dict_pool_name = "coroutine_yield_parent_dict"
+
+
+
+-- 可复用协程
+local function __Coroutine(func, ...)
+  local func_args = table.SafePack(...)
+  while func do
+    local result = table.SafePack(func(table.SafeUnpack(func_args)))
+    --poolCatManager:Despawn(coroutine.running(), co_pool_name)--虽然是running的，但在下一行已经挂起该协程就会返回，所以此刻可以进行回收
+    func_args = table.SafePack(coroutine.yield(table.SafeUnpack(result)))--这里会终端协程co
+    func = func_args[1]
+    table.remove(func_args, 1)
+  end
+end
+
+-- 获取协程
+local function __GetCoroutine()
+  --local co = poolCatManager:Spawn(co_pool_name, function()
+  --  return coroutine.create(__Coroutine)
+  --end)
+  local co = coroutine.create(__Coroutine)
+  return co
+end
+
+-- 回收Action
+local function __RecycleAction(action)
+  action.co = false
+  action.timer = false
+  action.func = false
+  action.func_args = false
+  action.abort_2_co_value = false
+  PoolCatManagerUtil.Despawn(action, action_pool_name)
+end
+
+-- 获取Action
+---@return CoroutineAction
+local function __GetAction(co, timer, func, func_args, abort_2_co_value)
+  ---@class CoroutineAction
+  ---@field co
+  ---@field timer Timer
+  ---@field func fun
+  ---@field func_args
+  ---@field abort_2_co_value boolean
+  ---@field timerManager TimerManager
+  local action = PoolCatManagerUtil.GetOrAddCustomPool(action_pool_name, function()
+    return {}
+  end):Spawn()
+  action.co = co and co or false
+  action.timer = timer and timer or false
+  action.func = func and func or false
+  action.func_args = func_args and func_args or false
+  action.abort_2_co_value = abort_2_co_value and abort_2_co_value or false
+  return action
+end
+
+-- 协程运行在保护模式下，不会抛出异常，所以这里要捕获一下异常
+-- 但是可能会遇到调用协程时对象已经被销毁的情况，这种情况应该被当做正常情况
+-- 所以这里并不继续抛出异常，而只是输出一下错误日志，不要让客户端当掉
+-- 注意：Logger中实际上在调试模式会抛出异常
+local function __PResume(co, func, ...)
+  local resume_result = nil
+  local func_args = table.SafePack(...)
+  if func ~= nil then
+    resume_result = table.SafePack(coroutine.resume(co, func, table.SafeUnpack(func_args)))
+  else
+    resume_result = table.SafePack(coroutine.resume(co, table.SafeUnpack(func_args)))
+  end
+  local is_call_success, error_msg = resume_result[1], resume_result[2]
+  if not is_call_success then
+    ErrorFormat("%s\n%s", error_msg, debug.traceback(co))
+  elseif resume_result.n > 1 then
+    table.remove(resume_result, 1)
+  else
+    resume_result = nil
+  end
+  return is_call_success, resume_result
+end
+
+---@param action CoroutineAction
+---@param abort boolean
+local function __DoAction(action, abort, ...)
+  assert(action.timer)
+  if not action.func then
+    abort = true
+  end
+
+  if not abort and action.func then
+    if action.func_args and action.func_args.n > 0 then
+      abort = (action.func(table.SafeUnpack(action.func_args)) == action.abort_2_co_value)
+    else
+      abort = (action.func() == action.abort_2_co_value)
+    end
+  end
+
+  if abort then
+    if action.timer then
+      action.timer:Stop()
+      action.timerManager:RemoveTimer(action.timer)
+    end
+    action_dict[action.co] = nil
+    __PResume(action.co, ...)---恢复action.co协程
+    __RecycleAction(action)
+  end
+end
+
+local function __DoActionLoop(action, abort, ...)
+  __DoAction(action, abort, ...)
+  return true  --Timer中的func返回true的话，就会继续循环调用func
+end
+
+-- 启动一个协程：等待协程第一次让出控制权时主函数继续往下执行，这点表现和Unity协程一致
+-- 等同于Unity侧的StartCoroutine
+-- @func：协程函数体
+-- @...：传入协程的可变参数
+function Coroutine.Start(func, ...)
+  local func_args = table.SafePack(...)
+  local co = __GetCoroutine()
+  __PResume(co, func, table.SafeUnpack(func_args))
+  return co
+end
+
+-- 启动一个协程并等待
+-- 重要：在func的最后一定要用yield break跳出，否则无法返回
+-- 注意： 与 yield break 连同使用，跳出进程
+-- 1、这里会真正启动一个子级协程，比起在协程中直接函数调用开销稍微大点，但是灵活度很高
+-- 2、最大好处就是可以在子级协程中使用yieldreturn返回值给父级协程执行一次某个回调，用于交付数据给父级协程
+-- 3、如果子级协程没有结束，父级协程会在执行完回调之后等待一帧再次启动子级协程
+-- 4、具体运用参考场景管理（ScenceManager）部分控制加载界面进度条的代码，十分清晰简洁
+-- 5、如果不需要callback，即不需要子级协程交付数据，别使用yieldstart，直接使用普通函数调用方式即可
+-- 6、回调callback函数体一般处理的是父级协程的逻辑，但是跑在子级协程内，这点要注意，直到yieldbreak父级协程都是挂起的
+-- @func：子级协程函数体
+-- @callback:子级协程在yieldreturn转移控制权给父级协程时，父级协程跑的回调，这个回调会填入子级协程yieldreturn时的参数
+-- @...：传递给子级协程的可变参数
+function Coroutine.YieldStart(func, callback, ...)
+  local func_args = table.SafePack(...)
+  local co = coroutine.running() or error('coroutine.yieldstart must be run in coroutine')
+  ---@class CoroutineParentDict  @里面的字段都是描述parentCo的
+  ---@param co
+  ---@param callback fun
+  ---@param isWaiting boolean
+  ---@param isOver boolean
+  local parent_dict = PoolCatManagerUtil.GetOrAddCustomPool(yield_parent_dict_pool_name, function()
+    return {}
+  end):Spawn()
+  parent_dict.co = co
+  parent_dict.callback = callback
+  parent_dict.is_waiting = false
+  parent_dict.is_over = false
+
+  local child_co = __GetCoroutine()
+  yield_child_co_2_parent_dict[child_co] = parent_dict
+  yield_co_2_child_co_dict[co] = child_co
+  local is_call_success, resume_result = __PResume(child_co, func, table.SafeUnpack(func_args))
+  if not is_call_success then
+    PoolCatManagerUtil.Despawn(parent_dict, yield_parent_dict_pool_name)
+    yield_child_co_2_parent_dict[child_co] = nil
+    yield_co_2_child_co_dict[co] = nil
+    return nil
+  elseif parent_dict.is_over then
+    PoolCatManagerUtil.Despawn(parent_dict, yield_parent_dict_pool_name)
+    yield_child_co_2_parent_dict[child_co] = nil
+    yield_co_2_child_co_dict[co] = nil
+    if resume_result == nil then
+      return nil
+    else
+      return table.SafeUnpack(resume_result)
+    end
+  else
+    parent_dict.is_waiting = true
+    local yield_ret = table.SafePack(coroutine.yield())--会中断当前的co(即parentCo)
+    PoolCatManagerUtil.Despawn(parent_dict, yield_parent_dict_pool_name)
+    yield_child_co_2_parent_dict[child_co] = nil
+    yield_co_2_child_co_dict[co] = nil
+    return table.SafeUnpack(yield_ret)
+  end
+end
+
+-- 子级协程将控制权转移给父级协程，并交付数据给父级协程回调，配合yieldstart使用
+-- 注意：
+-- 1、与Unity侧协程yield return不同，对子级协程来说yieldreturn一定会等待一帧再往下执行
+function Coroutine.YieldReturn(...)
+  local callback_args = table.SafePack(...)
+  local child_co = coroutine.running() or error("coroutine.yieldreturn must be run in coroutine") -- 子协程
+  Coroutine.YieldCallback(child_co, table.SafeUnpack(callback_args))
+  -- 子级协程等待一帧再继续往下执行
+  return Coroutine.WaitForFrames(1)
+end
+
+-- 子级协程在异步回调中交付数据给父级协程回调，配合yieldstart使用
+-- 注意：
+-- 1、子级协程异步回调并没有运行在子级协程当中，不能使用yieldreturn，实际上不能使用任何协程相关接口，除了start
+-- 2、yieldcallback需要传递当前的子级协程，这个可以从异步回调的首个参数获取
+-- 3、不会等待一帧，实际上协程中的回调是每帧执行一次的
+function Coroutine.YieldCallback(child_co, ...)
+  assert(child_co ~= nil and type(child_co) == "thread")
+  local callback_args = table.SafePack(...)
+  local parent_dict = yield_child_co_2_parent_dict[child_co]
+  -- 没有父级协程，啥都不做
+  if not parent_dict or not parent_dict.co then
+    return
+  end
+  local callback = parent_dict.callback
+  assert(callback ~= nil, "If you don't need callback, use normal function call instead!!!")
+  callback(child_co, table.SafeUnpack(callback_args))
+end
+
+-- 退出子级协程，将控制权转移给父级协程，并交付数据作为yieldstart返回值，配合yieldstart使用
+-- 注意：
+-- 1、一定要使用return coroutine.yieldbreak退出===>很重要***
+-- 2、不使用coroutine.yieldbreak无法唤醒父级协程
+-- 3、不使用return，可能无法正确退出子级协程
+function Coroutine.YieldBreak(...)
+  local co = coroutine.running() or error("coroutine.yieldbreak must be run in coroutine")
+  local parent_dict = yield_child_co_2_parent_dict[co]
+  -- 没有父级协程
+  if not parent_dict then
+    return ...
+  end
+
+  parent_dict.is_over = true
+  assert(parent_dict.co ~= nil, "What's the fuck!!!")
+  if not parent_dict.is_waiting then
+    return ...
+  else
+    __PResume(parent_dict.co, nil, ...)
+    --__PResume(parentMap.co,  ...)  我觉得这里应该这样子才对，这里会到yieldStart的isWating=true下的yiled的返回值
+  end
+end
+
+-- 等待下次FixedUpdate，并在FixedUpdate执行完毕后resume
+-- 等同于Unity侧的yield return new WaitForFixedUpdate
+function Coroutine.WaitForFixedUpdate(timerManager)
+  local co = coroutine.running() or error("coroutine.waitforfixedupdate must be run in coroutine")
+  local timer = Timer.New(__DoAction,nil,0,0,Timer.UpdateMode.FixedUpdate,nil,true,true)
+  local action = __GetAction(co, timer)
+  timer.target_func_args = {action}
+  action.timerManager = timerManager or global.client.timerManager
+  action.timerManager:AddTimer2(timer)
+  action_dict[co] = action
+  return coroutine.yield()
+end
+
+-- 等待帧数，并在Update执行完毕后resume
+function Coroutine.WaitForFrames(frames, timerManager)
+  assert(type(frames) == "number" and frames >= 1 and math.floor(frames) == frames)
+  local co = coroutine.running() or error("coroutine.waitforframes must be run in coroutine")
+  local timer = Timer.New(__DoAction,nil,frames,0,Timer.UpdateMode.Update,nil,true,true)
+  local action = __GetAction(co, timer)
+  timer.target_func_args = {action}
+  action.timerManager = timerManager or global.client.timerManager
+  action.timerManager:AddTimer2(timer)
+  action_dict[co] = action
+  return coroutine.yield()
+end
+
+-- 等待秒数，并在Update执行完毕后resume
+-- 等同于Unity侧的yield return new WaitForSeconds
+function Coroutine.WaitForSeconds(seconds,timerManager)
+  assert(type(seconds) == "number" and seconds >= 0)
+  local co = coroutine.running() or error("coroutine.waitforsenconds must be run in coroutine")
+  local timer = Timer.New(__DoAction,nil,seconds,nil,Timer.UpdateMode.Update,nil,true,false)
+  local action = __GetAction(co, timer)
+  timer.target_func_args = {action}
+  action.timerManager = timerManager or global.client.timerManager
+  action.timerManager:AddTimer2(timer)
+  action_dict[co] = action
+  return coroutine.yield()
+end
+
+---@param callback fun(thread,float)  @第一个参数是co，第二个参数是asyncOperation.progress
+---@param async_operation CoroutineAsyncOperation
+local function __AsyncOpCheck(co, async_operation, callback)
+  if callback ~= nil then
+    callback(co, async_operation.progress)
+  end
+  return async_operation.is_done
+end
+
+-- 等待异步操作完成，并在Update执行完毕resume
+-- 等同于Unity侧的yield return AsyncOperation
+-- 注意：yield return WWW也是这种情况之一
+-- @async_operation：异步句柄---或者任何带有isDone、progress成员属性的异步对象
+-- @callback：每帧回调，传入参数为异步操作进度progress
+---@param callback fun(thread,float)  @第一个参数是co，第二个参数是asyncOperation.progress
+---@param async_operation CoroutineAsyncOperation
+function Coroutine.WaitForAsyncOp(async_operation, callback,timerManager)
+  ---@class CoroutineAsyncOperation
+  ---@field progress number
+  ---@field is_done boolean
+  assert(async_operation)
+  local co = coroutine.running() or error("coroutine.waitforasyncop must be run in coroutine")
+  local timer = Timer.New(__DoActionLoop,nil,1,1,Timer.UpdateMode.Update,nil,true,true)--每帧都检测
+  local action = __GetAction(co, timer, __AsyncOpCheck, table.SafePack(co, async_operation, callback), true)
+  timer.target_func_args = {action}
+  action.timerManager = timerManager or global.client.timerManager
+  action.timerManager:AddTimer2(timer)
+  action_dict[co] = action
+  return coroutine.yield()
+end
+
+-- 等待条件为真，并在Update执行完毕resume
+-- 等同于Unity侧的yield return new WaitUntil
+function Coroutine.WaitUntil(timerManager, func, ...)
+  assert(func)
+  local co = coroutine.running() or error("coroutine.waituntil must be run in coroutine")
+  local func_args = table.SafePack(...)
+  local timer = Timer.New(__DoActionLoop,nil,1,1,Timer.UpdateMode.Update,nil,true,true)--每帧都检测
+  local action = __GetAction(co, timer, func, func_args, true)
+  timer.target_func_args = {action}
+  action.timerManager = timerManager or global.client.timerManager
+  action.timerManager:AddTimer2(timer)
+  action_dict[co] = action
+  return coroutine.yield()
+end
+
+-- 等待条件为假，并在Update执行完毕resume
+-- 等同于Unity侧的yield return new WaitWhile
+function Coroutine.WaitWhile(timerManager,func, ...)
+  assert(func)
+  local co = coroutine.running() or error("coroutine.waitwhile must be run in coroutine")
+  local timer = Timer.New(__DoActionLoop,nil,1,1,Timer.UpdateMode.Update,nil,true,true)--每帧都检测
+  local func_args = table.SafePack(...)
+  local action = __GetAction(co, timer, func, func_args, false)
+  timer.target_func_args = {action}
+  action.timerManager = timerManager or global.client.timerManager
+  action.timerManager:AddTimer2(timer)
+  action_dict[co] = action
+  return coroutine.yield()
+end
+
+-- 等待本帧结束，并在进入下一帧之前resume
+-- 等同于Unity侧的yield return new WaitForEndOfFrame
+function Coroutine.WaitForEndOfFrame(timerManager)
+  local co = coroutine.running() or error("coroutine.waitforendofframe must be run in coroutine")
+  local timer = Timer.New(__DoActionLoop,nil,1,1,Timer.UpdateMode.LateUpdate,nil,true,true)--每帧都检测
+  local action = __GetAction(co, timer)
+  timer.target_func_args = {action}
+  action.timerManager = timerManager or global.client.timerManager
+  action.timerManager:AddTimer2(timer)
+  action_dict[co] = action
+  return coroutine.yield()
+end
+
+function Coroutine.Stop(co)
+  local action = action_dict[co]
+  if action then
+    action_dict[action.co] = nil
+    if action.timer then
+      action.timer:Stop()
+      action.timerManager:RemoveTimer(action.timer)
+    end
+    __RecycleAction(action)
+    --poolCatManager:Despawn(co, co_pool_name)
+  end
+
+  local parent_dict = yield_child_co_2_parent_dict[co]
+  if parent_dict then
+    yield_child_co_2_parent_dict[co] = nil
+    if parent_dict.co then
+      Coroutine.Stop(parent_dict.co)
+    end
+    PoolCatManagerUtil.Despawn(parent_dict, yield_parent_dict_pool_name)
+  end
+
+  local child_co = yield_co_2_child_co_dict[co]
+  if child_co then
+    yield_co_2_child_co_dict[co] = nil
+    Coroutine.Stop(child_co)
+  end
+end
+
+
+function Coroutine.SetIsPaused(co, is_paused)
+  local action = action_dict[co]
+  if action then
+    if action.timer then
+      action.timer:SetIsPaused(is_paused)
+    end
+  end
+
+  local parent_dict = yield_child_co_2_parent_dict[co]
+  if parent_dict then
+    if parent_dict.co then
+      Coroutine.SetIsPaused(parent_dict.co, is_paused)
+    end
+  end
+
+  local child_co = yield_co_2_child_co_dict[co]
+  if child_co then
+    Coroutine.SetIsPaused(child_co, is_paused)
+  end
+end
+
+-- 停止等待操作（当前正在waitXXX的接口）
+function Coroutine.StopWaiting(co, ...)
+  local action = action_dict[co]
+  if action then
+    __DoAction(action, true, ...)
+  end
+end

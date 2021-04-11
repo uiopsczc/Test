@@ -1,0 +1,6 @@
+---@class AStarType
+local AStarType = {}
+AStarType.Fast = 1 -- 最快
+AStarType.Best = 2 -- 最短
+return AStarType
+

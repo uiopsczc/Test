@@ -1,0 +1,5 @@
+---@class AnimatorCompConst
+local AnimatorCompConst = Class("AnimatorCompConst")
+
+
+return AnimatorCompConst

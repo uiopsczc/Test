@@ -1,0 +1,13 @@
+local RedDotTest = require("luacat.redDot.test.RedDotTest")
+RedDotConst = {}
+
+RedDotConst.Red_Dot_Image_AssetPath = "Assets/Resources/common/ui/texture/red_dot.png:red_dot"
+RedDotConst.Red_Dot_Name = "red_dot"
+
+RedDotConst.Red_Dot_Info_List = {
+  {tag = "Test0任务", check_func = function() return RedDotTest.ShowRedDotTest0() end, listen_name_list = {"OnShowRedDotTest0"}},
+  {tag = "Test1任务", check_func = function(arg1) return RedDotTest.ShowRedDotTest1(arg1) end, listen_name_list = {"OnShowRedDotTest1"}},
+  {tag = "Test2任务", check_func = function(arg1,arg2) return RedDotTest.ShowRedDotTest2(arg1,arg2) end, listen_name_list = {"OnShowRedDotTest2"}},
+  {tag = "Test任务", child_tag_list = {"Test0任务","Test1任务", "Test2任务"},child_tag_all_params_func_dict = {["Test1任务"]=RedDotTest.ShowRedDotTest1AllParmasListFunc,["Test2任务"]=RedDotTest.ShowRedDotTest2AllParmasListFunc, }},
+}
+

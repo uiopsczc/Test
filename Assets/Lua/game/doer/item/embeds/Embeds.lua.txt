@@ -1,0 +1,79 @@
+---@class Embeds
+local Embeds = Class("Embeds")
+------------------------镶物容器------------------------------
+function Embeds:Init(parent_doer, sub_doer_key)
+  ---@type Item
+  self.parent_doer = parent_doer
+  self.sub_doer_key = sub_doer_key
+end
+------------------------DoXXX--------------------------------
+-- 卸载
+function Embeds:DoRelease()
+  SubDoerUtil1.DoReleaseSubDoer(self.parent_doer, self.sub_doer_key)
+end
+
+-- 保存
+function Embeds:DoSave(dict, dict_tmp, save_key)
+  save_key = save_key or "embed_ids"
+  local embeds = self:GetEmbeds()
+  local dict_embed_ids = {}
+  for _, embed in ipairs(embeds) do
+    table.insert(dict_embed_ids, embed:GetId())
+  end
+  dict[save_key] = table.GetNilIfEmpty(dict_embed_ids)
+end
+
+-- 还原
+function Embeds:DoRestore(dict, dict_tmp, restore_key)
+  restore_key = restore_key or "embed_ids"
+  self:ClearEmbeds()
+  local dict_embed_ids = table.Remove_Dict(dict, restore_key)
+  if not table.IsNilOrEmpty(dict_embed_ids) then
+    local embeds = self:GetEmbeds_ToEdit()
+    for i = 1, #dict_embed_ids do
+      local embed_id = dict_embed_ids[i]
+      local embed = self.parent_doer.factory:NewDoer(embed_id)
+      embed:SetEnv(self.parent_doer)
+      table.insert(embeds, embed)
+    end
+  end
+end
+--------------------------OnXXX-------------------
+
+---------------------------------------------
+-- 获得指定的镶物
+---@param id string
+---@return Item[]
+function Embeds:GetEmbeds(id)
+  return SubDoerUtil1.GetSubDoers(self.parent_doer,self.sub_doer_key, id)
+end
+
+---@return Item[]
+function Embeds:GetEmbeds_ToEdit() --可以直接插入删除
+  return SubDoerUtil1.GetSubDoers_ToEdit(self.parent_doer,self.sub_doer_key)
+end
+
+-- 是否有镶物
+function Embeds:HasEmbeds()
+  return SubDoerUtil1.HasSubDoers(self.parent_doer,self.sub_doer_key)
+end
+
+function Embeds:GetEmbedsCount()
+  return SubDoerUtil1.GetSubDoersCount(self.parent_doer,self.sub_doer_key)
+end
+
+-- 获得指定的镶物
+---@param id_or_rid string
+---@return Item
+function Embeds:GetEmbed(id_or_rid)
+  return SubDoerUtil1.GetSubDoer(self.parent_doer,self.sub_doer_key, id_or_rid)
+end
+
+-- 清除所有镶物
+function Embeds:ClearEmbeds()
+  return SubDoerUtil1.ClearSubDoers(self.parent_doer,self.sub_doer_key, function(embed)
+    self.parent_doer:EmbedOff(embed)
+  end)
+end
+
+return Embeds

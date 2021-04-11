@@ -1,0 +1,85 @@
+---@class SceneItems
+local SceneItems = Class("SceneItems")
+------------------------SceneItems容器------------------------------
+function SceneItems:Init(parent_doer, sub_doer_key)
+  ---@type Scene
+  self.parent_doer = parent_doer
+  self.sub_doer_key = sub_doer_key
+end
+------------------------DoXXX--------------------------------
+-- 卸载
+function SceneItems:DoRelease()
+  SubDoerUtil3.DoRelease(self.parent_doer,self.sub_doer_key)
+end
+
+-- 保存
+function SceneItems:DoSave(dict, dict_tmp,save_key)
+  save_key = save_key or "scene_items"
+  local items = self:GetItems()
+  local dict_items = {}
+  local dict_items_tmp = {}
+  for _,item in ipairs(items) do
+    local dict_item = {}
+    local dict_item_tmp = {}
+    item:PrepareSave(dict_item, dict_item_tmp)
+    local rid = item:GetRid()
+    dict_items[rid] = dict_item
+      if not table.IsNilOrEmpty(dict_item_tmp) then
+        dict_items_tmp[rid] = dict_item_tmp
+      end
+  end
+  dict[save_key] = table.GetNilIfEmpty(dict_items)
+  dict_tmp[save_key] = table.GetNilIfEmpty(dict_items_tmp)
+end
+
+-- 还原
+function SceneItems:DoRestore(dict, dict_tmp, restore_key)
+  restore_key = restore_key or "scene_items"
+  self:ClearItems()
+  local dict_items = table.Remove_Dict(dict, restore_key)
+  local dict_items_tmp = table.Remove_Dict(dict_tmp, restore_key)
+  if not table.IsNilOrEmpty(dict_items) then
+    for rid, value in pairs(dict_items) do
+      local item_dict = self:GetItemDict_ToEdit()
+      local dict_item = dict_items[rid]
+      ---@type Item
+      local item = global.client.itemFactory:NewDoer(rid)
+      item:SetEnv(self.parent_doer)
+      local dict_item_tmp
+      if dict_items_tmp ~= nil then
+        dict_item_tmp = dict_items_tmp[rid]
+      end
+      item:FinishRestore(dict_item, dict_item_tmp)
+      item_dict[rid] = item
+    end
+  end
+end
+--------------------------OnXXX-------------------
+
+--------------------------------------------------
+---@param filter_func fun(sub_doer:Item)
+---@return Item[]
+function SceneItems:GetItems(id,filter_func)
+  return SubDoerUtil3.GetSubDoers(self.parent_doer,self.sub_doer_key,id,filter_func)
+end
+
+-- 可以直接插入删除
+---@return table<string,Item>
+function SceneItems:GetItemDict_ToEdit()
+  return SubDoerUtil3.GetSubDoerDict_ToEdit(self.parent_doer,self.sub_doer_key)
+end
+
+---@param id_or_rid string
+---@return Item
+function SceneItems:GetItem(id_or_rid)
+  return SubDoerUtil3.GetSubDoer(self.parent_doer,self.sub_doer_key,id_or_rid)
+end
+
+
+
+function SceneItems:ClearItems()
+  SubDoerUtil3.ClearSubDoers(self.parent_doer,self.sub_doer_key)
+end
+
+
+return SceneItems

@@ -1,0 +1,8 @@
+---@class UIConst
+UIConst = {}
+
+UIConst.Resolution = Vector2(1024, 1920)
+UIConst.Max_Oder_Per_Window = 10
+UIConst.UICanvas_Path = "UIManager/UICanvas"
+UIConst.UICamera_Path = "UIManager/UICamera"
+UIConst.UIManager_Path = "UIManager"

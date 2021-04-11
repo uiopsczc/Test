@@ -1,0 +1,9 @@
+---@class UIHUDTextPanel:UIHUDLayerPanel
+local UIHUDTextPanel = Class("UIHUDTextPanel",UIHUDLayerPanel)
+
+function UIHUDTextPanel:Init()
+  UIHUDTextPanel.super.Init(self)
+  self.graphicComponent:SetPrefabPath("Assets/Resources/common/ui/prefab/UITestPanel.prefab")
+end
+
+return UIHUDTextPanel

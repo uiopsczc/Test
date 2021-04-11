@@ -1,0 +1,68 @@
+---@class SliderCat
+local SliderCat = Class("SliderCat")
+
+---@param slider CS.UnityEngine.UI.Slider
+---@param cur_index number
+---@param duration number
+---@param cur_pct number
+function SliderCat:Init(slider, cur_index, duration, cur_pct)
+  ---@type CS.UnityEngine.UI.Slider
+  self.slider = slider
+  self:SetValues(cur_index, duration, cur_pct)
+end
+
+---@param cur_index number
+---@param duration number
+---@param cur_pct number
+function SliderCat:SetValues(cur_index, duration, cur_pct)
+  if cur_index then
+    self.cur_index = cur_index
+  end
+  if duration then
+    self.duration = duration
+  end
+  if cur_pct then
+    self.slider.value = cur_pct
+  end
+end
+
+function SliderCat:GetCurrentValue()
+  return self.cur_index + self.slider.value
+end
+
+
+---@param to_index number @到哪个index
+---@param to_pct number @到哪个pct
+---@param callback fun(index:number, pct:number,next_tween:CS.DG.Tweening.Tween)
+---@return CS.DG.Tweening.Tween
+function SliderCat:SlideTo(to_index, to_pct, callback)
+  if self.cur_index == to_index then
+    local tween_druation = math.abs(self.slider.value - to_pct)*self.duration
+    local tween = self.slider:DOValue(to_pct, tween_druation,false):SetEase(CS.DG.Tweening.Ease.Linear)
+    if callback then
+      tween:OnComplete(function()  callback(to_index, to_pct,nil) end)
+    end
+    return tween
+  else
+    local is_to_large_index = self.cur_index < to_index --是否是向更大的index滑动
+    local tween_to_pct = is_to_large_index and  1 or  0
+    local tween_druation = math.abs(self.slider.value - tween_to_pct)
+    local tween = self.slider:DOValue(tween_to_pct, tween_druation, false):SetEase(CS.DG.Tweening.Ease.Linear)
+    tween:OnComplete(function()
+      if is_to_large_index then -- 向更大的index滑动
+        self.slider.value = 0
+        self.cur_index = self.cur_index + 1
+      else
+        self.slider.value = 1
+        self.cur_index = self.cur_index - 1
+      end
+      local next_tween = self:SlideTo(to_index, to_pct, callback)
+      if callback then
+        callback(self.cur_index, self.slider.value,next_tween)
+      end
+    end)
+    return tween
+  end
+end
+
+return SliderCat

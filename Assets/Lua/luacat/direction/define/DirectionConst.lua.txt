@@ -1,0 +1,48 @@
+---@class DirectionConst
+local DirectionConst = {}
+
+---@type table<string,DirectionInfo>
+DirectionConst.direction_dict = {
+  left_bottom =DirectionInfo.New(-1,-1,"left_bottom"),
+  bottom = DirectionInfo.New(0,-1,"bottom"),
+  right_bottom= DirectionInfo.New(1,-1,"right_bottom"),
+
+  left= DirectionInfo.New(-1,0,"left"),
+  center= DirectionInfo.New(0,0,"center"),
+  right= DirectionInfo.New(1,0,"right"),
+
+  left_top=DirectionInfo.New(-1,1,"left_top"),
+  top=DirectionInfo.New(0,1,"top"),
+  right_top=DirectionInfo.New(1,1,"right_top"),
+}
+
+DirectionConst.direction_dict2_func = function()
+  ---@type table<number,table<number,DirectionInfo>>
+  local result = {}
+  for _,directionInfo in pairs(DirectionConst.direction_dict) do
+    local sub_dict = table.GetOrAddDefault_Dict(result, directionInfo.x,function()return {} end)
+    sub_dict[directionInfo.y] = directionInfo
+  end
+  return result
+end
+
+---@type table<number,table<number,DirectionInfo>>
+DirectionConst.direction_dict2 = DirectionConst.direction_dict2_func()
+
+---@param x_or_name number|string
+---@param y number
+---@return DirectionInfo
+function DirectionConst.GetDirectionInfo( x_or_name,  y)
+  if IsString(x_or_name) then
+    return DirectionConst.direction_dict[string.lower(x_or_name)]
+  else
+    local x = x_or_name
+    if not DirectionConst.direction_dict2[x] then
+      return nil
+    end
+    return DirectionConst.direction_dict2[x][y]
+  end
+end
+
+return DirectionConst
+

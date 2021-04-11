@@ -1,0 +1,4 @@
+---@class RoleDBase:DBase
+local RoleDBase = Class("RoleDBase",DBase)
+
+return RoleDBase

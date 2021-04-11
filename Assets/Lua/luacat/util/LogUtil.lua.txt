@@ -1,0 +1,144 @@
+local function __ToString(...)
+  local result = {}
+  table.WalkArgs(function(index, e)
+    local v = e
+    local t = type(v)
+    if t == "string" or t == "number" then
+      result[index] = v
+    elseif t == "table" and v.GetFullTraceInfo then
+      result[index] = v:GetFullTraceInfo()
+    else
+      result[index] = tostring(v)
+    end
+  end,...)
+  return result
+end
+
+local function __Dump(...)
+  local result = {}
+  table.WalkArgs(function(index, e)
+    local v = e
+    local t = type(v)
+    if t == "table" then
+      v = table.Dump(v)
+    end
+    table.Append_Array(result, v)
+  end,...)
+  table.SafePackArray(result)
+  return table.SafeUnpack(result)
+end
+
+batch_log_cache = {}
+
+function Traceback(msg, level, thread)
+  local result = { msg }
+  while true do
+    --get stack info
+    local info
+    if thread then
+      info = debug.getinfo(thread, level, "Sln")
+    else
+      info = debug.getinfo(level, "Sln")
+    end
+    if not info then
+      break
+    end
+    table.insert(result, string.format("\n %d %s:%d in function <%s>", level, info.short_src, info.currentline, info.name or ""))
+    local i = 1
+    while true do
+      local name, value
+      if thread then
+        name, value = debug.getlocal(thread, level, i)
+      else
+        name, value = debug.getlocal(level, i)
+      end
+      if not name then
+        break
+      end
+      if name == "self" then
+        if type(value) == "table" and
+            type(value.GetFullTraceInfo) == "function" then
+          table.insert(result, string.format(" obj (%s)", value:GetFullTraceInfo()))
+          break
+        end
+      end
+      i = i + 1
+    end
+    level = level + 1
+  end
+  return table.concat(result)
+end
+
+local function __GetFormatTraceback(level, thread, ...)
+  local msg = table.concat(__ToString(...), " ")
+  msg = Traceback(msg, 0)
+  local info
+  if thread then
+    info = debug.getinfo(thread, level, "Sln")
+  else
+    info = debug.getinfo(level, "Sln")
+  end
+  msg = string.format("[%s:%d]:%s", info.short_src, info.currentline, msg)
+  return msg
+end
+
+local function __LogWithLevel(level, thread, ...)
+  LogCat.Log(__GetFormatTraceback(level,thread, ...))
+  --AddBatchLogCache(__GetFormatTraceback(level,thread, ...), "log")
+end
+
+local function __WarnWithLevel(level, thread, ...)
+  LogCat.LogWarning(__GetFormatTraceback(level,thread, ...))
+  --AddBatchLogCache(__GetFormatTraceback(level,thread, ...), "warn")
+end
+
+local function __ErrorWithLevel(level, thread,...)
+  LogCat.LogError(__GetFormatTraceback(level,thread, ...))
+  --AddBatchLogCache(__GetFormatTraceback(level,thread, ...), "error")
+end
+
+function AddBatchLogCache(message, logType)
+  table.insert(batch_log_cache,{message = message, logType = logType})
+end
+
+
+------------------------------------------------------------
+local level = 4
+function Log(...)
+  __LogWithLevel(level, nil,...)
+end
+function LogFormat(format, ...)
+  Log(string.format(format, ...))
+end
+function log(...)
+  __LogWithLevel(level,nil, __Dump(...))
+end
+
+function Warn(...)
+  __WarnWithLevel(level, nil,...)
+end
+function WarnFormat(format, ...)
+  Warn(string.format(format, ...))
+end
+function warn(...)
+  __WarnWithLevel(level, nil,__Dump(...))
+end
+
+function Error(...)
+  __ErrorWithLevel(level, nil,...)
+end
+function error2(...)
+  __ErrorWithLevel(level, nil,__Dump(...))
+end
+function ErrorFormat(format, ...)
+  Error(string.format(format, ...))
+end
+
+
+
+function LogUpdate()
+  if #batch_log_cache > 0 then
+    LogCat.LuaBatchLog(batch_log_cache)
+    batch_log_cache = {}
+  end
+end

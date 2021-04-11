@@ -1,0 +1,25 @@
+---@class SceneFactory:DoerFactory
+local SceneFactory = Class("SceneFactory",DoerFactory)
+
+function SceneFactory:Init()
+  SceneFactory.super.Init(self)
+  self.default_doer_class_path = "game.doer.scene.Scene"
+end
+
+function SceneFactory:GetDefinitions()
+  return global.definitionManager.sceneDefinition
+end
+
+---@return SceneDefinition
+function SceneFactory:GetDefinition(id)
+  return SceneFactory.super.GetDefinition(self,id)
+end
+
+---@return SceneDBase
+function SceneFactory:__NewDBase(id_or_rid)
+  return SceneDBase.New(id_or_rid)
+end
+
+
+
+return SceneFactory

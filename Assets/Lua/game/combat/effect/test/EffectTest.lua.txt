@@ -1,0 +1,14 @@
+---@class EffectTest
+local EffectTest = {}
+
+function EffectTest.Test()
+  --global.client.effectManager:CreateEffect("1",GroundEffect):InitGroundEffect(Vector3(0,0,0),Quaternion.Euler(0,0,0),2)
+  --global.client.effectManager:CreateEffect("1",AttachEffect):InitAttachEffect(GameObject.Find("Main Camera").transform,2)
+  --global.client.effectManager:CreateEffect("1",MissileEffect):InitMissileEffect(TransformVector3.New(nil,Vector3(0,0,0)), TransformVector3.New(nil,Vector3(0,0,10)), 1, 0.2)
+  --global.client.effectManager:CreateEffect("1",MortarMissileEffect):InitMortarMissileEffect(TransformVector3.New(nil,Vector3(0,0,0)), TransformVector3.New(nil,Vector3(0,0,10)),Vector3(0,-9,0),30)
+  global.client.combat.effectManager:CreateLineEffectEntity("1", nil,IPositionUtil.NewIPosition(Vector3(0,0,-1)) ,IPositionUtil.NewIPosition(Vector3(0,0,10)) ,1,1)
+  --global.client.effectManager:CreateEffect("1",SpinLineEffect):InitSpinLineEffect(Vector3(0,0,0),Vector3(1,0,0),30, 360, 5,Vector3(0,0,0),0)
+end
+
+
+return EffectTest

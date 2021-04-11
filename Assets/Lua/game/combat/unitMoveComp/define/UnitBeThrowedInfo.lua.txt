@@ -1,0 +1,32 @@
+---@class UnitBeThrowedInfo
+---@field start_pos Vector3 @开始位置
+---@field end_pos Vector3 @结束位置
+---@field height number
+---@field max_height number
+---@field animation_name string
+---@field org_height number
+---@field duration number
+---@field remain_duration number
+---@field interp number
+---@field height_speed number
+---@field height_accelerate number
+---@field rotate_duration number
+---@field rotate_remain_duration number
+---@field start_rotation Quaternion
+---@field end_rotation Quaternion
+---@field calc_height_func fun(beThrowedInfo:UnitBeThrowedInfo)
+---@field is_not_stop_animation boolean
+---@field is_back_to_ground boolean
+local UnitBeThrowedInfo = Class("UnitBeThrowedInfo")
+
+function UnitBeThrowedInfo:Init()
+  self.interp = 1
+  self.is_back_to_ground = true
+  self.animation_name = AnimationNameConst.be_throwed
+end
+
+function UnitBeThrowedInfo:IsHasAnimationName()
+  return not string.IsNilOrWhiteSpace(self.animation_name)
+end
+
+return UnitBeThrowedInfo

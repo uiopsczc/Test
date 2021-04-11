@@ -1,0 +1,17 @@
+---@class QuaternionUtil
+local QuaternionUtil = {}
+
+---@param value Quaternion
+---@param default_value Quaternion
+---@return Quaternion
+function QuaternionUtil.GetValueOrDefault(value, default_value)
+  default_value = default_value or Quaternion.New()
+  if value == nil then
+    return default_value
+  else
+    return value
+  end
+end
+
+return QuaternionUtil
+

@@ -1,0 +1,24 @@
+---@class UnitEventNameConst
+local UnitEventNameConst = {}
+
+UnitEventNameConst.On_Unit_Faction_Change = "On_Unit_Faction_Change"
+UnitEventNameConst.On_Unit_Guid_Change = "On_Unit_Guid_Change"
+UnitEventNameConst.On_Unit_Destroy = "On_Unit_Destroy"
+UnitEventNameConst.Before_Unit_Hit = "Before_Unit_Hit"
+UnitEventNameConst.On_Unit_Hit = "On_Unit_Hit"
+UnitEventNameConst.On_Unit_Kill_Target = "On_Unit_Kill_Target"
+UnitEventNameConst.Before_Unit_Dead = "Before_Unit_Dead"
+UnitEventNameConst.On_Unit_Hurt = "On_Unit_Hurt"
+UnitEventNameConst.On_Unit_Hp_Change = "On_Unit_Hp_Change"
+UnitEventNameConst.On_Unit_Build_Ok = "On_Unit_Build_Ok"
+UnitEventNameConst.On_Unit_Is_Silent_Change = "On_Unit_Is_Silent_Change"
+UnitEventNameConst.On_Unit_Is_Confused_Change = "On_Unit_Is_Confused_Change"
+UnitEventNameConst.On_MaxHp_Change = "On_MaxHp_Change"
+UnitEventNameConst.On_Unit_Is_Can_Move_Change = "On_Unit_Is_Can_Move_Change"
+UnitEventNameConst.On_Unit_Is_Can_Attack_Change = "On_Unit_Is_Can_Attack_Change"
+UnitEventNameConst.On_Unit_Is_Can_Cast_Skill_Change = "On_Unit_Is_Can_Cast_Skill_Change"
+UnitEventNameConst.On_Unit_Is_Can_Normal_Attack_Change = "On_Unit_Is_Can_Normal_Attack_Change"
+UnitEventNameConst.On_Unit_Is_Can_Control_Change = "On_Unit_Is_Can_Control_Change"
+
+
+return UnitEventNameConst

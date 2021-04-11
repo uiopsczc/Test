@@ -1,0 +1,8 @@
+KeyUtil = {}
+
+---@param separator string
+---@param keys any[]
+function KeyUtil.GetCombinedKey(separator, keys)
+  return table.concat(keys, separator)
+end
+

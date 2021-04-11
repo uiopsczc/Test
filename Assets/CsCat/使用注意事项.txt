@@ -1,0 +1,1 @@
+﻿1.Unity中File->BuildSetting->PlayerSetting->OtherSetting->APi Compatibility Level 设置为 .net 4.0

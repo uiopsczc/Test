@@ -1,0 +1,257 @@
+local NumberUnitConst = {}
+
+function NumberUnitConst.To_Number_Unit_Dict(number_unit_list)
+  if not number_unit_list then
+    return nil
+  end
+  local number_unit_dict = {}
+  for _, number_unit_info in ipairs(number_unit_list) do
+    number_unit_dict[number_unit_info.id] = number_unit_info
+  end
+  return number_unit_dict
+end
+
+function NumberUnitConst.To_Number_Unit_List(number_unit_dict)
+  if not number_unit_dict then
+    return nil
+  end
+  local number_unit_list = {}
+  for _, number_unit_info in pairs(number_unit_dict) do
+    table.insert(number_unit_list, number_unit_info)
+  end
+  table.QuickSort_Array(number_unit_list, function(a, b)
+    return a.index <= b.index
+  end)
+  return number_unit_list
+end
+
+NumberUnitConst.Number_Unit_List = {
+  {
+    ["index"] = 1,
+    ["zhi_shu"] = 0,
+    ["number_unit"] = "",
+    ["id"] = "n" },
+  {
+    ["index"] = 2,
+    ["zhi_shu"] = 3,
+    ["number_unit"] = "K",
+    ["id"] = "K" },
+  {
+    ["index"] = 3,
+    ["zhi_shu"] = 6,
+    ["number_unit"] = "M",
+    ["id"] = "M" },
+  {
+    ["index"] = 4,
+    ["zhi_shu"] = 9,
+    ["number_unit"] = "G",
+    ["id"] = "G" },
+  {
+    ["index"] = 5,
+    ["zhi_shu"] = 12,
+    ["number_unit"] = "T",
+    ["id"] = "T" },
+  {
+    ["index"] = 6,
+    ["zhi_shu"] = 15,
+    ["number_unit"] = "q",
+    ["id"] = "q" },
+  {
+    ["index"] = 7,
+    ["zhi_shu"] = 18,
+    ["number_unit"] = "Q",
+    ["id"] = "Q" },
+  {
+    ["index"] = 8,
+    ["zhi_shu"] = 21,
+    ["number_unit"] = "s",
+    ["id"] = "s" },
+  {
+    ["index"] = 9,
+    ["zhi_shu"] = 24,
+    ["number_unit"] = "S",
+    ["id"] = "S" },
+  {
+    ["index"] = 10,
+    ["zhi_shu"] = 27,
+    ["number_unit"] = "O",
+    ["id"] = "O" },
+  {
+    ["index"] = 11,
+    ["zhi_shu"] = 30,
+    ["number_unit"] = "N",
+    ["id"] = "N" },
+  {
+    ["index"] = 12,
+    ["zhi_shu"] = 33,
+    ["number_unit"] = "D",
+    ["id"] = "D" },
+  {
+    ["index"] = 13,
+    ["zhi_shu"] = 36,
+    ["number_unit"] = "Ud",
+    ["id"] = "Ud" },
+  {
+    ["index"] = 14,
+    ["zhi_shu"] = 39,
+    ["number_unit"] = "Dd",
+    ["id"] = "Dd" },
+  {
+    ["index"] = 15,
+    ["zhi_shu"] = 42,
+    ["number_unit"] = "Td",
+    ["id"] = "Td" },
+  {
+    ["index"] = 16,
+    ["zhi_shu"] = 45,
+    ["number_unit"] = "Qt",
+    ["id"] = "Qt" },
+  {
+    ["index"] = 17,
+    ["zhi_shu"] = 48,
+    ["number_unit"] = "Qd",
+    ["id"] = "Qd" },
+  {
+    ["index"] = 18,
+    ["zhi_shu"] = 51,
+    ["number_unit"] = "Sd",
+    ["id"] = "Sd" },
+  {
+    ["index"] = 19,
+    ["zhi_shu"] = 54,
+    ["number_unit"] = "St",
+    ["id"] = "St" },
+  {
+    ["index"] = 20,
+    ["zhi_shu"] = 57,
+    ["number_unit"] = "Od",
+    ["id"] = "Od" },
+  {
+    ["index"] = 21,
+    ["zhi_shu"] = 60,
+    ["number_unit"] = "Nd",
+    ["id"] = "Nd" },
+  {
+    ["index"] = 22,
+    ["zhi_shu"] = 63,
+    ["number_unit"] = "V",
+    ["id"] = "V" },
+}
+NumberUnitConst.Number_Unit_Dict = NumberUnitConst.To_Number_Unit_Dict(NumberUnitConst.Number_Unit_List)
+
+NumberUnitConst.Number_Unit_List2 = {
+  {
+    ["index"] = 1,
+    ["zhi_shu"] = 0,
+    ["number_unit"] = "",
+    ["id"] = "n" },
+  {
+    ["index"] = 2,
+    ["zhi_shu"] = 3,
+    ["number_unit"] = "K",
+    ["id"] = "K" },
+  {
+    ["index"] = 3,
+    ["zhi_shu"] = 6,
+    ["number_unit"] = "M",
+    ["id"] = "M" },
+  -----------------这里B与Number_Unit_Dict1不同---------------------------
+  {
+    ["index"] = 4,
+    ["zhi_shu"] = 9,
+    ["number_unit"] = "B",
+    ["id"] = "B" },
+  {
+    ["index"] = 5,
+    ["zhi_shu"] = 12,
+    ["number_unit"] = "T",
+    ["id"] = "T" },
+  {
+    ["index"] = 6,
+    ["zhi_shu"] = 15,
+    ["number_unit"] = "q",
+    ["id"] = "q" },
+  {
+    ["index"] = 7,
+    ["zhi_shu"] = 18,
+    ["number_unit"] = "Q",
+    ["id"] = "Q" },
+  {
+    ["index"] = 8,
+    ["zhi_shu"] = 21,
+    ["number_unit"] = "s",
+    ["id"] = "s" },
+  {
+    ["index"] = 9,
+    ["zhi_shu"] = 24,
+    ["number_unit"] = "S",
+    ["id"] = "S" },
+  {
+    ["index"] = 10,
+    ["zhi_shu"] = 27,
+    ["number_unit"] = "O",
+    ["id"] = "O" },
+  {
+    ["index"] = 11,
+    ["zhi_shu"] = 30,
+    ["number_unit"] = "N",
+    ["id"] = "N" },
+  {
+    ["index"] = 12,
+    ["zhi_shu"] = 33,
+    ["number_unit"] = "D",
+    ["id"] = "D" },
+  {
+    ["index"] = 13,
+    ["zhi_shu"] = 36,
+    ["number_unit"] = "Ud",
+    ["id"] = "Ud" },
+  {
+    ["index"] = 14,
+    ["zhi_shu"] = 39,
+    ["number_unit"] = "Dd",
+    ["id"] = "Dd" },
+  {
+    ["index"] = 15,
+    ["zhi_shu"] = 42,
+    ["number_unit"] = "Td",
+    ["id"] = "Td" },
+  {
+    ["index"] = 16,
+    ["zhi_shu"] = 45,
+    ["number_unit"] = "Qt",
+    ["id"] = "Qt" },
+  {
+    ["index"] = 17,
+    ["zhi_shu"] = 48,
+    ["number_unit"] = "Qd",
+    ["id"] = "Qd" },
+  {
+    ["index"] = 18,
+    ["zhi_shu"] = 51,
+    ["number_unit"] = "Sd",
+    ["id"] = "Sd" },
+  {
+    ["index"] = 19,
+    ["zhi_shu"] = 54,
+    ["number_unit"] = "St",
+    ["id"] = "St" },
+  {
+    ["index"] = 20,
+    ["zhi_shu"] = 57,
+    ["number_unit"] = "Od",
+    ["id"] = "Od" },
+  {
+    ["index"] = 21,
+    ["zhi_shu"] = 60,
+    ["number_unit"] = "Nd",
+    ["id"] = "Nd" },
+  {
+    ["index"] = 22,
+    ["zhi_shu"] = 63,
+    ["number_unit"] = "V",
+    ["id"] = "V" },
+}
+NumberUnitConst.Number_Unit_Dict2 = NumberUnitConst.To_Number_Unit_Dict(NumberUnitConst.Number_Unit_List2)
+
+return NumberUnitConst

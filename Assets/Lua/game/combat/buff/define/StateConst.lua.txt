@@ -1,0 +1,20 @@
+---@class StateConst:Class
+local StateConst = Class("StateConst")
+
+StateConst.Confused = "混乱"
+StateConst.Invincible = "无敌"
+StateConst.Stun = "眩晕"
+StateConst.Freeze = "冰冻"
+StateConst.Silent = "沉默"
+StateConst.CanNotMove = "不能移动"
+StateConst.CanNotAttack = "不能攻击"
+StateConst.ImmuneControl = "免控"
+StateConst.CanNotBeTakeDamage = "不受伤害"
+StateConst.CanNotBeHeal = "不能被治疗"
+StateConst.Hide = "隐身"
+StateConst.Expose = "反隐"
+
+-- 控制类的状态Dict
+StateConst.Control_State_Dict = {}
+
+return StateConst

@@ -1,0 +1,4 @@
+---@class ItemDBase:DBase
+local ItemDBase = Class("ItemDBase",DBase)
+
+return ItemDBase

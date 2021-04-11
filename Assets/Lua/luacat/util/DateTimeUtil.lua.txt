@@ -1,0 +1,257 @@
+---@class DateTimeUtil
+DateTimeUtil = {}
+
+function DateTimeUtil.Now()
+  return os.time()
+end
+
+
+-- 将t秒转换为？天？小时？分？秒
+-- t秒
+function DateTimeUtil.GetTimeString( t)
+  local sec = t % 60 --0-59秒
+  local min = math.floor((t / 60) % 60) --0-59分钟
+  local hour = math.floor((t / 3600) % 24) -- 0-24小时
+  local day = math.floor(t / (24*3600)) -- 天
+  local s = ""
+  if day > 0 then
+    s = s .. day .. "天"
+  end
+  if hour > 0 or day > 0 then
+    s = s .. hour .. "小时"
+  end
+  if min > 0 or day > 0 or hour > 0 then
+    s = s .. min .. "分"
+  end
+  s = s .. sec .. "秒"
+  return s
+end
+
+
+-- 将date增加days天
+function DateTimeUtil.AddDay(dateTime, add_days)
+  dateTime = dateTime or DateTimeUtil.Now()
+  return dateTime + 24*60*60*add_days
+end
+
+-- d1和d2是否是同一天
+function DateTimeUtil.IsSameDay(dateTime1, dateTime2)
+  local t1 = os.date("*t", dateTime1)
+  local t2 = os.date("*t", dateTime2)
+  if t1.year == t2.year and t1.month == t2.month and t1.day == t2.day then
+    return true
+  else
+    return false
+  end
+end
+
+-- d1和d2是否是同一个月
+function DateTimeUtil.IsSameMonth(dateTime1, dateTime2)
+  local t1 = os.date("*t", dateTime1)
+  local t2 = os.date("*t", dateTime2)
+  if t1.year == t2.year and t1.month == t2.month then
+    return true
+  else
+    return false
+  end
+end
+
+-- date1（yyyy-MM-dd）比date2(yyyy-MM-dd)多?天  (整数)
+function DateTimeUtil.DayDiff(dateTime1, dateTime2)
+  local diff = dateTime1 - dateTime2
+  if diff < 0 then
+    return math.ceil(diff/(60*60*24))
+  else
+    return math.floor(diff/(60*60*24))
+  end
+end
+
+-- date1（yyyy-MM-dd）比date2(yyyy-MM-dd)多?个月  (整数)
+function DateTimeUtil.MonthDiff(dateTime1, dateTime2)
+  local t1 = os.date("*t", dateTime1)
+  local t2 = os.date("*t", dateTime2)
+
+  local year1 = t1.year
+  local year2 = t2.year
+  local month1 = t1.month
+  local month2 = t2.month
+  if year1 == year2 then
+    return month1 -month2
+  else
+    return month1 -month2 + (year1 - year2) * 12
+  end
+end
+
+-- 当前的时间是否是月的第一天
+function DateTimeUtil.IsFirstDayOfMonth(dateTime)
+  dateTime = dateTime or DateTimeUtil.Now()
+  local t = os.date("*t", dateTime)
+  if t.day == 1 then
+    return true
+  end
+  return false
+end
+
+-- 当前的时间是否是月的最后一天
+function DateTimeUtil.IsLastDayOfMonth(dateTime)
+  dateTime = dateTime or DateTimeUtil.Now()
+  local t1 = os.date("*t", dateTime)
+  local month1 = t1.month
+  local t2 = os.date("*t",DateTimeUtil.AddDay(dateTime, 1))
+  local month2 = t2.month
+  if month1 == month2 then
+    return false
+  end
+  return true
+end
+
+-- 是否在给定的时间范围内
+function DateTimeUtil.IsBetween(dateTime, min_value, max_value)
+  if dateTime >= min_value and dateTime <= max_value then
+    return true
+  else
+    return false
+  end
+end
+
+-- 23:59:59:999
+function DateTimeUtil.End(dateTime)
+  dateTime = dateTime or DateTimeUtil.Now()
+  local t = os.date("*t", dateTime)
+  local year = t.year
+  local month = t.month
+  local day = t.day
+  return os.time({year = year, month = month, day = day, hour = 23, min = 59, sec = 59})
+end
+
+-- 00:00:00:000
+function DateTimeUtil.Begin(dateTime)
+  dateTime = dateTime or DateTimeUtil.Now()
+  local t = os.date("*t", dateTime)
+  local year = t.year
+  local month = t.month
+  local day = t.day
+  return os.time({year = year, month = month, day = day, hour = 0, min = 0, sec = 0})
+end
+
+-- 获取本星期的第一天
+function DateTimeUtil.FirstDayOfWeek(dateTime, startDayOfWeek)
+  return DateTimeUtil.AddDay(DateTimeUtil.LastDayOfWeek(dateTime, startDayOfWeek),-6)
+end
+
+-- 获取本星期的最后一天
+function DateTimeUtil.LastDayOfWeek(dateTime, startDayOfWeek)
+  dateTime = dateTime or DateTimeUtil.Now()
+  local dateTime_t = os.date("*t", dateTime)
+  startDayOfWeek = startDayOfWeek or 2 -- 2 表示星期一
+  local endDayOfWeek = startDayOfWeek - 1
+  if endDayOfWeek == 0 then
+    endDayOfWeek = 7
+  end
+
+  if dateTime_t.wday ~= endDayOfWeek then
+    if endDayOfWeek - dateTime_t.wday < 0 then
+      return DateTimeUtil.AddDay(dateTime, endDayOfWeek - dateTime_t.wday + 7)
+    else
+      return DateTimeUtil.AddDay(dateTime,  endDayOfWeek - dateTime_t.wday)
+    end
+  else
+    return dateTime
+  end
+end
+
+-- 获取月份的第一天
+function DateTimeUtil.FirstDayOfMonth(dateTime)
+  dateTime = dateTime or DateTimeUtil.Now()
+  local t = os.date("*t", dateTime)
+  local year = t.year
+  local month = t.month
+  return os.time({year = year, month = month, day = 1, hour = 0, min = 0, sec = 0})
+end
+
+-- 获取月份的最后一天
+function DateTimeUtil.LastDayOfMonth(dateTime)
+  dateTime = dateTime or DateTimeUtil.Now()
+  local t = os.date("*t", dateTime)
+  local year = t.year
+  local month = t.month
+  local hour = t.hour
+  local min = t.min
+  local sec = t.sec
+
+  local year2 = year
+  local month2 = month + 1
+  if month2 == 13 then
+    year2 = year + 1
+    month2 = 1
+  end
+  local firstDayOfNextMonth = os.time({year = year2, month = month2, day = 1, hour = 0, min = 0, sec = 0})
+  local t2 = os.date("*t",firstDayOfNextMonth - 1)
+  return os.time({year = year, month = month, day = t2.day, hour = hour, min = min, sec = sec})
+end
+
+
+
+-- 获取一年中第一天
+function DateTimeUtil.FirstDayOfYear(dateTime)
+  dateTime = dateTime or DateTimeUtil.Now()
+  local t = os.date("*t", dateTime)
+  local year = t.year
+  local hour = t.hour
+  local min = t.min
+  local sec = t.sec
+  return os.time({year = year, month = 1, day = 1, hour = hour, min = min, sec = sec})
+end
+
+-- 获取一年中最后一天
+function DateTimeUtil.LastDayOfYear(dateTime)
+  dateTime = dateTime or DateTimeUtil.Now()
+  local t = os.date("*t", dateTime)
+  local year = t.year
+  local hour = t.hour
+  local min = t.min
+  local sec = t.sec
+  return os.time({year = year, month = 12, day = 31, hour = hour, min = min, sec = sec})
+end
+
+function DateTimeUtil.IsAM(dateTime)
+  dateTime = dateTime or DateTimeUtil.Now()
+  local t = os.date("*t", dateTime)
+  local hour = t.hour
+  return hour < 12
+end
+
+function DateTimeUtil.IsPM(dateTime)
+  return not DateTimeUtil.IsAM(dateTime)
+end
+
+-- 是否是周末
+function DateTimeUtil.IsWeeken(dateTime,...)
+  local weeken_list = table.pack(...)
+  if weeken_list.n == 0 then
+    weeken_list = {7,1} -- 7代表星期六，1代表星期日
+  end
+  dateTime = dateTime or DateTimeUtil.Now()
+  local t = os.date("*t", dateTime)
+  local wday = t.wday
+  for _, weeken in ipairs(weeken_list) do
+    if weeken == wday then
+      return true
+    end
+  end
+  return false
+end
+
+-- 获取年龄
+function DateTimeUtil.GetAge(birthDay)
+  local birthDay_t = os.date("*t", birthDay)
+  local today = DateTimeUtil.Now()
+  local today_t = os.date("*t", today)
+  local age = today_t.year - birthDay_t.year
+  local t = os.time({year = today_t.year, month = birthDay_t.month, day = birthDay_t.day, hour = birthDay_t.hour,min = birthDay_t.min, sec = birthDay_t.sec })
+  if t > today then
+    return age - 1
+  else
+    return age
+  end
+end

@@ -1,0 +1,557 @@
+---@class SpellBase:TickObject
+local SpellBase = Class("SpellBase", TickObject)
+
+---@param source_unit Unit
+---@param target_unit Unit
+---@param spellDefinition SpellDefinition
+function SpellBase:Init(source_unit, spell_id, target_unit, spellDefinition, instance_arg_dict)
+  SpellBase.super.Init(self)
+  self.source_unit = source_unit
+  self.target_unit = target_unit
+  self.spell_id = spell_id
+  self.spellDefinition = spellDefinition
+  self.instance_arg_dict = instance_arg_dict
+
+  self.origin_position = instance_arg_dict.origin_position or self.soruce_unit:GetPosition()
+  self.transmit_arg_dict = instance_arg_dict.transmit_arg_dict or {}
+  self.attack_dir = self.transmit_arg_dict.attack_dir
+  self.new_spell_trigger_id = self.transmit_arg_dict.new_spell_trigger_id  -- 通过哪个trigger_id启动的技能
+
+  self.arg_dict = DoerAttrParserUtil.ConvertTableWithTypeString(spellDefinition.arg_dict)
+  self.is_can_move_while_cast = self.spellDefinition.is_can_move_while_cast
+  self.is_spell_animation_finished = self.spellDefinition.cast_type == "触发"
+  self.animation_event_list = {}
+
+  if self.is_can_move_while_cast and self.source_unit and not self.source_unit:IsDead() then
+    self.source_unit:SetIsMoveWithMoveAnimation(false)
+  end
+  self.source_unit:SetSpellInfoCooldown(self.spell_id, 1)
+  self:InitCounter()
+end
+
+
+function SpellBase:AddCombatNumber(number, target_unit_guid, max_type, param)
+end
+
+function SpellBase:AddCombatImage(immune_type, target_guid)
+end
+
+function SpellBase:AddCombatText(str_info, target_guid)
+end
+
+----------------------------------------------------------------------
+-- 伤害相关
+----------------------------------------------------------------------
+-- damage_factor是伤害倍率
+---@param source_unit Unit
+---@param target_unit Unit
+---@param damage_factor number
+---@param force_damage_value number
+---@param is_ignore_reduce boolean
+function SpellBase:___Hit(source_unit, target_unit, damage_factor, force_damage_value)
+  if not target_unit or target_unit:IsDead() then
+    return
+  end
+  self:CreateHitEffect(source_unit, target_unit)
+  local damage_value, special_effect_dict = self:TakeDamage(source_unit, target_unit, damage_factor, force_damage_value)
+  self:Broadcast(UnitEventNameConst.On_Unit_Hit, source_unit, target_unit, self, damage_value)
+  self:AddCombatNumber(damage_value, target_unit:GetGuid(), "physical", special_effect_dict)
+  target_unit:PlayAnimation(AnimationNameConst.be_hit, nil, nil, nil, true)
+  return damage_value
+end
+
+---@param source_unit Unit
+---@param target_unit Unit
+---@param damage_factor number
+---@param force_damage_value number
+function SpellBase:Hit(source_unit, target_unit, damage_factor, force_damage_value)
+  self:___Hit(source_unit, target_unit, damage_factor, force_damage_value)
+end
+
+---@param source_unit Unit
+---@param target_unit Unit
+---@param damage_factor number
+---@param force_damage_value number
+---@param is_ignore_reduce boolean
+function SpellBase:TakeDamage(source_unit, target_unit, damage_factor, force_damage_value)
+  if not target_unit or target_unit:IsDead() then
+    return
+  end
+  local special_effect_dict = {}
+
+  damage_factor = (damage_factor and damage_factor > 0 and damage_factor) or self.spellDefinition.damage_factor or 1
+  -- 计算原始伤害值
+  local damage_value = force_damage_value
+  if not force_damage_value then
+    damage_value, special_effect_dict = source_unit.propertyComp:CalculateOriginalDamageValue({ damage_factor = damage_factor,
+                                                                                                cur_hp_pct = source_unit:GetHp() / source_unit:GetMaxHp() })
+    --计算减伤
+    damage_value = source_unit.propertyComp:CalculateRealDamageValue(damage_value, target_unit)
+  end
+  --伤害前的回调
+  self:Broadcast(UnitEventNameConst.Before_Unit_Hit, source_unit, target_unit, self, damage_value)
+  -- 目标接收伤害
+  damage_value = target_unit:TakeDamage(damage_value, source_unit, self)
+  return damage_value, special_effect_dict
+end
+
+---@param target_unit Unit
+---@param source_unit Unit
+function SpellBase:Heal(source_unit, target_unit, force_heal_value, heal_factor)
+  target_unit = target_unit or self.target_unit
+  source_unit = source_unit or self.source_unit
+  local special_effect_dict = {}
+  if not target_unit or target_unit:IsDead() then
+    return
+  end
+  heal_factor = heal_factor or self.spellDefinition.damage_factor or 1
+  local heal_value
+  if force_heal_value then
+    heal_value = force_heal_value
+  else
+    heal_value,special_effect_dict = source_unit.propertyComp:CalculateOriginalHealValue({
+      heal_factor = heal_factor,
+      damage_type = self.spellDefinition.damage_type
+    })
+    heal_value = source_unit.propertyComp:CalculateRealHealValue(heal_value, target_unit)
+  end
+  target_unit:Heal(heal_value, source_unit)
+  return heal_value,special_effect_dict
+end
+
+-- 吸血,不能吸建筑
+-- 一定要传force_heal_count
+function SpellBase:SuckBlood(source_unit, target_unit, force_heal_value)
+  self:Heal(source_unit, target_unit, force_heal_value)
+end
+
+
+----------------------------------------------------------------------
+-- Counter相关
+----------------------------------------------------------------------
+function SpellBase:InitCounter()
+  ---@type Counter
+  self.counter = Counter.New()
+  self.counter:AddChangeValueInvokeFunc(function()
+    self:__CounterFunc()
+  end)
+end
+
+function SpellBase:__CounterFunc()
+  if self.counter.count < 0 then
+    Error("counter.count < 0")
+  end
+  if self.counter.count == 0 and self.is_spell_animation_finished and not self:IsDestroyed() then
+    self:RemoveSelf()
+  end
+end
+
+function SpellBase:CounterIncrease()
+  self.counter:Increase()
+end
+
+function SpellBase:CounterDecrease()
+  self.counter:Decrease()
+end
+
+----------------------------------------------------------------------
+-- 流程相关
+----------------------------------------------------------------------
+-- 技能起手处理
+function SpellBase:Start()
+  if self.spellDefinition.type == "被动" then
+    self:CounterIncrease()  -- 被动默认不被消耗
+  end
+  self:CounterIncrease()
+  self.target_unit_list = global.client.combat.spellManager:RecommendSpellRule(self.source_unit, self.target_unit, self.spellDefinition, self.origin_position)
+  self.target_unit = self.target_unit_list[1]
+  if self.OnStart then
+    self:OnStart()
+  end
+  self:RegisterTriggerSpell()
+  self:Broadcast(SpellEventNameConst.On_Spell_Start, self.source_unit, self.target_unit, self)
+  global.client.combat.spellManager:UnRegisterListener("on_start", self.source_unit, self, "RegisterTriggerSpell")
+  if self.spellDefinition.action_name then
+    if not self.source_unit.action_dict or
+        not self.source_unit.action_dict[self.spellDefinition.action_name] then
+      Error("action is not find", self.spell_id, self.source_unit.unit_id)
+    end
+    self.action = SpellAction.New(self.source_unit.action_dict[self.spellDefinition.action_name], self.source_unit, self)
+    self.action:Play()
+  else
+    self:PlaySpellAnimation()
+    if self.OnCast then
+      -- 起手前摇
+      self:RegisterAnimationEvent(self:GetAnimationTimePct(self.spellDefinition.cast_time) or 0, "__OnCast")
+    end
+    -- 可打断后摇
+    self:RegisterAnimationEvent(self:GetAnimationTimePct(self.spellDefinition.break_time) or 1, "PassBreakTime")
+    if self.spellDefinition.cast_type ~= "触发" then
+      if (self:GetAnimationTimePct(self.spellDefinition.break_time) or 1) < (self:GetAnimationTimePct(self.spellDefinition.cast_time) or 0) then
+        Error("技能脱手时间比出手时间快")
+      end
+      self:RegisterAnimationEvent(self:GetAnimationTimePct(self.spellDefinition.break_time) or 1, "OnSpellAnimationFinished")
+    end
+  end
+  self:CounterDecrease()
+end
+
+function SpellBase:GetAnimationTimePct(time)
+  if self.spellDefinition.animation_duration then
+    if time then
+      return time / self.spellDefinition.animation_duration
+    end
+  end
+end
+
+function SpellBase:__OnCast()
+  if self.OnCast then
+    self:OnCast()
+  end
+  self:Broadcast(SpellEventNameConst.On_Spell_Cast, self.source_unit, self.target_unit, self)
+  global.client.combat.spellManager:UnRegisterListener("on_cast", self.source_unit, self, "RegisterTriggerSpell")
+end
+
+function SpellBase:RegisterTriggerSpell()
+  -- 注册表里填的技能触发事件，由简单的技能按顺序触发组成复杂的技能
+  local new_spell_trigger_ids = self.spellDefinition.new_spell_trigger_ids
+  if not new_spell_trigger_ids then
+    return
+  end
+  for k, v in ipairs(new_spell_trigger_ids) do
+    self:__RegisterTriggerSpell(v)
+  end
+end
+
+function SpellBase:__RegisterTriggerSpell(new_spell_trigger_id)
+  local spellTriggerDefinition = global.definitionManager.spellTriggerDefinition[new_spell_trigger_id]
+  local trigger_type = spellTriggerDefinition.trigger_type
+  trigger_type = SpellConst.Trigger_Type_Dict[trigger_type]
+  local trigger_spell_id = spellTriggerDefinition.trigger_spell_id -- 触发的技能id
+  local trigger_spell_delay_duration = spellTriggerDefinition.trigger_spell_delay_duration
+  global.client.combat.spellManager:RegisterListener(trigger_type, self.source_unit, self, "RegisterTriggerSpell", function(source_unit, target_unit, spell)
+    -- 这里可以添加是否满足其它触发条件判断
+    if not self:CheckTriggerCondition(spellTriggerDefinition, source_unit, target_unit) then
+      return
+    end
+    local trigger_arg_dict = {}
+    trigger_arg_dict.source_spell = self
+    trigger_arg_dict.transmit_arg_dict = self:GetTransmitArgDict()
+    trigger_arg_dict.trigger_id = new_spell_trigger_id
+    local trigger_func = function()
+      -- 启动技能时需要把新技能需要的参数传进去，如果当前技能没有提供这样的方法，则说明当前技能不能启动目标技能
+      global.client.combat.spellManager:CastSpell(self.source_unit, trigger_spell_id, target_unit, trigger_arg_dict)
+    end
+    if trigger_spell_delay_duration then
+      self:CounterIncrease()
+      self:AddTimer(function()
+        trigger_func()
+        self:CounterDecrease()
+      end, nil, trigger_spell_delay_duration)
+    else
+      trigger_func()
+    end
+  end)
+end
+
+function SpellBase:CheckTriggerCondition(spellTriggerDefinition, source_unit, target_unit)
+  return true
+end
+
+-- 需要解决的问题，比如一个技能同时攻击了几个单位，触发了几次on_hit，怎么在回调中知道这个hit是由哪次攻击造成的
+-- 定义几种参数类型
+--[=[
+  SpellBase提供默认参数，具体技能根据自己实际情况重写
+  1.攻击方向
+  2.技能基础位置
+]=]
+--------------------------传递给下一个技能的方法 -------------------------
+function SpellBase:GetTransmitArgDict()
+  return {
+    origin_position = self:GetOriginPosition(),
+    attack_dir = self:GetAttackDir(),
+  }
+end
+
+function SpellBase:GetOriginPosition()
+  return self.origin_position or self.source_unit:GetPosition()
+end
+
+function SpellBase:GetAttackDir()
+  return Vector3.zero
+end
+
+function SpellBase:SwitchAction(action_name)
+  self.action = SpellAction.New(self.source_unit.action_dict[action_name], self.source_unit, self)
+  self.action:Play()
+end
+
+function SpellBase:__Update(deltaTime, unscaledDeltaTime)
+  SpellBase.super.__Update(self, deltaTime, unscaledDeltaTime)
+  if not self.is_spell_animation_finished then
+    -- 脱手了就不需要执行动画了
+    if self.action then
+      self.action:Update(deltaTime)
+    else
+      self:ProcessAnimationEvent(deltaTime)
+    end
+  elseif self.spellDefinition.cast_type == "触发" then
+    self:ProcessAnimationEvent(deltaTime)
+  end
+end
+
+
+-- 技能脱手，表示角色释放技能完成，可以做其他动作，但是技能本身可能没有完成，继续运行
+-- 比如脱手后子弹任然要飞，打到人才真正结束
+-- 使用CounterIncrease()和CounterDecrease()计数来控制真正结束
+function SpellBase:OnSpellAnimationFinished()
+  if self.is_spell_animation_finished then
+    return
+  end
+  self.is_spell_animation_finished = true
+  global.client.combat.spellManager:OnSpellAnimationFinished(self)
+  if self.counter.count <= 0 then
+    self:RemoveSelf()
+  end
+  if self.spellDefinition.is_can_move_while_cast and self.source_unit and not self.source_unit:IsDead() then
+    self.source_unit:SetIsMoveWithMoveAnimation(true)
+  end
+end
+
+function SpellBase:Break()
+  self:StopSpellAnimation()
+  self:OnSpellAnimationFinished()
+end
+
+-- 子类添加 FilterUnit 函数可以自定义过滤掉不需要的目标
+function SpellBase:FilterUnit(unit, spell_id, target_unit, spellDefinition)
+  return true
+end
+
+---@param missileEffect MissileEffect
+function SpellBase:OnMissileReach(missileEffect)
+  self:Broadcast(SpellEventNameConst.On_Missile_Reach, self.source_unit, missileEffect, self)
+  self:CounterDecrease()
+end
+
+----------------------------------------------------------------------
+-- 动画相关
+----------------------------------------------------------------------
+function SpellBase:PlaySpellAnimation(face_to_position)
+  if self.spellDefinition.animation_duration then
+    self.__animation_time_pct = 0
+    self.__animation_start_time = CombatUtil.GetTime()
+  end
+  if self.spellDefinition.animation_name then
+    if not face_to_position and self.target_unit then
+      face_to_position = self.target_unit:GetPosition()
+    end
+    -- 不转向
+    if self.spellDefinition.is_not_face_to_target then
+      face_to_position = nil
+    end
+    local speed = (self.spellDefinition.type == "普攻" and self.source_unit:GetCalcPropValue("攻击速度") or 1)
+    self.source_unit:PlayAnimation(self.spellDefinition.animation_name, nil, speed, face_to_position, self.spellDefinition.is_can_move_while_cast)
+  end
+end
+
+function SpellBase:StopSpellAnimation()
+  if self.spellDefinition.animation_name then
+    self.source_unit:StopAnimation(self.spellDefinition.animation_name)
+  end
+end
+
+-- 注意：只能在start时调用，不能在事件中调用
+function SpellBase:RegisterAnimationEvent(time_pct, invoke_method_name, arg_dict)
+  if not self.spellDefinition.animation_duration or not time_pct or time_pct <= 0 then
+    self[invoke_method_name](self, arg_dict)
+    return
+  end
+  local new_event = { time_pct = time_pct, event_name = invoke_method_name, arg_dict = arg_dict }
+  for k, animation_event in ipairs(self.animation_event_list) do
+    if animation_event.time_pct > time_pct then
+      table.insert(self.animation_event_list, k, new_event)
+      return
+    end
+  end
+  table.insert(self.animation_event_list, new_event)
+end
+
+function SpellBase:ProcessAnimationEvent(deltaTime)
+  if not self.__animation_time_pct then
+    return
+  end
+  self.__animation_time_pct = self.__animation_time_pct + deltaTime / (self.spellDefinition.animation_duration / (1 + self.source_unit:GetCalcPropValue("攻击速度")))
+  while true do
+    local animation_event = self.animation_event_list[1]
+    -- 没有animation_event了
+    if not animation_event then
+      return
+    end
+    -- 还没触发
+    if animation_event.time_pct > self.__animation_time_pct then
+      return
+    end
+    -- 时间到，可以进行触发
+    table.remove(self.animation_event_list, 1)
+    self[animation_event.invoke_method_name](self, animation_event.arg_dict)
+  end
+end
+
+function SpellBase:PassBreakTime()
+  self.is_past_break_time = true
+  self.source_unit:UpdateMixedStates()
+end
+----------------------------------------------------------------------
+-- Buff相关
+----------------------------------------------------------------------
+---@param target_unit Unit
+---@param force_duration number
+function SpellBase:AddBuff(buff_id, target_unit, force_duration, arg_dict)
+  if not buff_id then
+    return
+  end
+  if not target_unit or target_unit:IsDead() then
+    return
+  end
+  arg_dict = arg_dict or {}
+  arg_dict.source_spell = self
+  target_unit.buffManager:AddBuff(buff_id, self.source_unit, force_duration, arg_dict)
+end
+
+--  移除传入具体的buff
+---@param unit Unit
+---@param buff_list Buff[]
+function SpellBase:RemoveBuff(buff_list, unit)
+  if not buff_list then
+    return
+  end
+  unit = unit or self.source_unit
+  for _, buff in ipairs(buff_list) do
+    unit.buffManager:RemoveBuff(buff.buff_id, nil, self:GetGuid())
+  end
+end
+
+---@param unit Unit
+function SpellBase:RemoveBuffById(buff_id_list, unit, force_spell_guid)
+  if not unit or unit:IsDead() then
+    return
+  end
+  if IsString(buff_id_list) then
+    local buff_id = buff_id_list
+    unit.buffManager:RemoveBuff(buff_id, self.source_unit:GetGuid(), force_spell_guid or self:GetGuid())
+  elseif buff_id_list then
+    for _, buff_id in ipairs(buff_id_list) do
+      unit.buffManager:RemoveBuff(buff_id, self.source_unit:GetGuid(), force_spell_guid or self:GetGuid())
+    end
+  end
+end
+
+----------------------------------------------------------------------
+-- Effect相关
+----------------------------------------------------------------------
+-- 起手特效
+function SpellBase:CreateHandEffect(duration)
+  if not self.spellDefinition.hand_effect_ids then
+    return
+  end
+  local effect_ids, guid_list = self.spellDefinition.hand_effect_ids, {}
+  for _, effect_id in ipairs(effect_ids) do
+    local effect = global.client.combat.effectManager:CreateAttachEffect(effect_id, self.source_unit, duration)
+    table.insert(guid_list, effect:GetGuid())
+  end
+  return guid_list
+end
+
+-- 出手特效
+function SpellBase:CreateGoEffect(duration)
+  if not self.spellDefinition.go_effect_ids then
+    return
+  end
+  local effect_ids, guid_list = self.spellDefinition.go_effect_ids, {}
+  for _, effect_id in ipairs(effect_ids) do
+    local effect = global.client.combat.effectManager:CreateAttachEffect(effect_id, self.source_unit, duration)
+    table.insert(guid_list, effect:GetGuid())
+  end
+  return guid_list
+end
+
+-- 击中特效
+function SpellBase:CreateHitEffect(source_unit, target_unit, duration, sector_angle, force_effect_id_list)
+  if not self.spellDefinition.hit_effect_ids and not force_effect_id_list then
+    return
+  end
+  local force_dir
+  if source_unit then
+    ---@type Quaternion
+    local force_rotation = Quaternion.LookRotation(target_unit:GetPosition() - source_unit:GetPosition())
+    force_dir = force_rotation and force_rotation:ToEulerAngles() or nil
+  end
+  local effect_ids, guid_list = force_effect_id_list or self.spellDefinition.hit_effect_ids, {}
+
+  for _, effect_id in ipairs(effect_ids) do
+    local effect = global.client.combat.effectManager:CreateAttachEffect(effect_id, self.source_unit, duration, force_dir, sector_angle)
+    table.insert(guid_list, effect:GetGuid())
+  end
+  return guid_list
+end
+
+-- 地面特效
+function SpellBase:CreateGroundEffect(position, eulerAngles, duration, force_effect_ids, force_position, is_hide)
+  if not self.spellDefinition.ground_effect_ids and not force_effect_ids then
+    return
+  end
+  position = force_position or position or self.source_unit:GetPosition()
+  eulerAngles = eulerAngles or QuaternionUtil.GetValueOrDefault(Quaternion.LookRotation(position - self.source_unit:GetPosition())):ToEulerAngles()
+  local effect_ids, guid_list = force_effect_ids or self.spellDefinition.ground_effect_ids, {}
+  if not force_position then
+    position = global.client.combat.pathManager:GetGroundPos(position)
+  end
+  for _, effect_id in ipairs(effect_ids) do
+    local effect = global.client.combat.effectManager:CreateGroundEffect(effect_id, self.source_unit, position, eulerAngles, duration, is_hide)
+    table.insert(guid_list, effect:GetGuid())
+  end
+  return guid_list
+end
+
+-- line特效
+function SpellBase:CreateLineEffect(target, speed, acc_speed)
+  if not target or (IsUnit(target) and target:IsDead()) then
+    return {}
+  end
+  local effect_ids, guids = self.spellDefinition.line_effect_ids, {}
+  for _, effect_id in ipairs(effect_ids) do
+    local guid = global.client.combat.effectManager:CreateLineEffect(effect_id, self.source_unit, self.source_unit, target, speed, acc_speed)
+    table.insert(guids, guid)
+  end
+  return guids
+end
+
+function SpellBase:RemoveEffect(effect_guid_list)
+  if not effect_guid_list then
+    return
+  end
+  if IsString(effect_guid_list) then
+    local effect_guid = effect_guid_list
+    global.client.combat.effectManager:RemoveEffectEntity(effect_guid)
+  else
+    for _, effect_guid in ipairs(effect_guid_list) do
+      global.client.combat.effectManager:RemoveEffectEntity(effect_guid)
+    end
+  end
+end
+
+---------------------------------------------------------------
+function SpellBase:RemoveSelf()
+  global.client.combat.spellManager:RemoveSpell(self:GetGuid())
+end
+
+function SpellBase:__Destroy()
+  SpellBase.super.__Destroy(self)
+  if not self.is_spell_animation_finished then
+    global.client.combat.spellManager:OnSpellAnimationFinished(self)
+  end
+  global.client.combat.spellManager:RemoveListenersByObj(self)
+end
+
+return SpellBase

@@ -1,0 +1,20 @@
+local DoerAttrParserTest = {}
+
+
+function DoerAttrParserTest.Test()
+  local user = global.client.user
+  ---@type DoerAttrParser
+  local doerAttrParser = DoerAttrParser.New(user)
+  local result = ""
+  --result = doerAttrParser:Parse("{eval((5+5)*6)}") -- eval()测试
+  --result = doerAttrParser:Parse("{#definition.ItemDefinition.1.icon_path}") -- eval()测试
+  --result = doerAttrParser:Parse("{@hasSubString(abcdef,de)}") --hasSubString测试
+  --for i=1,100 do
+  --  result = doerAttrParser:Parse("{random(4,9)}") --random()测试
+  --  log(result)
+  --end
+  log(result)
+end
+
+
+return DoerAttrParserTest

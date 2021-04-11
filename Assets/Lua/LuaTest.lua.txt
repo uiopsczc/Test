@@ -1,0 +1,5 @@
+print("hello,lua")
+--require("Assets.Lua.lua_cat.All")
+--table.ForEach(array, print)
+
+

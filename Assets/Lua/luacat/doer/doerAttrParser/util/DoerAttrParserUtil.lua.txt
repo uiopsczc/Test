@@ -1,0 +1,46 @@
+DoerAttrParserUtil = {}
+
+
+
+function DoerAttrParserUtil.ConvertValue(value, type_string)
+  if string.EqualsIgnoreCase(type_string, DoerAttrParserConst.Type_String_List[1])
+    or  string.EqualsIgnoreCase(type_string, DoerAttrParserConst.Type_String_List[2]) then
+    return ObjectUtil.ToNumberOrToDefault(value, 0)
+  end
+  if string.EqualsIgnoreCase(type_string, DoerAttrParserConst.Type_String_List[3]) then
+    return ObjectUtil.ToBooleanOrToDefault(value, 0)
+  end
+  if string.EqualsIgnoreCase(type_string, DoerAttrParserConst.Type_String_List[4]) then
+    return ObjectUtil.ToStringOrToDefault(value, "")
+  end
+  error2(string.format("没有处理该type_string[%s]的方法",type_string))
+end
+
+
+function DoerAttrParserUtil.GetTypeString(value)
+  local value_first_char = (value and string.len(value) > 1) and value[1] or ""
+  for i= #DoerAttrParserConst.Type_String_List, 2,-1 do
+    if value_first_char == DoerAttrParserConst.Type_String_List[i] then
+      return DoerAttrParserConst.Type_String_List[i]
+    end
+  end
+  return DoerAttrParserConst.Type_String_List[1] -- 数字
+end
+
+
+function DoerAttrParserUtil.ConvertValueWithTypeString(value)
+  local type_string = DoerAttrParserUtil.GetTypeString(value)
+  local type_string_length = string.len(type_string)
+  local value_without_type_string = type_string_length == 0 and value or string.sub(value, type_string_length+1)
+  return  DoerAttrParserUtil.ConvertValue(value_without_type_string, type_string)
+end
+
+function DoerAttrParserUtil.ConvertTableWithTypeString(t)
+  local result = {}
+  if not table.IsNilOrEmpty(t) then
+    for key,value in pairs(t) do
+      result[key] = DoerAttrParserUtil.ConvertValueWithTypeString(value)
+    end
+  end
+  return result
+end

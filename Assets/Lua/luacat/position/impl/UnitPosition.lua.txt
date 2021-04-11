@@ -1,0 +1,34 @@
+---@class UnitPosition:IPosition
+local UnitPosition = Class("UnitPosition", IPosition)
+
+---@param unit Unit
+---@param socket_name string
+function UnitPosition:Init(unit, socket_name)
+  self.unit = unit
+  self.socket_name = socket_name
+end
+
+---@return Vector3
+function UnitPosition:GetPosition()
+  return self:GetTransform().position
+end
+
+---@return CS.UnityEngine.Transform
+function UnitPosition:GetTransform()
+  if string.IsNilOrWhiteSpace(self.socket_name) then
+    return self.unit.graphicComponent.transform
+  else
+    return self.unit.graphicComponent.transform:GetSocketTransform(self.socket_name)
+  end
+end
+
+---@param socket_name string
+function UnitPosition:SetSocketName(socket_name)
+  self.socket_name = socket_name
+end
+
+function UnitPosition:IsValid()
+  return not self.unit:IsDead()
+end
+
+return UnitPosition

@@ -1,0 +1,69 @@
+---@class AttachEffectComponent:EffectComponent
+local AttachEffectComponent = Class("AttachEffectComponent", EffectComponent)
+
+---@param attach_entity_iposition IPosition
+function AttachEffectComponent:Init(attach_entity_iposition, force_eulerAngles, sector_angle)
+  AttachEffectComponent.super.Init()
+  attach_entity_iposition:SetSocketName(self.effectEntity.effectDefinition.socket_name_1)
+  ---@type CS.UnityEngine.Transform
+  self.attach_entity_transform = attach_entity_iposition:GetTransform()
+  self.force_eulerAngles = force_eulerAngles
+  self.sector_angle = sector_angle or 0
+
+  self:AddListener(string.ToEventName(ECSEventNameConst.OnAllAssetsLoadDone,self.entity), function()
+    self:OnAllAssetsLoadDone()
+  end)
+end
+
+function AttachEffectComponent:OnAllAssetsLoadDone()
+  self:Attach()
+end
+
+function AttachEffectComponent:Attach()
+  self:ChangeAttach(true)
+end
+
+function AttachEffectComponent:DeAttach()
+  self:ChangeAttach(false)
+end
+
+
+function AttachEffectComponent:ChangeAttach(is_attach)
+  if not self.effectEntity.graphicComponent.gameObject then
+    return
+  end
+  if self.is_attach == is_attach then
+    return
+  end
+
+  if is_attach then
+    local socket_transform = self.attach_entity_transform
+    self.effectEntity.graphicComponent:SetParentTransform(socket_transform)
+    self.effectEntity.graphicComponent.transform.localPosition = Vector3.zero
+    self.effectEntity.graphicComponent.transform.localRotation = Quaternion.identity
+    if self.force_eulerAngles then
+      self.effectEntity.graphicComponent.transform.eulerAngles = self.force_eulerAngles
+    end
+    self:SetSector()
+    self.is_attach = true
+  else
+    self.effectEntity.graphicComponent:SetParentTransform(global.client.combat.effectManager.graphicComponent.transform)
+    self.is_attach = false
+    self.effectEntity.graphicComponent:SetIsShow(false)
+  end
+end
+
+function AttachEffectComponent:SetSector()
+  if self.sector_angle ~= 0 then
+    local sector_side_left = self.effectEntity.graphicComponent.transform:Find("sector/side_left")
+    local sector_side_right = self.effectEntity.graphicComponent.transform:Find("sector/side_right")
+    local sector_center = self.effectEntity.graphicComponent.transform:Find("sector/center")
+    ---@type CS.UnityEngine.Material
+    local sector_center_mat = sector_center:GetComponent(typeof(CS.UnityEngine.MeshRenderer)).material
+    sector_center_mat:SetFloat("_AngleCos", math.cos(math.Deg2Rad * (self.sector_angle / 2))) --扇形的角度大小
+    sector_side_left.localRotation = Quaternion.Euler(0, (self.sector_angle + 2) / 2, 0) -- 左边界的位置
+    sector_side_right.localRotation = Quaternion.Euler(0, -(self.sector_angle + 2) / 2, 0) -- 右边界的位置
+  end
+end
+
+return AttachEffectComponent

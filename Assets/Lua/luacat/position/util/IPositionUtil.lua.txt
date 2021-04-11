@@ -1,0 +1,19 @@
+---@class IPositionUtil
+local IPositionUtil = {}
+
+---@param value Vector3|CS.UnityEngine.Transform|Unit
+---@param socket_name string
+---@return IPosition
+function IPositionUtil.NewIPosition(value)
+  if IsVector3(value) then
+    return Vector3Position.New(value)
+  elseif IsTransform(value) then
+    return TransformPosition.New(value)
+  elseif IsUnit(value) then
+    return UnitPosition(value)
+  else
+    error("not support type:",value.__class_name)
+  end
+end
+
+return IPositionUtil

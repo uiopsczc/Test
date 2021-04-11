@@ -1,0 +1,33 @@
+---@class MetatableUtil
+MetatableUtil = {}
+
+function MetatableUtil.NewReadOnlyTable(require_path,metatable)
+  local data = require(require_path)
+  metatable = metatable or {}
+  metatable.__newindex = function(t,k,v)
+    Error(string.format("key:%s value:%s try to set new value in table %s",k,v,require_path))
+  end
+  metatable.__index = function(t,k)
+    return metatable[k]
+  end
+  data = setmetatable(data, metatable)
+  return data
+end
+
+function MetatableUtil.NewReadOnlyTableWithIdListDict(require_path,id_list_dict)
+  local file_name = string.FileName(require_path,".")
+  return MetatableUtil.NewReadOnlyTable(require_path,{[DefinitionManager.id_list_string] = id_list_dict[file_name]})
+end
+
+function MetatableUtil.NewNotExistUnReadableTable(require_path, metatable)
+  local data = require(require_path)
+  metatable = metatable or {}
+  metatable.__index = function(t, key)
+    if metatable[key] == nil then
+      Error(string.format("key:%s is not exist in table %s", key, require_path))
+    end
+    return metatable[key]
+  end
+  setmetatable(data, metatable)
+  return data
+end

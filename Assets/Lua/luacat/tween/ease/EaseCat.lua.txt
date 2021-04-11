@@ -1,0 +1,28 @@
+---@class EaseCat
+EaseCat = {
+  ---@type EaseCat_Back
+  Back = require("luacat.tween.ease.EaseCat_Back"),
+  ---@type EaseCat_Bounce
+  Bounce = require("luacat.tween.ease.EaseCat_Bounce"),
+  ---@type EaseCat_Circ
+  Circ = require("luacat.tween.ease.EaseCat_Circ"),
+  ---@type EaseCat_Cubic
+  Cubic = require("luacat.tween.ease.EaseCat_Cubic"),
+  ---@type EaseCat_Elastic
+  Elastic = require("luacat.tween.ease.EaseCat_Elastic"),
+  ---@type EaseCat_Expo
+  Expo = require("luacat.tween.ease.EaseCat_Expo"),
+  ---@type EaseCat_Linear
+  Linear = require("luacat.tween.ease.EaseCat_Linear"),
+  ---@type EaseCat_Quad
+  Quad = require("luacat.tween.ease.EaseCat_Quad"),
+  ---@type EaseCat_Quart
+  Quart = require("luacat.tween.ease.EaseCat_Quart"),
+  ---@type EaseCat_Quint
+  Quint = require("luacat.tween.ease.EaseCat_Quint"),
+  ---@type EaseCat_Sine
+  Sine = require("luacat.tween.ease.EaseCat_Sine"),
+  ---@type EaseCat_Strong
+  Strong = require("luacat.tween.ease.EaseCat_Strong"),
+
+}

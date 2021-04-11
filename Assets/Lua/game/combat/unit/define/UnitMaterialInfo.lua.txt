@@ -1,0 +1,6 @@
+---@class UnitMaterialInfo:Class
+---@field material CS.UnityEngine.Material
+---@field color CS.UnityEngine.Color
+local UnitMaterialInfo = Class("UnitMaterialInfo")
+
+return UnitMaterialInfo

@@ -1,0 +1,134 @@
+---@class Buff:TickObject
+local Buff = Class("Buff", TickObject)
+
+---@param buffManager BuffManager
+---@param source_unit Unit
+function Buff:Init(buffManager, buff_id)
+  Buff.super.Init(self)
+  ---@type BuffManager
+  self.buffManager = buffManager
+  self.buff_id = buff_id
+  self.buffDefinition = global.definitionManager.buffDefinition[buff_id]
+  ---@type BuffCache[]
+  self.buffCache_list = {} -- 因为有些buff可以同时存在多个，但效果只有一个生效,效果不累加
+  ---@field EffectBase[]
+  self.effect_list = {} -- 一个buff可能有多个特效
+end
+
+function Buff:CreateBuffCache(duration, source_unit, source_spell, arg_dict)
+  ---@type BuffCache
+  local buffCache = BuffCache.New()
+  buffCache.duration = duration
+  buffCache.remain_duration = duration
+  buffCache.source_unit = source_unit
+  buffCache.source_spell = source_spell
+  buffCache.arg_dict = arg_dict
+  table.insert(self.buffCache_list, buffCache)
+  if #self.buffCache_list == 1 then
+    -- 第一个的时候才添加
+    self:AddEffects()
+    self:AddPropertyDict()
+    self:AddTriggerSpell()
+    self.buffManager:AddState(self.buffDefinition.state)
+  end
+  return self
+end
+
+function Buff:__Update(deltaTime, unscaledDeltaTime)
+  Buff.super.__Update(self, deltaTime, unscaledDeltaTime)
+  for i = #self.buffCache_list, 1, -1 do
+    local buffCache = self.buffCache_list[i]
+    buffCache.remain_duration = buffCache.remain_duration - deltaTime
+    if buffCache.remain_duration <= 0 then
+      table.remove(self.buffCache_list, i)
+    end
+  end
+  if #self.buffCache_list == 0 then
+    self.buffManager:RemoveBuffByBuff(self)
+  end
+end
+
+function Buff:RemoveBuffCache(source_unit_guid, soruce_spell_guid)
+  for i = #self.buffCache_list, 1, -1 do
+    local buffCache = self.buffCache_list[i]
+    local is_this_unit = not source_unit_guid or (buffCache.source_unit and buffCache.source_unit:GetGuid() == source_unit_guid)
+    local is_this_spell = not soruce_spell_guid or (buffCache.source_spell and buffCache.source_spell:GetGuid() == soruce_spell_guid)
+    if is_this_unit and is_this_spell then
+      table.remove(self.buffCache_list, i)
+    end
+  end
+  if #self.buffCache_list == 0 then
+    self.buffManager:RemoveBuffByBuff(self)
+  end
+end
+
+function Buff:AddEffects()
+  local effect_ids = self.buffDefinition.effect_ids
+  if table.IsNilOrEmpty(effect_ids) then
+    return
+  end
+  for _, effect_id in ipairs(effect_ids) do
+    local effectDefinition = global.definitionManager.effectDefinition[effect_id]
+    local effect = global.client.combat.effectManager:CreateAttachEffect(effect_id, self.buffManager.unit,effectDefinition.duration) -- TODO 如何初始化effectBase
+    table.insert(self.effect_list, effect)
+  end
+end
+
+function Buff:RemoveEffects()
+  for _, effect in ipairs(self.effect_list) do
+    global.client.combat.effectManager:RemoveEffectEntity(effect.key)
+  end
+end
+
+function Buff:AddPropertyDict()
+  local new_property_dict = self.buffDefinition.property_dict and DoerAttrParserUtil.ConvertTableWithTypeString(self.buffDefinition.property_dict) or {}
+  if table.Count(new_property_dict) > 0 then
+    local propertyComp = self.buffManager.unit.propertyComp
+    propertyComp:StartChange()
+    propertyComp:AddPropSet(new_property_dict, "buff", self:GetGuid())
+    propertyComp:EndChange()
+  end
+end
+
+function Buff:RemovePropertyDict()
+  local new_property_dict = self.buffDefinition.property_dict and DoerAttrParserUtil.ConvertTableWithTypeString(self.buffDefinition.property_dict) or {}
+  if table.Count(new_property_dict) > 0 then
+    local propertyComp = self.buffDefinition.unit.propertyComp
+    propertyComp:StartChange()
+    propertyComp:RemovePropSet("buff", self:GetGuid())
+    propertyComp:EndChange()
+  end
+end
+
+function Buff:AddTriggerSpell()
+  local trigger_spell_id = self.buffDefinition.trigger_spell_id
+  if table.IsNilOrEmpty(trigger_spell_id) then
+    return
+  end
+  local spell = global.client.combat.spellManager:CastSpell(self.buffCache_list[1].source_unit or self.buffManager.unit, trigger_spell_id, self.buffManager.unit)
+  self.trigger_spell_guid = spell:GetGuid()
+end
+
+function Buff:RemoveTriggerSpell()
+  if self.trigger_spell_guid then
+    local spell = global.client.combat.spellManager:GetSpell(self.trigger_spell_guid)
+    if not spell then
+      return
+    end
+    if spell.OnBuffRemove then
+      spell:OnBuffRemove(self)
+      return
+    end
+    global.client.combat.spellManager:RemoveSpell(self.trigger_spell_guid)
+  end
+end
+
+function Buff:__Destroy()
+  Buff.super.__Destroy(self)
+  self:RemoveEffects()
+  self:RemovePropertyDict()
+  self:RemoveTriggerSpell()
+  self.buffManager:RemoveState(self.buffDefinition.state)
+end
+
+return Buff

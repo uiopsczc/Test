@@ -1,0 +1,18 @@
+local UpdateManagerTest = Class("UpdateManagerTest")
+function UpdateManagerTest:Hello(...)
+  log(...)
+end
+
+local test = UpdateManagerTest.New()
+global.updateManager:AddUpdate(function () test:Hello("hello","UpdateManagerTest")end)
+
+
+
+
+
+
+
+
+
+
+

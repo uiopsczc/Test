@@ -1,0 +1,55 @@
+---@class HFSMComponent:GameComponent
+local HFSMComponent = Class("HFSMComponent",AbstractComponent)
+
+
+---@param hfsm HFSM
+function HFSMComponent:Init(hfsm)
+  HFSMComponent.super.Init(self)
+  self.hfsm = hfsm
+end
+
+---@param is_paused boolean
+function HFSMComponent:__SetIsPaused(is_paused)
+  HFSMComponent.super.__SetIsPaused(self, is_paused)
+  self.hfsm:SetIsPaused(true, true)
+end
+
+---@param is_enabled boolean
+function HFSMComponent:__SetIsEnabled(is_enabled)
+  HFSMComponent.super.__SetIsEnabled(self, is_enabled)
+  self.hfsm:SetIsEnabled(true, true)
+end
+
+function HFSMComponent:__Reset()
+  HFSMComponent.super.__Reset(self)
+  self.hfsm:Reset(true)
+end
+
+function HFSMComponent:__Destroy()
+  HFSMComponent.super.__Destroy(self)
+  self.hfsm:Destroy()
+end
+
+function HFSMComponent:Update(deltaTime, unscaledDeltaTime)
+  HFSMComponent.super.Update(self, deltaTime, unscaledDeltaTime)
+  self.hfsm:CheckDestroyed()
+end
+
+
+function HFSMComponent:__Update(deltaTime, unscaledDeltaTime)
+  HFSMComponent.super.__Update(self, deltaTime, unscaledDeltaTime)
+  self.hfsm:Update(deltaTime, unscaledDeltaTime)
+end
+
+function HFSMComponent:__FixedUpdate(deltaTime, unscaledDeltaTime)
+  HFSMComponent.super.__FixedUpdate(self, deltaTime, unscaledDeltaTime)
+  self.hfsm:FixedUpdate(deltaTime, unscaledDeltaTime)
+end
+
+function HFSMComponent:__LateUpdate(deltaTime, unscaledDeltaTime)
+  HFSMComponent.super.__LateUpdate(self, deltaTime, unscaledDeltaTime)
+  self.hfsm:LateUpdate(deltaTime, unscaledDeltaTime)
+end
+
+
+return HFSMComponent

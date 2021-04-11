@@ -1,0 +1,365 @@
+---@class UnitMoveComp:TickObject
+---@field unitMoveInfo UnitMoveInfo
+---@field unitBeThrowedInfo UnitBeThrowedInfo
+---@field is_get_caught boolean
+local UnitMoveComp = Class("UnitMoveComp", TickObject)
+
+---@param unit Unit
+function UnitMoveComp:Init(unit)
+  UnitMoveComp.super.Init(self, unit)
+  self.unit = unit
+  self.walk_step_length = unit.unitDefinition.walk_step_length or 1
+  self.move_type = nil  -- move be_throwed
+  self.is_move_with_move_animation = true
+  self.adjust_dist_sqr = 3 * 3
+
+  self.unitMoveInfo = UnitMoveInfo.New()
+  self.unitMoveInfo.speed = unit:GetSpeed()
+  self.unitMoveInfo.target_pos = unit:GetPosition()
+  self.unitMoveInfo.end_rotation = unit:GetRotation()
+  ---@type UnitLookAtInfo
+  self.unitLookAtInfo = UnitLookAtInfo.New()
+end
+
+function UnitMoveComp:__Update(deltaTime, unscaledDeltaTime)
+  UnitMoveComp.super.__Update(self, deltaTime, unscaledDeltaTime)
+  self:__UpdateMove(deltaTime)
+  --if self.unitLookAtInfo:HasLookAt() then
+  --  self:__UpdateLookAt(deltaTime)
+  --end
+  if self.unitBeThrowedInfo then
+    self:__UpdateBeThrowed(deltaTime)
+  end
+end
+
+function UnitMoveComp:__Destroy()
+  UnitMoveComp.super.__Destroy(self)
+  self.unit = nil
+end
+
+function UnitMoveComp:OnBuild()
+end
+
+function UnitMoveComp:OnBuildOk()
+  local unit = self.unit
+  if self.move_type == "move" then
+    if self.unitMoveInfo:IsHasAnimationName() and self.is_move_with_move_animation then
+      unit:PlayAnimation(self.unitMoveInfo.animation_name, 0, self.unitMoveInfo.animation_speed)
+    end
+    unit:__MoveTo(self.unitMoveInfo.target_pos, self.unitMoveInfo.remain_duration)
+  end
+end
+
+----------------------------------------------------------------------
+-- Move相关
+----------------------------------------------------------------------
+function UnitMoveComp:Move(target_pos, speed, animation_name)
+  self:MoveByPath({ target_pos }, speed, animation_name)
+end
+function UnitMoveComp:MoveByPath(path, speed, animation_name)
+  local unit = self.unit
+  if not unit:IsCanMove() then
+    return
+  end
+  self.move_type = "move"
+  if path[1] and not unit.is_in_sight then
+    unit:SetPosition(path[1])
+  end
+  self.unitMoveInfo.path = path
+  if speed then
+    self.unitMoveInfo.speed = speed
+  end
+  if animation_name then
+    self.unitMoveInfo.animation_name = animation_name
+  end
+  local last_move_animation_speed = self.unitMoveInfo.animation_speed
+  self.unitMoveInfo.animation_speed = self.unitMoveInfo.speed / self.walk_step_length
+  if self.unitMoveInfo:IsHasAnimationName()
+      and self.is_move_with_move_animation
+      and math.abs(self.unitMoveInfo.animation_speed - last_move_animation_speed) > 0.2 then
+    unit:PlayAnimation(self.unitMoveInfo.animation_name, 0.2, self.unitMoveInfo.animation_speed)
+  end
+  self:__MoveNextTarget(2)
+end
+
+function UnitMoveComp:__MoveNextTarget(index)
+  local unit = self.unit
+  if index then
+    self.unitMoveInfo.target_index_in_path = index
+  else
+    self.unitMoveInfo.target_index_in_path = self.unitMoveInfo.target_index_in_path + 1
+  end
+  self.unitMoveInfo.target_pos = self.unitMoveInfo.path[self.unitMoveInfo.target_index_in_path]
+  if self.unitMoveInfo.target_pos then
+    local origin_pos = self.unitMoveInfo.path[self.unitMoveInfo.target_index_in_path - 1]
+    local distance = Vector3.Distance(self.unitMoveInfo.target_pos, origin_pos)
+    self.unitMoveInfo.remain_duration = distance / self.unitMoveInfo.speed
+    unit:__MoveTo(self.unitMoveInfo.target_pos, self.unitMoveInfo.remain_duration)
+    self.unitMoveInfo.end_rotation = Quaternion.LookRotation(self.unitMoveInfo.target_pos - unit:GetPosition()) or unit:GetRotation()
+    self.unitMoveInfo.rotate_remain_duration = Quaternion.Angle(self.unitMoveInfo.end_rotation, unit:GetRotation()) / 1080
+  else
+    self:MoveStop()
+  end
+end
+
+function UnitMoveComp:MoveStop(rotation, pos)
+  local unit = self.unit
+  if pos and
+      (not unit.is_in_sight or
+          (unit.position - pos):SqrMagnitude() > self.adjust_dist_sqr) then
+    unit:SetPosition(pos)
+  end
+  if rotation then
+    self.unitMoveInfo.end_rotation = rotation
+    self.unitMoveInfo.rotate_remain_duration = Quaternion.Angle(rotation, unit.rotation) / 720
+  end
+  if not self.move_type then
+    return
+  end
+  if self.move_type == "move"
+      and self.is_move_with_move_animation
+      and self.unitMoveInfo:IsHasAnimationName() then
+    if IsNotNil(unit.animation) then
+      unit:StopAnimation(self.unitMoveInfo.animation_name, 0.2)  -- animation动画是层叠的，停掉walk自动就播放idle
+    else
+      unit.animatorComp:PlayAnimation(AnimationNameConst.idle, true)
+    end
+  end
+  self.move_type = nil
+  self.unitMoveInfo.remain_duration = 0
+  self.unitMoveInfo.animation_speed = -1
+  unit:StopMoveTo()
+end
+
+function UnitMoveComp:__UpdateMove(deltaTime)
+  local unit = self.unit
+  local deltaTime_remain_duration = deltaTime
+  while self.move_type == "move" and deltaTime_remain_duration > 0 do
+    local new_pos
+    if self.unitMoveInfo.remain_duration > deltaTime_remain_duration then
+      new_pos = Vector3.Lerp(unit:GetPosition(), self.unitMoveInfo.target_pos, deltaTime_remain_duration / self.unitMoveInfo.remain_duration)
+      self.unitMoveInfo.remain_duration = self.unitMoveInfo.remain_duration - deltaTime_remain_duration
+      deltaTime_remain_duration = 0
+    else
+      new_pos = self.unitMoveInfo.target_pos
+      deltaTime_remain_duration = deltaTime_remain_duration - self.unitMoveInfo.remain_duration
+    end
+    local look_dir
+    if unit.unitLockTargetInfo:IsHasLockTarget() then
+      look_dir = unit.unitLockTargetInfo:GetLockTargetPosition() - unit:GetPosition()
+    else
+      look_dir = new_pos - unit:GetPosition()
+    end
+    unit:OnlyFaceToDir(look_dir)
+    unit:SetPosition(new_pos)
+    if deltaTime_remain_duration > 0 then
+      self:__MoveNextTarget()
+    end
+  end
+  if self.unitMoveInfo.look_at_unit then
+    if self.unitMoveInfo.look_at_unit:IsDead() then
+      self.look_at_unit = nil
+      return
+    end
+    local dir = self.unitMoveInfo.look_at_unit:GetPosition() - unit:GetPosition()
+    local angle = Vector3.Angle(unit:GetRotation():Forward(), dir)
+    if angle > 5 then
+      local target_rotation = Quaternion.LookRotation(dir) or unit.rotation
+      unit:SetRotation(Quaternion.Slerp(unit:GetRotation(), target_rotation, 0.3))
+    end
+  else
+    if self.unitMoveInfo.rotate_remain_duration > 0 then
+      if self.unitMoveInfo.rotate_remain_duration <= deltaTime then
+        unit:SetRotation(self.unitMoveInfo.end_rotation)
+        self.unitMoveInfo.rotate_remain_duration = 0
+      else
+        unit:SetRotation(Quaternion.Slerp(unit:GetRotation(), self.unitMoveInfo.end_rotation, deltaTime / self.unitMoveInfo.rotate_remain_duration))
+        self.unitMoveInfo.rotate_remain_duration = self.unitMoveInfo.rotate_remain_duration - deltaTime
+      end
+    end
+  end
+end
+
+
+----------------------------------------------------------------------
+-- beThrowed相关
+----------------------------------------------------------------------
+---@param unitBeThrowedInfo UnitBeThrowedInfo
+function UnitMoveComp:BeThrowed(unitBeThrowedInfo)
+  local end_pos = unitBeThrowedInfo.end_pos
+  local duration = unitBeThrowedInfo.duration
+  local height = unitBeThrowedInfo.height
+  local end_rotation = unitBeThrowedInfo.end_rotation
+  local rotate_duration = unitBeThrowedInfo.rotate_duration
+  if self.move_type == "be_throwed" then
+    return
+  end
+  local unit = self.unit
+  self.move_type = "be_throwed"
+  if unitBeThrowedInfo:IsHasAnimationName() and IsNotNil(unit.animation) then
+    self.unit:PlayAnimation(unitBeThrowedInfo.animation_name)
+  end
+  self.unitBeThrowedInfo = unitBeThrowedInfo
+  self.unit:UpdateMixedStates()
+  self.unitBeThrowedInfo.org_height = unit:GetPosition().y
+  self.unitBeThrowedInfo.start_pos = unit:GetPosition()
+  self.unitBeThrowedInfo.remain_duration = duration
+  local delta_height = end_pos.y - unit:GetPosition().y
+  -- 起点和落点，取最高的，加上height，为真正的最高高度
+  local max_height
+  if delta_height > 0 then
+    max_height = math.max((delta_height + height), 0)
+  else
+    max_height = height
+  end
+  self.unitBeThrowedInfo.max_height = max_height
+  if max_height == 0 then
+    self.unitBeThrowedInfo.height_accelerate = delta_height * 2 / (duration * duration)
+    self.unitBeThrowedInfo.height_speed = 0
+  else
+    local h_time = duration / (math.sqrt(1 - delta_height / max_height) + 1)
+    self.unitBeThrowedInfo.height_accelerate = -2 * max_height / (h_time * h_time)
+    self.unitBeThrowedInfo.height_speed = -self.unitBeThrowedInfo.height_accelerate * h_time
+  end
+  if end_rotation and rotate_duration then
+    self.unitBeThrowedInfo.rotate_remain_duration = rotate_duration
+    self.unitBeThrowedInfo.start_rotation = unit:GetRotation()
+  end
+end
+
+function UnitMoveComp:StopBeThrowed(is_end)
+  if is_end then
+    if self.unitBeThrowedInfo then
+      self.unitBeThrowedInfo.remain_duration = 0.02
+      self:__UpdateBeThrowed(0.02)
+    end
+    return
+  end
+
+  if self.unitBeThrowedInfo and not self.unitBeThrowedInfo.is_not_stop_animation and self.unitBeThrowedInfo:IsHasAnimationName() then
+    self.unit:StopAnimation(self.unitBeThrowedInfo.animation_name, 0.2)
+  end
+
+  local is_back_to_ground = self.unitBeThrowedInfo and self.unitBeThrowedInfo.is_back_to_ground or false
+  self.unitBeThrowedInfo = nil
+  self.move_type = nil
+  self.unit:UpdateMixedStates()
+
+  if is_back_to_ground then
+    ---@type UnitBeThrowedInfo
+    local unitBeThrowedInfo = UnitBeThrowedInfo.New()
+    unitBeThrowedInfo.end_pos = global.client.combat.pathManager:GetGroundPos(self.unit:GetPosition())
+    unitBeThrowedInfo.duration = 0.1
+    unitBeThrowedInfo.height = 0
+    unitBeThrowedInfo.is_back_to_ground = false
+    self:BeThrowed(unitBeThrowedInfo)
+  end
+end
+
+-- 更新beThrowed
+function UnitMoveComp:__UpdateBeThrowed(deltaTime)
+  local unit = self.unit
+  self.unitBeThrowedInfo.remain_duration = self.unitBeThrowedInfo.remain_duration - deltaTime
+  if self.unitBeThrowedInfo.remain_duration <= 0 then
+    self:StopBeThrowed()
+    return
+  end
+  local passed_duration = self.unitBeThrowedInfo.duration - self.unitBeThrowedInfo.remain_duration -- 已经运行的时间
+  -- 计算高度
+  local cur_height
+  if self.unitBeThrowedInfo.calc_height_func then
+    cur_height = self.unitBeThrowedInfo.org_height + self.unitBeThrowedInfo.calc_height_func(self.unitBeThrowedInfo)
+  else
+    cur_height = self.unitBeThrowedInfo.org_height + self.unitBeThrowedInfo.height_speed * passed_duration + self.unitBeThrowedInfo.height_accelerate * passed_duration * passed_duration * 0.5
+  end
+  -- 计算水平位置
+  local interp = math.pow((1 - passed_duration / self.unitBeThrowedInfo.duration), self.unitBeThrowedInfo.interp)
+  local new_pos = self.unitBeThrowedInfo.start_pos * interp + self.unitBeThrowedInfo.end_pos * (1 - interp)
+
+  new_pos.y = cur_height
+  unit:SetPosition(new_pos)
+
+  if self.unitBeThrowedInfo.rotate_duration and self.unitBeThrowedInfo.rotate_remain_duration then
+    self.unitBeThrowedInfo.rotate_remain_duration = self.unitBeThrowedInfo.rotate_remain_duration - deltaTime
+    if self.unitBeThrowedInfo.rotate_remain_duration <= 0 then
+      self.unitBeThrowedInfo.rotate_duration = nil
+      self.unitBeThrowedInfo.rotate_remain_duration = nil
+      unit:SetRotation(self.unitBeThrowedInfo.end_rotation)
+    else
+      unit:SetRotation(Quaternion.Slerp(self.unitBeThrowedInfo.start_rotation, self.unitBeThrowedInfo.end_rotation, self.unitBeThrowedInfo.rotate_remain_duration / self.unitBeThrowedInfo.rotate_duration))
+    end
+  end
+end
+----------------------------------------------------------------------
+-- LookAt相关  暂时没用
+----------------------------------------------------------------------
+-- 模式为lock时，可以占据LookAt， 其他地方调用LookAt将不起作用，除非mode为force强行LookAt
+-- 在不需占据LookAt时，需传入unlock解锁
+---@param unit_or_eulerAngle Unit|Vector3
+function UnitMoveComp:LookAt(unit_or_eulerAngle, mode)
+  self.unitLookAtInfo.is_rotate_x_arrived = false
+  self.unitLookAtInfo.is_rotate_y_arrived = false
+  if mode == "stop_look_at" then
+    self.unitLookAtInfo.look_at_unit = nil
+    self.unitLookAtInfo.look_at_dir = nil
+    return
+  end
+  if mode == "unlock" then
+    self.unitLookAtInfo.is_locked = false
+    return
+  end
+  if mode ~= "force" and self.unitLookAtInfo.is_locked then
+    return
+  end
+  self.unitLookAtInfo.mode = mode or "idle"
+  if mode == "lock" then
+    self.unitLookAtInfo.is_locked = true
+  end
+  if unit_or_eulerAngle then
+    if IsUnit(unit_or_eulerAngle) then
+      self.unitLookAtInfo.look_at_unit = unit_or_eulerAngle
+      self.unitLookAtInfo.look_at_dir = nil
+    else
+      self.unitLookAtInfo.look_at_dir = unit_or_eulerAngle
+      self.unitLookAtInfo.look_at_unit = nil
+    end
+  end
+end
+
+----------------------------------------------------------------------
+-- Util相关
+----------------------------------------------------------------------
+function UnitMoveComp:OnSpeedChange(old_value, new_value)
+  local unit = self.unit
+  local factor = new_value / old_value
+  self.unitMoveInfo.speed = self.unitMoveInfo.speed * factor
+  if self.move_type == "move" then
+    self.unitMoveInfo.remain_duration = self.unitMoveInfo.remain_duration / factor
+    local old_move_animation_speed = self.unitMoveInfo.animation_speed
+    self.unitMoveInfo.animation_speed = self.unitMoveInfo.animation_speed * factor
+    if unit.graphicComponent.transform then
+      unit:__MoveTo(self.unitMoveInfo.target_pos, self.unitMoveInfo.remain_duration)
+      if self.unitMoveInfo:IsHasAnimationName() and self.is_move_with_move_animation and
+          math.abs(self.unitMoveInfo.animation_speed - old_move_animation_speed) > 0.2 then
+        unit:PlayAnimation(self.unitMoveInfo.animation_name, 0.2, self.unitMoveInfo.animation_speed)
+      end
+    end
+  end
+end
+
+function UnitMoveComp:SetIsMoveWithMoveAnimation(is_move_with_move_animation)
+  local unit = self.unit
+  self.is_move_with_move_animation = is_move_with_move_animation
+  if self.move_type == "move" then
+    if is_move_with_move_animation then
+      if self.unitMoveInfo:IsHasAnimationName() then
+        unit:PlayAnimation(self.unitMoveInfo.animation_name, 0, self.unitMoveInfo.animation_speed)
+      end
+    else
+      unit:StopAnimation(self.unitMoveInfo.animation_name, 0.2)
+    end
+  end
+end
+
+return UnitMoveComp
+--endregion

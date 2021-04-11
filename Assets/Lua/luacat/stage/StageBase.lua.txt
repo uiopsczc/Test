@@ -1,0 +1,147 @@
+---@class StageBase:TickObject
+---@field scene_path string
+local StageBase = Class("StageBase", TickObject)
+
+function StageBase:Init()
+  StageBase.super.Init(self)
+  self.loadSceneMode = CS.UnityEngine.SceneManagement.LoadSceneMode.Additive
+  self.is_show_fade = false
+  self.is_show_loading = true
+  ---@type UIPanel[]
+  self.panel_list = {}
+  self.loading_scene = {}
+  self.on_show_callback = {}
+end
+
+function StageBase:LoadPanels()
+end
+
+function StageBase:Start()
+  StageBase.super.Start(self)
+  self:StartCoroutine(nil,function() self:StartLoading() end)
+  --Coroutine.YieldStart(function() self:StartLoading() end)
+end
+
+
+function StageBase:StartLoading()
+  local last_pct = 0
+  self:SetLoadingPct(last_pct)
+
+  self:LoadPanels()
+  self:WaitUntilAllPanelsLoadDone()
+  last_pct = 0.1
+  self:SetLoadingPct(last_pct)
+
+  if self.scene_path then
+    ---@type CS.UnityEngine.AsyncOperation
+    self.asyncOperation = CS.UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(self.scene_path, self.loadSceneMode)
+    self:WaitUntilScenePathLoadDone()
+  end
+  last_pct = 0.2
+  self:SetLoadingPct(last_pct)
+
+  self:WaitUntilPreLoadAssetsLoadDone(function(pct)
+    self:SetLoadingPct(last_pct+ math.Lerp(pct, 0, 0.9 - last_pct))
+  end)
+
+  self:WaitUntilAllAssetsLoadDone()
+  self:SetLoadingPct(1)
+
+  self:WaitForSeconds(0.05)
+  self:YieldStart(function()
+    self:IEPreShow()
+    self:YieldBreak()
+  end)
+  self:HideLoading()
+
+  self:Broadcast(StageEventNameConst.On_Stage_Loaded, self)
+  self:Show()
+end
+
+function StageBase:IEPreShow()
+end
+
+function StageBase:Show()
+  DelegateUtil.InvokeCallback(self.on_show_callback)
+end
+
+-------------------------Fade-------------------------
+function StageBase:HideFade()
+  if global.client.uiManager.uiFadePanel.graphicComponent.gameObject.activeInHierarchy then
+    global.client.uiManager:FadeTo(nil,0, FadeConst.Stage_Fade_Default_Hide_Duration, function()
+      global.client.uiManager:HideFade()
+    end)
+  end
+end
+-------------------------Loading-------------------------
+function StageBase:SetLoadingPct(pct)
+  if self.is_show_loading then
+    global.client.uiManager:SetLoadingPct(pct)
+  end
+end
+
+function StageBase:HideLoading()
+  if self.is_show_loading then
+    global.client.uiManager:HideLoading()
+  end
+end
+
+function StageBase:WaitUntilPreLoadAssetsLoadDone(callback)
+  local assetAsyncloader_prosessing_list = global.client.cs_client.assetBundleManager.assetAsyncloader_prosessing_list
+  local assetBundleAsyncLoader_prosessing_list = global.client.cs_client.assetBundleManager.assetBundleAsyncLoader_prosessing_list
+  local total_loading_count = assetAsyncloader_prosessing_list.Count + assetBundleAsyncLoader_prosessing_list.Count
+  local cur_pct = 0
+  local next_pct = 0
+  while assetAsyncloader_prosessing_list.Count > 0 or assetBundleAsyncLoader_prosessing_list.Count > 0 do
+    cur_pct = (assetAsyncloader_prosessing_list.Count + assetBundleAsyncLoader_prosessing_list.Count) / total_loading_count
+    if cur_pct > next_pct then
+      next_pct = cur_pct
+    end
+    callback(cur_pct)
+    self:WaitForFrames(1)
+  end
+  callback(1)
+end
+
+function StageBase:WaitUntilScenePathLoadDone()
+  self:WaitUntil( function()
+    return self.asyncOperation.isDone
+  end)
+end
+
+function StageBase:WaitUntilAllAssetsLoadDone()
+  self:WaitUntil( function()
+    return self.is_all_assets_load_done
+  end)
+end
+
+
+function StageBase:WaitUntilAllPanelsLoadDone()
+  self:WaitUntil( function()
+    for _, panel in ipairs(self.panel_list) do
+      if not panel.is_all_assets_load_done then
+        return false
+      end
+    end
+    return true
+  end)
+end
+
+function StageBase:IEDestroy()
+  global.client.uiManager:Reset()
+  global.poolCatManager:Trim()
+  if self.scene_path then
+    local asyncOperation = CS.UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(self:GetSceneName())
+    global.client:WaitUntil( function()
+      return asyncOperation.isDone
+    end)
+  end
+end
+
+function StageBase:GetSceneName()
+  return string.FileName(string.WithoutSuffix(self.scene_path))
+end
+
+
+
+return StageBase

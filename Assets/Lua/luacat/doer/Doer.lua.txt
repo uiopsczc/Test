@@ -1,0 +1,309 @@
+---@class Doer:TickObject
+---@field factory DoerFactory
+---@field dbase DBase @数据对象
+local Doer = Class("Doer", TickObject)
+
+function Doer:PostInit()
+  self:OnInit()
+  Doer.super.PostInit(self)
+end
+
+function Doer:Destruct()
+  if self.factory then
+    self.factory:ReleaseDoer(self)
+  end
+end
+
+function Doer:PrepareSave(dict, dict_tmp)
+  self:DoSave(dict, dict_tmp)
+end
+
+function Doer:FinishRestore(dict, dict_tmp)
+  self:DoRestore(dict, dict_tmp)
+end
+
+-------OnXXX-------------------------
+function Doer:OnInit()
+end
+
+function Doer:OnRelease()
+end
+
+-- 存储数据事件
+function Doer:OnSave(dict, dict_tmp)
+end
+
+-- 导出数据事件
+function Doer:OnRestore(dict, dict_tmp)
+end
+
+-- 修改属性事件
+function Doer:OnAttrChange(key)
+end
+
+-- 重新载入定义数据事件
+function Doer:OnReloadDefinition()
+end
+
+-------------DoXXX-----------------------
+
+
+function Doer:DoSave(dict, dict_tmp)
+  self:GetSaveData(dict)
+  self:GetSaveTmpData(dict_tmp)
+  self:OnSave(dict, dict_tmp)
+end
+
+function Doer:DoRestore(dict, dict_tmp)
+  self:OnRestore(dict,dict_tmp)
+  if dict_tmp then
+    self:AddTmpAll(dict_tmp)
+  end
+  if dict then
+    self:AddAll(dict)
+  end
+
+
+end
+
+-- 通知属性修改事件
+function Doer:NotifyAttrChange(key)
+  self:OnAttrChange(key)
+end
+
+
+function Doer:DoRelease()
+  self:OnRelease()
+end
+
+--------------------GetXXXX-------------------------
+function Doer:GetId()
+  return self.dbase.id
+end
+
+function Doer:GetRid()
+  return self.dbase.rid
+end
+
+function Doer:GetRidSeq()
+  return self.dbase:GetRidSeq()
+end
+
+function Doer:GetDBase()
+  return self.dbase
+end
+
+function Doer:GetName()
+  return self:GetDefinition().name
+end
+
+function Doer:GetShort()
+  return string.format("%s",self:GetRid())
+end
+
+function Doer:GetFullTraceInfo()
+  return self:GetShort()
+end
+
+-- 获得需存储数据
+function Doer:GetSaveData(dict)
+  if not dict then
+    return
+  end
+  self:GetAll(dict)
+end
+
+
+--  拷贝数据到指定dict
+function Doer:GetAll(dict)
+  table.CombineByReplace_Dict(dict,self.dbase.db)
+end
+
+--  获得需存储运行时数据
+function Doer:GetSaveTmpData(dict)
+  if not dict then
+    return
+  end
+  self:GetTmpAll(dict)
+  for key,value in pairs(dict) do
+    if string.StartsWith(key, "o_")then  -- "o_"开始的都是逻辑对象，不需要保存
+      dict[key] = nil
+    end
+  end
+end
+
+function Doer:Get(key,default_value)
+  local value = self.dbase.db[key]
+  value = value or default_value
+  return value
+end
+
+
+
+
+--  拷贝运行时数据到指定dict
+function Doer:GetTmpAll(dict)
+  table.CombineByReplace_Dict(dict,self.dbase.db_tmp)
+end
+
+function Doer:GetTmp(key,default_value)
+  local value = self.dbase.db_tmp[key]
+  value = value or default_value
+  return value
+end
+
+function Doer:GetDefinition()
+  if self.definition then
+    return self.definition
+  end
+  if self.factory then
+    self.definition = self.factory:GetDefinition(self:GetId())
+    return self.definition
+  end
+end
+
+function Doer:GetType1()
+  return self:GetDefinition().type_1
+end
+
+function Doer:GetType2()
+  return self:GetDefinition().type_2
+end
+
+function Doer:GetCount()
+  return self:Get("count")
+end
+
+-- 获得物件所在环境
+function Doer:GetEnv()
+  return self:GetTmp("o_env")
+end
+
+-- 拥有者，如发放任务的npc
+function Doer:GetOwner()
+  return self:GetTmp("o_owner")
+end
+
+
+function Doer:GetPos2()
+  local pos2 = self:Get("pos2")
+  if pos2 then
+    return Vector2.New(pos2.x,pos2.y)
+  end
+  return nil
+end
+
+function Doer:GetPos3()
+  local pos3 = self:Get("pos3")
+  if pos3 then
+    return Vector3.New(pos3.x,pos3.y,pos3.z)
+  end
+  return nil
+end
+
+function Doer:CanFold()
+  return self:GetDefinition().can_fold
+end
+
+function Doer:CanNotFold()
+  return not self:CanFold()
+end
+
+-- 获得物品类别
+function Doer:GetType1()
+  return self:GetDefinition().type_1
+end
+
+-- 获得物品子类别
+function Doer:GetType2()
+  return self:GetDefinition().type_2
+end
+
+function Doer:GetBelong()
+  return self:GetTmp("belong", "");
+end
+
+--------------------SetXXXX-----------------------------
+function Doer:SetDBase(dbase)
+  self.dbase = dbase
+end
+
+function Doer:Set(key,value)
+  self.dbase.db[key] = value
+end
+
+function Doer:SetTmp(key,value)
+  self.dbase.db_tmp[key] = value
+end
+
+function Doer:SetCount(count)
+  self:Set("count", count)
+end
+
+-- 设置物件所在环境
+---@param env Doer
+function Doer:SetEnv(env)
+  self:SetTmp("o_env", env)
+end
+
+-- 拥有者，如发放任务的npc
+function Doer:SetOwner(owner)
+  return self:SetTmp("o_owner", owner)
+end
+
+function Doer:SetPos2(x,y)
+  self:Set("pos2",{x= x, y = y})
+end
+
+function Doer:SetPos3(x,y,z)
+  self:Set("pos3",{x= x, y = y,z = z})
+end
+
+function Doer:SetBelong(belong)
+  self:SetTmp("belong", belong)
+end
+
+--------------------AddXXXX-----------------------------
+function Doer:AddAll(dict)
+  table.CombineByReplace_Dict(self.dbase.db,dict)
+end
+
+
+function Doer:Add(key,add_value)
+  self.dbase.db[key] = self.dbase.db[key] or 0
+  self.dbase.db[key] = self.dbase.db[key] + add_value
+end
+
+function Doer:AddString(key,add_value)
+  self.dbase.db[key] = self.dbase.db[key] or ""
+  self.dbase.db[key] = self.dbase.db[key] .. add_value
+end
+
+function Doer:AddTmp(key,add_value)
+  self.dbase.db_tmp[key] = self.dbase.db_tmp[key] or 0
+  self.dbase.db_tmp[key] = self.dbase.db_tmp[key] + add_value
+end
+
+function Doer:AddTmpString(key,add_value)
+  self.dbase.db_tmp[key] = self.dbase.db_tmp[key] or ""
+  self.dbase.db_tmp[key] = self.dbase.db_tmp[key] .. add_value
+end
+
+function Doer:AddTmpAll(dict)
+  table.CombineByReplace_Dict(self.dbase.db_tmp,dict)
+end
+
+function Doer:AddCount(add_value)
+  return self:Add("count", add_value)
+end
+
+----------------GetOrAddXXXX-----------------------------
+function Doer:GetOrAddTmp(key,add_func)
+  return table.GetOrAddDefault_Dict(self.dbase.db_tmp, key, add_func)
+end
+
+function Doer:GetOrAdd(key,add_func)
+  return table.GetOrAddDefault_Dict(self.dbase.db, key, add_func)
+end
+
+return Doer

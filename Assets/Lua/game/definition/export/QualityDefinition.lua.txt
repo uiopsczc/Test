@@ -1,0 +1,31 @@
+---@class QualityDefinition
+---@field id
+---@field name
+---@field icon_path
+local _
+
+
+local definition = {
+
+  [
+[=[1]=]
+] = {id = [=[1]=],name = [=[白色品质]=],icon_path = [=[Assets/Resources/common/ui/texture/bb_icon_wpk1.png:bb_icon_wpk1]=],},
+
+  [
+[=[2]=]
+] = {id = [=[2]=],icon_path = [=[Assets/Resources/common/ui/texture/bb_icon_wpk2.png:bb_icon_wpk2]=],},
+
+  [
+[=[3]=]
+] = {id = [=[3]=],icon_path = [=[Assets/Resources/common/ui/texture/bb_icon_wpk3.png:bb_icon_wpk3]=],},
+
+  [
+[=[4]=]
+] = {id = [=[4]=],icon_path = [=[Assets/Resources/common/ui/texture/bb_icon_wpk4.png:bb_icon_wpk4]=],},
+
+  [
+[=[5]=]
+] = {id = [=[5]=],icon_path = [=[Assets/Resources/common/ui/texture/bb_icon_wpk5.png:bb_icon_wpk5]=],},
+
+}
+return definition

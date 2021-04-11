@@ -1,0 +1,105 @@
+---@class CombatBase:TickObject
+---@field time number
+local CombatBase = Class("CombatBase", TickObject)
+
+function CombatBase:Init(arg_dict)
+  CombatBase.super.Init(self)
+  self.arg_dict = arg_dict or {}
+  self.is_fixed_duration_update = true
+
+  ---@type RandomManager
+  self.randomManager = RandomManager.New(arg_dict["random_seed"])
+  ---@type TimerManager
+  self.timerManager = TimerManager.New()
+
+  ---@type EffectManager
+  self.effectManager = self:AddChild("EffectManager", EffectManager)
+  ---@type CameraManager
+  self.cameraManager = self:AddChild("CameraManager", require("luacat.camera.CameraManager"))
+  ---@type UnitManager
+  self.unitManager = self:AddChild("UnitManager", UnitManager)
+  ---@type SpellManager
+  self.spellManager = self:AddChild("SpellManager", SpellManager)
+  ---@type PathManager
+  self.pathManager = self:AddChild("PathManager", PathManager)
+end
+
+function CombatBase:GetTimerManager()
+  return self.timerManager
+end
+
+function CombatBase:Start()
+  CombatBase.super.Start(self)
+  Log("=============== Combat:Start ===============")
+  self.time = 0
+  self.frame = 0
+  self.is_finished = false
+  self.fixed_update_remain_duration = CombatConst.Fixed_Update_Duration
+  self.is_started = true
+  local gameLevel_class = ClassLoadUtil.Load(self.arg_dict.gameLevel_class_path) or GameLevelBase
+  self.gameLevel = self:AddChild(nil,gameLevel_class)
+  self.gameLevel:Start()
+end
+
+function CombatBase:Update(deltaTime, unscaledDeltaTime)
+  if not self.is_fixed_duration_update then
+    self.frame = self.frame + 1
+    self.time = self.time + deltaTime
+    if not self:IsCanUpdate() then
+      return
+    end
+    CombatBase.super.Update(self, deltaTime, unscaledDeltaTime)
+  else
+    self.fixed_update_remain_duration = self.fixed_update_remain_duration - deltaTime
+    local deltaTime  = CombatConst.Fixed_Update_Duration
+    local unscaledDeltaTime = CombatConst.Fixed_Update_Duration
+    while self.fixed_update_remain_duration <= 0 do
+      self.frame = self.frame + 1
+      self.time = self.time + deltaTime
+      self.fixed_update_remain_duration = self.fixed_update_remain_duration + deltaTime
+      if not self:IsCanUpdate() then
+        return
+      end
+      CombatBase.super.Update(self, deltaTime,unscaledDeltaTime)
+    end
+  end
+end
+
+function CombatBase:__Update(deltaTime, unscaledDeltaTime)
+  CombatBase.super.__Update(self, deltaTime, unscaledDeltaTime)
+  self.timerManager:Update(deltaTime, unscaledDeltaTime)
+  self.timerManager:CoUpdate(deltaTime, unscaledDeltaTime)
+end
+
+function CombatBase:__LateUpdate(deltaTime, unscaledDeltaTime)
+  CombatBase.super.__LateUpdate(self, deltaTime, unscaledDeltaTime)
+  self.timerManager:LateUpdate(deltaTime, unscaledDeltaTime)
+  self.timerManager:CoLateUpdate(deltaTime, unscaledDeltaTime)
+end
+
+function CombatBase:__FixedUpdate(deltaTime, unscaledDeltaTime)
+  CombatBase.super.__FixedUpdate(self, deltaTime, unscaledDeltaTime)
+  self.timerManager:FixedUpdate(deltaTime, unscaledDeltaTime)
+  self.timerManager:CoFixedUpdate(deltaTime, unscaledDeltaTime)
+end
+
+function CombatBase:SetIsFinished(is_finished)
+  self.is_finished = is_finished
+end
+
+function CombatBase:IsStarted()
+  return self.is_started
+end
+
+function CombatBase:IsFinished()
+  return self.is_finished
+end
+
+function CombatBase:IsCanUpdate()
+  return self:IsStarted() and not self:IsFinished() and CombatBase.super.IsCanUpdate(self)
+end
+
+
+
+
+return CombatBase

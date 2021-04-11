@@ -1,0 +1,94 @@
+---@class PoolCat:Class
+local PoolCat = Class("PoolCat")
+
+---@param pool_name string
+---@param spawn_class_type Class
+function PoolCat:Init(pool_name, spawn_class_type)
+  self.pool_name = pool_name
+  ---@type list
+  self.despawned_object_queue = list.new()
+  ---@type table<any,boolean>
+  self.all_object_dict = {}
+  self.spawn_class_type = spawn_class_type
+end
+
+---@param init_count number
+---@param on_spawn_callback fun(spawn:any)
+function PoolCat:InitPool(init_count, on_spawn_callback)
+  init_count = init_count or 1
+  for i = 1, init_count, 1 do
+    self:Despawn(self:Spawn(on_spawn_callback))
+  end
+end
+
+function PoolCat:__Spawn()
+  return self.spawn_class_type.NewWithoutInit()
+end
+
+---@param on_spawn_callback fun(spawn:any)
+function PoolCat:Spawn(on_spawn_callback)
+  local spawn
+
+  if self.despawned_object_queue.length > 0 then
+    spawn = self.despawned_object_queue:pop()
+  else
+    spawn = self:__Spawn()
+  end
+  if on_spawn_callback then
+    on_spawn_callback(spawn)
+  end
+  self.all_object_dict[spawn] = true
+  return spawn
+end
+
+---@param despawn_object any
+function PoolCat:Despawn(despawn_object)
+  if despawn_object == nil then
+    return
+  end
+
+  if self.all_object_dict[despawn_object] == nil or self.all_object_dict[despawn_object] == false then
+    return
+  end
+
+  self.despawned_object_queue:push(despawn_object)
+  self.all_object_dict[despawn_object] = false
+  if IsTable(despawn_object) or IsUserData(despawn_object) then
+    if despawn_object.OnDespawn then
+      despawn_object:OnDespawn()
+    end
+  end
+end
+
+function PoolCat:Trim()
+  for _, despawned_object in ipairs(self.despawned_object_queue) do
+    self.all_object_dict[despawned_object] = nil
+    self:__Trim(despawned_object)
+  end
+  self.despawned_object_queue:clear()
+end
+
+function PoolCat:__Trim(despawned_object)
+end
+
+function PoolCat:DespawnAll()
+  for obj, _ in pairs(self.all_object_dict) do
+    if not self.despawned_object_queue:find(obj) then
+      self:Despawn(obj)
+    end
+  end
+end
+
+function PoolCat:IsEmpty()
+  if table.Count(self.all_object_dict)==0 then
+    return true
+  end
+  return false
+end
+
+function PoolCat:Destroy()
+  self.all_object_dict = {}
+  self.despawned_object_queue:clear()
+end
+
+return PoolCat

@@ -1,0 +1,84 @@
+local UIItemBase = require("luacat.ui.common.UIItemBase.UIItemBase")
+---@class UIMessageBoxPanel:UISecondPanelLayerPanel
+local UIMessageBoxPanel = Class("UIMessageBoxPanel",UISecondPanelLayerPanel)
+
+function UIMessageBoxPanel:Init(...)
+  UIMessageBoxPanel.super.Init(self,...)
+  self.graphicComponent:SetPrefabPath("Assets/Resources/common/ui/prefab/UIMessageBoxPanel.prefab")
+end
+
+function UIMessageBoxPanel:InitGameObjectChildren()
+  UIMessageBoxPanel.super.InitGameObjectChildren(self)
+  self.title_text = self.content_transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Text),"title")
+  self.subtitle_text = self.content_transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Text),"subtitle")
+  self.desc_text = self.content_transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Text),"content/desc/Scroll View/Viewport/Content/desc")
+  self.desc_scrollRect = self.content_transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.ScrollRect),"content/desc/Scroll View")
+  self.item_parent_transform = self.content_transform:Find("content/items/Scroll View/Viewport/Content")
+  self.items_transform = self.content_transform:Find("content/items")
+  self.items_scrollRect = self.content_transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.ScrollRect),"content/items/Scroll View")
+  self.close_btn = self.content_transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Button),"close")
+  self.button1 = self.content_transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Button),"buttons/button1")
+  self.button1_text = self.content_transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Text),"buttons/button1/text")
+  self.button2 = self.content_transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Button),"buttons/button2")
+  self.button2_text = self.content_transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Text),"buttons/button2/text")
+
+  self.t = self:AddUpdateTimer(function() log("1111") return true end,nil,0,1)
+  warn(self.t.remain_duration)
+end
+
+
+function UIMessageBoxPanel:Show(title, sub_title, desc, itemInfo_dict_list , close_callback, button1_desc, button1_callback, button2_desc, button2_callback)
+  self.graphicComponent:SetIsShow(true)
+  self.title_text.text = title
+  self.subtitle_text.text = sub_title
+  self.desc_text.text = desc
+  self.desc_scrollRect.verticalNormalizedPosition = 1
+  self.items_transform.gameObject:SetActive(not table.IsNilOrEmpty(itemInfo_dict_list))
+  if not table.IsNilOrEmpty(itemInfo_dict_list) then
+    for _, itemInfo_dict in ipairs(itemInfo_dict_list) do
+      local id = itemInfo_dict["id"]
+      local count = itemInfo_dict["count"]
+      ---@type UIItemBase
+      local uiItemBase = self:AddChild("a"..count, UIItemBase,self.item_parent_transform)
+      uiItemBase:InvokeAfterAllAssetsLoadDone(function()
+        --log(count)
+        uiItemBase:Show(tostring(id), count)
+        self:StartCoroutine("ScrollRectSetVerticalPosition",function()
+          self:WaitForFrames(1)
+          self.items_scrollRect.verticalNormalizedPosition = 1
+        end)
+      end)
+    end
+  end
+
+  if button1_callback then
+    self.button1.gameObject:SetActive(true)
+    self.button1_text.text = button1_desc
+    self:RegisterOnClick(self.button1, button1_callback)
+  else
+    self.button1.gameObject:SetActive(false)
+  end
+
+  if button2_callback then
+    self.button2.gameObject:SetActive(true)
+    self.button2_text.text = button2_desc
+    self:RegisterOnClick(self.button2, button2_callback)
+  else
+    self.button2.gameObject:SetActive(false)
+  end
+
+  self.close_callback = close_callback
+  self:RegisterOnClick(self.close_btn, function() self:Close() end)
+end
+
+
+function UIMessageBoxPanel:Close()
+  UIMessageBoxPanel.super.Close(self)
+  if self.close_callback then
+    self.close_callback()
+  end
+end
+
+
+
+return UIMessageBoxPanel

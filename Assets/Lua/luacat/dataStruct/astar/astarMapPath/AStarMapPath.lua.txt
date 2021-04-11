@@ -1,0 +1,145 @@
+--坐标是x增加是向右，y增加是向上（与unity的坐标系一致），数组用table.ToLeftBottomBaseArrays转换
+---@class AStarMapPath
+local AStarMapPath = Class("AStarMapPath")
+---@param grids number[][]
+function AStarMapPath:Init(grids)
+  ---@type number[][]
+  self.grids = grids
+  ---@type number[][]
+  self.project_grids = table.InitArrays(self:Height())
+end
+
+function AStarMapPath:GetFinalGrids()
+  if not self.final_grids then
+    self:UpdateFinalGrids()
+  end
+  return self.final_grids
+end
+
+function AStarMapPath:UpdateFinalGrids()
+  self.final_grids = table.InitArrays(self:Height())
+  for  i = 1, #self.grids do
+    for j = 1, #self.grids[1] do
+      local grid_type = self.grids[i][j]
+      local project_grid_type = self.project_grids[i][j]
+      if not project_grid_type or project_grid_type == 0 then --没有project_grid_type，则用grid_type
+        self.final_grids[i][j] = grid_type
+      else
+        local field = AStarUtil.GetField(grid_type) --用grid_type的field
+        local terrain_type = (project_grid_type and AStarUtil.GetTerrainType(project_grid_type) ~= 0) and AStarUtil.GetTerrainType(project_grid_type) or AStarUtil.GetTerrainType(grid_type) --覆盖关系
+        local obstacle_type = (project_grid_type and AStarUtil.GetObstacleType(project_grid_type) ~= 0) and AStarUtil.GetObstacleType(project_grid_type) or AStarUtil.GetObstacleType(grid_type) --覆盖关系
+        self.final_grids[i][j] = AStarUtil.ToGridType(field, terrain_type, obstacle_type)
+      end
+    end
+  end
+end
+
+
+function AStarMapPath:Width()
+  return not self.grids and 0 or #self.grids[1]
+end
+
+function AStarMapPath:Height()
+  return not self.grids and 0 or #self.grids
+end
+
+--先对角线查找，再直角查找
+function  AStarMapPath:DirectFindPath( point_a, point_b, can_pass_obstacle_types, can_pass_terrain_types)
+  return AStarMapPathUtil.DirectFindPath(self, point_a, point_b, can_pass_obstacle_types,
+      can_pass_terrain_types)
+end
+ -- 直角寻路(先横向再纵向寻路)
+function  AStarMapPath:BorderFindPath(point_a, point_b, can_pass_obstacle_types, can_pass_terrain_types)
+  return AStarMapPathUtil.BorderFindPath(self, point_a, point_b, can_pass_obstacle_types,
+      can_pass_terrain_types)
+end
+
+--对角线寻路
+function  AStarMapPath:DiagonallyFindPath(point_a, point_b, can_pass_obstacle_types, can_pass_terrain_types)
+  return AStarMapPathUtil.DiagonallyFindPath(self, point_a, point_b, can_pass_obstacle_types, can_pass_terrain_types)
+end
+
+--获取P点四周为+-out_count的可以通过的点列表
+---@param base_point Vector2
+---@param out_count number
+---@param can_pass_obstacle_types number[]
+---@param can_pass_terrain_types number[]
+function  AStarMapPath:GetAroundFreePointList(base_point, out_count, can_pass_obstacle_types, can_pass_terrain_types)
+  return AStarUtil.GetAroundFreePointList(self, base_point, out_count, can_pass_obstacle_types, can_pass_terrain_types)
+end
+
+-- 获取P点四周为+-out_count（包含边界）以内的可以通过的点
+---@param base_point Vector2
+---@param out_count number
+---@param except_point_list Vector2[]
+---@param can_pass_obstacle_types number[]
+---@param can_pass_terrain_types number[]
+---@param randomManager RandomManager
+function  AStarMapPath:FindAroundFreePoint( base_point, out_count, except_point_list, can_pass_obstacle_types, can_pass_terrain_types, randomManager)
+  return AStarUtil.FindAroundFreePoint(self, base_point, out_count, except_point_list, can_pass_obstacle_types, can_pass_terrain_types, randomManager)
+end
+
+-- 获得轨迹中可通过的最远点
+---@param track_list Vector2[]
+---@param can_pass_obstacle_types number[]
+---@param can_pass_terrain_types number[]
+---@param can_pass boolean
+function  AStarMapPath:GetMostPassPoint(track_list, can_pass_obstacle_types, can_pass_terrain_types, can_out)
+  return AStarUtil.GetMostPassPoint(self, track_list, can_pass_obstacle_types, can_pass_terrain_types, can_out)
+end
+
+-- 获得两点之间的连线中可通过的最远点
+---@param track_list Vector2[]
+---@param can_pass_obstacle_types number[]
+---@param can_pass_terrain_types number[]
+---@param can_pass boolean
+function AStarMapPath:GetMostLinePassPoint(lp, tp, can_pass_obstacle_types, can_pass_terrain_types, can_out)
+  return AStarUtil.GetMostLinePassPoint(self, lp, tp, can_pass_obstacle_types, can_pass_terrain_types, can_out)
+end
+
+-- 获取离a,b最近的点
+function AStarMapPath:GetNearestPoint(point_a,  point_b, can_pass_obstacle_types,can_pass_terrain_types)
+  return AStarUtil.GetNearestPoint(  self,  point_a,  point_b, can_pass_obstacle_types,can_pass_terrain_types)
+end
+
+
+---@param track_list Vector2[]
+---@param can_pass_obstacle_types number[]
+---@param can_pass_terrain_types number[]
+---@param can_pass boolean
+function AStarMapPath:GetRandomMovePoint(base_point, goal_point, max_radius_between_target_point_and_goal_point, can_pass_obstacle_types, can_pass_terrain_types,randomManager)
+  return AStarUtil.GetRandomMovePoint(self, base_point, goal_point, max_radius_between_target_point_and_goal_point, can_pass_obstacle_types, can_pass_terrain_types,randomManager)
+end
+-- 获取range范围内的可以通过的格子列表
+function AStarMapPath:GetRangeFreePointList(x1, y1, x2, y2, except_point_list, can_pass_obstacle_types, can_pass_terrain_types)
+  return AStarUtil.GetRangeFreePointList(self, x1, y1, x2, y2, except_point_list, can_pass_obstacle_types, can_pass_terrain_types)
+end
+-- 获取range范围内的可以通过的格子
+---@param randomManager RandomManager
+function AStarMapPath:FindRangeFreePoint(x1, y1, x2, y2, except_point_list, can_pass_obstacle_types, can_pass_terrain_types,randomManager)
+  return AStarUtil.FindRangeFreePoint(self, x1, y1, x2, y2, except_point_list, can_pass_obstacle_types, can_pass_terrain_types, randomManager)
+end
+-- 检测某个点是否可通过
+function AStarMapPath:CanPass( x, y, can_pass_obstacle_types, can_pass_terrain_types, can_out)
+  return AStarUtil.CanPass(self, x, y, can_pass_obstacle_types, can_pass_terrain_types, can_out)
+end
+-- 检测轨迹是否可通过
+function AStarMapPath:CanTrackListPass( track_list, can_pass_obstacle_types, can_pass_terrain_types, can_out)
+  return AStarUtil.CanTrackListPass(self, track_list, can_pass_obstacle_types, can_pass_terrain_types, can_out)
+end
+-- 检测两点间直线是否可通过
+function AStarMapPath:CanLinePass(  point_a, point_b, can_pass_obstacle_types, can_pass_terrain_types, can_out)
+  return AStarUtil.CanLinePass(self, point_a, point_b, can_pass_obstacle_types, can_pass_terrain_types, can_out)
+end
+
+-- 是否有效地图坐标（不含填充区域）
+function AStarMapPath:IsValidPoint( x,  y)
+  if not AStarUtil.IsInRange(self.grids, x, y) then
+    return false
+  end
+  return AStarUtil.IsValidObstacleType(self.grids[x][y])
+end
+
+
+return AStarMapPath
+

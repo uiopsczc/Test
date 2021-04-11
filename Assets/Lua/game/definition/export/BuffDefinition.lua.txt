@@ -1,0 +1,22 @@
+---@class BuffDefinition
+---@field id
+---@field name
+---@field type_1
+---@field type_2
+---@field duration
+---@field effect_ids
+---@field state
+---@field is_unique
+---@field trigger_spell_id
+---@field property_dict
+local _
+
+
+local definition = {
+
+  [
+[=[1]=]
+] = {id = [=[1]=],name = [=[buff1]=],duration = 3.0,effect_ids = {[=[1]=],},},
+
+}
+return definition

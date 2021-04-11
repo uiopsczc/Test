@@ -1,0 +1,4 @@
+---@class GameLevelTest:GameLevelBase
+local GameLevelTest = Class("GameLevelTest", GameLevelBase)
+
+return GameLevelTest

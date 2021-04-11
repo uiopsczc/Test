@@ -1,0 +1,42 @@
+---@class PathManager:TickObject
+local PathManager = Class("PathManager", TickObject)
+
+function PathManager:Init()
+  PathManager.super.Init(self)
+end
+
+---@param from_pos Vector3
+---@param to_pos Vector3
+function PathManager:GetPath(from_pos, to_pos, filter_arg_dict)
+  return {
+    [1] = from_pos,
+    [2] = to_pos
+  }
+end
+
+-- 是否能达到
+---@param from_pos Vector3
+---@param to_pos Vector3
+function PathManager:CanReach(from_pos, to_pos, filter_arg_dict)
+  local path = self:GetPath(from_pos, to_pos, filter_arg_dict)
+  if not path then
+    return
+  end
+
+  if to_pos ==  path[#path] then
+    return true
+  end
+end
+
+function PathManager:GetGroundPos(pos)
+  return pos
+end
+
+-- 返回from_pos, to_pos间碰撞的点
+---@param from_pos Vector3
+---@param to_pos Vector3
+function PathManager:Raycast(from_pos, to_pos, filter_arg_dict)
+  return nil
+end
+
+return PathManager

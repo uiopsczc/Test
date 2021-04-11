@@ -1,0 +1,13 @@
+---@class UserFactory:DoerFactory
+local UserFactory = Class("UserFactory",DoerFactory)
+
+
+---@return Doer
+function UserFactory:__NewDoer(id)
+  local doer = self:AddChildWithoutInit(nil, User)
+  return doer
+end
+
+
+
+return UserFactory

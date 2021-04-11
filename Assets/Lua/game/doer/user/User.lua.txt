@@ -1,0 +1,611 @@
+---@class User:Critter
+---@field main_role Role
+local User = Class("User", Thing)
+
+function User:Init()
+  User.super.Init(self)
+  ---@type Roles
+  self.o_roles = Roles.New(self, "o_roles")
+  ---@type ItemBag
+  self.o_item_bag = ItemBag.New(self, "o_item_bag")
+  ---@type Missions
+  self.o_missions = Missions.New(self, "o_missions")
+end
+
+------------------------DoXXX--------------------------------
+-- 卸载
+function User:DoRelease()
+  self.o_roles:DoRelease()
+  self.o_item_bag:DoRelease()
+  self.o_missions:DoRelease()
+  User.super.DoRelease(self)
+end
+
+-- 保存
+function User:DoSave(dict, dict_tmp)
+  User.super.DoSave(self, dict, dict_tmp)
+  -- 存储角色
+  self.o_roles:DoSave(dict, dict_tmp)
+  -- 存储背包
+  self.o_item_bag:DoSave(dict, dict_tmp)
+  -- 存储任务
+  self.o_missions:DoSave(dict, dict_tmp)
+  if self.main_role then
+    dict["main_role_rid"] = self.main_role:GetRid()
+  end
+end
+
+-- 还原
+function User:DoRestore(dict, dict_tmp)
+  -- 还原角色
+  self.o_roles:DoRestore(dict, dict_tmp)
+  -- 还原背包
+  self.o_item_bag:DoRestore(dict, dict_tmp)
+  -- 还原任务
+  self.o_missions:DoRestore(dict, dict_tmp)
+
+  local main_role_rid = table.Remove_Dict(dict, "main_role_rid")
+  self.main_role = self:GetRole(main_role_rid)
+
+  User.super.DoRestore(self,dict, dict_tmp)
+end
+
+--------------------------OnXXX-------------------
+
+--region 角色
+----------------------角色----------------------------------
+-- 获得指定的角色
+---@return Role[]
+function User:GetRoles(id)
+  return self.o_roles:GetRoles(id)
+end
+
+---@return Role[]
+function User:GetRoles_ToEdit() -- 可以直接插入删除
+  return self.o_roles:GetRoles_ToEdit()
+end
+
+function User:GetRolesCount()
+  return self.o_roles:GetRolesCount()
+end
+
+-- 获得指定的角色
+---@return Role
+function User:GetRole(id_or_rid)
+  return self.o_roles:GetRole(id_or_rid)
+end
+
+-- 清除所有角色
+function User:ClearRoles()
+  self.o_roles:ClearRoles()
+end
+
+function User:CheckAddRole(role)
+  return self:OnCheckAddRole(role) and role:OnCheckAddRole(self)
+end
+
+function User:__AddRole(role)
+  local env = role:GetEnv()
+  if env then
+    error2(string.format("%s still in %s",role, env))
+    return false
+  end
+  local list = self.o_roles:GetRoles_ToEdit()
+  if table.ContainsValue(list, role) then
+    error2(string.format("%s already has role:%s",self, role))
+    return false
+  end
+  if not(self:OnAddRole(role) and role:OnAddRole(self) ) then
+    return false
+  end
+  role:SetEnv(self)
+  table.insert(list, role)
+  return true
+end
+
+function User:CheckRemoveRole(role)
+  return self:OnCheckRemoveRole(role) and role:OnCheckRemoveRole(self)
+end
+
+function User:__RemoveRole(role)
+  local list = self.o_roles:GetRoles_ToEdit()
+  if not table.ContainsValue(list, role) then
+    error2(string.format("%s not contains role:%s",self, role))
+    return false
+  end
+
+  if not(self:OnRemoveRole(role) and role:OnRemoveRole(self) ) then
+    return false
+  end
+  table.RemoveByValue_Array(list, role)
+  role:SetEnv(nil)
+  return true
+end
+--------------------------OnXXX-------------------
+function User:OnCheckAddRole(role)
+  return true
+end
+
+function User:OnAddRole(role)
+  return true
+end
+
+function User:OnCheckRemoveRole(role)
+  return true
+end
+
+function User:OnRemoveRole(role)
+  return true
+end
+
+--------------------------------------Util------------------------------------------
+---@return Role
+function User:AddRole(id_or_rid)
+  local role = global.client.roleFactory:NewDoer(id_or_rid)
+  if not self:CheckAddRole(role) then
+    return nil
+  end
+  if not self:__AddRole(role) then
+    role:Destruct()
+    return nil
+  end
+  return role
+end
+
+---@return Role
+function User:RemoveRole(id_or_rid, is_not_need_destruct)
+  local role = self:GetRole(id_or_rid)
+  if not role then
+    error2(string.format("%s do not contain role:%s",self,role))
+    return nil
+  end
+  if not self:CheckRemoveRole(role) then
+    return nil
+  end
+  if not self:__RemoveRole(role) then
+    return nil
+  end
+  if not is_not_need_destruct then
+    role:Destruct()
+  end
+  return role
+end
+--endregion
+
+--region Mission
+----------------------Mission----------------------------------
+function User:GetMissions(id)
+  return self.o_missions:GetMissions(id)
+end
+
+-- 可以直接插入删除
+function User:GetMissions_ToEdit()
+  return self.o_missions:GetMissions_ToEdit()
+end
+
+function User:HasMissions()
+  return self.o_missions:HasMissions()
+end
+
+function User:HasMission(id)
+  return self.o_missions:GetMission(id) ~= nil
+end
+
+function User:GetMissionsCount()
+  return self.o_missions:GetMissionsCount()
+end
+
+function User:GetMission(id_or_rid)
+  return self.o_missions:GetMission(id_or_rid)
+end
+
+function User:ClearMissions()
+  return self.o_missions:ClearMissions()
+end
+
+function User:GetFinishedMissionIds()
+  return self:GetOrAdd("finished_mission_ids",function()
+    return {}
+  end)
+end
+
+function User:AddFinishedMissionId(mission_id)
+  table.insert(self:GetFinishedMissionIds(), mission_id)
+end
+
+function User:RemoveFinishedMissionId(mission_id)
+  table.RemoveByValue_Array(self:GetFinishedMissionIds(), mission_id)
+end
+
+-- 接受任务
+-- owner 发放任务的npc
+function User:AcceptMission(mission_or_mission_id,owner)
+  if IsString(mission_or_mission_id) then
+    local mission = global.client.missionFactory:NewDoer(mission_or_mission_id)
+    self:AcceptMission(mission,owner)
+  else
+    ---@type Mission
+    local mission = mission_or_mission_id
+    local org_env = mission:GetOwner()
+    if org_env then
+      error2(string.format("%s still belong to %s", mission:GetShort(), org_env:GetShort()))
+      mission:Destruct()
+      return false
+    end
+
+    if self:HasMission(mission:GetId()) then
+      error2(string.format("duplicate mission id![%s]", mission:GetShort()))
+      mission.Destruct()
+      return false
+    end
+
+    local missions = self:GetMissions_ToEdit()
+    mission:SetEnv(self)
+    mission:SetOwner(owner)
+    table.insert(missions, mission)
+    if not mission:OnAccept(self) then
+      mission:Destruct()
+      table.RemoveByValue_Array(missions, mission) -- 失败，减回去
+    end
+    -- 检测完成任务
+    self:CheckAutoFinishMissions()
+  end
+end
+
+---@param mission Mission
+function User:FinishMission(mission_or_mission_id,owner)
+  if IsString(mission_or_mission_id) then
+    self:FinishMission(self:GetMission(mission_or_mission_id),owner)
+  else
+    local mission = mission_or_mission_id
+    if not mission then
+      error("mission is nil")
+      return
+    end
+    if self:GetMission(mission:GetId()) ~= mission then
+      error2(string.format("%s not belong to %s", mission:GetShort(), self:GetShort()))
+      return
+    end
+
+    local missions = self:GetMissions_ToEdit()
+    mission:SetEnv(nil)
+    mission:SetOwner(owner)
+    table.RemoveByValue_Array(missions, mission)
+    self:AddFinishedMissionId(mission:GetId())
+    mission:OnFinish(self)
+    mission:Destruct()
+  end
+
+end
+
+
+---@param mission Mission
+function User:GiveUpMission(mission_or_mission_id,owner)
+  if IsString(mission_or_mission_id) then
+    self:GiveUpMission(self:GetMission(mission_or_mission_id),owner)
+  else
+    local mission = mission_or_mission_id
+    if not mission then
+      error("mission is nil")
+      return
+    end
+    if self:GetMission(mission:GetId()) ~= mission then
+      error2(string.format("%s not belong to %s", mission:GetShort(), self:GetShort()))
+      return
+    end
+
+    local missions = self:GetMissions_ToEdit()
+    mission:SetEnv(nil)
+    mission:SetOwner(owner)
+    table.RemoveByValue_Array(missions, mission)
+    mission:OnGiveUp(self)
+    mission:Destruct()
+  end
+
+end
+
+function User:CheckAutoFinishMissions()
+  for _,mission in ipairs(self:GetMissions()) do
+    if mission:IsReady() then
+      if mission:GetDefinition().is_auto_check_finish then
+        self:FinishMission(mission,mission:GetOwner())
+      end
+    end
+  end
+end
+--endregion
+
+
+--region 背包
+----------------------背包----------------------------------
+function User:GetItems(id)
+  return self.o_item_bag:GetItems(id)
+end
+
+function User:GetItem(id_or_rid)
+  return self.o_item_bag:GetItem(id_or_rid)
+end
+
+function User:GetItemsOfTypes(type_1, type_2)
+  return self.o_item_bag:GetItemsOfTypes(type_1, type_2)
+end
+
+function User:GetItemIds()
+  return self.o_item_bag:GetItemIds()
+end
+
+function User:GetItemCount(id)
+  return self.o_item_bag:GetItemCount(id)
+end
+
+function User:HasItem(id)
+  return self.o_item_bag:HasItem(id)
+end
+
+-- 放入物品
+-- 对于可折叠物品则会替代已存在的物品对象并数量叠加
+-- 对于不可折叠物品则直接加入到对象列表
+function User:AddItems(id, count)
+  local items = self.o_item_bag:AddItems(id, count)
+  for _, item in ipairs(items) do
+    self:OnAddItem(item)
+  end
+end
+
+function User:RemoveItems(id, count)
+  local items = self.o_item_bag:RemoveItems(id, count)
+  for _, item in ipairs(items) do
+    self:OnRemoveItem(item)
+  end
+  return items
+end
+
+function User:TryRemoveItems(id, count)
+  if self:CanRemoveItems(id, count) then
+    self:RemoveItems(id, count)
+    return true
+  else
+    return false
+  end
+end
+
+function User:AddItem(item)
+  self.o_item_bag:AddItem(item)
+  self:OnAddItem(item)
+end
+
+function User:RemoveItem(item_or_rid)
+  local item = self.o_item_bag:RemoveItem(item_or_rid)
+  if item then
+    self:OnRemoveItem(item)
+  end
+  return item
+end
+
+function User:CanRemoveItems(id, count)
+  return self.o_item_bag:CanRemoveItems(id, count)
+end
+
+
+function User:ClearItems()
+  self.o_item_bag:ClearItems()
+end
+--------------------------OnXXX-------------------
+function User:OnAddItem(item)
+end
+
+function User:OnRemoveItem(item)
+end
+
+--------------------------------------Util------------------------------------------
+--可以增加或者删除物品(count是负数的时候),添加物品的时候可以在数量后面加"xxAttr1:4,xxAttr2:5"添加该物品的附加属性
+---@param item_dict table<string,string>
+---@param doerAttrParser DoerAttrParser
+function User:DealItems(item_dict, doerAttrParser)
+  doerAttrParser = doerAttrParser or DoerAttrParser.New(self)
+  for item_id, value in pairs(item_dict) do
+    local add_attr_dict = {} -- 带属性
+    local left_c_1 = "\""
+    local right_c_1 = "\""
+    local left_c_2 = "“"
+    local right_c_2 = "”"
+    local is_use_1 = true
+    local pos = string.IndexOf(value,left_c_1)
+    if pos == -1 then
+      pos = string.IndexOf(value,left_c_2)
+      is_use_1 = false
+    end
+    if pos~= - 1 then
+      local left_c_length = is_use_1 and string.len(left_c_1) or string.len(left_c_2)
+      local right_c_length = is_use_1 and string.len(right_c_1) or string.len(right_c_2)
+      local attr_string = string.sub(value,pos+ left_c_length, -right_c_length);--最后一个"也要删除
+      add_attr_dict = string.ToDictionary(attr_string)
+      value = string.sub(value, 1, pos -1)
+    end
+    local count = doerAttrParser:ParseNumber(value)
+    if count< 0 then -- remove Items
+      count = math.abs(count)
+      local item_list = self:RemoveItems(item_id,count)
+      for _,item in ipairs(item_list) do
+        item:Destruct()
+      end
+    else -- add Items
+      ---@type Item
+      local item = global.client.itemFactory:NewDoer(item_id)
+      if not table.IsNilOrEmpty(add_attr_dict) then
+        for attr_name,attr_value in pairs(add_attr_dict) do
+          add_attr_dict[attr_name] = doerAttrParser:Parse(attr_value)
+        end
+        item:AddAll(add_attr_dict)
+      end
+      local can_fold = item:CanFold()
+      if can_fold then
+        item:SetCount(count)
+        self:AddItem(item)
+        break
+      else
+        self:AddItem(item)
+      end
+    end
+  end
+  return true
+end
+
+---@param target Critter
+function User:UseItem(id_or_rid, target)
+  local item = self:GetItem(id_or_rid)
+  if not item then
+    error2(string.format("UseItem error:do not has %s",id_or_rid))
+    return false
+  end
+  if not target:CheckUseItem(item) then
+    return false
+  end
+  if item:CanFold() then
+    item = self:RemoveItems(item:GetId(), 1)[1]
+  else
+    item = self:RemoveItem(item)
+  end
+  if not target:UseItem(item) then
+    -- 失败，加回去
+    self:AddItem(item)
+    return false
+  end
+  item:Destruct()
+  return true
+end
+
+
+------------------------装备--------------------------
+---@param target Critter
+function User:PutOnEquip(id_or_rid, target)
+  local item = self:GetItem(id_or_rid)
+  if not item then
+    return false
+  end
+  local type_1 = item:GetType1()
+  local type_2 = item:GetType2()
+  local old_equip = target:GetEquipOfTypes(type_1, type_2)
+  if old_equip then
+    if not self:TakeOffEquip(old_equip,target) then
+      return false
+    end
+  end
+  if not target:CheckPutOnEquip(item) then
+    return false
+  end
+  if item:CanFold() then
+    item = self:RemoveItems(item:GetId(), 1)[1]
+  else
+    item = self:RemoveItem(item)
+  end
+  if not item then
+    error2(string.format("PutOnEquip error:%s do not has item:%s",self, id_or_rid))
+    return false
+  end
+  if not target:PutOnEquip(item) then
+    -- 失败，加回去
+    self:AddItem(item)
+    return false
+  end
+  item:Destruct()
+  return true
+end
+
+
+function User:TakeOffEquip(equip,target)
+  if not equip then
+    error2("TakeOffEquip error: equip is nil")
+    return false
+  end
+  if not target:CheckTakeOffEquip(equip) then
+    return false
+  end
+
+  if not target:TakeOffEquip(equip) then
+    return false
+  end
+  equip:SetEnv(self)
+  self:AddItem(equip)
+  return true
+end
+
+
+------------------------镶嵌物--------------------------
+function User:EmbedOn(item_or_id_or_rid, embed_or_id_or_rid)
+  ---@type Item
+  local item
+  ---@type Item
+  local embed
+  if IsString(item_or_id_or_rid) then -- rid or id
+    item = self:GetItem(item_or_id_or_rid)
+  else
+    item = item_or_id_or_rid
+  end
+  if IsString(embed_or_id_or_rid) then  -- rid or id
+    embed = self:GetItem(embed_or_id_or_rid)
+  else
+    embed = embed_or_id_or_rid
+  end
+  if not item then
+    error2("EmbedOn error: item is null")
+    return false
+  end
+  if not embed then
+    error2("EmbedOn error: embed is null")
+    return false
+  end
+  if not item:CheckEmbedOn(embed) then
+    return false
+  end
+  if not self:RemoveItem(embed) then
+    error2(string.format("EmbedOn error:can not remove item:%s", embed))
+  end
+  if not item:EmbedOn(embed) then
+    -- 失败，加回去
+    self:AddItem(embed)
+    return false
+  end
+  return true
+end
+
+
+function User:EmbedOff(item_or_rid,embed_or_rid)
+  ---@type Item
+  local item
+  ---@type Item
+  local embed
+  if IsString(item_or_rid) then -- rid
+    item = self:GetItem(item_or_rid)
+  else
+    item = item_or_rid
+  end
+  if IsString(embed_or_rid) then -- rid
+    embed = item:GetEmbed(embed_or_rid)
+  else
+    embed = embed_or_rid
+  end
+
+  if not item then
+    error2("EmbedOff error: item is null")
+    return false
+  end
+  if not embed then
+    error2("EmbedOff error: embed is null")
+    return false
+  end
+
+  if not item:CheckEmbedOff(embed) then
+    return false
+  end
+  if not item:EmbedOff(embed) then
+    return false
+  end
+  embed:SetEnv(self)
+  self:AddItem(embed)
+  return true
+end
+--endregion
+
+
+return User

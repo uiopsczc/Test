@@ -1,0 +1,13 @@
+---@class HuiFuJi:Item
+local HuiFuJi = Class("HuiFuJi", Item)
+
+--------------------------OnXXX-------------------
+
+---@param critter Critter
+function HuiFuJi:OnUseItem(critter)
+  critter:Add("hp","5")
+  return true
+end
+
+
+return HuiFuJi

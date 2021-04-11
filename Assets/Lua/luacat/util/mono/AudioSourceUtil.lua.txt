@@ -1,0 +1,23 @@
+local AudioMixerConst = require("luacat.audio.define.AudioMixerConst")
+---@class AudioSourceUtil
+local AudioSourceUtil = {}
+
+AudioSourceUtil.audioMixerGroup_dict = {}
+---@param audioSource CS.UnityEngine.AudioSource
+---@param audioMixer CS.UnityEngine.Audio.AudioMixer
+function AudioSourceUtil.SetAudioMixerOutput(audioSource,group_name,audioMixer)
+  audioMixer = audioMixer or global.singletonMaster.audioMixer
+  -- cache
+  local dict = table.GetOrAddDefault_Dict(AudioSourceUtil.audioMixerGroup_dict,audioMixer, function() return {} end)
+  local audioMixerGroups = table.GetOrAddDefault_Dict(dict, group_name,function()
+    local groups = audioMixer:FindMatchingGroups(AudioMixerConst.Group_Dict[group_name].group_path)
+    return table.ConvertCSArray2LuaTable(groups)
+  end)
+  if #audioMixerGroups >= 0 then
+    audioSource.outputAudioMixerGroup = audioMixerGroups[1]
+    return true
+  end
+  return false
+end
+
+return AudioSourceUtil

@@ -1,0 +1,24 @@
+---@class UIGuidePanelBase_DialogItem:UIObject
+local UIGuidePanelBase_DialogItem = Class("UIGuidePanelBase_DialogItem", UIObject)
+
+function UIGuidePanelBase_DialogItem:Init(gameObject)
+  UIGuidePanelBase_DialogItem.super.Init(self,gameObject)
+  self.graphicComponent:SetGameObject(gameObject, true)
+end
+
+function UIGuidePanelBase_DialogItem:InitGameObjectChildren()
+  UIGuidePanelBase_DialogItem.super.InitGameObjectChildren(self)
+  ---@type CS.UnityEngine.UI.Image
+  self.tou_xiang_img = self.graphicComponent.transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Image),"tou_xiang", true, true)
+  ---@type CS.UnityEngine.UI.Text
+  self.desc_text = self.graphicComponent.transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Text),"content/desc")
+end
+
+function UIGuidePanelBase_DialogItem:Show(desc, image_path)
+  self.desc_text.text = desc
+  if image_path then
+    self:SetImageAsync(self.tou_xiang_img, image_path)
+  end
+end
+
+return UIGuidePanelBase_DialogItem

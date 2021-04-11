@@ -1,0 +1,138 @@
+---@class CamerUtil
+CameraUtil = {}
+
+---@param camera CS.UnityEngine.Camera
+function CameraUtil.GetRectSizeByDistance(camera, distance)
+  local tan_of_fov = math.tan(camera.fieldOfView / 2 * math.Deg2Rad)
+
+  local hight_half = tan_of_fov * distance
+  local width_half = hight_half * CS.UnityEngine.Screen.width / CS.UnityEngine.Screen.height
+
+  return Vector2(width_half * 2, hight_half * 2)
+end
+
+-----------------------------------ToUIPos-------------------------------------------------------------
+-- 世界坐标转UI坐标
+---@param world_camera CS.UnityEngine.Camera
+---@param canvas_rectTransform CS.UnityEngine.RectTransform
+---@param uiPosPivot Vector2
+---@param viewprot_offset Vector2
+function CameraUtil.WorldToUIPos(canvas_rectTransform, world_camera, worldPosition, uiPosPivot, viewprot_offset)
+  canvas_rectTransform = canvas_rectTransform or global.client.uiManager.uiCanvas_rectTransform
+  -- 世界坐标-》ViewPort坐标
+  local viewprot_pos = world_camera:WorldToViewportPoint(worldPosition)
+  return CameraUtil.ViewPortToUIPos(canvas_rectTransform, viewprot_pos, uiPosPivot, viewprot_offset)
+end
+
+-- 屏幕坐标转UI坐标
+---@param screen_camera CS.UnityEngine.Camera
+---@param canvas_rectTransform CS.UnityEngine.RectTransform
+---@param uiPosPivot Vector2
+---@param viewprot_offset Vector2
+function CameraUtil.ScreenToUIPos(canvas_rectTransform, screen_camera, screenPoint, uiPosPivot, viewprot_offset)
+  canvas_rectTransform = canvas_rectTransform or global.client.uiManager.uiCanvas_rectTransform
+  screen_camera = screen_camera or global.client.uiManager.uiCamera
+  -- 世界坐标-》ViewPort坐标
+  local viewprot_pos = screen_camera:ScreenToViewportPoint(screenPoint)
+  return CameraUtil.ViewPortToUIPos(canvas_rectTransform, viewprot_pos, uiPosPivot, viewprot_offset)
+end
+
+
+-- 屏幕坐标转UI坐标
+---@param camera CS.UnityEngine.Camera
+---@param canvas_rectTransform CS.UnityEngine.RectTransform
+---@param uiPosPivot Vector2
+---@param viewprot_offset Vector2
+function CameraUtil.ViewPortToUIPos(canvas_rectTransform, viewprot_pos, uiPosPivot, viewprot_offset)
+  canvas_rectTransform = canvas_rectTransform or global.client.uiManager.uiCanvas_rectTransform
+  -- uiPosPivot_x =0.5,uiPosPivot_y = 0.5 MiddleCenter
+  -- uiPosPivot_x =0.5,uiPosPivot_y = 0 MiddleBottom
+  -- uiPosPivot_x =0.5,uiPosPivot_y = 1 MiddleTop
+
+  -- uiPosPivot_x =0,uiPosPivot_y = 0.5 LeftCenter
+  -- uiPosPivot_x =0,uiPosPivot_y = 0 LeftBottom
+  -- uiPosPivot_x =0,uiPosPivot_y = 1 LeftTop
+
+  -- uiPosPivot_x =1,uiPosPivot_y = 0.5 RightCenter
+  -- uiPosPivot_x =1,uiPosPivot_y = 0 RightBottom
+  -- uiPosPivot_x =1,uiPosPivot_y = 1 RightTop
+  uiPosPivot = uiPosPivot or Vector2(0.5,0.5) -- MiddleCenter
+  viewprot_offset = viewprot_offset or Vector2(0, 0)
+  viewprot_pos = Vector2(viewprot_pos.x, viewprot_pos.y)
+  viewprot_pos = viewprot_pos - uiPosPivot
+  viewprot_pos = viewprot_pos + viewprot_offset
+  -- ViewPort坐标-〉UGUI坐标
+  return Vector2(canvas_rectTransform.rect.width * viewprot_pos.x, canvas_rectTransform.rect.height * viewprot_pos.y)
+end
+
+-----------------------------------ToWorldPos-------------------------------------------------------------
+-- UI坐标转世界坐标
+---@param world_camera CS.UnityEngine.Camera
+---@param canvas_rectTransform CS.UnityEngine.RectTransform
+---@param uiPosPivot Vector2
+---@param viewprot_offset Vector2
+function CameraUtil.UIPosToWorld(canvas_rectTransform, world_camera, ui_pos, uiPosPivot, viewprot_z,viewprot_offset)
+  canvas_rectTransform = canvas_rectTransform or global.client.uiManager.uiCanvas_rectTransform
+  local viewport_pos = CameraUtil.UIPosToViewPortPos(canvas_rectTransform, ui_pos, uiPosPivot, 0, viewprot_offset)
+  viewport_pos =  Vector3.New(viewport_pos.x, viewport_pos.y, viewprot_z)
+  -- ViewPort坐标 -》 世界坐标
+  return world_camera:ViewportToWorldPoint(viewport_pos)
+end
+
+-----------------------------------ToScreenPos-------------------------------------------------------------
+-- UI坐标转屏幕坐标
+---@param screen_camera CS.UnityEngine.Camera
+---@param canvas_rectTransform CS.UnityEngine.RectTransform
+---@param ui_pos Vector2
+---@param uiPosPivot Vector2
+---@param viewprot_offset Vector2
+function CameraUtil.UIPosToScreenPos(canvas_rectTransform, screen_camera, ui_pos, uiPosPivot, viewprot_offset)
+  canvas_rectTransform = canvas_rectTransform or global.client.uiManager.uiCanvas_rectTransform
+  screen_camera = screen_camera or global.client.uiManager.uiCamera
+  local viewport_pos = CameraUtil.UIPosToViewPortPos(canvas_rectTransform, ui_pos, uiPosPivot,0, viewprot_offset)
+  -- ViewPort坐标-》屏幕坐标
+  local screen_pos = screen_camera:ViewportToScreenPoint(viewport_pos)
+  return screen_pos
+end
+-----------------------------------ToViewPortPos-------------------------------------------------------------
+-- UI坐标转ViewPort坐标
+---@param camera CS.UnityEngine.Camera
+---@param canvas_rectTransform CS.UnityEngine.RectTransform
+---@param ui_pos Vector2
+---@param uiPosPivot Vector2
+---@param viewprot_z number
+---@param viewprot_offset Vector2
+function CameraUtil.UIPosToViewPortPos(canvas_rectTransform, ui_pos, uiPosPivot, viewprot_z, viewprot_offset)
+  canvas_rectTransform = canvas_rectTransform or global.client.uiManager.uiCanvas_rectTransform
+  viewprot_z = viewprot_z or 0
+  -- uiPosPivot_x =0.5,uiPosPivot_y = 0.5 MiddleCenter
+  -- uiPosPivot_x =0.5,uiPosPivot_y = 0 MiddleBottom
+  -- uiPosPivot_x =0.5,uiPosPivot_y = 1 MiddleTop
+
+  -- uiPosPivot_x =0,uiPosPivot_y = 0.5 LeftCenter
+  -- uiPosPivot_x =0,uiPosPivot_y = 0 LeftBottom
+  -- uiPosPivot_x =0,uiPosPivot_y = 1 LeftTop
+
+  -- uiPosPivot_x =1,uiPosPivot_y = 0.5 RightCenter
+  -- uiPosPivot_x =1,uiPosPivot_y = 0 RightBottom
+  -- uiPosPivot_x =1,uiPosPivot_y = 1 RightTop
+  uiPosPivot = uiPosPivot or Vector2(0.5,0.5) -- MiddleCenter
+  viewprot_offset = viewprot_offset or Vector2(0, 0)
+  -- UGUI坐标 -〉ViewPort
+  local viewport_pos = Vector2.New(ui_pos.x/canvas_rectTransform.rect.width, ui_pos.y / canvas_rectTransform.rect.height)
+  viewport_pos = viewport_pos + uiPosPivot
+  viewport_pos = viewport_pos + viewprot_offset
+  return Vector3.New(viewport_pos.x, viewport_pos.y, viewprot_z)
+end
+
+
+---@param camera CS.UnityEngine.Camera
+---@param world_position Vector3
+function CameraUtil.IsPosInViewPort(camera, world_position)
+  local viewport_position = camera:WorldToViewportPoint(world_position)
+  if viewport_position.z > 0 and viewport_position.x >= 0 and viewport_position.x <= 1 and viewport_position.y >= 0 and viewport_position.y <= 0 then
+    return true
+  end
+  return false
+end
+

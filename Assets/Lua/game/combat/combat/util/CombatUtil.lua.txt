@@ -1,0 +1,15 @@
+---@class CombatUtil
+local CombatUtil = {}
+
+function CombatUtil.GetTime()
+  return global.client.combat.time
+end
+
+
+function CombatUtil.GetFrame()
+  return global.client.combat.frame
+end
+
+
+
+return CombatUtil

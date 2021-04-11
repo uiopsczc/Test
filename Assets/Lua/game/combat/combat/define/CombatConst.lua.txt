@@ -1,0 +1,7 @@
+---@class CombatConst
+local CombatConst = Class("CombatConst")
+
+CombatConst.Fixed_Update_Rate = 40
+CombatConst.Fixed_Update_Duration = 1/CombatConst.Fixed_Update_Rate
+
+return CombatConst

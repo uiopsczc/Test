@@ -1,0 +1,29 @@
+---@class UIGMPanelBase_InputItem2:UIObject
+local UIGMPanelBase_InputItem2 = Class("UIGMPanelBase_InputItem2", UIObject)
+
+function UIGMPanelBase_InputItem2:Init(gameObject, desc, yes_callback)
+  UIGMPanelBase_InputItem2.super.Init(self)
+  self.desc = desc
+  self.yes_callback = yes_callback
+  self.graphicComponent:SetGameObject(gameObject, true)
+end
+
+function UIGMPanelBase_InputItem2:InitGameObjectChildren()
+  UIGMPanelBase_InputItem2.super.InitGameObjectChildren(self)
+  ---@type CS.UnityEngine.UI.Text
+  self.desc_text = self.graphicComponent.transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Text),"desc",true,true)
+  ---@type CS.UnityEngine.UI.InputField
+  self.inputField1 = self.graphicComponent.transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.InputField),"InputField1", true, true)
+  ---@type CS.UnityEngine.UI.InputField
+  self.inputField2 = self.graphicComponent.transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.InputField),"InputField1", true, true)
+  ---@type CS.UnityEngine.UI.Button
+  self.yes_btn = self.graphicComponent.transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Button),"yes_btn",true,true)
+
+  self.desc_text.text = self.desc
+  if self.yes_callback then
+    self:RegisterOnClick(self.yes_btn, self.yes_callback)
+  end
+end
+
+
+return UIGMPanelBase_InputItem2

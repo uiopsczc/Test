@@ -1,0 +1,15 @@
+local EquipsTest = {}
+function EquipsTest.Test()
+  local user = global.client.user
+  user:AddItems("5",5)
+  user:AddItems("6",6)
+  user:PutOnEquip("5",user.main_role)
+  user:PutOnEquip("6",user.main_role)
+
+  local dict = {}
+  local dict_tmp = {}
+  user:DoSave(dict, dict_tmp)
+  log(dict, dict_tmp)
+end
+
+return EquipsTest

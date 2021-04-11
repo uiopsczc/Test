@@ -1,0 +1,9 @@
+---@class UIBottomPanelLayerPanel:UIPanel
+local UIBottomPanelLayerPanel = Class("UIBottomPanelLayerPanel",UIPanel)
+
+function UIBottomPanelLayerPanel:Init(...)
+  self.layerName = "BottomPanelLayer"
+  UIBottomPanelLayerPanel.super.Init(self,...)
+end
+
+return UIBottomPanelLayerPanel

@@ -1,0 +1,29 @@
+---@class CombatStageBase:StageBase
+local CombatStageBase = Class("CombatStageBase", StageBase)
+
+function CombatStageBase:Init()
+  CombatStageBase.super.Init(self)
+  self.is_show_fade = true
+  self.is_show_loading = true
+  self.stage_name = "CombatStageBase"
+end
+
+
+function CombatStageBase:StartCombat(arg_dict)
+  if self.combat then
+    self:RemoveChild(self.combat)
+  end
+  local combat_class = ClassLoadUtil.Load(arg_dict["combat_class_path"]) or CombatBase
+  ---@type CombatBase
+  self.combat = self:AddChild(nil, combat_class, arg_dict)
+  global.client.combat = self.combat
+  self.combat:Start()
+end
+
+function CombatStageBase:__Destroy()
+  CombatStageBase.super.__Destroy(self)
+  global.client.combat = nil
+
+end
+
+return CombatStageBase

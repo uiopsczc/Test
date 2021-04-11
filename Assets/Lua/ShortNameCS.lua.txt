@@ -1,0 +1,21 @@
+-- CS
+LogCat = CS.CsCat.LogCat
+XLineRenderer = CS.CsCat.XLineRenderer
+UGUIEventListener = CS.CsCat.UGUIEventListener
+AutoAssetSetImageSprite = CS.CsCat.AutoAssetSetImageSprite
+-- Const
+SerializeDataConst = CS.CsCat.SerializeDataConst
+-- Util
+StdioUtil = CS.CsCat.StdioUtil
+StringUtilCat = CS.CsCat.StringUtilCat
+FileUtilCat = CS.CsCat.FileUtilCat
+TimeUtil = CS.CsCat.TimeUtil
+UIUtil = CS.CsCat.UIUtil
+StringUtilCat = CS.CsCat.StringUtilCat
+-- Extension
+
+
+-- UnityEngine
+GameObject = CS.UnityEngine.GameObject
+Input = CS.UnityEngine.Input
+AudioSource = CS.UnityEngine.AudioSource

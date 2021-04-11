@@ -1,0 +1,33 @@
+---@class EaseCat_Sine
+local EaseCat_Sine = {}
+
+function EaseCat_Sine.EaseIn(t, b, c, d)
+  return -c * math.cos(t / d * math.pi_half) + c + b
+end
+
+function EaseCat_Sine.EaseOut(t, b, c, d)
+  return c * math.sin(t / d * math.pi_half) + b
+end
+
+
+function EaseCat_Sine.EaseInOut(t, b, c, d)
+  return -c / 2 * (math.cos(math.PI * t / d) - 1) + b
+end
+
+-------------------------------------------------------------------------
+
+function EaseCat_Sine.EaseIn2(start_value, end_value, pct)
+  return EaseCat_Sine.EaseIn(pct, start_value, end_value - start_value, 1)
+end
+
+
+function EaseCat_Sine.EaseOut2(start_value, end_value, pct)
+  return EaseCat_Sine.EaseOut(pct, start_value, end_value - start_value, 1)
+end
+
+
+function EaseCat_Sine.EaseInOut2(start_value, end_value, pct)
+  return EaseCat_Sine.EaseInOut(pct, start_value, end_value - start_value, 1)
+end
+
+return EaseCat_Sine

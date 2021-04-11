@@ -1,0 +1,9 @@
+local NumberUnitTest = {}
+
+
+function NumberUnitTest.Test()
+  log(NumberUnitUtil.GetString(300000,2,1000))
+end
+
+
+return NumberUnitTest

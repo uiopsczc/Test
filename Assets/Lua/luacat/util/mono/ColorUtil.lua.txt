@@ -1,0 +1,33 @@
+---@class ColorUtil
+ColorUtil = {}
+
+function ColorUtil.Inverted(color)
+  return Color(1 - color.r, 1 - color.g, 1 - color.b, color.a)
+end
+
+
+function ColorUtil.ToHtmlStringRGB(color)
+  local r = math.Clamp(color.r,0,1)
+  local g = math.Clamp(color.g,0,1)
+  local b = math.Clamp(color.b,0,1)
+  r = math.Round(r * 255)
+  g = math.Round(g * 255)
+  b = math.Round(b * 255)
+  local num = b+256*g+256*256*r
+  return string.format("%06X",num)
+end
+
+function ColorUtil.ToHtmlStringRGBA(color)
+  local r = math.Clamp(color.r,0,1)
+  local g = math.Clamp(color.g,0,1)
+  local b = math.Clamp(color.b,0,1)
+  local a = math.Clamp(color.a,0,1)
+  r = math.Round(r * 255)
+  g = math.Round(g * 255)
+  b = math.Round(b * 255)
+  a = math.Round(a * 255)
+  local num = a+256*b+256*256*g+256*256*256*r
+  return string.format("%08X",num)
+end
+
+

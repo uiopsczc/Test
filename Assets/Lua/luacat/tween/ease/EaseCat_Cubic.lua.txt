@@ -1,0 +1,39 @@
+---@class EaseCat_Cubic
+local EaseCat_Cubic = {}
+
+function EaseCat_Cubic.EaseIn(t, b, c, d)
+  t = t / d
+  return c * t * t * t + b
+end
+
+function EaseCat_Cubic.EaseOut(t, b, c, d)
+  t = t / d - 1
+  return c * (t * t * t + 1) + b
+end
+
+
+function EaseCat_Cubic.EaseInOut(t, b, c, d)
+  t = t/(d / 2)
+  if t < 1 then
+    return c / 2 * t * t * t + b
+  end
+  t = t-2
+  return c / 2 * (t * t * t + 2) + b
+end
+
+-------------------------------------------------------------------------
+function EaseCat_Cubic.EaseIn2(start_value, end_value, pct)
+  return EaseCat_Cubic.EaseIn(pct, start_value, end_value - start_value, 1)
+end
+
+
+function EaseCat_Cubic.EaseOut2(start_value, end_value, pct)
+  return EaseCat_Cubic.EaseOut(pct, start_value, end_value - start_value, 1)
+end
+
+
+function EaseCat_Cubic.EaseInOut2(start_value, end_value, pct)
+  return EaseCat_Cubic.EaseInOut(pct, start_value, end_value - start_value, 1)
+end
+
+return EaseCat_Cubic

@@ -1,0 +1,19 @@
+local PhysicsTest = {}
+
+function PhysicsTest.Call()
+  log("4444444444")
+end
+
+function PhysicsTest.Test1()
+  global.client.physicsManager:RegisterOnClick(GameObject.Find("Cube"), PhysicsTest.Call)
+end
+
+function PhysicsTest.Test2()
+  global.client.physicsManager:UnRegisterOnClick(GameObject.Find("Cube"), PhysicsTest.Call)
+end
+
+function PhysicsTest.Test3()
+  global.client.physicsManager:SetRaycastLayer("UI")
+end
+
+return PhysicsTest

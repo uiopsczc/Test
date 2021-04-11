@@ -1,0 +1,10 @@
+---@class HFSMEventNameConst
+local HFSMEventNameConst = {}
+
+HFSMEventNameConst.Pre_State_Exit = "Pre_State_Exit"
+HFSMEventNameConst.Post_State_Exit = "Post_State_Exit"
+HFSMEventNameConst.Pre_State_Enter = "Pre_State_Enter"
+HFSMEventNameConst.Post_State_Enter = "Post_State_Enter"
+HFSMEventNameConst.State_Change_Finish = "State_Change_Finish"
+
+return HFSMEventNameConst

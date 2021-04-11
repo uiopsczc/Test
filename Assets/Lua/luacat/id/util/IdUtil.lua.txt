@@ -1,0 +1,65 @@
+IdUtil = {}
+
+-- 拼凑rid
+function IdUtil.JoinRid(id,  seq)
+  return id .. IdConst.Rid_Infix .. seq
+end
+
+-- 判断是否rid
+function IdUtil.IsRid(str)
+  return string.IndexOf(str, IdConst.Rid_Infix) ~= -1
+end
+
+-- 判断是否id
+function IdUtil.IsId(str)
+  return string.IndexOf(str, IdConst.Rid_Infix) == -1
+end
+
+-- 通过rid得到id
+function IdUtil.RidToId(rid)
+  local index = string.IndexOf(rid,IdConst.Rid_Infix)
+  if index ~= -1 then
+    return string.sub(rid,1,index-1)
+  else
+    return rid
+  end
+end
+
+
+function IdUtil.IsIdOrRidEquals(id_or_rid,id,rid)
+  if IdUtil.IsId(id_or_rid) then
+    if id_or_rid == id then
+      return true
+    else
+      return false
+    end
+  else
+    if id_or_rid == rid then
+      return true
+    else
+      return false
+    end
+  end
+end
+
+
+
+-- 生成序号
+function IdUtil.NewSeq()
+  return TimeUtil.GetNowTimestamp()
+end
+
+-- 生成一个新的rid
+function IdUtil.NewRid(id)
+  return IdUtil.JoinRid(id, IdUtil.NewSeq())
+end
+
+-- 获得运行时标识后缀序号
+function IdUtil.RidToSeq(rid)
+  local index = string.IndexOf(rid,IdConst.Rid_Infix)
+  if index ~= -1 then
+    return string.sub(rid, index + 1)
+  else
+    return ""
+  end
+end

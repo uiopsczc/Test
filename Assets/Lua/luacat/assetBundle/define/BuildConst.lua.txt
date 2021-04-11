@@ -1,0 +1,33 @@
+local BuildConst = {}
+
+-- AssetPathMap
+BuildConst.AssetPathMap_File_Name =  "@"
+BuildConst.ManifestBundle_Name = BuildConst.AssetPathMap_File_Name
+
+BuildConst.AssetsPackage_Root = "Assets/" .. BuildConst.AssetPathMap_File_Name .. "/"
+BuildConst.Lua_Root = "Assets/" .. "Lua" .. "/"
+BuildConst.Output_Path = "F:/NetBox下载/" .. BuildConst.ManifestBundle_Name .. "/"
+
+-- Mainifest
+BuildConst.Manifest_Name = "AssetBundleManifest"
+
+-- AssetsPackage
+BuildConst.AssetsPackage_Folder_Name = "AssetsPackage"
+
+-- AssetBundle
+BuildConst.AssetBundle_Suffix = ".ab"
+BuildConst.AssetBundle_Folder_Name = "AssetBundle"
+
+-- ResVersion
+BuildConst.Res_Version_Default = "1.0.00000"
+BuildConst.Res_Version_File_Name = "ResVersion.bytes"
+BuildConst.Res_Version_File_Path = "Assets/" .. BuildConst.Res_Version_File_Name
+
+-- AssetBundleMap
+BuildConst.LuaBundle_Prefix_Name = "@lua_" -- 小写，assetBundle_name全部都是小写的
+BuildConst.Lua_Suffix = ".lua.txt"
+
+-- Lua
+BuildConst.Lua_Path_Map_File_Name = "LuaPathMap.bytes"
+
+return BuildConst

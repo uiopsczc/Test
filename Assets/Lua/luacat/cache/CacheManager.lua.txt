@@ -1,0 +1,36 @@
+---@class CacheManager
+local CacheManager = Class("CacheManager")
+
+function CacheManager:Init()
+  ---@type table<string,Cache>
+  self.cache_dict = {}
+end
+
+---@return Cache
+function CacheManager:GetOrAddCahce(key)
+  if self.cache_dict[key] == nil then
+    self.cache_dict[key] = Cache.New()
+  end
+  return self.cache_dict[key]
+end
+
+
+function CacheManager:Remove(key)
+  if self.cache_dict[key] then
+    self.cache_dict[key]:Clear()
+  end
+  self.cache_dict[key] = nil
+end
+
+function CacheManager:IsContainsKey(key)
+  if self.cache_dict[key]~= nil then
+    return true
+  end
+  return false
+end
+
+
+
+
+
+return CacheManager

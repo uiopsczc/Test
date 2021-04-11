@@ -1,0 +1,99 @@
+---@class TranslationDefinition
+---@field id
+---@field english
+local _
+
+
+local definition = {
+
+  [
+[=[1]=]
+] = {id = [=[1]=],english = [=[ds]=],},
+
+  [
+[=[2]=]
+] = {id = [=[2]=],english = [=[sdf]=],},
+
+  [
+[=[3]=]
+] = {id = [=[3]=],},
+
+  [
+[=[4]=]
+] = {id = [=[4]=],},
+
+  [
+[=[NO]=]
+] = {id = [=[NO]=],},
+
+  [
+[=[1111]=]
+] = {id = [=[1111]=],},
+
+  [
+[=[dkk("dk
+dk")dkd]=]
+] = {id = [=[dkk("dk
+dk")dkd]=],english = [=[小肥鱼]=],},
+
+  [
+[=[Yes]=]
+] = {id = [=[Yes]=],},
+
+  [
+[=[desc]=]
+] = {id = [=[desc]=],},
+
+  [
+[=[Test]=]
+] = {id = [=[Test]=],english = [=[星仔]=],},
+
+  [
+[=[dddsd]=]
+] = {id = [=[dddsd]=],},
+
+  [
+[=[GM]=]
+] = {id = [=[GM]=],},
+
+  [
+[=[x55]=]
+] = {id = [=[x55]=],},
+
+  [
+[=[UITest]=]
+] = {id = [=[UITest]=],},
+
+  [
+[=[<color=red>欢迎，
+欢迎，热烈欢迎</color>]=]
+] = {id = [=[<color=red>欢迎，
+欢迎，热烈欢迎</color>]=],english = [=[<color=white>welcom,
+day,day, up</color>]=],},
+
+  [
+[=[bad0]=]
+] = {id = [=[bad0]=],english = [=[坏的]=],},
+
+  [
+[=[bad1]=]
+] = {id = [=[bad1]=],},
+
+  [
+[=[bad2]=]
+] = {id = [=[bad2]=],},
+
+  [
+[=[sb]=]
+] = {id = [=[sb]=],},
+
+  [
+[=[usa]=]
+] = {id = [=[usa]=],english = [=[美国]=],},
+
+  [
+[=[china]=]
+] = {id = [=[china]=],english = [=[中国]=],},
+
+}
+return definition

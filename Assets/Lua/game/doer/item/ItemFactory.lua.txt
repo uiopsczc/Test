@@ -1,0 +1,25 @@
+---@class ItemFactory:DoerFactory
+local ItemFactory = Class("ItemFactory",DoerFactory)
+
+function ItemFactory:Init()
+  ItemFactory.super.Init(self)
+  self.default_doer_class_path = "game.doer.item.Item"
+end
+
+function ItemFactory:GetDefinitions()
+  return global.definitionManager.itemDefinition
+end
+
+---@return ItemDefinition
+function ItemFactory:GetDefinition(id)
+  return ItemFactory.super.GetDefinition(self,id)
+end
+
+---@return ItemDBase
+function ItemFactory:__NewDBase(id_or_rid)
+  return ItemDBase.New(id_or_rid)
+end
+
+
+
+return ItemFactory

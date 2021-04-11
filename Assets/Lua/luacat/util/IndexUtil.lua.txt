@@ -1,0 +1,18 @@
+IndexUtil = {}
+
+--按高,行,列来填写
+---@param scales number[] @scales从1开始计算
+---@param indexes number[] @indexes从0开始计算
+---@param result number
+function IndexUtil.GetCombinedIndex(scales, indexes)
+  local result = 0
+  for i, index in ipairs(indexes) do
+    if i ~= #indexes then
+      result = result + index*scales[i+1]
+    else
+      result = result + index
+    end
+  end
+  return result
+end
+

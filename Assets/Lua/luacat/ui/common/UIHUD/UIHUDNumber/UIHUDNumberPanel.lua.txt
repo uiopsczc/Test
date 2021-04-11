@@ -1,0 +1,9 @@
+---@class UIHUDNumberPanel:UIHUDLayerPanel
+local UIHUDNumberPanel = Class("UIHUDNumberPanel",UIHUDLayerPanel)
+
+function UIHUDNumberPanel:Init()
+  UIHUDNumberPanel.super.Init(self)
+  self.graphicComponent:SetPrefabPath("Assets/Resources/common/ui/prefab/UINumberPanel.prefab")
+end
+
+return UIHUDNumberPanel

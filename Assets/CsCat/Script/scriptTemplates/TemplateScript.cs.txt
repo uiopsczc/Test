@@ -1,0 +1,20 @@
+using UnityEngine;
+using System.Collections;
+
+namespace CsCat
+{
+	public class #SCRIPTNAME# : MonoBehaviour {
+
+		void Awake(){
+
+		}
+
+		void Start () {
+
+		}
+			
+		void Update () {
+
+		}
+	}
+  }

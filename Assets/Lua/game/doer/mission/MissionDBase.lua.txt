@@ -1,0 +1,4 @@
+---@class MissionDBase:DBase
+local MissionDBase = Class("MissionDBase",DBase)
+
+return MissionDBase

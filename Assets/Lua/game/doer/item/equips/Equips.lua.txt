@@ -1,0 +1,164 @@
+---@class Equips
+local Equips = Class("Equips")
+------------------------装备容器------------------------------
+function Equips:Init(parent_doer, sub_doer_key)
+  ---@type Critter
+  self.parent_doer = parent_doer
+  self.sub_doer_key = sub_doer_key
+end
+------------------------DoXXX--------------------------------
+-- 卸载
+function Equips:DoRelease()
+  SubDoerUtil1.DoReleaseSubDoer(self.parent_doer, self.sub_doer_key)
+end
+
+-- 保存
+function Equips:DoSave(dict, dict_tmp, save_key)
+  save_key = save_key or "equips"
+  local equips = self:GetEquips()
+  local dict_equips = {}
+  local dict_equips_tmp = {}
+  for i = 1, #equips do
+    local equip = equips[i]
+    if equip:CanFold() then
+      -- 可折叠
+      table.insert(dict_equips, equip:GetId())
+    else
+      -- 不可折叠，需存储数据
+      local dict_equip = {}
+      local dict_equip_tmp = {}
+      local rid = equip:GetRid()
+      equip:PrepareSave(dict_equip, dict_equip_tmp)
+      dict_equip["rid"] = rid
+      table.insert(dict_equips, dict_equip)
+      if not table.IsNilOrEmpty(dict_equip_tmp) then
+        dict_equips_tmp[rid] = dict_equip_tmp
+      end
+    end
+    dict[save_key] = table.GetNilIfEmpty(dict_equips)
+    dict_tmp[save_key] = table.GetNilIfEmpty(dict_equips_tmp)
+  end
+end
+
+-- 还原
+function Equips:DoRestore(dict, dict_tmp, restore_key)
+  restore_key = restore_key or "equips"
+  self:ClearEquips()
+  local dict_equips = table.Remove_Dict(dict, restore_key)
+  local dict_equips_tmp = table.Remove_Dict(dict_tmp, restore_key)
+  local equips = self:GetEquips_ToEdit()
+  if not table.IsNilOrEmpty(dict_equips) then
+    for _, value in ipairs(dict_equips) do
+      ---@type Item
+      local item
+      if IsString(value) then
+        -- id情况，可折叠的装备
+        local id = value
+        item = global.client.itemFactory:NewDoer(id)
+      else
+        -- 不可折叠的情况
+        local dict_equip = value
+        local rid = table.Remove_Dict(dict_equip,"rid")
+        item = global.client.itemFactory:NewDoer(rid)
+        item:SetEnv(self.parent_doer)
+        local dict_equip_tmp
+        if dict_equips_tmp then
+          dict_equip_tmp = dict_equips_tmp[rid]
+        end
+        item:FinishRestore(dict_equip, dict_equip_tmp)
+      end
+      item:SetEnv(self.parent_doer)
+      item:SetIsPutOn(true)
+      table.insert(equips,item)
+    end
+  end
+end
+--------------------------OnXXX-------------------
+
+---------------------------------------------
+-- 获得指定的装备
+---@param id string
+---@return Item[]
+function Equips:GetEquips(id)
+  return SubDoerUtil1.GetSubDoers(self.parent_doer,self.sub_doer_key, id)
+end
+
+---@return Item[]
+function Equips:GetEquips_ToEdit() -- 可以直接插入删除
+  return SubDoerUtil1.GetSubDoers_ToEdit(self.parent_doer,self.sub_doer_key)
+end
+
+-- 是否有装备
+function Equips:HasEquips()
+  return SubDoerUtil1.HasSubDoers(self.parent_doer,self.sub_doer_key)
+end
+
+function Equips:GetEquipsCount()
+  return SubDoerUtil1.GetSubDoersCount(self.parent_doer,self.sub_doer_key)
+end
+
+---@param equip Item
+---@param type_1 string
+---@param type_2 string
+function Equips:__FilterType(equip, type_1, type_2)
+  if equip:GetType1() == type_1 and (not type_2 or type_2 == equip:GetType2()) then
+    return true
+  end
+end
+
+-- 获得指定种类的装备
+---@param type_1 string
+---@param type_2 string
+---@return Item[]
+function Equips:GetEquipsOfTypes(type_1, type_2)
+  return SubDoerUtil1.GetSubDoers(self.parent_doer,self.sub_doer_key, nil,function(equip)
+    return self:__FilterType(equip, type_1, type_2)
+  end)
+end
+
+-- 是否有指定种类装备
+---@param type_1 string
+---@param type_2 string
+function Equips:HasEquipsOfTypes(type_1, type_2)
+  return SubDoerUtil1.HasSubDoers(self.parent_doer,self.sub_doer_key, nil,function(equip)
+    self:__FilterType(equip, type_1, type_2)
+  end)
+end
+
+---@param type_1 string
+---@param type_2 string
+function Equips:GetEquipsCountOfTypes(type_1, type_2)
+  return SubDoerUtil1.GetSubDoersCount(self.parent_doer,self.sub_doer_key, nil,function(equip)
+    self:__FilterType(equip, type_1, type_2)
+  end)
+end
+
+
+
+-- 获得指定的装备
+---@param id_or_rid string
+---@return Item
+function Equips:GetEquip(id_or_rid)
+  return SubDoerUtil1.GetSubDoer(self.parent_doer,self.sub_doer_key, id_or_rid)
+end
+
+
+-- 获得指定的装备
+---@param type_1 string
+---@param type_2 string
+---@return Item
+function Equips:GetEquipOfTypes(type_1, type_2)
+  local equips = self:GetEquipsOfTypes(type_1, type_2)
+  if equips then
+    return equips[1]
+  end
+end
+
+-- 清除所有装备
+function Equips:ClearEquips()
+  return SubDoerUtil1.ClearSubDoers(self.parent_doer,self.sub_doer_key, function(equip)
+    self.parent_doer:TakeOffEquip(equip)
+  end)
+end
+
+return Equips

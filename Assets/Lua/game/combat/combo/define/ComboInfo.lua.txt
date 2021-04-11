@@ -1,0 +1,8 @@
+---@class ComboInfo
+---@field next_time number @下次触发combo的时间
+---@field next_index number @下次触发combo的index
+local ComboInfo = {}
+
+
+
+return ComboInfo

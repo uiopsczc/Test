@@ -1,0 +1,202 @@
+-----大部分是Unity的Mathf.cs中的函数
+math.HALF_PI = math.pi / 2.0
+math.Deg2Rad = math.pi / 180.0        -- 角度转弧度
+math.Rad2Deg = 180.0 / math.pi        -- 弧度转角度
+math.Epsilon = 1.175494e-38
+math.PI = math.pi -- π
+math.PI_two = math.pi * 2 -- 2π
+math.pi_half = math.pi / 2 -- 0.5π
+math.Pow = function(a, b) -- a的b次幂
+  return a ^ b
+end
+
+-- 如果v1,v2的差值在指定的epsilon内则两个v1,v2相等
+---@param v1 number
+---@param v2 number
+---@param epsilon number @默认不填则为math.Epsilon
+---@return boolean
+function math.EqualEpsilon(v1, v2, epsilon)
+  epsilon = epsilon or math.Epsilon
+  return math.abs(v1 - v2) < epsilon
+end
+
+-- 四舍五入
+function math.Round(num)
+  return math.floor(num + 0.5)
+end
+
+-- 正，负，零
+function math.Sign(num)
+  if num > 0 then
+    num = 1
+  elseif num < 0 then
+    num = -1
+  else
+    num = 0
+  end
+  return num
+end
+
+function math.Clamp(num, min, max)
+  if num < min then
+    num = min
+  elseif num > max then
+    num = max
+  end
+  return num
+end
+
+function math.Clamp01(value)
+  if value < 0 then
+    return 0
+  end
+  if value > 1.0 then
+    return 1
+  end
+  return value
+end
+
+--Linearly interpolates between a and b by t with no limit to t
+function math.LerpUnclamped(a, b, pct)
+  return a + (b - a) * pct
+end
+
+function math.Lerp(from, to, pct)
+  return from + (to - from) * math.Clamp(pct, 0, 1)
+end
+
+-- t在length范围中的值，使t不会大于length，也不会少于0
+function math.Repeat(t, length)
+  return t - (math.floor(t / length) * length)
+end
+
+-- Same as Lerp but makes sure the values interpolate correctly when they wrap around 360 degrees.
+function math.LerpAngle(a, b, pct)
+  local num = math.Repeat(b - a, 360)
+  if num > 180 then
+    num = num - 360
+  end
+  return a + num * math.Clamp(pct, 0, 1)
+end
+
+-- Moves a value current towards target
+function math.MoveTowards(current, target, maxDelta)
+  if math.abs(target - current) <= maxDelta then
+    return target
+  end
+  return current + math.Sign(target - current) * maxDelta
+end
+
+-- Calculates the shortest difference between two given angles given in degrees
+function math.DeltaAngle(current, target)
+  local num = math.Repeat(target - current, 360)
+  if num > 180 then
+    num = num - 360
+  end
+  return num
+end
+
+-- Same as MoveTowards but makes sure the values interpolate correctly when they wrap around 360 degrees.
+function math.MoveTowardsAngle(current, target, maxDelta)
+  target = current + math.DeltaAngle(current, target)
+  return math.MoveTowards(current, target, maxDelta)
+end
+
+-- Compares two floating point values and returns true if they are similar.
+function math.Approximately(a, b)
+  return math.abs(b - a) < math.max(1e-6 * math.max(math.abs(a), math.abs(b)), math.Epsilon*8)
+end
+
+-- Calculates the linear parameter t that produces the interpolant value within the range [a, b].
+function math.InverseLerp(a, b, value)
+  if  a == b then
+    return 0
+  end
+  math.Clamp01(( value - a) / ( a - b))
+end
+
+-- PingPongs the value t, so that it is never larger than length and never smaller than 0
+function math.PingPong(t, length)
+  t = math.Repeat(t, length * 2)
+  return length - math.abs(t - length)
+end
+
+-- Interpolates between min and max with smoothing at the limits.
+function math.SmoothStep(from, to, pct)
+  pct = math.Clamp01(pct)
+  pct = -2.0 * pct * pct * pct + 3.0 * pct * pct
+  return to * pct + from * (1.0 - pct)
+end
+
+function math.Gamma(value, absmax, gamma)
+  local flag = false
+  if value < 0.0 then
+    flag = true
+  end
+  local num1 = math.abs(value)
+  if num1 > absmax then
+    return not flag and num1 or -num1
+  end
+  local num2 = (num1 / absmax) ^ gamma * absmax
+  return not flag and num2 or -num2
+end
+
+-- 2d 两条直线相交
+-- line1_A, line1_B, line2_A, line2_B都是Vector2
+function math.LineIntersection(line1_A, line1_B, line2_A, line2_B)
+  local num1 = line1_B.x - line1_A.x
+  local num2 = line1_B.y - line1_A.y
+  local num3 = line2_B.x - line2_A.x
+  local num4 = line2_B.y - line2_A.y
+  local num5 = num1 * num4 - num2 * num3
+  if num5 == 0.0 then
+    return false
+  end
+  local num6 = line2_A.x - line1_A.x
+  local num7 = line2_A.y - line1_A.y
+  local num8 = (num6 * num4 - num7 * num3) / num5
+  local intersect_point = Vector2(line1_A.x + num8 * num1, line1_A.y + num8 * num2)
+  return true, intersect_point
+end
+
+-- 2d 两条线段相交
+-- line1_A, line1_B, line2_A, line2_B都是Vector2
+function math.LineSegmentIntersection(line1_A, line1_B, line2_A, line2_B)
+  local num1 = line1_B.x - line1_A.x
+  local num2 = line1_B.y - line1_A.y
+  local num3 = line2_B.x - line2_A.x
+  local num4 = line2_B.y - line2_A.y
+  local num5 = num1 * num4 - num2 * num3
+  if num5 == 0.0 then
+    return false
+  end
+  local num6 = line2_A.x - line1_A.x
+  local num7 = line2_A.y - line1_A.y
+  local num8 = (num6 * num4 - num7 * num3) / num5
+  if num8 < 0.0 or num8 > 1.0 then
+    return false
+  end
+  local num9 = (num6 * num2 - num7 * num1) / num5
+  if num9 < 0.0 or num9 > 1.0 then
+    return false
+  end
+  local intersect_point = Vector2(line1_A.x + num8 * num1, line1_A.y + num8 * num2)
+  return true, intersect_point
+end
+
+--百分比  输入0.1,输出10%
+function math.ToPctString(pct)
+  return string.format("%d%", pct * 100)
+end
+
+-- 二进制转Int
+function math.BinaryToInt(binary_str)
+  local num_int = 0
+  local j = 0
+  for i = string.len(binary_str), 1, -1 do
+    local single_number = tonumber(string.sub(binary_str, i, i))
+    num_int = num_int + single_number * 2 ^ j
+    j = j + 1
+  end
+  return num_int
+end

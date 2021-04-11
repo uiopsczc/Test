@@ -1,0 +1,140 @@
+---@class DefaultInputManager:TickObject
+local DefaultInputManager = Class("DefaultInputManager",TickObject)
+
+function DefaultInputManager:Init()
+  DefaultInputManager.super.Init(self)
+  --global.client.buffManager = global.client:AddChild(nil, BuffManager)
+  --local hfsm = require("luacat.dataStruct.hfsm.test.CoroutineHFSM.TestCoroutineHFSM").New(self)
+  --self.hfsmComponent = self:AddComponent(nil,HFSMComponent,  hfsm)
+  --self.hfsmComponent.hfsm:Start()
+end
+
+function DefaultInputManager:__Update(deltaTime, unscaledDeltaTime)
+  DefaultInputManager.super.__Update(self, deltaTime, unscaledDeltaTime)
+  if Input.GetKeyDown("f1") then
+  end
+  if Input.GetKeyDown("f2") then
+  end
+  if Input.GetKeyDown("f3") then
+  end
+  if Input.GetKeyDown("f4") then
+  end
+  if Input.GetKeyDown("f5") then
+    Reload()
+  end
+  if Input.GetKeyDown("f6") then
+    client:Rebort()
+  end
+  if Input.GetKeyDown("f7") then
+    --self.uiBloodParent:SlideTo(20)
+    global.client:GoTo(StageTest, 0.2)
+  end
+  if Input.GetKeyDown("f8") then
+    self:AddChild(nil, StageTest)
+    log("5555")
+    --warn("88888888")
+    --self.panel = global.client.uiManager:CreateChildPanel("UIGMPanel2",require("luacat.ui.common.UIGMPanelBase.test.UIGMTestPanel2"))
+    --require("luacat.ui.common.UIBlood.test.UIBloodTest").Test1()
+    --self.hfsmComponent.hfsm:Test1()
+    --self:AddComponent("a", AbstractObjectComponent)
+    --self.uiBloodParent:SlideTo(80)
+    --self.hfsm1:Test1()
+  end
+  if Input.GetKeyDown("f9") then
+    --self.panel:SetToBottom()
+    --require("luacat.ui.common.UIBlood.test.UIBloodTest").Test2()
+    --self.hfsmComponent.hfsm:Test2()
+    --self:AddComponent("2", AbstractObjectComponent)
+    --self.hfsm1:Test2()
+    --self.GUIAction = require("luacat.dataStruct.astar.test.AStarTest").Test_Find()
+    --AStarUtil.CanPass()
+    --log(Vector2Int.New(4,1))
+    --log(type(AStarRange.New(1,1,3,3)))
+    --CS.StringUtilCat.CC(CS.UnityEngine.Vector2Int(7,23))
+    --require("luacat.doer.doerAttrParser.test.DoerAttrParserTest").Test()
+    --require("game.doer.mission.test.MissionTest").Test1()
+    --local kk = "你好，“陈智权”"
+    --log(string.len("“"))
+    --log(string.sub(kk, string.IndexEndOf(kk,"“")+1,string.LastIndexOf(kk,"”") -1))
+    --require("game.doer.test.DoerTest").Test()
+    --require("luacat.profiler.test.ProfilerTest").Test1()
+    --Profiler:Start()
+    --require("luacat.ui.common.UIBlood.test.UIBloodTest").Test1()
+    --require("luacat.numberunit.test.NumberUnitTest").Test()
+    --self.uiBloodParent = require("luacat.ui.common.UIBlood.test.UIBloodTest").Test1()
+    --require("luacat.redDot.test.RedDotTest").Test()
+    --self.k:RemoveTimer(self.k.t)
+    --global.client:GoTo(require("luacat.stage.test.StageTest"),0.1)
+    --global.client.uiManager:CreateChildPanel(nil,require("luacat.ui.common.UITest.UITestPanel"))
+    --require("luacat.buff.test.BuffTest").Test1(global.client.buffManager)
+    --require("luacat.redDot.test.RedDotTest").Test()
+  end
+  if Input.GetKeyDown("f10") then
+    --self.panel:SetToTop()
+    --require("luacat.ui.common.UIBlood.test.UIBloodTest").Test3()
+    --self.hfsmComponent.hfsm:Test3()
+    --self:RemoveComponent("1")
+    --self.hfsm1:Test3()
+    --require("game.doer.mission.test.MissionTest").Test2()
+    --require("luacat.profiler.test.ProfilerTest").Test2()
+    --Profiler:Stop()
+    --require("luacat.ui.common.UIBlood.test.UIBloodTest").Test2()
+    --log(cast(typeof(CS.UnityEngine.LayerMask),0))
+    --global.client.physicsManager:SetRaycastLayer("UI")
+    --require("luacat.physics.test.PhysicsTest").Test2()
+    --global.client.physicsManager:UnRegisterOnClick(GameObject.Find("Cube"),DefaultInputManager.YY)
+    --self.uiBloodParent:Reset()
+    --global.client:Broadcast("OnShowRedDotTest0")
+    --global.client:Broadcast("OnShowRedDotTest0")
+    --global.client.uiManager:CreateChildPanel(nil,require("luacat.ui.common.UIGMPanelBase.test.UIGMTestPanel"))
+    --self.k = require("luacat.ui.common.UIGuidePanelBase.test.UIGuidePanelBaseTest").Test()
+    --local aBaseObj = require("luacat.ABaseObj").New()
+    --aBaseObj:CreateChild(nil,require("luacat.ABaseObj"))
+    --aBaseObj:CreateChild(nil,require("luacat.ABaseObj"))
+    --aBaseObj:CreateChild(nil,require("luacat.ABaseObj"))
+    --aBaseObj:CreateChild(nil,require("luacat.ABaseObj"))
+    --aBaseObj:CreateChild(nil,require("luacat.ABaseObj"))
+    --aBaseObj:CreateChild(nil,require("luacat.ABaseObj"))
+    --aBaseObj:CreateChhild(nil,require("luacat.ABaseObj"))
+    --aBaseObj:CreateChild(nil,require("luacat.ABaseObj"))
+    --
+    --for key,child in aBaseObj:GetChildren() do
+    --  log(type(key))
+    --end
+    --require("luacat.buff.test.BuffTest").Test2(global.client.buffManager)
+    --self.pool = PoolCatManagerUtil.AddGameObjectPool("TTT", GameObject.Find("Cube"),"CCC/DDD")
+
+  end
+  if Input.GetKeyDown("f11") then
+    --require("luacat.ui.common.UIBlood.test.UIBloodTest").Test4()
+    --self.hfsmComponent.hfsm:Test4()
+    --self:RemoveAllComponents()
+    --self:RemoveComponent("2")
+    --self.hfsm1:Test4()
+    --require("game.doer.mission.test.MissionTest").Test3()
+    --global.client.physicsManager:SetRaycastLayer()
+    --self.uiBloodParent = require("luacat.ui.common.UIBlood.test.UIBloodTest").Test2()
+    --global.client.redDotManager:CleanListenEvent("Test0任务")
+    --global.client.redDotManager:CleanListenEvent(GameObject.Find("gm_btn"))
+    --global.client.uiManager:CloseAllChildPanels()
+    --self.d = self.pool:Spawn()
+
+  end
+  if Input.GetKeyDown("f12") then
+    --PoolCatManagerUtil.DespawnGameObject(self.d)
+    --self.hfsmComponent.hfsm:Test5()
+    --self.hfsm1:Test5()
+    --require("luacat.ui.common.UIBlood.test.UIBloodTest").Test3()
+    --log(global.client.redDotManager.listen_dict)
+    --global.client.uiManager:CreateChildPanel("UITestPanel",require("luacat.ui.common.UITest.UITestPanel"))
+  end
+
+end
+
+
+
+
+
+
+
+return DefaultInputManager

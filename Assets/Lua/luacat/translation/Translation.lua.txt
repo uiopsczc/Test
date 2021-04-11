@@ -1,0 +1,30 @@
+---@class Translation
+local Translation = {}
+
+function Translation.InitIfNotInit()
+  if Translation.inited then
+    return
+  end
+  Translation.language = CS.CsCat.Client.instance.language
+  ---@type TranslationDefinition
+  Translation.translationDefinition = MetatableUtil.NewReadOnlyTable("game.definition.export.TranslationDefinition")
+end
+
+function Translation.Translate(content)
+  Translation.InitIfNotInit()
+  local language = Translation.language
+  local translationDefinition = Translation.translationDefinition
+  if not language then
+    return content
+  end
+  if content == nil then
+    return nil
+  end
+  local content_escape = string.gsub(string.gsub(content,"\r\n","\n"),"\r", "\n")
+  if translationDefinition[content_escape] and translationDefinition[content_escape][language] then
+    return translationDefinition[content_escape][language]
+  end
+  return content
+end
+
+return Translation

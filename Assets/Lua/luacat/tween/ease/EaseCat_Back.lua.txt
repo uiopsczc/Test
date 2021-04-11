@@ -1,0 +1,45 @@
+---@class EaseCat_Back
+local EaseCat_Back = {}
+
+function EaseCat_Back.EaseIn(t, b, c, d, s)
+  s = s or 1.70158
+  t = t / d
+  return c * t * t * ((s + 1) * t - s) + b
+end
+
+function EaseCat_Back.EaseOut(t, b, c, d, s)
+  s = s or 1.70158
+  t = t / d - 1
+  return c * (t * t * ((s + 1) * t + s) + 1) + b
+end
+
+
+function EaseCat_Back.EaseInOut(t, b, c, d, s)
+  s = s or 1.70158
+  t = t / (d / 2)
+
+  if t < 1 then
+    s = s * 1.525
+    return c / 2 * (t * t * ((s + 1) * t - s)) + b
+  end
+  t = t - 2
+  s = s * 1.525
+  return c / 2 * (t * t * ((s + 1) * t + s) + 2) + b
+end
+
+-------------------------------------------------------------------------
+function EaseCat_Back.EaseIn2(start_value, end_value, pct, s)
+  return EaseCat_Back.EaseIn(pct, start_value, end_value - start_value, 1, s)
+end
+
+
+function EaseCat_Back.EaseOut2(start_value, end_value, pct, s)
+  return EaseCat_Back.EaseOut(pct, start_value, end_value - start_value, 1, s)
+end
+
+
+function EaseCat_Back.EaseInOut2(start_value, end_value, pct, s)
+  return EaseCat_Back.EaseInOut(pct, start_value, end_value - start_value, 1, s)
+end
+
+return EaseCat_Back

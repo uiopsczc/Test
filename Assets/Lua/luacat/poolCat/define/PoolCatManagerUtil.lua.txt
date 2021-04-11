@@ -1,0 +1,139 @@
+---@class PoolCatManagerUtil
+local PoolCatManagerUtil = {}
+
+---@param pool_name string
+---@param pool PoolCat
+---@return PoolCat
+function PoolCatManagerUtil.AddPool(pool_name, pool)
+  return global.poolCatManager:AddPool(pool_name, pool)
+end
+
+---@param pool_name string
+function PoolCatManagerUtil.RemovePool(pool_name)
+  return global.poolCatManager:RemovePool(pool_name)
+end
+
+---@param pool_name string
+---@return PoolCat
+function PoolCatManagerUtil.GetPool(pool_name)
+  return global.poolCatManager:GetPool(pool_name)
+end
+
+---@param pool_name string
+---@return boolean
+function PoolCatManagerUtil.IsContainsPool(pool_name)
+  return global.poolCatManager:IsContainsPool(pool_name)
+end
+
+---@param pool_class_type @例如require(xxxx)
+---@return PoolCat
+function PoolCatManagerUtil.GetOrAddPool(pool_class_type, ...)
+  return global.poolCatManager:GetOrAddPool(pool_class_type,...)
+end
+
+
+---@param despawn_obj any
+---@param pool_name string
+function PoolCatManagerUtil.Despawn(despawn_obj, pool_name)
+  return global.poolCatManager:Despawn(despawn_obj,pool_name)
+end
+
+---@param pool_name string
+function PoolCatManagerUtil.DespawnAll(pool_name)
+  return global.poolCatManager:DespawnAll(pool_name)
+end
+
+---@param spawn_class_type Class
+---@param on_spawn_callback fun(spawn:any)
+---@return any
+function PoolCatManagerUtil.Spawn(spawn_class_type,on_spawn_callback)
+  return global.poolCatManager:Spawn(spawn_class_type, on_spawn_callback)
+end
+
+----------------------------------------------------------------------
+-- CustomPoolCat相关
+----------------------------------------------------------------------
+---@param pool_name string
+---@param spawn_func fun():any
+---@return CustomPoolCat
+function PoolCatManagerUtil.AddCustomPool(pool_name, spawn_func)
+  local pool = CustomPoolCat.New(pool_name, spawn_func)
+  PoolCatManagerUtil.AddPool(pool_name, pool)
+  return pool
+end
+
+---@param pool_name string
+---@return CustomPoolCat
+function PoolCatManagerUtil.GetCustomPool(pool_name)
+  return PoolCatManagerUtil.GetPool(pool_name)
+end
+
+---@param pool_name string
+---@param spawn_func fun():any
+---@return GameObjectPoolCat
+function PoolCatManagerUtil.GetOrAddCustomPool(pool_name, spawn_func)
+  return PoolCatManagerUtil.GetOrAddPool(CustomPoolCat, pool_name, spawn_func)
+end
+
+---@param despawn_gameObject any
+function PoolCatManagerUtil.DespawnGameObject(despawn_gameObject)
+  ---@type GameObjectPoolCat
+  local pool = CacheUtil.CacheGet(despawn_gameObject,PoolCatConst.Pool_Name)
+  pool:Despawn(despawn_gameObject)
+end
+
+----------------------------------------------------------------------
+-- GameObjectPoolCat相关
+----------------------------------------------------------------------
+---@param pool_name string
+---@param prefab CS.UnityEngine.Object
+---@param category string
+---@return GameObjectPoolCat
+function PoolCatManagerUtil.AddGameObjectPool(pool_name, prefab,category)
+  local pool = GameObjectPoolCat.New(pool_name, prefab,category)
+  PoolCatManagerUtil.AddPool(pool_name, pool)
+  return pool
+end
+
+---@param pool_name string
+---@return GameObjectPoolCat
+function PoolCatManagerUtil.GetGameObjectPool(pool_name)
+  return PoolCatManagerUtil.GetPool(pool_name)
+end
+
+---@param pool_name string
+---@return GameObjectPoolCat
+function PoolCatManagerUtil.GetOrAddGameObjectPool(pool_name, prefab,category)
+  return PoolCatManagerUtil.GetOrAddPool(GameObjectPoolCat, pool_name, prefab,category)
+end
+
+
+----------------------------------------------------------------------
+-- UnityObjectPoolCat相关
+----------------------------------------------------------------------
+---@param pool_name string
+---@param prefab CS.UnityEngine.Object
+---@param category string
+---@return UnityObjectPoolCat
+function PoolCatManagerUtil.AddUnityObjectPool(pool_name, prefab,category)
+  local pool = UnityObjectPoolCat.New(pool_name, prefab,category)
+  PoolCatManagerUtil.AddPool(pool_name, pool)
+  return pool
+end
+
+---@param pool_name string
+---@return UnityObjectPoolCat
+function PoolCatManagerUtil.GetUnityObjectPool(pool_name)
+  return PoolCatManagerUtil.GetPool(pool_name)
+end
+
+---@param pool_name string
+---@param prefab CS.UnityEngine.Object
+---@param category string
+---@return UnityObjectPoolCat
+function PoolCatManagerUtil.GetOrAddUnityObjectPool(pool_name,prefab,category)
+  return PoolCatManagerUtil.GetOrAddPool(UnityObjectPoolCat,pool_name,prefab,category)
+end
+
+return PoolCatManagerUtil
+

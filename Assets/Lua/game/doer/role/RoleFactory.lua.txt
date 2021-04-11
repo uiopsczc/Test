@@ -1,0 +1,25 @@
+---@class RoleFactory:DoerFactory
+local RoleFactory = Class("RoleFactory",DoerFactory)
+
+function RoleFactory:Init()
+  RoleFactory.super.Init(self)
+  self.default_doer_class_path = "game.doer.role.Role"
+end
+
+function RoleFactory:GetDefinitions()
+  return global.definitionManager.roleDefinition
+end
+
+---@return RoleDefinition
+function RoleFactory:GetDefinition(id)
+  return RoleFactory.super.GetDefinition(self,id)
+end
+
+---@return RoleDBase
+function RoleFactory:__NewDBase(id_or_rid)
+  return RoleDBase.New(id_or_rid)
+end
+
+
+
+return RoleFactory

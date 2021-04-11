@@ -1,0 +1,45 @@
+---@class GameLevelBase:TickObject
+local GameLevelBase = Class("GameLevelBase", TickObject)
+
+function GameLevelBase:Init()
+  GameLevelBase.super.Init(self)
+end
+
+function GameLevelBase:Start()
+  GameLevelBase.super.Start(self)
+  self.is_started = true
+end
+
+function GameLevelBase:IsCanUpdate()
+  return self:IsStarted() and self:IsFinished() and GameLevelBase.super.IsCanUpdate(self)
+end
+
+function GameLevelBase:__Update(deltaTime, unscaledDeltaTime)
+  GameLevelBase.super.__Update(self,deltaTime, unscaledDeltaTime)
+end
+
+function GameLevelBase:CheckWin()
+  return false
+end
+
+function GameLevelBase:CheckLose()
+  return false
+end
+
+function GameLevelBase:SetIsFinished(is_finished)
+  self.is_finished = is_finished
+end
+
+function GameLevelBase:IsStarted()
+  return self.is_started
+end
+
+function GameLevelBase:IsFinished()
+  return self.is_finished
+end
+
+function GameLevelBase:__Destroy()
+  GameLevelBase.super.__Destroy(self)
+end
+
+return GameLevelBase

@@ -1,0 +1,44 @@
+local PoolCat = require("luacat.poolCat.PoolCat")
+---@class UnityObjectPoolCat:PoolCat
+local UnityObjectPoolCat = Class("UnityObjectPoolCat",PoolCat)
+
+---@param pool_name string
+---@param prefab CS.UnityEngine.Object
+---@param category string
+function UnityObjectPoolCat:Init(pool_name, prefab, category)
+  UnityObjectPoolCat.super.Init(self, pool_name, prefab:GetType())
+  self.prefab = prefab
+  category = category or prefab.name
+  self:InitParent(prefab, category)
+end
+
+---@return CS.UnityEngine.Object
+function UnityObjectPoolCat:GetPrefab()
+  return self.prefab
+end
+
+---@param prefab CS.UnityEngine.Object
+---@param category string
+function UnityObjectPoolCat:InitParent(prefab, category)
+end
+
+function UnityObjectPoolCat:__Spawn()
+  local clone = CS.UnityEngine.Object.Instantiate(self.prefab)
+  clone.name = self.prefab.name
+  return clone
+end
+
+function UnityObjectPoolCat:__Trim(despawned_object)
+  UnityObjectPoolCat.super.__Trim(self, despawned_object)
+  despawned_object:Destroy()
+end
+
+function UnityObjectPoolCat:Destroy()
+  for obj, _ in pairs(self.all_object_dict) do
+    obj:Destroy()
+  end
+  UnityObjectPoolCat.super.Destroy(self)
+end
+
+
+return UnityObjectPoolCat

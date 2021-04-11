@@ -1,0 +1,4 @@
+文章:https://blog.csdn.net/qq_36458268/article/details/81067280
+protoc.exe是从https://github.com/google/protobuf/releases下载的,放到当前的lib文件夹下
+从https://github.com/protocolbuffers/protobuf下载包，解压后从protobuf-master\csharp\src中打开Google.Protobuf.sln
+然后编译Google.Protobuf,会出错，但不用理会，再次打开protobuf-master\csharp\src\Google.Protobuf\bin\Debug\net45,把里面的dll文件全部拷贝到Unity的Plugin下

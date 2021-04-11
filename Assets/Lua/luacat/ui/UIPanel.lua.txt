@@ -1,0 +1,98 @@
+---@class UIPanel:UIObject
+---@field is_add_to_child_panel_stack
+---@field layerName string
+---@field is_resident boolean
+local UIPanel = Class("UIPanel", UIObject)
+
+function UIPanel:Init()
+  UIPanel.super.Init(self)
+  self.sortingOrder = math.mininteger
+end
+
+
+function UIPanel:OnAllAssetsLoadDone()
+  UIPanel.super.OnAllAssetsLoadDone(self)
+  local canvas = self:GetCanvas()
+  canvas.overrideSorting = true
+  canvas.sortingLayerName = "UI"
+  self.graphicComponent.gameObject:GetOrAddComponent(typeof(CS.UnityEngine.UI.GraphicRaycaster))
+  self:OnSortingOrderChange()
+end
+
+function UIPanel:InitGameObjectChildren()
+  self.frame_transform = self.graphicComponent.transform:Find("frame")
+  if not IsNil(self.frame_transform) then
+    self.content_transform = self.frame_transform:Find("content")
+  end
+  UIPanel.super.InitGameObjectChildren(self)
+end
+
+---@param parent_transform CS.UnityEngine.Transform
+---@param is_add_to_child_panel_stack boolean
+---@param uiLayer CS.CsCat.UILayer
+function UIPanel:OnInitPanel(parent_transform, is_add_to_child_panel_stack)
+  ---@type CS.CsCat.UILayer
+  self.uiLayer = global.client.uiManager.uiLayerManager:GetUILayer(self.layerName)
+  self.graphicComponent:SetParentTransform(parent_transform or self.uiLayer.graphicComponent.transform)
+  self.is_add_to_child_panel_stack = is_add_to_child_panel_stack
+  self.uiLayer:AddPanel(self)
+end
+
+---@return CS.UnityEngine.Canvas
+function UIPanel:GetCanvas()
+  if not self.canvas then
+    ---@type CS.UnityEngine.Canvas
+    self.canvas = self.graphicComponent.gameObject:GetOrAddComponent(typeof(CS.UnityEngine.Canvas))
+  end
+  return self.canvas
+end
+
+function UIPanel:GetSortingOrder()
+  return self.sortingOrder
+end
+
+---@param sortingOrder number
+function UIPanel:SetSortingOrder(sortingOrder)
+  if self.sortingOrder == sortingOrder then
+    return
+  end
+  self.sortingOrder = sortingOrder
+  self:OnSortingOrderChange()
+end
+
+function UIPanel:OnSortingOrderChange()
+  if IsNil(self.graphicComponent.gameObject) then
+    return
+  end
+  self:GetCanvas().sortingOrder = self:GetSortingOrder()
+end
+
+function UIPanel:SetToTop()
+  self.uiLayer:SetPanelToTop(self)
+end
+
+function UIPanel:SetToBottom()
+  self.uiLayer:SetPanelToBottom(self)
+end
+
+---@param new_index number
+function UIPanel:SetPanelIndex(new_index)
+  self.uiLayer:SetPanelIndex(self, new_index)
+end
+
+
+
+function UIPanel:__Destroy()
+  UIPanel.super.__Destroy(self)
+  self.sortingOrder = math.mininteger
+  self.canvas = nil
+end
+
+function UIPanel:Close()
+  self.uiLayer:RemovePanel(self)
+  self.parent:CloseChildPanel(self.key)
+end
+
+
+
+return UIPanel

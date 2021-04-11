@@ -1,0 +1,85 @@
+---@class CoroutineHFSM:HFSM
+local CoroutineHFSM = Class("CoroutineHFSM", HFSM)
+
+function CoroutineHFSM:IEEnter(...)
+  self:Enter(...)
+  self:YieldBreak()
+end
+
+function CoroutineHFSM:IEExit(...)
+  self:Exit(...)
+  self:YieldBreak()
+end
+
+---@param to_state CoroutineHFSMState
+function CoroutineHFSM:IEEnterLoopTo(to_state, ...)
+  ---@type CoroutineHFSM[]
+  local hfsm_list = {}--倒序
+  local _hfsm = to_state.parent_hfsm
+  while _hfsm ~= self do
+    table.insert(hfsm_list, _hfsm)
+    _hfsm = _hfsm.parent_hfsm
+  end
+
+  for i = #hfsm_list,1, -1 do
+    self:YieldStart(function(...)
+      hfsm_list[i]:IEEnter(...)
+    end,nil, ...)
+  end
+
+  self:YieldStart(function(...)
+    to_state:IEEnter(...)
+  end,nil, ...)
+
+  self:YieldBreak()
+end
+
+
+function CoroutineHFSM:ChangeToState(to_state_or_to_state_key, is_force, ...)
+  self:StartCoroutine(nil, function(...)
+    self:IEChangeToState(to_state_or_to_state_key, is_force,...)
+  end, ...)
+end
+
+function CoroutineHFSM:IEChangeToState(to_state_or_to_state_key, is_force,...)
+  local root_hfsm = self:GetRootHFSM()
+  ---@type CoroutineHFSMState
+  local to_state
+  if IsString(to_state_or_to_state_key) then -- is key
+    to_state =  root_hfsm:GetSubState(to_state_or_to_state_key, true)
+  else -- state
+    to_state = to_state_or_to_state_key
+  end
+
+  ---@type CoroutineHFSMState
+  local from_state = root_hfsm:GetCurrentState()
+
+  if from_state == to_state then
+    return
+  end
+
+  if not is_force and from_state and not from_state:IsCanChangeToState(to_state, ...) then
+    return
+  end
+  ---@type CoroutineHFSM
+  local nearest_same_parent_hfsm = to_state:GetNearestSameParentHFSM(from_state)
+  if from_state then
+    self:Broadcast(string.ToEventName(CoroutineHFSMEventNameConst.Pre_State_Exit, root_hfsm), from_state)
+    self:YieldStart(function()
+      from_state:IEExitLoopTo(nearest_same_parent_hfsm)
+    end)
+    self:Broadcast(string.ToEventName(CoroutineHFSMEventNameConst.Post_State_Exit, root_hfsm), from_state)
+  end
+
+  self:Broadcast(string.ToEventName(CoroutineHFSMEventNameConst.Pre_State_Enter, root_hfsm), to_state)
+  self:YieldStart(function(...)
+    nearest_same_parent_hfsm:IEEnterLoopTo(to_state,...)
+  end,nil, ...)
+
+  self:Broadcast(string.ToEventName(CoroutineHFSMEventNameConst.Post_State_Enter, root_hfsm), to_state)
+
+  self.previous_state = from_state
+  self:Broadcast(string.ToEventName(CoroutineHFSMEventNameConst.State_Change_Finish, root_hfsm), from_state, to_state)
+end
+
+return CoroutineHFSM

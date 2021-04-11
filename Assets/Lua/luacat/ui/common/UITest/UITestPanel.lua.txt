@@ -1,0 +1,45 @@
+---@class UITestPanel:UISecondPanelLayerPanel
+local UITestPanel = Class("UITestPanel", UIFirstPanelLayerPanel)
+
+function UITestPanel:Init(...)
+  UITestPanel.super.Init(self, ...)
+  self.graphicComponent:SetPrefabPath("Assets/Resources/common/ui/prefab/UITestPanel.prefab")
+end
+
+function UITestPanel:InitGameObjectChildren()
+  UITestPanel.super.InitGameObjectChildren(self)
+  local gm_btn = self.frame_transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Button), "gm_btn")
+  local test_btn = self.frame_transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Button), "test_btn")
+  local combat_test_btn = self.frame_transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Button), "combat_test_btn")
+  self:RegisterOnClick(gm_btn, function()
+    global.client.uiManager:CreateChildPanel("UIGMPanel",require("luacat.ui.common.UIGMPanelBase.test.UIGMTestPanel"))
+  end)
+  self:RegisterOnClick(test_btn, function()
+    self:Test()
+  end)
+  self:RegisterOnClick(combat_test_btn,
+      function()
+        global.client:GoTo(
+            CombatStageTest,
+            0.1,
+            function()
+              global.client.uiManager.uiLoadingPanel:Reset()
+            end)
+      end)
+  --self:AddUpdateTimer(function()
+  --  log("cccc")
+  --  return true
+  --end,nil,0,1)
+  --self:StartCoroutine(nil, function()
+  --  log("eeee")
+  --  self:WaitForSeconds(2)
+  --  log("fff")
+  --end)
+end
+
+function UITestPanel:Test()
+  log("lua Test")
+  --require("luacat.effect.test.EffectTest").Test()
+end
+
+return UITestPanel

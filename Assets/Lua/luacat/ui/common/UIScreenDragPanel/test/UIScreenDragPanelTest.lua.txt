@@ -1,0 +1,8 @@
+local UIScreenDragPanelTest = {}
+
+function UIScreenDragPanelTest.Test()
+  local panel  = global.client.uiManager:CreateChildPanel(nil,UIScreenDragPanel)
+  panel:SetIsEnabled(false)
+end
+
+return UIScreenDragPanelTest

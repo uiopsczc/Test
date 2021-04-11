@@ -1,0 +1,31 @@
+---@class Role:Critter
+local Role = Class("Role", Critter)
+
+function Role:Init()
+  Role.super.Init(self)
+end
+
+function Role:OnInit()
+  Role.super.OnInit(self)
+end
+
+--------------------------OnXXX-------------------
+function Role:OnCheckAddRole(user)
+  return true
+end
+
+function Role:OnAddRole(user)
+  return true
+end
+
+function Role:OnCheckRemoveRole(user)
+  return true
+end
+
+function Role:RemoveRole(user)
+  return true
+end
+
+
+
+return Role

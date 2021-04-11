@@ -1,0 +1,1252 @@
+---@class Unit:TickObject
+---@field position Vector3
+---@field rotation Quaternion
+---@field scale number
+---@field build_ok_animation_name string
+---@field current_attack SpellBase
+local Unit = Class("Unit", TickObject)
+
+function Unit:Init()
+  Unit.super.Init(self)
+  self.is_in_sight = true -- 是否在视野内，用于优化，由unitManager设置
+end
+
+function Unit:__Destroy()
+  Unit.super.__Destroy(self)
+  self:Broadcast(UnitEventNameConst.On_Unit_Destroy, self)
+  if self.animatorComp then
+    self.animatorComp:Destroy()
+  end
+  if self.propertyComp then
+    self.propertyComp:Destroy()
+  end
+  self.unitModelInfo_dict = nil
+  self.animation = nil
+  self.actionManager = nil
+  self.socket_transform_dict = nil
+  self.unitMaterialInfo_list = nil
+
+end
+
+function Unit:UpdateUnit(arg_dict)
+  for key, value in pairs(arg_dict) do
+    if key == "hp" then
+      self:SetHp(value)
+    elseif key == "faction" then
+      self:SetFaction(value)
+    elseif key == "level" then
+      self:SetLevel(value)
+    elseif key == "position" then
+      self:SetPosition(value)
+    elseif key == "rotation" then
+      self:SetRotation(value)
+    elseif key == "scale" then
+      self:SetScale(value)
+    else
+      self[key] = value
+    end
+  end
+end
+
+----------------------------------------------------------------------
+-- 构建模型相关
+----------------------------------------------------------------------
+function Unit:Build(arg_dict)
+
+  ---@type UnitLockTargetInfo
+  self.unitLockTargetInfo = UnitLockTargetInfo.New()
+  ---@type ComboInfo
+  self.normal_attack_comboInfo = ComboInfo.New()
+  ---@type table<string,UnitModelInfo>  @第一个key是tag
+  self.unitModelInfo_dict = {}
+  self.load_ok_listen_list = {}
+  self.socket_transform_dict = {}
+
+  self.arg_dict = arg_dict
+  self:InitMixedStates()
+
+  self.unitDefinition = global.definitionManager.unitDefinition[self.unit_id]
+  self.name = self.unitDefinition.name
+  self.type = self.unitDefinition.type
+  self.radius = self.unitDefinition.radius
+  self.original_radius = self.radius
+
+  self.level = arg_dict.level
+  self.unit_id = arg_dict.unit_id
+  self.player_name = arg_dict.player_name
+  self.show_name_offset = arg_dict.show_name_offset
+  self.is_not_show_headBlood = arg_dict.is_not_show_headBlood
+  if arg_dict.owner_unit_guid then
+    self.owner_unit = global.client.combat.unitManager:GetUnit(arg_dict.owner_unit_guid)
+  end
+  -- 创建时播放的动画
+  self.build_ok_animation_name = arg_dict.build_ok_animation_name
+  -- 是否需要保持尸体
+  self.is_keep_dead_body = self.arg_dict.is_keep_dead_body or self.unitDefinition.is_keep_dead_body
+
+  self.faction = arg_dict.faction
+  self.position = arg_dict.position
+  self.rotation = arg_dict.rotation
+  self.scale = arg_dict.scale or self.unitDefinition.scale or 1
+  self:SetScale(self.scale)
+
+  ---@type PropertyComp
+  self.propertyComp = PropertyComp.New(arg_dict)
+  ---@type AnimatorComp
+  self.animatorComp = AnimatorComp.New()
+  ---@type UnitMoveComp
+  self.unitMoveComp = self:AddChild(nil, UnitMoveComp, self)
+  ---@type BuffManager
+  self.buffManager = self:AddChild(nil, BuffManager, self)
+
+  ---@type table<string,SpellInfo>
+  self.spellInfo_dict = {  }
+
+  -- 技能相关
+  ---@type string[]
+  self.skill_id_list = self.unitDefinition.skill_ids and table.Clone(self.unitDefinition.skill_ids) or {}
+  for _, skill_id in ipairs(self.skill_id_list) do
+    self:AddSkill(skill_id)
+  end
+
+  -- 普攻相关
+  ---@type string[]
+  self.normal_attack_id_list = self.unitDefinition.normal_attack_ids and table.Clone(self.unitDefinition.normal_attack_ids) or {}
+  for _, normal_attack_id in ipairs(self.normal_attack_id_list) do
+    self:AddNormalAttack(normal_attack_id)
+  end
+
+  -- 添加被动buff
+  for _, passive_buff_id in ipairs(self.unitDefinition.passive_buff_ids or {}) do
+    self.buffManager:AddBuff(passive_buff_id, self)
+  end
+
+  if self.unitDefinition.model_path then
+    self:BuildModel(self.unitDefinition.model_path)
+  end
+
+  self.unitMoveComp:OnBuild()
+  self.animatorComp:OnBuild()
+  self.propertyComp:OnBuild(self)
+
+  if arg_dict.hp_pct then
+    self:SetHp(self:GetMaxHp() * arg_dict.hp_pct, true)
+  else
+    self:SetHp(arg_dict.hp or self:GetMaxHp(), true)
+  end
+  self:UpdateMixedStates()
+end
+
+function Unit:BuildModel(model_path)
+  global.client.combat.effectManager:DeAttach(self)
+  self:__ClearModel()
+  self:__StartChangeModel()
+  self:__SetModel("main", model_path)
+  self:__FinishChangeModel()
+end
+
+function Unit:__ClearModel()
+  if IsNotNil(self.graphicComponent.gameObject) then
+    self.graphicComponent.gameObject:Destroy()
+  end
+  self.graphicComponent:SetGameObject(nil)
+  self.animation = nil
+  ---@type table<string,CS.UnityEngine.Transform>
+  self.socket_transform_dict = {}
+  self.unitMaterialInfo_list = {}
+end
+
+function Unit:__StartChangeModel()
+  self.is_setting_model_path = true
+  self.is_load_ok = false
+end
+
+function Unit:__SetModel(tag, model_path, model_type)
+  model_type = model_type or typeof(CS.UnityEngine.GameObject)
+  if model_path == nil then
+    self.unitModelInfo_dict[tag] = nil
+    return
+  end
+  if not self.unitModelInfo_dict[tag] then
+    self.unitModelInfo_dict[tag] = UnitModelInfo.New()
+  end
+  local unitModelInfo = self.unitModelInfo_dict[tag]
+  if unitModelInfo.path == model_path then
+    return
+  end
+  unitModelInfo.path = model_path
+  unitModelInfo.prefab = nil
+  self.resLoadComponent:GetOrLoadAsset(model_path, function(assetCat)
+    local prefab = assetCat:Get(string.GetSubAssetPath(model_path), model_type)
+    self:__OnLoadOK(prefab, tag)
+  end)
+end
+
+function Unit:__OnLoadOK(prefab, tag)
+  local unitModelInfo = self.unitModelInfo_dict[tag]
+  if not unitModelInfo then
+    return
+  end
+  unitModelInfo.prefab = prefab
+  self:__CheckAllLoadOK()
+end
+
+function Unit:__CheckAllLoadOK()
+  if self.is_setting_model_path or self.graphicComponent.gameObject then
+    return
+  end
+  for tag, unitModelInfo in pairs(self.unitModelInfo_dict) do
+    if not unitModelInfo.prefab then
+      return
+    end
+  end
+
+  local unitModelInfo = self.unitModelInfo_dict["main"]
+  local clone = GameObject.Instantiate(unitModelInfo.prefab, self:GetPosition(), self:GetRotation(), self.parent.graphicComponent.transform)
+  clone.name = string.format("%s:%s", self.unit_id, self.key)
+  self.graphicComponent:SetGameObject(clone)
+  self:__OnBuildOK()
+  self.is_load_ok = true
+  self:__OnLoadOKListen()
+end
+
+function Unit:__OnLoadOKListen()
+  for k, load_ok_listen in ipairs(self.load_ok_listen_list) do
+    load_ok_listen()
+  end
+  self.load_ok_listen_list = {}
+end
+
+function Unit:__OnBuildOK()
+  self:SetPosition(self.position)
+  self:SetRotation(self.rotation)
+  self.orginal_transform_scale = self.graphicComponent.transform.localScale
+  self.graphicComponent.transform.localScale = self.orginal_transform_scale * (self.scale or 1)
+
+  self:InitAnimation()
+  self:InitMaterial()
+
+  self.unitMoveComp:OnBuildOk()
+  self.animatorComp:OnBuildOk(self.graphicComponent.gameObject)
+  self:Broadcast(UnitEventNameConst.On_Unit_Build_Ok, self)
+
+end
+
+function Unit:InitAnimation()
+  ---@type CS.UnityEngine.Animation
+  self.animation = self.graphicComponent.gameObject:GetComponentInChildren(typeof(CS.UnityEngine.Animation))
+  if self.animationCullingType then
+    self:SetAnimationCullingType(self.animationCullingType)
+    ---@type CS.UnityEngine.AnimationCullingType
+    self.animationCullingType = nil
+  end
+  if IsNotNil(self.animation) then
+    ---@type CS.UnityEngine.AnimationState
+    local walk_animationState = self.animation:get_Item(AnimationNameConst.walk)
+    if walk_animationState then
+      walk_animationState.wrapMode = CS.UnityEngine.WrapMode.Loop
+    end
+    ---@type CS.UnityEngine.AnimationState
+    local idle_animationState = self.animation:get_Item(AnimationNameConst.idle)
+    if idle_animationState then
+      idle_animationState.wrapMode = UnityEngine.WrapMode.Loop
+      if not self.actionManager then
+        idle_animationState.layer = -1
+      end
+    end
+    ---@type CS.UnityEngine.AnimationState
+    local die_animationState = self.animation:get_Item(AnimationNameConst.die)
+    if die_animationState then
+      die_animationState.wrapMode = UnityEngine.WrapMode.ClampForever
+    end
+    if self.build_ok_animation_name and self.animation:get_Item(self.build_ok_animation_name) then
+      self:PlayAnimation(AnimationNameConst.idle)
+      self:PlayAnimation(self.build_ok_animation_name)
+      ---@type CS.UnityEngine.AnimationState
+      local build_ok_animationState = self.animation:get_Item(self.build_ok_animation_name)
+      self.graphicComponent.transform.position = Vector3(0.01, 0.01, 0.01)
+      self:AddTimer(function()
+        self:SetPosition(self.position)
+        self:SetRotation(self.rotation)
+      end, nil, build_ok_animationState.length)
+    else
+      self:PlayAnimation(AnimationNameConst.idle)
+    end
+  end
+end
+
+function Unit:InitMaterial()
+  -- 获取所有材质(MeshRenderer、SkinnedMeshRenderer)
+  ---@type UnitMaterialInfo[]
+  self.unitMaterialInfo_list = {}
+  local renderer_type_list = { typeof(CS.UnityEngine.MeshRenderer), typeof(CS.UnityEngine.SkinnedMeshRenderer) }
+  for k, renderer_type in ipairs(renderer_type_list) do
+    local render_list = self.graphicComponent.gameObject:GetComponentsInChildren(renderer_type)
+    for i = 0, render_list.Length - 1 do
+      local material = render_list[i].material
+      if material:HasProperty("_Color") then
+        ---@type UnitMaterialInfo
+        local unitMaterialInfo = UnitMaterialInfo.New()
+        unitMaterialInfo.material = material
+        unitMaterialInfo.color = material.color
+        table.insert(self.unitMaterialInfo_list, unitMaterialInfo)
+      end
+    end
+  end
+  ---@type table<string,Color> @key是tag
+  self.change_color_dict = {}
+end
+
+function Unit:__FinishChangeModel()
+  self.is_setting_model_path = false
+  self:__CheckAllLoadOK()
+end
+
+----------------------------------------------------------------------
+-- Socket相关
+----------------------------------------------------------------------
+---@return Vector3
+function Unit:GetSocketPosition(socket_name, is_ignore_error)
+  local socket_transform = self:GetSocketTransform(socket_name, is_ignore_error)
+  if socket_transform then
+    return socket_transform.position
+  else
+    return self:GetPosition()
+  end
+end
+
+---@return Quaternion
+function Unit:GetSocketRotation(socket_name, is_ignore_error)
+  local socket_transform = self:GetSocketTransform(socket_name, is_ignore_error)
+  if socket_transform then
+    return socket_transform.rotation
+  else
+    return self:GetPosition()
+  end
+end
+
+---@return CS.UnityEngine.Transform
+function Unit:GetSocketTransform(socket_name, is_ignore_error)
+  if IsNil(self.graphicComponent.gameObject) then
+    return nil
+  end
+  if not socket_name or socket_name == "" or socket_name == "main" then
+    return self.graphicComponent.transform
+  end
+  local socket_transform = self.socket_transform_dict[socket_name]
+  if not socket_transform then
+    socket_transform = self.graphicComponent.transform:FindChildRecursive(socket_name)
+    if socket_transform then
+      self.socket_transform_dict[socket_name] = socket_transform
+    end
+  end
+  if not socket_transform then
+    if not is_ignore_error then
+      ErrorFormat("Can't find socket(%s) in unit(%s)", socket_name, self.unit_id)
+    else
+      WarnFormat("Can't find socket(%s) in unit(%s)", socket_name, self.unit_id)
+    end
+    return self.graphicComponent.transform
+  end
+  return socket_transform
+end
+
+----------------------------------------------------------------------
+-- 伤害相关
+----------------------------------------------------------------------
+function Unit:TakeDamage(damage_value, source_unit, spell)
+  if self:IsDead() or self:IsInvincible() then
+    return 0
+  end
+  if self:IsCanNotBeTakeDamage() then
+    return 0
+  end
+  if self.aiComp and self.aiComp.BeHit then
+    self.aiComp:BeHit(source_unit, damage_value)
+  end
+  --以后用于计算血条收到伤害效果
+  local old_hp = self:GetHp()
+  self:SetHp(math.max(0, self:GetHp() - damage_value))
+  self:OnHpChange(source_unit, old_hp, self:GetHp())
+  self:Broadcast(UnitEventNameConst.On_Unit_Hurt, source_unit, self, spell, damage_value)
+
+  if self:GetHp() <= 0 then
+    self:Broadcast(UnitEventNameConst.Before_Unit_Dead, source_unit, self, spell, damage_value) --回调监听
+    self:OnKilled(source_unit, spell)
+  end
+  return damage_value
+end
+
+-- 治疗
+function Unit:Heal(heal_value, source_unit)
+  if self:IsDead() or self:IsCanNotBeHeal() then
+    return 0
+  end
+  local old_hp = self:GetHp()
+  self:SetHp(math.min(self:GetHp() + heal_value, self:GetMaxHp()))
+  self:OnHpChange(source_unit, old_hp, self:GetHp())
+  return heal_value
+end
+
+
+
+
+----------------------------------------------------------------------
+-- 隐身 显隐相关
+----------------------------------------------------------------------
+function Unit:UpdateHideState()
+  if self:IsHide() then
+    if self:IsExpose() then
+      self:__SetHideMode("隐身状态被显隐")
+    else
+      self:__SetHideMode("隐身状态没有显隐")
+    end
+  else
+    self:__SetHideMode("非隐形状态")
+  end
+end
+
+function Unit:__SetHideMode(mode)
+  if not self.is_load_ok then
+    table.insert(self.load_ok_listen_list, function()
+      self:____SetHideMode(mode)
+    end)
+    return
+  end
+  self:____SetHideMode(mode)
+end
+
+function Unit:____SetHideMode(mode)
+  if mode == "隐身状态被显隐" then
+    self.graphicComponent:SetIsShow(true)
+    self:ChangeColor("隐身", Color.New(1, 0.2, 1, 0.5)) -- 紫色透明
+  elseif mode == "隐身状态没有显隐" then
+    self.graphicComponent:SetIsShow(false)
+    self:ChangeColor("隐身", nil)
+  elseif mode == "非隐形状态" then
+    self.graphicComponent:SetIsShow(true)
+    self:ChangeColor("隐身", nil)
+  end
+end
+----------------------------------------------------------------------
+-- 死亡相关
+----------------------------------------------------------------------
+---@param spell SpellBase
+function Unit:OnKilled(source_unit, spell, is_play_dead_animation, is_waiting_rebirth, is_keep_dead_body)
+  self:Broadcast(UnitEventNameConst.On_Unit_Kill_Target, source_unit, self, spell)
+  if self.unitMoveComp.move_type == "be_throwed" or self.unitMoveComp.is_get_caught then
+    self.unitMoveComp.move_type = nil
+    self.unitMoveComp.is_get_caught = false
+    ---@type UnitBeThrowedInfo
+    local unitBeThrowedInfo = UnitBeThrowedInfo.New()
+    unitBeThrowedInfo.end_pos = global.client.combat.pathManager:GetGroundPos(self.position)
+    unitBeThrowedInfo.duration = 0.1
+    unitBeThrowedInfo.height = 0
+    self:BeThrowed(unitBeThrowedInfo)
+  end
+
+  if self.unitModelInfo_dict["main"].path ~= self.unitDefinition.model_path then
+    self:BuildModel(self.unitDefinition.model_path)
+  end
+  self.is_dead = true
+  self:UpdateMixedStates()
+  if is_keep_dead_body then
+    self.is_keep_dead_body = true
+  end
+  if is_play_dead_animation then
+    self:MoveStop()
+    local dead_body_dealy = self.unitDefinition.dead_body_dealy or 0.5
+    local death_effect_id = self.unitDefinition.death_effect_id
+    if death_effect_id then
+      local effectDefinition = global.definitionManager.effectDefinition[death_effect_id]
+      local ground_effect_pos = self:GetSocketPosition(effectDefinition.socket_name_1)
+      global.client.combat.effectManager:CreateGroundEffect(death_effect_id, self, ground_effect_pos, self:GetRotation():ToEulerAngles(), effectDefinition.duration)
+    end
+    if IsNotNil(self.animation) then
+      ---@type CS.UnityEngine.AnimationState
+      local die_animationState = self.animation:get_Item(AnimationNameConst.die)
+      if die_animationState then
+        self:PlayAnimation(AnimationNameConst.die)
+        dead_body_dealy = die_animationState.length + 1
+      end
+      if not is_waiting_rebirth then
+        self:AddTimer(function()
+          self:__OnDieOver()
+        end, nil, dead_body_dealy)
+      end
+    else
+      self.animatorComp:PlayAnimation(AnimationNameConst.die, true)
+      self:AddTimer(function()
+        self:__OnDieOver()
+      end, nil, dead_body_dealy)
+    end
+  else
+    global.client.combat.unitManager:RemoveUnit(self.key)
+  end
+end
+
+function Unit:__OnDieOver()
+  if self.is_keep_dead_body then
+    return
+  end
+  if self.unitDefinition.death_effect_id then
+    self:SetIsMoveWithMoveAnimation(false)
+    self:AddTimer(function()
+      self:__OnDieBuryOver()
+    end, nil, 3)
+  else
+    self:__OnDieBuryOver()
+  end
+end
+
+function Unit:__OnDieBuryOver()
+  global.client.combat.unitManager:RemoveUnit(self.key)
+end
+
+----------------------------------------------------------------------
+-- Faction相关
+----------------------------------------------------------------------
+function Unit:SetFaction(new_faction)
+  local old_faction = self.faction
+  self.faction = new_faction
+  self:OnFactionChange(old_faction, new_faction)
+end
+
+function Unit:GetFaction()
+  return self.faction
+end
+
+function Unit:OnFactionChange(old_value, new_value)
+  if old_value ~= new_value then
+    self:Broadcast(UnitEventNameConst.On_Unit_Faction_Change, self:GetGuid(), old_value, new_value)
+  end
+end
+
+----------------------------------------------------------------------
+-- 属性相关
+----------------------------------------------------------------------
+function Unit:OnPropertyChanged(old_calc_prop_dict, new_calc_prop_dict, calc_prop_dict_diff)
+  for key, value in pairs(calc_prop_dict_diff) do
+    local old_value = old_calc_prop_dict[key]
+    if key == "技能冷却减少百分比" or key == "攻击速度" then
+      self:OnSpellCooldownRateChange()
+    elseif key == "移动速度" then
+      self:OnSpeedChange(old_value, value)
+    elseif key == "生命上限" then
+      self:OnMaxHpChange(old_value, value)
+    end
+  end
+end
+
+function Unit:GetCalcPropValue(property_key)
+  return self.propertyComp.calc_prop_dict[property_key]
+end
+
+
+
+----------------------------------------------------------------------
+-- Buff,State相关
+----------------------------------------------------------------------
+function Unit:HasBuff(buff_id)
+  return self.buffManager:HasBuff(buff_id)
+end
+
+function Unit:GetBuffCount()
+  return self.buffManager:GetBuffCount()
+end
+
+function Unit:GetDebuffCount()
+  return self.buffManager:GetDebuffCount()
+end
+
+function Unit:HasState(state_name)
+  return self.buffManager:HasState(state_name)
+end
+
+-- 混合状态
+function Unit:InitMixedStates()
+  self.is_dead = false
+
+  self.is_can_move = true
+  self.is_can_attack = true
+  self.is_can_cast_skill = true
+  self.is_can_normal_attack = true
+  self.is_can_control = true
+end
+
+-- 混合状态
+function Unit:UpdateMixedStates()
+  -- 是否是正常状态
+  local is_common_state = not self:IsDead() and
+      not self:IsStun() and
+      not self:IsFreeze() and
+      not self.unitMoveComp.unitBeThrowedInfo and
+      not self.unitMoveComp.is_get_caught and true or false
+  local new_is_can_move = is_common_state and
+      not self:HasState(StateConst.CanNotMove) and
+      (not self.current_attack or
+          self.current_attack.is_past_break_time or
+          self.current_attack.spellDefinition.is_can_move_while_cast) and true or false
+  local new_is_can_attack = is_common_state and
+      (not self:HasState(StateConst.CanNotAttack)) and
+      (not self.current_attack or
+          self.current_attack.is_past_break_time) and true or false
+  local new_is_silent = self:IsSilent()
+  local new_is_can_cast_skill = new_is_can_attack and not new_is_silent and true or false
+  local new_is_can_normal_attack = new_is_can_attack and true or false
+
+  local new_is_confused = self:IsConfused() and true or false
+  local new_is_can_operate = is_common_state and not new_is_confused and true or false
+  local new_is_can_control = (new_is_can_move or new_is_can_attack) and new_is_can_operate and true or false
+  -- 检查混合状态变化
+  if self.is_can_move ~= new_is_can_move then
+    self.is_can_move = new_is_can_move
+    self:Broadcast(UnitEventNameConst.On_Unit_Is_Can_Move_Change, self, not self.is_can_move, self.is_can_move)
+    if not self.is_can_move then
+      self:MoveStop()
+    end
+  end
+  if self.is_can_attack ~= new_is_can_attack then
+    self.is_can_attack = new_is_can_attack
+    self:Broadcast(UnitEventNameConst.On_Unit_Is_Can_Attack_Change, self, not self.is_can_attack, self.is_can_attack)
+  end
+  if self.is_can_cast_skill ~= new_is_can_cast_skill then
+    self.is_can_cast_skill = new_is_can_cast_skill
+    self:Broadcast(UnitEventNameConst.On_Unit_Is_Can_Cast_Skill_Change, self, not self.is_can_cast_skill, self.is_can_cast_skill)
+    if not self.is_can_cast_skill and (self.current_attack and table.ContainsValue(self.skill_id_list, self.current_attack.spell_id)) then
+      global.client.combat.spellManager:BreakSpell(self.current_attack:GetGuid())
+    end
+  end
+  if self.is_can_normal_attack ~= new_is_can_normal_attack then
+    self.is_can_normal_attack = new_is_can_normal_attack
+    self:Broadcast(UnitEventNameConst.On_Unit_Is_Can_Normal_Attack_Change, self, not self.is_can_normal_attack, self.is_can_normal_attack)
+    if not self.is_can_normal_attack and (self.current_attack and table.ContainsValue(self.normal_attack_id_list, self.current_attack.spell_id)) then
+      global.client.combat.spellManager:BreakSpell(self.current_attack:GetGuid())
+    end
+  end
+
+  if self.is_can_control ~= new_is_can_control then
+    self.is_can_control = new_is_can_control
+    self:Broadcast(UnitEventNameConst.On_Unit_Is_Can_Control_Change, self, not self.is_can_control, self.is_can_control)
+  end
+end
+
+
+
+----------------------------------------------------------------------
+-- Move相关
+----------------------------------------------------------------------
+---@param move_to_target_pos Vector3
+---@param duration number
+function Unit:__MoveTo(move_to_target_pos, duration)
+  if not self.graphicComponent.transform then
+    return
+  end
+  move_to_target_pos = self.unitDefinition.offset_y and (move_to_target_pos + Vector3(0, self.unitDefinition.offset_y, 0)) or move_to_target_pos
+  global.client.moveManager:MoveTo(self.graphicComponent.transform, move_to_target_pos, duration)
+end
+
+function Unit:StopMoveTo()
+  if not self.graphicComponent.transform then
+    return
+  end
+  global.client.moveManager:StopMoveTo(self.graphicComponent.transform)
+end
+
+function Unit:Move(target_pos, speed)
+  if not self:IsCanMove() then
+    return
+  end
+  self.unitMoveComp:Move(target_pos, speed)
+end
+
+function Unit:MoveByPath(path, speed)
+  if not self:IsCanMove() then
+    return
+  end
+  self.unitMoveComp:MoveByPath(path, speed)
+end
+
+function Unit:MoveStop(rotation, pos)
+  self.unitMoveComp:MoveStop(rotation, pos)
+end
+
+function Unit:BeThrowed(unitBeThrowedInfo)
+  if self:IsDead() or self:IsImmuneControl() then
+    return
+  end
+  self.unitMoveComp:BeThrowed(unitBeThrowedInfo)
+end
+
+function Unit:StopBeThrowed(is_end)
+  self.unitMoveComp:StopBeThrowed(is_end)
+end
+
+function Unit:SetIsMoveWithMoveAnimation(is_move_with_move_animation)
+  self.unitMoveComp:SetIsMoveWithMoveAnimation(is_move_with_move_animation)
+end
+
+function Unit:FaceTo(rotation)
+  if not self.graphicComponent.transform then
+    return
+  end
+end
+
+function Unit:OnlyFaceTo(rotation)
+  if not self.graphicComponent.transform then
+    return
+  end
+end
+
+function Unit:FaceToDir(dir)
+  if not self.graphicComponent.transform then
+    return
+  end
+end
+
+function Unit:OnlyFaceToDir(dir)
+  if not self.graphicComponent.transform then
+    return
+  end
+end
+
+function Unit:LookAt(unit_or_eulerAngle, mode)
+  self.unitMoveComp:LookAt(unit_or_eulerAngle, mode)
+end
+
+----------------------------------------------------------------------
+-- Animation相关
+----------------------------------------------------------------------
+function Unit:SetAnimationCullingType(animationCullingType)
+  if not self.animation then
+    self.animationCullingType = animationCullingType
+    return
+  end
+  self.animation.cullingType = animationCullingType
+end
+
+function Unit:PlayAnimation(animation_name, blend_time, speed, face_to_position, is_not_move_stop)
+  blend_time = blend_time or 0.1
+  speed = speed or 1
+  if IsNotNil(self.animation) then
+    if self.cur_animation_name == AnimationNameConst.die then
+      return
+    end
+    if self.actionManager then
+      if animation_name == AnimationNameConst.walk and self.cur_animation_name then
+        self.actionManager:Stop(self.cur_animation_name)
+        self.cur_animation_name = nil
+      end
+      if animation_name == AnimationNameConst.idle then
+        self.actionManager:Play(animation_name, speed, -1, false)
+      elseif animation_name == AnimationNameConst.walk then
+        self.actionManager:Play(animation_name, speed, 0, false)
+      else
+        self.actionManager:Play(animation_name, speed, 0, true)
+        self.cur_animation_name = animation_name
+        if animation_name == AnimationNameConst.die then
+          self.actionManager:Stop(AnimationNameConst.idle)
+        end
+      end
+    else
+      if animation_name == AnimationNameConst.walk and self.cur_animation_name then
+        self.animation:Blend(self.cur_animation_name, 0, blend_time)
+        self.cur_animation_name = nil
+      end
+      local animationState = self.animation:get_Item(animation_name)
+      if not animationState then
+        ErrorFormat("animation is no exist: %s , %s", animation_name, self.unit_id)
+      end
+      local speed_threshold = 0.5
+      if animation_name == AnimationNameConst.walk and speed < speed_threshold then
+        animationState.speed = speed_threshold
+        self.animation:CrossFade(animation_name, blend_time)
+        self.animation:Blend(animation_name, speed / speed_threshold, blend_time)
+      else
+        animationState.speed = speed
+        self.animation:CrossFade(animation_name, blend_time)
+      end
+      if not (animation_name == AnimationNameConst.idle or animation_name == AnimationNameConst.walk) then
+        if self.cur_animation_name == animation_name then
+          self.animation:get_Item(animation_name).time = 0
+        end
+        self.cur_animation_name = animation_name
+      end
+    end
+  else
+    self.animatorComp:PlayAnimation(animation_name, true, speed)
+  end
+
+  if face_to_position then
+    local rotation = Quaternion.LookRotation(face_to_position - self:GetPosition())
+    if rotation and not is_not_move_stop then
+      self:MoveStop(rotation)
+    end
+  end
+end
+
+function Unit:StopAnimation(animation_name, blend_time)
+  --Warn("Unit:StopAnim", anim_name, blend_time);
+  blend_time = blend_time or 0.1
+  if IsNotNil(self.animation) then
+    if self.actionManager then
+      self.actionManager:Stop(animation_name)
+    else
+      animation_name = animation_name or self.cur_animation_name
+      self.animation:Blend(animation_name, 0, blend_time)
+    end
+  end
+end
+----------------------------------------------------------------------
+-- AI相关
+----------------------------------------------------------------------
+function Unit:RunAI(ai_class_path)
+  local ai_class = ai_class_path and ClassLoadUtil.Load(ai_class_path) or AIBaseComp
+  if self.aiComp then
+    self:RemoveChild(self.aiComp.key)
+  end
+  self.aiComp = self:AddChild(nil, ai_class, self)
+end
+
+
+----------------------------------------------------------------------
+-- 变色相关
+----------------------------------------------------------------------
+-- 改变一个物体上MeshRenderer、SkinMeshRenderer材质的颜色
+function Unit:ChangeColor(tag, color)
+  if not self.unitMaterialInfo_list or #self.unitMaterialInfo_list < 1 then
+    return
+  end
+
+  self.change_color_dict[tag] = color
+  self:__UpdateColor()
+end
+
+function Unit:__UpdateColor()
+  local current_color = Color.white
+  for k, color in pairs(self.change_color_dict) do
+    current_color = current_color * color
+  end
+
+  for k, unitMaterialInfo in ipairs(self.unitMaterialInfo_list) do
+    unitMaterialInfo.material.color = unitMaterialInfo.color * current_color
+  end
+end
+
+----------------------------------------------------------------------
+-- 普攻相关
+----------------------------------------------------------------------
+function Unit:AddNormalAttack(normal_attack_id)
+  if not normal_attack_id then
+    return
+  end
+  table.insert(self.normal_attack_id_list, normal_attack_id)
+  self:InitSpellInfo(normal_attack_id)
+  self:AddPassiveBuffOfSpell(normal_attack_id)
+end
+
+function Unit:GetNormalAttackId()
+  local next_index = self.normal_attack_comboInfo.next_index
+  if CombatUtil.GetTime() > self.normal_attack_comboInfo.next_time or
+      not self.normal_attack_id_list[self.normal_attack_comboInfo.next_index] then
+    next_index = 1
+  end
+  local normal_attack_id = self.normal_attack_id_list[next_index]
+  return normal_attack_id
+end
+
+---@param target_unit Unit
+function Unit:NormalAttack(target_unit)
+  local normal_attack_id = self:GetNormalAttackId()
+  local normal_attack = global.client.combat.spellManager:CastSpell(self, normal_attack_id, target_unit, nil, true)
+  if normal_attack then
+    self.last_attack_id = normal_attack_id
+  end
+  return normal_attack
+end
+
+function Unit:NormalAttackStart()
+  self.normal_attack_comboInfo.next_time = CombatUtil.GetTime() + ComboConst.Normal_Attack_Combo_Max_Duration -- 1秒间隔触发combo
+  self.normal_attack_comboInfo.next_index = self.normal_attack_comboInfo.next_index + 1
+  self.is_normal_attacking = true
+end
+
+function Unit:NormalAttackFinish()
+  self.normal_attack_comboInfo.next_time = CombatUtil.GetTime() + 0.2
+  self.is_normal_attacking = true
+end
+
+----------------------------------------------------------------------
+-- 技能相关
+----------------------------------------------------------------------
+function Unit:AddSkill(skill_id)
+  if not skill_id then
+    return
+  end
+  table.insert(self.skill_id_list, skill_id)
+  self:InitSpellInfo(skill_id)
+  self:AddPassiveBuffOfSpell(skill_id)
+end
+
+---@param target_unit Unit
+---@param is_control @是否是控制类技能
+function Unit:CastSkillByIndex(index, target_unit, is_control)
+  local skill_id = self.skill_id_list[index]
+  if not skill_id then
+    Error("index error ", index)
+    return
+  end
+  return self:CastSpell(skill_id, target_unit, is_control)
+end
+
+----------------------------------------------------------------------
+-- spell相关
+----------------------------------------------------------------------
+function Unit:InitSpellInfo(spell_id, cooldown_pct)
+  ---@type SpellInfo
+  local spellInfo = SpellInfo.New()
+  self.spellInfo_dict[spell_id] = spellInfo
+  self:SetSpellInfoCooldown(spell_id, cooldown_pct)
+end
+
+function Unit:GetSpellCooldownRate(spell_id)
+  local spellDefinition = global.definitionManager:GetSpellDefinition(spell_id)
+  if spellDefinition.type == "普攻" then
+    return 1 / (1 + self:GetCalcPropValue("攻击速度"))
+  else
+    return 1 - self:GetCalcPropValue("技能冷却减少百分比")
+  end
+end
+
+function Unit:GetSpellIdList(spell_id)
+  local spellDefinition = global.definitionManager:GetSpellDefinition(spell_id)
+  if spellDefinition.type == "普攻" then
+    return self.normal_attack_id_list
+  else
+    return self.skill_id_list
+  end
+end
+
+function Unit:SetSpellInfoCooldown(spell_id, cooldown_pct)
+  cooldown_pct = cooldown_pct or 0
+  local spellDefinition = global.definitionManager:GetSpellDefinition(spell_id)
+  local spellInfo = self.spellInfo_dict[spell_id]
+  spellInfo.cooldown_rate = self:GetSpellCooldownRate(spell_id)
+  spellInfo.cooldown_remain_duration = spellDefinition.cooldown_duration * spellInfo.cooldown_rate * cooldown_pct
+end
+
+function Unit:AddPassiveBuffOfSpell(spell_id)
+  local spellDefinition = global.definitionManager:GetSpellDefinition(spell_id)
+  local passive_buff_ids = spellDefinition.passive_buff_ids
+  if passive_buff_ids then
+    for _, passive_buff_id in ipairs(passive_buff_ids) do
+      self.buffManager:AddBuff(passive_buff_id, self)
+    end
+  end
+end
+
+function Unit:RemoveSpell(spell_id)
+  local spell_id_list = self:GetSpellIdList(spell_id)
+  table.RemoveByValue_Array(spell_id_list, spell_id)
+  self.spellInfo_dict[spell_id] = nil
+  self:RemovePassiveBuffOfSpell(spell_id)
+end
+
+function Unit:RemovePassiveBuffOfSpell(spell_id)
+  local spellDefinition = global.definitionManager:GetSpellDefinition(spell_id)
+  local passive_buff_ids = spellDefinition.passive_buff_ids
+  if passive_buff_ids then
+    self.buffManager:RemoveBuff(passive_buff_ids, self:GetGuid())
+  end
+end
+
+--  替换单位spell
+function Unit:ReplaceSpell(old_spell_id, new_spell_id, is_reset_cooldown_remain_duration)
+  local spell_id_list = self:GetSpellIdList(old_spell_id)
+  local index = table.IndexOf_Array(spell_id_list, old_spell_id)
+  spell_id_list[index] = new_spell_id
+
+  -- 更新cooldown
+  local cooldown_cur_pct = 0
+  if not is_reset_cooldown_remain_duration then
+    cooldown_cur_pct = self.spellInfo_dict[old_spell_id]:GetCooldownPct()
+  end
+  self:InitSpellInfo(new_spell_id, cooldown_cur_pct)
+  self.spellInfo_dict[old_spell_id] = nil
+
+
+  --  删除原技能被动buff
+  self:RemovePassiveBuffOfSpell(old_spell_id)
+  --  添加新技能被动buff
+  self:AddPassiveBuffOfSpell(new_spell_id)
+
+end
+
+
+
+--  改变技能CD
+function Unit:OnSpellCooldownRateChange()
+  for spell_id, spellInfo in pairs(self.spellInfo_dict) do
+    local spellDefinition = global.definitionManager:GetSpellDefinition(spell_id)
+    local cooldown_old_rate = spellInfo.cooldown_rate
+    local cooldown_duration = spellDefinition.cooldown_duration or 0
+    if cooldown_duration > 0 then
+      local new_rate = self:GetSpellCooldownRate(spell_id)
+      if spellInfo.cooldown_remain_duration <= 0 then
+        spellInfo.cooldown_remain_duration = 0
+      else
+        --local cooldown_cur_pct = spellInfo.cooldown_remain_duration/(cooldown_duration * cooldown_last_rate)
+        --local cooldown_remain_duration = cooldown_cur_pct * (cooldown_duration * new_rate)
+        spellInfo.cooldown_remain_duration = spellInfo.cooldown_remain_duration * new_rate / cooldown_old_rate
+      end
+      spellInfo.cooldown_rate = new_rate
+    end
+  end
+end
+
+function Unit:ReduceSpellCooldown(deltaTime)
+  for _, spellInfo in pairs(self.spellInfo_dict) do
+    if spellInfo.cooldown_remain_duration > 0 then
+      spellInfo.cooldown_remain_duration = math.max(0, spellInfo.cooldown_remain_duration - deltaTime)
+    end
+  end
+end
+
+function Unit:IsSpellCooldownOk(spell_id)
+  if self.spellInfo_dict[spell_id].cooldown_remain_duration == 0 then
+    return true
+  end
+  return false
+end
+
+---@param target_unit Unit
+---@param is_control @是否是控制类技能
+function Unit:CastSpell(spell_id, target_unit, is_control)
+  local spell = global.client.combat.spellManager:CastSpell(self, spell_id, target_unit, nil, is_control)
+  if spell then
+    self.last_attack_id = spell_id
+  end
+  return spell
+end
+
+---@param new_spellDefinition SpellDefinition
+function Unit:CanBreakCurrentSpell(new_spell_id, new_spellDefinition)
+  if not self.current_attack then
+    return true
+  end
+  new_spellDefinition = new_spellDefinition or global.definitionManager:GetSpellDefinition(new_spell_id)
+  if (new_spellDefinition.type == "法术" and self.current_attack.spellDefinition.type == "普攻") -- 法术可以打断普攻
+      or new_spellDefinition.cast_type == "触发" then
+    return true
+  else
+    return self.current_attack.is_past_break_time
+  end
+end
+
+
+--  检查是否到时间可以放技能1、是否能打断当前技能2、技能cd是否到
+function Unit:IsTimeToCastSpell(spell_id)
+  local spellDefinition = global.definitionManager:GetSpellDefinition(spell_id)
+  if not self:CanBreakCurrentSpell(spell_id, spellDefinition) then
+    return false
+  end
+  if not self:IsSpellCooldownOk(spell_id) then
+    return false
+  end
+  return true
+end
+
+function Unit:IsInSpellRange(target, spell_id)
+  local spellDefinition = global.definitionManager:GetSpellDefinition(spell_id)
+  if not spellDefinition.range then
+    return false
+  end
+  return spellDefinition.range >= self:Distance(target)
+end
+
+----------------------------------------------------------------------
+-- Util相关
+----------------------------------------------------------------------
+function Unit:SetPosition(pos)
+  if self.graphicComponent.transform then
+    self.graphicComponent.transform.position = self.unitDefinition.offset_y and (pos + Vector3(0, self.unitDefinition.offset_y, 0)) or pos
+  end
+  self.position = pos
+end
+
+function Unit:GetPosition()
+  return self.position
+end
+
+function Unit:SetRotation(rotation)
+  if self.graphicComponent.transform then
+    self.graphicComponent.transform.rotation = rotation
+  end
+  self.rotation = rotation
+end
+
+function Unit:GetRotation()
+  return self.rotation
+end
+
+---@param scale number
+function Unit:SetScale(scale)
+  if self.graphicComponent.transform then
+    self.graphicComponent.transform.localScale = self.original_transform_scale * scale
+  end
+  self.scale = scale
+  self.radius = self.original_radius * scale
+end
+
+function Unit:GetScale()
+  return self.scale
+end
+
+function Unit:SetLevel(level)
+  self.level = level
+  self.propertyComp:__CalculateProp()
+end
+
+function Unit:GetLevel()
+  return self.level
+end
+
+function Unit:GetRadius()
+  return self.radius
+end
+
+---@param target Unit|CS.UnityEngine.Transform|Vector3|IPosition
+function Unit:Distance(target)
+  local radius = self.radius
+  if IsUnit(target) then
+    radius = radius + target.radius
+    target = target:GetPosition()
+  elseif IsTransform(target) then
+    target = target.position
+  elseif IsVector3(target) then
+    target = target
+  elseif IsIPosition(target) then
+    if target.unit then
+      return self:Distance(target.unit)
+    else
+      return self:Distance(target:GetPosition())
+    end
+  end
+  return Vector3.Distance(self:GetPosition() - target) - radius
+end
+
+function Unit:GetMaxHp()
+  return self:GetCalcPropValue("生命上限")
+end
+
+function Unit:SetHp(hp, is_not_broadcast)
+  local old_value = self.hp
+  hp = math.fmod(hp) -- 取整
+  self.hp = math.min(hp, self:GetMaxHp())
+  if not is_not_broadcast then
+    self:OnHpChange(nil, old_value, self.hp)
+  end
+end
+
+function Unit:OnHpChange(soruce_unit, old_value, new_value)
+  self:Broadcast(UnitEventNameConst.On_Unit_Hp_Change, soruce_unit, self, old_value, new_value)
+end
+
+function Unit:OnMaxHpChange(old_value, new_value)
+  self:Broadcast(UnitEventNameConst.On_MaxHp_Change, self, old_value, new_value)
+end
+
+function Unit:GetHp()
+  return self.hp
+end
+
+function Unit:GetSpeed()
+  return self:GetCalcPropValue("移动速度")
+end
+
+function Unit:OnSpeedChange(old_value, new_value)
+  self.unitMoveComp:OnSpeedChange(old_value, new_value)
+end
+
+
+-- 能否移动
+function Unit:IsCanMove()
+  return self.is_can_move
+end
+
+-- 能否攻击（包括普攻和技能）
+function Unit:IsCanAttack()
+  return self.is_can_attack
+end
+
+-- 能否普攻
+function Unit:IsCanNormalAttack()
+  return self.is_can_normal_attack
+end
+
+-- 能否释放技能
+function Unit:IsCanCastSkill()
+  return self.is_can_cast_skill
+end
+
+-- 能否被控制
+function Unit:IsCanControl ()
+  return self.is_can_control
+end
+
+-- 是否混乱状态
+function Unit:IsConfused ()
+  return self:HasState(StateConst.Confused)
+end
+
+-- 是否无敌
+function Unit:IsInvincible()
+  return self:HasState(StateConst.Invincible)
+end
+
+-- 是否昏眩状态
+function Unit:IsStun()
+  return self:HasState(StateConst.Stun)
+end
+
+-- 是否冰冻状态
+function Unit:IsFreeze()
+  return self:HasState(StateConst.Freeze)
+end
+
+-- 是否沉默状态
+function Unit:IsSilent()
+  return self:HasState(StateConst.Silent)
+end
+
+-- 是否免控状态
+function Unit:IsImmuneControl()
+  return self:HasState(StateConst.ImmuneControl)
+end
+
+-- 是否不受伤害状态
+function Unit:IsCanNotBeTakeDamage()
+  return self:HasState(StateConst.CanNotBeTakeDamage)
+end
+
+-- 是否不能被治疗状态
+function Unit:IsCanNotBeHeal ()
+  return self:HasState(StateConst.CanNotBeHeal)
+end
+
+-- 是否隐身状态
+function Unit:IsHide()
+  return self:HasState(StateConst.Hide)
+end
+
+-- 是否反隐状态
+function Unit:IsExpose()
+  return self:HasState(StateConst.Expose)
+end
+
+-- 是否死亡
+function Unit:IsDead()
+  return self.is_dead
+end
+
+return Unit

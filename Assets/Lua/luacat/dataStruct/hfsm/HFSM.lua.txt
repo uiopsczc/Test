@@ -1,0 +1,369 @@
+---@class HFSM:TickObject
+---@field parent_hfsm HFSM
+---@field root_hfsm HFSM
+---@field current_sub_direct_state HFSMState
+---@field current_sub_direct_hfsm HFSM
+---@field default_sub_direct_state HFSMState
+---@field default_sub_direct_hfsm HFSM
+---@field previous_state HFSMState
+local HFSM = Class("HFSM", TickObject)
+
+---@param owner GameEntity
+function HFSM:Init(owner)
+  self.owner = owner
+  HFSM.super.Init(self)
+  ---@type table<string,HFSM>
+  self.sub_direct_hfsm_dict = {}
+  ---@type table<string,HFSMState>
+  self.sub_direct_state_dict = {}
+  self:InitStates()
+end
+
+function HFSM:InitStates()
+  --self:AddSubDirectState(XXState)
+end
+
+function HFSM:Start()
+  HFSM.super.Start(self)
+  if self.default_sub_direct_state then
+    self:ChangeToState(self.default_sub_direct_state)
+  end
+  if self.default_sub_direct_hfsm then
+    self:ChangeToHFSM(self.default_sub_direct_hfsm.key)
+  end
+end
+
+function HFSM:GetTimerManager()
+  return self:GetOwner():GetTimerManager()
+end
+
+function HFSM:GetOwner()
+  return self:GetRootHFSM().owner
+end
+
+function HFSM:Enter(...)
+  self:SetIsEnabled(true, false)
+  if self.parent_hfsm then
+    self.parent_hfsm.current_sub_direct_hfsm = self
+  end
+end
+
+function HFSM:Exit(...)
+  self:SetIsEnabled(false, false)
+  if self.parent_hfsm then
+    self.parent_hfsm.current_sub_direct_hfsm = nil
+  end
+end
+
+---@param to_state HFSMState
+function HFSM:EnterLoopTo(to_state, ...)
+  ---@type HFSM[]
+  local hfsm_list = {}--倒序
+  local _hfsm = to_state.parent_hfsm
+  while _hfsm ~= self do
+    table.insert(hfsm_list, _hfsm)
+    _hfsm = _hfsm.parent_hfsm
+  end
+
+  for i = #hfsm_list, 1, -1 do
+    hfsm_list[i]:Enter(...)
+  end
+  to_state:Enter(...)
+end
+
+----------------------------------------------------------------------
+--
+----------------------------------------------------------------------
+---@return HFSMState
+function HFSM:GetCurrentState()
+  if self.current_sub_direct_state then
+    return self.current_sub_direct_state
+  elseif self.current_sub_direct_hfsm then
+    return self.current_sub_direct_hfsm:GetCurrentState()
+  end
+  return nil
+end
+
+-- 获取上一次状态
+---@return HFSMState
+function HFSM:GetPreviousState()
+  return self.previous_state
+end
+
+-- 回到上一个状态
+function HFSM:RevertToPreviousState()
+  if self:GetPreviousState() then
+    self:ChangeToState(self:GetPreviousState())
+  end
+end
+
+---@return HFSM
+function HFSM:GetRootHFSM()
+  if not self.root_hfsm then
+    local root_hfsm = self
+    while root_hfsm.parent_hfsm ~= nil do
+      root_hfsm = root_hfsm.parent_hfsm
+    end
+    self.root_hfsm = root_hfsm
+  end
+  return self.root_hfsm
+end
+
+function HFSM:GetParentHFSMList()
+  local list = {}
+  local _hfsm = self.parent_hfsm
+  while _hfsm do
+    table.insert(list, _hfsm)
+    _hfsm = _hfsm.parent_hfsm
+  end
+  return list
+end
+
+----------------------------------------------------------------------
+-- SubState相关
+----------------------------------------------------------------------
+
+----------------------------------------------------------------------
+-- SubState Add相关
+----------------------------------------------------------------------
+function HFSM:AddSubDirectStateWithoutInit(key, sub_direct_state_type)
+  ---@type HFSMState
+  local sub_direct_state = self:AddChildWithoutInit(key, sub_direct_state_type)
+  sub_direct_state.parent_hfsm = self
+  self.sub_direct_state_dict[key] = sub_direct_state
+  return sub_direct_state
+end
+
+function HFSM:AddSubDirectState(key, sub_direct_state_type, ...)
+  local sub_direct_state = self:AddSubDirectStateWithoutInit(key, sub_direct_state_type)
+  sub_direct_state:Init(...)
+  sub_direct_state:PostInit()
+  return sub_direct_state
+end
+
+----------------------------------------------------------------------
+-- SubState Remove相关
+----------------------------------------------------------------------
+function HFSM:RemoveSubDirectState(key)
+  self:RemoveChild(key)
+  self.sub_direct_state_dict[key].parent_hfsm = nil
+  self.sub_direct_state_dict[key] = nil
+end
+
+----------------------------------------------------------------------
+-- SubState Set相关
+----------------------------------------------------------------------
+function HFSM:SetDefaultSubDirectState(key)
+  ---@type HFSMState
+  self.default_sub_direct_state = self.sub_direct_state_dict[key]
+end
+
+----------------------------------------------------------------------
+-- SubState Get相关
+----------------------------------------------------------------------
+---@param is_loop_sub_hfsm_dict boolean
+---@return HFSMState
+function HFSM:GetSubState(key, is_loop_sub_hfsm_dict)
+  if self.sub_direct_state_dict[key] ~= nil then
+    return self.sub_direct_state_dict[key]
+  end
+
+  if is_loop_sub_hfsm_dict == true then
+    for _, _sub_direct_hfsm in pairs(self.sub_direct_hfsm_dict) do
+      local instance = _sub_direct_hfsm:GetSubState(key, true)
+      if instance ~= nil then
+        return instance
+      end
+    end
+  end
+  return nil
+end
+
+----------------------------------------------------------------------
+-- SubHFSM相关
+----------------------------------------------------------------------
+
+----------------------------------------------------------------------
+-- SubHFSM Add相关
+----------------------------------------------------------------------
+function HFSM:AddSubDirectHFSMWithoutInit(key, sub_direct_hfsm_type)
+  ---@type HFSM
+  local sub_direct_hfsm = self:AddChildWithoutInit(key, sub_direct_hfsm_type)
+  sub_direct_hfsm.parent_hfsm = self
+  self.sub_direct_hfsm_dict[key] = sub_direct_hfsm
+  return sub_direct_hfsm
+end
+
+function HFSM:AddSubDirectHFSM(key, sub_direct_hfsm_type, ...)
+  local sub_direct_hfsm = self:AddSubDirectHFSMWithoutInit(key, sub_direct_hfsm_type)
+  sub_direct_hfsm:Init(...)
+  sub_direct_hfsm:PostInit()
+  return sub_direct_hfsm
+end
+
+----------------------------------------------------------------------
+-- SubHFSM Remove相关
+----------------------------------------------------------------------
+function HFSM:RemoveSubDirectHFSM(key)
+  self:RemoveChild(key)
+  self.sub_direct_hfsm_dict[key].parent_hfsm = nil
+  self.sub_direct_hfsm_dict[key] = nil
+end
+
+----------------------------------------------------------------------
+-- SubHFSM Set相关
+----------------------------------------------------------------------
+function HFSM:SetDefaultSubDirectHFSM(key)
+  ---@type HFSM
+  self.default_sub_direct_hfsm = self.sub_direct_hfsm_dict[key]
+end
+
+----------------------------------------------------------------------
+-- SubHFSM Get相关
+----------------------------------------------------------------------
+---@param is_loop_sub_hfsm_dict boolean
+---@return HFSM
+function HFSM:GetSubHFSM(key, is_loop_sub_hfsm_dict)
+  if self.sub_direct_hfsm_dict[key] ~= nil then
+    return self.sub_direct_hfsm_dict[key]
+  end
+
+  if is_loop_sub_hfsm_dict == true then
+    for _, _sub_direct_hfsm in pairs(self.sub_direct_hfsm_dict) do
+      local instance = _sub_direct_hfsm:GetSubHFSM(key, true)
+      if instance ~= nil then
+        return instance
+      end
+    end
+  end
+  return nil
+end
+
+----------------------------------------------------------------------
+-- ChangeToState相关
+----------------------------------------------------------------------
+function HFSM:ChangeToState(to_state_or_to_state_key, is_force, ...)
+  local root_hfsm = self:GetRootHFSM()
+  ---@type HFSMState
+  local to_state
+  if IsString(to_state_or_to_state_key) then
+    -- is key
+    to_state = root_hfsm:GetSubState(to_state_or_to_state_key, true)
+  else
+    -- state
+    to_state = to_state_or_to_state_key
+  end
+
+  local from_state = root_hfsm:GetCurrentState()
+
+  if from_state == to_state then
+    return
+  end
+
+  if not is_force and from_state and not from_state:IsCanChangeToState(to_state, ...) then
+    return
+  end
+
+  local nearest_same_parent_hfsm = to_state:GetNearestSameParentHFSM(from_state)
+  if from_state then
+    self:Broadcast(string.ToEventName(HFSMEventNameConst.Pre_State_Exit, root_hfsm), from_state)
+    from_state:ExitLoopTo(nearest_same_parent_hfsm)
+    self:Broadcast(string.ToEventName(HFSMEventNameConst.Post_State_Exit, root_hfsm), from_state)
+  end
+
+  self:Broadcast(string.ToEventName(HFSMEventNameConst.Pre_State_Enter, root_hfsm), to_state)
+  nearest_same_parent_hfsm:EnterLoopTo(to_state, ...)
+  self:Broadcast(string.ToEventName(HFSMEventNameConst.Post_State_Enter, root_hfsm), to_state)
+
+  self.previous_state = from_state
+  self:Broadcast(string.ToEventName(HFSMEventNameConst.State_Change_Finish, root_hfsm), from_state, to_state)
+end
+
+function HFSM:ChangeToHFSM(key, is_force, ...)
+  local to_hfsm = self:GetRootHFSM():GetSubHFSM(key, true)
+  while to_hfsm.default_sub_direct_hfsm do
+    to_hfsm = to_hfsm.default_sub_direct_hfsm
+  end
+  local to_state = to_hfsm.default_sub_direct_state
+  self:ChangeToState(to_state, is_force, ...)
+end
+
+
+
+
+----------------------------------------------------------------------
+-- Paused相关
+----------------------------------------------------------------------
+function HFSM:SetIsPaused(is_paused, is_loop_children)
+  if self:GetIsPaused() == is_paused then
+    return
+  end
+  self.is_paused = is_paused
+  if is_loop_children then
+    if self.current_sub_direct_hfsm then
+      self.current_sub_direct_hfsm:SetIsPaused(is_paused, true)
+    end
+    if self.current_sub_direct_state then
+      self.current_sub_direct_state:SetIsPaused(is_paused, true)
+    end
+  end
+
+  self:__SetIsPaused(is_paused)
+end
+
+----------------------------------------------------------------------
+-- Update相关
+----------------------------------------------------------------------
+function HFSM:IsCanUpdate()
+  return self:GetIsEnabled() and HFSM.super.IsCanUpdate(self)
+end
+
+function HFSM:Update(deltaTime, unscaledDeltaTime)
+  if not self:IsCanUpdate() then
+    return
+  end
+  self:__Update(deltaTime, unscaledDeltaTime)
+  for _, component in self:ForeachComponent() do
+    component:Update(deltaTime, unscaledDeltaTime)
+  end
+  if self.current_sub_direct_state then
+    self.current_sub_direct_state:Update(deltaTime, unscaledDeltaTime)
+  end
+  if self.current_sub_direct_hfsm then
+    self.current_sub_direct_hfsm:Update(deltaTime, unscaledDeltaTime)
+  end
+end
+
+function HFSM:FixedUpdate(deltaTime, unscaledDeltaTime)
+  if not self:IsCanUpdate() then
+    return
+  end
+  self:__FixedUpdate(deltaTime, unscaledDeltaTime)
+  for _, component in self:ForeachComponent() do
+    component:FixedUpdate(deltaTime, unscaledDeltaTime)
+  end
+  if self.current_sub_direct_state then
+    self.current_sub_direct_state:FixedUpdate(deltaTime, unscaledDeltaTime)
+  end
+  if self.current_sub_direct_hfsm then
+    self.current_sub_direct_hfsm:FixedUpdate(deltaTime, unscaledDeltaTime)
+  end
+end
+
+function HFSM:LateUpdate(deltaTime, unscaledDeltaTime)
+  if not self:IsCanUpdate() then
+    return
+  end
+  self:__LateUpdate(deltaTime, unscaledDeltaTime)
+  for _, component in self:ForeachComponent() do
+    component:LateUpdate(deltaTime, unscaledDeltaTime)
+  end
+  if self.current_sub_direct_state then
+    self.current_sub_direct_state:LateUpdate(deltaTime, unscaledDeltaTime)
+  end
+  if self.current_sub_direct_hfsm then
+    self.current_sub_direct_hfsm:LateUpdate(deltaTime, unscaledDeltaTime)
+  end
+end
+
+return HFSM

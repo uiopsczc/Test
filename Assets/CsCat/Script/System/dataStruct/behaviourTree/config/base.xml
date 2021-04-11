@@ -1,0 +1,16 @@
+<root>
+  <ParallelNode name="move">
+    <CalcMovePath/>
+    <ParallelNode>
+      <ParallelNode2>
+        <MoveNode/>
+        <MoveStateNode/>
+      </ParallelNode2>
+      <RotateNode/>
+    </ParallelNode>
+  </ParallelNode>
+  <ParallelNode2 name="idle">
+    <IdleStateNode/>
+    <IdleNode/>
+  </ParallelNode2>
+</root>

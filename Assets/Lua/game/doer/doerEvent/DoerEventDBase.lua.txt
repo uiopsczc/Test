@@ -1,0 +1,4 @@
+---@class DoerEventDBase:DBase
+local DoerEventDBase = Class("DoerEventDBase",DBase)
+
+return DoerEventDBase

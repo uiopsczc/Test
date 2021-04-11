@@ -1,0 +1,5 @@
+local MapConst = {}
+
+MapConst.Common_Pattren = ","
+
+return MapConst

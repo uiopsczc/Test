@@ -1,0 +1,54 @@
+---@class CameraManager:TickObject
+local CameraManager = Class("CameraManager", TickObject)
+
+function CameraManager:Init()
+  CameraManager.super.Init(self)
+  ---@type CameraBase[]
+  self.cameraBase_list = {}
+
+  ---@type CameraBase
+  self.main_cameraBase = self:AddChild("main_camera", CameraBase, GameObject.Find("Main Camera"):GetComponent(typeof(CS.UnityEngine.Camera)), true)
+  -----@type CameraBase
+  self.ui_cameraBase = self:AddChild("ui_camera", CameraBase, GameObject.Find(UIConst.UICamera_Path):GetComponent(typeof(CS.UnityEngine.Camera)), true)
+  self:AddListener(StageEventNameConst.On_Stage_Loaded, function(stage)
+    self:OnStageLoaded(stage)
+  end)
+end
+
+
+function CameraManager:OnStageLoaded(stage)
+  self.cameraBase_list = {}
+  local cameras = table.ConvertCSArray2LuaTable(CS.UnityEngine.Camera.allCameras)
+  for i,camera in ipairs(cameras) do
+    if camera ~= self.main_cameraBase.camera and camera ~= self.ui_cameraBase.camera then
+      local cameraBase = self:AddChild(string.format("%s%s", camera.name, i), CameraBase, camera, false)
+      table.insert(self.cameraBase_list,cameraBase)
+    end
+  end
+end
+
+function CameraManager:RemoveCameras()
+  for i = #self.cameraBase_list,1,-1 do
+    self:RemoveChild(self.cameraBase_list[i].key)
+    table.remove(self.cameraBase_list,i)
+  end
+end
+
+
+function CameraManager:MoveByDelta(dx,dy,dz)
+  self.main_cameraBase:MoveByDelta(dx,dy,dz)
+end
+
+function CameraManager:SetMainCameraMoveRange(range)
+  self.main_cameraBase:SetMoveRange(range)
+end
+
+
+
+function CameraManager:__Destroy()
+  CameraManager.super.__Destroy(self)
+end
+
+
+
+return CameraManager

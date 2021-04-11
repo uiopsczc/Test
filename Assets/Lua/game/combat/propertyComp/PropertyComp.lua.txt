@@ -1,0 +1,101 @@
+---@class PropertyComp:Class
+---@field is_changing boolean
+---@field unit Unit
+local PropertyComp = Class("PropertyComp")
+
+PropertyComp.split = "@"
+function PropertyComp:Init(arg_dict)
+  ---@type table<string,any>
+  self.arg_dict = arg_dict
+  self.unit_id = arg_dict.unit_id
+  self.level = arg_dict.level
+  ---@type table<string,table<string,number>>
+  self.prop_set_dict = {}
+  ---@type table<string,number>
+  self.base_prop_dict = {}
+  ---@type table<string,number>
+  self.calc_prop_dict = {}
+end
+
+---@param unit Unit
+function PropertyComp:OnBuild(unit)
+  self.unit = unit
+  self.level = self.unit:GetLevel()
+  self.unit_id = self.unit_id
+end
+
+---@param prop_set table<string,number>
+---@param key string
+---@param sub_key string
+function PropertyComp:AddPropSet(prop_set, key, sub_key)
+  local property_key = string.Combine(PropertyComp.split ,key ,sub_key)
+  self.prop_set_dict[property_key] = prop_set
+  self:__CalculateProp()
+end
+
+
+---@param key string
+---@param sub_key string
+function PropertyComp:RemovePropSet(key, sub_key)
+  local property_key = string.Combine(PropertyComp.split ,key ,sub_key)
+  self.prop_set_dict[property_key] = nil
+  self:__CalculateProp()
+end
+
+function PropertyComp:__CalculateProp()
+  if self.is_changing then
+    return
+  end
+  local old_calc_prop_dict = clone(self.calc_prop_dict)
+  self.base_prop_dict = {}
+  -- 基础属性统计
+  for _,id in ipairs(global.definitionManager.propertyDefinition.id_list) do
+    self.base_prop_dict[id] = 0
+  end
+  for _, prop_set in pairs(self.prop_set_dict) do
+    for key,_ in pairs(prop_set) do
+      local value = table.GetOrAddDefault_Dict(self.base_prop_dict,key,function() return 0 end)
+      self.base_prop_dict[key] = value + prop_set[key]
+    end
+  end
+  --综合属性计算
+  self.calc_prop_dict = {}
+  for key,_ in pairs(self.base_prop_dict) do
+    self.calc_prop_dict[key] = self.base_prop_dict[key]
+  end
+
+  if self.unit then
+    local new_clac_prop_dict = self.calc_prop_dict
+    local clac_prop_dict_diff = table.GetDiff( old_calc_prop_dict,self.calc_prop_dict)
+    self.unit:OnPropertyChanged(old_calc_prop_dict, new_clac_prop_dict, clac_prop_dict_diff)
+  end
+end
+
+
+
+function PropertyComp:StartChange()
+  self.is_changing = true
+end
+
+function PropertyComp:EndChange()
+  self.is_changing = false
+  self:__CalculateProp()
+end
+
+
+function PropertyComp:CalculateOriginalDamageValue(arg_dict)
+end
+
+function PropertyComp:CalculateRealDamageValue(damage_value, target_unit, arg_dict)
+end
+
+function PropertyComp:CalculateOriginalHealValue(arg_dict)
+end
+
+function PropertyComp:CalculateRealHealValue(heal_value, target_unit,arg_dict)
+end
+
+function PropertyComp:Destroy()
+end
+
+return PropertyComp

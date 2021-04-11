@@ -1,0 +1,14 @@
+using UnityEngine;
+using System.Collections;
+using UnityEditor;
+
+namespace CsCat
+{
+	public class #SCRIPTNAME# : Editor {
+
+		[MenuItem("游戏工具/Editor", false)]
+		static void Method()  
+		{    
+		} 
+	}
+  }

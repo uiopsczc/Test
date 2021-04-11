@@ -1,0 +1,9 @@
+---@class SpellListenerInfo
+---@field type string
+---@field unit Unit
+---@field obj
+---@field tag string
+---@field func
+local SpellListenerInfo = Class("SpellListenerInfo")
+
+return SpellListenerInfo

@@ -1,0 +1,23 @@
+local UIBloodTest = {}
+
+---@type UIBloodTestParent
+UIBloodTest.uiBloodTestParent = nil
+
+function UIBloodTest.Test1()
+  UIBloodTest.uiBloodTestParent = global.client:AddChild(nil, require("luacat.ui.common.UIBlood.test.UIBloodTestParent"),"aa",3)
+end
+
+function UIBloodTest.Test2()
+  UIBloodTest.uiBloodTestParent:SlideTo(40)
+end
+
+
+function UIBloodTest.Test3()
+  UIBloodTest.uiBloodTestParent:Reset()
+end
+
+function UIBloodTest.Test4()
+  UIBloodTest.uiBloodTestParent = global.client:AddChild(nil, require("luacat.ui.common.UIBlood.test.UIBloodTestParent"),"bb",2)
+end
+
+return UIBloodTest

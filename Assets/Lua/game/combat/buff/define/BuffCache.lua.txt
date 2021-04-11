@@ -1,0 +1,11 @@
+---@class BuffCache:Class
+---@field duration
+---@field remain_duration
+---@field source_unit Unit
+---@field source_spell SpellBase
+---@field arg_dict
+local BuffCache = Class("BuffCache")
+
+
+
+return BuffCache

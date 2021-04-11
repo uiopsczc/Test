@@ -1,0 +1,41 @@
+---@class LineEffectComponent:SourceTargetEffectComponent
+local LineEffectComponent = Class("LineEffectComponent", SourceTargetEffectComponent)
+
+---@param source_iposition IPosition
+---@param target_iposition IPosition
+function LineEffectComponent:Init(source_iposition, target_iposition, stay_source_duration, speed, acc_speed)
+  LineEffectComponent.super.Init(self)
+  self.source_iposition = source_iposition
+  self.target_iposition = target_iposition
+  self:SetSocket()
+  self.speed = speed or 0
+  self.acc_speed = acc_speed or 0
+  self.stay_source_duration = stay_source_duration or 0
+
+  self:Calculate(0)
+  self.effectEntity:ApplyToTransformComponent(self.current_position, self.current_eulerAngles)
+end
+
+
+function LineEffectComponent:Calculate(deltaTime)
+  self.stay_source_duration = self.stay_source_duration - deltaTime
+  if self.stay_source_duration >= 0 then
+    self.source_position = self.source_iposition:GetPosition()
+    self.target_position = self.target_iposition:GetPosition()
+    self.current_position = self.source_position
+    self:CalculateEulerAngles()
+    return
+  end
+
+  self.speed = self.speed + self.acc_speed
+  local remain_duration = Vector3.Distance(self.current_position, self.target_position) / self.speed
+  local pct = math.Clamp01(deltaTime / remain_duration)
+  self.current_position = Vector3.Lerp(self.current_position, self.target_position, pct)
+
+  self:CalculateEulerAngles()
+  if pct == 1 then
+    self:OnEffectReach()
+  end
+end
+
+return LineEffectComponent

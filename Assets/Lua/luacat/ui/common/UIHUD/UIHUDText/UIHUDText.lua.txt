@@ -1,0 +1,11 @@
+local UIHUDTextBase = require("luacat.ui.common.UIHUD.UIHUDTextBase.UIHUDTextBase")
+---@class UIHUDText:UIHUDTextBase
+local UIHUDText = Class("UIHUDText",UIHUDTextBase)
+
+function UIHUDText:SetText(text)
+  self:InvokeAfterAllAssetsLoadDone(function()
+    self.text_comp.text = text
+  end)
+end
+
+return UIHUDText

@@ -1,0 +1,5 @@
+AStarConst = {}
+
+AStarConst.Lineal_Cost = 10 -- 直线单元耗费值
+AStarConst.Diagonal_Cost = 14 -- 对角线单元耗费值
+

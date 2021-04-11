@@ -1,0 +1,4 @@
+---@class SceneDBase:DBase
+local SceneDBase = Class("SceneDBase",DBase)
+
+return SceneDBase

@@ -1,0 +1,6 @@
+---@class UnitModelInfo:Class
+---@field path string
+---@field prefab CS.UnityEngine.GameObject
+local UnitModelInfo = Class("UnitModelInfo")
+
+return UnitModelInfo

@@ -1,0 +1,28 @@
+---@class A_CoroutineHFSMState:HFSMState
+local A_CoroutineHFSMState = Class("A_CoroutineHFSMState",CoroutineHFSMState)
+
+function A_CoroutineHFSMState:IEEnter(...)
+  self:YieldStart(function(...)
+    A_CoroutineHFSMState.super.IEEnter(self,...)
+  end,nil, ...)
+  log("Enter A_CoroutineHFSMState", self.key)
+  self:YieldBreak()
+end
+
+function A_CoroutineHFSMState:__Update(deltaTime, unscaledDeltaTime)
+  A_CoroutineHFSMState.super.__Update(self,deltaTime, unscaledDeltaTime)
+  log("Execute A_CoroutineHFSMState", self.key)
+end
+
+
+function A_CoroutineHFSMState:IEExit(...)
+  self:YieldStart(function(...)
+    A_CoroutineHFSMState.super.IEExit(self,...)
+  end,nil, ...)
+  log("Exit A_CoroutineHFSMState", self.key)
+  self:YieldBreak()
+end
+
+
+
+return A_CoroutineHFSMState

@@ -1,0 +1,869 @@
+---@class Scene:Thing
+local Scene = Class("Scene", Thing)
+
+function Scene:Init()
+  Scene.super.Init(self)
+  ---@type Scenes
+  self.o_child_scenes = Scenes.New(self, "o_child_scenes")
+  ---@type SceneItems
+  self.o_sceneItems = SceneItems.New(self, "o_sceneItems")
+end
+
+-------------------------DoXXX---------------------------
+---@param thing Thing
+function Scene:DoEnter(thing)
+  xpcall(function()
+    self:OnEnter(thing)
+  end, function(error_msg)
+    error2(string.format("to.OnEnter error! [%s->%s]:%s", self, thing, error_msg))
+  end)
+  xpcall(function()
+    thing:OnEnterScene(self)
+  end, function(error_msg)
+    error2(string.format("to.OnEnterScene error! [%s->%s]:%s", self, thing, error_msg))
+  end)
+end
+
+---@param thing Thing
+function Scene:DoLeave(thing)
+  xpcall(function()
+    self:OnLeave(thing)
+  end, function(error_msg)
+    error2(string.format("to.OnLeave error! [%s->%s]:%s", self, thing, error_msg))
+  end)
+  xpcall(function()
+    thing:OnLeaveScene(self)
+  end, function(error_msg)
+    error2(string.format("to.OnLeaveScene error! [%s->%s]:%s", self, thing, error_msg))
+  end)
+end
+
+--物件thing在本场景中移动事件
+---@param thing Thing
+---@param from_pos Vector2
+---@param to_pos Vector2
+---@param track_list Vector2[]
+---@param type number
+function Scene:DoMove(thing, from_pos, to_pos, track_list, type)
+  xpcall(function()
+    self:OnMoveThing(thing, from_pos, to_pos, track_list, type)
+  end, function(error_msg)
+    error2(string.format("to.OnMoveThing error! [%s->%s]:%s", self, thing, error_msg))
+  end)
+
+  xpcall(function()
+    thing:OnMove(self, from_pos, to_pos, track_list, type)
+  end, function(error_msg)
+    error2(string.format("to.OnMove error! [%s,%s->(%s->%s]:%s", self, thing, from_pos, to_pos, error_msg))
+  end)
+end
+
+--物件thing本场景转移到另一场景事件
+---@param thing Thing
+---@param from_pos Vector2
+---@param child_scene Scene
+---@param to_pos Vector2
+---@param type number
+function Scene:DoShift(thing, from_pos, child_scene, to_pos, type)
+  xpcall(function()
+    self:OnShift(thing, from_pos, child_scene, to_pos, type)
+  end, function(error_msg)
+    error2(string.format("env.OnShift error! [%s,%s->(%s->%s]:%s", self, thing, from_pos, to_pos,
+        error_msg))
+  end)
+end
+
+---------------------OnXXX----------------------------
+function Scene:OnSave(dict, dict_tmp)
+  Scene.super.OnSave(self, dict, dict_tmp)
+end
+
+function Scene:OnRestore(dict, dict_tmp)
+  Scene.super.OnRestore(self, dict, dict_tmp)
+end
+
+function Scene:OnEnter(thing)
+
+end
+
+function Scene:OnLeave(thing)
+end
+
+--物件thing在本场景中移动事件
+---@param thing Thing
+---@param from_pos Vector2
+---@param to_pos Vector2
+---@param track_list Vector2[]
+---@param type number
+function Scene:OnMoveThing(thing, from_pos, to_pos, track_list, type)
+
+end
+
+--物件thing本场景转移到另一场景事件
+---@param thing Thing
+---@param from_pos Vector2
+---@param child_scene Scene
+---@param to_pos Vector2
+---@param type number
+function Scene:OnShift(thing, from_pos, child_scene, to_pos, type)
+end
+
+--region 子场景
+function Scene:CheckParentCall()
+  if self:IsChildScene() then
+    error("请使用父级场景调用此方法")
+  end
+end
+
+--清除主场景的子场景投影障碍（仅供父级场景调用）
+---@param base_on_parent_pos Vector2
+---@param child_scene Scene
+function Scene:ClearProjectGrids(base_on_parent_pos, child_scene)
+  self:CheckParentCall()
+  local mapPath = self:GetMapPath()
+  local project_grids
+  if child_scene:GetMapType() == 1 then
+    project_grids = child_scene:GetGrids()
+  else
+    project_grids = child_scene:GetProjectGrids()
+  end
+  if project_grids ~= nil then
+    local offset_pos = child_scene:GetOffsetPos()
+    for x = 1, #project_grids do
+      for y = 1, #project_grids[x] do
+        local v = project_grids[x][y]
+        if v ~= nil and v ~= 0 and AStarUtil.IsValidObstacleType(v) then
+          -- 子场景无效区域不投影
+          local px = self:ToParentX(base_on_parent_pos, offset_pos, x)
+          local py = self:ToParentY(base_on_parent_pos, offset_pos, y)
+          if mapPath:IsValidPoint(px, py) then
+            -- 父场景无效区域不投影
+            mapPath.project_grids[px][py] = 0
+          end
+        end
+      end
+    end
+  end
+end
+
+
+-- 设置子场景投影障碍到主场景（仅供父级场景调用）
+---@param base_on_parent_pos Vector2
+---@param child_scene Scene
+function Scene:SetProjectGrids(base_on_parent_pos, child_scene)
+  self:CheckParentCall()
+  local mapPath = self:GetMapPath()
+  if mapPath == nil or mapPath.grids == nil then
+    return
+  end
+  local project_grids
+  if child_scene:GetMapType() == 1 then
+    project_grids = child_scene:GetGrids()
+  else
+    project_grids = child_scene:GetProjectGrids()
+  end
+  if project_grids ~= nil then
+    local offset_pos = child_scene:GetOffsetPos()
+    for x = 1, #project_grids do
+      for y = 1, #project_grids[x] do
+        local v = project_grids[x][y]
+        if v ~= nil and v ~= 0 and AStarUtil.IsValidObstacleType(v) then
+          -- 子场景无效区域不投影
+          local px = self:ToParentX(base_on_parent_pos, offset_pos, x)
+          local py = self:ToParentY(base_on_parent_pos, offset_pos, y)
+          if mapPath:IsValidPoint(px, py) then
+            -- 父场景无效区域不投影
+            mapPath.project_grids[px][py] = v
+          end
+        end
+      end
+    end
+  end
+end
+
+--清空所有动态障碍（仅供父级场景调用）
+function Scene:ClearAllProjectGrids()
+  self:CheckParentCall()
+  local mapPath = self:GetMapPath()
+  if mapPath == nil or mapPath.project_grids == nil then
+    return
+  end
+  for x = 1, #mapPath.project_grids do
+    for y = 1, #mapPath.project_grids[x] do
+      mapPath.project_grids[x][y] = 0
+    end
+  end
+end
+
+--重置所有动态障碍（仅供父级场景调用）
+function Scene:ResetAllProjectGrids()
+  self:CheckParentCall()
+  self:ClearAllProjectGrids()
+  for _, child_scene in ipairs(self:GetChildScenes()) do
+    if not child_scene:IsInAir() then
+      self:SetProjectGrids(child_scene:GetPos(), child_scene)
+    end
+  end
+end
+
+---------------------子场景容器---------------------
+---@param id string
+---@param belong string
+---@return Scene[]
+function Scene:GetChildScenes(id, belong)
+  if belong == nil and id == nil then
+    return self.o_child_scenes:GetScenes()
+  else
+    return self.o_child_scenes:GetScenes(nil, function(scene)
+      if belong ~= nil and not scene:GetBelong() == belong then
+        return false
+      end
+      if id ~= nil and not scene:GetId() == id then
+        return false
+      end
+      return true
+    end)
+  end
+end
+
+---@param id_or_rid string
+---@param belong string
+---@return Scene
+function Scene:GetChildScene(id_or_rid, belong)
+  if IdUtil.IsRid(id_or_rid) then
+    -- rid的情况
+    local rid = id_or_rid
+    if not self.o_child_scenes:GetSceneDict_ToEdit()[rid] then
+      return nil
+    end
+    ---@type Scene
+    local child_scene = self.o_child_scenes.GetSceneDict_ToEdit()[rid]
+    if belong ~= nil and not child_scene:GetBelong() == belong then
+      return nil
+    end
+    return child_scene
+  else
+    -- id的情况
+    local id = id_or_rid
+    local child_scenes = self:GetChildScenes(id, belong)
+    return #child_scenes == 0 and nil or child_scenes[1]
+  end
+end
+
+-- 获得场景内所有子场景数量（仅供父级场景调用）
+---@param belong string
+function Scene:GetChildSceneCount(belong)
+  self:CheckParentCall()
+  return #self:GetChildScenes(nil, belong)
+end
+
+--添加子场景到指定坐标（仅供父级场景调用）
+---@param pos Vector2
+---@param child_scene Scene
+function Scene:AddChildScene(pos, child_scene)
+  self:CheckParentCall()
+  child_scene:SetEnv(self)
+  child_scene:SetPos(pos)
+  self.o_child_scenes:GetSceneDict_ToEdit()[child_scene:GetRid()] = child_scene
+  --处理子场景障碍投影
+  if not child_scene:IsInAir() then
+    self:SetProjectGrids(pos, child_scene)
+  end
+  -- 触发进入事件
+  self:DoEnter(child_scene)
+end
+
+-- 移除子场景（仅供父级场景调用）
+---@param child_scene Scene
+function Scene:RemoveChildScene(child_scene)
+  self:CheckParentCall()
+  local is_contain = self.o_child_scenes:GetSceneDict_ToEdit()[child_scene:GetRid()] ~= nil
+  self.o_child_scenes:GetSceneDict_ToEdit()[child_scene:GetRid()] = nil
+  if is_contain then
+    --  处理子场景障碍投影
+    if not child_scene:IsInAir() then
+      self:ClearProjectGrids(child_scene:GetPos(), child_scene)
+    end
+    -- 触发离开事件
+    self:DoLeave(child_scene)
+    child_scene:SetEnv(nil)
+  end
+end
+
+-- 移除子场景（仅供父级场景调用）
+---@param rid string
+function Scene:RemoveChildScene(rid)
+  local child_scene = self.o_child_scenes:GetScene(rid)
+  self:RemoveChildScene(child_scene)
+end
+
+-- 将子场景移到指定位置（仅供父级场景调用）
+---@param scene Scene
+---@param to_pos Vector2
+---@param track_list Vector2[]
+---@param type number
+function Scene:MoveChildScene(scene, to_pos, track_list, type)
+  self:CheckParentCall()
+  local from_pos = scene:GetPos()
+  scene:SetPos(to_pos)
+  scene:SetTmp("last_move_time", DateTimeUtil.Now())
+  scene:SetTmp("last_move_track_list", track_list)
+  --处理子场景障碍投影
+  if not scene:IsInAir() then
+    self:ClearProjectGrids(from_pos, scene)
+    self:SetProjectGrids(to_pos, scene)
+  end
+  --触发移动事件
+  self:DoMove(scene, from_pos, to_pos, track_list, type)
+end
+
+--获得指定范围的子场景（仅供父级场景调用）
+---@param range AStarRange
+---@param belong string
+---@return Scene[]
+function Scene:GetRangeScenes(range, belong)
+  self:CheckParentCall()
+  local list = {}
+  for _, child_scene in ipairs(self:GetChildScenes(nil, belong)) do
+    if range:IsInRange(child_scene:GetPos()) then
+      table.insert(list, child_scene)
+    end
+  end
+  return list
+end
+
+-- 获得视图内所有子场景（仅供父级场景调用）
+---@param pos Vector2
+---@param belong string
+---@return Scene[]
+function Scene:GetViewingScenes(pos, belong)
+  return self:__GetViewingScenes(pos, pos, belong)
+end
+
+-- 获得视图内所有子场景（仅供父级场景调用）
+---@param pos1 Vector2
+---@param pos2 Vector2
+---@param belong string
+---@return Scene[]
+function Scene:__GetViewingScenes(pos1, pos2, belong)
+  self:CheckParentCall()
+  return self:GetRangeScenes(AStarUtil.GetViewingRange(pos1, pos2), belong)
+end
+
+-- 获得指定分组的子场景
+---@param group string
+---@param belong string
+---@return Scene
+function Scene:GetGroupScene(group, belong)
+  self:CheckParentCall()
+  for _, child_scene in ipairs(self:GetChildScenes(nil, belong)) do
+    if group == child_scene:GetGroup() then
+      return child_scene
+    end
+  end
+end
+--endregion
+
+--region SceneItems
+
+---@param id string
+---@param belong string
+---@param is_not_include_child_scene boolean
+---@return Item[]
+function Scene:GetItems(id, belong, is_not_include_child_scene)
+  local result = {}
+  if belong == nil then
+    local current_scene_item_list = self.o_sceneItems:GetItems(id)
+    table.InsertRange_Array(result, current_scene_item_list)
+    if not is_not_include_child_scene then
+      for _, child_scene in ipairs(self:GetChildScenes()) do
+        table.InsertRange_Array(result, child_scene:GetItems(id, nil, is_not_include_child_scene))
+      end
+    end
+  else
+    for _, item in ipairs(self:GetItems(id, nil, is_not_include_child_scene)) do
+      if belong == item:GetBelong() then
+        table.insert(result, item)
+      end
+    end
+  end
+  return result
+end
+
+---@param id string
+---@param belong string
+---@param is_not_include_child_scene boolean
+function Scene:GetItemCount(id, belong, is_not_include_child_scene)
+  return #self:GetItems(id, belong, is_not_include_child_scene)
+end
+
+---@param id string
+---@param belong string
+---@param is_not_include_child_scene boolean
+---@return Item
+function Scene:GetItem(id_or_rid, belong, is_not_include_child_scene)
+  for _, item in ipairs(self:GetItems(nil, belong, is_not_include_child_scene)) do
+    if IdUtil.IsIdOrRidEquals(id_or_rid, item:GetId(), item:GetRid()) then
+      return item
+    end
+  end
+  return nil
+end
+
+-- 添加物品到指定坐标
+---@param pos Vector2
+---@param item Item
+function Scene:AddItem(pos, item)
+  item:SetEnv(self)
+  item:SetPos(pos)
+  self.o_sceneItems:GetItemDict_ToEdit()[item:GetRid()] = item
+  -- 触发进入事件
+  self:DoEnter(item)
+end
+
+-- 删除物品
+---@param item_or_rid Item|string
+function Scene:RemoveItem(item_or_rid)
+  if IsString(item_or_rid) then
+    local rid = item_or_rid
+    if not self.o_sceneItems:GetItemDict_ToEdit()[rid] then
+      return nil
+    end
+    local result = self.o_sceneItems:GetItemDict_ToEdit()[rid]
+    return self:RemoveItem(result)
+  end
+  ---@type Item
+  local item = item_or_rid
+  if not self.o_sceneItems:GetItemDict_ToEdit()[item:GetRid()] then
+    return
+  end
+  self.o_sceneItems:GetItemDict_ToEdit()[item:GetRid()] = nil
+
+  -- 触发离开事件
+  self:DoLeave(item)
+  item:SetEnv(nil)
+
+  return item
+end
+
+
+
+-- 将物品移到指定位置
+---@param item Item
+---@param to_pos Vector2
+---@param track_list Vector2[]
+---@param type number
+function Scene:MoveItem(item, to_pos, track_list, type)
+  local from_pos = item:GetPos()
+  item:SetPos(to_pos)
+
+  -- 触发移动事件
+  self:DoMove(item, from_pos, to_pos, track_list, type)
+end
+
+-- 将物品转移到指定子场景的指定位置
+---@param item Item
+---@param child_scene Scene
+---@param to_pos Vector2
+---@param type number
+function Scene:ShiftItem(item, child_scene, to_pos, type)
+  local from_pos = item:GetPos()
+  self.o_sceneItems:GetItemDict_ToEdit()[item:GetRid()] = nil
+  item:SetEnv(child_scene)
+  item:SetPos(to_pos)
+  child_scene.o_sceneItems:GetItemDict_ToEdit()[item:GetRid()] = item
+  self:DoShift(item, from_pos, child_scene, to_pos, type)
+end
+
+-- 清除所有物品
+function Scene:ClearItems(is_not_include_child_scene)
+  for rid, item in pairs(self.o_sceneItems:GetItemDict_ToEdit()) do
+    -- 触发离开事件
+    self:DoLeave(item)
+    item:SetEnv(nil)
+    item:Destruct()
+  end
+  table.RemoveAll_Dict(self.o_sceneItems:GetItemDict_ToEdit())
+  if not is_not_include_child_scene then
+    for _, child_scene in ipairs(self:GetChildScenes()) do
+      child_scene:ClearItems(is_not_include_child_scene)
+    end
+  end
+end
+
+-- 获得指定范围的物品（仅供父级场景调用）
+---@param range AStarRange
+---@param belong string
+---@param is_not_include_child_scene boolean
+---@return Item[]
+function Scene:GetRangeItems(range, belong, is_not_include_child_scene)
+  local result = {}
+  for _, item in ipairs(self:GetItems(nil, belong, is_not_include_child_scene)) do
+    local pos = item.GetEnv():ToParentPos(item:GetPos(), self)
+    if range:IsInRange(pos) then
+      table.insert(result, item)
+    end
+  end
+  return result
+end
+
+--获得指定范围的物品（仅供父级场景调用）
+---@param compare_pos Vector2
+---@param radius number
+---@param belong string
+---@param is_not_include_child_scene boolean
+---@return Item[]
+function Scene:GetAroundItems(compare_pos, radius, belong, is_not_include_child_scene)
+  local result = {}
+  for _, item in ipairs(self:GetItems(nil, belong, is_not_include_child_scene)) do
+    local pos = item.GetEnv():ToParentPos(item:GetPos(), self)
+    if AStarUtil.IsInAround(pos, compare_pos, radius) then
+      table.insert(result, item)
+    end
+  end
+  return result
+end
+
+-- 获得指定扇形的物品（仅供父级场景调用）
+---@param sector_center_pos Vector2
+---@param sector_dir Vector2
+---@param sector_radius number
+---@param sector_half_degrees number
+---@param belong boolean
+---@param is_not_include_child_scene boolean
+---@return Item[]
+function Scene:GetSectorItems(sector_center_pos, sector_dir, sector_radius, sector_half_degrees, belong, is_not_include_child_scene)
+  local result = {}
+  for _, item in ipairs(self:GetItems(nil, belong, is_not_include_child_scene)) do
+    local pos = item.GetEnv():ToParentPos(item:GetPos(), self)
+    if AStarUtil.IsInSector(pos, sector_center_pos, sector_dir, sector_radius, sector_half_degrees) then
+      table.insert(result, item)
+    end
+  end
+  return result
+end
+
+---@param group string
+---@param belong string
+---@param is_not_include_child_scene boolean
+---@return Item[]
+function Scene:GetGroupItems(group, belong, is_not_include_child_scene)
+  local result = {}
+  for _, item in ipairs(self:GetItems(nil, belong, is_not_include_child_scene)) do
+    if item:GetGroup() == group then
+      table.insert(result, item)
+    end
+  end
+  return result
+end
+
+---@param group string
+---@param belong string
+---@param is_not_include_child_scene boolean
+function Scene:GetGroupItemCount(group, belong, is_not_include_child_scene)
+  return #self:GetGroupItems(group, belong, is_not_include_child_scene)
+end
+
+--endregion
+------------------------Util------------------------
+function Scene:IsChildScene()
+  return self:GetEnv() ~= nil
+end
+
+function Scene:IsChildSceneOf(to_top_parent_scene)
+  if to_top_parent_scene ~= nil then
+    local parent_scene = self:GetEnv()
+    while parent_scene ~= nil do
+      if to_top_parent_scene == parent_scene then
+        return true
+      end
+      parent_scene = parent_scene:GetEnv()
+    end
+    return false
+  end
+  return self:GetEnv() == nil and true or false
+end
+
+function Scene:SetIsInAir(is_in_air)
+  self:SetTmp("o_is_in_air", is_in_air)
+end
+
+--是否在空中
+function Scene:IsInAir()
+  return self:GetTmp("o_is_in_air", false)
+end
+
+function Scene:SetGroup(group)
+  self:SetTmp("group", group)
+end
+
+function Scene:GetGroup()
+  return self:GetTmp("group", "")
+end
+
+function Scene:SetMapType(map_type)
+  ---@type Scene
+  local parent_scene = self:GetEnv()
+  if parent_scene ~= nil then
+    parent_scene:ClearProjectGrids(self:GetPos(), self)
+    parent_scene:SetProjectGrids(self:GetPos(), self)
+  end
+  self:Set("map_type", map_type)
+end
+
+function Scene:GetMapType()
+  return self:Get("map_type")
+end
+
+function Scene:SetOrgPos(pos)
+  self:SetTmp("org_pos", pos)
+end
+
+---@return Vector2
+function Scene:GetOrgPos()
+  return self:GetTmp("org_pos")
+end
+
+---@return SceneMapInfo
+function Scene:GetSceneMapInfo()
+  local sceneMapInfo
+  if self:Get("is_dynamic_map", false) then
+    local src = self:Get("src", "")
+    if not string.IsNilOrWhiteSpace(src) then
+      sceneMapInfo = global.definitionManager:GetSceneMapInfo(src)
+    end
+  else
+    sceneMapInfo = self:Get("sceneMapInfo")
+  end
+  return sceneMapInfo
+end
+
+-- 自身障碍数据 grids[x][y]
+---@return number[][]
+function Scene:GetGrids()
+  local sceneMapInfo = self:GetSceneMapInfo()
+  if sceneMapInfo ~= nil then
+    return sceneMapInfo.grids
+  end
+  return nil
+end
+
+-- 自身投影数据 project_grids[x][y]
+---@return number[][]
+function Scene:GetProjectGrids()
+  local sceneMapInfo = self:GetSceneMapInfo()
+  if sceneMapInfo ~= nil then
+    return sceneMapInfo.project_grids
+  end
+  return nil
+end
+
+--获得路径的x轴宽度
+function Scene:GetWidth()
+  local grids = self:GetGrids()
+  if grids ~= nil then
+    return #grids[1]
+  end
+  return 0
+end
+
+-- 获得路径的y轴高度
+function Scene:GetHeight()
+  local grids = self:GetGrids()
+  if grids ~= nil then
+    return #grids
+  end
+  return 0
+end
+
+-- 获得基准坐标
+function Scene:GetOffsetPos()
+  local sceneMapInfo = self:GetSceneMapInfo()
+  if sceneMapInfo ~= nil then
+    return sceneMapInfo.offset_pos
+  end
+  return Vector2.zero
+end
+
+-- 获得路径信息
+---@return AStarMapPath
+function Scene:GetMapPath()
+  return self:GetTmp("mapPath")
+end
+
+-- 更新路径信息
+function Scene:UpdateMapPath()
+  local sceneMapInfo = self:GetSceneMapInfo()
+  if sceneMapInfo ~= nil then
+    local mapPath = AStarMapPath.New(sceneMapInfo.grids)
+    self:SetTmp("mapPath", mapPath)
+  end
+end
+
+-- 将自身x坐标转换为父级场景x坐标
+---@param base_on_parent_pos Vector2
+---@param offset_pos Vector2
+---@param x number
+---@return number
+function Scene:ToParentX(base_on_parent_pos, offset_pos, x)
+  return base_on_parent_pos.x - offset_pos.x + x
+end
+
+-- 将自身y坐标转换为父级场景y坐标
+---@param base_on_parent_pos Vector2
+---@param offset_pos Vector2
+---@param y number
+---@return number
+function Scene:ToParentY(base_on_parent_pos, offset_pos, y)
+  return base_on_parent_pos.y - offset_pos.y + y
+end
+
+---@param base_on_parent_pos Vector2
+---@param offset_pos Vector2
+---@param pos Vector2
+---@return Vector2
+function Scene:__ToParentPos(base_on_parent_pos, offset_pos, pos)
+  return Vector2.New(self:ToParentX(base_on_parent_pos, offset_pos, pos.x),
+      self:ToParentY(base_on_parent_pos, offset_pos, pos.y))
+end
+
+-- 将自身坐标转换为父级场景坐标
+---@param pos Vector2
+---@param to_top_parent_scene Scene
+---@return Vector2
+function Scene:ToParentPos(pos, to_top_parent_scene)
+  local is_child_scene = self:IsChildScene()
+  if is_child_scene then
+    local base_on_parent_pos = self:GetPos()
+    local offset_pos = self:GetOffsetPos()
+    pos = self:__ToParentPos(base_on_parent_pos, offset_pos, pos)
+  end
+  if to_top_parent_scene ~= self:GetEnv() then
+    if is_child_scene then
+      return self:GetEnv():ToParentPos(pos, to_top_parent_scene)
+    end
+    error(string.format("没有目标的scene:%s", to_top_parent_scene))
+  end
+  return pos
+end
+
+-- 将自身坐标转换为父级场景坐标
+---@param pos_list Vector2[]
+---@param to_top_parent_scene Scene
+---@return Vector2[]
+function Scene:ToParentPosList(pos_list, to_top_parent_scene)
+  local result = {}
+  for _, pos in ipairs(pos_list) do
+    table.insert(result, self:ToParentPos(pos, to_top_parent_scene))
+  end
+  return result
+end
+
+-- 将自身坐标转换为父级场景坐标
+---@param range AStarRange
+---@param to_top_parent_scene Scene
+---@return AStarRange
+function Scene:ToParentRange(range, to_top_parent_scene)
+  local left_bottom = self:ToParentPos(Vector2.New(range.left_bottom_x, range.left_bottom_y), to_top_parent_scene)
+  local right_top = self:ToParentPos(Vector2.New(range.right_top_x, range.right_top_y), to_top_parent_scene)
+  return AStarRange.New(left_bottom.x, left_bottom.y, right_top.x, right_top.y)
+end
+
+--将父级场景x坐标转换为自身x坐标
+---@param base_on_parent_pos Vector2
+---@param offset_pos Vector2
+---@param x number
+---@return number
+function Scene:FromParentX(base_on_parent_pos, offset_pos, x)
+  return x - base_on_parent_pos.x + offset_pos.x
+end
+
+-- 将父级场景y坐标转换为自身y坐标
+---@param base_on_parent_pos Vector2
+---@param offset_pos Vector2
+---@param y number
+---@return number
+function Scene:FromParentY(base_on_parent_pos, offset_pos, y)
+  return y - base_on_parent_pos.y + offset_pos.y
+end
+
+---@param base_on_parent_pos Vector2
+---@param offset_pos Vector2
+---@param pos Vector2
+---@return Vector2
+function Scene:__FromParentPos(base_on_parent_pos, offset_pos, pos)
+  return Vector2.New(self:FromParentX(base_on_parent_pos, offset_pos, pos.x),
+      self:FromParentY(base_on_parent_pos, offset_pos, pos.y))
+end
+
+-- 将父级场景坐标转换为自身坐标
+---@param pos Vector2
+---@return Vector2
+function Scene:FromParentPos(pos)
+  if self:IsChildScene() then
+    local base_on_parent_pos = self:GetPos()
+    local offset_pos = self:GetOffsetPos()
+    return self:__FromParentPos(base_on_parent_pos, offset_pos, pos)
+  else
+    return pos
+  end
+end
+
+
+-- 将父级场景坐标转换为自身坐标
+---@param pos_list Vector2[]
+---@param to_top_parent_scene Scene
+---@return Vector2[]
+function Scene:FromParentPosList(pos_list)
+  local result = {}
+  for _, pos in ipairs(pos_list) do
+    table.insert(result, self:FromParentPos(pos))
+  end
+  return result
+end
+
+-- 将父级场景坐标转换为自身坐标
+---@param range AStarRange
+---@return AStarRange
+function Scene:FromParentRange(range)
+  if self:IsChildScene() then
+    local left_bottom = self:FromParentPos(Vector2.New(range.left_bottom_x, range.left_bottom_y))
+    local right_top = self:FromParentPos(Vector2.New(range.right_top_x, range.right_top_y))
+    return AStarRange.New(left_bottom.x, left_bottom.y, right_top.x, right_top.y)
+  else
+    return range
+  end
+end
+
+-- 检测指定点是否属于该地图内
+---@param pos Vector2
+function Scene:IsInMapRange(pos)
+  local project_grids = self:GetProjectGrids()
+  if project_grids == nil or not AStarUtil.IsInRange(project_grids, pos.x, pos.y) then
+    return false
+  end
+  return project_grids[pos.x][pos.y] ~= nil and project_grids[pos.x][pos.y] ~= 0-- 投影层不为空的范围就是图内
+end
+
+-- 随机获取地图上一点
+---@param can_pass_obstacle_types Vector2[]
+---@param can_pass_terrain_types Vector2[]
+---@param randomManager RandomManager
+function Scene:GetRandomPos(can_pass_obstacle_types, can_pass_terrain_types, randomManager)
+  randomManager = randomManager or global.client.randomManager
+  local width = self:GetWidth()
+  local height = self:GetHeight()
+  local x = randomManager:RandomInt(0, width)
+  local y = randomManager:RandomInt(0, height)
+
+  local result = Vector2.New(x, y)
+  if can_pass_obstacle_types ~= nil or can_pass_terrain_types ~= nil then
+    can_pass_obstacle_types = can_pass_obstacle_types or AStarMapPathConst.Air_Can_Pass_Obstacle_Types
+    can_pass_terrain_types = can_pass_terrain_types or AStarMapPathConst.Air_Can_Pass_Terrain_Types
+    result = AStarUtil.__FindAroundFreePoint(self:GetMapPath(), result, nil, can_pass_obstacle_types,
+        can_pass_terrain_types,randomManager)
+  end
+  return result
+end
+
+return Scene

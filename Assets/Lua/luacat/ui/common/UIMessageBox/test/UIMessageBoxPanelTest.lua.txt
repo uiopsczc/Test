@@ -1,0 +1,16 @@
+local UIMessageBoxPanelTest = {}
+function UIMessageBoxPanelTest.Test()
+  ---@type UIMessageBoxPanel
+  local panel = global.client.uiManager:CreateChildPanel(null, require("luacat.ui.common.UIMessageBox.UIMessageBoxPanel"))
+  panel:InvokeAfterAllAssetsLoadDone(function()
+    --panel:Show("Hello",nil, "world2222222")
+    local item_dict_list = {}
+    for i=1,100 do
+      table.insert(item_dict_list, {id = "1", count = i})
+    end
+    panel:Show("Hello", "world", nil, item_dict_list, nil, "确定1", function()  warn("hello") end, "确定2", function() warn("world") end)
+  end)
+  return panel
+end
+
+return UIMessageBoxPanelTest

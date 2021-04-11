@@ -1,0 +1,55 @@
+local UnityObjectPoolCat = require("luacat.poolCat.UnityObjectPoolCat")
+---@class GameObjectPoolCat:UnityObjectPoolCat
+local GameObjectPoolCat = Class("GameObjectPoolCat",UnityObjectPoolCat)
+
+---@param pool_name string
+---@param prefab CS.UnityEngine.Object
+---@param category string
+function GameObjectPoolCat:Init(pool_name, prefab, category)
+  GameObjectPoolCat.super.Init(self, pool_name, prefab,category)
+end
+
+---@param on_spawn_callback fun(spawn:any)
+function GameObjectPoolCat:Spawn(on_spawn_callback)
+  ---@type CS.UnityEngine.GameObject
+  local clone_gameObject = GameObjectPoolCat.super.Spawn(self, on_spawn_callback)
+  CacheUtil.CacheSet(clone_gameObject,PoolCatConst.Pool_Name,self)
+  clone_gameObject:SetCache(CS.CsCat.PoolCatConst.Lua_Pool_Name, self)
+  clone_gameObject:SetActive(true)
+  clone_gameObject.transform:CopyFrom(self:GetPrefab().transform)
+  return clone_gameObject
+end
+
+---@param on_spawn_callback fun(spawn:CS.UnityEngine.GameObject)
+function GameObjectPoolCat:SpawnGameObject(on_spawn_callback)
+  return self:Spawn(on_spawn_callback)
+end
+
+---@param prefab CS.UnityEngine.Object
+---@param category string
+function GameObjectPoolCat:InitParent(prefab, category)
+  GameObjectPoolCat.super.InitParent(self, prefab, category)
+  local root_gameObject = CS.CsCat.GameObjectUtil.GetOrNewGameObject("Pools",nil)
+  ---@type CS.UnityEngine.Transform
+  self.root_transform = root_gameObject.transform
+  self.category_transform = self.root_transform:GetOrNewGameObject(category).transform
+end
+
+function GameObjectPoolCat:Despawn(obj)
+  ---@type CS.UnityEngine.GameObject
+  local clone = obj
+  local component_list = table.ConvertCSArray2LuaTable(clone:GetComponents(typeof(CS.UnityEngine.Component)))
+  for _, clone_component in ipairs(component_list) do
+    if IsISpawnable(clone_component) then
+      clone_component:OnDespawn()
+    end
+  end
+  clone:SetActive(false)
+  clone.transform:SetParent(self.category_transform)
+  clone.transform:CopyFrom(self.prefab.transform)
+  CacheUtil.RemoveCache(clone)
+  GameObjectPoolCat.super.Despawn(self, obj)
+end
+
+
+return GameObjectPoolCat

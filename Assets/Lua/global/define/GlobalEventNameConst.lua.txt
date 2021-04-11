@@ -1,0 +1,9 @@
+---@class GlobalEventNameConst
+local GlobalEventNameConst = {}
+
+GlobalEventNameConst.Update = "Update"
+GlobalEventNameConst.FixedUpdate = "FixedUpdate"
+GlobalEventNameConst.LateUpdate = "LateUpdate"
+GlobalEventNameConst.OnApplicationPause="OnApplicationPause"
+
+return GlobalEventNameConst

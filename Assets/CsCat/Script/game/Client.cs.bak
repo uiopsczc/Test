@@ -1,0 +1,196 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Reflection;
+using UnityEngine;
+
+namespace CsCat
+{
+  public class Client : TickObject, ISingleton
+  {
+    public MoveManager moveManager;
+
+    //管理模块
+    public AssetBundleManager assetBundleManager;
+    public AssetBundleUpdater assetBundleUpdater;
+    public AudioManager audioManager;
+
+    public PhysicsManager physicsManager;
+    public CommandManager commandManager = new CommandManager();
+    public DefaultInputManager defaultInputManager;
+
+    public FrameCallBackMananger frameCallbackMananger = new FrameCallBackMananger();
+    public GuidManager guidManager;
+    public RandomManager randomManager = new RandomManager();
+    public RedDotManager redDotManager;
+
+
+
+    public RPN rpn = new RPN();
+    public CombatBase combat;
+
+    public UserFactory userFactory;
+    public RoleFactory roleFactory;
+    public ItemFactory itemFactory;
+    public MissionFactory missionFactory;
+    public DoerEventFactory doerEventFactory;
+    public SceneFactory sceneFactory;
+
+
+    public RedDotLogic redDotLogic;
+
+    public User user;
+    public Role main_role;
+
+
+    public StageBase stage;
+    public SyncUpdate syncUpdate = new SyncUpdate();
+
+    public IdPool idPool = new IdPool();
+
+    //通用模块
+    public override TimerManager timerManager
+    {
+      get { return cache.GetOrAddDefault(() => { return new TimerManager(); }); }
+    }
+
+    public UIManager uiManager;
+    public static Client instance => SingletonFactory.instance.Get<Client>();
+
+    public EventDispatchers eventDispatchers
+    {
+      get { return cache.GetOrAddDefault(() => { return new EventDispatchers(this); }); }
+    }
+
+    public string language;
+
+    public override void Start()
+    {
+      base.Start();
+#if !UNITY_EDITOR
+      EditorModeConst.Is_Editor_Mode = false;
+#endif
+      this.moveManager = this.gameObject.AddComponent<MoveManager>();
+
+      language = GameData.instance.translationData.language;
+      guidManager = new GuidManager(GameData.instance.guid_current);
+      assetBundleUpdater = AddChild<AssetBundleUpdater>("AssetBundleUpdater");
+      assetBundleManager = AddChild<AssetBundleManager>("AssetBundleManager");
+      audioManager = AddChild<AudioManager>("AudioManager");
+      physicsManager = AddChild<PhysicsManager>("physicsManager");
+      defaultInputManager = AddChild<DefaultInputManager>("DefaultInputManager");
+      uiManager = AddChildWithoutInit<UIManager>("UIManager");
+      uiManager.Init();
+      uiManager.PostInit();
+
+
+      redDotManager = AddChild<RedDotManager>("RedDotManager");
+
+
+
+      userFactory = AddChild<UserFactory>("UserFactory");
+      roleFactory = AddChild<RoleFactory>("RoleFactory");
+      missionFactory = AddChild<MissionFactory>("MissionFactory");
+      itemFactory = AddChild<ItemFactory>("ItemFactory");
+      doerEventFactory = AddChild<DoerEventFactory>("DoerEventFactory");
+      sceneFactory = AddChild<SceneFactory>("SceneFactory");
+
+
+      user = GameData2.instance.RestoreUser();
+      TestUser();
+      Test();
+      Goto<StageShowLogo>(0);
+
+    }
+
+    public void Test()
+    {
+    }
+    
+
+    public void TestUser()
+    {
+//    ItemTest.Test();
+    }
+
+   
+
+    public void Goto<T>(float fade_hide_duration = 0f, Action onStageShowCallback = null) where T : StageBase, new()
+    {
+      StartCoroutine(IEGoto<T>(fade_hide_duration, onStageShowCallback));
+    }
+
+    public IEnumerator IEGoto<T>(float fade_hide_duration = 0f, Action onStageShowCallback = null)
+      where T : StageBase, new()
+    {
+      if (stage != null)
+      {
+        if (fade_hide_duration > 0)
+        {
+          uiManager.FadeTo(0, 1, fade_hide_duration);
+
+          yield return new WaitForSeconds(fade_hide_duration);
+        }
+        this.RemoveChild(stage.key);
+        yield return stage.IEDestroy();
+        stage = null;
+      }
+
+      stage = this.AddChild<T>(null);
+      stage.onShowCallback = onStageShowCallback;
+      stage.Start();
+    }
+
+    //重启
+    public void Rebort()
+    {
+      Goto<StageTest>();
+    }
+
+    protected override void __Update(float deltaTime, float unscaledDeltaTime)
+    {
+      base.__Update(deltaTime, unscaledDeltaTime);
+      eventDispatchers.Broadcast("Update");
+      eventDispatchers.Broadcast("Update", deltaTime);
+      eventDispatchers.Broadcast("Update", deltaTime, unscaledDeltaTime);
+
+      this.timerManager.Update(deltaTime, unscaledDeltaTime);
+      syncUpdate.Update();
+      frameCallbackMananger.Update();
+
+    }
+
+    protected override void __LateUpdate(float deltaTime, float unscaledDeltaTime)
+    {
+      base.__LateUpdate(deltaTime, unscaledDeltaTime);
+      eventDispatchers.Broadcast("LateUpdate");
+      eventDispatchers.Broadcast("LateUpdate", deltaTime);
+      eventDispatchers.Broadcast("LateUpdate", deltaTime, unscaledDeltaTime);
+
+      this.timerManager.LateUpdate(deltaTime, unscaledDeltaTime);
+      frameCallbackMananger.LateUpdate();
+    }
+
+    protected override void __FixedUpdate(float deltaTime, float unscaledDeltaTime)
+    {
+      base.__FixedUpdate(deltaTime, unscaledDeltaTime);
+      eventDispatchers.Broadcast("FixedUpdate");
+      eventDispatchers.Broadcast("FixedUpdate", deltaTime);
+      eventDispatchers.Broadcast("FixedUpdate", deltaTime, unscaledDeltaTime);
+
+      this.timerManager.FixedUpdate(deltaTime, unscaledDeltaTime);
+      frameCallbackMananger.FixedUpdate();
+    }
+
+    public void OnApplicationQuit()
+    {
+      GameData.instance.quit_time_ticks = DateTimeUtil.NowTicks();
+      GameData.instance.Save();
+      GameData2.instance.Save();
+    }
+
+    public void OnApplicationPause(bool is_paused)
+    {
+    }
+  }
+}

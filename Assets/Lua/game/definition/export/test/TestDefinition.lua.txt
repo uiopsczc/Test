@@ -1,0 +1,33 @@
+---@class TestDefinition
+---@field id
+---@field name
+---@field None
+---@field country
+---@field age_dict
+---@field None
+---@field None
+local _
+
+
+local definition = {
+
+  [
+[=[3]=]
+] = {id = [=[3]=],name = [=[chenzhiquan]=],country = global.Translate([=[china]=]),},
+
+  [
+[=[2]=]
+] = {id = [=[2]=],name = [=[uiopsczc]=],country = global.Translate([=[usa]=]),age_dict = {[
+[=[哒哒星]=]
+] = [=["你好,我是不不不"]=],[
+[=["星哥"]=]
+] = [=[3]=],},},
+
+  [
+[=[1]=]
+] = {id = [=[1]=],name = [=[dadaxing]=],country = global.Translate([=[sb]=]),age_dict = {[
+[=[星仔不不]=]
+] = [=[4]=],},},
+
+}
+return definition

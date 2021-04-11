@@ -1,0 +1,25 @@
+---@class MissionDefinition
+---@field id
+---@field name
+---@field class_path_lua
+---@field class_path_cs
+---@field type_1
+---@field type_2
+---@field finish_condition
+---@field is_auto_check_finish
+---@field onAccept_doerEvent_id
+---@field onFinish_doerEvent_id
+---@field onGiveUp_doerEvent_id
+---@field reward_dict
+---@field find_item_dict
+local _
+
+
+local definition = {
+
+  [
+[=[1]=]
+] = {id = [=[1]=],name = [=[任务1]=],finish_condition = [=[{@eval(${u.cp}>0)}]=],onAccept_doerEvent_id = [=[1]=],},
+
+}
+return definition

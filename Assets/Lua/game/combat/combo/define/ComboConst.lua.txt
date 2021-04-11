@@ -1,0 +1,6 @@
+---@class ComboConst
+local ComboConst = {}
+
+ComboConst.Normal_Attack_Combo_Max_Duration = 1
+
+return ComboConst

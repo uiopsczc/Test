@@ -1,0 +1,13 @@
+local ProfilerTest = {}
+
+
+function ProfilerTest.Test1()
+  Profiler:Start()
+end
+
+function ProfilerTest.Test2()
+  Profiler:Stop()
+end
+
+
+return ProfilerTest

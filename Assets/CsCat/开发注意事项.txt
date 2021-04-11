@@ -1,0 +1,1 @@
+动画状态机  要立刻播放某一时刻  需要先Animator.PlayInFixedTime("animatonName", -1,具体时间); 然后记得要调用Animator.Update(0);

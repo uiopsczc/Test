@@ -1,0 +1,113 @@
+require("luacat.ui.define.UIConst")
+---@class UIManager:UIObject
+local UIManager = Class("UIManager", UIObject)
+
+function UIManager:Init()
+  UIManager.super.Init(self)
+  self.graphicComponent:SetGameObject(GameObject.Find(UIConst.UIManager_Path), true)
+  ---@type CS.UnityEngine.Camera
+  self.uiCamera = GameObject.Find(UIConst.UICamera_Path):GetComponent(typeof(CS.UnityEngine.Camera))
+  ---@type CS.UnityEngine.Canvas
+  self.uiCanvas = GameObject.Find(UIConst.UICanvas_Path):GetComponent(typeof(CS.UnityEngine.Canvas))
+  ---@type CS.UnityEngine.RectTransform
+  self.uiCanvas_rectTransform = self.uiCanvas:GetComponent(typeof(CS.UnityEngine.RectTransform))
+  ---@type UIBloodManager
+  self.uiBloodManager = self:AddChild(nil, UIBloodManager)
+end
+
+function UIManager:PostInit()
+  ---@type CS.CsCat.UIManager
+  self.cs_uiManager = global.client.cs_client.uiManager
+  ---@type CS.CsCat.UILayerManager
+  self.uiLayerManager = self.cs_uiManager.uiLayerManager
+  self:InitListeners()
+  self:InitPanels()
+  self.uiNotifyManager = self.cs_uiManager.uiNotifyManager
+  UIManager.super.PostInit(self)
+end
+
+function UIManager:InitListeners()
+end
+
+function UIManager:InitPanels()
+  ---@type CS.CsCat.UILoadingPanel
+  self.uiLoadingPanel = self.cs_uiManager.uiLoadingPanel
+  ---@type CS.CsCat.UIWaitingPanel
+  self.uiWaitingPanel = self.cs_uiManager.uiWaitingPanel
+  ---@type CS.CsCat.UIShowLogoPanel
+  self.uiShowLogoPanel = self.cs_uiManager.uiShowLogoPanel
+  ---@type CS.CsCat.UIFadePanel
+  self.uiFadePanel = self.cs_uiManager.uiFadePanel
+  ---@type CS.CsCat.UILanternNotifyPanel
+  self.uiLanternNotifyPanel = self.cs_uiManager.uiLanternNotifyPanel
+end
+
+-----------------------------UIBlood--------------------------------
+---@param parent_transform CS.UnityEngine.Transform
+---@param max_value number
+---@param slider_count number
+---@param to_value number
+---@param slider_color_list Color[]
+---@retrun UIBlood
+function UIManager:AddUIBlood(parent_transform, max_value, slider_count, to_value, slider_color_list)
+  return self.uiBloodManager:AddUIBlood(parent_transform, max_value, slider_count, to_value, slider_color_list)
+end
+
+---@param uiBlood UIBlood
+function UIManager:RemoveUIBlood(uiBlood)
+  return self.uiBloodManager:RemoveChild(uiBlood.key)
+end
+
+-----------------------------Notify--------------------------------
+function UIManager:Notify(desc, parent_transform, is_add_to_child_panel_stack)
+  is_add_to_child_panel_stack = is_add_to_child_panel_stack or false
+  self.uiNotifyManager:Notify(desc, parent_transform, is_add_to_child_panel_stack)
+end
+
+function UIManager:LanternNotify(desc)
+  self.uiNotifyManager:LanternNotify(desc)
+end
+-----------------------------Fade--------------------------------
+function UIManager:HideFade()
+  self.uiFadePanel:HideFade()
+end
+
+function UIManager:FadeInOut(duration, callback)
+  self.uiFadePanel:FadeInOut(duration, callback)
+end
+
+function UIManager:FadeTo(fromAplha, toAplha, duration, callback)
+  if fromAplha then
+    self.uiFadePanel:FadeTo(fromAplha, toAplha, duration, callback)
+  else
+    self.uiFadePanel:FadeTo(toAplha, duration, callback)
+  end
+
+end
+----------------------------Loading--------------------------------
+function UIManager:SetLoadingPct(pct)
+  self.uiLoadingPanel:SetPct(pct)
+end
+
+function UIManager:HideLoading()
+  self.uiLoadingPanel:HideLoading()
+end
+----------------------------Waiting--------------------------------
+function UIManager:StartWaiting()
+  self.uiWaitingPanel:StartWaiting()
+end
+
+function UIManager:EndWaiting()
+  self.uiWaitingPanel:EndWaiting()
+end
+
+function UIManager:HideWaiting()
+  self.uiWaitingPanel:HideWaiting()
+end
+--------------------------------------------------------------------
+function UIManager:__Reset()
+  UIManager.super.__Reset(self)
+  self:CloseAllChildPanels(true)
+end
+
+return UIManager

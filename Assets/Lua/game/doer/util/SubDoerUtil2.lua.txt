@@ -1,0 +1,257 @@
+---@class SubDoerUtil2
+local SubDoerUtil2 = Class("SubDoerUtil2")
+
+--************************** 里面的结构是  dict<id = List<Doer>>***********************
+------------------------DoXXX--------------------------------
+-- 卸载doer中的sub_doer_key子doers
+---@param parent_doer Doer
+---@param relase_sub_doer_func fun(sub_doer:Doer)
+function SubDoerUtil2.DoReleaseSubDoer(parent_doer, sub_doer_key, relase_sub_doer_func)
+  --销毁
+  local sub_doers = SubDoerUtil2.GetSubDoers(parent_doer, sub_doer_key)
+  for i = #sub_doers, 1, -1 do
+    local sub_doer = sub_doers[i]
+    relase_sub_doer_func(sub_doer)
+    sub_doer:SetEnv(nil)
+    sub_doer:Destruct()
+  end
+  table.RemoveAll_Dict(SubDoerUtil2.GetSubDoerDict_ToEdit(parent_doer, sub_doer_key))
+end
+-----------------容器---------------------
+-- 获取doer中的sub_doer_key子doers  有id一层的包裹
+---@param parent_doer Doer
+---@param filter_func fun(sub_doer:Doer)
+---@return Doer[]
+function SubDoerUtil2.GetSubDoers(parent_doer, sub_doer_key, id, filter_func)
+  ---@type table<string,Doer[]>
+  local dict = SubDoerUtil2.GetSubDoerDict_ToEdit(parent_doer, sub_doer_key)
+  if not id then
+    local result = {}
+    if not filter_func then
+      for id, sub_doer_list in pairs(dict) do
+        table.InsertRange_Array(result, nil, sub_doer_list)
+      end
+    else
+      for id, sub_doer_list in pairs(dict) do
+        for _, sub_doer in ipairs(sub_doer_list) do
+          if filter_func(sub_doer) then
+            table.insert(result, sub_doer)
+          end
+        end
+      end
+    end
+    return result
+  end
+  local list = SubDoerUtil2.GetSubDoers_ToEdit(parent_doer, sub_doer_key, id)
+  local result = {}
+  for _, sub_doer in ipairs(list) do
+    if not filter_func or filter_func(sub_doer) then
+      table.insert(result, sub_doer)
+    end
+  end
+  return result
+end
+
+-- 获取doer中的sub_doer_key子doers  有id一层的包裹 可以直接插入删除
+---@param parent_doer Doer
+---@return Doer[]
+function SubDoerUtil2.GetSubDoers_ToEdit(parent_doer, sub_doer_key, id)
+  local dict = SubDoerUtil2.GetSubDoerDict_ToEdit(parent_doer, sub_doer_key)
+  local list = table.GetOrAddDefault_Dict(dict, id, function()
+    return {}
+  end)
+  return list
+end
+
+---@return table<string,Doer[]>
+function SubDoerUtil2.GetSubDoerDict_ToEdit(parent_doer, sub_doer_key)
+  local dict = parent_doer:GetOrAddTmp(sub_doer_key, function()
+    return {}
+  end)
+  return dict
+end
+
+---@return Doer
+function SubDoerUtil2.GetSubDoer(parent_doer, sub_doer_key, id_or_rid)
+  local is_id = IdUtil.IsId(id_or_rid)
+  local id = is_id and id_or_rid or IdUtil.RidToId(id_or_rid)
+  local dict = SubDoerUtil2.GetSubDoerDict_ToEdit(parent_doer, sub_doer_key)
+  local list = dict[id]
+  if not table.IsNilOrEmpty(list) then
+    for _, sub_doer in ipairs(list) do
+      if is_id then -- id的情况
+        return sub_doer
+      else -- rid的情况
+        if sub_doer:GetRid() == id_or_rid then
+          return sub_doer
+        end
+      end
+    end
+  end
+end
+
+
+-- doer中sub_doer_key的子doers
+---@param parent_doer Doer
+---@param filter_func fun(sub_doer:Doer)
+function SubDoerUtil2.HasSubDoers(parent_doer, sub_doer_key, id, filter_func)
+  return not table.IsNilOrEmpty(SubDoerUtil2.GetSubDoers(parent_doer, sub_doer_key, id, filter_func))
+end
+
+-- 获取doer中的sub_doer_key的子doer数量  并不是sub_doer:GetCount()累加，而是sub_doers的个数
+---@param parent_doer Doer
+function SubDoerUtil2.GetSubDoersCount(parent_doer, sub_doer_key, id, filter_func)
+  return table.Count(SubDoerUtil2.GetSubDoers(parent_doer, sub_doer_key, id, filter_func))
+end
+
+-- 获取doer中的sub_doer_key的子doer数量  sub_doer:GetCount()累加
+---@param parent_doer Doer
+function SubDoerUtil2.GetSubDoerCount(parent_doer, sub_doer_key, id, filter_func)
+  local sub_doers = SubDoerUtil2.GetSubDoers(parent_doer, sub_doer_key, id, filter_func)
+  local count = 0
+  for _, sub_doer in ipairs(sub_doers) do
+    count = count + sub_doer:GetCount()
+  end
+  return count
+end
+
+function SubDoerUtil2.GetSubDoerIds(parent_doer, sub_doer_key)
+  local dict = SubDoerUtil2.GetSubDoerDict_ToEdit(parent_doer, sub_doer_key)
+  local result = {}
+  for id, _ in pairs(dict) do
+    table.insert(result, id)
+  end
+  return result
+end
+
+
+--add_subDoer 中设置数量
+---@param add_subDoer Doer
+function SubDoerUtil2.AddSubDoers(parent_doer, sub_doer_key, add_subDoer)
+  local id = add_subDoer:GetId()
+  add_subDoer:SetOwner(parent_doer)
+  local can_fold = add_subDoer:CanFold()
+  local sub_doers = SubDoerUtil2.GetSubDoers_ToEdit(parent_doer, sub_doer_key, id)
+  if can_fold then
+    -- 可以折叠的
+    if table.IsNilOrEmpty(sub_doers) then
+      table.insert(sub_doers, add_subDoer)
+    else
+      sub_doers[1]:AddCount(add_subDoer:GetCount())
+      add_subDoer:SetEnv(nil)
+      add_subDoer:Destruct()
+    end
+  else
+    -- 不可折叠的
+    table.insert(sub_doers, add_subDoer)
+  end
+end
+
+function SubDoerUtil2.RemoveSubDoers(parent_doer, sub_doer_key, id, count, sub_doer_factory)
+  local sub_doers = SubDoerUtil2.GetSubDoers_ToEdit(parent_doer, sub_doer_key, id)
+  local current_count = 0
+  local result = {}
+  if table.IsNilOrEmpty(sub_doers) then
+    return result
+  end
+  if not count then -- 全部删除
+    for i = #sub_doers, 1, -1 do
+      local sub_doer = sub_doers[i]
+      table.remove(sub_doers, i)
+      sub_doer:SetEnv(nil)
+      table.insert(result,sub_doer)
+    end
+    table.Reverse_Array(result)
+    return result
+  end
+  local can_fold = sub_doers[1]:CanFold()
+  for i = #sub_doers, 1, -1 do
+    local sub_doer = sub_doers[i]
+    if not can_fold then -- 不可折叠的
+      table.remove(sub_doers, i)
+      sub_doer:SetEnv(nil)
+      current_count = current_count  + 1
+      table.insert(result,sub_doer)
+      if current_count == count then
+        return result
+      end
+    else  -- 可折叠的
+      local sub_doer_count = sub_doer:GetCount()
+      if sub_doer_count > count then
+        -- 有多
+        sub_doer:AddCount(-count)
+        local clone = sub_doer_factory:NewDoer(sub_doer:GetId())
+        clone:SetCount(count)
+        table.insert(result,clone)
+      else
+        -- 不够或者相等
+        table.remove(sub_doers, i)
+        sub_doer:SetEnv(nil)
+        table.insert(result,sub_doer)
+      end
+      return result
+    end
+  end
+  return result
+end
+
+
+function SubDoerUtil2.CanRemoveSubDoers(parent_doer, sub_doer_key, id, count)
+  local current_count = SubDoerUtil2.GetSubDoerCount(parent_doer, sub_doer_key, id)
+  if current_count >= count then
+    return true
+  else
+    return false
+  end
+end
+
+
+function SubDoerUtil2.RemoveSubDoer(parent_doer, sub_doer_key, sub_doer_or_rid)
+  if IsString(sub_doer_or_rid) then  -- rid
+    local id = IdUtil.RidToId(sub_doer_or_rid)
+    local sub_doers = SubDoerUtil2.GetSubDoers_ToEdit(parent_doer, sub_doer_key, id)
+    for i = #sub_doers,1,-1 do
+      local sub_doer = sub_doers[i]
+      if sub_doer:GetRid() == sub_doer_or_rid then
+        sub_doer:SetEnv(nil)
+        table.remove(sub_doers,i)
+        return sub_doer
+      end
+    end
+  else
+    local id = sub_doer_or_rid:GetId()
+    local sub_doers = SubDoerUtil2.GetSubDoers_ToEdit(parent_doer, sub_doer_key, id)
+    for i = #sub_doers,1,-1 do
+      local sub_doer = sub_doers[i]
+      if sub_doer == sub_doer_or_rid then
+        sub_doer:SetEnv(nil)
+        table.remove(sub_doers,i)
+        return sub_doer
+      end
+    end
+  end
+end
+
+
+
+
+
+
+-- 清除doer中sub_doer_key的子doers
+---@param parent_doer Doer
+---@param clear_sub_doer_func fun(sub_doer:Doer)
+function SubDoerUtil2.ClearSubDoers(parent_doer, sub_doer_key, clear_sub_doer_func)
+  ---@type table<string,Doer[]>
+  local dict = SubDoerUtil2.GetSubDoerDict_ToEdit(parent_doer, sub_doer_key)
+  for id, sub_doer_list in pairs(dict) do
+    for i = #sub_doer_list, 1, -1 do
+      local sub_doer = sub_doer_list[i]
+      clear_sub_doer_func(sub_doer)
+      sub_doer:SetEnv(nil)
+      sub_doer:Destruct()
+    end
+  end
+  table.RemoveAll_Dict(dict)
+end
+
+return SubDoerUtil2

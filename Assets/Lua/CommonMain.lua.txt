@@ -1,0 +1,3 @@
+require("common.RequirePath")
+require("ShortNameCS")
+require("ShortNameLua")

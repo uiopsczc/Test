@@ -1,0 +1,9 @@
+---@class UIGuidePanelBase_FingerItem:UIObject
+local UIGuidePanelBase_FingerItem = Class("UIGuidePanelBase_FingerItem", UIObject)
+
+function UIGuidePanelBase_FingerItem:Init(gameObject)
+  UIGuidePanelBase_FingerItem.super.Init(self,gameObject)
+  self.graphicComponent:SetGameObject(gameObject, true)
+end
+
+return UIGuidePanelBase_FingerItem

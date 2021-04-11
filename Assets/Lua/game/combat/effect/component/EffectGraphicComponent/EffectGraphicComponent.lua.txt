@@ -1,0 +1,58 @@
+---@class EffectGraphicComponent:GraphicComponent
+local EffectGraphicComponent = Class("EffectGraphicComponent", GraphicComponent)
+
+function EffectGraphicComponent:Init()
+  EffectGraphicComponent.super.Init(self, global.client.combat.effectManager.resLoadComponent)
+  ---@type EffectEntity
+  self.effectEntity = self.entity
+end
+
+function EffectGraphicComponent:OnAllAssetsLoadDone()
+  EffectGraphicComponent.super.OnAllAssetsLoadDone(self)
+  self:ApplyToTransform(self.effectEntity.transformComponent:GetPosition(), self.effectEntity.transformComponent:GetEulerAngles())
+end
+
+---@param position Vector3
+---@param eulerAngles Vector3
+function EffectGraphicComponent:ApplyToTransform(position, eulerAngles)
+  if self.transform == nil then
+    return
+  end
+  if position then
+    self.transform.position = position
+  end
+  if eulerAngles then
+    self.transform.eulerAngles = eulerAngles
+  end
+end
+
+function EffectGraphicComponent:DestroyGameObject()
+  if self.gameObject then
+    PoolCatManagerUtil.DespawnGameObject(self.gameObject)
+  end
+end
+
+function EffectGraphicComponent:GetEffectGameObjectPoolName()
+  return EffectManagerConst.Pool_Name .. "_" .. self.effectEntity.effect_id
+end
+
+---@param prefab CS.UnityEngine.GameObject
+function EffectGraphicComponent:GetEffectGameObjectPool(prefab)
+  return PoolCatManagerUtil.GetOrAddGameObjectPool(self:GetEffectGameObjectPoolName(), prefab, EffectManagerConst.Pool_Name .. "/" .. self.effectEntity.effect_id)
+end
+
+---@param prefab CS.UnityEngine.GameObject
+function EffectGraphicComponent:InstantiateGameObject(prefab)
+  return self:GetEffectGameObjectPool(prefab):SpawnGameObject()
+end
+
+function EffectGraphicComponent:IsCanUpdate()
+  return self.gameObject and EffectGraphicComponent.super.IsCanUpdate(self)
+end
+
+function EffectGraphicComponent:__Update(deltaTime, unscaledDeltaTime)
+  EffectGraphicComponent.super.__Update(self, deltaTime, unscaledDeltaTime)
+  self:ApplyToTransform(self.effectEntity.transformComponent:GetPosition(),self.effectEntity.transformComponent:GetEulerAngles())
+end
+
+return EffectGraphicComponent

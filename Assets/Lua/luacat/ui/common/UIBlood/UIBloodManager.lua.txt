@@ -1,0 +1,44 @@
+---@class UIBloodManager:UIObject
+local UIBloodManager = Class("UIBloodManager", UIObject)
+
+function UIBloodManager:Init()
+  UIBloodManager.super.Init(self)
+  self.graphicComponent:SetGameObject(GameObject.Find(UIConst.UICanvas_Path .. "/UIBloodManager"),true)
+  ---@type CS.UnityEngine.GameObject[]
+  self.uiBlood_gameObject_pool = {}
+end
+
+---@param parent_transform CS.UnityEngine.Transform
+---@param max_value number
+---@param slider_count number
+---@param to_value number
+---@param slider_color_list Color[]
+---@retrun UIBlood
+function UIBloodManager:AddUIBlood(parent_transform, max_value, slider_count, to_value, slider_color_list)
+  local uiBlood = self:AddChild(nil, UIBlood, parent_transform, max_value, slider_count, to_value, slider_color_list)
+  return uiBlood
+end
+
+---@return CS.UnityEngine.GameObject
+function UIBloodManager:SpawnUIBloodGameObject()
+  if #self.uiBlood_gameObject_pool > 0 then
+    return table.remove(self.uiBlood_gameObject_pool, #self.uiBlood_gameObject_pool)
+  end
+  return nil
+end
+
+---@param uiBlood_gameObject CS.UnityEngine.GameObject
+function UIBloodManager:DespawnUIBloodGameObject(uiBlood_gameObject)
+  if not uiBlood_gameObject then
+    return
+  end
+  table.insert(self.uiBlood_gameObject_pool, uiBlood_gameObject)
+  uiBlood_gameObject.transform:SetParent(self.graphicComponent.transform)
+end
+
+function UIBloodManager:__Reset()
+  UIBloodManager.super.__Reset(self)
+  self.graphicComponent:SetIsShow(false)
+end
+
+return UIBloodManager

@@ -1,0 +1,1067 @@
+--坐标是x增加是向右，y增加是向上（与unity的坐标系一致），数组用table.ToLeftBottomBaseArrays转换
+---@class AStarUtil
+local AStarUtil = {}
+
+-----------------------------------GridType相关--------------------------------
+-- 是否有效障碍
+function AStarUtil.IsValidObstacleType(grid_type)
+  return (grid_type & 0xff) ~= AStarMapPathConst.Invalid_Obstacle_Types
+end
+
+function AStarUtil.ToGridType(field, terrain_type, obstacle_type)
+  field = field or 0
+  terrain_type = terrain_type or 0
+  obstacle_type = obstacle_type or 0
+  return (field << 8) + (terrain_type << 3) + obstacle_type
+end
+
+-- 障碍类型，取后3位, 数值范围[0,7]
+function AStarUtil.GetObstacleType(grid_type)
+  return grid_type & 0x7
+end
+
+-- 地形类型，取后三位向前的5位 数值范围[0,31]
+function AStarUtil.GetTerrainType(grid_type)
+  return (grid_type & 0xff) >> 3
+end
+
+-- 区块编号值 ,基于grid_type的低16位移除低8位的值
+function AStarUtil.GetField(grid_type)
+  return (grid_type & 0xff00) >> 8  -- >>8去掉低8位
+end
+
+-- 是否是同一个区块编号值,基于grid_type的低16位移除低8位的值
+function AStarUtil.IsSameField(v1, v2)
+  return AStarUtil.GetField(v1) == AStarUtil.GetField(v2)
+end
+
+-- 获取区块的Point，基于Client_View_Width_Grid_Count，Client_View_Height_Grid_Count
+---@param p Vector2
+function AStarUtil.GetBlockPoint(p)
+  local x = math.modf(p.x / AStarMapPathConst.Client_View_Width_Grid_Count)
+  local y = math.modf(p.y / AStarMapPathConst.Client_View_Height_Grid_Count)
+  return Vector2(x, y)
+end
+
+-- 是否在同一区块，基于Client_View_Width_Grid_Count，Client_View_Height_Grid_Count
+---@param p Vector2
+function AStarUtil.IsSameBlock(p1, p2)
+  return AStarUtil.GetBlockPoint(p1) == AStarUtil.GetBlockPoint(p2)
+end
+
+-- 是否在相邻区块，block是基于Client_View_Width_Grid_Count，Client_View_Height_Grid_Count
+function AStarUtil.IsNeighborBlock(p1_x, p1_y, p2_x, p2_y)
+    local x = math.abs(math.modf((p1_x - p2_x) / AStarMapPathConst.Client_View_Width_Grid_Count))
+    local y = math.abs(math.modf((p1_y - p2_y) / AStarMapPathConst.Client_View_Width_Grid_Count))
+    return x <= 1 and y <= 1
+end
+-----------------------------------InRange相关--------------------------------
+---@param range_grids number[][]
+function AStarUtil.IsInRangeX(range_grids, x)
+  if x < 1 or x > #range_grids then
+    return false
+  end
+  return true
+end
+
+---@param range_grids number[][]
+function AStarUtil.IsInRangeY(range_grids, y)
+  if y < 1 or y > #range_grids[1] then
+    return false
+  end
+  return true
+end
+
+---@param range_grids number[][]
+function AStarUtil.IsInRange(range_grids, x, y)
+  if not AStarUtil.IsInRangeX(range_grids, x) or not AStarUtil.IsInRangeY(range_grids, y) then
+    return false
+  end
+  return true
+end
+-----------------------------------Neighbor相关--------------------------------
+---@param base_point Vector2
+---@return Vector2[]
+function AStarUtil.GetNeighborList(base_point)
+  local neighbor_list = {}
+  table.insert(neighbor_list, Vector2(base_point.x - 1, base_point.y + 1)) -- 增加左上角邻居节点
+  table.insert(neighbor_list, Vector2(base_point.x - 1, base_point.y)) -- 增加左侧邻居节点
+  table.insert(neighbor_list, Vector2(base_point.x - 1, base_point.y - 1)) -- 增加左下角的邻居节点
+  table.insert(neighbor_list, Vector2(base_point.x, base_point.y + 1)) -- 增加上方邻居节点
+  table.insert(neighbor_list, Vector2(base_point.x, base_point.y - 1)) -- 增加下方邻居节点
+  table.insert(neighbor_list, Vector2(base_point.x + 1, base_point.y + 1)) -- 增加右上角邻居节点
+  table.insert(neighbor_list, Vector2(base_point.x + 1, base_point.y)) -- 增加右侧邻居节点
+  table.insert(neighbor_list, Vector2(base_point.x + 1, base_point.y - 1)) -- 增加右下角邻居节点
+  return neighbor_list
+end
+
+---@param base_point Vector2
+---@return Vector2[]
+function AStarUtil.GetLeftTopNeighborList(base_point)
+  local neighbor_list = {}
+  table.insert(neighbor_list, Vector2(base_point.x - 1, base_point.y + 1)) -- 增加左上角邻居节点
+  table.insert(neighbor_list, Vector2(base_point.x - 1, base_point.y)) -- 增加左侧邻居节点
+  table.insert(neighbor_list, Vector2(base_point.x, base_point.y + 1)) -- 增加上方邻居节点
+  return neighbor_list
+end
+
+---@param base_point Vector2
+---@return Vector2[]
+function AStarUtil.GetLeftBottomNeighborList(base_point)
+  local neighbor_list = {}
+  table.insert(neighbor_list, Vector2(base_point.x - 1, base_point.y)) -- 增加左侧邻居节点
+  table.insert(neighbor_list, Vector2(base_point.x - 1, base_point.y - 1)) -- 增加左下角的邻居节点
+  table.insert(neighbor_list, Vector2(base_point.x, base_point.y - 1)) -- 增加下方邻居节点
+  return neighbor_list
+end
+
+---@param base_point Vector2
+---@return Vector2[]
+function AStarUtil.GetRightTopNeighborList(base_point)
+  local neighbor_list = {}
+  table.insert(neighbor_list, Vector2(base_point.x, base_point.y + 1)) -- 增加上方邻居节点
+  table.insert(neighbor_list, Vector2(base_point.x + 1, base_point.y + 1)) -- 增加右上角邻居节点
+  table.insert(neighbor_list, Vector2(base_point.x + 1, base_point.y)) -- 增加右侧邻居节点
+  return neighbor_list
+end
+
+---@param base_point Vector2
+---@return Vector2[]
+function AStarUtil.GetRightBottomNeighborList(base_point)
+  local neighbor_list = {}
+  table.insert(neighbor_list, Vector2(base_point.x + 1, base_point.y)) -- 增加右侧邻居节点
+  table.insert(neighbor_list, Vector2(base_point.x + 1, base_point.y - 1)) -- 增加右下角邻居节点
+  table.insert(neighbor_list, Vector2(base_point.x, base_point.y - 1)) -- 增加下方邻居节点
+  return neighbor_list
+end
+
+---@param o Vector2
+---@param p Vector2
+---@return Vector2[]
+function AStarUtil.GetOppositeNeighborList(o, p)
+  local list = AStarUtil.GetNeighborList(o)
+  local dx = p.x > o.x and 1 or p.x < o.x and -1 or 0
+  local dy = p.y > o.y and 1 or p.y < o.y and -1 or 0
+
+  table.RemoveByValue_Array(list, Vector2(o.x + dx, o.y + dy))
+  if dx == 0 then
+    table.RemoveByValue_Array(list, Vector2(o.x + 1, o.y + dy))
+    table.RemoveByValue_Array(list, Vector2(o.x - 1, o.y + dy))
+  elseif dy == 0 then
+    table.RemoveByValue_Array(list, Vector2(o.x + dx, o.y + 1))
+    table.RemoveByValue_Array(list, Vector2(o.x + dx, o.y - 1))
+  else
+    table.RemoveByValue_Array(list, Vector2(o.x, o.y + dy))
+    table.RemoveByValue_Array(list, Vector2(o.x + dx, o.y))
+  end
+  return list
+end
+
+-----------------------------------ViewingRange相关--------------------------------
+-- 获得left_bottom和right_top的范围两边外延（AStarConst.Client_View_Width_Grid_Count / 2，AStarConst.Client_View_Height_Grid_Count / 2） 可见范围
+---@param left_bottom Vector2
+---@param right_top Vector2
+---@return AStarRange
+function AStarUtil.GetViewingRange(left_bottom, right_top)
+  right_top = right_top or left_bottom
+  local min_x = math.min(left_bottom.x, right_top.x) - AStarMapPathConst.Client_View_Width_Grid_Count / 2
+  local min_y = math.min(left_bottom.y, right_top.y) - AStarMapPathConst.Client_View_Height_Grid_Count / 2
+  local max_x = math.max(left_bottom.x, right_top.x) + AStarMapPathConst.Client_View_Width_Grid_Count / 2
+  local max_y = math.max(left_bottom.y, right_top.y) + AStarMapPathConst.Client_View_Height_Grid_Count / 2
+  return AStarRange.New(min_x, min_y, max_x, max_y)
+end
+
+-- 是否在视图内
+---@param viewing_range_base_point Vector2
+---@param check_point Vector2
+function AStarUtil.IsInViewingRange(viewing_range_base_point, check_point)
+  return AStarUtil.GetViewingRange(viewing_range_base_point, viewing_range_base_point):IsInRange(check_point)
+end
+--------------------------------------CanPass相关---------------------------------------
+-- 检测某个点是否可通过
+---@param grids_or_astarMapPath number[][]|AStarMapPath
+---@param x number
+---@param y number
+---@param can_pass_obstacle_types number[]
+---@param can_pass_terrain_types number[]
+---@param can_out boolean @是否允许在场景外
+function AStarUtil.CanPass(grids_or_astarMapPath, x, y, can_pass_obstacle_types, can_pass_terrain_types, can_out)
+  if IsInstanceOf(grids_or_astarMapPath, "AStarMapPath") then
+    return AStarUtil.__CanPass2(grids_or_astarMapPath, x, y, can_pass_obstacle_types, can_pass_terrain_types,can_out)
+  else
+    return AStarUtil.__CanPass1(grids_or_astarMapPath, x, y, can_pass_obstacle_types, can_pass_terrain_types )
+  end
+end
+
+---@param girds number[][]
+---@param x number
+---@param y number
+---@param can_pass_obstacle_types number[]
+---@param can_pass_terrain_types number[]
+function AStarUtil.__CanPass1(grids, x, y, can_pass_obstacle_types, can_pass_terrain_types)
+  local grid_type = grids[x][y]
+  if grid_type then
+    local grid_obstacle_type = AStarUtil.GetObstacleType(grid_type)
+    if  grid_obstacle_type ~= 0 and can_pass_obstacle_types[grid_obstacle_type+1] == 0 then -- grid_obstacle_type+1是因为lua数组从1开始
+      -- 障碍
+      return false
+    end
+
+    local grid_terrain_type = AStarUtil.GetTerrainType(grid_type)
+    if  grid_terrain_type ~= 0 and can_pass_terrain_types[grid_terrain_type+1] == 0 then -- grid_obstacle_type+1是因为lua数组从1开始
+      -- 地形
+      return false
+    end
+  end
+
+
+  return true
+end
+
+---@param astarMapPath AStarMapPath
+---@param x number
+---@param y number
+---@param can_pass_obstacle_types number[]
+---@param can_pass_terrain_types number[]
+---@param can_out boolean
+function AStarUtil.__CanPass2(astarMapPath, x, y, can_pass_obstacle_types, can_pass_terrain_types, can_out)
+  if not AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), x, y) then
+    return can_out
+  end
+  local grid_type = astarMapPath:GetFinalGrids()[x][y] -- 固有地形+障碍
+  if not AStarUtil.IsValidObstacleType(grid_type) then
+    -- 填充区域
+    return can_out
+  end
+  if not AStarUtil.CanPass(astarMapPath:GetFinalGrids(), x, y, can_pass_obstacle_types, can_pass_terrain_types) then
+    return false
+  end
+  return true
+end
+
+-- 检测轨迹是否可通过
+---@param astarMapPath AStarMapPath
+---@param track_list Vector2[]
+---@param can_pass_obstacle_types number[]
+---@param can_pass_terrain_types number[]
+---@param can_out boolean @是否允许在场景外
+function AStarUtil.CanTrackListPass(astarMapPath, track_list, can_pass_obstacle_types, can_pass_terrain_types, can_out)
+  if #track_list == 0 then
+    return true
+  end
+  local lp = track_list[1]
+  if #track_list == 1 then
+    return AStarUtil.CanPass(astarMapPath, lp.x, lp.y, can_pass_obstacle_types, can_pass_terrain_types, can_out)
+  end
+  for i = 2, #track_list do
+    local p = track_list[i]
+    if not AStarUtil.CanPass(astarMapPath, p.x, p.y, can_pass_obstacle_types, can_pass_terrain_types, can_out) then
+      return false
+    end
+    local directionInfo = DirectionConst.GetDirectionInfo(p.x - lp.x, p.y - lp.y)
+    if directionInfo == DirectionConst.GetDirectionInfo("left_top") then
+      -- 左上角
+      if not AStarUtil.CanPass(astarMapPath, p.x + 1, p.y, can_pass_obstacle_types, can_pass_terrain_types, can_out) then
+        return false
+      end
+      if not AStarUtil.CanPass(astarMapPath, p.x, p.y - 1, can_pass_obstacle_types, can_pass_terrain_types, can_out) then
+        return false
+      end
+    end
+    if directionInfo == DirectionConst.GetDirectionInfo("right_top") then
+      -- 右上角
+      if not AStarUtil.CanPass(astarMapPath, p.x - 1, p.y, can_pass_obstacle_types, can_pass_terrain_types, can_out) then
+        return false
+      end
+      if not AStarUtil.CanPass(astarMapPath, p.x, p.y - 1, can_pass_obstacle_types, can_pass_terrain_types, can_out) then
+        return false
+      end
+    end
+    if directionInfo == DirectionConst.GetDirectionInfo("right_bottom") then
+      -- 右下角
+      if not AStarUtil.CanPass(astarMapPath, p.x - 1, p.y, can_pass_obstacle_types, can_pass_terrain_types, can_out) then
+        return false
+      end
+      if not AStarUtil.CanPass(astarMapPath, p.x, p.y + 1, can_pass_obstacle_types, can_pass_terrain_types, can_out) then
+        return false
+      end
+    end
+    if directionInfo == DirectionConst.GetDirectionInfo("left_bottom") then
+      -- 左下角
+      if not AStarUtil.CanPass(astarMapPath, p.x + 1, p.y, can_pass_obstacle_types, can_pass_terrain_types, can_out) then
+        return false
+      end
+      if not AStarUtil.CanPass(astarMapPath, p.x, p.y + 1, can_pass_obstacle_types, can_pass_terrain_types, can_out) then
+        return false
+      end
+    end
+    lp = p
+  end
+  return true
+end
+
+-- 检测两点间直线是否可通过
+---@param astarMapPath AStarMapPath
+---@param point_a Vector2
+---@param point_b Vector2
+---@param can_pass_obstacle_types number[]
+---@param can_pass_terrain_types number[]
+---@param can_out boolean
+function AStarUtil.CanLinePass(astarMapPath, point_a, point_b, can_pass_obstacle_types, can_pass_terrain_types, can_out)
+  if not can_out and (not AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), point_a.x, point_a.y) or not AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), point_b.x, point_b.y)) then
+    return false
+  end
+  local line_point_list = AStarUtil.GetLinePointList(point_a, point_b)
+  if not AStarUtil.CanTrackListPass(astarMapPath, line_point_list, can_pass_obstacle_types, can_pass_terrain_types, can_out) then
+    return false
+  end
+  return true
+end
+-------------------------------------AroundFreePoint相关-----------------------------------
+-- 获取P点四周为+-out_count的可以通过的点列表
+---@param astarMapPath AStarMapPath
+---@param base_point Vector2
+---@param out_count number
+---@param can_pass_obstacle_types number[]
+---@param can_pass_terrain_types number[]
+function AStarUtil.GetAroundFreePointList(astarMapPath, base_point, out_count, can_pass_obstacle_types, can_pass_terrain_types)
+  local list = {}
+  local x
+  local y
+  --log(base_point.x,base_point.y)
+  local field = AStarUtil.GetField(astarMapPath:GetFinalGrids()[base_point.x][base_point.y]) -- 所属区块值
+  local can_pass = AStarUtil.CanPass(astarMapPath, base_point.x, base_point.y, can_pass_obstacle_types, can_pass_terrain_types) -- 是否起始在障碍点
+
+  y = base_point.y - out_count -- 下边一行
+  if AStarUtil.IsInRangeY(astarMapPath:GetFinalGrids(), y) then
+    for x = base_point.x - out_count, base_point.x + out_count do
+      if AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), x, y)
+          and (not can_pass or field == AStarUtil.GetField(astarMapPath:GetFinalGrids()[x][y]))
+          and AStarUtil.CanPass(astarMapPath, x, y, can_pass_obstacle_types, can_pass_terrain_types) then
+        table.insert(list, Vector2(x, y))
+      end
+    end
+  end
+
+  x = base_point.x + out_count -- 右边一行
+  if AStarUtil.IsInRangeX(astarMapPath:GetFinalGrids(), x) then
+    for y = base_point.y - out_count, base_point.y + out_count do
+      if AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), x, y)
+          and (not can_pass or field == AStarUtil.GetField(astarMapPath:GetFinalGrids()[x][y]))
+          and AStarUtil.CanPass(astarMapPath, x, y, can_pass_obstacle_types, can_pass_terrain_types) then
+        table.insert(list, Vector2(x, y))
+      end
+    end
+  end
+
+  y = base_point.y + out_count -- 上边一行
+  if AStarUtil.IsInRangeY(astarMapPath:GetFinalGrids(), y) then
+    for x = base_point.x + out_count, base_point.x - out_count, -1 do
+      if AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), x, y)
+          and (not can_pass or field == AStarUtil.GetField(astarMapPath:GetFinalGrids()[x][y]))
+          and AStarUtil.CanPass(astarMapPath, x, y, can_pass_obstacle_types, can_pass_terrain_types) then
+        table.insert(list, Vector2(x, y))
+      end
+    end
+  end
+
+  x = base_point.x - out_count -- 左边一行
+  if AStarUtil.IsInRangeX(astarMapPath:GetFinalGrids(), x) then
+    for y = base_point.y + out_count, base_point.y - out_count, -1 do
+      if AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), x, y)
+          and (not can_pass or field == AStarUtil.GetField(astarMapPath:GetFinalGrids()[x][y]))
+          and AStarUtil.CanPass(astarMapPath, x, y, can_pass_obstacle_types, can_pass_terrain_types) then
+        table.insert(list, Vector2(x, y))
+      end
+    end
+  end
+  return list
+end
+
+-- 获取P点四周为+-out_count（包含边界）以内的可以通过的点
+---@param astarMapPath AStarMapPath
+---@param base_point Vector2
+---@param out_count number
+---@param except_point_list Vector2[]
+---@param can_pass_obstacle_types number[]
+---@param can_pass_terrain_types number[]
+---@param randomManager RandomManager
+function AStarUtil.FindAroundFreePoint(astarMapPath, base_point, out_count, except_point_list, can_pass_obstacle_types, can_pass_terrain_types,randomManager)
+  randomManager = randomManager or global.client.randomManager
+  if not out_count then
+    return AStarUtil.__FindAroundFreePoint(astarMapPath, base_point, except_point_list, can_pass_obstacle_types, can_pass_terrain_types,randomManager)
+  end
+  if not AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), base_point.x, base_point.y) then
+    return nil
+  end
+  local list = {}
+  if AStarUtil.CanPass(astarMapPath, base_point.x, base_point.y, can_pass_obstacle_types, can_pass_terrain_types) and (except_point_list == nil or not table.ContainsValue(except_point_list, base_point)) then
+    table.insert(list, base_point)
+  end
+  local max = math.max(math.max(base_point.x, astarMapPath:Width() - base_point.x), math.max(base_point.y, astarMapPath:Height() - base_point.y))
+  if max > out_count then
+    max = out_count
+  end
+  for i = 1, max do
+    local ls = AStarUtil.GetAroundFreePointList(astarMapPath, base_point, i, can_pass_obstacle_types, can_pass_terrain_types)
+    table.AddRange_Array(list, ls)
+  end
+  if except_point_list then
+    table.RemoveElementsOfSub_Array(list, except_point_list)
+  end
+  if #list > 0 then
+    return list[randomManager:RandomInt(1, #list + 1)]
+  end
+  return nil
+end
+
+---@param astarMapPath AStarMapPath
+---@param base_point Vector2
+---@param except_point_list Vector2[]
+---@param can_pass_obstacle_types number[]
+---@param can_pass_terrain_types number[]
+function AStarUtil.__FindAroundFreePoint(astarMapPath, base_point, except_point_list, can_pass_obstacle_types, can_pass_terrain_types, randomManager)
+  randomManager = randomManager or global.client.randomManager
+  if not AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), base_point.x, base_point.y) then
+    return nil
+  end
+  if AStarUtil.CanPass(astarMapPath, base_point.x, base_point.y, can_pass_obstacle_types, can_pass_terrain_types) and (not except_point_list or not table.ContainsValue(except_point_list, base_point)) then
+    return base_point
+  end
+  local max = math.max(math.max(base_point.x, astarMapPath:Width() - base_point.x), math.max(base_point.y, astarMapPath:Height() - base_point.y))
+  for i = 1, max do
+    local list = AStarUtil.GetAroundFreePointList(astarMapPath, base_point, i, can_pass_obstacle_types, can_pass_terrain_types)
+    if except_point_list then
+      table.RemoveElementsOfSub_Array(list, except_point_list)
+    end
+    if #list.Count > 0 then
+      return list[randomManager:RandomInt(1, #list.Count)]
+    end
+  end
+end
+-------------------------------------MostPassPoint-----------------------------------
+---@param astarMapPath AStarMapPath
+---@param track_list Vector2[]
+---@param can_pass_obstacle_types number[]
+---@param can_pass_terrain_types number[]
+---@param can_pass boolean
+function AStarUtil.GetMostPassPoint(astarMapPath, track_list, can_pass_obstacle_types, can_pass_terrain_types, can_out)
+  local lp = track_list[1]
+  local tp = lp
+  for i = 2, #track_list do
+    local p = track_list[i]
+    if not AStarUtil.CanPass(astarMapPath, p.x, p.y, can_pass_obstacle_types, can_pass_terrain_types, can_out) then
+      break
+    end
+    local directionInfo = DirectionConst.GetDirectionInfo(p.x - lp.x, p.y - lp.y)
+    if directionInfo == DirectionConst.GetDirectionInfo("left_top") then
+      -- 左上角
+      if not AStarUtil.CanPass(astarMapPath, p.x + 1, p.y, can_pass_obstacle_types, can_pass_terrain_types, can_out) then
+        break
+      end
+      if not AStarUtil.CanPass(astarMapPath, p.x, p.y - 1, can_pass_obstacle_types, can_pass_terrain_types, can_out) then
+        break
+      end
+    end
+
+    if directionInfo == DirectionConst.GetDirectionInfo("right_top") then
+      -- 右上角
+      if not AStarUtil.CanPass(astarMapPath, p.x - 1, p.y, can_pass_obstacle_types, can_pass_terrain_types, can_out) then
+        break
+      end
+      if not AStarUtil.CanPass(astarMapPath, p.x, p.y - 1, can_pass_obstacle_types, can_pass_terrain_types, can_out) then
+        break
+      end
+    end
+
+    if directionInfo == DirectionConst.GetDirectionInfo("right_bottom") then
+      -- 右下角
+      if not AStarUtil.CanPass(astarMapPath, p.x - 1, p.y, can_pass_obstacle_types, can_pass_terrain_types, can_out) then
+        break
+      end
+      if not AStarUtil.CanPass(astarMapPath, p.x, p.y + 1, can_pass_obstacle_types, can_pass_terrain_types, can_out) then
+        break
+      end
+    end
+
+    if directionInfo == DirectionConst.GetDirectionInfo("left_bottom") then
+      -- 左下角
+      if not AStarUtil.CanPass(astarMapPath, p.x + 1, p.y, can_pass_obstacle_types, can_pass_terrain_types, can_out) then
+        break
+      end
+      if not AStarUtil.CanPass(astarMapPath, p.x, p.y + 1, can_pass_obstacle_types, can_pass_terrain_types, can_out) then
+        break
+      end
+    end
+    lp = p
+    tp = lp
+  end
+
+  return tp
+end
+
+---@param astarMapPath AStarMapPath
+---@param lp Vector2
+---@param tp Vector2
+---@param can_pass_obstacle_types number[]
+---@param can_pass_terrain_types number[]
+---@param can_pass boolean
+function AStarUtil.GetMostLinePassPoint(astarMapPath, lp, tp, can_pass_obstacle_types, can_pass_terrain_types, can_out)
+  if not can_out and not AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), lp.x, lp.y) then
+    return lp
+  end
+  local point_list = AStarUtil.GetLinePointList(lp, tp)
+  return AStarUtil.GetMostPassPoint(astarMapPath, point_list, can_pass_obstacle_types, can_pass_terrain_types, can_out)
+end
+
+-------------------------------------RangeFreePoint-----------------------------------
+-- 获取range范围内的可以通过的格子列表
+function AStarUtil.GetRangeFreePointList(astarMapPath, x1, y1, x2, y2, except_point_list, can_pass_obstacle_types, can_pass_terrain_types)
+  local list = {}
+  for x = x1, x2 do
+    for y = y1, y2 do
+      if AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), x, y) then
+        local can_pass = AStarUtil.CanPass(astarMapPath, x, y, can_pass_obstacle_types, can_pass_terrain_types)
+        if can_pass then
+          local p = Vector2(x, y)
+          if not except_point_list or not table.ContainsValue(except_point_list, p) then
+            table.insert(list, p)
+          end
+        end
+      end
+    end
+  end
+  return list
+end
+
+
+-- 获取range范围内的可以通过的格子
+---@param randomManager RandomManager
+function AStarUtil.FindRangeFreePoint(astarMapPath, x1, y1, x2, y2, except_point_list, can_pass_obstacle_types, can_pass_terrain_types, randomManager)
+  randomManager = randomManager or global.client.randomManager
+  local list = AStarUtil.GetRangeFreePointList(astarMapPath, x1, y1, x2, y2, except_point_list, can_pass_obstacle_types, can_pass_terrain_types)
+  if except_point_list then
+    table.RemoveElementsOfSub_Array(list, except_point_list)
+  end
+  if #list > 0 then
+    return list[randomManager:RandomInt(1, #list + 1)]
+  end
+  return nil
+end
+
+--------------------------------------------RandomMovePoint相关-------------------------------
+---@param randomManager RandomManager
+function AStarUtil.GetRandomMovePoint(astarMapPath, base_point, goal_point, max_radius_between_target_point_and_goal_point, can_pass_obstacle_types, can_pass_terrain_types, randomManager)
+  randomManager = randomManager or global.client.randomManager
+  local out_count = randomManager:RandomInt(AStarMapPathConst.Random_Move_Distance_Min,
+      AStarMapPathConst.Random_Move_Distance_Max + 1)
+  local list = AStarUtil.GetAroundFreePointList(astarMapPath, base_point, out_count, can_pass_obstacle_types, can_pass_terrain_types)
+  while #list > 0 do
+    local remove_index = randomManager:RandomInt(1, #list + 1)
+    local target_point = list[remove_index]
+    table.remove(list, remove_index)
+    if Vector2.Distance(goal_point, target_point) <= max_radius_between_target_point_and_goal_point then
+      return target_point
+    end
+  end
+  return nil
+end
+------------------------------------------------------------------------------------------------
+-- 获取以center_point为中心，半径为radius的圆弧形格子列表
+function AStarUtil.GetArcPointList(center_point, radius)
+  local list = {}
+  local left = Vector2(center_point.x - radius, center_point.y)
+  local top = Vector2(center_point.x, center_point.y + radius)
+  local right = Vector2(center_point.x + radius, center_point.y)
+  local bottom = Vector2(center_point.x, center_point.y - radius)
+
+  local a = left
+  table.insert(list, a)
+  while true do
+    a = AStarUtil.GetArcFitPoint(center_point, a, radius, 1, 1)
+    if a.x > top.x or a.y > top.y then
+      break
+    end
+    if not table.ContainsValue(list, a) then
+      table.insert(list, a)
+    end
+  end
+
+  a = top
+  table.insert(list, a)
+  while true do
+    a = AStarUtil.GetArcFitPoint(center_point, a, radius, 1, -1)
+    if a.x > right.x or a.y < right.y then
+      break
+    end
+    if not table.ContainsValue(list, a) then
+      table.insert(list, a)
+    end
+  end
+
+  a = right
+  table.insert(list, a)
+  while true do
+    a = AStarUtil.GetArcFitPoint(center_point, a, radius, -1, -1)
+    if a.x < bottom.x or a.y < bottom.y then
+      break
+    end
+    if not table.ContainsValue(list, a) then
+      table.insert(list, a)
+    end
+  end
+
+  a = bottom
+  table.insert(list, a)
+  while true do
+    a = AStarUtil.GetArcFitPoint(center_point, a, radius, -1, 1)
+    if a.x < left.x or a.y > left.y then
+      break
+    end
+    if not table.ContainsValue(list, a) then
+      table.insert(list, a)
+    end
+  end
+  return list
+end
+
+function AStarUtil.GetArcFitPoint(center_point, base_point, radius, dx, dy)
+  local p1 = Vector2(base_point.x + dx, base_point.y)
+  local p2 = Vector2(base_point.x, base_point.y + dy)
+  local p3 = Vector2(base_point.x + dx, base_point.y + dy)
+  local d1 = Vector2.Distance(center_point, p1)
+  local d2 = Vector2.Distance(center_point, p2)
+  local d3 = Vector2.Distance(center_point, p3)
+  local dd1 = math.abs(d1 - radius)
+  local dd2 = math.abs(d2 - radius)
+  local dd3 = math.abs(d3 - radius)
+  if dd1 < dd2 then
+    if dd1 < dd3 then
+      return p1
+    else
+      return p3
+    end
+  else
+    if dd2 < dd3 then
+      return p2
+    else
+      return p3
+    end
+  end
+end
+
+-- 获取以center_point为中心，半径为radius的圆弧形格子列表
+function AStarUtil.GetArcPointList2(center_point, radius)
+  local list = {}
+  local left = Vector2(center_point.x - radius, center_point.y)
+  local top = Vector2(center_point.x, center_point.y + radius)
+  local right = Vector2(center_point.x + radius, center_point.y)
+  local bottom = Vector2(center_point.x, center_point.y - radius)
+
+  local a = left
+  table.insert(list, a)
+  while true do
+    a = AStarUtil.GetArcFitPoint2(list,center_point, a, radius, 1, 1)
+    if a.x > top.x or a.y > top.y then
+      break
+    end
+    if not table.ContainsValue(list, a) then
+      table.insert(list, a)
+    end
+  end
+
+  a = top
+  table.insert(list, a)
+  while true do
+    a = AStarUtil.GetArcFitPoint2(list,center_point, a, radius, 1, -1)
+    if a.x > right.x or a.y < right.y then
+      break
+    end
+    if not table.ContainsValue(list, a) then
+      table.insert(list, a)
+    end
+  end
+
+  a = right
+  table.insert(list, a)
+  while true do
+    a = AStarUtil.GetArcFitPoint2(list,center_point, a, radius, -1, -1)
+    if a.x < bottom.x or a.y < bottom.y then
+      break
+    end
+    if not table.ContainsValue(list, a) then
+      table.insert(list, a)
+    end
+  end
+
+  a = bottom
+  table.insert(list, a)
+  while true do
+    a = AStarUtil.GetArcFitPoint2(list,center_point, a, radius, -1, 1)
+    if a.x < left.x or a.y > left.y then
+      break
+    end
+    if not table.ContainsValue(list, a) then
+      table.insert(list, a)
+    end
+  end
+  return list
+end
+
+function AStarUtil.GetArcFitPoint2(list, center_point, base_point, radius, dx, dy)
+  local p1 = Vector2(base_point.x + dx, base_point.y)
+  local p2 = Vector2(base_point.x, base_point.y + dy)
+  local p3 = Vector2(base_point.x + dx, base_point.y + dy)
+  local d1 = Vector2.Distance(center_point, p1)
+  local d2 = Vector2.Distance(center_point, p2)
+  local d3 = Vector2.Distance(center_point, p3)
+  if math.Round(d1) == radius and not table.ContainsValue(list, p1) then
+    table.insert(list, p1)
+  end
+  if math.Round(d2) == radius and not table.ContainsValue(list, p2) then
+    table.insert(list, p2)
+  end
+  if math.Round(d3) == radius and not table.ContainsValue(list, p3) then
+    table.insert(list, p3)
+  end
+
+  local dd1 = math.abs(d1 - radius)
+  local dd2 = math.abs(d2 - radius)
+  local dd3 = math.abs(d3 - radius)
+  if dd1 < dd2 then
+    if dd1 < dd3 then
+      return p1
+    else
+      return p3
+    end
+  else
+    if dd2 < dd3 then
+      return p2
+    else
+      return p3
+    end
+  end
+end
+
+-- 列出两点间连线经过的所有格子
+function AStarUtil.GetLinePointList( point_a,  point_b)
+  local list = {}
+  if point_a == point_b then
+    table.insert(list,point_a)
+  elseif point_a.x == point_b.x then
+    table.insert(list, point_a)
+    local dv = point_a.y < point_b.y and 1 or -1
+    for  y = (point_a.y + dv), point_b.y ,  dv do
+      table.insert(list, Vector2(point_a.x, y))
+    end
+    table.insert(list, point_b)
+  elseif point_a.y == point_b.y then
+    table.insert(list, point_a)
+    local dv = point_a.x < point_b.x and 1 or -1
+    for  x = (point_a.x + dv),  point_b.x,  dv do
+      table.insert(list, Vector2(x, point_a.y))
+    end
+    table.insert(list, point_b)
+  else
+    local x1 = point_a.x
+    local y1 = point_a.y
+    local x2 = point_b.x
+    local y2 = point_b.y
+    local dx = x2 - x1
+    local dy = y2 - y1
+    local reverse = false
+    if math.abs(dx) >= math.abs(dy) then
+      if x1 > x2 then
+        local t = x1
+        x1 = x2
+        x2 = t
+        t = y1
+        y1 = y2
+        y2 = t
+
+        dx = -dx
+        dy = -dy
+        reverse = true
+      end
+      local ddx = dx * 2
+      local ddy = dy * 2
+      if dy >= 0 then
+        -- 直线的倾斜角位于 [0, pi / 4]
+        local y = y1
+        local e = -dx
+        for  x = x1, x2 do
+          if reverse then
+            table.insert(list, 1, Vector2(x, y))
+          else
+            table.insert(list, Vector2(x, y))
+          end
+          e = e + ddy
+          if e >= 0 then
+            y = y + 1
+            e = e - ddx
+          end
+        end
+      else
+        local y = y1
+        local e = dx
+        -- 直线的倾斜角位于 [-pi / 4, 0)
+        for x = x1, x2 do
+          if reverse then
+            table.insert(list, 1, Vector2(x,y))
+          else
+            table.insert(list, Vector2(x,y))
+          end
+          e = e + ddy
+          if e <= 0 then
+            y = y -1
+            e = e + ddx
+          end
+        end
+      end
+    else
+      if y1 > y2 then
+        local t = x1
+        x1 = x2
+        x2 = t
+        t = y1
+        y1 = y2
+        y2 = t
+
+        dx = -dx
+        dy = -dy
+        reverse = true
+      end
+      local ddx = dx * 2
+      local ddy = dy * 2
+      if dx >= 0 then
+        local x = x1
+        local e = -dy
+        -- 直线的倾斜角位于 (pi / 4, pi / 2]
+        for  y = y1, y2 do
+          if reverse then
+            table.insert(list, 1, Vector2(x,y))
+          else
+            table.insert(list, Vector2(x,y))
+          end
+          e =e + ddx
+          if e >= 0 then
+            x = x +1
+            e = e - ddy
+          end
+        end
+      else
+        local x = x1
+        local e = dy
+        -- 直线的倾斜角位于 [-pi / 2, -pi / 4)
+        for y = y1, y2 do
+          if reverse then
+            table.insert(list, 1, Vector2(x,y))
+          else
+            table.insert(list, Vector2(x,y))
+          end
+          e = e + ddx
+          if e <= 0 then
+            x = x -1
+            e =e + ddy
+          end
+        end
+      end
+    end
+  end
+  return list
+end
+
+-- 获得线段p1p2延长线上的距离d以外的某点
+-- distance > 0
+function AStarUtil.GetExtendPoint( point_a,  point_b,  distance)
+  local updx = point_b.x - point_a.x
+  local updy = point_b.y - point_a.y
+  if updx == 0 and updy == 0 then-- p1==p2
+    return Vector2(point_a.x + distance, point_a.y + distance)
+  elseif updx == 0 then
+    return Vector2(point_b.x, point_b.y + (updy > 0 and distance or -distance))
+  elseif updy == 0 then
+    return Vector2(point_b.x + (updx > 0 and distance or -distance), point_b.y)
+  else
+    local dx = math.abs(updx)
+    local dy = math.abs(updy)
+    if dx > dy then
+      local x = point_b.x + (updx > 0 and distance or -distance)
+      local y = math.modf(updy * (x - point_a.x) / updx) + point_a.y
+      return Vector2(x, y)
+    elseif dx < dy then
+      local y = point_b.y + (updy > 0 and  distance or -distance)
+      local x = math.modf(updx * (y - point_a.y) / updy) + point_a.x
+      return Vector2(x, y)
+    else
+      return Vector2(point_b.x + (updx > 0 and distance or -distance), point_b.y + (updy > 0 and distance or -distance))
+    end
+  end
+end
+
+
+-- 获得point点离线段point_a,point_b得最短距离
+function AStarUtil.GetNearestDistance( point_a,  point_b,  point)
+  if point_a == point or point_b == point then -- 与a点或b点重合findRangeFreePoint
+    return 0
+  end
+  local a = AStarUtil.GetMapDistance(point_b, point)
+  if point_a == point_b then -- a点和b点重合
+    return a
+  end
+  local b = AStarUtil.GetMapDistance(point_a, point)
+  local c = AStarUtil.GetMapDistance(point_a, point_b)
+  if a * a >= b * b + c * c then -- 如果p点与a点内夹角是钝角，则返回b
+    return b
+  end
+  if b * b >= a * a + c * c then -- 如果p点与b点内夹角是钝角，则返回a
+    return a
+  end
+
+  local l = (a + b + c) / 2 -- 周长的一半
+  local s = math.sqrt(l * (l - a) * (l - b) * (l - c)) -- 海伦公式求面积，也可以用矢量求
+  local result = math.modf(2 * s / c)
+  return result
+end
+
+function AStarUtil.GetMapDistance( point_a,  point_b)
+  local dx = point_a.x - point_b.x
+  local dy = point_a.y - point_b.y
+  local ddx = dx - dy
+  local ddy = dx + dy
+  local result = math.modf(math.sqrt(0.8 * ddx * ddx + 0.2 * ddy * ddy))
+  return result
+end
+
+---@param pos Vector2
+---@param compare_pos Vector2
+---@param radius number
+function AStarUtil.IsInAround(pos, compare_pos,  radius)
+  if AStarUtil.GetMapDistance(pos, compare_pos) <= radius then
+    return true
+  end
+  return false
+  end
+
+---@param pos Vector2
+---@param sector_center_pos Vector2
+---@param sector_dir Vector2
+---@param sector_radius number
+---@param sector_half_degrees number
+function AStarUtil.IsInSector( pos,  sector_center_pos,  sector_dir,  sector_radius,  sector_half_degrees)
+  local distance = self:GetMapDistance(pos, sector_center_pos)
+  if distance > sector_radius then
+    return false
+  end
+  local v1 = sector_dir
+  local v2 = pos - sector_center_pos
+  local degree_between_v1_v2 =Mathf.Acos(Vector2.Dot(v1, v2) / (Vector2.Magnitude(v1) * Vector2.Magnitude(v2))) * Mathf.Rad2Deg
+  if degree_between_v1_v2 <= sector_half_degrees then
+    return true
+  end
+  return false
+end
+
+-------------------------------------------GUI------------------------------
+function AStarUtil.GUIShowPointList( left,  bottom,  right,  top,  point_list)
+  local offset_x = 220
+  local offset_y = 100
+  local rect_width = 80
+  local rect_height = 80
+  local fontStyle = CS.UnityEngine.GUIStyle()
+  fontStyle.fontSize = 30 --字体大小
+  if IsInstanceOf(point_list, "Vector2") then
+    local t = {}
+    table.insert(t,Vector2(point_list.x, point_list.y))
+    point_list = t
+  end
+  for i = left, right do
+    for  j = top,  bottom, -1 do
+      local v = Vector2(i, j)
+      local x = tostring(math.modf(v.x))
+      local y = tostring(math.modf(v.y))
+
+      local rect = CS.UnityEngine.Rect(offset_x+(i - left) * rect_width, offset_y+(top - j) * rect_height, rect_width, rect_height)
+      if point_list and  table.ContainsValue(point_list, v) then
+        fontStyle.normal.textColor = Color.red
+      else
+        fontStyle.normal.textColor = Color.white
+      end
+
+      CS.UnityEngine.GUI.Label(rect, string.format("[%s,%s]", x, y), fontStyle)
+    end
+  end
+end
+-----------------------------------------NearestPoint------------------------------------
+-- 获取离a,b最近的点
+function AStarUtil.GetNearestPoint(  astarMapPath,  point_a,  point_b, can_pass_obstacle_types,can_pass_terrain_types)
+  local  p = point_a
+  p = AStarUtil.GetNearestNearbyPoint(astarMapPath, point_a, point_b, can_pass_obstacle_types, can_pass_terrain_types)
+  while p ~= point_a do
+    point_a = p
+    p = AStarUtil.GetNearestNearbyPoint(astarMapPath, point_a, point_b, can_pass_obstacle_types, can_pass_terrain_types)
+  end
+  return p
+end
+
+function AStarUtil.GetNearestNearbyPoint(  astarMapPath,  point_a,  point_b, can_pass_obstacle_types,can_pass_terrain_types)
+  local dx = point_b.x > point_a.x and 1 or point_b.x < point_a.x and -1 or 0
+  local dy = point_b.y > point_a.y and 1 or point_b.y < point_a.y and -1 or 0
+
+  local min_distance = AStarUtil.GetMapDistance(point_a, point_b)
+  local min_point = point_a
+  local x
+  local y
+
+  x = point_a.x + dx
+  y = point_a.y
+  local s1 = false
+  if AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), x, y) then
+    local p = Vector2(x, y)
+    if AStarUtil.CanPass(astarMapPath, x, y, can_pass_obstacle_types, can_pass_terrain_types) then
+      s1 = true
+      local d = AStarUtil.GetMapDistance(p, point_b)
+      if d < min_distance then
+        min_point = p
+        min_distance = d
+      end
+    end
+  end
+
+  x = point_a.x
+  y = point_a.y + dy
+  local s2 = false
+  if AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), x, y) then
+    local p =  Vector2(x, y)
+    if AStarUtil.CanPass(astarMapPath, x, y, can_pass_obstacle_types, can_pass_terrain_types) then
+      s2 = true
+      local d = AStarUtil.GetMapDistance(p, point_b)
+      if d < min_distance then
+        min_point = p
+        min_distance = d
+      end
+    end
+  end
+
+  if s1 or s2 then
+    x = point_a.x + dx
+    y = point_a.y + dy
+    if AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), x, y) then
+      local p = Vector2(x, y)
+      if AStarUtil.CanPass(astarMapPath, x, y, can_pass_obstacle_types, can_pass_terrain_types) then
+        local d = AStarUtil.GetMapDistance(p, point_b)
+        if d < min_distance then
+          min_point = p
+          min_distance = d
+        end
+      end
+    end
+  end
+
+  return min_point
+end
+
+
+
+return AStarUtil
+

@@ -1,0 +1,623 @@
+local FilePathConst = require("luacat.util.define.FileConst")
+Char_Val_a = string.byte('a')
+Char_Val_z = string.byte('z')
+Char_Val_A = string.byte('A')
+Char_Val_Z = string.byte('Z')
+Char_Val_0 = string.byte('0')
+Char_Val_9 = string.byte('9')
+Char_Val_Empty = string.byte('')
+Char_Val_WhiteSpace = string.byte(' ')
+
+---@return boolean
+function string.ToBool(content)
+  if string.EqualsIgnoreCase(content,"true") then
+    return true
+  elseif string.EqualsIgnoreCase(content,"false") then
+    return false
+  end
+end
+
+---@param content string
+---@param pattern string
+---@param replace_func_or_string fun(match_string:string)|string
+---@return string
+function string.ReplaceAll(content, pattern,replace_func_or_string, n)
+  local result,_= string.gsub(content,pattern,replace_func_or_string,n)
+  return result
+end
+
+-- 判断字符串是否全部为字母
+---@param content string
+---@return boolean
+function string.IsAlphabet(content)
+  local result = false
+  if content then
+    result = true
+    for _, v in ipairs({ string.byte(content, 1, #content) }) do
+      local is_in_range = false
+      if not is_in_range and Char_Val_a <= v and v <= Char_Val_z then
+        is_in_range = true
+      end
+      if not is_in_range and Char_Val_A <= v and v <= Char_Val_Z then
+        is_in_range = true
+      end
+      if not is_in_range then
+        result = false
+        break
+      end
+    end
+  end
+  return result
+end
+
+-- 判断字符串是否全部为数字
+---@param content string
+---@return boolean
+function string.IsNumber(content)
+  return StringUtilCat.IsNumber(content)
+end
+
+-- 判断字符串str是否以pattern结尾
+---@param content string
+---@param pattern string @要匹配的字符串
+---@param plain boolean @默认不填为false
+---@return boolean
+function string.EndsWith(content, pattern, plain)
+  plain = plain or false
+  local pos_begin, pos_end = string.find(content, pattern, -#pattern, plain)
+  return pos_end == #content
+end
+
+-- 判断字符串content是否以pattern开始
+---@param content string
+---@param pattern string @要匹配的字符串
+---@param plain boolean @默认不填为false
+---@return boolean
+function string.StartsWith(content, pattern, plain)
+  if plain == nil then
+    plain = true
+  end
+  local pos_begin, pos_end = string.find(content, pattern, 1, plain)
+  return pos_begin == 1
+end
+
+-- 判断字符串str是否包含pattern
+---@param content string
+---@param pattern string @要匹配的字符串
+---@param plain boolean @默认不填为false
+---@return boolean
+function string.Contains(content, pattern, plain)
+  plain = plain or false
+  local pos_begin, pos_end = string.find(content, pattern, 1, plain)
+  return pos_begin ~= nil
+end
+
+-- 判断字符串content是否为nil或者" "(空格)
+---@param content string
+---@return boolean
+function string.IsNilOrWhiteSpace(content)
+  if content ~= nil and #content > 0 then
+    for _, v in ipairs({ string.byte(content, 1, #content) }) do
+      if v ~= Char_Val_Empty then
+        return false
+      end
+    end
+  end
+  return true
+end
+
+-- 判断字符串content是否为nil或者""(Empty)
+---@param content string
+---@return boolean
+function string.IsNilOrEmpty(content)
+  if content ~= nil and #content > 0 then
+    return false
+  end
+  return true
+end
+
+-- 寻找'第一个'toSerach在字符串str中的index,找不到则返回-1
+---@param content string
+---@param to_serach string
+---@return boolean @找不到则返回-1
+function string.IndexOf(content, to_serach, index)
+  index = index or 1
+  local pos_begin, pos_end = string.find(content, to_serach, index, true)
+  return pos_begin ~= nil and pos_begin or -1
+end
+
+function string.IndexEndOf(str, to_serach, index)
+  index = index or 1
+  local pos_begin, pos_end = string.find(str, to_serach, index, true)
+  return pos_begin ~= nil and pos_end or -1
+end
+
+-- 寻找'最后一个'to_search在字符串str中的index,找不到则返回-1
+---@param content string
+---@param to_search string
+---@return boolean @找不到则返回-1
+function string.LastIndexOf(content, to_search, start_index)
+  start_index = start_index or -1
+  local begin_index
+  if start_index < 0 then
+    begin_index = math.abs(start_index)
+  else
+    begin_index = string.len(content) - start_index + 1
+  end
+  to_search = string.reverse(to_search)
+  content = string.reverse(content)
+  local index = string.IndexOf(content, to_search, begin_index)
+  if index == -1 then
+    return -1
+  else
+    return string.len(content) -index - string.len(to_search) + 2
+  end
+end
+
+-- 寻找'最后一个'to_search在字符串str中的index,找不到则返回-1
+function string.LastIndexEndOf(content, to_search, start_index)
+  local index = string.LastIndexOf(content, to_search, start_index)
+  if index == - 1 then
+    return index
+  else
+    return index + string.len(to_search) - 1
+  end
+end
+
+---@param content string
+---@param separator string
+---@return string[]
+function string.Split(content, separator)
+  separator = separator or ','
+  if string.IsNilOrWhiteSpace(content) then
+    return {}
+  end
+
+  local pos = 0
+  local result = {}
+  local iterator = function()
+    return string.find(content, separator, pos)
+  end
+  for pos_begin, pos_end in iterator do
+    table.Append_Array(result, string.sub(content, pos, pos_begin - 1))
+    pos = pos_end + 1
+  end
+  content = string.sub(content, pos)
+  if string.len(content) > 0 then
+    table.Append_Array(result, content)
+  end
+  return result
+end
+
+-- 将str重复num次返回
+------@param content string
+-----@param num number
+-----@return string
+function string.Join(content, num)
+  local result = content
+  for i = 2, num do
+    result = result .. content
+  end
+  return result
+end
+
+---将str用左右字符串括起来
+---@param content string
+---@param left string
+---@param right string @不填则与left相同
+---@return string
+function string.Quote(content, left, right)
+  right = right or left
+  return left .. content .. right
+end
+
+-- 将str用双引号括起来
+---@param content string
+---@return string
+function string.QuoteWithDouble(content)
+  return string.Quote(content, "\"")
+end
+
+-- 将str用双引号括起来
+---@param content string @pos在left之后第一个字母的index
+---@return string
+function string.QuoteEndIndex(s,  left,  right, pos)
+  pos = pos or 1
+  local stack = 0
+  while pos <= string.len(s) do
+    if string.IndexOf(s,left,pos) == pos then
+      stack = stack +1
+      pos = pos + string.len(left)
+    elseif string.IndexOf(s,right,pos) == pos then
+      if stack == 0 then
+        return pos
+      else
+        stack = stack - 1
+        pos = pos + string.len(right)
+      end
+    else
+      pos = pos + 1
+    end
+  end
+  return -1
+end
+
+-- 大写第一个字母
+---@param content string
+---@return string
+function string.UppterFirstLetter(content)
+  return string.upper(string.sub(content, 1, 1)) .. string.sub(content, 2)
+end
+
+-- 小写第一个字母
+---@param content string
+---@return string
+function string.LowerFirstLetter(content)
+  return string.lower(string.sub(content, 1, 1)) .. string.sub(content, 2)
+end
+
+-- 去掉两边的指定字符（trimLeftChars，trimRightChars）
+---@param content string
+---@param trim_left_chars string @不填则为" "
+---@param trim_right_chars string @不填则与trimLeftChars相同
+---@return string
+function string.Trim(content, trim_left_chars, trim_right_chars)
+  trim_left_chars = trim_left_chars or " "
+  trim_right_chars = trim_right_chars or trim_left_chars
+
+  if not (trim_left_chars == nil or trim_left_chars == "") then
+    local pos = 1
+    while pos <= string.len(content) do
+      local begin_index, end_index = string.find(content, trim_left_chars,pos,true)
+      if begin_index == pos then
+        pos = end_index + 1
+      else
+        break
+      end
+    end
+    if pos ~= 1 then
+      content = string.sub(content, pos)
+    end
+  end
+
+  if not (trim_right_chars == nil or trim_right_chars == "") then
+    local pos = string.len(content)
+    while pos >= 1 do
+      local begin_index = string.LastIndexOf(content, trim_right_chars,pos)
+      if begin_index ~= -1 and begin_index + string.len(trim_right_chars) -1 == pos then
+        pos = begin_index - 1
+      else
+        break
+      end
+    end
+    if pos ~= string.len(content) then
+      content = string.sub(content,1, pos)
+    end
+  end
+  return content
+end
+
+function string.TrimLeft(content, trim_left_chars)
+  return string.Trim(content, trim_left_chars,"")
+end
+
+function string.TrimRight(content, trim_right_chars)
+  return string.Trim(content, "",trim_right_chars)
+end
+
+-- 前补齐字符串.若str长度不足len，则在str前面用c补足len长度，否则直接返回str
+---@param content string
+---@param length number @规定返回的长度
+---@param char string @单个字符
+---@return string
+function string.FillHead(content, length, char)
+  if #content >= length then
+    return content
+  end
+  for i = 1, length - #content, #char do
+    content = char .. content
+  end
+  return content
+end
+
+-- 后补齐字符串.若str长度不足len，则在str后面用c补足len长度，否则直接返回str
+---@param content string
+---@param length number @规定返回的长度
+---@param char string @单个字符
+---@return string
+function string.FillEnd(content, length, char)
+  if #content >= length then
+    return content
+  end
+  for i = 1, length - #content, #char do
+    content = content .. char
+  end
+  return content
+end
+
+-- 判断s1和s2忽略大小写的情况下是否相等
+---@param content1 string
+---@param content2 string
+---@return boolean
+function string.EqualsIgnoreCase(content1, content2)
+  return string.lower(content1) == string.lower(content2)
+end
+
+-- 返回str每个字符
+---@param content string
+---@return string[]
+function string.ToCharArray(content)
+  local result = {}
+  for i = 1, #content do
+    table.Append_Array(result, string.sub(content, i, i))
+  end
+  return result
+end
+
+function string.ToVector2(s,split, trim_left , trim_right)
+  split = split or ","
+  trim_left = trim_left or "%(" -- 正则匹配，转义(
+  trim_right = trim_right or "%)" -- 正则匹配，转义)
+
+  local element_list = string.ToList(s, split, trim_left, trim_right)
+  local x = tonumber(element_list[1])
+  local y = tonumber(element_list[2])
+  return Vector2.New(x,y)
+end
+
+
+function string.ToQuaternion(s,split, trim_left , trim_right)
+  split = split or ","
+  trim_left = trim_left or "%(" -- 正则匹配，转义(
+  trim_right = trim_right or "%)" -- 正则匹配，转义)
+
+  local element_list = string.ToList(s, split, trim_left, trim_right)
+  if #element_list == 4 then
+    local x = tonumber(element_list[1])
+    local y = tonumber(element_list[2])
+    local z = tonumber(element_list[3])
+    local w = tonumber(element_list[4])
+    return Quaternion.New(x, y, z, w)
+  else -- 欧拉角，三个系数
+    local x = tonumber(element_list[1])
+    local y = tonumber(element_list[2])
+    local z = tonumber(element_list[3])
+    return Quaternion.Euler(x, y, z)
+  end
+end
+
+-- 将str转为string[] 先将str用trimLeft和trimRight进行trim，然后用split分割字符串返回
+---@param content string
+---@param split string @每个element的分隔符
+---@param trim_left string
+---@param trim_right string
+---@return string[]
+function string.ToList(s,split, trim_left , trim_right)
+  split = split or ","
+  trim_left = trim_left or "%[" -- 正则匹配，转义[
+  trim_right = trim_right or "%]" -- 正则匹配，转义]
+
+  local result = {}
+  if string.StartsWith(s,trim_left) then
+    s = string.sub(2,string.len(s))
+  end
+  if string.EndsWith(s,trim_right) then
+    s = string.sub(1,string.len(s) -1)
+  end
+  if string.IsNilOrWhiteSpace(s) then
+    return result
+  end
+  local elements = string.SplitIgnore(s,split)
+  for _,element in ipairs(elements) do
+    table.insert(result, element)
+  end
+  return result
+end
+
+-- 将str转为Dict 先将str用trimLeft和trimRight进行trim，然后用split分割字符串，将分割后的字符串数组进行subSplit分割，第一项作为key，第二项作为value
+---@param content string
+---@param split string @每个element的分隔符 不填为","
+---@param sub_split string @每个element内部区分keyValue的分隔符 不填为:
+---@param trim_left string @不填为"{"
+---@param trim_right string @不填为"}"
+function string.ToDictionary(s,split,sub_sep, trim_left , trim_right)
+  split = split or ","
+  sub_sep = sub_sep or ":"
+  trim_left = trim_left or "%{" -- 正则匹配，转义{
+  trim_right = trim_right or "%}" -- 正则匹配，转义}
+
+  local element_list = string.ToList(s, split, trim_left, trim_right)
+  local result = {}
+  for _, element in ipairs(element_list) do
+    local ss = string.SplitIgnore(element, sub_sep)
+    local key_string = ss[1]
+    local value_string = ss[2]
+    result[key_string] = value_string
+  end
+  return result
+end
+
+-- #FF00FF00或者FF00FF00  含Alpha
+-- 或者#FF00FF或者FF00FF 不含Alpha
+function string.ToColor(s,trim_left)
+  trim_left = trim_left or "#" -- 正则匹配，转义#
+
+  s = string.Trim(s,trim_left,nil)
+  s = string.Trim(s,"0x",nil)
+  local r = string.FromHex(string.sub(s,1,2))/255
+  local g = string.FromHex(string.sub(s,3,4))/255
+  local b = string.FromHex(string.sub(s,5,6))/255
+  local a = string.len(s) == 6 and 1 or string.FromHex(string.sub(s,7,8))/255
+  return Color.New(r,g,b,a)
+end
+
+
+function string.ToEventName(name, source)
+  if source then
+    return name .. tostring(source)
+  end
+  return name
+end
+
+
+
+---------------------------------------------------------------------
+-- AssetPath相关
+function string.GetAssetPathInfo(content)
+  local names = string.Split(content, ":")
+  local sub_asset_path
+  if #names > 1 then
+    sub_asset_path = names[2]
+  end
+  return {
+    main_asset_path = names[1],
+    sub_asset_path = sub_asset_path
+  }
+end
+
+function string.GetMainAssetPath(content)
+  return string.GetAssetPathInfo(content).main_asset_path
+end
+
+function string.GetSubAssetPath(content)
+  return string.GetAssetPathInfo(content).sub_asset_path
+end
+
+function string.WithRootPath(relative_file_path, root_path, slash)
+  slash = slash or "/"
+  local is_root_path_end_with_slash = string.EndsWith(root_path, slash)
+  if is_root_path_end_with_slash then
+    root_path = string.sub(1, #root_path - 1)
+  end
+  local is_relative_file_path_start_with_slash = string.StartsWith(relative_file_path, slash)
+  if is_relative_file_path_start_with_slash then
+    relative_file_path = string.sub(relative_file_path, 2)
+  end
+  return string.format("%s%s%s", root_path, slash, relative_file_path)
+end
+
+function string.WithoutRootPath(full_file_path, root_path, slash)
+  slash = slash or "/"
+  local is_full_file_path_start_with_slash = string.StartsWith(slash)
+  if is_full_file_path_start_with_slash then
+    is_full_file_path_start_with_slash = string.sub(is_full_file_path_start_with_slash, 2)
+  end
+  local is_root_path_start_with_slash = string.EndsWith(root_path, slash)
+  if not is_root_path_start_with_slash then
+    root_path = string.format("%s%s", root_path, slash)
+  end
+  return string.gsub(full_file_path, root_path, "")
+end
+
+function string.FileName(file_path, last_sep)
+  last_sep = last_sep or "/"
+  local index = string.LastIndexOf(file_path, last_sep)
+  if index < 0 then
+    index = 0
+  else
+    index = index + string.len(last_sep)
+  end
+  return string.sub(file_path, index)
+end
+
+function string.DirPath(file_path, last_sep)
+  last_sep = last_sep or "/"
+  local index = string.LastIndexOf(file_path, last_sep)
+  local length = 0
+  if index < 0 then
+    length = string.len(file_path)
+  else
+    length = index
+  end
+  return string.sub(file_path, 1, length)
+end
+
+function string.IsNetURL(url)
+  if string.StartsWith(string.lower(url), "http") or
+      string.StartsWith(string.lower(url), "ftp") then
+    return true
+  end
+  return false
+end
+
+
+function string.WWWURLHandle(path)
+  if string.IsNetURL(path) then
+    return path
+  end
+  if string.IndexOf(path, FilePathConst.File_Prefix) == -1 then
+    return string.WithRootPath(path, FilePathConst.File_Prefix)
+  end
+  return path
+end
+
+function string.WithoutAllSuffix(path)
+  local index = string.IndexOf(path,".")
+  return index ~= -1 and string.sub(path,1, index -1 ) or path
+end
+
+function string.WithoutSuffix(path)
+  local index = string.LastIndexOf(path,".")
+  return index ~= -1 and string.sub(path,1, index -1 ) or path
+end
+
+function string.ContainTags(s, ...)
+  local tags = string.Split(s,"|")
+  local check_tags = table.pack(...)
+  for _, check_tag in ipairs(check_tags) do
+    if table.IndexOf_Array(tags, check_tag) == -1 then
+      return false
+    end
+  end
+  return true
+end
+
+
+function string.SplitIgnore(s,split, ignore_left,ignore_right)
+  split = split or ","
+  ignore_left = ignore_left or "\\\""
+  local result = StringUtilCat.SplitIgnore(s,split,ignore_left,ignore_right)
+  return table.ConvertCSArray2LuaTable(result)
+end
+
+
+-- 从16进制转为10进制数字
+---@param s @例如 FF01
+function string.FromHex(s)
+  s = string.Trim(s,"0x",nil)
+  return tonumber(s, 16)
+end
+
+
+
+function string.GetPathRelativeTo(path, relative_path)
+  local index = string.IndexEndOf(path,relative_path)
+  if index ~= -1 then
+    path = string.sub(path,index + 1)
+  end
+  return path
+end
+
+function string.GetPathStartWithRelativePath(path, relative_path)
+  local path = string.GetPathRelativeTo(path, relative_path)
+  path = relative_path + path
+  return path
+end
+
+function string.Combine(split,...)
+  local s
+  local count = select('#', ...)
+  table.WalkArgs(function(index, e)
+    if index == 1 then
+      s = ""
+    end
+    local world = e == nil and "__nil__" or e
+    s = s .. world
+    if index ~= count then
+      s = s .. split
+    end
+  end,...)
+  return s
+end
+
+

@@ -1,0 +1,23 @@
+---@class LineEffectGraphicComponent:EffectGraphicComponent
+local LineEffectGraphicComponent = Class("LineEffectGraphicComponent", EffectGraphicComponent)
+
+
+
+function LineEffectGraphicComponent:OnAllAssetsLoadDone()
+  LineEffectGraphicComponent.super.OnAllAssetsLoadDone(self)
+  ---@type CS.CsCat.XLineRenderer[]
+  self.xlineRenderer_list = table.ConvertCSArray2LuaTable(self.transform:GetComponent(typeof(CS.CsCat.XLineRenderer)))
+end
+
+function LineEffectGraphicComponent:__Update(deltaTime,unscaledDeltaTime)
+  LineEffectGraphicComponent.super.__Update(self, deltaTime,unscaledDeltaTime)
+  self.transform.position = self.effectEntity.transformComponent:GetPosition()
+  self.transform.eulerAngles = self.effectEntity.transformComponent:GetEulerAngles()
+  for _,xlineRenderer in ipairs(self.xlineRenderer_list) do
+    xlineRenderer.target.position = self.effectEntity:GetComponentByType(LineEffectComponent).target_position
+    xlineRenderer.target.eulerAngles = self.effectEntity.transformComponent:GetEulerAngles()
+  end
+end
+
+
+return LineEffectGraphicComponent

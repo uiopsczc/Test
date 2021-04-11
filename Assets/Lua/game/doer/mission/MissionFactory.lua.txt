@@ -1,0 +1,25 @@
+---@class MissionFactory:DoerFactory
+local MissionFactory = Class("MissionFactory",DoerFactory)
+
+function MissionFactory:Init()
+  MissionFactory.super.Init(self)
+  self.default_doer_class_path = "game.doer.mission.Mission"
+end
+
+function MissionFactory:GetDefinitions()
+  return global.definitionManager.missionDefinition
+end
+
+---@return DoerEventDBase
+function MissionFactory:GetDefinition(id)
+  return MissionFactory.super.GetDefinition(self,id)
+end
+
+---@return DoerEventDBase
+function MissionFactory:__NewDBase(id_or_rid)
+  return MissionDBase.New(id_or_rid)
+end
+
+
+
+return MissionFactory

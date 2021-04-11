@@ -1,0 +1,19 @@
+---@class SpellTriggerDefinition
+---@field id
+---@field name
+---@field trigger_type
+---@field trigger_spell_id
+---@field trigger_spell_delay_duration
+---@field check_target
+---@field condition
+local _
+
+
+local definition = {
+
+  [
+[=[1]=]
+] = {id = [=[1]=],name = [=[技能触发1]=],},
+
+}
+return definition

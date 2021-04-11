@@ -1,0 +1,27 @@
+---@class UIGuidePanelBase_DescItem:UIObject
+local UIGuidePanelBase_DescItem = Class("UIGuidePanelBase_DescItem", UIObject)
+
+function UIGuidePanelBase_DescItem:Init(gameObject)
+  UIGuidePanelBase_DescItem.super.Init(self,gameObject)
+  self.graphicComponent:SetGameObject(gameObject, true)
+end
+
+function UIGuidePanelBase_DescItem:InitGameObjectChildren()
+  UIGuidePanelBase_DescItem.super.InitGameObjectChildren(self)
+  ---@type CS.UnityEngine.UI.Text
+  self.desc_text = self.graphicComponent.transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Text),"desc",true,true)
+  ---@type CS.UnityEngine.UI.Image
+  self.desc_image = self.graphicComponent.gameObject:GetComponent(typeof(CS.UnityEngine.UI.Image))
+end
+
+function UIGuidePanelBase_DescItem:Show(desc, is_bg_visible)
+  if is_bg_visible == nil then
+    is_bg_visible = true
+  end
+  self.desc_text.text = desc
+  if not is_bg_visible then
+    self.desc_image:SetAlpha(0)
+  end
+end
+
+return UIGuidePanelBase_DescItem

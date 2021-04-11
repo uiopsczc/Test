@@ -1,0 +1,9 @@
+---@class UIFirstPanelLayerPanel:UIPanel
+local UIFirstPanelLayerPanel = Class("UIFirstPanelLayerPanel", UIPanel)
+
+function UIFirstPanelLayerPanel:Init(...)
+  self.layerName = "FirstPanelLayer"
+  UIFirstPanelLayerPanel.super.Init(self,...)
+end
+
+return UIFirstPanelLayerPanel

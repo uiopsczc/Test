@@ -1,0 +1,60 @@
+---@class SourceTargetEffectComponent:EffectComponent
+---@field source_iposition IPosition
+---@field target_iposition IPosition
+local SourceTargetEffectComponent = Class("SourceTargetEffectComponent", EffectComponent)
+
+function SourceTargetEffectComponent:Init()
+  SourceTargetEffectComponent.super.Init(self)
+  self.on_reach_callback_list = {}
+end
+
+function SourceTargetEffectComponent:AddOnReachCallback(callback)
+  table.insert(self.on_reach_callback_list, callback)
+end
+
+function SourceTargetEffectComponent:SetSocket()
+  self.source_socket_name = self.effectEntity.effectDefinition.socket_name_1 or "missile"
+  self.target_socket_name = self.effectEntity.effectDefinition.socket_name_2 or "chest"
+
+  if self.source_iposition then
+    self.source_iposition:SetSocketName(self.source_socket_name)
+  end
+  if self.target_iposition then
+    self.target_iposition:SetSocketName(self.target_socket_name)
+  end
+end
+
+function SourceTargetEffectComponent:Calculate(deltaTime)
+  self.source_position = self.source_iposition:GetPosition()
+  self.target_position = self.target_iposition:GetPosition()
+  self.current_position = self.source_position
+  self:CalculateEulerAngles()
+end
+
+function SourceTargetEffectComponent:CalculateEulerAngles()
+  local diff = self.target_position - self.current_position
+  if diff == Vector3.zero then
+    self.current_eulerAngles = Vector3.zero
+  else
+    self.current_eulerAngles = Quaternion.LookRotation(diff, Vector3.up):ToEulerAngles()
+  end
+end
+
+
+function SourceTargetEffectComponent:OnEffectReach()
+  DelegateUtil.InvokeCallback(self.on_reach_callback_list)
+  self.effectEntity:OnEffectReach()
+end
+
+function SourceTargetEffectComponent:__Update(deltaTime , unscaledDeltaTime)
+  SourceTargetEffectComponent.super.__Update(self, deltaTime , unscaledDeltaTime)
+  self:Calculate(deltaTime)
+  self.effectEntity:ApplyToTransformComponent(self.current_position, self.current_eulerAngles)
+end
+
+function SourceTargetEffectComponent:__Destroy()
+  SourceTargetEffectComponent.super.__Destroy(self)
+  self.on_reach_callback_list = nil
+end
+
+return SourceTargetEffectComponent

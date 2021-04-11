@@ -1,0 +1,19 @@
+---@class UnitLockTargetInfo:Class
+---@field lock_target_unit Unit
+---@field lock_target_pos Vector3
+local UnitLockTargetInfo = Class("UnitLockTargetInfo")
+
+function UnitLockTargetInfo:IsHasLockTarget()
+  return self.lock_target_unit or self.lock_target_pos
+end
+
+function UnitLockTargetInfo:GetLockTargetPosition()
+  if self.lock_target_unit then
+    return self.lock_target_unit:GetPosition()
+  end
+  if self.lock_target_pos then
+    return self.lock_target_pos
+  end
+end
+
+return UnitLockTargetInfo

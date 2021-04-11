@@ -1,0 +1,5 @@
+---@class CombatTest:CombatBase
+local CombatTest = Class("CombatTest", CombatBase)
+
+
+return CombatTest

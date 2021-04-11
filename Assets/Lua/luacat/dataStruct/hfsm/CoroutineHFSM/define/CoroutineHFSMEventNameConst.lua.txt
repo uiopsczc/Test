@@ -1,0 +1,11 @@
+---@class CoroutineHFSMEventNameConst
+local CoroutineHFSMEventNameConst = {}
+
+CoroutineHFSMEventNameConst.Pre_State_Exit = "Pre_State_Exit"
+CoroutineHFSMEventNameConst.Post_State_Exit = "Post_State_Exit"
+CoroutineHFSMEventNameConst.Pre_State_Enter = "Pre_State_Enter"
+CoroutineHFSMEventNameConst.Post_State_Enter = "Post_State_Enter"
+CoroutineHFSMEventNameConst.State_Change_Finish = "State_Change_Finish"
+
+
+return CoroutineHFSMEventNameConst

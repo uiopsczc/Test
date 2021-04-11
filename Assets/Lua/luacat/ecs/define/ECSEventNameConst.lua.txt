@@ -1,0 +1,7 @@
+---@class ECSEventNameConst
+local ECSEventNameConst = {}
+
+ECSEventNameConst.OnAllAssetsLoadDone = "OnAllAssetsLoadDone"
+
+
+return ECSEventNameConst

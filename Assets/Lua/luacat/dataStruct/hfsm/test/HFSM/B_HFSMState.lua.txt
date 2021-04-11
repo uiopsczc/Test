@@ -1,0 +1,21 @@
+---@class B_HFSMState:HFSMState
+local B_HFSMState = Class("B_HFSMState",HFSMState)
+
+function B_HFSMState:Enter(...)
+  B_HFSMState.super.Enter(self,...)
+  log("Enter B_HFSMState", self.key)
+end
+
+function B_HFSMState:__Update(deltaTime, unscaledDeltaTime)
+  B_HFSMState.super.__Update(self,deltaTime, unscaledDeltaTime)
+  log("Execute B_HFSMState", self.key)
+end
+
+function B_HFSMState:Exit(...)
+  B_HFSMState.super.Exit(self,...)
+  log("Exit B_HFSMState", self.key)
+end
+
+
+
+return B_HFSMState

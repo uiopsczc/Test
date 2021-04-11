@@ -1,0 +1,144 @@
+---@class GraphicComponent:GameComponent
+local GraphicComponent = Class("GraphicComponent", GameComponent)
+
+
+-----注意创建后记得设置key和entity
+---@param owner GameEntity
+---@param resLoadComponent ResLoadComponent
+function GraphicComponent:Init(resLoadComponent)
+  GraphicComponent.super.Init(self)
+  ---@type GameEntity
+  self.gameEntity = self.entity
+  ---@type ResLoadComponentPlugin
+  self.resLoadComponentPlugin = ResLoadComponentPlugin.New(resLoadComponent)
+  if self.entity.__class_name == "Client" then
+    return
+  end
+  self:AddListener(string.ToEventName(ECSEventNameConst.OnAllAssetsLoadDone, self.entity), function()
+    self:OnAllAssetsLoadDone()
+  end)
+end
+
+
+----------------------------------------------------------------------
+-- gameObject相关
+----------------------------------------------------------------------
+---@param parent_transform CS.UnityEngine.Transform
+function GraphicComponent:SetParentTransform(parent_transform)
+  self.parent_transform = parent_transform
+  if self.transform then
+    self.transform:SetParent(self.parent_transform, self.gameObject.layer ~= LayerMask.NameToLayer("UI"))
+  end
+end
+
+function GraphicComponent:InstantiateGameObject(prefab)
+  return GameObject.Instantiate(prefab)
+end
+
+function GraphicComponent:SetIsShow(is_show)
+  self.is_hide = not is_show
+  if self.gameObject then
+    self.gameObject:SetActive(not self.is_hide)
+  end
+end
+
+function GraphicComponent:InitGameObjectChildren()
+  self.gameEntity:InitGameObjectChildren()
+end
+
+function GraphicComponent:SetGameObject(gameObject, is_not_destroy_gameObject)
+  if not gameObject then
+    self.gameObject = nil
+    self.transform = nil
+    self.rectTransform = nil
+    return
+  end
+  ---@type CS.UnityEngine.GameObject
+  self.gameObject = gameObject
+  ---@type CS.UnityEngine.Transform
+  self.transform = self.gameObject.transform
+  ---@type CS.UnityEngine.RectTransform
+  self.rectTransform = self.gameObject:GetComponent(typeof(CS.UnityEngine.RectTransform))
+  if is_not_destroy_gameObject~=nil then
+    self.is_not_destroy_gameObject = is_not_destroy_gameObject
+  end
+  self:InitGameObjectChildren()
+  self:SetIsShow(gameObject.activeSelf)
+end
+
+
+function GraphicComponent:DestroyGameObject()
+  if self.gameObject and not self.is_not_destroy_gameObject then
+    self.gameObject:Destroy()
+    self:SetGameObject(nil)
+  end
+end
+
+----------------------------------------------------------------------
+-- prefab相关
+----------------------------------------------------------------------
+function GraphicComponent:SetPrefabPath(prefab_path)
+  self.prefab_path = prefab_path
+  self.is_load_done = self.prefab_path == nil
+end
+
+function GraphicComponent:LoadPrefabPath()
+  if self.prefab_path then
+    self.prefab_assetCat = self.resLoadComponentPlugin:GetOrLoadAsset(self.prefab_path, nil,nil, function()
+      self.is_load_done = true
+    end,self)
+  end
+end
+
+function GraphicComponent:IsLoadDone()
+  return self.is_load_done
+end
+
+function GraphicComponent:OnAllAssetsLoadDone()
+  if self.prefab_path then
+    self.prefab = self.prefab_assetCat:Get(string.GetSubAssetPath(self.prefab_path))
+    local clone = self:InstantiateGameObject(self.prefab)
+    clone.name = self.prefab.name
+    clone.transform:CopyFrom(self.prefab.transform)
+    self:SetGameObject(clone)
+  end
+
+  if self.parent_transform then
+    self:SetParentTransform(self.parent_transform)
+  end
+end
+
+----------------------------------------------------------------------
+-- __Destroy
+----------------------------------------------------------------------
+function GraphicComponent:__Reset()
+  GraphicComponent.super.__Destroy(self)
+  self.resLoadComponentPlugin:Destroy()
+  self:DestroyGameObject()
+end
+
+----------------------------------------------------------------------
+-- __Destroy
+----------------------------------------------------------------------
+function GraphicComponent:__Destroy()
+  GraphicComponent.super.__Destroy(self)
+  self.resLoadComponentPlugin:Destroy()
+  self:DestroyGameObject()
+
+  self.resLoadComponentPlugin = nil
+
+  self.parent_transform = nil
+  self.gameObject = nil
+  self.transform = nil
+  self.rectTransform = nil
+  self.is_not_destroy_gameObject = false
+  self.prefab = nil
+  self.prefab_path = nil
+  self.prefab_assetCat = nil
+
+  self.is_load_done = false
+  self.is_hide = false
+end
+
+
+return GraphicComponent

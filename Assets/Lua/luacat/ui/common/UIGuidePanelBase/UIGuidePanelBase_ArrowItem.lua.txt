@@ -1,0 +1,9 @@
+---@class UIGuidePanelBase_ArrowItem:UIObject
+local UIGuidePanelBase_ArrowItem = Class("UIGuidePanelBase_ArrowItem", UIObject)
+
+function UIGuidePanelBase_ArrowItem:Init(gameObject)
+  UIGuidePanelBase_ArrowItem.super.Init(self,gameObject)
+  self.graphicComponent:SetGameObject(gameObject, true)
+end
+
+return UIGuidePanelBase_ArrowItem

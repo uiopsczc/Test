@@ -1,0 +1,15 @@
+local A_HFSMState = require("luacat.dataStruct.hfsm.test.HFSM.A_HFSMState")
+local B_HFSMState = require("luacat.dataStruct.hfsm.test.HFSM.B_HFSMState")
+local TestSubHFSM111 = require("luacat.dataStruct.hfsm.test.HFSM.TestSubHFSM111")
+----@class TestHFSM11:HFSM
+local TestSubHFSM11 = Class("TestSubHFSM11", HFSM)
+
+function TestSubHFSM11:InitStates()
+  TestSubHFSM11.super.InitStates(self)
+  self:AddSubDirectState("a11",A_HFSMState)
+  self:AddSubDirectState("b11",B_HFSMState)
+  self:AddSubDirectHFSM("sub_hfsm111",TestSubHFSM111)
+  self:SetDefaultSubDirectState("a11")
+end
+
+return TestSubHFSM11

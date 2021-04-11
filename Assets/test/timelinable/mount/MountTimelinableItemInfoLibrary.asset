@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0ecc852219b44e4ab25925996595434, type: 3}
+  m_Name: MountTimelinableItemInfoLibrary
+  m_EditorClassIdentifier: 
+  _itemInfoes:
+  - name: bb
+    time: 1.8399999
+    duration: 1
+    mount_point_transformFinders:
+      _transformFinder0:
+        path: 
+      _transformFinder1:
+        humanBodyBones: 0
+    mount_point_transformFinder_index: 0
+    mountPrefabInfo_list:
+    - localPosition: {x: 0, y: 2, z: 0}
+      localEulerAngles: {x: 0, y: 3, z: 0}
+      localScale: {x: 1, y: 4, z: 1}
+      prefab: {fileID: 5093575976147553667, guid: 0e3df53ad15c1214fb210bceee524116,
+        type: 3}

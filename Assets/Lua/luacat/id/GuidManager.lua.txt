@@ -1,0 +1,13 @@
+---@class GuidManager
+local GuidManager = Class("GuidManager")
+
+function GuidManager:Init(current_key_number)
+  self.key_number = current_key_number or 0
+end
+
+function GuidManager:NewGuid(id)
+  self.key_number = self.key_number + 1
+  return (string.IsNilOrWhiteSpace(id) and "" or tostring(id)) .. IdConst.Rid_Infix .. self.key_number
+end
+
+return GuidManager

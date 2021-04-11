@@ -1,0 +1,24 @@
+-- 加载全局模块
+require("common.import")
+
+Mathf = require("common.UnityEngine.Mathf")
+Vector2 = require("common.UnityEngine.Vector2")
+Vector3 = require("common.UnityEngine.Vector3")
+Vector4 = require("common.UnityEngine.Vector4")
+Quaternion = require("common.UnityEngine.Quaternion")
+Color = require("common.UnityEngine.Color")
+Ray = require("common.UnityEngine.Ray")
+Bounds = require("common.UnityEngine.Bounds")
+RaycastHit = require("common.UnityEngine.RaycastHit")
+Touch = require("common.UnityEngine.Touch")
+LayerMask = require("common.UnityEngine.LayerMask")
+Plane = require("common.UnityEngine.Plane")
+Time = require("common.UnityEngine.Time")
+Object = require("common.UnityEngine.Object")
+
+list = require("common.list")
+
+require("common.event")
+
+json = require("common.json")
+

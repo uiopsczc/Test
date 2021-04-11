@@ -1,0 +1,47 @@
+---@class DoerEventFactory:DoerFactory
+local DoerEventFactory = Class("DoerEventFactory",DoerFactory)
+
+function DoerEventFactory:Init()
+  DoerEventFactory.super.Init(self)
+  self.default_doer_class_path = "game.doer.doerEvent.DoerEvent"
+  local id_list = global.definitionManager.idDefinition["DoerEventDefinition"]
+  ---@type table<string,DoerEvent>
+  self.doerEvent_dict = {}
+  for _, id in ipairs(id_list) do
+    self:LoadDoerEvent(id)
+  end
+end
+
+function DoerEventFactory:GetDefinitions()
+  return global.definitionManager.doerEventDefinition
+end
+
+---@return DoerEventDBase
+function DoerEventFactory:GetDefinition(id)
+  return DoerEventFactory.super.GetDefinition(self,id)
+end
+
+---@return DoerEventDBase
+function DoerEventFactory:__NewDBase(id_or_rid)
+  return DoerEventDBase.New(id_or_rid)
+end
+-------------------------------------------------------------------------------------
+function DoerEventFactory:LoadDoerEvent(id)
+  local definition = self:GetDefinition(id)
+  local class_path = definition.class_path_lua or self.default_doer_class_path
+  local doerEvent = self:AddChildWithoutInit(nil, require(class_path))
+  local doerEventDBase = self:__NewDBase(id)
+  doerEvent.factory = self
+  doerEvent:SetDBase(doerEventDBase)
+  doerEventDBase:SetDoer(doerEvent)
+  doerEvent:Init(doerEvent.key)
+  doerEvent:PostInit()
+  doerEvent:SetIsEnabled(true, false)
+  self.doerEvent_dict[id] = doerEvent
+end
+
+function DoerEventFactory:GetDoerEvent(id)
+  return self.doerEvent_dict[id]
+end
+
+return DoerEventFactory

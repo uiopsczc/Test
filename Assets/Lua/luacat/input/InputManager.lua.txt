@@ -1,0 +1,9 @@
+---@class InputManager:TickObject
+local InputManager = Class("InputManager", TickObject)
+
+function InputManager:Init()
+  InputManager.super.Init(self)
+end
+
+
+return InputManager

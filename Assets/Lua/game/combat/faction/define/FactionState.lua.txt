@@ -1,0 +1,8 @@
+---@class FactionState:Class
+---@field is_can_attack boolean @能否攻击
+---@field is_can_help boolean @能否加血
+local FactionState = Class("FactionState")
+
+
+
+return FactionState

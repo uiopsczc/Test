@@ -1,0 +1,72 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 47adde5eef743d04185ebcf37e5690e1, type: 3}
+  m_Name: SkinnedMeshRendererTimelinableSequence
+  m_EditorClassIdentifier: 
+  scroll_position: {x: 0, y: 0}
+  _tracks:
+  - name: "\u773C\u795E"
+    _itemInfoes:
+    - name: "\u95ED\u4E0A\u53CC\u773C"
+      time: 2.485624
+      duration: 1
+      skinnedMeshRenderer_index: 0
+      blendShape_index: 6
+      blendShape_weight: 100
+      skinnedMeshRendererSubBlendShapeInfo_list: []
+    - name: "\u7741\u5F00\u53CC\u773C"
+      time: 4.773125
+      duration: 1
+      skinnedMeshRenderer_index: 0
+      blendShape_index: 6
+      blendShape_weight: 0
+      skinnedMeshRendererSubBlendShapeInfo_list: []
+    _itemInfoLibrary: {fileID: 11400000, guid: 0709ad85c1b25b14cb2f2ec3e4afbf5c, type: 2}
+  - name: "\u773C\u73E0"
+    _itemInfoes:
+    - name: "\u5411\u5DE6"
+      time: 0.2592303
+      duration: 1
+      skinnedMeshRenderer_index: 1
+      blendShape_index: 2
+      blendShape_weight: 60
+      skinnedMeshRendererSubBlendShapeInfo_list:
+      - skinnedMeshRenderer_index: 2
+        blendShape_index: 2
+    - name: "\u6B63\u5E38"
+      time: 1.404402
+      duration: 1
+      skinnedMeshRenderer_index: 1
+      blendShape_index: 0
+      blendShape_weight: 0
+      skinnedMeshRendererSubBlendShapeInfo_list:
+      - skinnedMeshRenderer_index: 2
+        blendShape_index: 0
+    - name: "\u5411\u53F3"
+      time: 2.7639153
+      duration: 1
+      skinnedMeshRenderer_index: 1
+      blendShape_index: 3
+      blendShape_weight: 60
+      skinnedMeshRendererSubBlendShapeInfo_list:
+      - skinnedMeshRenderer_index: 2
+        blendShape_index: 3
+    - name: "\u5411\u5DE6"
+      time: 4.7700005
+      duration: 1
+      skinnedMeshRenderer_index: 1
+      blendShape_index: 2
+      blendShape_weight: 60
+      skinnedMeshRendererSubBlendShapeInfo_list:
+      - skinnedMeshRenderer_index: 2
+        blendShape_index: 2
+    _itemInfoLibrary: {fileID: 11400000, guid: 0709ad85c1b25b14cb2f2ec3e4afbf5c, type: 2}

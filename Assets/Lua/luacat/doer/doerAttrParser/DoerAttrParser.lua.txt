@@ -1,0 +1,517 @@
+---@class DoerAttrParser:Class
+local DoerAttrParser = Class("DoerAttrParser")
+
+function DoerAttrParser:Init(u, o, e, m)
+  self:Set(u, o, e, m)
+end
+
+---@param randomManager RandomManager
+function DoerAttrParser:SetRandomManager(randomManager)
+  self.randomManager = randomManager
+end
+
+---@return RandomManager
+function DoerAttrParser:GetRandomManager()
+  return self.randomManager
+end
+
+function DoerAttrParser:Set(u, o, e, m)
+  self:SetU(u)
+  self:SetO(o)
+  self:SetE(e)
+  self:SetM(m)
+end
+
+function DoerAttrParser:SetU(u)
+  ---@type Doer
+  self.u = u--主动对象，比如任务中接受任务的玩家
+end
+
+function DoerAttrParser:GetU()
+  return self.u
+end
+
+function DoerAttrParser:SetO(o)
+  ---@type Doer
+  self.o = o -- 被动对象，比如任务中的任务
+end
+
+function DoerAttrParser:GetO()
+  return self.o
+end
+
+function DoerAttrParser:SetE(e)
+  ---@type Doer
+  self.e = e --中间对象，比如任务中给与任务的npc
+end
+
+function DoerAttrParser:GetE()
+  return self.e
+end
+
+function DoerAttrParser:SetM(m)
+  ---@type table<string,any>
+  self.m = m -- 相互传数据的hashttable
+end
+
+function DoerAttrParser:GetM()
+  return self.m
+end
+
+
+
+---@param flag number
+---@param doer Doer
+---@param key string
+function DoerAttrParser:GetDoerTmpValue(flag, doer, key)
+  return self:ConvertValue(flag, doer:GetTmp(key))
+end
+
+
+---@param doerAttrParser DoerAttrSetter
+---@param eval string
+---@param dv string
+function DoerAttrParser:Parse(eval)
+  if string.IsNilOrWhiteSpace(eval) then
+    return nil
+  end
+  if string.EqualsIgnoreCase(eval,"true") then
+    return true
+  end
+  if string.EqualsIgnoreCase(eval,"false") then
+    return false
+  end
+  if string.IsNumber(eval) then
+    return tonumber(string.TrimLeft(eval,"+"))
+  end
+  if string.StartsWith(eval, "#") then -- 直接字符串
+    eval = string.sub(eval,string.len("#")+ 1)
+    if string.IndexOf(eval,"{") ~=-1 then
+      return self:ParseString(eval)
+    else
+      return eval
+    end
+  else
+    local ueval
+    if string.IndexOf(eval,"{") ~=-1 then
+      ueval = self:ParseString(eval)
+    else
+      ueval = eval
+    end
+    local o = load(string.format("return %s", ueval))()
+    return o
+  end
+end
+
+function DoerAttrParser:ParseBoolean(expression,dv)
+  dv = dv or false
+  --warn(self:ParseString(expression))
+  return ObjectUtil.ToBooleanOrToDefault(self:ParseString(expression),dv)
+end
+
+function DoerAttrParser:ParseNumber(expression,dv)
+  dv = dv or 0
+  return tonumber(self:ParseString(expression))
+end
+
+function DoerAttrParser:ParseString(expression)
+  log(string.format("解析ing:%s", expression))
+  local replace_func = function(match_string)
+    return self:Replace(match_string)
+  end
+  -- 决定解析的先后顺序
+  if string.IndexOf(expression,"${") ~= -1 then
+    if string.IndexOf(expression,"$${") ~= -1 then
+      expression = string.ReplaceAll(expression, DoerAttrParserConst.Pattern3,replace_func)
+    end
+    expression = string.ReplaceAll(expression, DoerAttrParserConst.Pattern2,replace_func)
+  end
+  return string.ReplaceAll(expression, DoerAttrParserConst.Pattern1,replace_func)
+end
+
+function DoerAttrParser:Replace(expression)
+  if string.StartsWith(expression, "{") then
+    expression = string.Trim(string.sub(expression, string.len("{")+ 1, string.len(expression)-1))
+  elseif string.StartsWith(expression, "${") then
+    expression = string.Trim(string.sub(expression, string.len("${")+ 1, string.len(expression)-1))
+  elseif string.StartsWith(expression, "$${") then
+    expression = string.Trim(string.sub(expression, string.len("$${")+ 1, string.len(expression)-1))
+  end
+  local type_string = ""
+  if string.StartsWith(expression, DoerAttrParserConst.Type_String_List[2]) then
+    type_string = DoerAttrParserConst.Type_String_List[2]
+    expression = string.Trim(string.sub(expression, string.len(type_string)+ 1))
+  elseif string.StartsWith(expression, DoerAttrParserConst.Type_String_List[3]) then
+    type_string = DoerAttrParserConst.Type_String_List[3]
+    expression = string.Trim(string.sub(expression, string.len(type_string)+ 1))
+  elseif string.StartsWith(expression, DoerAttrParserConst.Type_String_List[4]) then
+    type_string = DoerAttrParserConst.Type_String_List[4]
+    expression = string.Trim(string.sub(expression, string.len(type_string)+ 1))
+  end
+
+
+  if string.StartsWith(expression,"u.") then -- 主动对象属性
+    expression = string.sub(expression, string.len("u.")+1)
+    if self.u then
+      return self:GetDoerValue(self.u, expression,type_string)
+    else
+      return self:ConvertValue( "",type_string)
+    end
+  end
+  if string.StartsWith(expression,"ut.") then -- 主动对象临时属性
+    expression = string.sub(expression, string.len("ut.")+1)
+    if self.u then
+      return self:GetDoerTmpValue( self.u, expression,type_string)
+    else
+      return self:ConvertValue("",type_string)
+    end
+  end
+
+  if string.StartsWith(expression,"o.") then -- 被动对象属性
+    expression = string.sub(expression, string.len("o.")+1)
+    if self.o then
+      return self:GetDoerValue( self.o, expression,type_string)
+    else
+      return self:ConvertValue( "",type_string)
+    end
+  end
+  if string.StartsWith(expression,"ot.") then -- 被动对象临时属性
+    expression = string.sub(expression, string.len("ot.")+1)
+    if self.o then
+      return self:GetDoerTmpValue(self.o, expression,type_string)
+    else
+      return self:ConvertValue( "",type_string)
+    end
+  end
+
+  if string.StartsWith(expression,"e.") then -- 中间对象属性
+    expression = string.sub(expression, string.len("e.")+1)
+    if self.e then
+      return self:GetDoerValue(self.e, expression,type_string)
+    else
+      return self:ConvertValue("",type_string)
+    end
+  end
+  if string.StartsWith(expression,"et.") then -- 中间对象临时属性
+    expression = string.sub(expression, string.len("et.")+1)
+    if self.e then
+      return self:GetDoerTmpValue(self.e, expression,type_string)
+    else
+      return self:ConvertValue("",type_string)
+    end
+  end
+
+
+  if string.StartsWith(expression,"m.") then -- 当前或中间对象
+    expression = string.sub(expression, string.len("m.")+1)
+    if self.m then
+      return self:ConvertValue(self.m[expression],type_string)
+    else
+      return self:ConvertValue("",type_string)
+    end
+  end
+
+  if string.StartsWith(expression, "definition.") then --  定义数据
+    expression = string.sub(expression, string.len("definition.")+1)
+    local pos0 = string.IndexOf(expression,'.')
+    local definition_name = string.sub(expression,1, pos0 - 1)
+    expression = string.sub(expression,pos0 + 1)
+    local pos1 = string.IndexOf(expression,'.')
+    local id = string.sub(expression,1, pos1 - 1)
+    local attr = string.sub(expression,pos1 + 1)
+    local definition
+    if string.EqualsIgnoreCase(definition_name,"ItemDefinition") then
+      definition = global.client.itemFactory:GetDefinition(id)
+    end
+    return self:ConvertValue(definition[attr],type_string)
+  end
+  if string.StartsWith(expression,"eval(") then --  求表达式值
+    expression = string.Trim(string.sub(expression, string.len("eval(")+1))
+    local pos = string.QuoteEndIndex(expression,"(", ")")
+    if pos ~= -1 then
+      local exp = string.Trim(string.sub(expression, 1, pos - 1))
+      local end_string = pos == string.len(expression) and "" or string.Trim(string.sub(expression,pos + 1))
+      local v = tostring(self:Parse(exp)) .. end_string -- 计算结果
+      return self:ConvertValue( v,type_string)
+    end
+    return self:ConvertValue("",type_string)
+  end
+
+  if string.StartsWith(expression,"hasSubString(") then --  是否有子字符串查找
+    expression = string.Trim(string.sub(expression, string.len("hasSubString(")+1))
+    if string.EndsWith(expression,")") then
+      expression = string.sub(expression,1, string.len(expression) - 1)
+    end
+    local pos = string.LastIndexOf(expression,'|')
+    if pos == -1 then
+      pos = string.LastIndexOf(expression,',')
+    end
+    if pos ~= -1 then
+      local src = string.sub(expression,1, pos -1)
+      local dst = string.Trim(string.sub(expression,pos + 1))
+      local v = string.IndexOf(src,dst) ~= -1
+      return self:ConvertValue( v,type_string)
+    end
+    return self:ConvertValue( "",type_string)
+  end
+
+  if string.StartsWith(expression,"random(") then --  随机数
+    expression = string.Trim(string.sub(expression, string.len("random(")+1))
+    local pos0 = string.QuoteEndIndex(expression, "(", ")")
+    local random_expression = string.Trim(string.sub(expression,1, pos0 - 1))
+    local end_string = pos0 == string.len(expression) and "" or string.Trim(string.sub(expression,pos0 + 1))
+    local pos1 = string.IndexOf(random_expression,",")
+    local random_arg0 = tonumber(string.sub(random_expression, 1, pos1 -1))
+    local random_arg1 = tonumber(string.sub(random_expression, pos1+ 1))
+    return self:ConvertValue( self:GetRandomManager():RandomInt(random_arg0, random_arg1)  .. end_string,type_string)
+  end
+
+  -- 默认的处理
+  if self.m then
+    return self:ConvertValue(self.m[expression],type_string)
+  end
+  if self.u then
+    return self:ConvertValue(self.u[expression],type_string)
+  end
+  if self.o then
+    return self:ConvertValue(self.o[expression],type_string)
+  end
+  return self:ConvertValue("",type_string)
+end
+
+------------------------------------------GetDoerValue------------------------------
+---@param type_string string
+---@param doer Doer
+---@param key string
+function DoerAttrParser:GetDoerTmpValue(doer, key,type_string)
+  return self:ConvertValue(doer:GetTmp(key), type_string)
+end
+
+---@param type_string string
+---@param doer Doer
+---@param key string
+function DoerAttrParser:GetDoerValue(doer, key,type_string)
+  local result_dict = {}
+  if self:GetDoerValue_User(doer, key, type_string, result_dict) then
+    return result_dict.result
+  end
+  if self:GetDoerValue_Mission(doer, key, type_string, result_dict) then
+    return result_dict.result
+  end
+  if self:GetDoerValue_Doer(doer, key, type_string, result_dict) then
+    return result_dict.result
+  end
+  return self:ConvertValue(doer:Get(key), type_string)
+end
+
+---@param type_string string
+---@param doer Doer
+---@param key string
+---@return boolean
+function DoerAttrParser:GetDoerValue_Doer(doer, key, type_string, result_dict)
+  local is_break = false
+  if IsInstanceOf(doer,"Doer") then
+    if string.StartsWith(key,"env.") or string.StartsWith(key,"envt.") then
+      local env = doer:GetEnv()
+      if env then
+        key = string.sub(string.len("env") +1)
+        ---@type DoerAttrParser
+        local doerAttrParser = DoerAttrParser.New(env)
+        result_dict.result = doerAttrParser:ParseString(type_string .. "u" .. key)
+        return true
+      end
+      result_dict.result = self:ConvertValue("", type_string)
+      return true
+    end
+
+    if string.StartsWith(key,"pos2") then
+      key = string.sub(key,string.len("pos2")+1)
+      local pos2 = doer:GetPos2()
+      if pos2 then
+        if key == ".x" then
+          result_dict.result = self:ConvertValue(pos2.x, type_string)
+          return true
+        end
+        if key == ".y" then
+          result_dict.result = self:ConvertValue(pos2.y, type_string)
+          return true
+        end
+        result_dict.result = self:ConvertValue(tostring(pos2),type_string)
+        return true
+      end
+      result_dict.result = self:ConvertValue("", type_string)
+      return true
+    end
+
+    if string.StartsWith(key,"pos3") then
+      key = string.sub(key,string.len("pos3")+1)
+      local pos3 = doer:GetPos3()
+      if pos3 then
+        if key == ".x" then
+          result_dict.result = self:ConvertValue(pos3.x, type_string)
+          return true
+        end
+        if key == ".y" then
+          result_dict.result = self:ConvertValue(pos3.y, type_string)
+          return true
+        end
+        if key == ".z" then
+          result_dict.result = self:ConvertValue(pos3.y, type_string)
+          return true
+        end
+        result_dict.result = self:ConvertValue(tostring(pos3),type_string)
+        return true
+      end
+      result_dict.result = self:ConvertValue("", type_string)
+      return true
+    end
+  end
+  return is_break
+end
+
+
+---@param type_string string
+---@param doer Doer
+---@param key string
+---@return boolean
+function DoerAttrParser:GetDoerValue_Mission(doer, key, type_string, result_dict)
+  local is_break = false
+  if IsInstanceOf(doer,"Mission") then
+    ---@type Mission
+    local mission = doer
+    if key == "status" then
+      if mission:IsReady() then
+        result_dict.result = self:ConvertValue(3, type_string) -- 已就绪,可以被完成
+        return true
+      else
+        result_dict.result = self:ConvertValue(2, type_string) -- 未完成
+        return true
+      end
+    end
+
+    if key == "items." then -- 物品
+      local item_id = string.sub(key, string.len("items.") +1)
+      local items = mission:Get("items")
+      if items then
+        local count = items[item_id] or 0
+        result_dict.result = self:ConvertValue(count, type_string)
+        return true
+      end
+    end
+
+  end
+  return is_break
+end
+
+
+---@param type_string string
+---@param doer Doer
+---@param key string
+---@return boolean
+function DoerAttrParser:GetDoerValue_User(doer, key, type_string, result_dict)
+  local is_break = false
+  if IsInstanceOf(doer,"User") then
+    ---@type User
+    local user = doer
+    if self:GetDoerValue_User_Missions(user,key,type_string, result_dict) then
+      return true
+    end
+    if self:GetDoerValue_User_Items(user,key,type_string, result_dict) then
+      return true
+    end
+  end
+  return is_break
+end
+
+---@param type_string string
+---@param user User
+---@param key string
+---@return boolean
+function DoerAttrParser:GetDoerValue_User_Missions(user, key, type_string, result_dict)
+  local is_break = false
+  if string.StartsWith(key,"missions.") then --任务对象
+    key = string.sub(key, string.len("missions.")+1)
+    local mission_id
+    local pos = string.IndexOf(key,".")
+    if pos ~= -1 then
+      mission_id = string.sub(key, 1, pos-1)
+      key = string.sub(key, pos +1)
+      if string.EndsWith(mission_id,"t") then -- 修改tmpValue
+        mission_id = string.sub(mission_id,1, -2)
+        key = "t" + key
+      end
+    else
+      mission_id = key
+      key = ""
+    end
+    local mission = user:GetMission(mission_id)
+    if mission then  -- 身上有这个任务
+      if string.len(key) > 0 then
+        ---@type DoerAttrParser
+        local doerAttrParser = DoerAttrParser.New(mission)
+        result_dict.result = doerAttrParser:ParseString(type_string .. "u" .. key)
+        return true
+      else
+        result_dict.result  = self:ConvertValue("1", type_string)
+        return true
+      end
+    else
+      if string.StartsWith(key, ".status") then --  身上没这个任务
+        if  table.ContainsValue(user:GetFinishedMissionIds(),mission_id) then
+          result_dict.result  = self:ConvertValue(4, type_string) -- 已完成
+          return true
+        else
+          result_dict.result  = self:ConvertValue(0, type_string) -- 未接到
+          return true
+        end
+      end
+    end
+  end
+  return is_break
+end
+
+
+---@param type_string string
+---@param user User
+---@param key string
+---@return boolean
+function DoerAttrParser:GetDoerValue_User_Items(user, key, type_string, result_dict)
+  local is_break = false
+  if string.StartsWith(key,"items.") then --物品对象
+    key = string.sub(key, string.len("items.")+1)
+    local pos = string.IndexOf(key,".")
+    if pos ~= -1 then
+      local item_id = string.sub(key, 1, pos-1)
+      key = string.sub(key, pos +1)
+      if string.EndsWith(item_id,"t") then -- 修改tmpValue
+        item_id = string.sub(item_id,1, -2)
+        key = "t" + key
+      end
+      if key == ".count" then
+        result_dict.result  = self:ConvertValue(user:GetItemCount(item_id),type_string)
+        return true
+      end
+      local item = user:GetItem(item_id)
+      if item then -- 身上有这个物品
+        ---@type DoerAttrParser
+        local doerAttrParser = DoerAttrParser.New(item)
+        result_dict.result  = doerAttrParser:ParseString(type_string .. "u" .. key)
+        return true
+      end
+    end
+    result_dict.result  = self:ConvertValue("",type_string)
+    return true
+  end
+  return is_break
+end
+
+
+
+-------------------------------------------------------------------------------
+
+function DoerAttrParser:ConvertValue(value,type_string)
+  return tostring(DoerAttrParserUtil.ConvertValue(value, type_string))
+end
+
+
+return DoerAttrParser

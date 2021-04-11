@@ -1,0 +1,86 @@
+---@class AStarRange
+local AStarRange = Class("AStarRange")
+function AStarRange:Init( left_bottom_x,  left_bottom_y,  right_top_x,  right_top_y)
+  self:SetRange( left_bottom_x, left_bottom_y,  right_top_x,  right_top_y)
+end
+
+function AStarRange:SetRange( left_bottom_x, left_bottom_y,  right_top_x,  right_top_y)
+  self.left_bottom_x = math.min(left_bottom_x, right_top_x)
+  self.left_bottom_y = math.min(left_bottom_y, right_top_y)
+  self.right_top_x = math.max(left_bottom_x, right_top_x)
+  self.right_top_y = math.max(left_bottom_y, right_top_y)
+end
+
+---@return Vector2
+function AStarRange:GetCenter()
+  return Vector2.New((self.left_bottom_x + self.right_top_x)/2,(self.left_bottom_y + self.right_top_y) / 2)
+end
+
+---@return Vector2
+function AStarRange:GetLeftBottom()
+  return Vector2.New(self.left_bottom_x,self.left_bottom_y)
+end
+
+---@return Vector2
+function AStarRange:GetRightTop()
+  return Vector2.New(self.right_top_x,self.right_top_y)
+end
+
+---@return Vector2
+function AStarRange:GetRandomPos(randomManager)
+  randomManager = randomManager or global.client.randomManager
+  local dx = self.right_top_x - self.left_bottom_x
+  local dy = self.right_top_y - self.left_bottom_y
+  local x, y
+  if dx > 0 then
+    x = self.left_bottom_x + randomManager:RandomInt(0,math.abs(dx)+1)
+  elseif dx < 0 then
+    x = self.left_bottom_x - randomManager:RandomInt(0, math.abs(dx) + 1)
+  else
+    x = self.left_bottom_x
+  end
+  if dy > 0 then
+    y = self.left_bottom_y + randomManager:RandomInt(0, math.abs(dy) + 1)
+  elseif dy < 0 then
+    y = self.left_bottom_y - randomManager:RandomInt(0, math.abs(dy) + 1)
+  else
+    y = self.left_bottom_y
+  end
+  return Vector2.New(x, y)
+end
+
+function AStarRange:GetWidth()
+  return self.right_top_x - self.left_bottom_x
+end
+
+function AStarRange:GetHeight()
+  return self.right_top_y - self.left_bottom_y
+end
+
+---@param pos Vector2
+---@return boolean
+function AStarRange:IsInRange(pos)
+  return self:IsInRangeX(pos.x) and self:IsInRangeY(pos.y)
+end
+
+---@return boolean
+function AStarRange:IsInRangeX(x)
+  ---@type RangeCat
+  local range_x = RangeCat.New(self.left_bottom_x, self.right_top_x)
+  return range_x:IsContains(x)
+end
+
+---@return boolean
+function AStarRange:IsInRangeY(y)
+  ---@type RangeCat
+  local range_y = RangeCat.New(self.left_bottom_y, self.right_top_y)
+  return range_y:IsContains(y)
+end
+
+function AStarRange:__tostring ()
+  return string.format("[%s,%s]-[%s,%s]",self.left_bottom_x, self.left_bottom_y, self.right_top_x, self.right_top_y)
+end
+
+
+return AStarRange
+

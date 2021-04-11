@@ -1,0 +1,47 @@
+---@class DOTweenPluginComponent:AbstractComponent
+local DOTweenPluginComponent = Class("DOTweenPluginComponent", AbstractComponent)
+
+---@param dotweenPlugin DOTweenPlugin
+function DOTweenPluginComponent:Init(dotweenPlugin)
+  DOTweenPluginComponent.super.Init(self)
+  self.dotweenPlugin = dotweenPlugin
+end
+
+---@param key string
+---@return CS.DG.Tweening.Sequence
+function DOTweenPluginComponent:AddDOTweenSequence( key)
+  return self.dotweenPlugin:AddDOTweenSequence(key)
+end
+
+---@param key string
+---@param tween CS.DG.Tweening.Tween
+---@return CS.DG.Tweening.Tween
+function DOTweenPluginComponent:AddDOTween(key, tween)
+  return self.dotweenPlugin:AddDOTween(key, tween)
+end
+
+---@param key_or_tween CS.DG.Tweening.Tween||string
+function DOTweenPluginComponent:RemoveDOTween(key_or_tween)
+  self.dotweenPlugin:RemoveDOTween(key_or_tween)
+end
+
+function DOTweenPluginComponent:RemoveAllDOTweens()
+  self.dotweenPlugin:RemoveAllDOTweens()
+end
+
+function DOTweenPluginComponent:__SetIsPaused(is_paused)
+  DOTweenPluginComponent.super.__SetIsPaused(self, is_paused)
+  self.dotweenPlugin:SetIsPaused(is_paused)
+end
+
+function DOTweenPluginComponent:__Reset()
+  DOTweenPluginComponent.super.__Reset(self)
+  self:RemoveAllDOTweens()
+end
+
+function DOTweenPluginComponent:__Destroy()
+  DOTweenPluginComponent.super.__Destroy(self)
+  self:RemoveAllDOTweens()
+end
+
+return DOTweenPluginComponent

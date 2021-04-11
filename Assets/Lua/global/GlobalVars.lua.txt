@@ -1,0 +1,35 @@
+global = global or {}
+
+setmetatable(global, {
+  __newindex = function(_, name, value)
+    rawset(_G, name, value)
+  end,
+
+  __index = function(_, name)
+    return rawget(_G, name)
+  end
+})
+
+-- 使_G.xx赋值不能使用
+function DisableGlobal()
+  local mt = getmetatable(_G)
+  if mt == nil then
+    mt = {}
+    setmetatable(_G, mt)
+  end
+  mt.__newindex = function(_, name, value)
+    error(debug.traceback(string.format("USE \" global.%s = value \" INSTEAD OF SET GLOBAL VARIABLE", name), 2))
+  end
+end
+
+-- 使_G.xx赋值可以使用
+function EnableGlobal()
+  local mt = getmetatable(_G)
+  if mt == nil then
+    return
+  end
+  mt.__newindex = nil
+end
+
+----------------------------------------------------------------------
+

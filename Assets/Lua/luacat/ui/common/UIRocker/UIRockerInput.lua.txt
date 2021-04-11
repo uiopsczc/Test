@@ -1,0 +1,81 @@
+-- 左右 键盘的左右键,[-1，1]
+-- 下上 键盘的下上键,[-1，1]
+---@class UIRockerInput:TickObject
+local UIRockerInput = Class("RockerInput", TickObject)
+
+function UIRockerInput:Init(name)
+  UIRockerInput.super.Init(self)
+  self.pre_axis = {x = 0, y = 0}
+  self.cur_axis = {x = 0, y = 0}
+  self.key_axis = {x = 0, y = 0}
+  self.move_cooldown_remain_duration = 0
+  self.name = name or ""
+  self.event_name_move_stop = self.name .. "MoveStop"
+  self.event_name_move_pct = self.name .. "MovePct"
+end
+
+function UIRockerInput:__Update(deltaTime, unscaledDeltaTime)
+  UIRockerInput.super.__Update(self,deltaTime, unscaledDeltaTime)
+  self:__UpdateKeyInput(deltaTime, unscaledDeltaTime) -- 键盘测试用的
+  if self.move_cooldown_remain_duration > 0 then
+    self:__UpdateMove(deltaTime, unscaledDeltaTime)
+  end
+end
+
+
+function UIRockerInput:__GetAxisKeyInput()
+  local axis_x = Input.GetAxis("Horizontal") --键盘的左右,[-1，1]
+  local axis_y = Input.GetAxis("Vertical")-- 键盘的上下,[-1，1]
+  return axis_x,axis_y
+end
+
+function UIRockerInput:__UpdateKeyInput(deltaTime, unscaledDeltaTime)
+  local axis_x , axis_y = self:__GetAxisKeyInput()
+  local len = math.sqrt(axis_x * axis_x + axis_y * axis_y)
+  if len == 0 then
+    if not self.has_key_pressed then
+      return
+    end
+    self.has_key_pressed = false
+    if self.is_axis_move then
+      self.key_axis.x = axis_x -- 0
+      self.key_axis.y = axis_y -- 0
+      self:AxisMove(0, 0)
+    end
+  else
+    self.has_key_pressed = true
+    self.key_axis.x = axis_x
+    self.key_axis.y = axis_y
+    self:AxisMove(self.key_axis.x, self.key_axis.y)
+  end
+end
+
+function UIRockerInput:AxisMove(x, y)
+  self.cur_axis.x = x
+  self.cur_axis.y = y
+  if x ~= 0 or y ~= 0 then
+    self:MovePct(x, y)
+    self.is_axis_move = true
+  elseif self.is_axis_move then
+    self:MoveStop()
+    self.is_axis_move = false
+  end
+end
+
+function UIRockerInput:MovePct(pct_x, pct_y)
+  self:Broadcast(self.event_name_move_pct, pct_x, pct_y)
+end
+
+function UIRockerInput:MoveStop()
+  self.move_cooldown_remain_duration = 0
+  self:Broadcast(self.event_name_move_stop)
+end
+
+function UIRockerInput:__UpdateMove(deltaTime, unscaledDeltaTime)
+  self.move_cooldown_remain_duration = self.move_cooldown_remain_duration - deltaTime
+  if self.move_cooldown_remain_duration <= 0 then
+    self:MovePct(self.cur_axis.x, self.cur_axis.y)
+  end
+end
+
+return UIRockerInput

@@ -1,0 +1,42 @@
+---@class EaseCat_Quad
+local EaseCat_Quad = {}
+
+
+
+function EaseCat_Quad.EaseIn(t, b, c, d)
+  t = t / d
+  return c * t * t + b
+end
+
+function EaseCat_Quad.EaseOut(t, b, c, d)
+  t = t/d
+  return -c * t * (t - 2) + b
+end
+
+
+function EaseCat_Quad.EaseInOut(t, b, c, d)
+  t = t/(d / 2)
+  if t < 1 then
+    return c / 2 * t * t + b
+  end
+  t = t - 1
+  return -c / 2 * (t * (t - 2) - 1) + b
+end
+
+-------------------------------------------------------------------------
+
+function EaseCat_Quad.EaseIn2(start_value, end_value, pct)
+  return EaseCat_Quad.EaseIn(pct, start_value, end_value - start_value, 1)
+end
+
+
+function EaseCat_Quad.EaseOut2(start_value, end_value, pct)
+  return EaseCat_Quad.EaseOut(pct, start_value, end_value - start_value, 1)
+end
+
+
+function EaseCat_Quad.EaseInOut2(start_value, end_value, pct)
+  return EaseCat_Quad.EaseInOut(pct, start_value, end_value - start_value, 1)
+end
+
+return EaseCat_Quad

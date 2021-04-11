@@ -1,0 +1,3 @@
+IdConst = {}
+
+IdConst.Rid_Infix =  "@"

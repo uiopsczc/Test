@@ -1,0 +1,20 @@
+---@class IPosition:Class
+local IPosition = Class("IPosition")
+
+---@return Vector3
+function IPosition:GetPosition()
+end
+
+---@return CS.UnityEngine.Transform
+function IPosition:GetTransform()
+end
+
+---@param socket_name string
+function IPosition:SetSocketName(socket_name)
+end
+
+function IPosition:IsValid()
+  return true
+end
+
+return IPosition

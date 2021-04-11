@@ -1,0 +1,96 @@
+---@class EaseCat_Elastic
+local EaseCat_Elastic = {}
+
+function EaseCat_Elastic.EaseIn(t, b, c, d,a,p)
+  a = a or 0
+  p = p or d * .3
+  local s
+  if t == 0 then
+    return b
+  end
+  t = t/d
+  if t == 1 then
+    return b + c
+  end
+  if p == 0 then
+    p = d * .3
+  end
+  if a < math.abs(c) then
+    a = c
+    s = p / 4
+  else
+    s = p / math.PI_two * math.asin(c / a)
+  end
+  t = t - 1
+  return -(a * math.Pow(2, 10 * t) * math.sin((t * d - s) * math.PI_two / p)) + b
+end
+
+function EaseCat_Elastic.EaseOut(t, b, c, d,a,p)
+  a = a or 0
+  p = p or d * .3
+  local s
+  if t == 0  then
+    return b
+  end
+  t = t/d
+  if t== 1 then
+    return b + c
+  end
+  if p == 0 then
+    p = d * .3
+  end
+  if a < math.abs(c) then
+    a = c
+    s = p / 4
+  else
+    s = p / math.PI_two * math.asin(c / a)
+  end
+  return a * math.Pow(2, -10 * t) * math.sin((t * d - s) * math.PI_two / p) + c + b
+end
+
+
+function EaseCat_Elastic.EaseInOut(t, b, c, d,a,p)
+  a = a or 0
+  p = p or d * (.3 * 1.5)
+  local s
+  if t == 0 then
+    return b
+  end
+  t = t / (d / 2)
+  if t == 2 then
+    return b + c
+  end
+  if p == 0 then
+    p = d * (.3 * 1.5)
+  end
+  if a < math.abs(c) then
+    a = c
+    s = p / 4
+  else
+    s = p / math.PI_two * math.asin(c / a)
+  end
+
+  if t < 1 then
+    t = t - 1
+    return -.5 * (a * math.Pow(2, 10 * t) * math.sin((t * d - s) * math.PI_two / p)) + b
+  end
+  t = t -1
+  return a * math.Pow(2, -10 * t) * math.sin((t * d - s) * math.PI_two / p) * .5 + c + b
+end
+
+-------------------------------------------------------------------------
+function EaseCat_Elastic.EaseIn2(start_value, end_value, pct,a,p)
+  return EaseCat_Elastic.EaseIn(pct, start_value, end_value - start_value, 1,a,p)
+end
+
+
+function EaseCat_Elastic.EaseOut2(start_value, end_value, pct,a,p)
+  return EaseCat_Elastic.EaseOut(pct, start_value, end_value - start_value, 1,a,p)
+end
+
+
+function EaseCat_Elastic.EaseInOut2(start_value, end_value, pct,a,p)
+  return EaseCat_Elastic.EaseInOut(pct, start_value, end_value - start_value, 1,a,p)
+end
+
+return EaseCat_Elastic

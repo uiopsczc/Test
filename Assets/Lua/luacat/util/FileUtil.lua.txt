@@ -1,0 +1,10 @@
+---@class FileUtil
+FileUtil = {}
+
+function FileUtil.GetDirName(full_path)
+  return string.match(full_path, "(.*)/")
+end
+
+function FileUtil.GetFileName(full_path)
+  return string.match(full_path, "(.*)/")
+end

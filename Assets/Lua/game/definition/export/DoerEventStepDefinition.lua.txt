@@ -1,0 +1,36 @@
+---@class DoerEventStepDefinition
+---@field id
+---@field name
+---@field trigger_condition
+---@field trigger_desc
+---@field can_not_trigger_desc
+---@field execute_condition
+---@field execute_desc
+---@field can_not_execute_desc
+---@field is_stop_here
+---@field set_attr_dict
+---@field add_attr_dict
+---@field deal_item_dict
+---@field give_up_mission_ids
+---@field accept_mission_ids
+---@field finish_mission_ids
+---@field give_up_mission_ids
+---@field add_finished_mission_ids
+---@field remove_finished_mission_ids
+local _
+
+
+local definition = {
+
+  [
+[=[1]=]
+] = {id = [=[1]=],name = [=[事件子步骤1]=],trigger_condition = [=[{@eval(${u.mp}==0)}]=],trigger_desc = [=[触发事件子步骤1]=],can_not_trigger_desc = [=[不触发事件子步骤1]=],execute_condition = [=[{@eval(${u.tp}==0)}]=],execute_desc = [=[执行事件子步骤1]=],can_not_execute_desc = [=[执行事件子步骤1]=],add_attr_dict = {[
+[=[u.cp]=]
+] = [=[2]=],[
+[=[u.dp]=]
+] = [=[4]=],},deal_item_dict = {[
+[=[5]=]
+] = [=[1"atk:5,def:6"]=],},},
+
+}
+return definition

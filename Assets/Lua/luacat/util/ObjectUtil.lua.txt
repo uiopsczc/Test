@@ -1,0 +1,65 @@
+---@class ObjectUtil
+ObjectUtil = {}
+
+function ObjectUtil.ToNumberOrToDefault(value,dv)
+  dv = dv or 0
+  if value == nil then
+    return dv
+  end
+  if IsBoolean(value) then
+    return value == true and 1 or 0
+  end
+  if IsNumber(value) then
+    return value
+  end
+  if IsString(value) then
+    if tonumber(value) then
+      return tonumber(value)
+    end
+  end
+  return dv
+end
+
+function ObjectUtil.ToStringOrToDefault(value,dv)
+  if value == nil then
+    return dv
+  end
+  return tostring(value)
+end
+
+function ObjectUtil.ToBooleanOrToDefault(value,dv)
+  dv = dv or false
+  if value == nil then
+    return dv
+  end
+  if IsBoolean(value) then
+    return value
+  end
+  if IsNumber(value) then
+    return value ~= 0
+  end
+  if IsString(value) then
+    if string.EqualsIgnoreCase(value, "true") then
+      return true
+    end
+    if string.EqualsIgnoreCase(value, "false") then
+      return false
+    end
+    return ObjectUtil.ToNumberOrToDefault(value, 0) ~= 0
+  end
+  return dv
+end
+
+function ObjectUtil.GetNotNilKey(obj)
+  if obj ~= nil then
+    return obj
+  end
+  return NilUtil.GetDefaultString()
+end
+
+function ObjectUtil.GetNilableKey(obj)
+  if obj == NilUtil.GetDefaultString() then
+    return nil
+  end
+  return self
+end

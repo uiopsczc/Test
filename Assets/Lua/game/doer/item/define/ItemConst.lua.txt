@@ -1,0 +1,5 @@
+ItemConst = {}
+
+ItemConst.Item_Type1_Weapon = "武器"
+ItemConst.Item_Type1_Armor = "防具"
+ItemConst.Item_Type1_Embed = "镶嵌物"

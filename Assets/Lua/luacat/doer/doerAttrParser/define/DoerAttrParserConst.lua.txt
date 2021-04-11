@@ -1,0 +1,11 @@
+DoerAttrParserConst = {}
+
+DoerAttrParserConst.Type_String_List = {
+  "",-- 整数
+  "%",-- 浮点数
+  "@",-- 布尔值
+  "#", -- 字符串
+}
+DoerAttrParserConst.Pattern1 = "{.-}"
+DoerAttrParserConst.Pattern2 = "%${.-}"
+DoerAttrParserConst.Pattern3 = "%$%${.-}"

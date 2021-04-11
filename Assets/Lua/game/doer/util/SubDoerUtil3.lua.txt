@@ -1,0 +1,105 @@
+---@class SubDoerUtil3
+local SubDoerUtil3 = Class("SubDoerUtil3")
+
+--********************************里面的结构是  Dict<rid,Doer>****************************
+------------------------DoXXX--------------------------------
+-- 卸载doer中的sub_doer_key子doers
+---@param parent_doer Doer
+---@param relase_sub_doer_func fun(sub_doer:Doer)
+function SubDoerUtil3.DoReleaseSubDoer(parent_doer, sub_doer_key, relase_sub_doer_func)
+  --销毁
+  local sub_doers = SubDoerUtil3.GetSubDoers(parent_doer, sub_doer_key)
+  for i = #sub_doers, 1, -1 do
+    local sub_doer = sub_doers[i]
+    relase_sub_doer_func(sub_doer)
+    sub_doer:SetEnv(nil)
+    sub_doer:Destruct()
+  end
+  table.RemoveAll_Dict(SubDoerUtil3.GetSubDoerDict_ToEdit(parent_doer, sub_doer_key))
+end
+-----------------容器---------------------
+-- 获取doer中的sub_doer_key子doers  没有id一层的包裹
+---@param parent_doer Doer
+---@param filter_func fun(sub_doer:Doer)
+---@return Doer[]
+function SubDoerUtil3.GetSubDoers(parent_doer, sub_doer_key, id, filter_func)
+  ---@type Doer[]
+  local dict = SubDoerUtil3.GetSubDoerDict_ToEdit(parent_doer,sub_doer_key)
+  if not id then
+    local result = {}
+    for _, sub_doer in pairs(dict) do
+      if not filter_func or filter_func(sub_doer) then
+        table.insert(result, sub_doer)
+      end
+      return result
+    end
+  end
+  local result = {}
+  for _, sub_doer in pairs(dict) do
+    if sub_doer:GetId() == id then
+      if not filter_func or filter_func(sub_doer) then
+        table.insert(result, sub_doer)
+      end
+    end
+  end
+  return result
+end
+
+-- 获取doer中的sub_doer_key子doers  没有id一层的包裹 可以直接插入删除
+---@return table<string,Doer>
+function SubDoerUtil3.GetSubDoerDict_ToEdit(parent_doer, sub_doer_key)
+  return parent_doer:GetOrAddTmp(sub_doer_key, function()
+    return {}
+  end)
+end
+
+
+
+
+-- doer中sub_doer_key的子doers
+---@param parent_doer Doer
+---@param filter_func fun(sub_doer:Doer)
+function SubDoerUtil3.HasSubDoers(parent_doer, sub_doer_key, id, filter_func)
+  return not table.IsNilOrEmpty(SubDoerUtil3.GetSubDoers(parent_doer, sub_doer_key, id, filter_func))
+end
+
+-- 获取doer中的sub_doer_key的子doer数量
+---@param parent_doer Doer
+function SubDoerUtil3.GetSubDoersCount(parent_doer, sub_doer_key, id, filter_func)
+  return table.Count(SubDoerUtil3.GetSubDoers(parent_doer, sub_doer_key, id, filter_func))
+end
+
+
+-- 获取doer中的sub_doer_key的id_or_rid子doer
+---@param parent_doer Doer
+---@return Doer
+function SubDoerUtil3.GetSubDoer(parent_doer, sub_doer_key, id_or_rid)
+  if IdUtil.IsId(id_or_rid) then --id的情况
+    local id = id_or_rid
+    for _, sub_doer in ipairs(SubDoerUtil3.GetSubDoers(parent_doer, sub_doer_key)) do
+      if sub_doer:GetId() == id then
+        return sub_doer
+      end
+    end
+    return nil
+  else -- rid的情况
+    local rid = id_or_rid
+    return SubDoerUtil3.GetSubDoerDict_ToEdit(parent_doer, sub_doer_key)[rid]
+  end
+end
+
+-- 清除doer中是否有sub_doer_key的子doers
+---@param parent_doer Doer
+---@param clear_sub_doer_func fun(sub_doer:Doer)
+function SubDoerUtil3.ClearSubDoers(parent_doer, sub_doer_key, clear_sub_doer_func)
+  local list = SubDoerUtil3.GetSubDoers(parent_doer, sub_doer_key)
+  for i = #list, 1, -1 do
+    local sub_doer = list[i]
+    clear_sub_doer_func(sub_doer)
+    sub_doer:SetEnv(nil)
+    sub_doer:Destruct()
+  end
+  table.RemoveAll_Dict(SubDoerUtil3.GetSubDoerDict_ToEdit(parent_doer, sub_doer_key))
+end
+
+return SubDoerUtil3

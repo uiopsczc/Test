@@ -1,0 +1,351 @@
+---@class DoerAttrSetter:Class
+local DoerAttrSetter = Class("DoerAttrParser")
+
+---@param desc string
+---@param doerAttrParser DoerAttrParser
+function DoerAttrSetter:Init(desc, doerAttrParser)
+  self:SetDesc(desc)
+  if doerAttrParser then
+    self:SetU(doerAttrParser:GetU())
+    self:SetO(doerAttrParser:GetO())
+    self:SetE(doerAttrParser:GetE())
+    self:SetM(doerAttrParser:GetM())
+    self:SetDoerAttrParser(doerAttrParser)
+  end
+end
+
+function DoerAttrSetter:SetU(u)
+  ---@type Doer
+  self.u = u--主动对象，比如任务中接受任务的玩家
+end
+
+function DoerAttrSetter:GetU()
+  return self.u
+end
+
+function DoerAttrSetter:SetO(o)
+  ---@type Doer
+  self.o = o -- 被动对象，比如任务中的任务
+end
+
+function DoerAttrSetter:GetO()
+  return self.o
+end
+
+function DoerAttrSetter:SetE(e)
+  ---@type Doer
+  self.e = e --中间对象，比如任务中给与任务的npc
+end
+
+function DoerAttrSetter:GetE()
+  return self.e
+end
+
+function DoerAttrSetter:SetM(m)
+  ---@type table<string,any>
+  self.m = m -- 相互传数据的hashttable
+end
+
+function DoerAttrSetter:GetM()
+  return self.m
+end
+
+function DoerAttrSetter:SetDoerAttrParser(doerAttrParser)
+  ---@type DoerAttrParser
+  self.doerAttrParser = doerAttrParser
+end
+
+function DoerAttrSetter:GetDoerAttrParser()
+  return self.doerAttrParser
+end
+
+function DoerAttrSetter:SetDesc(desc)
+  ---@type string
+  self.desc = desc
+end
+
+function DoerAttrSetter:GetDesc()
+  return self.desc
+end
+
+function DoerAttrSetter:Set(key, value_expression, is_add)
+  if self.doerAttrParser and string.IndexOf(key,"{") ~= -1 then
+    key = self.doerAttrParser:ParseString(key)
+  end
+  local object_value = self.doerAttrParser:Parse(value_expression)
+  self:SetObject(key,object_value,is_add)
+end
+
+function DoerAttrSetter:SetObject(key, object_value, is_add)
+  if string.StartsWith(key, "u.") then -- 主动对象属性
+    key = string.sub(key,string.len("u.")+1)
+    if self.u then
+      self:SetObjectValue(self.u, key,object_value, is_add)
+    end
+    return
+  end
+  if string.StartsWith(key, "ut.") then -- 主动对象临时属性
+    key = string.sub(key,string.len("ut.")+1)
+    if self.u then
+      self:SetObjectTmpValue(self.u, key,object_value, is_add)
+    end
+    return
+  end
+
+  if string.StartsWith(key, "o.") then -- 被动对象属性
+    key = string.sub(key,string.len("o.")+1)
+    if self.o then
+      self:SetObjectValue(self.o, key,object_value, is_add)
+    end
+    return
+  end
+  if string.StartsWith(key, "ot.") then -- 被动对象临时属性
+    key = string.sub(key,string.len("ot.")+1)
+    if self.o then
+      self:SetObjectTmpValue(self.o, key,object_value, is_add)
+    end
+    return
+  end
+
+  if string.StartsWith(key, "e.") then -- 中间对象属性
+    key = string.sub(key,string.len("e.")+1)
+    if self.e then
+      self:SetObjectValue(self.e, key,object_value, is_add)
+    end
+    return
+  end
+  if string.StartsWith(key, "et.") then -- 中间对象临时属性
+    key = string.sub(key,string.len("et.")+1)
+    if self.e then
+      self:SetObjectTmpValue(self.e, key,object_value, is_add)
+    end
+    return
+  end
+
+  if string.StartsWith(key,"m.") then -- 当前或中间对象
+    key = string.sub(key, string.len("m.") + 1)
+    if self.m then
+      if IsNumber(object_value) then
+        if is_add then
+          self.m[key] = ObjectUtil.ToNumberOrToDefault(self.m[key],0) + object_value
+        else
+          self.m = object_value
+        end
+      end
+      if IsBoolean(object_value) then
+        self.m[key] = object_value
+      end
+      if IsString(object_value) then
+        if object_value == "nil" then
+          self.m[key] = nil
+        elseif is_add then
+          self.m[key] = table.GetOrAddDefault_Dict(self.m, key,function()
+            return ""
+          end) .. object_value
+        else
+          self.m[key] = object_value
+        end
+      end
+    end
+    return
+  end
+
+  if self.u then
+    self:SetObject("u.".. key, object_value,is_add)
+  elseif self.o then
+    self:SetObject("o.".. key, object_value,is_add)
+  elseif self.e then
+    self:SetObject("e.".. key, object_value,is_add)
+  elseif self.m then
+    self:SetObject("m.".. key, object_value,is_add)
+  end
+end
+--------------------------------------------------SetObjectValue----------------------
+---@param doer Doer
+function DoerAttrSetter:SetObjectTmpValue(doer, key, object_value, is_add)
+  if object_value == "nil" then
+    doer:SetTmp(key,nil)
+    return
+  end
+  if not is_add then
+    doer:SetTmp(key,object_value)
+    return
+  end
+  -- add
+  if IsString(object_value) then
+    doer:AddTmpString(key,object_value)
+    return
+  end
+  -- number
+  doer:AddTmp(key,object_value)
+end
+
+
+---@param doer Doer
+function DoerAttrSetter:SetObjectValue(doer, key, object_value, is_add)
+  if self:SetObjectValue_User(doer, key, object_value,is_add) then
+    return
+  end
+
+  if self:SetObjectValue_Doer(doer, key, object_value,is_add) then
+    return
+  end
+
+  if object_value == "nil" then
+    doer:Set(key,nil)
+    return
+  end
+  if not is_add then
+    doer:Set(key,object_value)
+    return
+  end
+  -- add
+  if IsString(object_value) then
+    doer:AddString(key,object_value)
+    return
+  end
+  -- number
+  doer:Add(key,object_value)
+end
+
+
+---@param doer Doer
+---@return boolean
+function DoerAttrSetter:SetObjectValue_Doer(doer, key, object_value, is_add)
+  local is_break = false
+  if IsInstanceOf(doer, "Doer") then
+    if string.StartsWith(key,"env.") or string.StartsWith(key,"envt.") then
+      local env = doer:GetEnv()
+      if env then
+        key = string.sub(key, string.len("env")+1)
+        ---@type DoerAttrSetter
+        local attrAttrSetter = DoerAttrSetter.New(self.desc)
+        attrAttrSetter:SetU(env)
+        DoerAttrSetter:SetObject("u" .. key, object_value, is_add)
+      end
+      return true
+    end
+
+    if string.StartsWith(key,"owner.") or string.StartsWith(key,"ownert.") then
+      local owner = doer:GetOwner()
+      if owner then
+        key = string.sub(key, string.len("owner")+1)
+        ---@type DoerAttrSetter
+        local attrAttrSetter = DoerAttrSetter.New(self.desc)
+        attrAttrSetter:SetU(owner)
+        DoerAttrSetter:SetObject("u" .. key, object_value, is_add)
+      end
+      return true
+    end
+  end
+  return is_break
+end
+
+---@param doer Doer
+---@return boolean
+function DoerAttrSetter:SetObjectValue_User(doer, key, object_value, is_add)
+  local is_break = false
+  if IsInstanceOf(doer, "User") then
+    local user = doer
+    if IsString(object_value) then
+      if self:SetObjectValue_User_AddAttrEquip(user, key, object_value, is_add) then
+        return true
+      end
+      if self:SetObjectValue_User_Missions(user, key, object_value, is_add) then
+        return true
+      end
+      if self:SetObjectValue_User_Items(user, key, object_value, is_add) then
+        return true
+      end
+    end
+  end
+  return is_break
+end
+
+---@param user User
+---@return boolean
+function DoerAttrSetter:SetObjectValue_User_AddAttrEquip(user, key, object_value, is_add)
+  local is_break = false
+  local value = object_value
+  if string.StartsWith(key, "add_attr_equip.") then -- 增加带属性道具
+    local item_id = string.Trim(string.sub(key,string.len("add_attr_equip.")+1))
+    local pos = string.IndexOf(value, ";") -- count;pz:2,jl:3
+    if pos ~= -1 then
+      local count_string = string.Trim(string.sub(value, pos-1))
+      local count_value = self.doerAttrParser:ParseNumber(count_string, 0)
+      local attrs = string.ToDictionary(string.sub(value,pos+1))
+      local attr_dict = {}
+      for attr_key,attr_value in pairs(attrs) do
+        local attr_key_post_parse = self.doerAttrParser:ParseString(attr_key)
+        local attr_value_post_parse = self.doerAttrParser:Parse(attr_value)
+        attr_dict[attr_key_post_parse] = attr_value_post_parse
+      end
+      for i=1,count_value do
+        local equip = global.client.itemFactory:NewDoer(item_id)
+        equip:AddAll(attr_dict)
+        user:AddItem(equip)
+      end
+    end
+    return true
+  end
+  return is_break
+end
+
+
+---@param user User
+---@return boolean
+function DoerAttrSetter:SetObjectValue_User_Items(user, key, object_value, is_add)
+  local is_break = false
+  if string.StartsWith(key,"items.") then -- 物品对象
+    key = string.sub(key, string.len("items.")+1)
+    local pos = string.IndexOf(key, ".")
+    if pos~= -1 then
+      local item_id = string.sub(key, 1, pos -1)
+      key = string.sub(key, pos +1)
+      if string.EndsWith(item_id, "t") then -- 改变tmpValue
+        item_id = string.sub(item_id, 1, -2)
+        key = "t" .. key
+      end
+      local item = user:GetItem(item_id)
+      if item then
+        ---@type DoerAttrSetter
+        local doerAttrSetter = DoerAttrSetter.New(self.desc)
+        doerAttrSetter:SetU(item)
+        doerAttrSetter:SetObject("u" .. key, object_value, is_add)
+      end
+    end
+    return true
+  end
+  return is_break
+end
+
+
+---@param user User
+---@return boolean
+function DoerAttrSetter:SetObjectValue_User_Missions(user, key, object_value, is_add)
+  local is_break = false
+  if string.StartsWith(key,"missions.") then -- 任务对象
+    key = string.sub(key, string.len("missions.")+1)
+    local pos = string.IndexOf(key, ".")
+    if pos~= -1 then
+      local mission_id = string.sub(key, 1, pos -1)
+      key = string.sub(key, pos +1)
+      if string.EndsWith(mission_id, "t") then -- 改变tmpValue
+        mission_id = string.sub(mission_id, 1, -2)
+        key = "t" .. key
+      end
+      local mission = user:GetMission(mission_id)
+      if mission then
+        ---@type DoerAttrSetter
+        local doerAttrSetter = DoerAttrSetter.New(self.desc)
+        doerAttrSetter:SetU(mission)
+        doerAttrSetter:SetObject("u" .. key, object_value, is_add)
+      end
+    end
+    return true
+  end
+  return is_break
+end
+
+
+return DoerAttrSetter
