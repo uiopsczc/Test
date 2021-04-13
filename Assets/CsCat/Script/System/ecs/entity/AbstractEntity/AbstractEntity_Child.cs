@@ -31,38 +31,22 @@ namespace CsCat
     public IEnumerable<AbstractEntity> ForeachChild(Type child_type)
     {
       AbstractEntity child = null;
-      for (int i = 0; i < child_type_list.Count; i++)
+      for (int i = 0; i < child_key_list.Count; i++)
       {
-        var _child_type = child_type_list[i];
-        if (child_type.IsAssignableFrom(_child_type))
-        {
-          var childList = type_to_childList_dict[_child_type];
-          for (int m = 0; m < childList.Count; m++)
-          {
-            child = childList[m];
-            if (!child.IsDestroyed())
-              yield return child;
-          }
-        }
+        child = GetChild(child_key_list[i]);
+        if (child != null&& child_type.IsInstanceOfType(child))
+          yield return child;
       }
     }
 
     public IEnumerable<T> ForeachChild<T>() where T : AbstractEntity
     {
       T child = null;
-      for (int i = 0; i < child_type_list.Count; i++)
+      for (int i = 0; i < child_key_list.Count; i++)
       {
-        var _child_type = child_type_list[i];
-        if (typeof(T).IsAssignableFrom(_child_type))
-        {
-          var childList = type_to_childList_dict[_child_type];
-          for (int m = 0; m < childList.Count; m++)
-          {
-            child = (T)childList[m];
-            if (!child.IsDestroyed())
-              yield return child;
-          }
-        }
+        child = GetChild(child_key_list[i]) as T;
+        if (child != null)
+          yield return child;
       }
     }
     

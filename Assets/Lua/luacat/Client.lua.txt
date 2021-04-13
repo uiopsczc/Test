@@ -71,6 +71,7 @@ end
 
 
 function Client:Test()
+
   --log(self:IsInstanceOf(ResLoad))
   ---@type IdPool
   --require("luacat.timer.test.TimerManagerTest")

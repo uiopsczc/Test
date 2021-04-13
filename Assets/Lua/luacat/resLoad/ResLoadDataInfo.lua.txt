@@ -49,7 +49,7 @@ function ResLoadDataInfo:Destroy()
   for callback_cause, _ in pairs(self.callback_cause_dict) do
     self.resLoadData.assetCat:RemoveCallback(ObjectUtil.GetNilableKey(callback_cause))
   end
-  table.Clear(self.callback_cause_list)
+  table.Clear(self.callback_cause_dict)
   self.resLoadData:Destroy()
 end
 

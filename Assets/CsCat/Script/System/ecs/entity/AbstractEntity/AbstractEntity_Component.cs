@@ -33,38 +33,22 @@ namespace CsCat
     public IEnumerable<AbstractComponent> ForeachComponent(Type component_type)
     {
       AbstractComponent component = null;
-      for (int i = 0; i < component_type_list.Count; i++)
+      for (int i = 0; i < component_key_list.Count; i++)
       {
-        var _component_type = component_type_list[i];
-        if (component_type.IsAssignableFrom(_component_type))
-        {
-          var componentList = type_to_componentList_dict[_component_type];
-          for (int m = 0; m < componentList.Count; m++)
-          {
-            component = componentList[m];
-            if (!component.IsDestroyed())
-              yield return component;
-          }
-        }
+        component = GetComponent(component_key_list[i]);
+        if (component != null&& component_type.IsInstanceOfType(component))
+          yield return component;
       }
     }
 
     public IEnumerable<T> ForeachComponent<T>() where T : AbstractComponent
     {
       T component = null;
-      for (int i = 0; i < component_type_list.Count; i++)
+      for (int i = 0; i < component_key_list.Count; i++)
       {
-        var _component_type = component_type_list[i];
-        if (typeof(T).IsAssignableFrom(_component_type))
-        {
-          var componentList = type_to_componentList_dict[_component_type];
-          for (int m = 0; m < componentList.Count; m++)
-          {
-            component = (T)componentList[m];
-            if (!component.IsDestroyed())
-              yield return component;
-          }
-        }
+        component = GetComponent(component_key_list[i]) as T;
+        if (component != null)
+          yield return component;
       }
     }
     

@@ -84,50 +84,29 @@ function AbstractEntity.__ForeachChild(children_info, i)
   end
 end
 
----@class AbstractEntity_children_info
----@field className_to_childList_dict table<string,AbstractEntity[]>
----@field child_class_type Class
----@field child_className_list string[]
----@field m number
----@field n number
-local AbstractEntity_children_info
 ---@param child_class_type Class
 function AbstractEntity:ForeachChildOfType(child_class_type)
   return self.__ForeachChildOfType,
-    ---@type AbstractEntity_children_info
-    {
-      className_to_childList_dict = self.className_to_childList_dict,
-      child_class_type = child_class_type,
-      child_className_list = self.child_className_list,
-      m = 1,
-      n = 1
-    },
+
+  {
+    children_dict = self.key_to_child_dict, child_key_list = self.child_key_list, count = #self.child_key_list,child_class_type = child_class_type
+  },
   0
 end
 
 ---@param i number
----@param children_info AbstractEntity_children_info
 function AbstractEntity.__ForeachChildOfType(children_info, i)
-  local className_to_childList_dict = children_info.className_to_childList_dict
-  local child_className_list = children_info.child_className_list
+  ---@type AbstractEntity
+  local child
+  local children_dict = children_info.children_dict
+  local child_key_list = children_info.child_key_list
+  local count = children_info.count
   local child_class_type = children_info.child_class_type
-  while children_info.m <= #child_className_list do
-    local child_className = child_className_list[children_info.m]
-    local childList = className_to_childList_dict[child_className]
-    if IsSubClassOf(child_className, child_class_type.__class_name) and children_info.n <= #childList then
-      while children_info.n <= #childList do
-        local child = childList[children_info.n]
-        children_info.n = children_info.n + 1
-        if children_info.n == #childList+1 then
-          children_info.m = children_info.m + 1
-          children_info.n = 1
-        end
-        if not child:IsDestroyed() then
-          return i, child
-        end
-      end
-    else
-      children_info.m = children_info.m + 1
+  while i < count and i <= #child_key_list do
+    i = i + 1
+    child = children_dict[child_key_list[i]]
+    if not child:IsDestroyed() and IsSubClassOf(child.__class_name, child_class_type.__class_name) then
+      return i, child
     end
   end
 end
@@ -168,29 +147,6 @@ function AbstractEntity:AddChildWithoutInit(child_key, child_class_type)
   return self:AddChild2(child)
 end
 
-
-function AbstractEntity:AddChildWithoutInitTmp(child_key, child_class_type)
-  if child_key and self.key_to_child_dict[child_key] then
-    Error("duplicate add child:", child_key, child_class_type.__class_name)
-    return
-  end
-  local is_key_using_parent_idPool = not child_key
-  if is_key_using_parent_idPool then
-    child_key = tostring(self.child_key_idPool:Get())
-    --再次检查键值
-    if self.key_to_child_dict[child_key] then
-      Error("duplicate add child:", child_key, child_class_type.__class_name)
-      return
-    end
-  end
-  ---@type AbstractEntity
-  local child = PoolCatManagerUtil.Spawn(child_class_type)
-  child.key = child_key
-  child.is_key_using_parent_idPool = is_key_using_parent_idPool
-  child.parent = self
-  self:__AddChildRelationship(child)
-end
-
 ---@generic T:AbstractEntity
 ---@param child T
 ---@return T
@@ -223,7 +179,9 @@ end
 ---@param child AbstractEntity
 function AbstractEntity:__AddChildRelationship(child)
   self.key_to_child_dict[child.key] = child
-  local className_to_childList = table.GetOrAddDefault_Dict(self.className_to_childList_dict, child.__class_name, function() return {} end)
+  local className_to_childList = table.GetOrAddDefault_Dict(self.className_to_childList_dict, child.__class_name, function()
+    return {}
+  end)
   table.insert(className_to_childList, child)
   table.insert(self.child_key_list, child.key)
   if not table.ContainsValue(self.child_className_list, child.__class_name) then
@@ -459,34 +417,23 @@ function AbstractEntity.__ForeachComponent(component_info, i)
 end
 
 function AbstractEntity:ForeachComponentOfType(component_class_type)
-  return self.__ForeachComponentOfType, { className_to_componentList_dict = self.className_to_componentList_dict, component_class_type = component_class_type, component_className_list = self.component_className_list, m = 1, n = 1 }, 0
+  return self.__ForeachComponentOfType, { key_to_component_dict = self.key_to_component_dict, component_key_list = self.component_key_list, count = #self.component_key_list,component_class_type = component_class_type }, 0
 end
 
 ---@param i number
 function AbstractEntity.__ForeachComponentOfType(component_info, i)
-  ---@type table<string,AbstractComponent[]>
-  local className_to_componentList_dict = component_info.className_to_componentList_dict
-  ---@type string[]
-  local component_className_list = component_info.component_className_list
-  ---@type Class
+  ---@type AbstractComponent
+  local component
+  local component_key_list = component_info.component_key_list
+  local key_to_component_dict = component_info.key_to_component_dict
+  local count = component_info.count
   local component_class_type = component_info.component_class_type
-  while component_info.m <= #component_className_list do
-    local component_className = component_className_list[component_info.m]
-    local componentList = className_to_componentList_dict[component_className]
-    if IsSubClassOf(component_className, component_class_type.__class_name) and component_info.n <= #componentList then
-      while component_info.n <= #componentList do
-        local component = componentList[component_info.n]
-        component_info.n = component_info.n + 1
-        if component_info.n == #componentList+1 then
-          component_info.m = component_info.m + 1
-          component_info.n = 1
-        end
-        if not component:IsDestroyed() then
-          return i, component
-        end
-      end
-    else
-      component_info.m = component_info.m + 1
+  while i < count do
+    i = i + 1
+    local component_key = component_key_list[i]
+    component = key_to_component_dict[component_key]
+    if not component:IsDestroyed() and IsSubClassOf(component.__class_name, component_class_type.__class_name) then
+      return i, component
     end
   end
 end
