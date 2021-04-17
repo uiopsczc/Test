@@ -118,9 +118,10 @@ function DefaultInputManager:__Update(deltaTime, unscaledDeltaTime)
     --global.client.redDotManager:CleanListenEvent(GameObject.Find("gm_btn"))
     --global.client.uiManager:CloseAllChildPanels()
     --self.d = self.pool:Spawn()
-
+    Profiler:Start()
   end
   if Input.GetKeyDown("f12") then
+    Profiler:Stop()
     --PoolCatManagerUtil.DespawnGameObject(self.d)
     --self.hfsmComponent.hfsm:Test5()
     --self.hfsm1:Test5()

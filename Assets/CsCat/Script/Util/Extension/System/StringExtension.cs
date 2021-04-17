@@ -246,6 +246,24 @@ namespace CsCat
     {
       return string.Format(self, args);
     }
+    #region RichText
+    public static void SetRichTextColor(this string self, Color color)
+    {
+      RichTextUtil.SetColor(self, color);
+    }
+    public static void SetRichTextIsBold(this string self)
+    {
+      RichTextUtil.SetIsBold(self);
+    }
+    public static void SetIsItalic(this string self)
+    {
+      RichTextUtil.SetIsItalic(self);
+    }
+    public static void SetRichTextFontSize(this string self, int font_size)
+    {
+      RichTextUtil.SetFontSize(self, font_size);
+    }
+    #endregion
 
     #region 编码
 
