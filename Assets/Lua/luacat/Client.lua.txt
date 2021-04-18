@@ -135,12 +135,11 @@ function Client:GoTo(stage_class_type, fade_hide_duration, on_stage_show_callbac
         self.uiManager:FadeTo(nil, 1, fade_hide_duration)
         self:WaitForSeconds(fade_hide_duration)
       end
-
-      self:RemoveChild(self.stage.key)
       self:YieldStart(function()
-        self.stage:IEDestroy()
+        self.stage:IEPreDestroy()
         self:YieldBreak()
       end)
+      self:RemoveChild(self.stage.key)
       self.stage = nil
     end
     self.stage = self:AddChild(nil, stage_class_type)

@@ -136,8 +136,8 @@ namespace CsCat
 
           yield return new WaitForSeconds(fade_hide_duration);
         }
+        yield return stage.IEPreDestroy();
         this.RemoveChild(stage.key);
-        yield return stage.IEDestroy();
         stage = null;
       }
 

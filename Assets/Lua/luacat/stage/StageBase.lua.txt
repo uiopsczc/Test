@@ -127,7 +127,7 @@ function StageBase:WaitUntilAllPanelsLoadDone()
   end)
 end
 
-function StageBase:IEDestroy()
+function StageBase:IEPreDestroy()
   global.client.uiManager:Reset()
   global.poolCatManager:Trim()
   if self.scene_path then

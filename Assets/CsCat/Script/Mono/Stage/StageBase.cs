@@ -160,7 +160,7 @@ namespace CsCat
       base.Init();
     }
 
-    public IEnumerator IEDestroy()
+    public IEnumerator IEPreDestroy()
     {
       Client.instance.uiManager.Reset();
       PoolCatManager.instance.Trim();//清理所有的对象池

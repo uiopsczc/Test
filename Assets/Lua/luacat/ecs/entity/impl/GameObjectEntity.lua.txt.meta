@@ -3,5 +3,5 @@ guid: 12c3351590ce59942ba5a99fb49187db
 TextScriptImporter:
   externalObjects: {}
   userData: 
-  assetBundleName: 
-  assetBundleVariant: 
+  assetBundleName: '@lua_assets_lua_luacat_ecs_entity_impl_'
+  assetBundleVariant: ab

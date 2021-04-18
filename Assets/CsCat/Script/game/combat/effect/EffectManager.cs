@@ -10,7 +10,6 @@ namespace CsCat
     {
       base.Init();
       this.resLoadComponent.resLoad.is_not_check_destroy = true;//effectManager销毁的时候才去把assetBundle销毁
-
       this.AddListener<Unit>(UnitEventNameConst.On_Unit_Destroy, this.DestroyByUnit);
     }
     
