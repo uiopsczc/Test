@@ -242,9 +242,9 @@ namespace CsCat
         return self.Substring(index + 1);
     }
 
-    public static string Format(this string self, params object[] args)
+    public static string Format(this string format, params object[] args)
     {
-      return string.Format(self, args);
+      return string.Format(format, args);
     }
     #region RichText
     public static void SetRichTextColor(this string self, Color color)
