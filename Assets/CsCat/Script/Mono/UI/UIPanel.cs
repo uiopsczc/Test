@@ -14,8 +14,8 @@ namespace CsCat
     public virtual bool is_resident => false;
     public virtual EUILayerName layerName => EUILayerName.SecondPanelLayer;
     public UILayer uiLayer => Client.instance.uiManager.uiLayerManager.uiLayer_dict[layerName];
-    protected Transform frame_transform=> this.cache.GetOrAddDefault("frameTransform", () => this.graphicComponent.gameObject.transform.Find("frame"));
-    protected Transform content_transform=> this.cache.GetOrAddDefault("contentTransform", () => frame_transform.Find("content"));
+    protected Transform frame_transform => this.cache.GetOrAddDefault("frameTransform", () => this.graphicComponent.gameObject.transform.Find("frame"));
+    protected Transform content_transform => this.cache.GetOrAddDefault("contentTransform", () => frame_transform.Find("content"));
     protected Canvas canvas => this.cache.GetOrAddDefault("canvas", () => graphicComponent.gameObject.GetOrAddComponent<Canvas>());
     public int sortingOrder
     {
@@ -31,7 +31,7 @@ namespace CsCat
 
     protected void OnSortingOrderChange()
     {
-      if(graphicComponent.gameObject==null)
+      if (graphicComponent.gameObject == null)
         return;
       canvas.sortingOrder = sortingOrder;
     }

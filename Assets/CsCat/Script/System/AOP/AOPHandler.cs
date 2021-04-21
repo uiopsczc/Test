@@ -83,8 +83,8 @@ namespace CsCat
       MethodBase source_methodBase)
     {
       var aopAttributeMethodInfoProxyCategories = from a in source_methodBase.GetCustomAttributes(true)
-        where a is IAOPAttribute
-        select new AOPAttributeMethodInfoProxyCategory(a as IAOPAttribute); //linq会延迟处理的，用到的时候才会调用
+                                                  where a is IAOPAttribute
+                                                  select new AOPAttributeMethodInfoProxyCategory(a as IAOPAttribute); //linq会延迟处理的，用到的时候才会调用
       var result = aopAttributeMethodInfoProxyCategory_cache_dict.GetOrAddDefault(source_methodBase,
         () => new List<AOPAttributeMethodInfoProxyCategory>(aopAttributeMethodInfoProxyCategories));
       return result;

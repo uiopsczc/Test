@@ -49,10 +49,10 @@ namespace CsCat
         .MultiplyMatrix(Matrix4x4.Rotate(Quaternion.Euler(0, 0, 90))).GetDrawLineList());
 
       float eachDegree = 4;
-      int segmentNum = (int) Mathf.Ceil(360 / eachDegree);
+      int segmentNum = (int)Mathf.Ceil(360 / eachDegree);
       for (int i = 0; i <= segmentNum; i++)
       {
-        Circle3d circle = (Circle3d) (new Circle3d(world_offset, radius).MultiplyMatrix(matrix)
+        Circle3d circle = (Circle3d)(new Circle3d(world_offset, radius).MultiplyMatrix(matrix)
           .MultiplyMatrix(Matrix4x4.Rotate(Quaternion.Euler(0, 0, i * eachDegree))));
         result.AddRange(circle.GetDrawLineList());
       }

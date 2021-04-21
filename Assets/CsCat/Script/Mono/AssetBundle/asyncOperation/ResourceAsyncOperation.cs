@@ -25,9 +25,9 @@ namespace CsCat
     public Action on_success_callback;
     public Action on_fail_callback;
     public Action on_done_callback;
-    
 
-    
+
+
 
     public bool MoveNext()
     {
@@ -53,7 +53,7 @@ namespace CsCat
       this.on_done_callback?.Invoke();
       this.on_done_callback = null;
     }
-    
+
 
     protected abstract float GetProgress();
 
@@ -72,7 +72,7 @@ namespace CsCat
       on_success_callback = null;
       on_fail_callback = null;
       on_done_callback = null;
-      if(_resultInfo!=null)
+      if (_resultInfo != null)
         PoolCatManagerUtil.Despawn(_resultInfo);
       _resultInfo = null;
     }

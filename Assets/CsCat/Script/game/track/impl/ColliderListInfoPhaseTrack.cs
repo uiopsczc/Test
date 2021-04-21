@@ -6,6 +6,6 @@ namespace CsCat
 {
   public class ColliderListInfoPhaseTrack : AbstractPhaseTrack<ColliderListInfoPhase>
   {
-    
+
   }
 }

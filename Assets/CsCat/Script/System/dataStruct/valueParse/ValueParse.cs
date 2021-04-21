@@ -29,8 +29,8 @@ namespace CsCat
       var target_type = TypeUtil.GetType(type_name, assemble_name);
       foreach (var hashtable in ValueParseUtil.GetValueParseList())
       {
-        var type = (Type) hashtable["type"];
-        var parseFunc = (Delegate) hashtable["parseFunc"];
+        var type = (Type)hashtable["type"];
+        var parseFunc = (Delegate)hashtable["parseFunc"];
         if (type == target_type)
           return parseFunc.DynamicInvoke(value);
       }
@@ -40,7 +40,7 @@ namespace CsCat
 
     public T Parse<T>()
     {
-      return (T) Parse();
+      return (T)Parse();
     }
   }
 }

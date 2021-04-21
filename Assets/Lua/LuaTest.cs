@@ -27,8 +27,8 @@ public class LuaTest : MonoBehaviour
   private void DoLuaLogic()
   {
     XLuaManager.instance.OnInit();
-//        XLuaManager.Instance.LuaEnv.DoString(@"
-//            UIManager.GetInstance():OpenWindow('UITest2');
-//            ");
+    //        XLuaManager.Instance.LuaEnv.DoString(@"
+    //            UIManager.GetInstance():OpenWindow('UITest2');
+    //            ");
   }
 }

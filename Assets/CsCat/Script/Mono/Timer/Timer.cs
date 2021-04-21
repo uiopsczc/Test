@@ -150,7 +150,7 @@ namespace CsCat
     #endregion
 
 
-    
+
 
 
     #region ctor
@@ -200,8 +200,8 @@ namespace CsCat
         return 0;
       if (interval == 0)
         return ValidCurrentNeedRunCount(cur_run_count + 1);
-//      return 1;
-      long current_need_run_count = (long) Math.Floor(exec_time / interval) + 1;
+      //      return 1;
+      long current_need_run_count = (long)Math.Floor(exec_time / interval) + 1;
       return ValidCurrentNeedRunCount(current_need_run_count);
 
     }
@@ -264,7 +264,7 @@ namespace CsCat
 
       //大过delay时间
       long current_need_run_count = CalcCurrentNeedRunCount(); //当前执行时间对应需要执行的次数
-      int delta_count = (int) (current_need_run_count - cur_run_count); //需要增量执行的次数
+      int delta_count = (int)(current_need_run_count - cur_run_count); //需要增量执行的次数
 
       if (delta_count > 0)
       {

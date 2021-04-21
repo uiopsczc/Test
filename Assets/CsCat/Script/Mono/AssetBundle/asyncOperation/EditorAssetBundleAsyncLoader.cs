@@ -10,8 +10,8 @@ namespace CsCat
       resultInfo.is_success = true;
     }
 
-    
-    
+
+
 
     protected override float GetProgress()
     {
@@ -21,6 +21,6 @@ namespace CsCat
     public override void Update()
     {
     }
-    
+
   }
 }

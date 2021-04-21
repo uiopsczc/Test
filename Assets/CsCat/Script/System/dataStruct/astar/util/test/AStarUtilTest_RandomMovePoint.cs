@@ -14,7 +14,7 @@ namespace CsCat
       return () =>
       {
         if (point != null)
-          AStarUtil.GUIShowPointList(0, 0, 9, 9, new List<Vector2Int>() {point.Value});
+          AStarUtil.GUIShowPointList(0, 0, 9, 9, new List<Vector2Int>() { point.Value });
       };
     }
   }

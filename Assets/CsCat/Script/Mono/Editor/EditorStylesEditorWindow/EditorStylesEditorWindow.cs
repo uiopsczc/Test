@@ -17,7 +17,7 @@ namespace CsCat
         GUILayout.Label("EditorStyles.centeredGreyMiniLabel", EditorStyles.centeredGreyMiniLabel);
         GUILayout.Label("EditorStyles.colorField", EditorStyles.colorField);
         GUILayout.Label("EditorStyles.foldout", EditorStyles.foldout);
-        GUILayout.Label("EditorStyles.foldoutPreDrop" ,EditorStyles.foldoutPreDrop);
+        GUILayout.Label("EditorStyles.foldoutPreDrop", EditorStyles.foldoutPreDrop);
         GUILayout.Label("EditorStyles.helpBox", EditorStyles.helpBox);
         GUILayout.Label("EditorStyles.inspectorDefaultMargins", EditorStyles.inspectorDefaultMargins);
         GUILayout.Label("EditorStyles.inspectorFullWidthMargins", EditorStyles.inspectorFullWidthMargins);
@@ -118,7 +118,7 @@ namespace CsCat
         display_value = "GUIStyleConst.Thin_Help_Box";
         GUILayout.Label(display_value, GUIStyleConst.Thin_Help_Box, GUILayout.Height(15));
 
-        
+
       }
     }
   }

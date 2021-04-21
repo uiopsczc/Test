@@ -19,7 +19,7 @@ namespace CsCat
 
     private MonoBehaviourCache _monoBehaviourCache;
 
-    public MonoBehaviourCache monoBehaviourCache => 
+    public MonoBehaviourCache monoBehaviourCache =>
       _monoBehaviourCache ?? (_monoBehaviourCache = new MonoBehaviourCache(this));
 
     #endregion

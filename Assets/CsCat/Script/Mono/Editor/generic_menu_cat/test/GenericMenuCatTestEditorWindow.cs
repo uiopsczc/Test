@@ -31,7 +31,7 @@ namespace CsCat
     }
 
     //Test的时候将这行去掉
-//    [MenuItem("GenericMenuCatTestEditorWindow/Test")]
+    //    [MenuItem("GenericMenuCatTestEditorWindow/Test")]
     public static void Load()
     {
       GetWindow<GenericMenuCatTestEditorWindow>();

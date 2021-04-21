@@ -611,6 +611,12 @@ namespace CsCat
       TransformUtil.SetColor(self, color, is_not_use_color_alpha, is_recursive);
     }
 
+
+    public static (bool, string) GetRelativePath(this Transform self, Transform parent_transform = null)
+    {
+      return TransformUtil.GetRelativePath(self, parent_transform);
+    }
+
     #region DOTween
 
     #region act

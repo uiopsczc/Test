@@ -16,7 +16,7 @@ namespace CsCat
         value_key_dict[value] = key;
       }
     }
-    
+
     public void Add(TKey key, TValue value)
     {
       this[key] = value;
@@ -58,7 +58,7 @@ namespace CsCat
     public void ForeachKeyValue(Action<TKey, TValue> action)
     {
       foreach (var key in this.Keys)
-          action(key, this[key]);
+        action(key, this[key]);
     }
 
     public void ForeachValueKey(Action<TValue, TKey> action)

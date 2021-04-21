@@ -25,14 +25,14 @@ namespace CsCat
           to_remove_key_list.Add(key);
         else if (value.IsNumber() && value.To<double>() == 0) //删除值为0的数值
           to_remove_key_list.Add(key);
-        else if (value.IsBool() && (bool) value == false) //删除值为false的逻辑值
+        else if (value.IsBool() && (bool)value == false) //删除值为false的逻辑值
           to_remove_key_list.Add(key);
-        else if (value.IsString() && ((string) value).IsNullOrWhiteSpace()) //删除值为空的字符串
+        else if (value.IsString() && ((string)value).IsNullOrWhiteSpace()) //删除值为空的字符串
           to_remove_key_list.Add(key);
-        else if (value is ICollection && ((ICollection) value).Count == 0) //删除为null的collection
+        else if (value is ICollection && ((ICollection)value).Count == 0) //删除为null的collection
           to_remove_key_list.Add(key);
         else if (value is IDictionary)
-          Trim((IDictionary) value);
+          Trim((IDictionary)value);
       }
 
       foreach (var to_remove_key in to_remove_key_list)
@@ -69,7 +69,7 @@ namespace CsCat
           self[key] = dvFunc();
       }
 
-      return (T) self[key];
+      return (T)self[key];
     }
 
     /// <summary>
@@ -90,7 +90,7 @@ namespace CsCat
           return dvFunc();
       }
 
-      return (T) self[key];
+      return (T)self[key];
     }
 
     public static void RemoveByFunc(this IDictionary self, Func<object, object, bool> func)
@@ -133,7 +133,7 @@ namespace CsCat
       if (!self.Contains(key))
         return default(T);
 
-      T result = (T) self[key];
+      T result = (T)self[key];
       self.Remove(key);
       return result;
     }
@@ -198,7 +198,7 @@ namespace CsCat
       else
         return default(T);
     }
-    
+
 
     //////////////////////////////////////////////////////////////////////
     // Diff相关
@@ -237,7 +237,7 @@ namespace CsCat
       return DictionaryUtil.IsDiff(old_dict, new_dict);
     }
 
-    public static K FindKey<K,V>(this IDictionary<K,V> self,K key)
+    public static K FindKey<K, V>(this IDictionary<K, V> self, K key)
     {
       foreach (var k in self.Keys)
       {

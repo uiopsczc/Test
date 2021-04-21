@@ -4,7 +4,7 @@ namespace CsCat
 {
   public class ArrayUtil
   {
-    public static Array AddFirst(Array source_array,params object[] to_adds)
+    public static Array AddFirst(Array source_array, params object[] to_adds)
     {
       var element_type = source_array != null ? source_array.GetType().GetElementType() : to_adds.GetType().GetElementType();
       var source_array_length = source_array == null ? 0 : source_array.Length;
@@ -23,9 +23,9 @@ namespace CsCat
       var element_type = source_array != null ? source_array.GetType().GetElementType() : to_adds.GetType().GetElementType();
       var source_array_length = source_array == null ? 0 : source_array.Length;
       var array = Array.CreateInstance(element_type, source_array_length + 1);
-      if(source_array!=null&&source_array.Length>0)
+      if (source_array != null && source_array.Length > 0)
         Array.Copy(source_array, array, source_array_length);
-      Array.Copy(to_adds, 0,array, source_array_length, to_adds.Length);
+      Array.Copy(to_adds, 0, array, source_array_length, to_adds.Length);
       return array;
     }
     public static T[] AddLast<T>(Array source_array, params object[] to_adds)
@@ -51,13 +51,13 @@ namespace CsCat
 
       if (to_remove_index == -1)
         return source_array;
-      
-      
+
+
       var array = Array.CreateInstance(element_type, source_array_length - 1);
-      if (to_remove_index!=0)
+      if (to_remove_index != 0)
         Array.Copy(source_array, 0, array, 0, to_remove_index);
-      if(to_remove_index!= source_array_length-1)
-        Array.Copy(source_array, to_remove_index+1, array, to_remove_index, source_array_length - to_remove_index-1);
+      if (to_remove_index != source_array_length - 1)
+        Array.Copy(source_array, to_remove_index + 1, array, to_remove_index, source_array_length - to_remove_index - 1);
       return array;
     }
 
@@ -91,7 +91,7 @@ namespace CsCat
       return RemoveAt(source_array, index).ToArray<T>();
     }
 
-    
+
 
   }
 }

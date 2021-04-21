@@ -108,6 +108,6 @@ namespace CsCat
 
       return 0;
     }
-    
+
   }
 }

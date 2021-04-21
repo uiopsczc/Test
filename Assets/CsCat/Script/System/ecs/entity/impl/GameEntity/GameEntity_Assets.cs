@@ -23,7 +23,7 @@ namespace CsCat
         all_assets_load_done_callback += callback;
     }
 
-    
+
 
     protected void CheckIsAllAssetsLoadDone()
     {
@@ -34,7 +34,7 @@ namespace CsCat
     {
       yield return this.resLoadComponent.IEIsAllLoadDone();
       if (!graphicComponent.prefab_path.IsNullOrEmpty())
-        yield return new WaitUntil(()=>graphicComponent.IsLoadDone());
+        yield return new WaitUntil(() => graphicComponent.IsLoadDone());
       OnAllAssetsLoadDone();
     }
 

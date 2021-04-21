@@ -180,7 +180,7 @@ namespace CsCat
         else if (szOp == ")")
         {
           string szTop;
-          while ((szTop = (string) stkOp.Pop()) != "(")
+          while ((szTop = (string)stkOp.Pop()) != "(")
           {
             IOperator oprtr = OperatorHelper.CreateOperator(szTop);
             arrFinalExpr.Add(oprtr);
@@ -217,8 +217,8 @@ namespace CsCat
           }
           else
           {
-            if (stkOp.Count == 0 || (string) stkOp.Peek() == "("
-                                 || OperatorHelper.IsHigherPrecOperator(szOp, (string) stkOp.Peek()))
+            if (stkOp.Count == 0 || (string)stkOp.Peek() == "("
+                                 || OperatorHelper.IsHigherPrecOperator(szOp, (string)stkOp.Peek()))
             {
               stkOp.Push(szOp);
             }
@@ -226,13 +226,13 @@ namespace CsCat
             {
               while (stkOp.Count != 0)
               {
-                if (OperatorHelper.IsLowerPrecOperator(szOp, (string) stkOp.Peek())
-                    || OperatorHelper.IsEqualPrecOperator(szOp, (string) stkOp.Peek()))
+                if (OperatorHelper.IsLowerPrecOperator(szOp, (string)stkOp.Peek())
+                    || OperatorHelper.IsEqualPrecOperator(szOp, (string)stkOp.Peek()))
                 {
-                  string szTop = (string) stkOp.Peek();
+                  string szTop = (string)stkOp.Peek();
                   if (szTop == "(")
                     break;
-                  szTop = (string) stkOp.Pop();
+                  szTop = (string)stkOp.Pop();
 
                   IOperator oprtr = OperatorHelper.CreateOperator(szTop);
                   arrFinalExpr.Add(oprtr);
@@ -253,7 +253,7 @@ namespace CsCat
 
       while (stkOp.Count != 0)
       {
-        string szTop = (string) stkOp.Pop();
+        string szTop = (string)stkOp.Pop();
         if (szTop == "(")
           throw new RPN_Exception("Unmatched braces");
 
@@ -320,18 +320,18 @@ namespace CsCat
         }
         else if (var is IOperator)
         {
-          if (OperatorHelper.IsUnaryOperator(((Operator) var).ToString()))
+          if (OperatorHelper.IsUnaryOperator(((Operator)var).ToString()))
           {
             // Operator :
             // Pop top of stack into var 1
-            op1 = (Operand) stPad.Pop();
+            op1 = (Operand)stPad.Pop();
             if (htValues != null)
             {
               op1.Value = htValues[op1.Name];
             }
 
             // Do operation exp for 'this' operator on var1 and var2
-            oprtr = (IOperator) var;
+            oprtr = (IOperator)var;
             IOperand opRes = oprtr.Eval(op1);
             // Push results onto stack
             stPad.Push(opRes);
@@ -340,21 +340,21 @@ namespace CsCat
           {
             // Operator :
             // Pop top of stack into var 1 - op2 first as top of stack is rhs
-            op2 = (Operand) stPad.Pop();
+            op2 = (Operand)stPad.Pop();
             if (htValues != null)
             {
               op2.Value = htValues[op2.Name];
             }
 
             // Pop top of stack into var 2
-            op1 = (Operand) stPad.Pop();
+            op1 = (Operand)stPad.Pop();
             if (htValues != null)
             {
               op1.Value = htValues[op1.Name];
             }
 
             // Do operation exp for 'this' operator on var1 and var2
-            oprtr = (IOperator) var;
+            oprtr = (IOperator)var;
             IOperand opRes = oprtr.Eval(op1, op2);
             // Push results onto stack
             stPad.Push(opRes);
@@ -364,7 +364,7 @@ namespace CsCat
 
       // end loop
       // stack ends up with single value with final result
-      return ((Operand) stPad.Pop()).Value;
+      return ((Operand)stPad.Pop()).Value;
     }
 
     #endregion
@@ -632,7 +632,7 @@ namespace CsCat
       if (!(rhs is LongOperand))
         throw new RPN_Exception("Argument invalid in LongOperand.Plus : rhs");
       LongOperand oprResult = new LongOperand("Result", Type.GetType("System.Int64"));
-      oprResult.Value = (long) this.Value + (long) ((Operand) rhs).Value;
+      oprResult.Value = (long)this.Value + (long)((Operand)rhs).Value;
       return oprResult;
     }
 
@@ -641,14 +641,14 @@ namespace CsCat
       if (!(rhs is LongOperand))
         throw new RPN_Exception("Argument invalid in LongOperand.Minus : rhs");
       LongOperand oprResult = new LongOperand("Result", Type.GetType("System.Int64"));
-      oprResult.Value = (long) this.Value - (long) ((Operand) rhs).Value;
+      oprResult.Value = (long)this.Value - (long)((Operand)rhs).Value;
       return oprResult;
     }
 
     public IOperand Negate()
     {
       LongOperand oprResult = new LongOperand("Result", Type.GetType("System.Int64"));
-      oprResult.Value = (long) this.Value * -1;
+      oprResult.Value = (long)this.Value * -1;
       return oprResult;
     }
 
@@ -657,7 +657,7 @@ namespace CsCat
       if (!(rhs is LongOperand))
         throw new ArgumentException("Argument invalid in LongOperand.Multiply : rhs");
       LongOperand oprResult = new LongOperand("Result", Type.GetType("System.Int64"));
-      oprResult.Value = (long) this.Value * (long) ((Operand) rhs).Value;
+      oprResult.Value = (long)this.Value * (long)((Operand)rhs).Value;
       return oprResult;
     }
 
@@ -666,7 +666,7 @@ namespace CsCat
       if (!(rhs is LongOperand))
         throw new RPN_Exception("Argument invalid in LongOperand.Divide : rhs");
       LongOperand oprResult = new LongOperand("Result", Type.GetType("System.Int64"));
-      oprResult.Value = (long) this.Value / (long) ((Operand) rhs).Value;
+      oprResult.Value = (long)this.Value / (long)((Operand)rhs).Value;
       return oprResult;
     }
 
@@ -675,7 +675,7 @@ namespace CsCat
       if (!(rhs is LongOperand))
         throw new RPN_Exception("Argument invalid in LongOperand.Modulo : rhs");
       LongOperand oprResult = new LongOperand("Result", Type.GetType("System.Int64"));
-      oprResult.Value = (long) this.Value % (long) ((Operand) rhs).Value;
+      oprResult.Value = (long)this.Value % (long)((Operand)rhs).Value;
       return oprResult;
     }
 
@@ -704,7 +704,7 @@ namespace CsCat
       if (!(rhs is LongOperand))
         throw new RPN_Exception("Argument invalid in LongOperand.== : rhs");
       BoolOperand oprResult = new BoolOperand("Result");
-      oprResult.Value = (long) this.Value == (long) ((Operand) rhs).Value;
+      oprResult.Value = (long)this.Value == (long)((Operand)rhs).Value;
       return oprResult;
     }
 
@@ -713,7 +713,7 @@ namespace CsCat
       if (!(rhs is LongOperand))
         throw new RPN_Exception("Argument invalid in LongOperand.!= : rhs");
       BoolOperand oprResult = new BoolOperand("Result");
-      oprResult.Value = ((long) this.Value != (long) ((Operand) rhs).Value) ? true : false;
+      oprResult.Value = ((long)this.Value != (long)((Operand)rhs).Value) ? true : false;
       return oprResult;
     }
 
@@ -722,7 +722,7 @@ namespace CsCat
       if (!(rhs is LongOperand))
         throw new RPN_Exception("Argument invalid in LongOperand.< : rhs");
       BoolOperand oprResult = new BoolOperand("Result");
-      oprResult.Value = ((long) this.Value < (long) ((Operand) rhs).Value) ? true : false;
+      oprResult.Value = ((long)this.Value < (long)((Operand)rhs).Value) ? true : false;
       return oprResult;
     }
 
@@ -731,7 +731,7 @@ namespace CsCat
       if (!(rhs is LongOperand))
         throw new RPN_Exception("Argument invalid in LongOperand.<= : rhs");
       BoolOperand oprResult = new BoolOperand("Result");
-      oprResult.Value = ((long) this.Value <= (long) ((Operand) rhs).Value) ? true : false;
+      oprResult.Value = ((long)this.Value <= (long)((Operand)rhs).Value) ? true : false;
       return oprResult;
     }
 
@@ -740,7 +740,7 @@ namespace CsCat
       if (!(rhs is LongOperand))
         throw new RPN_Exception("Argument invalid in LongOperand.> : rhs");
       BoolOperand oprResult = new BoolOperand("Result");
-      oprResult.Value = ((long) this.Value > (long) ((Operand) rhs).Value) ? true : false;
+      oprResult.Value = ((long)this.Value > (long)((Operand)rhs).Value) ? true : false;
       return oprResult;
     }
 
@@ -749,7 +749,7 @@ namespace CsCat
       if (!(rhs is LongOperand))
         throw new RPN_Exception("Argument invalid in LongOperand.>= : rhs");
       BoolOperand oprResult = new BoolOperand("Result");
-      oprResult.Value = ((long) this.Value >= (long) ((Operand) rhs).Value) ? true : false;
+      oprResult.Value = ((long)this.Value >= (long)((Operand)rhs).Value) ? true : false;
       return oprResult;
     }
   }
@@ -783,7 +783,7 @@ namespace CsCat
       if (!(rhs is DoubleOperand))
         throw new RPN_Exception("Argument invalid in DoubleOperand.Plus : rhs");
       DoubleOperand oprResult = new DoubleOperand("Result", Type.GetType("System.Int64"));
-      oprResult.Value = (double) this.Value + (double) ((Operand) rhs).Value;
+      oprResult.Value = (double)this.Value + (double)((Operand)rhs).Value;
       return oprResult;
     }
 
@@ -792,14 +792,14 @@ namespace CsCat
       if (!(rhs is DoubleOperand))
         throw new RPN_Exception("Argument invalid in DoubleOperand.Minus : rhs");
       DoubleOperand oprResult = new DoubleOperand("Result", Type.GetType("System.Int64"));
-      oprResult.Value = (double) this.Value - (double) ((Operand) rhs).Value;
+      oprResult.Value = (double)this.Value - (double)((Operand)rhs).Value;
       return oprResult;
     }
 
     public IOperand Negate()
     {
       DoubleOperand oprResult = new DoubleOperand("Result", Type.GetType("System.Int64"));
-      oprResult.Value = (double) this.Value * -1;
+      oprResult.Value = (double)this.Value * -1;
       return oprResult;
     }
 
@@ -808,7 +808,7 @@ namespace CsCat
       if (!(rhs is DoubleOperand))
         throw new ArgumentException("Argument invalid in DoubleOperand.Multiply : rhs");
       DoubleOperand oprResult = new DoubleOperand("Result", Type.GetType("System.Int64"));
-      oprResult.Value = (double) this.Value * (double) ((Operand) rhs).Value;
+      oprResult.Value = (double)this.Value * (double)((Operand)rhs).Value;
       return oprResult;
     }
 
@@ -817,7 +817,7 @@ namespace CsCat
       if (!(rhs is DoubleOperand))
         throw new RPN_Exception("Argument invalid in DoubleOperand.Divide : rhs");
       DoubleOperand oprResult = new DoubleOperand("Result", Type.GetType("System.Int64"));
-      oprResult.Value = (double) this.Value / (double) ((Operand) rhs).Value;
+      oprResult.Value = (double)this.Value / (double)((Operand)rhs).Value;
       return oprResult;
     }
 
@@ -826,7 +826,7 @@ namespace CsCat
       if (!(rhs is DoubleOperand))
         throw new RPN_Exception("Argument invalid in DoubleOperand.Modulo : rhs");
       DoubleOperand oprResult = new DoubleOperand("Result", Type.GetType("System.Int64"));
-      oprResult.Value = (double) this.Value % (double) ((Operand) rhs).Value;
+      oprResult.Value = (double)this.Value % (double)((Operand)rhs).Value;
       return oprResult;
     }
 
@@ -855,7 +855,7 @@ namespace CsCat
       if (!(rhs is DoubleOperand))
         throw new RPN_Exception("Argument invalid in LongOperand.== : rhs");
       BoolOperand oprResult = new BoolOperand("Result");
-      oprResult.Value = (double) this.Value == (double) ((Operand) rhs).Value;
+      oprResult.Value = (double)this.Value == (double)((Operand)rhs).Value;
       return oprResult;
     }
 
@@ -864,7 +864,7 @@ namespace CsCat
       if (!(rhs is DoubleOperand))
         throw new RPN_Exception("Argument invalid in DoubleOperand.!= : rhs");
       BoolOperand oprResult = new BoolOperand("Result");
-      oprResult.Value = ((double) this.Value != (double) ((Operand) rhs).Value) ? true : false;
+      oprResult.Value = ((double)this.Value != (double)((Operand)rhs).Value) ? true : false;
       return oprResult;
     }
 
@@ -873,7 +873,7 @@ namespace CsCat
       if (!(rhs is DoubleOperand))
         throw new RPN_Exception("Argument invalid in DoubleOperand.< : rhs");
       BoolOperand oprResult = new BoolOperand("Result");
-      oprResult.Value = ((double) this.Value < (double) ((Operand) rhs).Value) ? true : false;
+      oprResult.Value = ((double)this.Value < (double)((Operand)rhs).Value) ? true : false;
       return oprResult;
     }
 
@@ -882,7 +882,7 @@ namespace CsCat
       if (!(rhs is DoubleOperand))
         throw new RPN_Exception("Argument invalid in DoubleOperand.<= : rhs");
       BoolOperand oprResult = new BoolOperand("Result");
-      oprResult.Value = ((double) this.Value <= (double) ((Operand) rhs).Value) ? true : false;
+      oprResult.Value = ((double)this.Value <= (double)((Operand)rhs).Value) ? true : false;
       return oprResult;
     }
 
@@ -891,7 +891,7 @@ namespace CsCat
       if (!(rhs is DoubleOperand))
         throw new RPN_Exception("Argument invalid in DoubleOperand.> : rhs");
       BoolOperand oprResult = new BoolOperand("Result");
-      oprResult.Value = ((double) this.Value > (double) ((Operand) rhs).Value) ? true : false;
+      oprResult.Value = ((double)this.Value > (double)((Operand)rhs).Value) ? true : false;
       return oprResult;
     }
 
@@ -900,7 +900,7 @@ namespace CsCat
       if (!(rhs is DoubleOperand))
         throw new RPN_Exception("Argument invalid in DoubleOperand.>= : rhs");
       BoolOperand oprResult = new BoolOperand("Result");
-      oprResult.Value = ((double) this.Value >= (double) ((Operand) rhs).Value) ? true : false;
+      oprResult.Value = ((double)this.Value >= (double)((Operand)rhs).Value) ? true : false;
       return oprResult;
     }
   }
@@ -935,7 +935,7 @@ namespace CsCat
       if (!(rhs is BoolOperand))
         throw new RPN_Exception("Argument invalid in BoolOperand.&& : rhs");
       BoolOperand oprResult = new BoolOperand("Result");
-      oprResult.Value = ((bool) this.Value && (bool) ((Operand) rhs).Value) ? true : false;
+      oprResult.Value = ((bool)this.Value && (bool)((Operand)rhs).Value) ? true : false;
       return oprResult;
     }
 
@@ -944,7 +944,7 @@ namespace CsCat
       if (!(rhs is BoolOperand))
         throw new RPN_Exception("Argument invalid in BoolOperand.|| : rhs");
       BoolOperand oprResult = new BoolOperand("Result");
-      oprResult.Value = ((bool) this.Value || (bool) ((Operand) rhs).Value) ? true : false;
+      oprResult.Value = ((bool)this.Value || (bool)((Operand)rhs).Value) ? true : false;
       return oprResult;
     }
 
@@ -997,7 +997,7 @@ namespace CsCat
         case "System.String":
           oprResult = new StringOperand(szVarName, varValue);
           return oprResult;
-        //break;
+          //break;
 
 
 
@@ -1041,7 +1041,7 @@ namespace CsCat
       if (!(rhs is StringOperand))
         throw new RPN_Exception("Argument invalid in StringOperand.== : rhs");
       BoolOperand oprResult = new BoolOperand("Result");
-      oprResult.Value = (string) this.Value == (string) ((Operand) rhs).Value;
+      oprResult.Value = (string)this.Value == (string)((Operand)rhs).Value;
       return oprResult;
     }
 
@@ -1050,7 +1050,7 @@ namespace CsCat
       if (!(rhs is StringOperand))
         throw new RPN_Exception("Argument invalid in StringOperand.!= : rhs");
       BoolOperand oprResult = new BoolOperand("Result");
-      oprResult.Value = ((string) this.Value != (string) ((Operand) rhs).Value) ? true : false;
+      oprResult.Value = ((string)this.Value != (string)((Operand)rhs).Value) ? true : false;
       return oprResult;
     }
 
@@ -1150,15 +1150,15 @@ namespace CsCat
       switch (m_szOperator)
       {
         case "+":
-          return ((IArithmeticOperations) lhs).Plus(rhs);
+          return ((IArithmeticOperations)lhs).Plus(rhs);
         case "-":
-          return ((IArithmeticOperations) lhs).Minus(rhs);
+          return ((IArithmeticOperations)lhs).Minus(rhs);
         case "*":
-          return ((IArithmeticOperations) lhs).Multiply(rhs);
+          return ((IArithmeticOperations)lhs).Multiply(rhs);
         case "/":
-          return ((IArithmeticOperations) lhs).Divide(rhs);
+          return ((IArithmeticOperations)lhs).Divide(rhs);
         case "%":
-          return ((IArithmeticOperations) lhs).Modulo(rhs);
+          return ((IArithmeticOperations)lhs).Modulo(rhs);
       }
 
       throw new RPN_Exception("Unsupported Arithmetic operation " + m_szOperator);
@@ -1173,9 +1173,9 @@ namespace CsCat
         switch (m_szOperator)
         {
           case "~":
-            return ((IArithmeticOperations) lhs).Negate();
+            return ((IArithmeticOperations)lhs).Negate();
           case "!":
-            return ((IArithmeticOperations) lhs).Not();
+            return ((IArithmeticOperations)lhs).Not();
         }
       }
       else if (lhs is BoolOperand)
@@ -1183,7 +1183,7 @@ namespace CsCat
         switch (m_szOperator)
         {
           case "!":
-            return ((BoolOperand) lhs).Not();
+            return ((BoolOperand)lhs).Not();
         }
       }
 
@@ -1223,17 +1223,17 @@ namespace CsCat
       switch (m_szOperator)
       {
         case "==":
-          return ((IComparisonOperations) lhs).EqualTo(rhs);
+          return ((IComparisonOperations)lhs).EqualTo(rhs);
         case "!=":
-          return ((IComparisonOperations) lhs).NotEqualTo(rhs);
+          return ((IComparisonOperations)lhs).NotEqualTo(rhs);
         case "<":
-          return ((IComparisonOperations) lhs).LessThan(rhs);
+          return ((IComparisonOperations)lhs).LessThan(rhs);
         case "<=":
-          return ((IComparisonOperations) lhs).LessThanOrEqualTo(rhs);
+          return ((IComparisonOperations)lhs).LessThanOrEqualTo(rhs);
         case ">":
-          return ((IComparisonOperations) lhs).GreaterThan(rhs);
+          return ((IComparisonOperations)lhs).GreaterThan(rhs);
         case ">=":
-          return ((IComparisonOperations) lhs).GreaterThanOrEqualTo(rhs);
+          return ((IComparisonOperations)lhs).GreaterThanOrEqualTo(rhs);
       }
 
       throw new RPN_Exception("Unsupported Comparison operation " + m_szOperator);
@@ -1269,9 +1269,9 @@ namespace CsCat
       switch (m_szOperator)
       {
         case "&&":
-          return ((ILogicalOperations) lhs).AND(rhs);
+          return ((ILogicalOperations)lhs).AND(rhs);
         case "||":
-          return ((ILogicalOperations) lhs).OR(rhs);
+          return ((ILogicalOperations)lhs).OR(rhs);
       }
 
       throw new RPN_Exception("Unsupported Logical operation " + m_szOperator);
@@ -1551,10 +1551,10 @@ namespace CsCat
       "<", "<=", ">", ">=", "+", "-", "*", "/", "~", "%", "(", ")", "!"
     };
 
-    static string[] m_AllArithmeticOps = {"+", "-", "~", "*", "/", "%", "!"};
-    static string[] m_AllComparisonOps = {"==", "!=", "<", "<=", ">", ">="};
-    static string[] m_AllLogicalOps = {"&&", "||"};
-    static string[] m_AllUnaryOps = {"~", "!"};
+    static string[] m_AllArithmeticOps = { "+", "-", "~", "*", "/", "%", "!" };
+    static string[] m_AllComparisonOps = { "==", "!=", "<", "<=", ">", ">=" };
+    static string[] m_AllLogicalOps = { "&&", "||" };
+    static string[] m_AllUnaryOps = { "~", "!" };
   }
 
   #endregion
@@ -1569,7 +1569,7 @@ namespace CsCat
 
   #endregion
 
-// Function to test for Positive Integers.
+  // Function to test for Positive Integers.
 
   #region Content check
 

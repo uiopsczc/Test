@@ -14,7 +14,7 @@ namespace CsCat
       var asset_path = XLuaConst.Lua_Root_Folder + relative_file_path;
       asset_path = asset_path.Replace(".", "/");
       asset_path = asset_path + BuildConst.Lua_Suffix;
-      
+
 
       var assetCat = Client.instance.assetBundleManager.GetOrLoadAssetCat(asset_path);
       return assetCat.Get<TextAsset>().text.GetBytes();

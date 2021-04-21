@@ -5,7 +5,7 @@ namespace CsCat
   public partial class AbstractComponent
   {
     public Action reset_callback;
-    
+
 
     public void Reset()
     {
@@ -24,7 +24,7 @@ namespace CsCat
 
     void __OnDespawn_Reset()
     {
-      reset_callback =null;
+      reset_callback = null;
     }
   }
 }

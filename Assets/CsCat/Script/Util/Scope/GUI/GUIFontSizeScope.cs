@@ -13,7 +13,7 @@ namespace CsCat
     {
       if (ps == null || ps.Length == 0)
       {
-        this.ps = new[] {GUI.skin.label, GUI.skin.button, GUI.skin.toggle};
+        this.ps = new[] { GUI.skin.label, GUI.skin.button, GUI.skin.toggle };
       }
       else
       {
@@ -25,7 +25,7 @@ namespace CsCat
       for (var i = 0; i < this.ps.Length; ++i)
       {
         sizes[i] = this.ps[i].fontSize;
-        this.ps[i].fontSize = (int) size;
+        this.ps[i].fontSize = (int)size;
       }
     }
 

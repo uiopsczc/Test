@@ -21,9 +21,9 @@ namespace CsCat
     {
     }
 
-    public static void SetColor( Image image, Color color,bool is_not_use_color_alpha = false)
+    public static void SetColor(Image image, Color color, bool is_not_use_color_alpha = false)
     {
-      image.color = new Color(color.r, color.g, color.b, is_not_use_color_alpha? image.color.a: color.a);
+      image.color = new Color(color.r, color.g, color.b, is_not_use_color_alpha ? image.color.a : color.a);
     }
 
 

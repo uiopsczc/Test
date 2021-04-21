@@ -6,7 +6,7 @@ namespace CsCat
 
     public static void Test1()
     {
-      uiBloodTestParent = Client.instance.AddChild<UIBloodTestParent>(null,"aa", 3);
+      uiBloodTestParent = Client.instance.AddChild<UIBloodTestParent>(null, "aa", 3);
     }
 
     public static void Test2()
@@ -21,7 +21,7 @@ namespace CsCat
 
     public static void Test4()
     {
-      uiBloodTestParent = Client.instance.AddChild<UIBloodTestParent>(null,"bb", 2);
+      uiBloodTestParent = Client.instance.AddChild<UIBloodTestParent>(null, "bb", 2);
     }
   }
 }

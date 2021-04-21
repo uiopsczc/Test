@@ -73,12 +73,12 @@ namespace CsCat
 
     public static Vector2 AddX(this Vector2 self, float args)
     {
-      return self.Set("x", self.x+ args);
+      return self.Set("x", self.x + args);
     }
 
     public static Vector2 AddY(this Vector2 self, float args)
     {
-      return self.Set("y", self.y+ args);
+      return self.Set("y", self.y + args);
     }
 
     public static Vector2 Set(this Vector2 self, string format, params float[] args)
@@ -131,7 +131,7 @@ namespace CsCat
 
     public static Vector2Int ToVector2Int(this Vector2 self)
     {
-      return new Vector2Int((int) self.x, (int) self.y);
+      return new Vector2Int((int)self.x, (int)self.y);
     }
 
     public static string ToStringOrDefault(this Vector2 self, string to_default_string = null,

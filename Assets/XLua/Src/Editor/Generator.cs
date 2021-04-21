@@ -33,8 +33,8 @@ namespace CSObjectWrapEditor
     static GeneratorConfig()
     {
       foreach (var type in (from type in XLua.Utils.GetAllTypes()
-        where type.IsAbstract && type.IsSealed
-        select type))
+                            where type.IsAbstract && type.IsSealed
+                            select type))
       {
         foreach (var field in type.GetFields(BindingFlags.Static | BindingFlags.Public | BindingFlags.NonPublic |
                                              BindingFlags.DeclaredOnly))
@@ -128,24 +128,24 @@ namespace CSObjectWrapEditor
 #if GEN_CODE_MINIMIZE
                 LuaClassWrap = { name = template_ref.LuaClassWrapGCM.name, text = template_ref.LuaClassWrapGCM.text },
 #else
-        LuaClassWrap = {name = template_ref.LuaClassWrap.name, text = template_ref.LuaClassWrap.text},
+        LuaClassWrap = { name = template_ref.LuaClassWrap.name, text = template_ref.LuaClassWrap.text },
 #endif
-        LuaDelegateBridge = {name = template_ref.LuaDelegateBridge.name, text = template_ref.LuaDelegateBridge.text},
-        LuaDelegateWrap = {name = template_ref.LuaDelegateWrap.name, text = template_ref.LuaDelegateWrap.text},
+        LuaDelegateBridge = { name = template_ref.LuaDelegateBridge.name, text = template_ref.LuaDelegateBridge.text },
+        LuaDelegateWrap = { name = template_ref.LuaDelegateWrap.name, text = template_ref.LuaDelegateWrap.text },
 #if GEN_CODE_MINIMIZE
                 LuaEnumWrap = { name = template_ref.LuaEnumWrapGCM.name, text = template_ref.LuaEnumWrapGCM.text },
 #else
-        LuaEnumWrap = {name = template_ref.LuaEnumWrap.name, text = template_ref.LuaEnumWrap.text},
+        LuaEnumWrap = { name = template_ref.LuaEnumWrap.name, text = template_ref.LuaEnumWrap.text },
 #endif
-        LuaInterfaceBridge = {name = template_ref.LuaInterfaceBridge.name, text = template_ref.LuaInterfaceBridge.text},
+        LuaInterfaceBridge = { name = template_ref.LuaInterfaceBridge.name, text = template_ref.LuaInterfaceBridge.text },
 #if GEN_CODE_MINIMIZE
                 LuaRegister = { name = template_ref.LuaRegisterGCM.name, text = template_ref.LuaRegisterGCM.text },
 #else
-        LuaRegister = {name = template_ref.LuaRegister.name, text = template_ref.LuaRegister.text},
+        LuaRegister = { name = template_ref.LuaRegister.name, text = template_ref.LuaRegister.text },
 #endif
-        LuaWrapPusher = {name = template_ref.LuaWrapPusher.name, text = template_ref.LuaWrapPusher.text},
-        PackUnpack = {name = template_ref.PackUnpack.name, text = template_ref.PackUnpack.text},
-        TemplateCommon = {name = template_ref.TemplateCommon.name, text = template_ref.TemplateCommon.text},
+        LuaWrapPusher = { name = template_ref.LuaWrapPusher.name, text = template_ref.LuaWrapPusher.text },
+        PackUnpack = { name = template_ref.PackUnpack.name, text = template_ref.PackUnpack.text },
+        TemplateCommon = { name = template_ref.TemplateCommon.name, text = template_ref.TemplateCommon.text },
       };
 #endif
       luaenv.AddLoader((ref string filepath) =>
@@ -197,16 +197,16 @@ namespace CSObjectWrapEditor
         var gen_types = LuaCallCSharp;
 
         type_has_extension_methods = from type in gen_types
-          where type.GetMethods(BindingFlags.Static | BindingFlags.Public)
-            .Any(method => isDefined(method, typeof(ExtensionAttribute)))
-          select type;
+                                     where type.GetMethods(BindingFlags.Static | BindingFlags.Public)
+                                       .Any(method => isDefined(method, typeof(ExtensionAttribute)))
+                                     select type;
       }
 
       return from type in type_has_extension_methods
-        where type.IsSealed && !type.IsGenericType && !type.IsNested
-        from method in type.GetMethods(BindingFlags.Static | BindingFlags.Public)
-        where isSupportedExtensionMethod(method, extendedType)
-        select method;
+             where type.IsSealed && !type.IsGenericType && !type.IsNested
+             from method in type.GetMethods(BindingFlags.Static | BindingFlags.Public)
+             where isSupportedExtensionMethod(method, extendedType)
+             select method;
     }
 
     static bool isSupportedExtensionMethod(MethodBase method, Type extendedType)
@@ -391,13 +391,13 @@ namespace CSObjectWrapEditor
         .Where(prop => prop.GetIndexParameters().Length == 0 && prop.CanRead && (prop.GetGetMethod() != null) &&
                        prop.Name != "Item" && !isObsolete(prop) && !isObsolete(prop.GetGetMethod()) &&
                        !isMemberInBlackList(prop) && !isMemberInBlackList(prop.GetGetMethod())).Select(prop =>
-          new {prop.Name, IsStatic = prop.GetGetMethod().IsStatic, ReadOnly = false, Type = prop.PropertyType})
+          new { prop.Name, IsStatic = prop.GetGetMethod().IsStatic, ReadOnly = false, Type = prop.PropertyType })
         .Concat(
           type.GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.IgnoreCase |
                          BindingFlags.DeclaredOnly)
             .Where(field => !isObsolete(field) && !isMemberInBlackList(field))
             .Select(field => new
-              {field.Name, field.IsStatic, ReadOnly = field.IsInitOnly || field.IsLiteral, Type = field.FieldType})
+            { field.Name, field.IsStatic, ReadOnly = field.IsInitOnly || field.IsLiteral, Type = field.FieldType })
         ).Where(info =>
           !IsDoNotGen(type, info.Name)) /*.Where(getter => !typeof(Delegate).IsAssignableFrom(getter.Type))*/.ToList());
 
@@ -407,12 +407,12 @@ namespace CSObjectWrapEditor
         .Where(prop => prop.GetIndexParameters().Length == 0 && prop.CanWrite && (prop.GetSetMethod() != null) &&
                        prop.Name != "Item" && !isObsolete(prop) && !isObsolete(prop.GetSetMethod()) &&
                        !isMemberInBlackList(prop) && !isMemberInBlackList(prop.GetSetMethod())).Select(prop =>
-          new {prop.Name, IsStatic = prop.GetSetMethod().IsStatic, Type = prop.PropertyType, IsProperty = true})
+          new { prop.Name, IsStatic = prop.GetSetMethod().IsStatic, Type = prop.PropertyType, IsProperty = true })
         .Concat(
           type.GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.Static | BindingFlags.IgnoreCase |
                          BindingFlags.DeclaredOnly)
             .Where(field => !isObsolete(field) && !isMemberInBlackList(field) && !field.IsInitOnly && !field.IsLiteral)
-            .Select(field => new {field.Name, field.IsStatic, Type = field.FieldType, IsProperty = false})
+            .Select(field => new { field.Name, field.IsStatic, Type = field.FieldType, IsProperty = false })
         ).Where(info =>
           !IsDoNotGen(type, info.Name)) /*.Where(setter => !typeof(Delegate).IsAssignableFrom(setter.Type))*/.ToList());
 
@@ -421,7 +421,7 @@ namespace CSObjectWrapEditor
                     BindingFlags.DeclaredOnly)
         .Where(method => OpMethodNames.Contains(method.Name))
         .GroupBy(method => method.Name,
-          (k, v) => new {Name = k, Overloads = v.Cast<MethodBase>().OrderBy(mb => mb.GetParameters().Length).ToList()})
+          (k, v) => new { Name = k, Overloads = v.Cast<MethodBase>().OrderBy(mb => mb.GetParameters().Length).ToList() })
         .ToList());
 
       var indexers = type.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
@@ -446,8 +446,11 @@ namespace CSObjectWrapEditor
           .Where(ev => !IsDoNotGen(type, ev.Name))
           .Select(ev => new
           {
-            IsStatic = ev.GetAddMethod() != null ? ev.GetAddMethod().IsStatic : ev.GetRemoveMethod().IsStatic, ev.Name,
-            CanSet = false, CanAdd = ev.GetRemoveMethod() != null, CanRemove = ev.GetRemoveMethod() != null,
+            IsStatic = ev.GetAddMethod() != null ? ev.GetAddMethod().IsStatic : ev.GetRemoveMethod().IsStatic,
+            ev.Name,
+            CanSet = false,
+            CanAdd = ev.GetRemoveMethod() != null,
+            CanRemove = ev.GetRemoveMethod() != null,
             Type = ev.EventHandlerType
           })
           .ToList());
@@ -546,7 +549,7 @@ namespace CSObjectWrapEditor
     {
       parameters.Set("type", type);
 
-      var itfs = new Type[] {type}.Concat(type.GetInterfaces());
+      var itfs = new Type[] { type }.Concat(type.GetInterfaces());
       parameters.Set("methods", itfs.SelectMany(i => i.GetMethods())
         .Where(method => !method.IsSpecialName && !method.IsGenericMethod && !method.Name.StartsWith("op_") &&
                          !method.Name.StartsWith("add_") &&
@@ -1032,7 +1035,7 @@ namespace CSObjectWrapEditor
 
       var delegates_groups = types.Select(delegate_type => makeMethodInfoSimulation(delegate_type.GetMethod("Invoke")))
         .Concat(hotfxDelegates)
-        .GroupBy(d => d, comparer).Select((group) => new {Key = group.Key, Value = group.ToList()});
+        .GroupBy(d => d, comparer).Select((group) => new { Key = group.Key, Value = group.ToList() });
       GenOne(typeof(DelegateBridge),
         (type, type_info) => { type_info.Set("delegates_groups", delegates_groups.ToList()); },
         templateRef.LuaDelegateBridge, textWriter);
@@ -1059,7 +1062,7 @@ namespace CSObjectWrapEditor
           }).ToList());
         type_info.Set("tableoptimzetypes", types.Where(t => !t.IsEnum && SizeOf(t) == -1)
           .Select(t => new
-            {Type = t, Fields = t.GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)})
+          { Type = t, Fields = t.GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly) })
           .ToList());
       }, templateRef.LuaWrapPusher, textWriter);
       textWriter.Close();
@@ -1205,19 +1208,19 @@ namespace CSObjectWrapEditor
       var lookup = LuaCallCSharp.Distinct().ToDictionary(t => t);
 
       var extension_methods_from_lcs = (from t in LuaCallCSharp
-          where isDefined(t, typeof(ExtensionAttribute))
-          from method in t.GetMethods(BindingFlags.Static | BindingFlags.Public)
-          where isDefined(method, typeof(ExtensionAttribute))
-          where !method.ContainsGenericParameters || isSupportedGenericMethod(method)
-          select makeGenericMethodIfNeeded(method))
+                                        where isDefined(t, typeof(ExtensionAttribute))
+                                        from method in t.GetMethods(BindingFlags.Static | BindingFlags.Public)
+                                        where isDefined(method, typeof(ExtensionAttribute))
+                                        where !method.ContainsGenericParameters || isSupportedGenericMethod(method)
+                                        select makeGenericMethodIfNeeded(method))
         .Where(method => !lookup.ContainsKey(method.GetParameters()[0].ParameterType));
 
       var extension_methods = (from t in ReflectionUse
-        where isDefined(t, typeof(ExtensionAttribute))
-        from method in t.GetMethods(BindingFlags.Static | BindingFlags.Public)
-        where isDefined(method, typeof(ExtensionAttribute))
-        where !method.ContainsGenericParameters || isSupportedGenericMethod(method)
-        select makeGenericMethodIfNeeded(method)).Concat(extension_methods_from_lcs);
+                               where isDefined(t, typeof(ExtensionAttribute))
+                               from method in t.GetMethods(BindingFlags.Static | BindingFlags.Public)
+                               where isDefined(method, typeof(ExtensionAttribute))
+                               where !method.ContainsGenericParameters || isSupportedGenericMethod(method)
+                               select makeGenericMethodIfNeeded(method)).Concat(extension_methods_from_lcs);
       GenOne(typeof(DelegateBridgeBase), (type, type_info) =>
       {
 #if GENERIC_SHARING
@@ -1292,7 +1295,7 @@ namespace CSObjectWrapEditor
     {
       var fs = t.GetFields(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
         .Select(fi => new XluaFieldInfo
-          {Name = fi.Name, Type = fi.FieldType, IsField = true, Size = SizeOf(fi.FieldType)})
+        { Name = fi.Name, Type = fi.FieldType, IsField = true, Size = SizeOf(fi.FieldType) })
         .Concat(t.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.DeclaredOnly)
           .Where(prop =>
           {
@@ -1300,7 +1303,7 @@ namespace CSObjectWrapEditor
                    || isDefined(prop, typeof(AdditionalPropertiesAttribute));
           })
           .Select(prop => new XluaFieldInfo
-            {Name = prop.Name, Type = prop.PropertyType, IsField = false, Size = SizeOf(prop.PropertyType)}));
+          { Name = prop.Name, Type = prop.PropertyType, IsField = false, Size = SizeOf(prop.PropertyType) }));
       int float_field_count = 0;
       bool only_float = true;
       foreach (var f in fs)
@@ -1336,7 +1339,7 @@ namespace CSObjectWrapEditor
       }
 
       return new XluaTypeInfo
-        {Type = t, FieldInfos = fs.ToList(), FieldGroup = grouped_field, IsRoot = set.ContainsKey(t)};
+      { Type = t, FieldInfos = fs.ToList(), FieldGroup = grouped_field, IsRoot = set.ContainsKey(t) };
     }
 
     public static void GenPackUnpack(IEnumerable<Type> types, string save_path)
@@ -1741,9 +1744,9 @@ namespace CSObjectWrapEditor
     static void callCustomGen()
     {
       foreach (var method in (from type in XLua.Utils.GetAllTypes()
-        from method in type.GetMethods(BindingFlags.Static | BindingFlags.Public)
-        where method.IsDefined(typeof(GenCodeMenuAttribute), false)
-        select method))
+                              from method in type.GetMethods(BindingFlags.Static | BindingFlags.Public)
+                              where method.IsDefined(typeof(GenCodeMenuAttribute), false)
+                              select method))
       {
         method.Invoke(null, new object[] { });
       }
@@ -1779,7 +1782,7 @@ namespace CSObjectWrapEditor
       AssetDatabase.Refresh();
     }
 
-    
+
 
 #if UNITY_EDITOR_OSX || UNITY_EDITOR_WIN
     public static void GenUsingCLI()

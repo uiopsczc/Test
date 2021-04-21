@@ -11,7 +11,7 @@ namespace CsCat
   {
     public static void SetAssetCat(AssetCat assetCat, Object[] assets)
     {
-      
+
     }
   }
 }

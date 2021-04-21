@@ -89,7 +89,7 @@ namespace CsCat
     public void ClearEmbeds()
     {
       SubDoerUtil1.ClearSubDoers<Item>(this.parent_doer, this.sub_doer_key,
-        (embed) => { ((Item) this.parent_doer).EmbedOff(embed); });
+        (embed) => { ((Item)this.parent_doer).EmbedOff(embed); });
     }
   }
 }

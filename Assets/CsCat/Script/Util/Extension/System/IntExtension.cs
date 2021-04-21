@@ -63,7 +63,7 @@ namespace CsCat
 
     public static T ToEnum<T>(this int self)
     {
-      return (T) Enum.ToObject(typeof(T), self);
+      return (T)Enum.ToObject(typeof(T), self);
     }
 
     //是否是defalut, 默认是与float.MaxValue比较

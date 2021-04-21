@@ -33,18 +33,18 @@ namespace CsCat
     //      return asset;
     //    }
 
-    public static T CreateAsset<T>(string path,Action<T> on_create_callback=null) where T : ScriptableObject
+    public static T CreateAsset<T>(string path, Action<T> on_create_callback = null) where T : ScriptableObject
     {
       T asset = ScriptableObject.CreateInstance<T>();
       path = path.WithoutRootPath(FilePathConst.ProjectPath);
       var dir = path.DirPath();
-      if(!dir.IsNullOrEmpty())
+      if (!dir.IsNullOrEmpty())
         StdioUtil.CreateDirectoryIfNotExist(dir);
       string file_extension_name = Path.GetExtension(path);
       if (!file_extension_name.Equals(".asset"))
         path = path.Replace(file_extension_name, ".asset");
       on_create_callback?.Invoke(asset);
-      
+
       EditorUtility.SetDirty(asset);
       AssetDatabase.CreateAsset(asset, path);
       AssetDatabase.SaveAssets();
@@ -53,7 +53,7 @@ namespace CsCat
     }
 
 
-    
+
 #endif
 
   }

@@ -24,7 +24,7 @@ namespace CsCat
         zhi_shu = number_unit_info.zhi_shu;
       }
 
-      return (long) (num * (Math.Pow(10, zhi_shu)));
+      return (long)(num * (Math.Pow(10, zhi_shu)));
     }
 
     //获取zhi_shu指数对应的单位
@@ -51,13 +51,13 @@ namespace CsCat
         var is_fu_shu = num < 0; // 是否是负数
         num = Math.Abs(num);
         var zhi_shu = 0; // 指数
-        num = (long) Mathf.Floor(num);
+        num = (long)Mathf.Floor(num);
         var get_num = num;
         while (true)
         {
           if (get_num < 10)
             break;
-          get_num = (long) Mathf.Floor(get_num / 10f);
+          get_num = (long)Mathf.Floor(get_num / 10f);
           zhi_shu = zhi_shu + 1;
         }
 
@@ -75,7 +75,7 @@ namespace CsCat
           show_num = Mathf.Floor(num / (Mathf.Pow(10, (zhi_shu - show_wei_shu - _max_decimals_count - 1))));
           show_num = Mathf.Floor((show_num + 5) / 10);
           show_num = show_num / (Mathf.Pow(10, _max_decimals_count));
-          show_unit = NumberUnitUtil.GetNumberUnitInfoByZhiShu((int) (Mathf.Floor(zhi_shu / 3f) * 3), Number_Unit_List);
+          show_unit = NumberUnitUtil.GetNumberUnitInfoByZhiShu((int)(Mathf.Floor(zhi_shu / 3f) * 3), Number_Unit_List);
         }
 
         var result = string.Format("{0}{1}", show_num, show_unit);
@@ -84,7 +84,7 @@ namespace CsCat
         return result;
       }
       else
-        return ((long) Mathf.Floor(num)).ToString();
+        return ((long)Mathf.Floor(num)).ToString();
     }
 
   }

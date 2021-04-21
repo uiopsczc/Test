@@ -21,7 +21,7 @@ namespace CsCat
     }
 
     #endregion
-    
+
 
     #region GetMethodInfo
 
@@ -32,21 +32,21 @@ namespace CsCat
       {
         return GetGenericMethodInfoCache2(type, method_name, generic_types);
       }
-      var result = get_methodInfo_func==null? type.GetMethod(method_name, bindingFlags) : get_methodInfo_func();
+      var result = get_methodInfo_func == null ? type.GetMethod(method_name, bindingFlags) : get_methodInfo_func();
       result = result.MakeGenericMethod(generic_types);
       SetGenericMethodInfoCache2(type, method_name, generic_types, result);
       return result;
     }
 
     public static MethodInfo GetGenericMethodInfo(Type type, string method_name, Type[] generic_types
-,    BindingFlags bindingFlags = BindingFlagsConst.All, Func<MethodInfo[]> get_methodInfos_func = null,
+, BindingFlags bindingFlags = BindingFlagsConst.All, Func<MethodInfo[]> get_methodInfos_func = null,
       params Type[] source_parameter_types)
     {
       if (IsContainsGenericMethodInfoCache(type, method_name, generic_types, source_parameter_types))
       {
         return GetGenericMethodInfoCache(type, method_name, generic_types, source_parameter_types);
       }
-      
+
       MethodInfo[] methodInfos = get_methodInfos_func == null ? type.GetMethods(bindingFlags) : get_methodInfos_func();
       if (methodInfos.IsNullOrEmpty())
       {
@@ -66,7 +66,7 @@ namespace CsCat
             else
             {
               var reuslt = methodInfo.MakeGenericMethod(generic_types);
-              SetGenericMethodInfoCache(type, method_name, generic_types,source_parameter_types, reuslt);
+              SetGenericMethodInfoCache(type, method_name, generic_types, source_parameter_types, reuslt);
               return reuslt;
             }
           }
@@ -93,7 +93,7 @@ namespace CsCat
               target_parameter_type = target_parameterInfo.ParameterType;
               if (i >= methodInfo_parameters.Length - 1 && is_final_params)
                 target_parameter_type = target_parameter_type.GetElementType();
-              if (!target_parameter_type.IsGenericTypeDefinition&&!target_parameter_type.IsGenericType&&!target_parameter_type.IsGenericParameter && !ConvertUtil.CanConvertToType(source_parameter_type, target_parameter_type))
+              if (!target_parameter_type.IsGenericTypeDefinition && !target_parameter_type.IsGenericType && !target_parameter_type.IsGenericParameter && !ConvertUtil.CanConvertToType(source_parameter_type, target_parameter_type))
               {
                 LogCat.log("77777");
                 is_continue_this_round = true;
@@ -121,13 +121,13 @@ namespace CsCat
           else
           {
             var reuslt = methodInfo.MakeGenericMethod(generic_types);
-            SetGenericMethodInfoCache(type, method_name, generic_types,source_parameter_types, reuslt);
-            SetGenericMethodInfoCache(type, method_name, generic_types,methodInfo_parameters.ToList().ConvertAll(parameter => parameter.ParameterType).ToArray(), reuslt);
+            SetGenericMethodInfoCache(type, method_name, generic_types, source_parameter_types, reuslt);
+            SetGenericMethodInfoCache(type, method_name, generic_types, methodInfo_parameters.ToList().ConvertAll(parameter => parameter.ParameterType).ToArray(), reuslt);
             return reuslt;
           }
         }
       }
-      SetGenericMethodInfoCache(type, method_name, generic_types,source_parameter_types, null);
+      SetGenericMethodInfoCache(type, method_name, generic_types, source_parameter_types, null);
       return null;
     }
 
@@ -165,14 +165,14 @@ namespace CsCat
 
     #endregion
 
-    
+
     #region Invoke
 
     public static T InvokeGeneric<T>(object obj, string full_class_path, string methodInfo_string, Type[] generic_types,
       bool is_miss_not_invoke = true, params object[] parameters)
     {
       MethodInfo methodInfo = GetGenericMethodInfo(full_class_path, methodInfo_string, generic_types,
-        GetReflectionObject(obj) == null ? BindingFlagsConst.Static : BindingFlagsConst.Instance,null,
+        GetReflectionObject(obj) == null ? BindingFlagsConst.Static : BindingFlagsConst.Instance, null,
         ReflectionUtil.GetReflectionType(obj).Assembly, parameters);
       if (methodInfo == null && is_miss_not_invoke)
         return default(T);
@@ -190,7 +190,7 @@ namespace CsCat
       bool is_miss_not_invoke = true, params object[] parameters)
     {
       MethodInfo methodInfo = GetGenericMethodInfo(full_class_path, methodInfo_string, generic_types,
-        GetReflectionObject(obj) == null ? BindingFlagsConst.Static : BindingFlagsConst.Instance,null,
+        GetReflectionObject(obj) == null ? BindingFlagsConst.Static : BindingFlagsConst.Instance, null,
         ReflectionUtil.GetReflectionType(obj).Assembly.FullName, parameters);
       if (methodInfo == null && is_miss_not_invoke)
         return;

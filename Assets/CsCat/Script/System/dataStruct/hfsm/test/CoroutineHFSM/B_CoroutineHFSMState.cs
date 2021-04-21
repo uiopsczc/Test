@@ -10,11 +10,11 @@ namespace CsCat
       LogCat.log("Enter B_CoroutineHFSMState", this.key);
     }
 
-//    public override void DoUpdateLogic(float deltaTime = 0, float unscaledDeltaTime = 0)
-//    {
-//      base.DoUpdateLogic(deltaTime, unscaledDeltaTime);
-//      LogCat.log("Execute B_CoroutineHFSMState", this.key);
-//    }
+    //    public override void DoUpdateLogic(float deltaTime = 0, float unscaledDeltaTime = 0)
+    //    {
+    //      base.DoUpdateLogic(deltaTime, unscaledDeltaTime);
+    //      LogCat.log("Execute B_CoroutineHFSMState", this.key);
+    //    }
 
     public override IEnumerator IEExit(object[] args)
     {

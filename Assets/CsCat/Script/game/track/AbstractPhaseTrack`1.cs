@@ -48,7 +48,7 @@ namespace CsCat
     public virtual void DoSave(Hashtable dict)
     {
       duration_tick = 0;
-      
+
       var phase_arrayList = phase_list.DoSaveList((phase, sub_dict) =>
       {
         phase.DoSave(sub_dict);

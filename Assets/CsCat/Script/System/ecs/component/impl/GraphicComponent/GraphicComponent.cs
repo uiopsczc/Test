@@ -37,6 +37,6 @@ namespace CsCat
       is_hide = false;
 
     }
-    
+
   }
 }

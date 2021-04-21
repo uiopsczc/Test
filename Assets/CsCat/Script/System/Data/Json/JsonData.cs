@@ -33,7 +33,7 @@ namespace CsCat
 
     public virtual T GetValue<T>(string key)
     {
-      return (T) GetValue(key);
+      return (T)GetValue(key);
     }
 
     public virtual object GetValue(int key)
@@ -43,7 +43,7 @@ namespace CsCat
 
     public virtual T GetValue<T>(int key)
     {
-      return (T) GetValue(key);
+      return (T)GetValue(key);
     }
 
     public virtual void Refresh()

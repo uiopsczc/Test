@@ -234,7 +234,7 @@ namespace CsCat
       while (open_heap.Count > 0)
       {
         // 寻找开启列表中F值最低的格子。我们称它为当前格
-        AStarNode check_node = (AStarNode) open_heap.Remove();
+        AStarNode check_node = (AStarNode)open_heap.Remove();
 
         // 把目标格添加进了开启列表，这时候路径被找到
         if (check_node.pos.Equals(goal_pos))
@@ -249,7 +249,7 @@ namespace CsCat
           for (int i = 0; i < neighbor_list.Count; i++)
           {
             // 计算邻居节点的耗费值
-            AStarNode neighbor_node = (AStarNode) neighbor_list[i];
+            AStarNode neighbor_node = (AStarNode)neighbor_list[i];
 
             float neighbor_g = check_node.g + GetG(check_node.pos, neighbor_node.pos);
             if (closed_dict.ContainsKey(neighbor_node.pos))

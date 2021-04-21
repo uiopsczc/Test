@@ -18,7 +18,7 @@ namespace CsCat
     {
       ref_id_hashtable.Clear();
       Hashtable dict = new Hashtable();
-      dict["child_list"]=GetSave_ChildList(this.transform);
+      dict["child_list"] = GetSave_ChildList(this.transform);
       string content = MiniJson.JsonEncode(dict);
       string file_path = textAsset.GetAssetPath().WithRootPath(FilePathConst.ProjectPath);
       StdioUtil.WriteTextFile(file_path, content);
@@ -57,10 +57,10 @@ namespace CsCat
         ref_id_hashtable[prefab_ref_id] = true;
       }
       //如果是预设则不用递归子节点
-      if (!is_prefab&&child_transform.childCount > 0)
+      if (!is_prefab && child_transform.childCount > 0)
         hashtable["child_list"] = GetSave_ChildList(child_transform);
 
-      List<Type> except_list = new List < Type > { typeof(Transform), typeof(Tilemap)};
+      List<Type> except_list = new List<Type> { typeof(Transform), typeof(Tilemap) };
       foreach (var component in child_transform.GetComponents<Component>())
       {
         if (!except_list.Contains(component.GetType()))

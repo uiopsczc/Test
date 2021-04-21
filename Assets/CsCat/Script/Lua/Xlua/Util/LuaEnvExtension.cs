@@ -29,7 +29,7 @@ namespace CsCat
       params object[] args)
     {
       var results = self.DoString(chunk, chunk_name, env, args);
-      return results == null ? default : (T) results[0];
+      return results == null ? default : (T)results[0];
     }
 
     public static object[] DoString(this LuaEnv self, string chunk, string chunk_name = "chunk", LuaTable env = null,

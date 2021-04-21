@@ -46,7 +46,7 @@ namespace CsCat
 
     public T GetParent<T>() where T : AbstractEntity
     {
-      return (T) _parent;
+      return (T)_parent;
     }
 
     void __OnDespawn_()

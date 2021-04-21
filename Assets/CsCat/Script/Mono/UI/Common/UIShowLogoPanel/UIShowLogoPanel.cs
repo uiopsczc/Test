@@ -17,7 +17,7 @@ namespace CsCat
     public void Init(GameObject gameObject)
     {
       base.Init();
-      graphicComponent.SetGameObject(gameObject,true);
+      graphicComponent.SetGameObject(gameObject, true);
     }
 
     protected override void __Reset()

@@ -40,7 +40,7 @@ namespace CsCat
       }
       else
       {
-        float h_time = duration / ((float) Math.Sqrt(1 - delta_height / max_height) + 1);
+        float h_time = duration / ((float)Math.Sqrt(1 - delta_height / max_height) + 1);
         this.unitBeThrowedInfo.height_accelerate = -2 * max_height / (h_time * h_time);
         this.unitBeThrowedInfo.height_speed = -this.unitBeThrowedInfo.height_accelerate * h_time;
       }
@@ -106,7 +106,7 @@ namespace CsCat
         cur_height = this.unitBeThrowedInfo.org_height + this.unitBeThrowedInfo.height_speed * passed_duration +
                      this.unitBeThrowedInfo.height_accelerate * passed_duration * passed_duration * 0.5f;
       //计算水平位置
-      float interp = (float) Math.Pow((1 - passed_duration / this.unitBeThrowedInfo.duration),
+      float interp = (float)Math.Pow((1 - passed_duration / this.unitBeThrowedInfo.duration),
         this.unitBeThrowedInfo.interp);
       Vector3 new_pos = this.unitBeThrowedInfo.start_pos * interp + this.unitBeThrowedInfo.end_pos * (1 - interp);
 

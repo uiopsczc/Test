@@ -35,7 +35,7 @@ namespace CsCat
     public static GUILayoutBeginScrollViewScope BeginScrollView(ref Vector2 scroll_position, GUIStyle horizontal_scrollBar,
       GUIStyle vertical_scrollBar, params GUILayoutOption[] options)
     {
-      return new GUILayoutBeginScrollViewScope(ref  scroll_position, horizontal_scrollBar, vertical_scrollBar, options);
+      return new GUILayoutBeginScrollViewScope(ref scroll_position, horizontal_scrollBar, vertical_scrollBar, options);
     }
 
     public static GUILayoutBeginScrollViewScope BeginScrollView(ref Vector2 scroll_position, bool is_always_show_horizontal,

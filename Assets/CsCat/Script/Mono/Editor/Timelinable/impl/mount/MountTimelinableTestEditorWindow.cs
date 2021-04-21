@@ -11,11 +11,11 @@ namespace CsCat
 
     MountTimelinableSequence sequence;
 
-    
+
     void Awake()
     {
       this.resizableRects =
-        new HorizontalResizableRects(() => new Rect(0, 0, this.position.width, this.position.height), new[] {300f});
+        new HorizontalResizableRects(() => new Rect(0, 0, this.position.width, this.position.height), new[] { 300f });
       this.timelineRect = new TimelineRect(() => resizableRects.rects[1]);
       this.timelineRect.on_draw_tracks_left_side_callback = () => TimelinableEditorWindowUtil.OnDrawTracksLeftSideCallback(sequence, timelineRect);
       this.timelineRect.on_draw_tracks_right_side_callback = () => TimelinableEditorWindowUtil.OnDrawTracksRightSideCallback(sequence, timelineRect);
@@ -28,7 +28,7 @@ namespace CsCat
 
       this.timelineRect.on_mouse_right_button_click_callback = (position_rect) => TimelinableEditorWindowUtil.OnMouseRightButtonClickCallback(position_rect, sequence.tracks);
 
-      this.timelineRect.on_do_editorCommand_callback = (editorCommand)=> TimelinableEditorWindowUtil.OnDoEditorCommandCallback(editorCommand, sequence.tracks);
+      this.timelineRect.on_do_editorCommand_callback = (editorCommand) => TimelinableEditorWindowUtil.OnDoEditorCommandCallback(editorCommand, sequence.tracks);
 
       this.timelineRect.on_play_time_change_callback = (play_time) => TimelinableEditorWindowUtil.OnPlayTimeChangeCallback(sequence, play_time);
     }
@@ -52,6 +52,6 @@ namespace CsCat
       this.timelineRect.OnGUI();
       Repaint();
     }
-    
+
   }
 }

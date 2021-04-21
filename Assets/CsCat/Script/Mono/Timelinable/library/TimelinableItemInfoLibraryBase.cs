@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public class TimelinableItemInfoLibraryBase: ScriptableObject
+  public class TimelinableItemInfoLibraryBase : ScriptableObject
   {
     public virtual TimelinableItemInfoBase[] itemInfoes
     {

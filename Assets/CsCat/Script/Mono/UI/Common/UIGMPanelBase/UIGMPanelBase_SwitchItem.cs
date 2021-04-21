@@ -16,7 +16,7 @@ namespace CsCat
       private Action yes_callback;
       private Action no_callback;
 
-      public void Init(GameObject gameObject, string desc, Action yes_callback, Action no_callback =null)
+      public void Init(GameObject gameObject, string desc, Action yes_callback, Action no_callback = null)
       {
         base.Init();
         this.desc = desc;

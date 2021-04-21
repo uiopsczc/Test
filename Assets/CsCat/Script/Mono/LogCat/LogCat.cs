@@ -73,7 +73,7 @@ namespace CsCat
     {
       Log(GetLogString(args));
     }
-    
+
 
     public static void LogWarning(object message)
     {
@@ -100,7 +100,7 @@ namespace CsCat
     {
       LogWarning(GetLogString(args));
     }
-    
+
 
 
     public static void LogError(object message)
@@ -128,7 +128,7 @@ namespace CsCat
     {
       LogError(GetLogString(args));
     }
-    
+
 
 
     public static void ClearLogs()
@@ -158,7 +158,7 @@ namespace CsCat
         if (arg == null)
           result.Append("null ");
         else
-          result.Append(arg.ToString2()+" ");
+          result.Append(arg.ToString2() + " ");
       }
       return result.ToString();
     }

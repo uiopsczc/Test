@@ -13,7 +13,7 @@ namespace CsCat
     public override void ProcessFrame(Playable playable, FrameData info, object arg)
     {
       //Insert logic per frame in here
-      var inputPlayable = (ScriptPlayable<SimpleBehaviour>) playable.GetInput(0);
+      var inputPlayable = (ScriptPlayable<SimpleBehaviour>)playable.GetInput(0);
 
       LogCat.Log(message);
     }

@@ -87,7 +87,7 @@ namespace CsCat
       this.propertyComp.OnBuild(this);
 
       if (arg_dict.ContainsKey("hp_pct"))
-        this.SetHp((int) (this.GetMaxHp() * arg_dict.Get<float>("hp_pct")), true);
+        this.SetHp((int)(this.GetMaxHp() * arg_dict.Get<float>("hp_pct")), true);
       else
         this.SetHp(arg_dict.GetOrGetDefault("hp", () => this.GetMaxHp()), true);
 
@@ -97,7 +97,7 @@ namespace CsCat
 
     private void BuildModel(string model_path)
     {
-//      Client.instance.combat.effectManager.DeAttach(this);
+      //      Client.instance.combat.effectManager.DeAttach(this);
       this.__ClearModel();
       this.__StartChangeModel();
       this.__SetModel("main", model_path);
@@ -108,7 +108,7 @@ namespace CsCat
     {
       if (graphicComponent.gameObject != null)
         graphicComponent.gameObject.Destroy();
-      graphicComponent.SetGameObject(null,null);
+      graphicComponent.SetGameObject(null, null);
       this.animation = null;
       this.socket_transform_dict.Clear();
       ;
@@ -141,7 +141,7 @@ namespace CsCat
       {
         var prefab = assetCat.Get(model_path.GetSubAssetPath(), model_type);
         this.__OnLoadOK(prefab, tag);
-      },null,null, this);
+      }, null, null, this);
     }
 
     private void __OnLoadOK(Object prefab, string tag)
@@ -241,7 +241,7 @@ namespace CsCat
     private void InitMaterial()
     {
       this.unitMaterialInfo_list.Clear();
-      var renderer_type_list = new List<Type> {typeof(MeshRenderer), typeof(SkinnedMeshRenderer)};
+      var renderer_type_list = new List<Type> { typeof(MeshRenderer), typeof(SkinnedMeshRenderer) };
       foreach (var renderer_type in renderer_type_list)
       {
         var render_list = graphicComponent.gameObject.GetComponentsInChildren(renderer_type);

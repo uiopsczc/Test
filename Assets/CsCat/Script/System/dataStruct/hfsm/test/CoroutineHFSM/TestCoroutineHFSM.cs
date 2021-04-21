@@ -13,7 +13,7 @@ namespace CsCat
       this.SetDefaultSubDirectState("a");
     }
 
-    public  void Test1()
+    public void Test1()
     {
       ChangeToState("a");
     }

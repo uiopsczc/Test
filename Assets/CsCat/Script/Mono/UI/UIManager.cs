@@ -18,9 +18,9 @@ namespace CsCat
 
     public Camera uiCamera => cache.GetOrAddDefault("uiCamera",
       () => GameObject.Find(UIConst.UICamera_Path).GetComponent<Camera>());
-    public Canvas uiCanvas=> cache.GetOrAddDefault("uiCanvas",
+    public Canvas uiCanvas => cache.GetOrAddDefault("uiCanvas",
       () => GameObject.Find(UIConst.UICanvas_Path).GetComponent<Canvas>());
-    public RectTransform uiCanvas_rectTransform=> cache.GetOrAddDefault("uiCanvas_rectTransform",
+    public RectTransform uiCanvas_rectTransform => cache.GetOrAddDefault("uiCanvas_rectTransform",
       () => uiCanvas.GetComponent<RectTransform>());
 
 
@@ -58,7 +58,7 @@ namespace CsCat
         GameObject.Find("UIManager/UICanvas/NotifyLayer/UILanternNotifyPanel"));
     }
 
-    
+
 
     void InitListeners()
     {
@@ -70,7 +70,7 @@ namespace CsCat
       base.__Reset();
       this.CloseAllChildPanels(true);
     }
-    
+
     //////////////////////////////////////////////////////////////////////
     // UIBlood
     //////////////////////////////////////////////////////////////////////

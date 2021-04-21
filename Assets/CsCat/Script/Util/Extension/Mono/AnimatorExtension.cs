@@ -24,7 +24,7 @@ namespace CsCat
     {
       foreach (var behaviour in self.GetBehaviours<T>())
       {
-        if (name.Equals((string) behaviour.GetFieldValue("name")))
+        if (name.Equals((string)behaviour.GetFieldValue("name")))
           return behaviour;
       }
 

@@ -13,12 +13,12 @@ namespace CsCat
       if (assembly == null)
         assembly = Assembly.GetExecutingAssembly();
       var query = from type in assembly.GetTypes()
-        where !type.IsGenericType && !type.IsNested
-        from methodInfo in type.GetMethods(BindingFlags.Static
-                                           | BindingFlags.Public | BindingFlags.NonPublic)
-        where methodInfo.IsDefined(typeof(System.Runtime.CompilerServices.ExtensionAttribute), false)
-        where methodInfo.GetParameters()[0].ParameterType == extended_type
-        select methodInfo;
+                  where !type.IsGenericType && !type.IsNested
+                  from methodInfo in type.GetMethods(BindingFlags.Static
+                                                     | BindingFlags.Public | BindingFlags.NonPublic)
+                  where methodInfo.IsDefined(typeof(System.Runtime.CompilerServices.ExtensionAttribute), false)
+                  where methodInfo.GetParameters()[0].ParameterType == extended_type
+                  select methodInfo;
       return new List<MethodInfo>(query).ToArray();
     }
 
@@ -50,7 +50,7 @@ namespace CsCat
     }
 
 
-    public static MethodInfo GetExtensionMethodInfo(Type type, string method_name, 
+    public static MethodInfo GetExtensionMethodInfo(Type type, string method_name,
       params object[] source_parameters)
     {
       return ReflectionUtil.GetMethodInfo(type, method_name, BindingFlagsConst.All,
@@ -61,7 +61,7 @@ namespace CsCat
       string dll_name = null, params object[] source_parameters)
     {
       return ReflectionUtil.GetMethodInfo(full_class_path, method_name, BindingFlagsConst.All,
-        () => GetExtensionMethodInfos(TypeUtil.GetType(full_class_path,dll_name)), dll_name, source_parameters);
+        () => GetExtensionMethodInfos(TypeUtil.GetType(full_class_path, dll_name)), dll_name, source_parameters);
     }
 
     public static MethodInfo GetExtensionMethodInfo(string full_class_path, string method_name,
@@ -80,9 +80,9 @@ namespace CsCat
 
     #endregion
 
-    
 
-   
+
+
 
     #region InvokeExtension
     public static T InvokeExtension<T>(object obj, string full_class_path, string methodInfo_string,

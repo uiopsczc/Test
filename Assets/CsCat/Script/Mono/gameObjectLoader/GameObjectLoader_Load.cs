@@ -18,7 +18,7 @@ namespace CsCat
       {
         string content_json = assetCat.Get<TextAsset>().text;
         GameObjectLoader.instance.Load(content_json);
-      },null, null, this);
+      }, null, null, this);
     }
 
 
@@ -55,16 +55,16 @@ namespace CsCat
 #endif
           }
           _Load(clone, child_hashtable, parent_transform, true);
-        },null, null, this);
+        }, null, null, this);
         return; //如果是prefab的话，不用检查子孩子节点了
       }
 
       GameObject child_gameObject = new GameObject();
       _Load(child_gameObject, child_hashtable, parent_transform, false);
-      
+
     }
 
-    
+
     private void _Load(GameObject child_gameObject, Hashtable child_hashtable, Transform parent_transform, bool is_prefab)
     {
       child_gameObject.transform.SetParent(parent_transform);

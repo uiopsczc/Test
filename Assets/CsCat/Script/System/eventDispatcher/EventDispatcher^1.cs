@@ -54,14 +54,14 @@ namespace CsCat
       {
         eventName.Despawn();
       }
-      
+
     }
 
     public bool RemoveListener(Action<P0> handler)
     {
       foreach (var eventName in this.listener_dict.Keys)
       {
-        var result = RemoveListener(PoolCatManagerUtil.Spawn<EventName>().Init(eventName.source,eventName.name), handler);
+        var result = RemoveListener(PoolCatManagerUtil.Spawn<EventName>().Init(eventName.source, eventName.name), handler);
         if (result)
           return result;
       }

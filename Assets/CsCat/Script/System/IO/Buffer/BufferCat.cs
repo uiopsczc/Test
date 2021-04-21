@@ -173,7 +173,7 @@ namespace CsCat
     /// <returns></returns>
     public void Set(int pos, int value)
     {
-      single_byte_buf[0] = (byte) value;
+      single_byte_buf[0] = (byte)value;
       Set(pos, single_byte_buf);
     }
 
@@ -353,7 +353,7 @@ namespace CsCat
     /// <returns></returns>
     public void Append(int value)
     {
-      single_byte_buf[0] = (byte) value;
+      single_byte_buf[0] = (byte)value;
       Append(single_byte_buf);
     }
 

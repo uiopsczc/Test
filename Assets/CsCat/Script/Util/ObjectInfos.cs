@@ -18,7 +18,7 @@ namespace CsCat
 
     public override bool Equals(object obj)
     {
-      var other = (ObjectInfos) obj;
+      var other = (ObjectInfos)obj;
       var other_list = other.list;
       if (list.Count != other_list.Count)
         return false;

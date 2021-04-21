@@ -32,7 +32,7 @@ public partial class CZMToolMenu
     foreach (Transform transform in transform_list)
       GetMinMax(transform, ref min, ref max);
 
-    
+
     if (max == Vector3Const.Max)
     {
       LogCat.error("没有Meshes");

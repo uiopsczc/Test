@@ -16,7 +16,7 @@ namespace CsCat
     {
       return this.spawn_func();
     }
-    
+
   }
 
 }

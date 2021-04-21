@@ -177,7 +177,7 @@ namespace CsCat
 
     public Object Get(string sub_asset_path = null, Type type = null)
     {
-//    LogCat.logWarning(sub_asset_path, asset_dict);
+      //    LogCat.logWarning(sub_asset_path, asset_dict);
       if (asset_dict.Count == 0)
         return null;
       if (sub_asset_path.IsNullOrWhiteSpace())
@@ -192,7 +192,7 @@ namespace CsCat
 
     public T Get<T>(string sub_asset_path = null) where T : Object
     {
-      return (T) Get(sub_asset_path, typeof(T));
+      return (T)Get(sub_asset_path, typeof(T));
     }
 
     public bool IsLoadSuccess()

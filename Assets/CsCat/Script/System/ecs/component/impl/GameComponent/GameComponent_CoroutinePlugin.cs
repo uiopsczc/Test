@@ -12,7 +12,7 @@ namespace CsCat
     {
       get { return cache.GetOrAddDefault(() => { return new CoroutinePlugin(Main.instance); }); }
     }
-    
+
 
     public string StartCoroutine(IEnumerator ie, string key = null)
     {
@@ -32,6 +32,6 @@ namespace CsCat
     {
       coroutinePlugin.StopAllCoroutines();
     }
-    
+
   }
 }

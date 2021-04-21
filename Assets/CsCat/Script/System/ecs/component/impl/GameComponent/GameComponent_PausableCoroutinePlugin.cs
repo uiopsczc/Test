@@ -12,7 +12,7 @@ namespace CsCat
     {
       get { return cache.GetOrAddDefault(() => { return new PausableCoroutinePlugin(Main.instance); }); }
     }
-    
+
 
     public string StartPausableCoroutine(IEnumerator ie, string key = null)
     {
@@ -37,7 +37,7 @@ namespace CsCat
     {
       pausableCoroutinePlugin.SetIsPaused(is_paused);
     }
-    
+
 
   }
 }

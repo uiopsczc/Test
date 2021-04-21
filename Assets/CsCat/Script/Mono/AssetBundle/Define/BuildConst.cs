@@ -14,7 +14,7 @@ namespace CsCat
     public static string AssetsPackage_Root = "Assets/" + AssetsPackage_Folder_Name + "/";
     public static string Lua_Root = "Assets/" + "Lua" + "/";
 
-    
+
 
     #region Mainifest
 

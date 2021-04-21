@@ -6,7 +6,7 @@ namespace CsCat
   /// <summary>
   /// 缓存
   /// </summary>
-  public class Cache:ISpawnable
+  public class Cache : ISpawnable
   {
     #region field
 

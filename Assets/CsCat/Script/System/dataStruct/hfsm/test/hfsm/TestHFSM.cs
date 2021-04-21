@@ -2,7 +2,7 @@ namespace CsCat
 {
   public class TestHFSM : HFSM
   {
-    public TestHFSM(GameEntity owner):base(owner)
+    public TestHFSM(GameEntity owner) : base(owner)
     {
     }
     public override void InitStates()

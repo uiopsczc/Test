@@ -12,8 +12,8 @@ namespace CsCat
       Hashtable hashtable = new Hashtable();
       hashtable["cellSize"] = self.cellSize.ToStringOrDefault();
       hashtable["cellGap"] = self.cellGap.ToStringOrDefault();
-      hashtable["cellLayout"] = (int) self.cellLayout;
-      hashtable["cellSwizzle"] = (int) self.cellSwizzle;
+      hashtable["cellLayout"] = (int)self.cellLayout;
+      hashtable["cellSwizzle"] = (int)self.cellSwizzle;
       hashtable.Trim();
       return hashtable;
     }

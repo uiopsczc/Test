@@ -21,7 +21,7 @@ namespace CsCat
       if (from_state == to_state)
         return;
 
-      if (!is_force && from_state!=null&& !from_state.IsCanChangeToState(to_state, args))
+      if (!is_force && from_state != null && !from_state.IsCanChangeToState(to_state, args))
         return;
 
       HFSM nearest_same_parent_hfsm = to_state.GetNearestSameParentHFSM(from_state);
@@ -48,6 +48,6 @@ namespace CsCat
       HFSMState to_state = to_hfsm.default_sub_direct_state;
       this.ChangeToState(to_state, is_force, args);
     }
-    
+
   }
 }

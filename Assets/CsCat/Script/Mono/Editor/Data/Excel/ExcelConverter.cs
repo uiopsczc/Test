@@ -119,11 +119,11 @@ namespace CsCat
           break;
         }
 
-//      if (string.IsNullOrEmpty(cellValue))
-//      {
-//        Debug.LogErrorFormat("表头字段名字不能为空，所在列：{0}/{1}", i + 1, fileName);
-//        return false;
-//      }
+        //      if (string.IsNullOrEmpty(cellValue))
+        //      {
+        //        Debug.LogErrorFormat("表头字段名字不能为空，所在列：{0}/{1}", i + 1, fileName);
+        //        return false;
+        //      }
       }
 
       if (!hasIdColumn)
@@ -143,19 +143,19 @@ namespace CsCat
         var rowEnumerator = sheet.GetRowEnumerator();
         var sheetColLen = ExcelUtil.GetSheetColLen(sheet);
         var headerNames = ExcelUtil.GetSheetHeaderNames(sheet, ExcelConst.Header_Name_Row_Index);
-//      if (headerNames.Count > sheetColLen)
-//      {
-//        Debug.LogErrorFormat("表格: [{0}] 名字那行的数据长度不对,names.Count:{1},   colLength:{2}", sheet.SheetName,
-//          headerNames.Count, sheetColLen);
-//      }
-//      else
+        //      if (headerNames.Count > sheetColLen)
+        //      {
+        //        Debug.LogErrorFormat("表格: [{0}] 名字那行的数据长度不对,names.Count:{1},   colLength:{2}", sheet.SheetName,
+        //          headerNames.Count, sheetColLen);
+        //      }
+        //      else
         {
           var sheetTypes = ExcelUtil.GetSheetHeaderTypes(sheet, ExcelConst.Header_Name_Type_Row_Index);
-//        if (sheetTypes.Count > sheetColLen)
-//        {
-//          Debug.LogErrorFormat("表格: [{0}] 类型那行的数据长度不对", sheet.SheetName);
-//        }
-//        else
+          //        if (sheetTypes.Count > sheetColLen)
+          //        {
+          //          Debug.LogErrorFormat("表格: [{0}] 类型那行的数据长度不对", sheet.SheetName);
+          //        }
+          //        else
           {
             var excelDatabase = AssetDatabase.LoadAssetAtPath<ExcelDatabase>(outputPath);
             if (excelDatabase == null)
@@ -204,7 +204,7 @@ namespace CsCat
                   }
 
                   var errorTips = string.Format("表格: [{0}] 第{1}行，第{2}列数据格式不对!", row.RowNum + 1, sheet.SheetName, j + 1);
-                  var cell = j < (int) row.LastCellNum ? row.GetCell(j) : null;
+                  var cell = j < (int)row.LastCellNum ? row.GetCell(j) : null;
                   var sCellValue = cell == null ? "" : ExcelUtil.GetCellValue(cell);
                   var excelHeader = headers[j - cur_ignore_count];
                   var cellType = excelHeader.type;

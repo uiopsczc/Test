@@ -27,7 +27,7 @@ namespace CsCat
         return _transformFinderInfo_dict;
       }
     }
-    
+
   }
 }
 

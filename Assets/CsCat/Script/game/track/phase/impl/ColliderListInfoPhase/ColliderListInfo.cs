@@ -11,7 +11,7 @@ namespace CsCat
     public List<AABBBox> atk_box_list = new List<AABBBox>();
 
     public List<AABBBox> hit_box_list = new List<AABBBox>();
-    
+
 
     public void DoSave(Hashtable dict)
     {

@@ -123,13 +123,13 @@ namespace CsCat
         PoolCat pool = self.GetCache<PoolCat>(PoolCatConst.Pool_Name);
         pool.Despawn(self);
       }
-//      else if (self.IsCacheContainsKey(PoolCatConst.Lua_Pool_Name))//Lua端调用
-//      {
-//        LuaTable pool = self.GetCache<LuaTable>(PoolCatConst.Lua_Pool_Name);
-//        pool.Get("Despawn", out LuaFunction despawnFunction);
-//        despawnFunction.Action(pool, self);
-//        despawnFunction.Dispose();
-//      }
+      //      else if (self.IsCacheContainsKey(PoolCatConst.Lua_Pool_Name))//Lua端调用
+      //      {
+      //        LuaTable pool = self.GetCache<LuaTable>(PoolCatConst.Lua_Pool_Name);
+      //        pool.Get("Despawn", out LuaFunction despawnFunction);
+      //        despawnFunction.Action(pool, self);
+      //        despawnFunction.Dispose();
+      //      }
     }
 
     public static void SetCache(this GameObject self, string key, object obj)
@@ -224,10 +224,10 @@ namespace CsCat
 
     public static void DoActionRecursive(this GameObject self, Action<GameObject> do_action)
     {
-      self.transform.DoActionRecursive(transform=> do_action(transform.gameObject));
+      self.transform.DoActionRecursive(transform => do_action(transform.gameObject));
     }
 
-    public static void SetAlpha(this GameObject self, float alpha,bool is_recursive = true)
+    public static void SetAlpha(this GameObject self, float alpha, bool is_recursive = true)
     {
       self.transform.SetAlpha(alpha, is_recursive);
     }
@@ -236,6 +236,13 @@ namespace CsCat
     {
       self.transform.SetColor(color, is_not_use_color_alpha, is_recursive);
     }
+
+
+    public static (bool, string) GetRelativePath(this GameObject self, GameObject parent_gameObject = null)
+    {
+      return TransformUtil.GetRelativePath(self.transform, parent_gameObject == null ? null : parent_gameObject.transform);
+    }
+    
 
     #region 反射
 

@@ -28,13 +28,13 @@ namespace CsCat
     {
       if (key == null)
         key = typeof(T).FullName;
-      return (T) dict[key];
+      return (T)dict[key];
     }
 
     public T Get<T>(string key, string sub_key)
     {
       Dictionary<string, object> sub_dict = Get<Dictionary<string, object>>(key);
-      return (T) sub_dict[key];
+      return (T)sub_dict[key];
     }
 
     public T GetOrAdd<T>(string key, Func<T> defaultFunc)
@@ -43,7 +43,7 @@ namespace CsCat
         key = typeof(T).FullName;
       if (!dict.ContainsKey(key))
         dict[key] = defaultFunc();
-      return (T) dict[key];
+      return (T)dict[key];
     }
 
     public T GetOrAdd<T>(string key, string sub_key, Func<T> defaultFunc)

@@ -22,7 +22,7 @@ namespace CsCat
       {
         string path = e.GetNamePath(rootName);
         if (e.isValidate && e.methodInfoValidate != null &&
-            !(bool) (e.methodInfoValidate.Invoke(e.methodInfoValidate.DeclaringType, new object[0])))
+            !(bool)(e.methodInfoValidate.Invoke(e.methodInfoValidate.DeclaringType, new object[0])))
           genericMenu.AddDisabledItem(path.ToGUIContent());
         else
         {

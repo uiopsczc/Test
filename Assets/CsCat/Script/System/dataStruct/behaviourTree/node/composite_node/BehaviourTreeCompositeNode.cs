@@ -28,13 +28,13 @@ namespace CsCat
         if (!loop)
         {
           if (child is T)
-            return (T) child;
+            return (T)child;
         }
         else
         {
           BehaviourTreeNode childchild = child.GetChild<T>(loop);
           if (childchild is T)
-            return (T) childchild;
+            return (T)childchild;
         }
 
       return null;

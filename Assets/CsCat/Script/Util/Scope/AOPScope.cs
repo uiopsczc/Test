@@ -8,7 +8,7 @@ namespace CsCat
     private Action pre_callback;
     private Action post_callback;
     #region ctor
-    
+
 
     public AOPScope(Action pre_callback, Action post_callback)
     {

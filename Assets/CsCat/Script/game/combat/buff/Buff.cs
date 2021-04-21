@@ -13,7 +13,7 @@ namespace CsCat
     public string buff_id;
     private string trigger_spell_guid;
 
-    public  void Init(BuffManager buffManager, string buff_id)
+    public void Init(BuffManager buffManager, string buff_id)
     {
       base.Init();
       this.buffManager = buffManager;

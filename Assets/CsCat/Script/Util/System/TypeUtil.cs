@@ -9,8 +9,8 @@ namespace CsCat
     public static Type GetType(string class_path, string dll_name = null)
     {
       // return Type.GetType(string.Format("{0}, {1}, Version=0.0.0.0, Culture=neutral, PublicKeyToken=null", className, dllName));
-      if (dll_name == null&& cache_dict.ContainsKey(class_path))
-          return cache_dict[class_path];
+      if (dll_name == null && cache_dict.ContainsKey(class_path))
+        return cache_dict[class_path];
 
       string _dll_name = dll_name;
       if (dll_name == null)
@@ -33,9 +33,9 @@ namespace CsCat
           }
         }
       }
-      cache_dict[string.Format("{0},{1}", class_path, dll_name??"")] = result;
+      cache_dict[string.Format("{0},{1}", class_path, dll_name ?? "")] = result;
       return result;
     }
-    
+
   }
 }

@@ -27,14 +27,14 @@ namespace CsCat
         this.args = args;
       //二者只会有一个被调用
       if (delegation != null)
-        return delegation.DynamicInvoke(new object[] {this.args});
+        return delegation.DynamicInvoke(new object[] { this.args });
       else
         return this.target.InvokeMethod<object>(this.method_name, false, this.args);
     }
 
     public T Invoke<T>(params object[] args)
     {
-      return (T) Invoke(args);
+      return (T)Invoke(args);
     }
   }
 }

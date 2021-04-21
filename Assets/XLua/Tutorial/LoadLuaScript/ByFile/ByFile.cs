@@ -12,28 +12,28 @@ using XLua;
 
 namespace Tutorial
 {
-    public class ByFile : MonoBehaviour
+  public class ByFile : MonoBehaviour
+  {
+    LuaEnv luaenv = null;
+    // Use this for initialization
+    void Start()
     {
-        LuaEnv luaenv = null;
-        // Use this for initialization
-        void Start()
-        {
-            luaenv = new LuaEnv();
-            luaenv.DoString("require 'byfile'");
-        }
-
-        // Update is called once per frame
-        void Update()
-        {
-            if (luaenv != null)
-            {
-                luaenv.Tick();
-            }
-        }
-
-        void OnDestroy()
-        {
-            luaenv.Dispose();
-        }
+      luaenv = new LuaEnv();
+      luaenv.DoString("require 'byfile'");
     }
+
+    // Update is called once per frame
+    void Update()
+    {
+      if (luaenv != null)
+      {
+        luaenv.Tick();
+      }
+    }
+
+    void OnDestroy()
+    {
+      luaenv.Dispose();
+    }
+  }
 }

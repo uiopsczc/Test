@@ -36,10 +36,10 @@ namespace CsCat
     public void Init(MonoBehaviour owner, ActSequence parent, string id)
     {
       _owner = owner;
-      base.Init(parent,id);
+      base.Init(parent, id);
     }
 
-    
+
 
 
     public override void Start()

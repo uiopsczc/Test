@@ -17,7 +17,7 @@ namespace CsCat
     {
       get { return cache.GetOrAddDefault("parent_uiPanel", () => parent as UIPanel); }
     }
-    
+
 
 
     public void SetImageAsync(Image image, string asset_path, Action<Image> callbak = null,
@@ -31,7 +31,7 @@ namespace CsCat
         if (is_setNativeSize)
           image.SetNativeSize();
         callbak?.Invoke(image);
-      },null, null, this);
+      }, null, null, this);
     }
 
     public void SetRawImageAsync(RawImage image, string asset_path, Action<RawImage> callbak = null,
@@ -45,7 +45,7 @@ namespace CsCat
         if (is_setNativeSize)
           image.SetNativeSize();
         callbak?.Invoke(image);
-      },null, null, this);
+      }, null, null, this);
     }
 
 

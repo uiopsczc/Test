@@ -261,7 +261,7 @@ namespace CsCat
         //一个byte是8位的，所以8个byte就是64位，
         // 网络顺序的存储方式是bb[0]bb[1]bb[2]bb[3]bb[4]bb[5]bb[6]bb[7]bb[8],从i=0开始处理,每次将value右移(len-i-1)*8位,然后&0xFF取最后8位
         for (var i = 0; i < len; i++)
-          bb[i] = (byte) (int) ((value >> ((len - i - 1) * 8)) & 0xFF);
+          bb[i] = (byte)(int)((value >> ((len - i - 1) * 8)) & 0xFF);
         return bb;
       }
       else
@@ -270,7 +270,7 @@ namespace CsCat
         //主机顺序的存储方式是bb[8]bb[7]bb[6]bb[5]bb[4]bb[3]bb[2]bb[1]bb[0],从i=0开始处理,每次右移i*8位,然后&0xFF取最后8位
         var bb = new byte[len];
         for (var i = 0; i < len; i++)
-          bb[i] = (byte) (int) ((value >> (i * 8)) & 0xFF);
+          bb[i] = (byte)(int)((value >> (i * 8)) & 0xFF);
         return bb;
       }
     }

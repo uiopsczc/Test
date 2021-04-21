@@ -35,7 +35,7 @@ namespace CsCat
       label_style.normal.textColor = Color.black;
       Color color = Color.gray;
 
-      for (int i = (int) min_time; i <= max_time; i++)
+      for (int i = (int)min_time; i <= max_time; i++)
       {
         //画秒的字符串
         string current_second = string.Format("{0}s", i);

@@ -47,7 +47,7 @@ namespace CsCat
 
     public void ToSet(object key, object value)
     {
-      delayEditHandler.ToSet(key,value);
+      delayEditHandler.ToSet(key, value);
     }
 
     public void ToCallback(Action to_callback)

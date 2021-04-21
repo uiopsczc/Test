@@ -13,7 +13,7 @@ namespace CsCat
     {
       Type type = typeof(T);
       T clone = type.CreateInstance<T>();
-      foreach (var field_info in type.GetFields(BindingFlagsConst.Instance_Public| BindingFlagsConst.Instance_Private))
+      foreach (var field_info in type.GetFields(BindingFlagsConst.Instance_Public | BindingFlagsConst.Instance_Private))
         field_info.SetValue(clone, field_info.GetValue(source));
       return clone;
     }
@@ -34,11 +34,11 @@ namespace CsCat
       {
         formatter.Serialize(stream, source);
         stream.Seek(0, SeekOrigin.Begin);
-        return (T) formatter.Deserialize(stream);
+        return (T)formatter.Deserialize(stream);
       }
     }
 
 
-    
+
   }
 }

@@ -12,9 +12,9 @@ namespace CsCat
       this.resLoadComponent.resLoad.is_not_check_destroy = true;//effectManager销毁的时候才去把assetBundle销毁
       this.AddListener<Unit>(UnitEventNameConst.On_Unit_Destroy, this.DestroyByUnit);
     }
-    
 
-    
+
+
 
 
     public void RemoveEffectEntity(string key)
@@ -22,11 +22,11 @@ namespace CsCat
       RemoveChild(key);
     }
 
-    public EffectEntity GetEffectEntity(string key) 
+    public EffectEntity GetEffectEntity(string key)
     {
       return GetChild(key) as EffectEntity;
     }
-    
+
 
 
     void DestroyByUnit(Unit unit)

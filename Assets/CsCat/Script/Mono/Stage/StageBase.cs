@@ -22,7 +22,7 @@ namespace CsCat
 
     public Action on_show_callback;
 
-    
+
     public virtual void LoadPanels()
     {
     }

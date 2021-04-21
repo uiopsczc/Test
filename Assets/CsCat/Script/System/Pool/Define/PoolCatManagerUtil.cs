@@ -30,7 +30,7 @@ namespace CsCat
       return PoolCatManager.instance.IsContainsPool(name);
     }
 
-    public static PoolCat GetOrAddPool(Type pool_type,params object[] pool_construct_args)
+    public static PoolCat GetOrAddPool(Type pool_type, params object[] pool_construct_args)
     {
       return PoolCatManager.instance.GetOrAddPool(pool_type, pool_construct_args);
     }
@@ -43,7 +43,7 @@ namespace CsCat
 
     public static void Despawn(object despawn, string pool_name)
     {
-      PoolCatManager.instance.Despawn( despawn, pool_name);
+      PoolCatManager.instance.Despawn(despawn, pool_name);
     }
 
     public static void Despawn(object o)
@@ -65,7 +65,7 @@ namespace CsCat
     {
       if (on_spawn_callback == null)
         return PoolCatManager.instance.Spawn<T>();
-      return PoolCatManager.instance.Spawn<T>(obj => on_spawn_callback((T) obj));
+      return PoolCatManager.instance.Spawn<T>(obj => on_spawn_callback((T)obj));
     }
   }
 }

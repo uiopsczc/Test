@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CsCat
 {
-  public class ForeachDictionary<K,V>
+  public class ForeachDictionary<K, V>
   {
     private Dictionary<K, V> dict;
     private List<K> tmp_to_check_key_list = new List<K>();
@@ -30,7 +30,7 @@ namespace CsCat
           if (!dict.ContainsKey(tmp_to_check_key))//中途yield return value;可能有删除其他的节点，所以可能会出现null,所以要检测是否需要忽略
             continue;
           yield return dict[tmp_to_check_key];
-          tmp_checked_key_dict[tmp_to_check_key] =true;
+          tmp_checked_key_dict[tmp_to_check_key] = true;
         }
 
         //再次检测，是否有新生成的，如果有则加入tmp_to_check_key_list，然后再次调用上面的步骤，否则全部checked，跳出所有循环

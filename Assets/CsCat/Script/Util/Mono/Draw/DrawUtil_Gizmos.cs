@@ -308,13 +308,13 @@ namespace CsCat
 
     #endregion
 
-    public static void GizmosCube(Vector3 min,Vector3 max, Color color)
+    public static void GizmosCube(Vector3 min, Vector3 max, Color color)
     {
       if (!Is_Gizmos_Enable) return;
 
       using (new GizmosColorScope(color))
       {
-        var cube = new Cube3d((min+max)/2, (max - min).Abs());
+        var cube = new Cube3d((min + max) / 2, (max - min).Abs());
         cube.GetDrawLineList().ForEach(kv => { GizmosLine(kv.Key, kv.Value, color); });
       }
     }

@@ -27,8 +27,8 @@ namespace CsCat
       base.Play();
       if (animator != null)
       {
-//        if (sequence != null)
-//          animator.runtimeAnimatorController = (sequence as AnimationTimelinableSequence).runtimeAnimatorController;
+        //        if (sequence != null)
+        //          animator.runtimeAnimatorController = (sequence as AnimationTimelinableSequence).runtimeAnimatorController;
 
         animator.enabled = true;
         animator.speed = 1;

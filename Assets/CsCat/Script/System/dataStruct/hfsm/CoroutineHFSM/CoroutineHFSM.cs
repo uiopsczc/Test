@@ -31,15 +31,15 @@ namespace CsCat
       }
 
       for (int i = hfsm_list.Count - 1; i >= 0; i--)
-        yield return  hfsm_list[i].IEEnter(args);
+        yield return hfsm_list[i].IEEnter(args);
 
       yield return to_state.IEEnter(args);
     }
 
 
-    public override void ChangeToState(HFSMState to_state, bool is_force= false, params object[] args)
+    public override void ChangeToState(HFSMState to_state, bool is_force = false, params object[] args)
     {
-      StartCoroutine(IEChangeToState(to_state as CoroutineHFSMState, is_force,args));
+      StartCoroutine(IEChangeToState(to_state as CoroutineHFSMState, is_force, args));
     }
 
     public IEnumerator IEChangeToState(CoroutineHFSMState to_state, bool is_force = false, params object[] args)
@@ -48,7 +48,7 @@ namespace CsCat
       CoroutineHFSMState from_state = root_hfsm.GetCurrentState() as CoroutineHFSMState;
 
       if (from_state == to_state)
-        yield break ;
+        yield break;
 
       if (!is_force && from_state != null && !from_state.IsCanChangeToState(to_state, args))
         yield break;
@@ -62,14 +62,14 @@ namespace CsCat
       }
 
       this.Broadcast(CoroutineHFSMEventNameConst.Pre_State_Enter.ToEventName(root_hfsm), to_state);
-      yield return  nearest_same_parent_hfsm.IEEnterLoopTo(to_state, args);
+      yield return nearest_same_parent_hfsm.IEEnterLoopTo(to_state, args);
       this.Broadcast(CoroutineHFSMEventNameConst.Post_State_Enter.ToEventName(root_hfsm), to_state);
 
       previous_state = from_state;
       this.Broadcast(CoroutineHFSMEventNameConst.State_Change_Finish.ToEventName(root_hfsm), from_state, to_state);
     }
 
-    
+
   }
 }
 

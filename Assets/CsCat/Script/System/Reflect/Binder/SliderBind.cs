@@ -111,7 +111,7 @@ namespace CsCat
     /// <param name="new_value"></param>
     private void OnMaxValueChanged(string property_name, object old_value, object new_value)
     {
-      this.silder.maxValue = (float) Convert.ToDouble(new_value);
+      this.silder.maxValue = (float)Convert.ToDouble(new_value);
     }
 
     /// <summary>
@@ -122,7 +122,7 @@ namespace CsCat
     /// <param name="new_value"></param>
     private void OnCurValueChanged(string property_name, object old_value, object new_value)
     {
-      this.silder.value = (float) Convert.ToDouble(new_value);
+      this.silder.value = (float)Convert.ToDouble(new_value);
     }
 
     #endregion

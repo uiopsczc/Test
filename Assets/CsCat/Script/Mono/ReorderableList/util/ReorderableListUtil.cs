@@ -10,7 +10,7 @@ namespace CsCat
 {
   public class ReorderableListUtil
   {
-    public static void ToReorderableList(IList to_reorder_list,ref ReorderableList _reorderableList)
+    public static void ToReorderableList(IList to_reorder_list, ref ReorderableList _reorderableList)
     {
       if (_reorderableList != null) return;
       _reorderableList =
@@ -18,7 +18,7 @@ namespace CsCat
       _reorderableList.headerHeight = 0;
     }
 
-    public static void DrawGUI(ReorderableList reorderableList,GUIToggleTween toggleTween,string titile)
+    public static void DrawGUI(ReorderableList reorderableList, GUIToggleTween toggleTween, string titile)
     {
       using (new GUILayoutToggleAreaScope(toggleTween, titile))
       {
@@ -31,7 +31,7 @@ namespace CsCat
       reorderableList.elementHeight = reorderableList.count == 0 ? EditorConst.Single_Line_Height : element_height;
     }
 
-    
+
   }
 }
 #endif

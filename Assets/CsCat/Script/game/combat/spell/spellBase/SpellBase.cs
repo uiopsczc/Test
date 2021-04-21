@@ -22,7 +22,7 @@ namespace CsCat
     public List<Hashtable> animation_event_list = new List<Hashtable>();
 
     public void Init(Unit source_unit, string spell_id,
-      Unit target_unit,SpellDefinition spellDefinition, Hashtable instance_arg_dict)
+      Unit target_unit, SpellDefinition spellDefinition, Hashtable instance_arg_dict)
     {
       base.Init();
       this.source_unit = source_unit;
@@ -74,7 +74,7 @@ namespace CsCat
       if (!this.is_spell_animation_finished)
         Client.instance.combat.spellManager.OnSpellAnimationFinished(this);
       Client.instance.combat.spellManager.RemoveListenersByObj(this);
-      
+
     }
 
     public void AddCombatNumber(int number, string target_unit_guid, string max_type, Hashtable arg_dict)

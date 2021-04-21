@@ -4,12 +4,12 @@ namespace CsCat
 {
   public partial class AbstractComponent
   {
-    
+
     public virtual bool IsCanUpdate()
     {
-      return is_enabled&&!is_paused&&!IsDestroyed();
+      return is_enabled && !is_paused && !IsDestroyed();
     }
-    
+
     public virtual void Update(float deltaTime = 0, float unscaledDeltaTime = 0)
     {
       if (this.IsCanUpdate())

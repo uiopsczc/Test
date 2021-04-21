@@ -4,7 +4,7 @@ using Object = UnityEngine.Object;
 
 namespace CsCat
 {
-  public class ResLoadComponent:GameComponent
+  public class ResLoadComponent : GameComponent
   {
     public ResLoad resLoad;
     public void Init(ResLoad resLoad)
@@ -31,13 +31,13 @@ namespace CsCat
 
 
     // 加载某个资源
-    public AssetCat GetOrLoadAsset(string asset_path, Action<AssetCat> on_load_success_callback = null, Action<AssetCat> on_load_fail_callback = null, Action<AssetCat> on_load_done_callback = null,object callback_cause = null)
+    public AssetCat GetOrLoadAsset(string asset_path, Action<AssetCat> on_load_success_callback = null, Action<AssetCat> on_load_fail_callback = null, Action<AssetCat> on_load_done_callback = null, object callback_cause = null)
     {
       return this.resLoad.GetOrLoadAsset(asset_path, on_load_success_callback, on_load_fail_callback, on_load_done_callback, callback_cause);
     }
-    
 
-    public void CancelLoadCallback(AssetCat assetCat,object callback_cause=null)
+
+    public void CancelLoadCallback(AssetCat assetCat, object callback_cause = null)
     {
       this.resLoad.CancelLoadCallback(assetCat, callback_cause);
     }

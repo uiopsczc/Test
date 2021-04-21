@@ -48,7 +48,7 @@ namespace CsCat
     }
 
     public void Show(string title, string sub_title, string desc,
-      List<Dictionary<string, int>> itemInfo_dict_list = null,  string button1_desc = null,
+      List<Dictionary<string, int>> itemInfo_dict_list = null, string button1_desc = null,
       Action button1_callback = null, string button2_desc = null, Action button2_callback = null, Action close_callback = null)
     {
       graphicComponent.SetIsShow(true);

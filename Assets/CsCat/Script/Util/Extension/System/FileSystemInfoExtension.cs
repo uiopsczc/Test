@@ -26,8 +26,8 @@ namespace CsCat
     public static DirectoryInfo Parent(this FileSystemInfo self)
     {
       if (self.IsFile())
-        return ((FileInfo) self).Directory;
-      return ((DirectoryInfo) self).Parent;
+        return ((FileInfo)self).Directory;
+      return ((DirectoryInfo)self).Parent;
     }
 
     /// <summary>
@@ -48,7 +48,7 @@ namespace CsCat
         if (!dir2.IsDirectory())
           throw new IOException("无法创建目录" + dir2);
 
-        var srcs = ((DirectoryInfo) self).GetFileSystemInfos();
+        var srcs = ((DirectoryInfo)self).GetFileSystemInfos();
         foreach (var t in srcs)
           CopyFileTo(t, dir2);
       }
@@ -60,17 +60,17 @@ namespace CsCat
           FileInfo dstInfo;
           if (dst.IsDirectory())
           {
-            dstInfo = new FileInfo(((DirectoryInfo) dst).SubPath(self.Name));
+            dstInfo = new FileInfo(((DirectoryInfo)dst).SubPath(self.Name));
             dstInfo.Create().Close();
           }
           else
           {
-            var pdir2 = ((FileInfo) dst).Directory; // 目标文件dst的父级目录
+            var pdir2 = ((FileInfo)dst).Directory; // 目标文件dst的父级目录
             if (pdir2 != null)
               pdir2.Create();
             if (pdir2 == null || !pdir2.Exists)
               throw new IOException("无法创建目录:" + pdir2);
-            dstInfo = (FileInfo) dst;
+            dstInfo = (FileInfo)dst;
             dstInfo.Create().Close();
           }
 
@@ -103,7 +103,7 @@ namespace CsCat
     public static void RemoveFiles(this FileSystemInfo self)
     {
       if (self.IsDirectory())
-        ((DirectoryInfo) self).ClearDir();
+        ((DirectoryInfo)self).ClearDir();
       self.Delete();
     }
 

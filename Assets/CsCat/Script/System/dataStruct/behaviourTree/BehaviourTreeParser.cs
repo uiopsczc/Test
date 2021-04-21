@@ -59,7 +59,7 @@ namespace CsCat
       foreach (XmlNode child_xmlNode in parent_xmlNode.ChildNodes)
       {
         var child = ParseNode(child_xmlNode, o);
-        ((BehaviourTreeCompositeNode) parent).AddChild(child);
+        ((BehaviourTreeCompositeNode)parent).AddChild(child);
       }
 
       return parent;

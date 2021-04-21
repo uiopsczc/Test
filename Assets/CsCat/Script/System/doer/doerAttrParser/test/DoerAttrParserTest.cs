@@ -6,7 +6,7 @@ namespace CsCat
     {
       DoerAttrParser doerAttrParser = new DoerAttrParser(Client.instance.user);
       var result = "";
-//    result = doerAttrParser.ParseString("{#u.pos2}");
+      //    result = doerAttrParser.ParseString("{#u.pos2}");
       //    result = doerAttrParser.Parse("{eval((5+4)*6)}");//eval()²âÊÔ
       //    result = doerAttrParser.Parse("{#definition.ItemDefinition.1.icon_path}");//definition²âÊÔ
       //    result = doerAttrParser.Parse("{@hasSubString(abcdef,de)}");//hasSubString²âÊÔ

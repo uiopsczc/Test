@@ -8,7 +8,7 @@ namespace CsCat
   {
     public void Move(Vector3 target_pos, float? speed, string animation_name = null)
     {
-      MoveByPath(new List<Vector3>() {target_pos}, speed, animation_name);
+      MoveByPath(new List<Vector3>() { target_pos }, speed, animation_name);
     }
 
     public void MoveByPath(List<Vector3> path, float? speed, string animation_name = null)

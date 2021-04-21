@@ -11,30 +11,30 @@ namespace CsCat
     /// </summary>
     public static bool IsSuperTypeOf(this Type self, Type sub_type)
     {
-//      if (sub_type == null || self == null)
-//        return false;
-//      if (!sub_type.IsInterface && !self.IsInterface)
-//      {
-//        while (sub_type != null)
-//        {
-//          if (sub_type == self)
-//            return true;
-//          sub_type = sub_type.BaseType;
-//        }
-//      }
-//      else if (self.IsInterface)
-//      {
-//        if (sub_type == self)
-//          return true;
-//        var ts = sub_type.GetInterfaces();
-//        for (var i = 0; i < ts.Length; i++)
-//          if (self.IsSuperOf(ts[i]))
-//            return true;
-//        if (!sub_type.IsInterface)
-//          return self.IsSuperOf(sub_type.BaseType);
-//      }
-//
-//      return false;
+      //      if (sub_type == null || self == null)
+      //        return false;
+      //      if (!sub_type.IsInterface && !self.IsInterface)
+      //      {
+      //        while (sub_type != null)
+      //        {
+      //          if (sub_type == self)
+      //            return true;
+      //          sub_type = sub_type.BaseType;
+      //        }
+      //      }
+      //      else if (self.IsInterface)
+      //      {
+      //        if (sub_type == self)
+      //          return true;
+      //        var ts = sub_type.GetInterfaces();
+      //        for (var i = 0; i < ts.Length; i++)
+      //          if (self.IsSuperOf(ts[i]))
+      //            return true;
+      //        if (!sub_type.IsInterface)
+      //          return self.IsSuperOf(sub_type.BaseType);
+      //      }
+      //
+      //      return false;
       return self.IsAssignableFrom(sub_type);
     }
 
@@ -53,14 +53,14 @@ namespace CsCat
     public static string GetDescription(this Type self, string field_name)
     {
       var memberInfo = self.GetMember(field_name);
-      var attributes = (DescriptionAttribute[]) memberInfo[0].GetCustomAttributes(typeof(DescriptionAttribute), false);
+      var attributes = (DescriptionAttribute[])memberInfo[0].GetCustomAttributes(typeof(DescriptionAttribute), false);
       return attributes == null ? null : attributes[0].Description;
     }
 
     public static string GetDescription(this Type self, int enum_value)
     {
       var memberInfo = self.GetMember(Enum.GetName(self, enum_value));
-      var attributes = (DescriptionAttribute[]) memberInfo[0].GetCustomAttributes(typeof(DescriptionAttribute), false);
+      var attributes = (DescriptionAttribute[])memberInfo[0].GetCustomAttributes(typeof(DescriptionAttribute), false);
       return attributes == null ? null : attributes[0].Description;
     }
 
@@ -96,7 +96,7 @@ namespace CsCat
     public static MethodInfo GetMethodInfo(this Type self, string method_name,
       BindingFlags bindingFlags = BindingFlagsConst.All, params Type[] sourceParameterTypes)
     {
-      return ReflectionUtil.GetMethodInfo( self,method_name, bindingFlags,null, sourceParameterTypes);
+      return ReflectionUtil.GetMethodInfo(self, method_name, bindingFlags, null, sourceParameterTypes);
     }
 
     public static MethodInfo GetGenericMethodInfo2(this Type self, string method_name, Type[] generic_types,

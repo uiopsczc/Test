@@ -77,7 +77,7 @@ namespace CsCat
         {
           OnSoundLoadSuccess(assetCat.Get<AudioClip>(asset_path.GetSubAssetPath()), group_name, target, target_localPosition,
             is_loop, range);
-        },null, null, this);
+        }, null, null, this);
     }
 
     private void OnSoundLoadSuccess(AudioClip audioClip, string group_name, GameObject target, Vector3? target_localPosition,
@@ -144,7 +144,7 @@ namespace CsCat
         {
           OnBGMLoadSuccess(asset_cat.Get<AudioClip>(sound_path.GetSubAssetPath()), is_loop);
           last_bgm_path = sound_path;
-        },null, null, this);
+        }, null, null, this);
     }
 
     public void PauseBGMSound(bool is_paused = true)

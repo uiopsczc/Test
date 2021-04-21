@@ -51,7 +51,7 @@ namespace CsCat
           return false;
 
         DirectionInfo directionInfo = DirectionConst.GetDirectionInfo(p.x - lp.x, p.y - lp.y);
-//      directionInfo = DirectionConst.GetDirectionInfo(0, 0);
+        //      directionInfo = DirectionConst.GetDirectionInfo(0, 0);
         if (directionInfo == DirectionConst.GetDirectionInfo("left_top")) // 左上角
         {
           if (!CanPass(astarMapPath, p.x + 1, p.y, can_pass_obstacle_types, can_pass_terrain_types, can_out))

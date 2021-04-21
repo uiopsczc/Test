@@ -4,7 +4,7 @@ using System.Collections;
 
 namespace CsCat
 {
-  public class ReorderableListInfo:ICopyable
+  public class ReorderableListInfo : ICopyable
   {
     public IList to_reorder_list;
     private GUIToggleTween toggleTween = new GUIToggleTween();
@@ -41,7 +41,7 @@ namespace CsCat
       {
         if (to_reorder_element is ICopyable)
         {
-          var _to_reorder_element = (ICopyable) to_reorder_element;
+          var _to_reorder_element = (ICopyable)to_reorder_element;
           var _dest_clone_elemnt = _to_reorder_element.GetType().CreateInstance<ICopyable>();
           _to_reorder_element.CopyTo(_dest_clone_elemnt);
           _dest.to_reorder_list.Add(_dest_clone_elemnt);

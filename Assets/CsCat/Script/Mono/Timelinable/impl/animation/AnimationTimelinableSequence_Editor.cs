@@ -13,9 +13,9 @@ namespace CsCat
         (track as AnimationTimelinableTrack).SyncAnimationWindow();
     }
 
-    
-    
-    
+
+
+
 
 
   }

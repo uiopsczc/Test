@@ -24,7 +24,7 @@ namespace CsCat
     {
       var eventListenerInfo = eventDispatchers.AddListener(eventName, handler);
       listener_dict.GetOrAddDefault(eventListenerInfo,
-        () => PoolCatManagerUtil.Spawn<KeyValuePairCat<Action, int>>().Init(()=>RemoveListener(eventName, handler), 0));
+        () => PoolCatManagerUtil.Spawn<KeyValuePairCat<Action, int>>().Init(() => RemoveListener(eventName, handler), 0));
       listener_dict[eventListenerInfo].value += 1;//个数加1
       return eventListenerInfo;
     }
@@ -278,7 +278,7 @@ namespace CsCat
       {
         if (key.GetType() == typeof(EventListenerInfo<P0, P1, P2>) && key._handler.Equals(handler))
         {
-          listener = PoolCatManagerUtil.Spawn<EventListenerInfo<P0, P1, P2>>().Init(key.eventName, handler) ;
+          listener = PoolCatManagerUtil.Spawn<EventListenerInfo<P0, P1, P2>>().Init(key.eventName, handler);
           break;
         }
       }

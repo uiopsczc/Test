@@ -140,7 +140,7 @@ namespace CsCat
     {
       var list = new List<ExcelDataType>();
       var row = sheet.GetRow(headerTypeRowNum);
-      for (var i = 0; i < (int) row.LastCellNum; i++)
+      for (var i = 0; i < (int)row.LastCellNum; i++)
       {
         var cell = row.GetCell(i);
         if (cell == null || GetCellValue(cell).Trim().IsNullOrWhiteSpace())

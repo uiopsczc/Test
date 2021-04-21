@@ -9,8 +9,8 @@ namespace CsCat
     public CameraTimelinableItemInfo()
     {
     }
-    
-    public CameraTimelinableItemInfo(CameraTimelinableItemInfo other):base(other)
+
+    public CameraTimelinableItemInfo(CameraTimelinableItemInfo other) : base(other)
     {
     }
 

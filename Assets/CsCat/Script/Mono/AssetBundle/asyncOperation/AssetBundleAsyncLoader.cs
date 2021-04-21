@@ -11,8 +11,8 @@ namespace CsCat
     protected Dictionary<string, AssetBundleCat> waiting_assetBundleCat_dict = new Dictionary<string, AssetBundleCat>();
     protected Dictionary<string, long> assetBundle_downloaded_bytes_dict = new Dictionary<string, long>();
     protected long need_download_bytes;
-    
-    
+
+
 
     public void Init(AssetBundleCat assetBundleCat)
     {
@@ -21,21 +21,21 @@ namespace CsCat
       // 只添加没有被加载过的
       if (!assetBundleCat.IsLoadDone())
       {
-        waiting_assetBundleCat_dict[assetBundleCat.assetBundle_name]= assetBundleCat;
+        waiting_assetBundleCat_dict[assetBundleCat.assetBundle_name] = assetBundleCat;
         assetBundle_downloaded_bytes_dict[assetBundleCat.assetBundle_name] = 0;
       }
-      
-        foreach (var dependence_assetBundleCat in assetBundleCat.dependence_assetBundleCat_list)
-        {
-          if (dependence_assetBundleCat.IsLoadDone())
-            continue;
-          waiting_assetBundleCat_dict[dependence_assetBundleCat.assetBundle_name] = dependence_assetBundleCat;
-          assetBundle_downloaded_bytes_dict[dependence_assetBundleCat.assetBundle_name] = 0;
-        }
+
+      foreach (var dependence_assetBundleCat in assetBundleCat.dependence_assetBundleCat_list)
+      {
+        if (dependence_assetBundleCat.IsLoadDone())
+          continue;
+        waiting_assetBundleCat_dict[dependence_assetBundleCat.assetBundle_name] = dependence_assetBundleCat;
+        assetBundle_downloaded_bytes_dict[dependence_assetBundleCat.assetBundle_name] = 0;
+      }
 
       total_waiting_assetBundleCat_count = waiting_assetBundleCat_dict.Count;
 
-      
+
       need_download_bytes = 0;
       foreach (var _assetBundle_name in assetBundle_downloaded_bytes_dict.Keys)
         need_download_bytes += Client.instance.assetBundleManager.assetBundleMap.dict[_assetBundle_name];
@@ -51,14 +51,14 @@ namespace CsCat
       AddListener<ResourceWebRequester>(AssetBundleEventNameConst.On_ResourceWebRequester_Success,
         OnResourceWebRequesterSuccess);
     }
-    
+
 
     protected override float GetProgress()
     {
       if (resultInfo.is_done)
         return 1.0f;
 
-      var progress_value = (float) GetDownloadedBytes() / GetNeedDownloadBytes();
+      var progress_value = (float)GetDownloadedBytes() / GetNeedDownloadBytes();
       return progress_value;
     }
 
@@ -124,7 +124,7 @@ namespace CsCat
       RemoveListener<ResourceWebRequester>(AssetBundleEventNameConst.On_ResourceWebRequester_Fail,
         OnResourceWebRequesterFail);
     }
-    
+
 
     protected override void OnSuccess()
     {
@@ -136,7 +136,7 @@ namespace CsCat
       base.OnFail();
       Broadcast(AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Fail, this);
     }
-    
+
     protected override void OnDone()
     {
       base.OnDone();

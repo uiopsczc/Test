@@ -35,7 +35,7 @@ namespace CsCat
 
     public void Check(TKey key)
     {
-      if (this.ContainsKey(key)&&this[key].IsNullOrEmpty())
+      if (this.ContainsKey(key) && this[key].IsNullOrEmpty())
         this.Remove(key);
     }
 

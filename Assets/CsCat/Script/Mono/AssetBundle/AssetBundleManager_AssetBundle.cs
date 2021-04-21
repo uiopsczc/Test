@@ -19,9 +19,9 @@ namespace CsCat
       var resourceWebRequester = PoolCatManagerUtil.Spawn<ResourceWebRequester>();
       var url = assetBundle_name.WithRootPath(FilePathConst.PersistentAssetBundleRoot);
       resourceWebRequester.Init(assetBundleCat, url);
-      resourceWebRequester_all_dict[assetBundle_name]= resourceWebRequester;
+      resourceWebRequester_all_dict[assetBundle_name] = resourceWebRequester;
       resourceWebRequester_waiting_queue.Enqueue(resourceWebRequester);
-      
+
       return true;
     }
 
@@ -47,13 +47,13 @@ namespace CsCat
       CreateAssetBundleAsync(assetBundle_name);
       var assetBundleCat = __GetAssetBundleCat(assetBundle_name);
       foreach (var dependance_assetBundleCat in dependance_assetBundleCat_list)
-        assetBundleCat.AddDependenceAssetBundleCat(dependance_assetBundleCat);      
+        assetBundleCat.AddDependenceAssetBundleCat(dependance_assetBundleCat);
       assetBundleAsyncLoader.Init(assetBundleCat);
       // 添加assetBundleAsyncLoader加载器对AB持有的引用,assetBundleAsyncLoader结束后会删除该次引用(在AssetBunldeMananger中的OnProsessingAssetBundleAsyncLoader的进行删除本次引用操作)
       assetBundleCat.AddRefCount();
       return assetBundleAsyncLoader;
     }
-    
+
 
     private void OnAssetBundleAsyncLoaderFail(AssetBundleAsyncLoader assetBundleAsyncLoader)
     {

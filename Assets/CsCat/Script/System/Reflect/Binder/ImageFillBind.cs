@@ -121,7 +121,7 @@ namespace CsCat
     /// <param name="new_value"></param>
     internal void OnCurValueChanged(string property_name, object old_value, object new_value)
     {
-      this.cur_value = (float) Convert.ToDouble(new_value);
+      this.cur_value = (float)Convert.ToDouble(new_value);
       this.image.fillAmount = this.cur_value / this.max_value;
     }
 

@@ -7,6 +7,6 @@ namespace CsCat
 {
   public static partial class Rigidbody2DExtension
   {
-    
+
   }
 }

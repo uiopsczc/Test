@@ -180,7 +180,7 @@ namespace CsCat
       }
 
       //排序
-      closest_point_list.Sort(delegate(Vector2 v1, Vector2 v2)
+      closest_point_list.Sort(delegate (Vector2 v1, Vector2 v2)
         {
           float distance_sqr1 = (p2 - v1).sqrMagnitude;
           float distance_sqr2 = (p2 - v2).sqrMagnitude;
@@ -279,7 +279,7 @@ namespace CsCat
       }
 
       //排序,先比较x，如果相同再比较y
-      point_set.Sort(delegate(Vector2 v1, Vector2 v2)
+      point_set.Sort(delegate (Vector2 v1, Vector2 v2)
         {
           if (v1.x < v2.x)
             return -1;

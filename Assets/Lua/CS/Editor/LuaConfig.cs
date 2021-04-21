@@ -14,7 +14,8 @@ using Object = UnityEngine.Object;
 
 public static class LuaConfig
 {
-  [LuaCallCSharp] public static List<Type> static_lua_call_cs_list = new List<Type>
+  [LuaCallCSharp]
+  public static List<Type> static_lua_call_cs_list = new List<Type>
   {
     typeof(LogCat),
     typeof(Client),
@@ -199,7 +200,8 @@ public static class LuaConfig
     typeof(Func<Vector3>)
   };
 
-  [BlackList] public static List<List<string>> BlackList = new List<List<string>>
+  [BlackList]
+  public static List<List<string>> BlackList = new List<List<string>>
   {
     new List<string> {"UnityEngine.UI.Text", "OnRebuildRequested"},
     new List<string> {"UnityEngine.UI.Graphic", "OnRebuildRequested"},

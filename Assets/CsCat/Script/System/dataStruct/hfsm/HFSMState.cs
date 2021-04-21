@@ -7,7 +7,7 @@ namespace CsCat
   /// <summary>
   /// HFSMState
   /// </summary>
-  public class HFSMState:TickObject
+  public class HFSMState : TickObject
   {
     public HFSM parent_hfsm;
 
@@ -35,7 +35,7 @@ namespace CsCat
       this.SetIsEnabled(true, false);
       this.parent_hfsm.current_sub_direct_state = this;
     }
-    
+
 
     public virtual void Exit(params object[] args)
     {
@@ -97,26 +97,26 @@ namespace CsCat
       return null;
     }
 
-    
+
 
     public HFSM GetRootHFSM()
     {
       return this.parent_hfsm.GetRootHFSM();
     }
 
-    public void ChangeToState(string key,  bool is_force = false, params object[] args)
+    public void ChangeToState(string key, bool is_force = false, params object[] args)
     {
       this.GetRootHFSM().ChangeToState(key, is_force, args);
     }
 
     public void ChangeToState(HFSMState to_state, bool is_force = false, params object[] args)
     {
-      this.GetRootHFSM().ChangeToState(to_state,  is_force, args);
+      this.GetRootHFSM().ChangeToState(to_state, is_force, args);
     }
 
     public void ChangeToHFSM(string key, bool is_force = false, params object[] args)
     {
-      this.GetRootHFSM().ChangeToHFSM(key,  is_force, args);
+      this.GetRootHFSM().ChangeToHFSM(key, is_force, args);
     }
 
     /// <summary>

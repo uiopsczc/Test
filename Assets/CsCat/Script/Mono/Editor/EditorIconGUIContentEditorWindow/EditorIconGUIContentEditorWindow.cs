@@ -35,7 +35,7 @@ namespace CsCat
               GUILayout.BeginHorizontal();
             }
 
-            var gui_content = EditorIconGUIContent.GetSystem((EditorIconGUIContentType) i);
+            var gui_content = EditorIconGUIContent.GetSystem((EditorIconGUIContentType)i);
             if (GUILayout.Button(gui_content,
               GUILayout.Width(50), GUILayout.Height(36)))
             {

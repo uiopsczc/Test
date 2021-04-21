@@ -77,7 +77,7 @@ namespace CsCat
 
 
       float each_degree = 4;
-      int segment_num = (int) Mathf.Ceil(360 / each_degree);
+      int segment_num = (int)Mathf.Ceil(360 / each_degree);
       for (int i = 0; i <= segment_num; i++)
       {
         float pre_degree = i * each_degree;

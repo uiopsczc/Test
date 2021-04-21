@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public class AABBBox:BoxBase
+  public class AABBBox : BoxBase
   {
     private float _min_x;
     private float _min_y;
@@ -279,7 +279,7 @@ namespace CsCat
     {
       Vector3 min = this.min + offset;
       Vector3 max = this.max + offset;
-      DrawUtil.DebugCube(min,max,color);
+      DrawUtil.DebugCube(min, max, color);
     }
 
     public override string ToString()
@@ -287,6 +287,6 @@ namespace CsCat
       return string.Format("[min:({0},{1},{2}),max:({3},{4},{5})]", min_x, min_y, min_z, max_x, max_y, max_z);
     }
 
-    
+
   }
 }

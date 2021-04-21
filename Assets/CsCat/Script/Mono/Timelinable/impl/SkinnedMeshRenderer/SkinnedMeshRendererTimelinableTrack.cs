@@ -9,7 +9,7 @@ namespace CsCat
   {
     [SerializeField] private SkinnedMeshRendererTimelinableItemInfo[] _itemInfoes = new SkinnedMeshRendererTimelinableItemInfo[0];
     [SerializeField] private SkinnedMeshRendererTimelinableItemInfoLibrary _itemInfoLibrary;
-    [NonSerialized] private List<SkinnedMeshRenderer> skinnedMeshRenderer_list=new List<SkinnedMeshRenderer>();
+    [NonSerialized] private List<SkinnedMeshRenderer> skinnedMeshRenderer_list = new List<SkinnedMeshRenderer>();
 
     public override TimelinableItemInfoBase[] itemInfoes
     {

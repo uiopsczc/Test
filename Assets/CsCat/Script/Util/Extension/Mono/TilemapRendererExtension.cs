@@ -6,6 +6,6 @@ namespace CsCat
 {
   public static partial class TilemapRendererExtension
   {
-    
+
   }
 }

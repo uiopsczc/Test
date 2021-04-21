@@ -23,7 +23,7 @@ namespace CsCat
     {
       if (instance == null)
       {
-//      LogCat.LogWarning(path);
+        //      LogCat.LogWarning(path);
         instance = Resources.Load<ExcelDatabase>(path);
       }
 

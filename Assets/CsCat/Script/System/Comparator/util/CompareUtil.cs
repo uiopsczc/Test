@@ -6,9 +6,9 @@ namespace CsCat
   public static class CompareUtil
   {
 
-    public static void SortListWithCompareRules<T>(List<T> to_sort_list,params Comparison<T>[] compare_rules)
+    public static void SortListWithCompareRules<T>(List<T> to_sort_list, params Comparison<T>[] compare_rules)
     {
-      to_sort_list.Sort((a,b)=> __Sort(a,b,compare_rules));
+      to_sort_list.Sort((a, b) => __Sort(a, b, compare_rules));
     }
 
     public static T[] SortArrayWithCompareRules<T>(T[] to_sort_arrays, params Comparison<T>[] compare_rules)

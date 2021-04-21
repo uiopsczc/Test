@@ -35,7 +35,7 @@ namespace CsCat
     // 加载某个资源
     public AssetCat GetOrLoadAsset(string asset_path, Action<AssetCat> on_load_success_callback = null,
       Action<AssetCat> on_load_fail_callback = null,
-      Action<AssetCat> on_load_done_callback = null,object callback_cause=null)
+      Action<AssetCat> on_load_done_callback = null, object callback_cause = null)
     {
       if (!Application.isPlaying)
       {
@@ -61,14 +61,14 @@ namespace CsCat
       var assetCat =
         Client.instance.assetBundleManager.GetOrLoadAssetCat(asset_path.GetMainAssetPath(), on_load_success_callback,
           on_load_fail_callback, on_load_done_callback, callback_cause);
-      if(!resLoadDataInfo_dict.ContainsKey(asset_path.GetMainAssetPath()))
+      if (!resLoadDataInfo_dict.ContainsKey(asset_path.GetMainAssetPath()))
         resLoadDataInfo_dict[asset_path.GetMainAssetPath()] = new ResLoadDataInfo(new ResLoadData(assetCat), is_not_check_destroy);
       resLoadDataInfo_dict[asset_path.GetMainAssetPath()].AddCallbackCause(callback_cause);
       return assetCat;
     }
 
 
-    public void CancelLoadCallback(AssetCat assetCat,object callback_cause=null)
+    public void CancelLoadCallback(AssetCat assetCat, object callback_cause = null)
     {
       string to_remove_key = null;
       foreach (var key in resLoadDataInfo_dict.Keys)
@@ -77,7 +77,7 @@ namespace CsCat
         if (resLoadDataInfo.resLoadData.assetCat == assetCat)
         {
           resLoadDataInfo.RemoveCallbackCause(callback_cause);
-          if(resLoadDataInfo.callback_cause_dict.Count==0&&!is_not_check_destroy)//is_not_check_destroy的时候不删除，因为要在destroy的时候作为删除的asset的依据
+          if (resLoadDataInfo.callback_cause_dict.Count == 0 && !is_not_check_destroy)//is_not_check_destroy的时候不删除，因为要在destroy的时候作为删除的asset的依据
             to_remove_key = key;
           break;
         }
@@ -96,7 +96,7 @@ namespace CsCat
         if (resLoadDataInfo.resLoadData.assetCat == assetCat)
         {
           resLoadDataInfo.RemoveAllCallbackCauses();
-          if (resLoadDataInfo.callback_cause_dict.Count == 0&& !is_not_check_destroy)//is_not_check_destroy的时候不删除，因为要在destroy的时候作为删除的asset的依据
+          if (resLoadDataInfo.callback_cause_dict.Count == 0 && !is_not_check_destroy)//is_not_check_destroy的时候不删除，因为要在destroy的时候作为删除的asset的依据
             to_remove_key = key;
           break;
         }

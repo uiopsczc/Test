@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public class FloatPhaseTrack: AbstractPhaseTrack<float>
+  public class FloatPhaseTrack : AbstractPhaseTrack<float>
   {
-    
+
   }
 }

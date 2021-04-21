@@ -10,9 +10,9 @@ namespace CsCat
   {
     public TransformFinders mount_point_transformFinders = new TransformFinders();
     public int mount_point_transformFinder_index = 0;
-    public List<MountPrefabInfo> mountPrefabInfo_list=new List<MountPrefabInfo>();
+    public List<MountPrefabInfo> mountPrefabInfo_list = new List<MountPrefabInfo>();
     [NonSerialized]
-    private List<GameObject> clone_list =new  List<GameObject>();
+    private List<GameObject> clone_list = new List<GameObject>();
 
     public TransformFinderBase mount_point_transformFinder
     {
@@ -53,7 +53,7 @@ namespace CsCat
           mount_point_transform = transformFinder1.Find(transform);
           break;
         case TransformFinder1 transformFinder2:
-          mount_point_transform =  transformFinder2.Find(transform.GetComponent<Animator>());
+          mount_point_transform = transformFinder2.Find(transform.GetComponent<Animator>());
           break;
         default:
           mount_point_transform = mount_point_transformFinders[mount_point_transformFinder_index].Find();
@@ -70,10 +70,10 @@ namespace CsCat
       Func<GameObject, Transform, GameObject> spawn_callback = SpawnUtil.Instantiate;
       if (Application.isPlaying)
         spawn_callback = TimelinableUtil.SpawnGameObject;
-      for (int i=0;i< mountPrefabInfo_list.Count;i++)
+      for (int i = 0; i < mountPrefabInfo_list.Count; i++)
       {
         var mountPrefabInfo = mountPrefabInfo_list[i];
-        var clone = spawn_callback( mountPrefabInfo.prefab, mount_point_transform);
+        var clone = spawn_callback(mountPrefabInfo.prefab, mount_point_transform);
         if (clone != null)
         {
           var clone_transform = clone.transform;
@@ -96,7 +96,7 @@ namespace CsCat
       clone_list.Clear();
       base.Stop(args);
     }
-    
+
   }
 }
 

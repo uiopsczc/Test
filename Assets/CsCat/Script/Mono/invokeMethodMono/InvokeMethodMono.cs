@@ -36,7 +36,7 @@ namespace CsCat
 
     public void Invoke()
     {
-      var args = (List<object>) JsonSerializer.Deserialize(target_methodArgs_json_string);
+      var args = (List<object>)JsonSerializer.Deserialize(target_methodArgs_json_string);
       args = args ?? new List<object>();
       target_component.InvokeMethod(target_methodInfo_name, false, args.ToArray());
     }

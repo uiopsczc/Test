@@ -8,7 +8,7 @@ namespace CsCat
 {
   public partial class GameEntity
   {
-    
+
 
     public string StartCoroutine(IEnumerator ie, string key = null)
     {
@@ -28,6 +28,6 @@ namespace CsCat
     {
       coroutinePluginComponent.StopAllCoroutines();
     }
-    
+
   }
 }

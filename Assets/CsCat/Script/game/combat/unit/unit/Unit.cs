@@ -153,20 +153,20 @@ namespace CsCat
     public float Distance(IPosition target_iposition)
     {
       if (target_iposition is UnitPosition)
-        return Distance(((UnitPosition) target_iposition).unit);
+        return Distance(((UnitPosition)target_iposition).unit);
       else
         return Distance(target_iposition.GetPosition());
     }
 
     public int GetMaxHp()
     {
-      return (int) this.GetCalcPropValue("生命上限");
+      return (int)this.GetCalcPropValue("生命上限");
     }
 
     public void SetHp(int hp, bool is_not_broadcast = false)
     {
       var old_value = this.hp;
-      this.hp = (int) Math.Min(hp, this.GetMaxHp());
+      this.hp = (int)Math.Min(hp, this.GetMaxHp());
       if (!is_not_broadcast)
         this.OnHpChange(null, old_value, this.hp);
     }

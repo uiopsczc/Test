@@ -26,7 +26,7 @@ namespace CsCat
     {
       if (!(obj is EventListenerInfo<P0>))
         return false;
-      var other = (EventListenerInfo<P0>) obj;
+      var other = (EventListenerInfo<P0>)obj;
       return ObjectUtil.Equals(this.eventName, other.eventName) && ObjectUtil.Equals(this.handler, other.handler);
     }
 

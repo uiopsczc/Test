@@ -25,19 +25,19 @@ namespace CsCat
       // add
       if (object_value is int)
       {
-        doer.Add(key, (int) object_value);
+        doer.Add(key, (int)object_value);
         return;
       }
 
       if (object_value is float)
       {
-        doer.Add(key, (float) object_value);
+        doer.Add(key, (float)object_value);
         return;
       }
 
       if (object_value is string)
       {
-        doer.Add(key, (string) object_value);
+        doer.Add(key, (string)object_value);
         return;
       }
     }
@@ -59,19 +59,19 @@ namespace CsCat
       // add
       if (object_value is int)
       {
-        doer.AddTmp(key, (int) object_value);
+        doer.AddTmp(key, (int)object_value);
         return;
       }
 
       if (object_value is float)
       {
-        doer.AddTmp(key, (float) object_value);
+        doer.AddTmp(key, (float)object_value);
         return;
       }
 
       if (object_value is string)
       {
-        doer.AddTmp(key, (string) object_value);
+        doer.AddTmp(key, (string)object_value);
         return;
       }
     }

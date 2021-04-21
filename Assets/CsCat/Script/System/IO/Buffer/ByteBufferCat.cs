@@ -74,7 +74,7 @@ namespace CsCat
     /// <returns></returns>
     public int Remaining()
     {
-      return (int) (Length - Position);
+      return (int)(Length - Position);
     }
 
     /// <summary>
@@ -105,7 +105,7 @@ namespace CsCat
     /// <returns></returns>
     public ByteBufferCat Put(int b)
     {
-      return Put((byte) b);
+      return Put((byte)b);
     }
 
     /// <summary>
@@ -217,7 +217,7 @@ namespace CsCat
 
     public ByteBufferCat PutShort(int value)
     {
-      return PutShort((short) value);
+      return PutShort((short)value);
     }
 
     /// <summary>
@@ -331,7 +331,7 @@ namespace CsCat
     public byte Get()
     {
       CheckBounds(0, 1, 1);
-      var data = (byte) ReadByte();
+      var data = (byte)ReadByte();
       return data;
     }
 
@@ -345,7 +345,7 @@ namespace CsCat
       var tmp_position = Position;
       Seek(index, SeekOrigin.Begin);
       CheckBounds(0, 1, 1);
-      var data = (byte) ReadByte();
+      var data = (byte)ReadByte();
       Seek(tmp_position, SeekOrigin.Begin);
       //this.Position = tmp_position;
       return data;

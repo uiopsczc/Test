@@ -74,13 +74,13 @@ namespace CsCat
     public void Reset()
     {
       foreach (var assetCat in assetCat_dict.Keys)
-      foreach (var callback_cause in assetCat_dict[assetCat].Values)
-      {
-        if (callback_cause.Equals(NullUtil.GetDefaultString()))
-          this.resLoad.CancelLoadCallback(assetCat, null);
-        else
-          this.resLoad.CancelLoadCallback(assetCat, callback_cause);
-      }
+        foreach (var callback_cause in assetCat_dict[assetCat].Values)
+        {
+          if (callback_cause.Equals(NullUtil.GetDefaultString()))
+            this.resLoad.CancelLoadCallback(assetCat, null);
+          else
+            this.resLoad.CancelLoadCallback(assetCat, callback_cause);
+        }
 
       assetCat_dict.Clear();
     }

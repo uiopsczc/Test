@@ -5,7 +5,7 @@ using UnityEngine;
 namespace CsCat
 {
   [Serializable]
-  public partial class MountPrefabInfo:ICopyable
+  public partial class MountPrefabInfo : ICopyable
   {
     public Vector3 localPosition = Vector3.zero;
     public Vector3 localEulerAngles = Vector3.zero;
@@ -16,7 +16,7 @@ namespace CsCat
     {
     }
 
-    
+
 
     public void CopyTo(object dest)
     {
@@ -36,7 +36,7 @@ namespace CsCat
       prefab = _source.prefab;
     }
 
-    
+
   }
 }
 

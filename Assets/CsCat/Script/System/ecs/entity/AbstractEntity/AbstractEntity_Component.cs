@@ -36,7 +36,7 @@ namespace CsCat
       for (int i = 0; i < component_key_list.Count; i++)
       {
         component = GetComponent(component_key_list[i]);
-        if (component != null&& component_type.IsInstanceOfType(component))
+        if (component != null && component_type.IsInstanceOfType(component))
           yield return component;
       }
     }
@@ -51,8 +51,8 @@ namespace CsCat
           yield return component;
       }
     }
-    
-    
+
+
 
     void __OnDespawn_Component()
     {

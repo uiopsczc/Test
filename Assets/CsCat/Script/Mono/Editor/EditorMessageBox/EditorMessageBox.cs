@@ -27,7 +27,7 @@ namespace CsCat
         GUILayout.Label(message_title, GUIStyleConst.Label_MiddleCenter_Style);
         EditorGUILayout.Space(10);
       }
-      
+
       GUILayout.Label(content, GUIStyleConst.Label_Bold_MiddleCenter_Style);
 
       GUILayout.FlexibleSpace();
@@ -56,6 +56,6 @@ namespace CsCat
         }
       }
     }
-    
+
   }
 }

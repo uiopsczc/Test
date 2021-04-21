@@ -5,7 +5,7 @@ namespace CsCat
 
     public static void Test()
     {
-      UIScreenDragPanel panel  = Client.instance.uiManager.CreateChildPanel<UIScreenDragPanel>(null, default(UIScreenDragPanel), null, false, (object) null);
+      UIScreenDragPanel panel = Client.instance.uiManager.CreateChildPanel<UIScreenDragPanel>(null, default(UIScreenDragPanel), null, false, (object)null);
       panel.SetIsEnabled(false);
     }
   }

@@ -27,7 +27,7 @@ namespace CsCat
     {
       if (!(obj is EventListenerInfo))
         return false;
-      var other = (EventListenerInfo) obj;
+      var other = (EventListenerInfo)obj;
       return ObjectUtil.Equals(this.eventName, other.eventName) && ObjectUtil.Equals(this.handler, other.handler);
     }
 
@@ -36,7 +36,7 @@ namespace CsCat
       return ObjectUtil.GetHashCode(eventName, handler);
     }
 
-    public  override  void OnDespawn()
+    public override void OnDespawn()
     {
       base.OnDespawn();
       this.handler = null;

@@ -44,7 +44,7 @@ namespace CsCat
 
     public void RemoveDOTween(Tween tween)
     {
-      string key=null;
+      string key = null;
       foreach (var dictKey in dict.Keys)
       {
         if (dict[dictKey] == tween)

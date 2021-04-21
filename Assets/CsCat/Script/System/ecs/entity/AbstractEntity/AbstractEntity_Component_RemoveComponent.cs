@@ -27,7 +27,7 @@ namespace CsCat
         return null;
       return RemoveComponent(this.key_to_component_dict[component_key]);
     }
-    
+
     public AbstractComponent RemoveComponent(Type component_type)
     {
       var component = this.GetComponent(component_type);
@@ -69,7 +69,7 @@ namespace CsCat
     {
       return (T[])RemoveComponents(typeof(T));
     }
-    
+
 
     public AbstractComponent[] RemoveComponentsStrictly(Type component_type)
     {

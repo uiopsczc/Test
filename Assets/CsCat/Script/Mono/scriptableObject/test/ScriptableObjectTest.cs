@@ -21,14 +21,14 @@ namespace CsCat
       ScriptableObjectUtil.CreateAsset<TestScriptableObject2Impl>("Assets/ff.asset", (asset) =>
       {
         asset.name = "chen";
-        asset.indexes=new TestScriptableObjectBB<string,int>("aa",6);
+        asset.indexes = new TestScriptableObjectBB<string, int>("aa", 6);
       });
     }
 
     public static void LoadAsset()
     {
       var obj = AssetDatabase.LoadAssetAtPath<TestScriptableObject1>("Assets/ff.asset");
-      LogCat.log(obj.indexes,obj.name);
+      LogCat.log(obj.indexes, obj.name);
     }
   }
 }

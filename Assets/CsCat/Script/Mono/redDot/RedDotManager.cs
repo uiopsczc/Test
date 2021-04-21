@@ -162,7 +162,7 @@ namespace CsCat
             red_dot_rectTransform.gameObject.SetActive(is_active);
             var sizeDelta = red_dot_rectTransform.sizeDelta;
             red_dot_rectTransform.anchoredPosition = new Vector2(x_offset, y_offset);
-//          red_dot_rectTransform.anchoredPosition = new Vector2(sizeDelta.x / 2 + x_offset, sizeDelta.y / 2 + y_offset);
+            //          red_dot_rectTransform.anchoredPosition = new Vector2(sizeDelta.x / 2 + x_offset, sizeDelta.y / 2 + y_offset);
           });
         return red_dot_image;
       }

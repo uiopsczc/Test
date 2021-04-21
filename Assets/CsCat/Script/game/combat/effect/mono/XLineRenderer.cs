@@ -9,7 +9,7 @@ namespace CsCat
     public Material mat;
 
     public AnimationCurve width_animationCurve =
-      new AnimationCurve(new Keyframe[] {new Keyframe(0, 2), new Keyframe(1, 2)});
+      new AnimationCurve(new Keyframe[] { new Keyframe(0, 2), new Keyframe(1, 2) });
 
     public float life_time = 1;
     public int loop_count = 1;
@@ -17,7 +17,7 @@ namespace CsCat
     public int tile_row_count = 1;
     public int tile_last_row_column_count = 1;
     public float fps = 24;
-    public Color[] colors = new Color[] {new Color(1, 1, 1, 1), new Color(1, 1, 1, 1)};
+    public Color[] colors = new Color[] { new Color(1, 1, 1, 1), new Color(1, 1, 1, 1) };
     public bool is_test_replay = false;
     public Transform target;
 
@@ -39,9 +39,9 @@ namespace CsCat
     {
       mesh = new Mesh();
       vertices = new Vector3[4];
-      uv = new Vector2[] {new Vector2(0, 0), new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 1)};
-      vertex_colors = new Color[] {Color.white, Color.white, Color.white, Color.white};
-      indices = new int[] {0, 1, 2, 2, 1, 3};
+      uv = new Vector2[] { new Vector2(0, 0), new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 1) };
+      vertex_colors = new Color[] { Color.white, Color.white, Color.white, Color.white };
+      indices = new int[] { 0, 1, 2, 2, 1, 3 };
       current_time = 0;
 
       if (target == null)
@@ -121,7 +121,7 @@ namespace CsCat
       Vector3 target_position = target.position;
       Vector3 camera_position = camera.transform.position;
       Vector3 dir = target_position - source_position;
-//    float dist = dir.magnitude;
+      //    float dist = dir.magnitude;
       Vector3 source_dir = Vector3.Cross(dir, camera_position - source_position);
       Vector3 target_dir = Vector3.Cross(dir, camera_position - target_position);
       source_dir.Normalize();
@@ -139,14 +139,14 @@ namespace CsCat
       Vector2Int current_tile_index = GetTileRowColumn(current_tile_id);
       int current_tile_row = current_tile_index.x;
       int current_tile_column = current_tile_index.y;
-      uv[0] = new Vector2((current_tile_column - 1) / (float) this.tile_column_count,
-        (current_tile_row - 1) / (float) this.tile_row_count);
-      uv[1] = new Vector2((current_tile_column - 1) / (float) this.tile_column_count,
-        current_tile_row / (float) this.tile_row_count);
-      uv[2] = new Vector2(current_tile_column / (float) this.tile_column_count,
-        (current_tile_row - 1) / (float) this.tile_row_count);
-      uv[3] = new Vector2(current_tile_column / (float) this.tile_column_count,
-        current_tile_row / (float) this.tile_row_count);
+      uv[0] = new Vector2((current_tile_column - 1) / (float)this.tile_column_count,
+        (current_tile_row - 1) / (float)this.tile_row_count);
+      uv[1] = new Vector2((current_tile_column - 1) / (float)this.tile_column_count,
+        current_tile_row / (float)this.tile_row_count);
+      uv[2] = new Vector2(current_tile_column / (float)this.tile_column_count,
+        (current_tile_row - 1) / (float)this.tile_row_count);
+      uv[3] = new Vector2(current_tile_column / (float)this.tile_column_count,
+        current_tile_row / (float)this.tile_row_count);
       mesh.uv = uv;
 
       // color

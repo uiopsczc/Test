@@ -29,8 +29,8 @@ namespace CsCat
         {
           for (int i = track.playing_itemInfo_list.Count - 1; i >= 0; i--)
             track.Stop(track.playing_itemInfo_list[i], transform,
-              !Application.isPlaying ? null : (Func<GameObject, Transform, GameObject>) TimelinableUtil.SpawnGameObject,
-              !Application.isPlaying ? null : (Action<GameObject, Transform>) TimelinableUtil.DespawnGameObject);
+              !Application.isPlaying ? null : (Func<GameObject, Transform, GameObject>)TimelinableUtil.SpawnGameObject,
+              !Application.isPlaying ? null : (Action<GameObject, Transform>)TimelinableUtil.DespawnGameObject);
         }
       }
     }

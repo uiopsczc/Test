@@ -30,7 +30,7 @@ namespace CsCat
       base.Init();
       this.arg_dict = arg_dict;
 
-      randomManager.SetSeed(this.arg_dict.GetOrGetDefault<int>("random_seed", () => (int) DateTime.Now.Ticks));
+      randomManager.SetSeed(this.arg_dict.GetOrGetDefault<int>("random_seed", () => (int)DateTime.Now.Ticks));
       effectManager = AddChild<EffectManager>("EffectManager");
       cameraManager = AddChild<CameraManager>("CameraManager");
       unitManager = AddChild<UnitManager>("UnitManager");
@@ -118,6 +118,6 @@ namespace CsCat
     {
       return this.is_finished;
     }
-    
+
   }
 }

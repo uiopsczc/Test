@@ -26,10 +26,10 @@ namespace CsCat
 
     public GameObject SpawnGameObject(Action<GameObject> on_spawn_callback = null)
     {
-      if(on_spawn_callback==null)
+      if (on_spawn_callback == null)
         return Spawn() as GameObject;
       else
-        return Spawn(obj=>on_spawn_callback((GameObject)obj)) as GameObject;
+        return Spawn(obj => on_spawn_callback((GameObject)obj)) as GameObject;
     }
 
     public GameObject GetPrefab()
@@ -40,17 +40,17 @@ namespace CsCat
     public override void InitParent(Object prefab, string category)
     {
       base.InitParent(prefab, category);
-      GameObject root_gameObject = GameObjectUtil.GetOrNewGameObject("Pools",null);
+      GameObject root_gameObject = GameObjectUtil.GetOrNewGameObject("Pools", null);
       root_transform = root_gameObject.transform;
       category_transform = root_transform.GetOrNewGameObject(category).transform;
     }
 
     public override void Despawn(object obj)
     {
-      GameObject clone  = obj as GameObject;
+      GameObject clone = obj as GameObject;
       foreach (var clone_component in clone.GetComponents<Component>())
       {
-        if(clone_component is ISpawnable ispanwable)
+        if (clone_component is ISpawnable ispanwable)
           ispanwable.OnDespawn();
       }
       clone.SetActive(false);

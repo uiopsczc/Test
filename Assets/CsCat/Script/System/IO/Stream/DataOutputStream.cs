@@ -76,7 +76,7 @@ namespace CsCat
 
     public void WriteBool(bool buf)
     {
-      buff[0] = (byte) (buf ? 1 : 0);
+      buff[0] = (byte)(buf ? 1 : 0);
       outputStream.Write(buff, 0, 1);
     }
 
@@ -108,59 +108,59 @@ namespace CsCat
 
     public void WriteInt16(short buf)
     {
-      buff[1] = (byte) buf;
-      buff[0] = (byte) (buf >> 8);
+      buff[1] = (byte)buf;
+      buff[0] = (byte)(buf >> 8);
       outputStream.Write(buff, 0, 2);
     }
 
     public void WriteInt32(int value)
     {
-      buff[3] = (byte) value;
-      buff[2] = (byte) (value >> 8);
-      buff[1] = (byte) (value >> 16);
-      buff[0] = (byte) (value >> 24);
+      buff[3] = (byte)value;
+      buff[2] = (byte)(value >> 8);
+      buff[1] = (byte)(value >> 16);
+      buff[0] = (byte)(value >> 24);
       outputStream.Write(buff, 0, 4);
     }
 
     public void WriteInt64(long value)
     {
-      buff[7] = (byte) value;
-      buff[6] = (byte) (value >> 8);
-      buff[5] = (byte) (value >> 16);
-      buff[4] = (byte) (value >> 24);
-      buff[3] = (byte) (value >> 32);
-      buff[2] = (byte) (value >> 40);
-      buff[1] = (byte) (value >> 48);
-      buff[0] = (byte) (value >> 56);
+      buff[7] = (byte)value;
+      buff[6] = (byte)(value >> 8);
+      buff[5] = (byte)(value >> 16);
+      buff[4] = (byte)(value >> 24);
+      buff[3] = (byte)(value >> 32);
+      buff[2] = (byte)(value >> 40);
+      buff[1] = (byte)(value >> 48);
+      buff[0] = (byte)(value >> 56);
       outputStream.Write(buff, 0, 8);
     }
 
     public void WriteUInt16(ushort buf)
     {
-      buff[1] = (byte) buf;
-      buff[0] = (byte) (buf >> 8);
+      buff[1] = (byte)buf;
+      buff[0] = (byte)(buf >> 8);
       outputStream.Write(buff, 0, 2);
     }
 
     public void WriteUInt32(uint value)
     {
-      buff[3] = (byte) value;
-      buff[2] = (byte) (value >> 8);
-      buff[1] = (byte) (value >> 16);
-      buff[0] = (byte) (value >> 24);
+      buff[3] = (byte)value;
+      buff[2] = (byte)(value >> 8);
+      buff[1] = (byte)(value >> 16);
+      buff[0] = (byte)(value >> 24);
       outputStream.Write(buff, 0, 4);
     }
 
     public void WriteUInt64(ulong value)
     {
-      buff[7] = (byte) value;
-      buff[6] = (byte) (value >> 8);
-      buff[5] = (byte) (value >> 16);
-      buff[4] = (byte) (value >> 24);
-      buff[3] = (byte) (value >> 32);
-      buff[2] = (byte) (value >> 40);
-      buff[1] = (byte) (value >> 48);
-      buff[0] = (byte) (value >> 56);
+      buff[7] = (byte)value;
+      buff[6] = (byte)(value >> 8);
+      buff[5] = (byte)(value >> 16);
+      buff[4] = (byte)(value >> 24);
+      buff[3] = (byte)(value >> 32);
+      buff[2] = (byte)(value >> 40);
+      buff[1] = (byte)(value >> 48);
+      buff[0] = (byte)(value >> 56);
       outputStream.Write(buff, 0, 8);
     }
 

@@ -58,7 +58,7 @@ namespace CsCat
       object result = null;
       if (obj != null)
       {
-        JsonSerializer.ConstructClassTable((Hashtable) ((Hashtable) obj)[STR_CLS_TABLE]);
+        JsonSerializer.ConstructClassTable((Hashtable)((Hashtable)obj)[STR_CLS_TABLE]);
         result = JsonSerializer.Deserialize(obj, obj.GetType(), context);
       }
 
@@ -284,7 +284,7 @@ namespace CsCat
     public static object DeserializeArray(Hashtable table, object context)
     {
       Type type = JsonSerializer.typeCache[Convert.ToInt64(table[STR_CLS_TYPE_ID])];
-      ArrayList arrayList = (ArrayList) table[STR_CLS_DATA_VALUE];
+      ArrayList arrayList = (ArrayList)table[STR_CLS_DATA_VALUE];
       int count = arrayList.Count;
       Array array = Array.CreateInstance(type, count);
       JsonSerializer.AddToCache(array, table);
@@ -300,7 +300,7 @@ namespace CsCat
     public static object DeserializeClass(Hashtable table, object context)
     {
       Type type = JsonSerializer.typeCache[Convert.ToInt64(table[STR_CLS_TYPE_ID])];
-      ArrayList arrayList = (ArrayList) table[STR_CLS_DATA_VALUE];
+      ArrayList arrayList = (ArrayList)table[STR_CLS_DATA_VALUE];
       object obj = Activator.CreateInstance(type, true);
       JsonSerializer.AddToCache(obj, table);
       if (obj is ISerializable)
@@ -312,7 +312,7 @@ namespace CsCat
         int count = arrayList.Count;
         for (int i = 0; i < count; i++)
         {
-          IDictionaryEnumerator iterator = ((Hashtable) arrayList[i]).GetEnumerator();
+          IDictionaryEnumerator iterator = ((Hashtable)arrayList[i]).GetEnumerator();
           iterator.MoveNext();
           string text = iterator.Key.ToString();
           object value = iterator.Value;
@@ -367,8 +367,8 @@ namespace CsCat
     public static object DeserializeList(Hashtable table, object context)
     {
       Type type = JsonSerializer.typeCache[Convert.ToInt64(table[STR_CLS_TYPE_ID])];
-      ArrayList arrayList = (ArrayList) table[STR_CLS_DATA_VALUE];
-      IList list = (IList) Activator.CreateInstance(type);
+      ArrayList arrayList = (ArrayList)table[STR_CLS_DATA_VALUE];
+      IList list = (IList)Activator.CreateInstance(type);
       JsonSerializer.AddToCache(list, table);
       Type type2 = type.GetGenericArguments()[0];
       int count = arrayList.Count;
@@ -383,8 +383,8 @@ namespace CsCat
     public static object DeserializeDict(Hashtable table, object context)
     {
       Type dictType = JsonSerializer.typeCache[Convert.ToInt64(table[STR_CLS_TYPE_ID])];
-      ArrayList dictList = (ArrayList) table[STR_CLS_DATA_VALUE];
-      IDictionary result = (IDictionary) Activator.CreateInstance(dictType);
+      ArrayList dictList = (ArrayList)table[STR_CLS_DATA_VALUE];
+      IDictionary result = (IDictionary)Activator.CreateInstance(dictType);
       JsonSerializer.AddToCache(result, table);
       Type keyType = dictType.GetGenericArguments()[0];
       Type valueType = dictType.GetGenericArguments()[1];
@@ -565,7 +565,7 @@ namespace CsCat
         {
           if (enumerator.Value.ToString() == type.AssemblyQualifiedName)
           {
-            return (long) enumerator.Key;
+            return (long)enumerator.Key;
           }
         }
 

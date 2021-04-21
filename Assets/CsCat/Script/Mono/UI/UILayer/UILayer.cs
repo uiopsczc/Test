@@ -15,7 +15,7 @@ namespace CsCat
     {
       base.Init();
       this.uiLayerConfig = uiLayerConfig;
-      this.graphicComponent.SetGameObject(gameObject,true);
+      this.graphicComponent.SetGameObject(gameObject, true);
       gameObject.name = uiLayerConfig.name.ToString();
       gameObject.layer = LayerMask.NameToLayer("UI");
 

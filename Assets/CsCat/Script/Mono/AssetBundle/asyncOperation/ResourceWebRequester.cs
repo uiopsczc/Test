@@ -17,7 +17,7 @@ namespace CsCat
     public string text => www.text;
     public string error => www.error.IsNullOrWhiteSpace() ? null : www.error;
 
-    
+
 
     public void Init(string url, bool is_not_cache = false)
     {
@@ -37,7 +37,7 @@ namespace CsCat
     {
       base.Start();
       www = new WWW(url);
-//    Debug.LogError("loading:"+url);
+      //    Debug.LogError("loading:"+url);
     }
 
     protected override float GetProgress()

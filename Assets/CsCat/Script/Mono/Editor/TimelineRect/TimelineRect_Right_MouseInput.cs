@@ -37,7 +37,8 @@ namespace CsCat
                 ;
               else
                 EditorMouseInput.status = EditorMouseInputStatus.Normal;
-            }else if (Event.current.button == 1)
+            }
+            else if (Event.current.button == 1)
             {
               Rect position_rect = new Rect();
               position_rect.position = Event.current.mousePosition;
@@ -152,7 +153,7 @@ namespace CsCat
       else if (EditorMouseInput.touch_point.x - scroll_position.x < scroll_rect.width * 0.15f)
         scroll_position.x -= width_per_second * sample_ratio;
     }
-    
+
 
     bool TryToSelectUnselectedItem()
     {

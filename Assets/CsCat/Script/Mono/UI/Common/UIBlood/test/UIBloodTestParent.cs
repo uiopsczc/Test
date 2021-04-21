@@ -8,14 +8,14 @@ namespace CsCat
   {
     public UIBlood uiBlood;
 
-    public  void Init(string name, int slider_count)
+    public void Init(string name, int slider_count)
     {
       base.Init();
       var rectTransform = GameObject.Find("UITestPanel").NewChildWithRectTransform(name);
       rectTransform.anchorMin = Vector2.zero;
       rectTransform.anchorMax = Vector2.one;
       rectTransform.sizeDelta = Vector2.zero;
-      graphicComponent.SetGameObject(rectTransform.gameObject,false);
+      graphicComponent.SetGameObject(rectTransform.gameObject, false);
       this.uiBlood = Client.instance.uiManager.AddUIBlood(graphicComponent.transform, 150, slider_count, null, null);
     }
 

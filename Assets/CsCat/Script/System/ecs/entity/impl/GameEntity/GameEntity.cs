@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public partial class GameEntity:AbstractEntity
+  public partial class GameEntity : AbstractEntity
   {
     public GameEntity parent { get { return GetParent<GameEntity>(); } }
 
@@ -38,14 +38,14 @@ namespace CsCat
       CheckIsAllAssetsLoadDone();
     }
 
-   
+
 
     public string GetGuid()
     {
       return this.key;
     }
 
-    
+
 
     public new GameEntity GetChild(string child_key)
     {

@@ -67,7 +67,7 @@ namespace CsCat
       if (propertyInfo.PropertyType.IsValueType) //PropertyType propertyInfo的类型
         ilGenerator.Emit(OpCodes.Box, propertyInfo.PropertyType);
       ilGenerator.Emit(OpCodes.Ret); //Ret: 方法结束  return propertyInfo
-      getter = (Func<object, object>) dynamicMethod.CreateDelegate(typeof(Func<object, object>));
+      getter = (Func<object, object>)dynamicMethod.CreateDelegate(typeof(Func<object, object>));
     }
 
     /// <summary>
@@ -93,7 +93,7 @@ namespace CsCat
       EmitTypeConversion(ilGenerator, propertyInfo.PropertyType);
       ilGenerator.EmitCall(OpCodes.Callvirt, propertyInfo.GetSetMethod(), null); //Callvirt  call virtual method
       ilGenerator.Emit(OpCodes.Ret); //Ret:方法结束
-      setter = (Action<object, object>) dynamicMethod.CreateDelegate(typeof(Action<object, object>));
+      setter = (Action<object, object>)dynamicMethod.CreateDelegate(typeof(Action<object, object>));
     }
 
     #endregion

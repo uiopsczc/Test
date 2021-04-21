@@ -29,7 +29,7 @@ namespace CsCat
 
     protected virtual void __Destroy()
     {
-      
+
     }
 
     protected virtual void __PostDestroy()

@@ -39,7 +39,7 @@ namespace CsCat
     {
       if (!cache_dict.ContainsKey(type))
         return null;
-      string main_key = methodInfo_string + split_string + method_name + split_string+ GetGenericTypesString(generic_types);
+      string main_key = methodInfo_string + split_string + method_name + split_string + GetGenericTypesString(generic_types);
       if (!cache_dict[type].ContainsKey(main_key))
         return null;
       var sub_key = new Args(paramer_types);
@@ -61,7 +61,7 @@ namespace CsCat
     {
       if (!cache_dict.ContainsKey(type))
         cache_dict[type] = new Dictionary<string, Dictionary<object, object>>();
-      string main_key = methodInfo_string + split_string + method_name + split_string+ GetGenericTypesString(generic_types);
+      string main_key = methodInfo_string + split_string + method_name + split_string + GetGenericTypesString(generic_types);
       if (!cache_dict[type].ContainsKey(main_key))
         cache_dict[type][main_key] = new Dictionary<object, object>();
       var sub_key = default_methodInfo_sub_key;
@@ -86,7 +86,7 @@ namespace CsCat
     {
       if (!cache_dict.ContainsKey(type))
         return false;
-      string main_key = filedInfo_string + split_string + field_name+ split_string+ GetGenericTypesString(generic_types);
+      string main_key = filedInfo_string + split_string + field_name + split_string + GetGenericTypesString(generic_types);
       if (!cache_dict[type].ContainsKey(main_key))
         return false;
       var sub_key = "";
@@ -97,7 +97,7 @@ namespace CsCat
     {
       if (!cache_dict.ContainsKey(type))
         cache_dict[type] = new Dictionary<string, Dictionary<object, object>>();
-      string main_key = filedInfo_string + split_string + field_name+ split_string + GetGenericTypesString(generic_types);
+      string main_key = filedInfo_string + split_string + field_name + split_string + GetGenericTypesString(generic_types);
       if (!cache_dict[type].ContainsKey(main_key))
         cache_dict[type][main_key] = new Dictionary<object, object>();
       var sub_key = "";
@@ -108,7 +108,7 @@ namespace CsCat
     {
       if (!cache_dict.ContainsKey(type))
         return null;
-      string main_key = filedInfo_string + split_string + field_name+ split_string + GetGenericTypesString(generic_types);
+      string main_key = filedInfo_string + split_string + field_name + split_string + GetGenericTypesString(generic_types);
       if (!cache_dict[type].ContainsKey(main_key))
         return null;
       var sub_key = "";
@@ -122,7 +122,7 @@ namespace CsCat
     {
       if (!cache_dict.ContainsKey(type))
         return false;
-      string main_key = propertyInfo_string + split_string + property_name+ split_string + GetGenericTypesString(generic_types);
+      string main_key = propertyInfo_string + split_string + property_name + split_string + GetGenericTypesString(generic_types);
       if (!cache_dict[type].ContainsKey(main_key))
         return false;
       var sub_key = "";
@@ -133,7 +133,7 @@ namespace CsCat
     {
       if (!cache_dict.ContainsKey(type))
         cache_dict[type] = new Dictionary<string, Dictionary<object, object>>();
-      string main_key = propertyInfo_string + split_string + property_name+ split_string + GetGenericTypesString(generic_types);
+      string main_key = propertyInfo_string + split_string + property_name + split_string + GetGenericTypesString(generic_types);
       if (!cache_dict[type].ContainsKey(main_key))
         cache_dict[type][main_key] = new Dictionary<object, object>();
       var sub_key = "";
@@ -144,7 +144,7 @@ namespace CsCat
     {
       if (!cache_dict.ContainsKey(type))
         return null;
-      string main_key = propertyInfo_string + split_string + property_name+ split_string + GetGenericTypesString(generic_types);
+      string main_key = propertyInfo_string + split_string + property_name + split_string + GetGenericTypesString(generic_types);
       if (!cache_dict[type].ContainsKey(main_key))
         return null;
       var sub_key = "";

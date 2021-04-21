@@ -4,14 +4,14 @@ using UnityEngine;
 namespace CsCat
 {
   [Serializable]
-  public partial class TransformFinderBase:ICopyable
+  public partial class TransformFinderBase : ICopyable
   {
     public TransformFinderBase()
     {
     }
 
 
-    public virtual Transform Find(params  object[] args)
+    public virtual Transform Find(params object[] args)
     {
       return null;
     }

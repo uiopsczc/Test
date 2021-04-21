@@ -34,7 +34,7 @@ namespace CsCat
 
     public void Show(Transform tf, string show_string, Color color)
     {
-      Show(() => tf == null ? null : (Vector3?) tf.position, show_string, color);
+      Show(() => tf == null ? null : (Vector3?)tf.position, show_string, color);
     }
 
     public void Show(Vector3 position, string show_string, Color color)

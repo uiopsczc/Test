@@ -9,7 +9,7 @@ namespace CsCat
   public partial class TimelinableSequenceBase
   {
     public Vector2 scroll_position;
-    
+
 
     public virtual void DrawGUISetting_Detail()
     {

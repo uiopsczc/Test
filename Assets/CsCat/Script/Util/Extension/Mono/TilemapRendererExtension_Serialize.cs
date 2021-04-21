@@ -9,11 +9,11 @@ namespace CsCat
     public static Hashtable GetSerializeHashtable(this TilemapRenderer self)
     {
       Hashtable hashtable = new Hashtable();
-      hashtable["mode"] = (int) self.mode;
-      hashtable["detectChunkCullingBounds"] = (int) self.detectChunkCullingBounds;
-      hashtable["sortOrder"] = (int) self.sortOrder;
+      hashtable["mode"] = (int)self.mode;
+      hashtable["detectChunkCullingBounds"] = (int)self.detectChunkCullingBounds;
+      hashtable["sortOrder"] = (int)self.sortOrder;
       hashtable["sortingOrder"] = self.sortingOrder;
-      hashtable["maskInteraction"] = (int) self.maskInteraction;
+      hashtable["maskInteraction"] = (int)self.maskInteraction;
       hashtable.Trim();
       return hashtable;
     }

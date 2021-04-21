@@ -64,7 +64,7 @@ namespace CsCat
     {
       return (T[])GetComponents(typeof(T));
     }
-    
+
 
     public AbstractComponent[] GetComponentsStrictly(Type component_type)
     {

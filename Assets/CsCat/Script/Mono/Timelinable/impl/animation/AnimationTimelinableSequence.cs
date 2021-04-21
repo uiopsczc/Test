@@ -12,7 +12,7 @@ namespace CsCat
       get { return _tracks; }
       set
       {
-        _tracks = value as AnimationTimelinableTrack[]; 
+        _tracks = value as AnimationTimelinableTrack[];
 
       }
     }

@@ -27,7 +27,7 @@ namespace CsCat
       var current_power_count = GetPowerCount();
       if (GameData._instance.quit_time_ticks > 0 && current_power_count < CurrencyConst.Max_Power_Count)
       {
-        var diff_seconds = (int) (DateTimeUtil.NowDateTime() - new DateTime(GameData._instance.quit_time_ticks))
+        var diff_seconds = (int)(DateTimeUtil.NowDateTime() - new DateTime(GameData._instance.quit_time_ticks))
           .TotalSeconds;
         var add_power_count = diff_seconds / CurrencyConst.Add_Power_Period * CurrencyConst.Add_Power_Count;
         AddPower(add_power_count, true);

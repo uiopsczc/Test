@@ -58,7 +58,7 @@ namespace CsCat
       Type itemInfoLibrary_type = this.GetFieldInfo("_itemInfoLibrary").FieldType;
       using (new GUILayoutToggleAreaScope(itemInfoLibrary_toggleTween, "Library", () =>
       {
-        itemInfoLibrary = (TimelinableItemInfoLibraryBase) EditorGUILayout.ObjectField(itemInfoLibrary,
+        itemInfoLibrary = (TimelinableItemInfoLibraryBase)EditorGUILayout.ObjectField(itemInfoLibrary,
           itemInfoLibrary_type, false);
         if (GUILayout.Button("create", GUILayout.Width(64)))
         {
@@ -70,7 +70,7 @@ namespace CsCat
           if (!path.IsNullOrEmpty())
             itemInfoLibrary =
               typeof(ScriptableObjectUtil).InvokeGenericMethod<TimelinableItemInfoLibraryBase>("CreateAsset",
-                new Type[] {itemInfoLibrary_type}, false, path);
+                new Type[] { itemInfoLibrary_type }, false, path);
         }
 
         using (new GUIEnabledScope(itemInfoLibrary != null))

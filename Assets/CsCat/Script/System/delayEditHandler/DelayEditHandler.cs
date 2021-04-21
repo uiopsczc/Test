@@ -6,7 +6,7 @@ namespace CsCat
   public class DelayEditHandler
   {
     private readonly object edit_target;
-    private  Action to_callback;
+    private Action to_callback;
 
     public DelayEditHandler(object edit_target)
     {
@@ -17,7 +17,7 @@ namespace CsCat
     {
       set
       {
-        ToSet( key,  value);
+        ToSet(key, value);
       }
     }
 
@@ -29,7 +29,7 @@ namespace CsCat
 
     public void ToAdd(params object[] args)
     {
-      ToCallback(()=>edit_target.InvokeMethod("Add", true, args));
+      ToCallback(() => edit_target.InvokeMethod("Add", true, args));
     }
 
     public void ToRemove(params object[] args)

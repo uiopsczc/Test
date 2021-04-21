@@ -62,7 +62,7 @@ namespace CsCat
       foreach (var timer in this.timer_dict.Keys)
         timer.SetIsPaused(is_paused);
     }
-    
+
 
     public void Destroy()
     {

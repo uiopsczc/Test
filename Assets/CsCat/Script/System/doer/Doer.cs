@@ -210,7 +210,7 @@ namespace CsCat
       return definition;
     }
 
-    public  string GetType1()
+    public string GetType1()
     {
       return this.GetDefinition().type_1;
     }
@@ -379,7 +379,7 @@ namespace CsCat
       T result = default(T);
       if (dbase.db.ContainsKey(key))
       {
-        result = (T) dbase.db[key];
+        result = (T)dbase.db[key];
         dbase.db.Remove(key);
       }
 
@@ -391,7 +391,7 @@ namespace CsCat
       T result = default(T);
       if (dbase.db_tmp.ContainsKey(key))
       {
-        result = (T) dbase.db_tmp[key];
+        result = (T)dbase.db_tmp[key];
         dbase.db_tmp.Remove(key);
       }
 

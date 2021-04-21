@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace CsCat
 {
-  
+
   public class EditorIconTextureEditorWindow : EditorWindow
   {
     private Vector2 scroll_position;
@@ -26,7 +26,7 @@ namespace CsCat
               GUILayout.BeginHorizontal();
             }
 
-            if (GUILayout.Button(EditorIconTexture.GetSystem((EditorIconTextureType) i),
+            if (GUILayout.Button(EditorIconTexture.GetSystem((EditorIconTextureType)i),
               GUILayout.Width(50), GUILayout.Height(36)))
             {
               string display_value = string.Format("EditorIconTextureType.{0}\n{1}",

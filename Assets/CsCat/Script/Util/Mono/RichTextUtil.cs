@@ -24,7 +24,7 @@ namespace CsCat
 
     public static string SetFontSize(string s, int font_size)
     {
-      return string.Format("<size=#{0}>{1}</size>", font_size, s);;
+      return string.Format("<size=#{0}>{1}</size>", font_size, s); ;
     }
   }
 }

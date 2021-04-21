@@ -74,11 +74,11 @@ namespace CsCat
         return;
       _isAnalyzed = true;
 
-      Object[] dependChildren = EditorUtility.CollectDependencies(new Object[] {asset});
+      Object[] dependChildren = EditorUtility.CollectDependencies(new Object[] { asset });
       dependChildren = AssetBuildInfoManager.FilterDependChildren(dependChildren);
       var dependChildrenPaths = from dep in dependChildren
-        let obj = dep.GetAssetPath()
-        select obj;
+                                let obj = dep.GetAssetPath()
+                                select obj;
       dependChildrenPaths = dependChildrenPaths.Distinct().ToArray();
 
 

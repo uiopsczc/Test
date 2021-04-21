@@ -6,11 +6,11 @@ namespace CsCat
   public partial class AbstractEntity
   {
     public Action reset_callback;
-    
+
 
     public void Reset(bool is_loop_children = false)
     {
-      if(is_loop_children)
+      if (is_loop_children)
         ResetAllChildren();
       ResetAllComponents();
       __Reset();
@@ -18,7 +18,7 @@ namespace CsCat
     }
     protected virtual void __Reset()
     {
-      
+
     }
     protected virtual void __PostReset()
     {

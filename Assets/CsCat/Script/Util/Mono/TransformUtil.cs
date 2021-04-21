@@ -1,5 +1,3 @@
-
-
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -128,7 +126,6 @@ namespace CsCat
     public static Component FindComponentWithTagInChildren(Transform transform, Type type, string tag_name,
       bool is_recursive = true, bool is_start_with = true)
     {
-
       for (int i = 0; i < transform.childCount; i++)
       {
         Transform child = transform.GetChild(i);
@@ -403,6 +400,25 @@ namespace CsCat
       Reset(transform, transformMode);
     }
 
+    public static (bool, string) GetRelativePath(Transform transform, Transform parent_transform = null)
+    {
+      StringBuilder stringBuilder = new StringBuilder();
+      stringBuilder.Append(transform.name);
+      if (transform == parent_transform)
+        return (true, stringBuilder.ToString());
+      Transform parent_node = transform.parent;
+      while (!(parent_node == null || parent_node == parent_transform))
+      {
+        stringBuilder.Insert(0, parent_node.name + "/");
+        parent_node = parent_node.parent;
+      }
+
+      bool is_found = parent_transform == parent_node;
+      if (is_found && parent_node != null)
+        stringBuilder.Insert(0, parent_node.name + "/");
+      return (is_found, stringBuilder.ToString());
+    }
+
     #region SetPositon,LocalPosition,Euler,LocalEuler,Rotation, LocalRotation,LocalScale,LossyScale
 
     #region position
@@ -474,18 +490,22 @@ namespace CsCat
     #endregion
 
     #region Rotation
+
     public static void SetRotationX(Transform transform, float value)
     {
       transform.rotation = new Quaternion(value, transform.rotation.y, transform.rotation.z, transform.rotation.w);
     }
+
     public static void SetRotationY(Transform transform, float value)
     {
       transform.rotation = new Quaternion(transform.rotation.x, value, transform.rotation.z, transform.rotation.w);
     }
+
     public static void SetRotationZ(Transform transform, float value)
     {
       transform.rotation = new Quaternion(transform.rotation.x, transform.rotation.y, value, transform.rotation.w);
     }
+
     public static void SetRotationW(Transform transform, float value)
     {
       transform.rotation = new Quaternion(transform.rotation.x, transform.rotation.y, transform.rotation.z, value);
@@ -493,20 +513,28 @@ namespace CsCat
 
     public static void SetLocalRotationX(Transform transform, float value)
     {
-      transform.localRotation = new Quaternion(value, transform.localRotation.y, transform.localRotation.z, transform.localRotation.w);
+      transform.localRotation = new Quaternion(value, transform.localRotation.y, transform.localRotation.z,
+        transform.localRotation.w);
     }
+
     public static void SetLocalRotationY(Transform transform, float value)
     {
-      transform.localRotation = new Quaternion(transform.localRotation.x, value, transform.localRotation.z, transform.localRotation.w);
+      transform.localRotation = new Quaternion(transform.localRotation.x, value, transform.localRotation.z,
+        transform.localRotation.w);
     }
+
     public static void SetLocalRotationZ(Transform transform, float value)
     {
-      transform.localRotation = new Quaternion(transform.localRotation.x, transform.localRotation.y, value, transform.localRotation.w);
+      transform.localRotation = new Quaternion(transform.localRotation.x, transform.localRotation.y, value,
+        transform.localRotation.w);
     }
+
     public static void SetLocalRotationW(Transform transform, float value)
     {
-      transform.localRotation = new Quaternion(transform.localRotation.x, transform.localRotation.y, transform.localRotation.z, value);
+      transform.localRotation = new Quaternion(transform.localRotation.x, transform.localRotation.y,
+        transform.localRotation.z, value);
     }
+
     #endregion
 
     #region scale
@@ -566,6 +594,7 @@ namespace CsCat
           ? 0
           : value / lossyScale.z);
     }
+
     #endregion
 
     #endregion
@@ -576,7 +605,7 @@ namespace CsCat
 
     public static void AddPositionX(Transform transform, float value)
     {
-      transform.position = new Vector3(transform.position.x+value, transform.position.y, transform.position.z);
+      transform.position = new Vector3(transform.position.x + value, transform.position.y, transform.position.z);
     }
 
     public static void AddPositionY(Transform transform, float value)
@@ -586,22 +615,25 @@ namespace CsCat
 
     public static void AddPositionZ(Transform transform, float value)
     {
-      transform.localPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z+value );
+      transform.localPosition = new Vector3(transform.position.x, transform.position.y, transform.position.z + value);
     }
 
     public static void AddLocalPositionX(Transform transform, float value)
     {
-      transform.localPosition = new Vector3(transform.localPosition.x+value, transform.localPosition.y, transform.localPosition.z);
+      transform.localPosition = new Vector3(transform.localPosition.x + value, transform.localPosition.y,
+        transform.localPosition.z);
     }
 
     public static void AddLocalPositionY(Transform transform, float value)
     {
-      transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y + value, transform.localPosition.z);
+      transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y + value,
+        transform.localPosition.z);
     }
 
     public static void AddLocalPositionZ(Transform transform, float value)
     {
-      transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, transform.localPosition.z + value);
+      transform.localPosition = new Vector3(transform.localPosition.x, transform.localPosition.y,
+        transform.localPosition.z + value);
     }
 
     #endregion
@@ -610,87 +642,112 @@ namespace CsCat
 
     public static void AddEulerAnglesX(Transform transform, float value)
     {
-      transform.eulerAngles = new Vector3(transform.eulerAngles.x+value, transform.eulerAngles.y, transform.eulerAngles.z);
+      transform.eulerAngles =
+        new Vector3(transform.eulerAngles.x + value, transform.eulerAngles.y, transform.eulerAngles.z);
     }
 
     public static void AddEulerAnglesY(Transform transform, float value)
     {
-      transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y+value, transform.eulerAngles.z);
+      transform.eulerAngles =
+        new Vector3(transform.eulerAngles.x, transform.eulerAngles.y + value, transform.eulerAngles.z);
     }
 
     public static void AddEulerAnglesZ(Transform transform, float value)
     {
-      transform.eulerAngles = new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z+value);
+      transform.eulerAngles =
+        new Vector3(transform.eulerAngles.x, transform.eulerAngles.y, transform.eulerAngles.z + value);
     }
 
     public static void AddLocalEulerAnglesX(Transform transform, float value)
     {
-      transform.localEulerAngles = new Vector3(value, transform.localEulerAngles.y, transform.localEulerAngles.x+ transform.localEulerAngles.z);
+      transform.localEulerAngles = new Vector3(value, transform.localEulerAngles.y,
+        transform.localEulerAngles.x + transform.localEulerAngles.z);
     }
 
     public static void AddLocalEulerAnglesY(Transform transform, float value)
     {
-      transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, transform.localEulerAngles.y + value, transform.localEulerAngles.z);
+      transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, transform.localEulerAngles.y + value,
+        transform.localEulerAngles.z);
     }
 
     public static void AddLocalEulerAnglesZ(Transform transform, float value)
     {
-      transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, transform.localEulerAngles.y, transform.localEulerAngles.z + value);
+      transform.localEulerAngles = new Vector3(transform.localEulerAngles.x, transform.localEulerAngles.y,
+        transform.localEulerAngles.z + value);
     }
 
     #endregion
 
     #region Rotation
+
     public static void AddRotationX(Transform transform, float value)
     {
-      transform.rotation =  new Quaternion(transform.rotation.x+value, transform.rotation.y, transform.rotation.z, transform.rotation.w);
+      transform.rotation = new Quaternion(transform.rotation.x + value, transform.rotation.y, transform.rotation.z,
+        transform.rotation.w);
     }
+
     public static void AddRotationY(Transform transform, float value)
     {
-      transform.rotation = new Quaternion(transform.rotation.x, transform.rotation.y + value, transform.rotation.z, transform.rotation.w);
+      transform.rotation = new Quaternion(transform.rotation.x, transform.rotation.y + value, transform.rotation.z,
+        transform.rotation.w);
     }
+
     public static void AddRotationZ(Transform transform, float value)
     {
-      transform.rotation = new Quaternion(transform.rotation.x, transform.rotation.y, transform.rotation.z + value, transform.rotation.w);
+      transform.rotation = new Quaternion(transform.rotation.x, transform.rotation.y, transform.rotation.z + value,
+        transform.rotation.w);
     }
+
     public static void AddRotationW(Transform transform, float value)
     {
-      transform.rotation = new Quaternion(transform.rotation.x, transform.rotation.y, transform.rotation.z, transform.rotation.w+value);
+      transform.rotation = new Quaternion(transform.rotation.x, transform.rotation.y, transform.rotation.z,
+        transform.rotation.w + value);
     }
 
     public static void AddLocalRotationX(Transform transform, float value)
     {
-      transform.localRotation = new Quaternion(transform.localRotation.x + value, transform.localRotation.y, transform.localRotation.z, transform.localRotation.w);
+      transform.localRotation = new Quaternion(transform.localRotation.x + value, transform.localRotation.y,
+        transform.localRotation.z, transform.localRotation.w);
     }
+
     public static void AddLocalRotationY(Transform transform, float value)
     {
-      transform.localRotation = new Quaternion(transform.localRotation.x, transform.localRotation.y + value, transform.localRotation.z, transform.localRotation.w);
+      transform.localRotation = new Quaternion(transform.localRotation.x, transform.localRotation.y + value,
+        transform.localRotation.z, transform.localRotation.w);
     }
+
     public static void AddLocalRotationZ(Transform transform, float value)
     {
-      transform.localRotation = new Quaternion(transform.localRotation.x, transform.localRotation.y, transform.localRotation.z + value, transform.localRotation.w);
+      transform.localRotation = new Quaternion(transform.localRotation.x, transform.localRotation.y,
+        transform.localRotation.z + value, transform.localRotation.w);
     }
+
     public static void AddLocalRotationW(Transform transform, float value)
     {
-      transform.localRotation = new Quaternion(transform.localRotation.x, transform.localRotation.y, transform.localRotation.z, transform.localRotation.w+value);
+      transform.localRotation = new Quaternion(transform.localRotation.x, transform.localRotation.y,
+        transform.localRotation.z, transform.localRotation.w + value);
     }
+
     #endregion
 
     #region scale
 
     public static void AddLocalScaleX(Transform transform, float value)
     {
-      transform.localScale = new Vector3(transform.localScale.x+value, transform.localScale.y, transform.localScale.z);
+      transform.localScale =
+        new Vector3(transform.localScale.x + value, transform.localScale.y, transform.localScale.z);
     }
 
     public static void AddLocalScaleY(Transform transform, float value)
     {
-      transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y + value, transform.localScale.z);
+      transform.localScale =
+        new Vector3(transform.localScale.x, transform.localScale.y + value, transform.localScale.z);
     }
 
     public static void AddLocalScaleZ(Transform transform, float value)
     {
-      transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z + value);
+      transform.localScale =
+        new Vector3(transform.localScale.x, transform.localScale.y, transform.localScale.z + value);
     }
 
     public static void AddLossyScaleX(Transform transform, float value)
@@ -699,8 +756,8 @@ namespace CsCat
       transform.localScale =
         new Vector3(
           Math.Abs(lossyScale.x) <= float.Epsilon
-            ? (0+value)
-            : 1+(value / lossyScale.x), transform.localScale.y, transform.localScale.z);
+            ? (0 + value)
+            : 1 + (value / lossyScale.x), transform.localScale.y, transform.localScale.z);
     }
 
     public static void AddLossyScaleY(Transform transform, float value)
@@ -708,8 +765,8 @@ namespace CsCat
       var lossyScale = GetLossyScaleOfPrarent(transform);
       transform.localScale = new Vector3(transform.localScale.x,
         Math.Abs(lossyScale.y) <= float.Epsilon
-          ? (0+value)
-          : 1+(value / lossyScale.y), transform.localScale.z);
+          ? (0 + value)
+          : 1 + (value / lossyScale.y), transform.localScale.z);
     }
 
     public static void AddLossyScaleZ(Transform transform, float value)
@@ -717,14 +774,15 @@ namespace CsCat
       var lossyScale = GetLossyScaleOfPrarent(transform);
       transform.localScale = new Vector3(transform.localScale.x, transform.localScale.y,
         Math.Abs(lossyScale.z) <= float.Epsilon
-          ? (0+value)
-          : 1+(value / lossyScale.z));
+          ? (0 + value)
+          : 1 + (value / lossyScale.z));
     }
-    #endregion
 
     #endregion
 
-    public static void SetIsGray(Transform transform,bool is_gray, bool is_recursive = true)
+    #endregion
+
+    public static void SetIsGray(Transform transform, bool is_gray, bool is_recursive = true)
     {
       __SetIsGray(transform, is_gray);
       if (is_recursive)
@@ -740,13 +798,12 @@ namespace CsCat
       transform.GetComponent<Text>()?.SetIsGray(is_gray);
     }
 
-    public static void SetAlpha( Transform self, float alpha, bool is_recursive = true)
+    public static void SetAlpha(Transform self, float alpha, bool is_recursive = true)
     {
       if (!is_recursive)
-        __SetAlpha(self,alpha);
+        __SetAlpha(self, alpha);
       else
         self.DoActionRecursive(transform => SetAlpha(transform, alpha));
-
     }
 
     static void __SetAlpha(Transform transform, float alpha)
@@ -755,7 +812,8 @@ namespace CsCat
       transform.GetComponent<Text>()?.SetAlpha(alpha);
     }
 
-    public static void SetColor(Transform self, Color color, bool is_not_use_color_alpha = false, bool is_recursive = true)
+    public static void SetColor(Transform self, Color color, bool is_not_use_color_alpha = false,
+      bool is_recursive = true)
     {
       if (!is_recursive)
         __SetColor(self, color, is_not_use_color_alpha);

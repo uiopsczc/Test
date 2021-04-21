@@ -134,7 +134,7 @@ namespace CsCat
       SearchOption searchOption = SearchOption.AllDirectories)
     {
       if (partterns == null)
-        partterns = new string[] {"*.*"};
+        partterns = new string[] { "*.*" };
       foreach (string parttern in partterns)
       {
         FileInfo[] fileInfos = bundleDir.GetFiles(parttern, searchOption);

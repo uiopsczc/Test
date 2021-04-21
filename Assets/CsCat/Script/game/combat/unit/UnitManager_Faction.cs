@@ -110,8 +110,8 @@ namespace CsCat
     {
       var faction_unit_list = new List<Unit>();
       foreach (var faction in faction_list)
-      foreach (var unit in this.faction_unit_dict[faction].Values)
-        faction_unit_list.Add(unit);
+        foreach (var unit in this.faction_unit_dict[faction].Values)
+          faction_unit_list.Add(unit);
       return faction_unit_list;
     }
 

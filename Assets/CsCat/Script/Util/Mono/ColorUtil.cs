@@ -36,19 +36,19 @@ namespace CsCat
 
     public static void SetColor(System.Object obj, string member_name, ColorMode rgbaMode, params float[] rgba)
     {
-      FieldInfo fieldInfo = obj.GetType().GetFieldInfo( member_name, BindingFlagsConst.All);
+      FieldInfo fieldInfo = obj.GetType().GetFieldInfo(member_name, BindingFlagsConst.All);
       if (fieldInfo != null)
       {
-        Color orgColor = (Color) fieldInfo.GetValue(obj);
+        Color orgColor = (Color)fieldInfo.GetValue(obj);
         Color newColor = Set(orgColor, rgbaMode, rgba);
         fieldInfo.SetValue(obj, newColor);
         return;
       }
 
-      PropertyInfo propertyInfo = obj.GetType().GetPropertyInfo( member_name, BindingFlagsConst.All);
+      PropertyInfo propertyInfo = obj.GetType().GetPropertyInfo(member_name, BindingFlagsConst.All);
       if (propertyInfo != null)
       {
-        Color orgColor = (Color) propertyInfo.GetValue(obj, null);
+        Color orgColor = (Color)propertyInfo.GetValue(obj, null);
         Color newColor = Set(orgColor, rgbaMode, rgba);
         propertyInfo.SetValue(obj, newColor, null);
         return;

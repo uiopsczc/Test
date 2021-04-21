@@ -38,9 +38,9 @@ namespace CsCat
 
     public static Encoding GetEncoding(FileStream fileStream)
     {
-      byte[] Unicode = new byte[] {0xFF, 0xFE, 0x41};
-      byte[] UnicodeBIG = new byte[] {0xFE, 0xFF, 0x00};
-      byte[] UTF8 = new byte[] {0xEF, 0xBB, 0xBF}; //带BOM 
+      byte[] Unicode = new byte[] { 0xFF, 0xFE, 0x41 };
+      byte[] UnicodeBIG = new byte[] { 0xFE, 0xFF, 0x00 };
+      byte[] UTF8 = new byte[] { 0xEF, 0xBB, 0xBF }; //带BOM 
       Encoding reVal = Encoding.Default;
 
       BinaryReader r = new BinaryReader(fileStream, System.Text.Encoding.Default);

@@ -14,7 +14,7 @@ namespace CsCat
       base.Init();
       SetDuration(duration);
     }
-    
+
 
     public void SetDuration(float duration)
     {

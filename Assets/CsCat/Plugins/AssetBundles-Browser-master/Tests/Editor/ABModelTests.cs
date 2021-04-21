@@ -409,7 +409,7 @@ namespace AssetBundleBrowserTests
       ABModelUtil.Root.AddChild(dataInfo);
       ABModelUtil.Root.AddChild(concreteFolder);
 
-      Model.HandleBundleReparent(new BundleInfo[] {dataInfo}, concreteFolder);
+      Model.HandleBundleReparent(new BundleInfo[] { dataInfo }, concreteFolder);
 
       Assert.AreEqual(dataInfo.parent.m_Name.bundleName, concreteFolder.m_Name.bundleName);
     }
@@ -425,7 +425,7 @@ namespace AssetBundleBrowserTests
       concreteFolder.AddChild(subConcreteFolder);
       subConcreteFolder.AddChild(subConcreteFolder);
 
-      Model.HandleBundleReparent(new BundleInfo[] {folderToBeMoved}, concreteFolder);
+      Model.HandleBundleReparent(new BundleInfo[] { folderToBeMoved }, concreteFolder);
 
       Assert.AreEqual(concreteFolder.m_Name.bundleName, folderToBeMoved.parent.m_Name.bundleName);
     }
@@ -439,7 +439,7 @@ namespace AssetBundleBrowserTests
 
       var bundleVariantDataInfo = new BundleVariantDataInfo("v1", startParent);
 
-      Model.HandleBundleReparent(new BundleInfo[] {bundleVariantDataInfo}, concreteFolder);
+      Model.HandleBundleReparent(new BundleInfo[] { bundleVariantDataInfo }, concreteFolder);
       Assert.AreEqual(concreteFolder, bundleVariantDataInfo.parent);
     }
 
@@ -451,7 +451,7 @@ namespace AssetBundleBrowserTests
       var bundleVariantFolder =
         Model.CreateEmptyVariant(new BundleVariantFolderInfo("v1", startParent)) as BundleVariantDataInfo;
 
-      Model.HandleBundleReparent(new BundleInfo[] {bundleVariantFolder}, concreteFolder);
+      Model.HandleBundleReparent(new BundleInfo[] { bundleVariantFolder }, concreteFolder);
 
       Assert.AreNotEqual(string.Empty, bundleVariantFolder.parent.m_Name.bundleName);
       Assert.AreEqual(concreteFolder, bundleVariantFolder.parent);
@@ -469,7 +469,7 @@ namespace AssetBundleBrowserTests
       ABModelUtil.Root.AddChild(bundleVariantFolderRoot);
       ABModelUtil.Root.AddChild(bundleDataInfo);
 
-      Model.HandleBundleReparent(new BundleInfo[] {bundleDataInfo}, bundleVariantFolderRoot);
+      Model.HandleBundleReparent(new BundleInfo[] { bundleDataInfo }, bundleVariantFolderRoot);
 
       Assert.AreEqual(variantFolderName + "/" + bundleName, bundleDataInfo.m_Name.bundleName);
     }
@@ -488,7 +488,7 @@ namespace AssetBundleBrowserTests
       concreteFolder.AddChild(bundleDataInfo2);
       concreteFolder.AddChild(bundleDataInfo3);
 
-      Model.HandleBundleDelete(new BundleInfo[] {concreteFolder});
+      Model.HandleBundleDelete(new BundleInfo[] { concreteFolder });
 
       var numberOfChildrenFieldInfo =
         typeof(BundleFolderConcreteInfo).GetField("m_Children", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -512,7 +512,7 @@ namespace AssetBundleBrowserTests
       ABModelUtil.Root.AddChild(bundleDataInfo2);
       ABModelUtil.Root.AddChild(bundleDataInfo3);
 
-      Model.HandleBundleDelete(new BundleInfo[] {bundleDataInfo1, bundleDataInfo2, bundleDataInfo3});
+      Model.HandleBundleDelete(new BundleInfo[] { bundleDataInfo1, bundleDataInfo2, bundleDataInfo3 });
 
       var numberOfChildrenFieldInfo =
         typeof(BundleFolderConcreteInfo).GetField("m_Children", BindingFlags.NonPublic | BindingFlags.Instance);
@@ -548,7 +548,7 @@ namespace AssetBundleBrowserTests
 
       Assert.AreEqual(numChildren + 1, numberOfConcreteFolderChildren.Keys.Count);
 
-      Model.HandleBundleDelete(new BundleInfo[] {bundleVariantFolderRoot});
+      Model.HandleBundleDelete(new BundleInfo[] { bundleVariantFolderRoot });
 
       numberOfConcreteFolderChildren =
         numberOfChildrenFieldInfo.GetValue(ABModelUtil.Root) as Dictionary<string, BundleInfo>;
@@ -586,7 +586,7 @@ namespace AssetBundleBrowserTests
 
       Assert.AreEqual(numChildren + 1, numberOfConcreteFolderChildren.Keys.Count);
 
-      Model.HandleBundleDelete(new BundleInfo[] {bundleVariantDataInfo1});
+      Model.HandleBundleDelete(new BundleInfo[] { bundleVariantDataInfo1 });
 
       numberOfConcreteFolderChildren =
         numberOfChildrenFieldInfo.GetValue(ABModelUtil.Root) as Dictionary<string, BundleInfo>;
@@ -623,7 +623,7 @@ namespace AssetBundleBrowserTests
 
       TestUtil.ExecuteCodeAndCleanupAssets(() =>
       {
-        Model.HandleBundleMerge(new BundleInfo[] {bundle2DataInfo}, bundle1DataInfo);
+        Model.HandleBundleMerge(new BundleInfo[] { bundle2DataInfo }, bundle1DataInfo);
 
         var bundleNames = AssetDatabase.GetAllAssetBundleNames();
         Assert.AreEqual(numBundles + 1, bundleNames.Length);
@@ -657,7 +657,7 @@ namespace AssetBundleBrowserTests
 
       TestUtil.ExecuteCodeAndCleanupAssets(() =>
       {
-        Model.HandleBundleMerge(new BundleInfo[] {bundle1DataInfo}, bundle2DataInfo);
+        Model.HandleBundleMerge(new BundleInfo[] { bundle1DataInfo }, bundle2DataInfo);
 
         var bundleNames = AssetDatabase.GetAllAssetBundleNames();
         Assert.AreEqual(numBundles + 1, bundleNames.Length, GetAllElementsAsString(bundleNames));
@@ -673,7 +673,7 @@ namespace AssetBundleBrowserTests
     public static void HandleConvertToVariant_Converts_BundlesToVariant()
     {
       BundleInfo dataInfo = new BundleDataInfo("folder", ABModelUtil.Root);
-      dataInfo = Model.HandleConvertToVariant((BundleDataInfo) dataInfo);
+      dataInfo = Model.HandleConvertToVariant((BundleDataInfo)dataInfo);
       Assert.AreEqual(typeof(BundleVariantDataInfo), dataInfo.GetType());
     }
 
@@ -710,8 +710,8 @@ namespace AssetBundleBrowserTests
 
       TestUtil.ExecuteCodeAndCleanupAssets(() =>
       {
-        AddMaterialsToMultipleObjects(new[] {bundle1PrefabInstanceName, bundle2PrefabInstanceName}, listOfAssets, mat);
-        Model.HandleDedupeBundles(new BundleInfo[] {bundle1DataInfo, bundle2DataInfo}, false);
+        AddMaterialsToMultipleObjects(new[] { bundle1PrefabInstanceName, bundle2PrefabInstanceName }, listOfAssets, mat);
+        Model.HandleDedupeBundles(new BundleInfo[] { bundle1DataInfo, bundle2DataInfo }, false);
         //This checks to make sure that a newbundle was automatically created since we dont' set this up anywhere else.
         Assert.IsTrue(AssetDatabase.GetAllAssetBundleNames().Contains("newbundle"));
       }, listOfAssets);

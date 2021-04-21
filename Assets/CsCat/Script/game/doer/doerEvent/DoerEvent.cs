@@ -117,11 +117,11 @@ namespace CsCat
 
       User user = null;
       if (doerAttrParser.GetU() is User)
-        user = (User) doerAttrParser.GetU();
+        user = (User)doerAttrParser.GetU();
       else if (doerAttrParser.GetO() is User)
-        user = (User) doerAttrParser.GetO();
+        user = (User)doerAttrParser.GetO();
       else if (doerAttrParser.GetE() is User)
-        user = (User) doerAttrParser.GetE();
+        user = (User)doerAttrParser.GetE();
       else
         user = Client.instance.user;
 

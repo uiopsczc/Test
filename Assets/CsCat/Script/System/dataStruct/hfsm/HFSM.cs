@@ -37,14 +37,14 @@ namespace CsCat
     {
     }
 
-    
+
 
     public override void Start()
     {
       base.Start();
-      if(default_sub_direct_state!=null)
+      if (default_sub_direct_state != null)
         ChangeToState(default_sub_direct_state);
-      if(default_sub_direct_hfsm!=null)
+      if (default_sub_direct_hfsm != null)
         ChangeToHFSM(default_sub_direct_hfsm.key);
     }
 
@@ -56,9 +56,9 @@ namespace CsCat
     public virtual void Enter(params object[] args)
     {
       this.SetIsEnabled(true, false);
-      if (parent_hfsm!=null)
+      if (parent_hfsm != null)
         parent_hfsm.current_sub_direct_hfsm = this;
-      
+
     }
 
     public virtual void Exit(params object[] args)
@@ -78,7 +78,7 @@ namespace CsCat
         _hfsm = _hfsm.parent_hfsm;
       }
 
-      for(int i= hfsm_list.Count-1;i>=0;i--)
+      for (int i = hfsm_list.Count - 1; i >= 0; i--)
         hfsm_list[i].Enter(args);
       to_state.Enter(args);
     }

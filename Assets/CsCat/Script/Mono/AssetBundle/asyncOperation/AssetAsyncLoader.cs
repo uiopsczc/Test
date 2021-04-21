@@ -7,7 +7,7 @@ namespace CsCat
   public class AssetAsyncLoader : BaseAssetAsyncLoader
   {
     protected BaseAssetBundleAsyncLoader assetBundleLoader;
-    
+
 
 
     //通过AssetBundleLoader获取
@@ -82,7 +82,7 @@ namespace CsCat
       base.OnFail();
       Broadcast(AssetBundleEventNameConst.On_AssetAsyncLoader_Fail, this);
     }
-    
+
     protected override void OnDone()
     {
       base.OnDone();

@@ -4,9 +4,9 @@ using XLua;
 namespace XLuaTest
 {
 
-    public class GenericMethodExample : MonoBehaviour
-    {
-        private const string script = @"
+  public class GenericMethodExample : MonoBehaviour
+  {
+    private const string script = @"
         local foo1 = CS.XLuaTest.Foo1Child()
         local foo2 = CS.XLuaTest.Foo2Child()
 
@@ -20,23 +20,23 @@ namespace XLuaTest
         foo:Test1(foo1)
         foo:Test2(foo1,foo2,obj)
 ";
-        private LuaEnv env;
+    private LuaEnv env;
 
-        private void Start()
-        {
-            env = new LuaEnv();
-            env.DoString(script);
-        }
-
-        private void Update()
-        {
-            if (env != null)
-                env.Tick();
-        }
-
-        private void OnDestroy()
-        {
-            env.Dispose();
-        }
+    private void Start()
+    {
+      env = new LuaEnv();
+      env.DoString(script);
     }
+
+    private void Update()
+    {
+      if (env != null)
+        env.Tick();
+    }
+
+    private void OnDestroy()
+    {
+      env.Dispose();
+    }
+  }
 }

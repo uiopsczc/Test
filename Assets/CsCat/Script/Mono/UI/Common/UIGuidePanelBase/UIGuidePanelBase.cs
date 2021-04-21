@@ -37,7 +37,7 @@ namespace CsCat
     {
       GameObject clone = GameObject.Instantiate(dialog_left_prefab, graphicComponent.transform);
       clone.SetActive(true);
-      return this.AddChild<UIGuidePanelBase.DialogItem>(null,clone);
+      return this.AddChild<UIGuidePanelBase.DialogItem>(null, clone);
     }
 
     public UIGuidePanelBase.DialogItem CreateDialogRightItem()

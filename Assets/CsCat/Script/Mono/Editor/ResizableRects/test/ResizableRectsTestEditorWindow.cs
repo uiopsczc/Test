@@ -12,7 +12,7 @@ namespace CsCat
     void Awake()
     {
       this.resizableRects =
-        new HorizontalResizableRects(() => new Rect(0, 0, this.position.width, this.position.height),null,new float[]{ 0.3f,0.6f});
+        new HorizontalResizableRects(() => new Rect(0, 0, this.position.width, this.position.height), null, new float[] { 0.3f, 0.6f });
     }
 
 

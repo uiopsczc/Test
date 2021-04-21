@@ -9,7 +9,7 @@ namespace CsCat
 {
   public partial class ReflectionUtil
   {
-    public static Dictionary<Type, Dictionary<string, Dictionary<object,object>>> cache_dict =
+    public static Dictionary<Type, Dictionary<string, Dictionary<object, object>>> cache_dict =
       new Dictionary<Type, Dictionary<string, Dictionary<object, object>>>();
 
     private const string methodInfo_string = "methodInfo";
@@ -21,7 +21,7 @@ namespace CsCat
     //////////////////////////////////////////////////////////////////////
     // MethodInfoCache
     //////////////////////////////////////////////////////////////////////
-    public static bool IsContainsMethodInfoCache(Type type,string method_name, params Type[] paramer_types)
+    public static bool IsContainsMethodInfoCache(Type type, string method_name, params Type[] paramer_types)
     {
       if (!cache_dict.ContainsKey(type))
         return false;
@@ -43,7 +43,7 @@ namespace CsCat
       cache_dict[type][main_key][sub_key] = methodInfo;
     }
 
-    public static MethodInfo GetMethodInfoCache(Type type,string method_name, params Type[] paramer_types)
+    public static MethodInfo GetMethodInfoCache(Type type, string method_name, params Type[] paramer_types)
     {
       if (!cache_dict.ContainsKey(type))
         return null;
@@ -137,7 +137,7 @@ namespace CsCat
       return cache_dict[type][main_key].ContainsKey(sub_key);
     }
 
-    public static void SetPropertyInfoCache(Type type, string property_name,  PropertyInfo propertyInfo)
+    public static void SetPropertyInfoCache(Type type, string property_name, PropertyInfo propertyInfo)
     {
       if (!cache_dict.ContainsKey(type))
         cache_dict[type] = new Dictionary<string, Dictionary<object, object>>();

@@ -9,7 +9,7 @@ namespace CsCat
     {
       get { return EUILayerName.NotifyLayer; }
     }
-    
+
 
     private Text desc_text;
     private Image bg_image;

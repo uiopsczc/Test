@@ -82,7 +82,7 @@ namespace CsCat
       {
         var input_weight = playable.GetInputWeight(i);
         var inputPlayable =
-          (ScriptPlayable<TransformTweenBehaviour>) playable.GetInput(i);
+          (ScriptPlayable<TransformTweenBehaviour>)playable.GetInput(i);
         var input = inputPlayable.GetBehaviour();
         weight_blend_total += input_weight;
 

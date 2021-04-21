@@ -17,7 +17,7 @@ namespace CsCat
       if (command_type != null)
       {
         var command_instance = Activator.CreateInstance(command_type);
-        if (command_instance is ICommand) ((ICommand) command_instance).Execute(commandMessage);
+        if (command_instance is ICommand) ((ICommand)command_instance).Execute(commandMessage);
       }
     }
 

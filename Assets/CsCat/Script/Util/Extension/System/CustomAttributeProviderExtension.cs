@@ -10,7 +10,7 @@ namespace CsCat
     {
       object[] customAttributes = self.GetCustomAttributes(typeof(T), is_contain_inherit);
       if (customAttributes != null && customAttributes.Length > index)
-        return (T) customAttributes[index];
+        return (T)customAttributes[index];
       return default(T);
     }
 

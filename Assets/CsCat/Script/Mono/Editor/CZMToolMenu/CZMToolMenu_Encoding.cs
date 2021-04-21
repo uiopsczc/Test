@@ -27,8 +27,8 @@ namespace CsCat
       if (target_encoding == null)
         target_encoding = Encoding.UTF8;
       Encoding encoding = EncodingUtil.GetEncoding(file_path);
-//    LogCat.logError(file_path);
-//    LogCat.logError(target_encoding);
+      //    LogCat.logError(file_path);
+      //    LogCat.logError(target_encoding);
       var data = File.ReadAllBytes(file_path);
       data = target_encoding.GetBytes(encoding.GetString(data));
       File.WriteAllBytes(file_path, data);

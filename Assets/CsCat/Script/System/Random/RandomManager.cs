@@ -9,7 +9,7 @@ namespace CsCat
     private int seed;
 
     public Random random_obj = new Random(
-      (int) DateTimeUtil.NowTicks());
+      (int)DateTimeUtil.NowTicks());
 
     public RandomManager()
     {
@@ -43,12 +43,12 @@ namespace CsCat
     /// </summary>
     public float RandomFloat()
     {
-      return (float) RandomDouble();
+      return (float)RandomDouble();
     }
 
     public float RandomFloat(float min, float max)
     {
-      return (float) RandomDouble(min, max);
+      return (float)RandomDouble(min, max);
     }
 
     /// <summary>
@@ -63,7 +63,7 @@ namespace CsCat
     //
     public long RandomLong(long min, long max)
     {
-      return min + (long) ((max - min) * random_obj.NextDouble());
+      return min + (long)((max - min) * random_obj.NextDouble());
     }
 
     /// <summary>

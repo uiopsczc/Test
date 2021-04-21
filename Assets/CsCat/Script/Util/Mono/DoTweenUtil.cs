@@ -19,7 +19,7 @@ namespace CsCat
         {
           if (source == null)
           {
-            if (t.id is DOTweenId && ((DOTweenId) t.id).prefix == prefix)
+            if (t.id is DOTweenId && ((DOTweenId)t.id).prefix == prefix)
               tweens.Add(t);
 
           }
@@ -29,7 +29,7 @@ namespace CsCat
               tweens.Add(t);
           }
 
-          if (t.id is string && (string) t.id == prefix)
+          if (t.id is string && (string)t.id == prefix)
             tweens.Add(t);
 
 

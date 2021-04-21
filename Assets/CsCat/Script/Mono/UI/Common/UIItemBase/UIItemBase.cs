@@ -46,7 +46,7 @@ namespace CsCat
       this.item_count = item_count;
 
       this.itemDefinition = DefinitionManager.instance.itemDefinition.GetData(item_id);
-//    LogCat.logError(Client.instance.definitionManager.Quality.GetData(item_data.quality_id));
+      //    LogCat.logError(Client.instance.definitionManager.Quality.GetData(item_data.quality_id));
       this.qualityDefinition = itemDefinition.quality_id == null
         ? null
         : DefinitionManager.instance.qualityDefinition.GetData(itemDefinition.quality_id);
@@ -57,8 +57,8 @@ namespace CsCat
         this.SetImageAsync(this.content_quality_image, qualityDefinition.icon_path, null, false);
       else
         this.content_bg_image.gameObject.SetActive(false);
-//    LogCat.LogWarning(this.content_icon_image);
-//    LogCat.LogWarning(itemData.icon_path);
+      //    LogCat.LogWarning(this.content_icon_image);
+      //    LogCat.LogWarning(itemData.icon_path);
       this.SetImageAsync(this.content_icon_image, itemDefinition.icon_path, null, false);
       this.content_count_text.text = (item_count == 0 || item_count == 1) ? "" : string.Format("x{0}", item_count);
       this.name_text.text = itemDefinition.name;

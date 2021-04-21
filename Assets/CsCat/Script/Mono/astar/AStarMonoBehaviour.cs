@@ -15,7 +15,8 @@ namespace CsCat
     [SerializeField] public int min_grid_y;
     [SerializeField] public int max_grid_x;
     [SerializeField] public int max_grid_y;
-    [SerializeField] public SerializableDictionary_Vector2Int_Int data_dict =
+    [SerializeField]
+    public SerializableDictionary_Vector2Int_Int data_dict =
       SerializableDictionary_Vector2Int_Int.New<SerializableDictionary_Vector2Int_Int>();
 
 
@@ -134,7 +135,7 @@ namespace CsCat
       dict["is_enable_edit_outside_bounds"] = is_enable_edit_outside_bounds;
       dict["data_dict"] = new Hashtable();
       foreach (var key in data_dict.Keys)
-        ((Hashtable) dict["data_dict"])[key.ToString()] = data_dict[key];
+        ((Hashtable)dict["data_dict"])[key.ToString()] = data_dict[key];
 
       dict["position"] = this.transform.position.ToString();
       dict["eulerAngles"] = this.transform.eulerAngles.ToString();
@@ -163,7 +164,7 @@ namespace CsCat
       foreach (var _key in _data_dict.Keys)
       {
         Vector2 v = _key.To<string>().ToVector2();
-        Vector2Int key = new Vector2Int((int) v.x, (int) v.y);
+        Vector2Int key = new Vector2Int((int)v.x, (int)v.y);
         int value = _data_dict[_key].To<int>();
         data_dict[key] = value;
       }

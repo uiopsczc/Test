@@ -134,7 +134,7 @@ namespace CsCat
 
     public T AddWorldOffset<T>(Vector2 add_world_offset) where T : Shape2d
     {
-      return (T) AddWorldOffset(add_world_offset);
+      return (T)AddWorldOffset(add_world_offset);
     }
 
     public Shape2d MultiplyMatrix(Matrix4x4 martix)
@@ -145,7 +145,7 @@ namespace CsCat
 
     public T MultiplyMatrix<T>(Matrix4x4 martix) where T : Shape2d
     {
-      return (T) MultiplyMatrix(martix);
+      return (T)MultiplyMatrix(martix);
     }
 
 
@@ -157,7 +157,7 @@ namespace CsCat
 
     public T PreMultiplyMatrix<T>(Matrix4x4 martix) where T : Shape2d
     {
-      return (T) PreMultiplyMatrix(martix);
+      return (T)PreMultiplyMatrix(martix);
     }
 
 

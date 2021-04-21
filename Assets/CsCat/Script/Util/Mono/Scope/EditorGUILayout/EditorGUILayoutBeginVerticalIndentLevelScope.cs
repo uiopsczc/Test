@@ -5,7 +5,7 @@ using UnityEditor;
 using UnityEngine;
 namespace CsCat
 {
-  
+
   // Begin a vertical group and get its rect back.
   public class EditorGUILayoutBeginVerticalIndentLevelScope : IDisposable
   {
@@ -19,9 +19,9 @@ namespace CsCat
       Golbal_Indent_Level += add;
       EditorGUILayout.BeginHorizontal();
       GUILayout.Space(Golbal_Indent_Level * Width_Of_Per_Indent_Level);
-//      GUILayout.FlexibleSpace();
+      //      GUILayout.FlexibleSpace();
     }
-    public EditorGUILayoutBeginVerticalIndentLevelScope(int add = 1,params GUILayoutOption[] options)
+    public EditorGUILayoutBeginVerticalIndentLevelScope(int add = 1, params GUILayoutOption[] options)
     {
       _Init(add);
       EditorGUILayout.BeginVertical(options);

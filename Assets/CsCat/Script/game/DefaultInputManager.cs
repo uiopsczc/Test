@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Reflection;
 using DG.Tweening;
+using UnityEditor;
 using UnityEngine;
 
 namespace CsCat
@@ -9,15 +10,15 @@ namespace CsCat
   public class DefaultInputManager : TickObject
   {
     public Action gui_callback;
-    
+
     private HFSMComponent<TestCoroutineHFSM> hfsmComponent;
     public override void Init()
     {
       base.Init();
-//      TestCoroutineHFSM hfsm = new TestCoroutineHFSM(this);
-//      hfsm.Init();
-//      hfsmComponent = this.AddComponent<HFSMComponent<TestCoroutineHFSM>>("HFSMComponent", hfsm);
-//      hfsmComponent.hfsm.Start();
+      //      TestCoroutineHFSM hfsm = new TestCoroutineHFSM(this);
+      //      hfsm.Init();
+      //      hfsmComponent = this.AddComponent<HFSMComponent<TestCoroutineHFSM>>("HFSMComponent", hfsm);
+      //      hfsmComponent.hfsm.Start();
     }
 
     private Dictionary<EventName, string> dict = new Dictionary<EventName, string>();
@@ -51,13 +52,14 @@ namespace CsCat
 
       if (Input.GetKeyDown("f2"))
       {
-        panel = Client.instance.uiManager.CreateChildPanel(null, default(UIGMTestPanel2));
+        //        panel = Client.instance.uiManager.CreateChildPanel(null, default(UIGMTestPanel2));
+        LogCat.warn(Selection.activeTransform.GetRelativePath(GameObject.Find("EffectPool").transform));
       }
 
       if (Input.GetKeyDown("f3"))
       {
         panel.SetToBottom();
-//        LogCat.log(dict);
+        //        LogCat.log(dict);
       }
 
       if (Input.GetKeyDown("f4"))

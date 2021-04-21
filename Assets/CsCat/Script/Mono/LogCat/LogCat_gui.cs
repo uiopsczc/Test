@@ -16,15 +16,15 @@ namespace CsCat
         if (_gui_font_style == null)
         {
           _gui_font_style = new GUIStyle();
-//          _gui_font_style.normal.background = null;    //设置背景填充
-//          _gui_font_style.normal.textColor = Color.red; //设置字体颜色
+          //          _gui_font_style.normal.background = null;    //设置背景填充
+          //          _gui_font_style.normal.textColor = Color.red; //设置字体颜色
           _gui_font_style.fontSize = 30;
         }
 
         return _gui_font_style;
       }
     }
-    
+
 
     public static void Flush_GUI()
     {

@@ -103,7 +103,7 @@ namespace CsCat
       if (self == null)
         return null;
       if (self.NodeType == XmlNodeType.Element)
-        return ((XmlElement) self).GetAttributeNode(attribute_name);
+        return ((XmlElement)self).GetAttributeNode(attribute_name);
       return null;
     }
 
@@ -126,7 +126,7 @@ namespace CsCat
       if (attrs != null)
         for (var i = 0; i < attrs.Count; i++)
         {
-          var attr = (XmlAttribute) attrs.Item(i);
+          var attr = (XmlAttribute)attrs.Item(i);
           property_dict[Convert.ToString(attr.Name)] = Convert.ToString(attr.Value);
         }
 
@@ -139,7 +139,7 @@ namespace CsCat
         return false;
       if (self.NodeType == XmlNodeType.Element)
       {
-        ((XmlElement) self).SetAttribute(name, value);
+        ((XmlElement)self).SetAttribute(name, value);
         return true;
       }
 
@@ -177,7 +177,7 @@ namespace CsCat
         return null;
       XmlElement element;
       if (self.NodeType == XmlNodeType.Document)
-        element = ((XmlDocument) self).CreateElement(name);
+        element = ((XmlDocument)self).CreateElement(name);
       else if (self.NodeType == XmlNodeType.Element)
         element = self.OwnerDocument.CreateElement(name);
       else

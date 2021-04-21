@@ -53,7 +53,7 @@ namespace CsCat
       {
         eventName.Despawn();
       }
-      
+
     }
 
     public bool RemoveListener(Action<P0, P1, P2, P3> handler)

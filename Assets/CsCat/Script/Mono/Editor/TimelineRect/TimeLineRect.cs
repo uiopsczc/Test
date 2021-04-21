@@ -64,8 +64,8 @@ namespace CsCat
     public TimelineRect(Func<Rect> total_rect_func, float duration = 0)
     {
       this.total_rect_func = total_rect_func;
-      this.resizableRects = new HorizontalResizableRects(total_rect_func, new[] {140f});
-//      this.resizableRects.SetCanResizable(false);
+      this.resizableRects = new HorizontalResizableRects(total_rect_func, new[] { 140f });
+      //      this.resizableRects.SetCanResizable(false);
       SetDuration(duration);
     }
 

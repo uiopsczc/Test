@@ -13,22 +13,24 @@ using System;
 
 public static class GenCfg
 {
-    [LuaCallCSharp]
-    static List<Type> cfg = new List<Type>()
+  [LuaCallCSharp]
+  static List<Type> cfg = new List<Type>()
     {
         typeof(TextAsset)
     };
 }
 
-public class Helloworld : MonoBehaviour {
-	// Use this for initialization
-	void Start () {
-        LuaEnv luaenv = new LuaEnv();
-        luaenv.AddBuildin("rapidjson", XLua.LuaDLL.Lua.LoadRapidJson);
-        luaenv.AddBuildin("lpeg", XLua.LuaDLL.Lua.LoadLpeg);
-        luaenv.AddBuildin("pb", XLua.LuaDLL.Lua.LoadLuaProfobuf);
-        luaenv.AddBuildin("ffi", XLua.LuaDLL.Lua.LoadFFI);
-        luaenv.DoString(@"
+public class Helloworld : MonoBehaviour
+{
+  // Use this for initialization
+  void Start()
+  {
+    LuaEnv luaenv = new LuaEnv();
+    luaenv.AddBuildin("rapidjson", XLua.LuaDLL.Lua.LoadRapidJson);
+    luaenv.AddBuildin("lpeg", XLua.LuaDLL.Lua.LoadLpeg);
+    luaenv.AddBuildin("pb", XLua.LuaDLL.Lua.LoadLuaProfobuf);
+    luaenv.AddBuildin("ffi", XLua.LuaDLL.Lua.LoadFFI);
+    luaenv.DoString(@"
         ------------------------------------
         local rapidjson = require 'rapidjson' 
         local t = rapidjson.decode('{""a"":123}')
@@ -100,11 +102,12 @@ public class Helloworld : MonoBehaviour {
         end
         "
 );
-        luaenv.Dispose();
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
+    luaenv.Dispose();
+  }
+
+  // Update is called once per frame
+  void Update()
+  {
+
+  }
 }

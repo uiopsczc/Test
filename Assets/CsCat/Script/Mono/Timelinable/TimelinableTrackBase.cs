@@ -18,7 +18,7 @@ namespace CsCat
     [NonSerialized] public int cur_time_itemInfo_index = -1;
 
     [NonSerialized] private bool _is_paused;
-    public bool is_paused { get=> _is_paused;}
+    public bool is_paused { get => _is_paused; }
 
 
     public TimelinableItemInfoBase cur_time_itemInfo
@@ -79,9 +79,9 @@ namespace CsCat
       }
     }
 
-    
 
-   
+
+
 
     public void AddItemInfo(TimelinableItemInfoBase timelinableItemInfo)
     {
@@ -133,7 +133,7 @@ namespace CsCat
       if (pre_state != is_paused)
         OnPauseStateChange();
     }
-    
+
     protected virtual void OnPauseStateChange()
     {
       foreach (var playing_itemInfo in playing_itemInfo_list)
@@ -147,7 +147,7 @@ namespace CsCat
       int start_index = 0;
       //从0开始检查
       Handle_Time(start_index, args);
-      
+
     }
 
     public virtual void Tick(float time, params object[] args)
@@ -226,7 +226,7 @@ namespace CsCat
       for (int i = playing_itemInfo_list.Count - 1; i >= 0; i--)
       {
         var playing_itemInfo = playing_itemInfo_list[i];
-        if (itemInfoes.IndexOf(playing_itemInfo)==-1||!playing_itemInfo.IsTimeInside(time))
+        if (itemInfoes.IndexOf(playing_itemInfo) == -1 || !playing_itemInfo.IsTimeInside(time))
           Stop(playing_itemInfo, args);
       }
     }
@@ -239,6 +239,6 @@ namespace CsCat
         Stop(playing_itemInfo, args);
       }
     }
-    
+
   }
 }

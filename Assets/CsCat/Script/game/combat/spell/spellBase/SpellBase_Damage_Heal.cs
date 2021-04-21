@@ -39,7 +39,7 @@ namespace CsCat
       {
         Hashtable arg_dict = new Hashtable();
         arg_dict["damage_factor"] = _damage_factor;
-        arg_dict["cur_hp_pct"] = source_unit.GetHp() / (float) source_unit.GetMaxHp();
+        arg_dict["cur_hp_pct"] = source_unit.GetHp() / (float)source_unit.GetMaxHp();
         (damage_value, special_effect_dict) = source_unit.propertyComp.CalculateOriginalDamageValue(arg_dict);
       }
       else

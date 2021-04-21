@@ -8,7 +8,7 @@ namespace CsCat
 
     public static T GetTrackAsset<T>(this TimelineAsset self, string track_name) where T : TrackAsset
     {
-      return (T) self.GetTrackAsset(track_name);
+      return (T)self.GetTrackAsset(track_name);
     }
 
     public static TrackAsset GetTrackAsset(this TimelineAsset self, string track_name)

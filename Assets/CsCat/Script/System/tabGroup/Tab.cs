@@ -24,6 +24,6 @@ namespace CsCat
       is_selected = false;
       on_unselect_callback?.Invoke();
     }
-    
+
   }
 }

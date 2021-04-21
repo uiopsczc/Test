@@ -6,7 +6,7 @@ namespace CsCat
 {
   public static class GUIStyleExtension
   {
-    public static GUIStyle Append(this GUIStyle self,Action<GUIStyle> append_callback)
+    public static GUIStyle Append(this GUIStyle self, Action<GUIStyle> append_callback)
     {
       append_callback(self);
       return self;
@@ -17,7 +17,7 @@ namespace CsCat
       return new GUIStyle(self);
     }
 
-    public static GUIStyle SetFontSize(this GUIStyle self,int font_size)
+    public static GUIStyle SetFontSize(this GUIStyle self, int font_size)
     {
       self.fontSize = font_size;
       return self;
@@ -123,7 +123,7 @@ namespace CsCat
       self.overflow = overflow;
       return self;
     }
-    
+
 
   }
 }

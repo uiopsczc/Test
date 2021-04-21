@@ -18,9 +18,9 @@ namespace CsCat
       if (self is IDictionary)
       {
         LinkedHashtable lht = new LinkedHashtable();
-        foreach (object key in ((IDictionary) self).Keys)
+        foreach (object key in ((IDictionary)self).Keys)
         {
-          object value = ((IDictionary) self)[key];
+          object value = ((IDictionary)self)[key];
           lht.Put(key, value.ToLinkedHashtable2());
         }
 
@@ -92,7 +92,7 @@ namespace CsCat
       var iterator = self.GetEnumerator();
       while (iterator.MoveNext(ref cur_index))
       {
-        result.Add((T) iterator.Current);
+        result.Add((T)iterator.Current);
       }
 
       return result;
@@ -111,7 +111,7 @@ namespace CsCat
       var iterator = self.GetEnumerator();
       while (iterator.MoveNext(ref cur_index))
       {
-        result[cur_index] = (T) iterator.Current;
+        result[cur_index] = (T)iterator.Current;
       }
 
       return result;
@@ -163,7 +163,7 @@ namespace CsCat
 
       if (self is IDictionary)
       {
-        foreach (object key in ((IDictionary) self).Keys)
+        foreach (object key in ((IDictionary)self).Keys)
         {
           if (first)
             first = false;
@@ -171,7 +171,7 @@ namespace CsCat
             sb.Append(",");
           sb.Append(key.ToString2(is_fill_string_with_double_quote));
           sb.Append(":");
-          object value = ((IDictionary) self)[key];
+          object value = ((IDictionary)self)[key];
           sb.Append(value.ToString2(is_fill_string_with_double_quote));
         }
       }

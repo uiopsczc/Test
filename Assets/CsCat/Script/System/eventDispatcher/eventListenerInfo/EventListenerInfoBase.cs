@@ -1,6 +1,6 @@
 namespace CsCat
 {
-  public class EventListenerInfoBase: ISpawnable
+  public class EventListenerInfoBase : ISpawnable
   {
     public EventName _eventName;
     public object _handler;

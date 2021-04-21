@@ -26,9 +26,9 @@ namespace CsCat
       foreach (var colliderType in check_colliderType_list_2)
         _tmp_to_check_collider_list_2.AddRange(colliderGroup2.collider_list_dict[colliderType]);
       foreach (var collider1 in _tmp_to_check_collider_list_1)
-      foreach (var collider2 in _tmp_to_check_collider_list_2)
-        if (collider1.IsIntersect(collider2))
-          return true;
+        foreach (var collider2 in _tmp_to_check_collider_list_2)
+          if (collider1.IsIntersect(collider2))
+            return true;
       return false;
     }
 

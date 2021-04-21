@@ -30,7 +30,7 @@ namespace CsCat
 
     public new List<TValue> Values
     {
-      get { return ((ArrayList) table.Values).ToList<TValue>(); }
+      get { return ((ArrayList)table.Values).ToList<TValue>(); }
     }
 
     public List<KeyValuePair<TKey, TValue>> KeyValues
@@ -40,7 +40,7 @@ namespace CsCat
         List<KeyValuePair<TKey, TValue>> list = new List<KeyValuePair<TKey, TValue>>();
         foreach (TKey key in Keys)
         {
-          list.Add(new KeyValuePair<TKey, TValue>(key, (TValue) table[key]));
+          list.Add(new KeyValuePair<TKey, TValue>(key, (TValue)table[key]));
         }
 
         return list;

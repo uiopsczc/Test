@@ -7,7 +7,7 @@ using UnityEngine.Tilemaps;
 
 namespace CsCat
 {
-  public  static partial class TilemapExtension
+  public static partial class TilemapExtension
   {
 #if UNITY_EDITOR
     public static Hashtable GetSerializeHashtable(this Tilemap self, Hashtable ref_id_hashtable = null)
@@ -16,7 +16,7 @@ namespace CsCat
       hashtable["animationFrameRate"] = self.animationFrameRate;
       hashtable["color"] = self.color.ToHtmlStringRGBAOrDefault();
       hashtable["tileAnchor"] = self.tileAnchor.ToStringOrDefault(null, new Vector3(0.5f, 0.5f, 0));
-      hashtable["orientation"] = (int) self.orientation;
+      hashtable["orientation"] = (int)self.orientation;
 
       Hashtable tile_hashtable = new Hashtable();
       Vector3Int size = self.size;
@@ -44,7 +44,7 @@ namespace CsCat
             ref_id_hashtable[ref_id] = true;
 
           TileFlags tileFlags = self.GetTileFlags(current);
-          tile_detail_hashtable["tileFlags"] = (int) tileFlags;
+          tile_detail_hashtable["tileFlags"] = (int)tileFlags;
 
           tile_detail_hashtable["transformMatrix"] =
             self.GetTransformMatrix(current).ToStringOrDefault(null, Matrix4x4.identity);
@@ -83,7 +83,7 @@ namespace CsCat
         {
           TileBase tileBase = assetCat.Get<TileBase>();
           SetTile(self, cell_pos, tileBase, tile_detail_hashtable);
-        },null, null, self);
+        }, null, null, self);
       }
     }
   }

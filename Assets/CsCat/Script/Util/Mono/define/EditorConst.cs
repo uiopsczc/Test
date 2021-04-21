@@ -10,7 +10,7 @@ namespace CsCat
 
     public static Texture2D White_Texture { get { return EditorGUIUtility.whiteTexture; } }
 
-    
+
   }
 }
 #endif

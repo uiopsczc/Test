@@ -63,7 +63,7 @@ namespace CsCat
 
     public override IDictionaryEnumerator GetEnumerator()
     {
-      DictionaryEnumerator enumerator = new DictionaryEnumerator(key_list, (ArrayList) Values);
+      DictionaryEnumerator enumerator = new DictionaryEnumerator(key_list, (ArrayList)Values);
       return enumerator;
     }
 

@@ -6,13 +6,13 @@ namespace CsCat
   {
     public string assetBundle_name { get; protected set; }
 
-    public AssetBundleCat assetBundleCat { get;  set; }
+    public AssetBundleCat assetBundleCat { get; set; }
 
     public virtual List<string> GetAssetBundlePathList()
     {
       return null;
     }
-    
+
     protected override void __Destroy()
     {
       base.__Destroy();

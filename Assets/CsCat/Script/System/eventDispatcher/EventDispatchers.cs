@@ -37,7 +37,7 @@ namespace CsCat
 
     private EventDispatcher<P0> GetEventDispatcher<P0>()
     {
-      var args = PoolCatManagerUtil.Spawn<Args>(_args => _args.Init(EventDispatcher_Name,typeof(P0)));
+      var args = PoolCatManagerUtil.Spawn<Args>(_args => _args.Init(EventDispatcher_Name, typeof(P0)));
       if (cache.ContainsKey(args))
       {
         var result = cache.Get<EventDispatcher<P0>>(args);
@@ -54,16 +54,16 @@ namespace CsCat
 
     private EventDispatcher<P0, P1> GetEventDispatcher<P0, P1>()
     {
-      var args = PoolCatManagerUtil.Spawn<Args>(_args => _args.Init(EventDispatcher_Name,typeof(P0),typeof(P1)));
+      var args = PoolCatManagerUtil.Spawn<Args>(_args => _args.Init(EventDispatcher_Name, typeof(P0), typeof(P1)));
       if (cache.ContainsKey(args))
       {
-        var result = cache.Get<EventDispatcher<P0,P1>>(args);
+        var result = cache.Get<EventDispatcher<P0, P1>>(args);
         args.Despawn();
         return result;
       }
       else
       {
-        var result = new EventDispatcher<P0,P1>();
+        var result = new EventDispatcher<P0, P1>();
         cache[args] = result;
         return result;
       }
@@ -71,16 +71,16 @@ namespace CsCat
 
     private EventDispatcher<P0, P1, P2> GetEventDispatcher<P0, P1, P2>()
     {
-      var args = PoolCatManagerUtil.Spawn<Args>(_args => _args.Init(EventDispatcher_Name,typeof(P0),typeof(P1),typeof(P2)));
+      var args = PoolCatManagerUtil.Spawn<Args>(_args => _args.Init(EventDispatcher_Name, typeof(P0), typeof(P1), typeof(P2)));
       if (cache.ContainsKey(args))
       {
-        var result = cache.Get<EventDispatcher<P0,P1,P2>>(args);
+        var result = cache.Get<EventDispatcher<P0, P1, P2>>(args);
         args.Despawn();
         return result;
       }
       else
       {
-        var result = new EventDispatcher<P0,P1,P2>();
+        var result = new EventDispatcher<P0, P1, P2>();
         cache[args] = result;
         return result;
       }
@@ -88,16 +88,16 @@ namespace CsCat
 
     private EventDispatcher<P0, P1, P2, P3> GetEventDispatcher<P0, P1, P2, P3>()
     {
-      var args = PoolCatManagerUtil.Spawn<Args>(_args => _args.Init(EventDispatcher_Name,typeof(P0),typeof(P1),typeof(P2),typeof(P3)));
+      var args = PoolCatManagerUtil.Spawn<Args>(_args => _args.Init(EventDispatcher_Name, typeof(P0), typeof(P1), typeof(P2), typeof(P3)));
       if (cache.ContainsKey(args))
       {
-        var result = cache.Get<EventDispatcher<P0,P1,P2,P3>>(args);
+        var result = cache.Get<EventDispatcher<P0, P1, P2, P3>>(args);
         args.Despawn();
         return result;
       }
       else
       {
-        var result = new EventDispatcher<P0,P1,P2,P3>();
+        var result = new EventDispatcher<P0, P1, P2, P3>();
         cache[args] = result;
         return result;
       }
@@ -123,7 +123,7 @@ namespace CsCat
 
     private List<EventListenerInfo<P0>> GetListeners<P0>()
     {
-      var args = PoolCatManagerUtil.Spawn<Args>(_args => _args.Init(Listeners_Name,typeof(P0)));
+      var args = PoolCatManagerUtil.Spawn<Args>(_args => _args.Init(Listeners_Name, typeof(P0)));
       if (cache.ContainsKey(args))
       {
         var result = cache.Get<List<EventListenerInfo<P0>>>(args);
@@ -140,16 +140,16 @@ namespace CsCat
 
     private List<EventListenerInfo<P0, P1>> GetListeners<P0, P1>()
     {
-      var args = PoolCatManagerUtil.Spawn<Args>(_args => _args.Init(Listeners_Name,typeof(P0),typeof(P1)));
+      var args = PoolCatManagerUtil.Spawn<Args>(_args => _args.Init(Listeners_Name, typeof(P0), typeof(P1)));
       if (cache.ContainsKey(args))
       {
-        var result = cache.Get<List<EventListenerInfo<P0,P1>>>(args);
+        var result = cache.Get<List<EventListenerInfo<P0, P1>>>(args);
         args.Despawn();
         return result;
       }
       else
       {
-        var result = new List<EventListenerInfo<P0,P1>>();
+        var result = new List<EventListenerInfo<P0, P1>>();
         cache[args] = result;
         return result;
       }
@@ -160,13 +160,13 @@ namespace CsCat
       var args = PoolCatManagerUtil.Spawn<Args>(_args => _args.Init(Listeners_Name, typeof(P0), typeof(P1), typeof(P2)));
       if (cache.ContainsKey(args))
       {
-        var result = cache.Get<List<EventListenerInfo<P0, P1,P2>>>(args);
+        var result = cache.Get<List<EventListenerInfo<P0, P1, P2>>>(args);
         args.Despawn();
         return result;
       }
       else
       {
-        var result = new List<EventListenerInfo<P0, P1,P2>>();
+        var result = new List<EventListenerInfo<P0, P1, P2>>();
         cache[args] = result;
         return result;
       }
@@ -174,16 +174,16 @@ namespace CsCat
 
     private List<EventListenerInfo<P0, P1, P2, P3>> GetListeners<P0, P1, P2, P3>()
     {
-      var args = PoolCatManagerUtil.Spawn<Args>(_args => _args.Init(Listeners_Name, typeof(P0), typeof(P1), typeof(P2),typeof(P3)));
+      var args = PoolCatManagerUtil.Spawn<Args>(_args => _args.Init(Listeners_Name, typeof(P0), typeof(P1), typeof(P2), typeof(P3)));
       if (cache.ContainsKey(args))
       {
-        var result = cache.Get<List<EventListenerInfo<P0, P1, P2,P3>>>(args);
+        var result = cache.Get<List<EventListenerInfo<P0, P1, P2, P3>>>(args);
         args.Despawn();
         return result;
       }
       else
       {
-        var result = new List<EventListenerInfo<P0, P1, P2,P3>>();
+        var result = new List<EventListenerInfo<P0, P1, P2, P3>>();
         cache[args] = result;
         return result;
       }
@@ -216,7 +216,7 @@ namespace CsCat
     {
       var listeners = GetListeners();
       int index = listeners.IndexOf(eventListenerInfo);
-      if (index!=-1)
+      if (index != -1)
       {
         var to_despawn = listeners[index];
         listeners.RemoveAt(index);
@@ -248,7 +248,7 @@ namespace CsCat
         return false;
       return RemoveListener(listener);
     }
-    
+
 
     public void Broadcast(string eventName)
     {
@@ -288,7 +288,7 @@ namespace CsCat
     {
       var listeners = GetListeners<P0>();
       int index = listeners.IndexOf(eventListenerInfo);
-      if (index!=-1)
+      if (index != -1)
       {
         var to_despawn = listeners[index];
         listeners.RemoveAt(index);
@@ -320,7 +320,7 @@ namespace CsCat
         return false;
       return RemoveListener(listener);
     }
-    
+
 
     public void Broadcast<P0>(string eventName, P0 p0)
     {
@@ -360,7 +360,7 @@ namespace CsCat
     {
       var listeners = GetListeners<P0, P1>();
       int index = listeners.IndexOf(eventListenerInfo);
-      if (index!=-1)
+      if (index != -1)
       {
         var to_despawn = listeners[index];
         listeners.RemoveAt(index);
@@ -380,7 +380,7 @@ namespace CsCat
       {
         if (element.handler.Equals(handler))
         {
-          listener = PoolCatManagerUtil.Spawn<EventListenerInfo<P0, P1>>().Init(element.eventName, element.handler) ;
+          listener = PoolCatManagerUtil.Spawn<EventListenerInfo<P0, P1>>().Init(element.eventName, element.handler);
           break;
         }
       }
@@ -451,7 +451,7 @@ namespace CsCat
       {
         if (element.handler.Equals(handler))
         {
-          listener = PoolCatManagerUtil.Spawn<EventListenerInfo<P0, P1, P2>>().Init(element.eventName, element.handler) ;
+          listener = PoolCatManagerUtil.Spawn<EventListenerInfo<P0, P1, P2>>().Init(element.eventName, element.handler);
           break;
         }
       }
@@ -461,7 +461,7 @@ namespace CsCat
       return RemoveListener(listener);
     }
 
-    
+
 
     public void Broadcast<P0, P1, P2>(string eventName, P0 p0, P1 p1, P2 p2)
     {
@@ -506,7 +506,7 @@ namespace CsCat
     {
       var listeners = GetListeners<P0, P1, P2, P3>();
       int index = listeners.IndexOf(eventListenerInfo);
-      if (index!=-1)
+      if (index != -1)
       {
         var to_despawn = listeners[index];
         listeners.RemoveAt(index);
@@ -529,7 +529,7 @@ namespace CsCat
       {
         if (element.handler.Equals(handler))
         {
-          listener =PoolCatManagerUtil.Spawn<EventListenerInfo<P0, P1, P2, P3>>().Init(element.eventName,element.handler) ;
+          listener = PoolCatManagerUtil.Spawn<EventListenerInfo<P0, P1, P2, P3>>().Init(element.eventName, element.handler);
           break;
         }
       }
@@ -538,7 +538,7 @@ namespace CsCat
         return false;
       return RemoveListener(listener);
     }
-    
+
     public void Broadcast<P0, P1, P2, P3>(string eventName, P0 p0, P1 p1, P2 p2, P3 p3)
     {
       Broadcast(eventName.ToEventName(source), p0, p1, p2, p3);
@@ -559,7 +559,7 @@ namespace CsCat
           var eventDispatcher = (IEventDispatcher)cache.dict[key];
           eventDispatcher.RemoveAllListeners();
         }
-        if(key is Args)
+        if (key is Args)
           key.Despawn();
       }
 

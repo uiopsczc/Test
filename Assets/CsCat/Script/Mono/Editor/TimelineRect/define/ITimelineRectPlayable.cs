@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public  interface ITimelineRectPlayable
+  public interface ITimelineRectPlayable
   {
     void OnPlay(TimelineRect timelineRect);
     bool OnStop(TimelineRect timelineRect);

@@ -55,7 +55,7 @@ namespace CsCat
     {
       AddPauseCount(-1);
     }
-    
+
 
     public void Reset()
     {

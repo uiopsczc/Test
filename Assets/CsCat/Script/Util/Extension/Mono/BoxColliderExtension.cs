@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public  static partial class BoxColliderExtension
+  public static partial class BoxColliderExtension
   {
     /// <summary>
     /// 世界坐标（中点）
@@ -109,7 +109,7 @@ namespace CsCat
     {
       return BoxColliderUtil.WorldSize(self);
     }
-    
+
 
 
 #if UNITY_EDITOR

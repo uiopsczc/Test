@@ -22,7 +22,7 @@ namespace CsCat
     {
       base.__Destroy();
       Client.instance.uiManager.uiShowLogoPanel.graphicComponent.gameObject.SetActive(false);
-      
+
     }
 
 

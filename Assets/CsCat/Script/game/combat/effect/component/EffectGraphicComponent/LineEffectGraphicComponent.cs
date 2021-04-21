@@ -7,7 +7,7 @@ namespace CsCat
   public class LineEffectGraphicComponent : EffectGraphicComponent
   {
     private List<XLineRenderer> xlineRenderer_list = new List<XLineRenderer>();
-    
+
     public override void OnAllAssetsLoadDone()
     {
       base.OnAllAssetsLoadDone();
@@ -22,7 +22,7 @@ namespace CsCat
       transform.eulerAngles = this.effectEntity.transformComponent.eulerAngles;
       foreach (var line in xlineRenderer_list)
       {
-        line.target.position = effectEntity.GetComponent<LineEffectComponent>().target_position ;
+        line.target.position = effectEntity.GetComponent<LineEffectComponent>().target_position;
         line.target.eulerAngles = this.effectEntity.transformComponent.eulerAngles;
       }
     }

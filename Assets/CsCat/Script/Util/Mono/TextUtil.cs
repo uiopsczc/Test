@@ -31,12 +31,12 @@ namespace CsCat
 
     public static void SetAlpha(Text text, float alpha)
     {
-      text.color = new Color(text.color.r, text.color.g, text.color.b,alpha);
+      text.color = new Color(text.color.r, text.color.g, text.color.b, alpha);
     }
 
-    public static void SetColor(Text text, Color color,bool is_not_use_color_alpha = false)
+    public static void SetColor(Text text, Color color, bool is_not_use_color_alpha = false)
     {
-      text.color = new Color(color.r, color.g, color.b, is_not_use_color_alpha? text.color.a: color.a);
+      text.color = new Color(color.r, color.g, color.b, is_not_use_color_alpha ? text.color.a : color.a);
     }
   }
 }

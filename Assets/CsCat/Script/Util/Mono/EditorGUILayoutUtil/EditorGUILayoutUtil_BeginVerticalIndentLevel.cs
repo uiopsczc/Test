@@ -5,9 +5,9 @@ namespace CsCat
 {
   public partial class EditorGUILayoutUtil
   {
-    public static EditorGUILayoutBeginVerticalIndentLevelScope BeginVerticalIndentLevel(int add = 1,params GUILayoutOption[] options)
+    public static EditorGUILayoutBeginVerticalIndentLevelScope BeginVerticalIndentLevel(int add = 1, params GUILayoutOption[] options)
     {
-      return new EditorGUILayoutBeginVerticalIndentLevelScope(add,options);
+      return new EditorGUILayoutBeginVerticalIndentLevelScope(add, options);
     }
 
     public static EditorGUILayoutBeginVerticalIndentLevelScope BeginVerticalIndentLevel(GUIStyle style, int add = 1, params GUILayoutOption[] options)

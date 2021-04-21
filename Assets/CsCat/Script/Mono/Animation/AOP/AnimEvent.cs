@@ -17,11 +17,11 @@ namespace CsCat
     /// </summary>
     private readonly Dictionary<string, List<DelegateStruct>> event_callback_dict =
       new Dictionary<string, List<DelegateStruct>>();
-    
+
 
     private Animator animator => GetComponent<Animator>();
     private AnimationClip[] clips => animator.runtimeAnimatorController.animationClips;
-    
+
 
     #region private method
 
@@ -38,7 +38,7 @@ namespace CsCat
     }
 
     #endregion
-    
+
     #region public method
 
     public string GetEventKey(string clip_name, float percentage)
@@ -81,7 +81,7 @@ namespace CsCat
 
     public AnimEvent AddEvents(Action callback, string clip_name, float percentage)
     {
-      return AddEvents((Delegate) callback, clip_name, percentage);
+      return AddEvents((Delegate)callback, clip_name, percentage);
     }
 
     #endregion
@@ -98,7 +98,7 @@ namespace CsCat
 
     public AnimEvent ReplaceEvents(Action callback, string clip_name, float percentage)
     {
-      return ReplaceEvents((Delegate) callback, clip_name, percentage);
+      return ReplaceEvents((Delegate)callback, clip_name, percentage);
     }
 
     #endregion

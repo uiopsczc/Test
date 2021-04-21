@@ -8,7 +8,7 @@ namespace CsCat
     {
       get { return cache.GetOrAddDefault(() => { return this.GetParent<GameEntity>().timerManager; }); }
     }
-    
+
     /// <summary>
     /// duration needRunCount 里面随便一个触碰底线都会结束
     /// </summary>
@@ -42,6 +42,6 @@ namespace CsCat
     {
       this.timerManagerPluginComponent.RemoveAllTimers();
     }
-    
+
   }
 }

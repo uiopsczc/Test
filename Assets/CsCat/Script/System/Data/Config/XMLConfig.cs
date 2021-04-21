@@ -272,7 +272,7 @@ namespace CsCat
             child_node_name = child_node_name.Trim();
             string parse_class_string = XMLUtil.GetNodeAttrValue(child, "parseClass", "");
             if (parse_class_string.Length > 0)
-              sub_config = (XMLConfig) Activator.CreateInstance(Type.GetType(parse_class_string));
+              sub_config = (XMLConfig)Activator.CreateInstance(Type.GetType(parse_class_string));
             else
               sub_config = new XMLConfig();
             sub_config.parent_config = this;
@@ -297,14 +297,14 @@ namespace CsCat
 
     public XMLConfig GetConfig(int index)
     {
-      return (XMLConfig) this.config_list[index];
+      return (XMLConfig)this.config_list[index];
     }
 
     public bool HasConfig(string tag)
     {
       for (int i = 0; i < this.config_list.Count; i++)
       {
-        XMLConfig conf = (XMLConfig) this.config_list[i];
+        XMLConfig conf = (XMLConfig)this.config_list[i];
         if (tag == conf.GetName())
           return true;
       }
@@ -316,7 +316,7 @@ namespace CsCat
     {
       for (int i = 0; i < this.config_list.Count; i++)
       {
-        XMLConfig config = (XMLConfig) this.config_list[i];
+        XMLConfig config = (XMLConfig)this.config_list[i];
         if (tag == config.GetName())
           return config;
       }
@@ -329,7 +329,7 @@ namespace CsCat
       List<XMLConfig> config_list = new List<XMLConfig>();
       for (int i = 0; i < this.config_list.Count; i++)
       {
-        XMLConfig config = (XMLConfig) this.config_list[i];
+        XMLConfig config = (XMLConfig)this.config_list[i];
         if (tag == config.GetName())
           config_list.Add(config);
       }
@@ -350,7 +350,7 @@ namespace CsCat
     {
       for (int i = 0; i < GetConfigCount(); i++)
       {
-        XMLConfig config = (XMLConfig) this.config_list[i];
+        XMLConfig config = (XMLConfig)this.config_list[i];
         if (config.GetAttribute(attr_name) == attr_value)
           return config;
       }
@@ -363,7 +363,7 @@ namespace CsCat
       Regex r = new Regex(attr_value, RegexOptions.IgnoreCase);
       for (int i = 0; i < GetConfigCount(); i++)
       {
-        XMLConfig config = (XMLConfig) this.config_list[i];
+        XMLConfig config = (XMLConfig)this.config_list[i];
         if (config.HasAttribute(attr_name))
         {
           Match m = r.Match(config.GetAttribute(attr_name));
@@ -485,7 +485,7 @@ namespace CsCat
       }
 
       for (int i = 0; i < config.config_list.Count; i++)
-        ToXMLNode(root, (XMLConfig) config.config_list[i]);
+        ToXMLNode(root, (XMLConfig)config.config_list[i]);
       return root;
     }
 

@@ -6,7 +6,7 @@ namespace CsCat
   {
     public T Get<T>(object key)
     {
-      return (T) base[key];
+      return (T)base[key];
     }
   }
 }

@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public  interface ITimelineRect
+  public interface ITimelineRect
   {
     void OnDrawTracks(TimelineRect timelineRect);
     bool OnTrySelectAnyone(TimelineRect timelineRect);

@@ -17,13 +17,13 @@ namespace CsCat
 
     public T GetChild<T>(string child_key) where T : AbstractEntity
     {
-      return (T) GetChild(child_key);
+      return (T)GetChild(child_key);
     }
 
     public AbstractEntity GetChild(Type child_type)
     {
       foreach (var child in ForeachChild(child_type))
-          return child;
+        return child;
       return null;
     }
 
@@ -65,14 +65,14 @@ namespace CsCat
         list.Clear();
         PoolCatManagerUtil.Despawn(list);
       }
-      
+
     }
 
     public T[] GetChildren<T>() where T : AbstractEntity
     {
       return (T[])GetChildren(typeof(T));
     }
-    
+
 
     public AbstractEntity[] GetChildrenStrictly(Type child_type)
     {
@@ -93,12 +93,12 @@ namespace CsCat
         list.Clear();
         PoolCatManagerUtil.Despawn(list);
       }
-      
+
     }
 
     public T[] GetChildrenStrictly<T>() where T : AbstractEntity
     {
-      return (T[]) GetChildrenStrictly(typeof(T));
+      return (T[])GetChildrenStrictly(typeof(T));
     }
   }
 }

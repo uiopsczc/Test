@@ -21,7 +21,7 @@ namespace CsCat
 
         DirectionInfo directionInfo = DirectionConst.GetDirectionInfo(p.x - lp.x, p.y - lp.y);
         //      directionInfo = DirectionConst.GetDirectionInfo(0, 0); // 不再判断临边障碍 2012-10-29
-//      LogCat.log(directionInfo.name);
+        //      LogCat.log(directionInfo.name);
         if (directionInfo == DirectionConst.GetDirectionInfo("left_top")) // 左上角
         {
 

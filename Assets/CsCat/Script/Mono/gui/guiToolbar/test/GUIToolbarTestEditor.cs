@@ -23,7 +23,7 @@ namespace CsCat
       guiToolbar = new GUIToolbar(button_guiContent_list);
       guiToolbar.OnToolSelected += OnToolSelected;
       guiToolbar.TriggerButton(1);
-//    guiToolbar.SetHighlight(3, true);
+      //    guiToolbar.SetHighlight(3, true);
     }
 
     void OnDisable()

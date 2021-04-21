@@ -88,19 +88,19 @@ namespace CsCat
     #region static method
 
     private static int Parent(int index)
-      //helper function that calculates the parent of a node
+    //helper function that calculates the parent of a node
     {
       return (index - 1) >> 1;
     }
 
     private static int Child1(int index)
-      //helper function that calculates the first child of a node
+    //helper function that calculates the first child of a node
     {
       return (index << 1) + 1;
     }
 
     private static int Child2(int index)
-      //helper function that calculates the second child of a node
+    //helper function that calculates the second child of a node
     {
       return (index << 1) + 2;
     }
@@ -228,7 +228,7 @@ namespace CsCat
     #region private method
 
     private void UpHeap()
-      //helper function that performs up-heap bubbling
+    //helper function that performs up-heap bubbling
     {
       _sorted = false;
       var p = Count;
@@ -245,7 +245,7 @@ namespace CsCat
     }
 
     private void DownHeap()
-      //helper function that performs down-heap bubbling
+    //helper function that performs down-heap bubbling
     {
       _sorted = false;
       int n;

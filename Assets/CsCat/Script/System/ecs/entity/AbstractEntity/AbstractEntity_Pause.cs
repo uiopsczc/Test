@@ -6,14 +6,14 @@ namespace CsCat
   public partial class AbstractEntity
   {
     protected bool _is_paused;
-    public bool is_paused=> _is_paused;
+    public bool is_paused => _is_paused;
 
     public virtual void SetIsPaused(bool is_paused, bool is_loop_children = false)
     {
       if (_is_paused == is_paused)
         return;
       this._is_paused = is_paused;
-      if(is_loop_children)
+      if (is_loop_children)
         SetAllChildrenIsPaused(is_paused);
       SetAllComponentsIsPaused(is_paused);
       __SetIsPaused(is_paused);

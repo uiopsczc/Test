@@ -20,7 +20,7 @@ namespace CsCat
           duration = _animationClip.length;
       }
     }
-    public float cross_fade_duration=0.1f;
+    public float cross_fade_duration = 0.1f;
 
 
     public float speed
@@ -63,7 +63,7 @@ namespace CsCat
 
     public override void Play(params object[] args)
     {
-      var track = args[args.Length-1] as AnimationTimelinableTrack;
+      var track = args[args.Length - 1] as AnimationTimelinableTrack;
       var animator = args[0] as Animator;
       if (animator != null)
       {

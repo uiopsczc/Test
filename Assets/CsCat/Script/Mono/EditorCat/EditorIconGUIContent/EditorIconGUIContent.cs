@@ -8,7 +8,7 @@ namespace CsCat
   public class EditorIconGUIContent
   {
     static Dictionary<string, GUIContent> icon_GUIContent_cache_dict = new Dictionary<string, GUIContent>();
-    
+
     public static int count { get { return icon_GUIContent_cache_dict.Count; } }
 
     public static GUIContent custom_GUIContent
@@ -20,13 +20,13 @@ namespace CsCat
       }
     }
 
-  
+
     public static GUIContent Get(string name, string text, string tips)
     {
       if (icon_GUIContent_cache_dict.ContainsKey(name))
         return icon_GUIContent_cache_dict[name];
       GUIContent gui_content = new GUIContent(text, EditorIconTexture.GetCustom(name), tips);
-      icon_GUIContent_cache_dict[name]=gui_content;
+      icon_GUIContent_cache_dict[name] = gui_content;
       return gui_content;
     }
 
@@ -35,7 +35,7 @@ namespace CsCat
       if (icon_GUIContent_cache_dict.ContainsKey(name))
         return icon_GUIContent_cache_dict[name];
       GUIContent gui_content = new GUIContent(text, EditorIconTexture.GetCustom(name));
-      icon_GUIContent_cache_dict[name]=gui_content;
+      icon_GUIContent_cache_dict[name] = gui_content;
       return gui_content;
     }
 
@@ -64,7 +64,7 @@ namespace CsCat
         return icon_GUIContent_cache_dict[name];
 
       GUIContent gui_content = EditorGUIUtility.IconContent(name);
-      icon_GUIContent_cache_dict[name]=gui_content;
+      icon_GUIContent_cache_dict[name] = gui_content;
       return gui_content;
     }
   }

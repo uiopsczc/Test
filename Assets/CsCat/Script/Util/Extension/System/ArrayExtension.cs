@@ -24,7 +24,7 @@ namespace CsCat
       if (!self.IsNullOrEmpty())
       {
         foreach (object t in self)
-          ls.Add((T) t);
+          ls.Add((T)t);
       }
 
       return ls;
@@ -255,8 +255,8 @@ namespace CsCat
     {
       List<T> result = new List<T>(self);
       foreach (T[] t in arrs)
-      foreach (T element in t)
-        result.Add(element);
+        foreach (T element in t)
+          result.Add(element);
       if (is_unique)
         result = result.Unique();
       return result.ToArray();
@@ -303,8 +303,8 @@ namespace CsCat
       int result_width = self_height;
       var result = InitArrays(self, result_height, result_width);
       for (int i = 0; i < result_width; i++)
-      for (int j = 0; j < result_height; j++)
-        result[j][result_width - 1 - i] = self[i][j];
+        for (int j = 0; j < result_height; j++)
+          result[j][result_width - 1 - i] = self[i][j];
       return result;
     }
 
@@ -342,11 +342,11 @@ namespace CsCat
 
     public static void CopyTo<T>(this T[] self, T[] dest_array, params object[] construct_args) where T : ICopyable
     {
-      dest_array =new T[self.Length];
+      dest_array = new T[self.Length];
       for (int i = 0; i < self.Length; i++)
       {
         var dest_element = typeof(T).CreateInstance<T>(construct_args);
-        dest_array[i]=dest_element;
+        dest_array[i] = dest_element;
         self[i].CopyTo(dest_element);
       }
     }

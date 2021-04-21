@@ -9,7 +9,7 @@ namespace CsCat
   {
     private bool is_playing;
     private float pre_realtimeSinceStartup_of_play_time;
-    private float play_speed=1f;
+    private float play_speed = 1f;
 
     public void DrawLeftTop()
     {
@@ -42,14 +42,14 @@ namespace CsCat
 
         using (new EditorGUIUtilityLabelWidthScope(30))
         {
-          frame_count_per_second = EditorGUILayout.IntField("FPS", frame_count_per_second, GUILayout.Width(30+25));
+          frame_count_per_second = EditorGUILayout.IntField("FPS", frame_count_per_second, GUILayout.Width(30 + 25));
           if (frame_count_per_second <= 1)
             frame_count_per_second = 1;
         }
 
         using (new EditorGUIUtilityLabelWidthScope(70))
         {
-          play_speed = EditorGUILayout.FloatField("play_speed", play_speed, GUILayout.Width(70+25));
+          play_speed = EditorGUILayout.FloatField("play_speed", play_speed, GUILayout.Width(70 + 25));
           if (play_speed <= 0)
             play_speed = 1;
         }
@@ -66,7 +66,7 @@ namespace CsCat
       else
         Pause();
     }
-    
+
 
     void Play()
     {

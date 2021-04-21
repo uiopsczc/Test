@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public class Vector2Phase: AbstractPhase<Vector2>
+  public class Vector2Phase : AbstractPhase<Vector2>
   {
     public override Vector2 Lerp(AbstractPhase<Vector2> to_phase, int lerp_tick)
     {

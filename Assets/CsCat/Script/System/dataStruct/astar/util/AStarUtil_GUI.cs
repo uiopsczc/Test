@@ -36,7 +36,7 @@ namespace CsCat
 
     public static void GUIShowPointList(int left, int bottom, int right, int top, Vector2Int point)
     {
-      GUIShowPointList(left, bottom, right, top, new List<Vector2Int>() {point});
+      GUIShowPointList(left, bottom, right, top, new List<Vector2Int>() { point });
     }
 
 

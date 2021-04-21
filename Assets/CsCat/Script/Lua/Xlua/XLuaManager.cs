@@ -151,18 +151,18 @@ namespace CsCat
 
     public T Get<T>(string key)
     {
-//    string[] splits = key.Split(".");
-//    int i = 0;
-//    if (splits.Length == 1)
-//      return luaEnv.Global.Get<T>(splits[0]);
-//    LuaTable luaTable = luaEnv.Global;
-//    while (i < splits.Length - 1)
-//    {
-//      luaTable = luaTable.Get<LuaTable>(splits[i]);
-//      i++;
-//    }
-//
-//    return luaTable.Get<T>(splits[i]);
+      //    string[] splits = key.Split(".");
+      //    int i = 0;
+      //    if (splits.Length == 1)
+      //      return luaEnv.Global.Get<T>(splits[0]);
+      //    LuaTable luaTable = luaEnv.Global;
+      //    while (i < splits.Length - 1)
+      //    {
+      //      luaTable = luaTable.Get<LuaTable>(splits[i]);
+      //      i++;
+      //    }
+      //
+      //    return luaTable.Get<T>(splits[i]);
       return this.luaEnv.Global.GetInPath<T>(key);
     }
 

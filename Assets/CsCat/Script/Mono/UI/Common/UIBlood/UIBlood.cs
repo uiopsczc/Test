@@ -35,13 +35,13 @@ namespace CsCat
       this.slider_color_list = this.slider_color_list ?? UIBloodConst.Color_List1;
     }
 
-//    public override GameObject InstantiateGameObject(GameObject prefab)
-//    {
-//      GameObject clone = Client.instance.uiManager.uiBloodManager.SpawnUIBloodGameObject();
-//      if (clone == null)
-//        clone = GameObject.Instantiate(prefab);
-//      return clone;
-//    }
+    //    public override GameObject InstantiateGameObject(GameObject prefab)
+    //    {
+    //      GameObject clone = Client.instance.uiManager.uiBloodManager.SpawnUIBloodGameObject();
+    //      if (clone == null)
+    //        clone = GameObject.Instantiate(prefab);
+    //      return clone;
+    //    }
 
     public override void InitGameObjectChildren()
     {
@@ -51,12 +51,12 @@ namespace CsCat
       this.slider_front_image = graphicComponent.transform.FindChildRecursive("Fill").GetComponent<Image>();
     }
 
-//    public override void OnAllAssetsLoadDone()
-//    {
-//      base.OnAllAssetsLoadDone();
-//      graphicComponent.SetIsNotDestroyGameObject(true);
-//      __OnAllAssetsLoadDone();
-//    }
+    //    public override void OnAllAssetsLoadDone()
+    //    {
+    //      base.OnAllAssetsLoadDone();
+    //      graphicComponent.SetIsNotDestroyGameObject(true);
+    //      __OnAllAssetsLoadDone();
+    //    }
 
     // spawn的时候重用
     public void __OnAllAssetsLoadDone()
@@ -88,8 +88,8 @@ namespace CsCat
       else
       {
         float slider_each_value = this.max_value / this.slider_count;
-        index = (int) Mathf.Ceil(value / slider_each_value);
-        int int_part = (int) Mathf.Floor(value / slider_each_value);
+        index = (int)Mathf.Ceil(value / slider_each_value);
+        int int_part = (int)Mathf.Floor(value / slider_each_value);
         float fractional_part = value / slider_each_value - int_part;
         pct = fractional_part;
         if (int_part == index)

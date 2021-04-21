@@ -22,10 +22,10 @@ namespace CsCat
       0, //填充区域,对应int的数值是7
     };
 
-    public static int[] Skill_Can_Pass_Obstacle_Types = {1, 1, 1, 1, 0, 0, 0, 0}; // skill默认可通过障碍 0表示不能通过，1表示可以通过
+    public static int[] Skill_Can_Pass_Obstacle_Types = { 1, 1, 1, 1, 0, 0, 0, 0 }; // skill默认可通过障碍 0表示不能通过，1表示可以通过
 
     /////////////////////////////////////////////////////0, 1, 2, 3, 4, 5, 6, 7  对应的int数值
-    public static int[] Air_Can_Pass_Obstacle_Types = {1, 1, 1, 1, 1, 1, 1, 1}; // 空中可通过障碍 0表示不能通过，1表示可以通过
+    public static int[] Air_Can_Pass_Obstacle_Types = { 1, 1, 1, 1, 1, 1, 1, 1 }; // 空中可通过障碍 0表示不能通过，1表示可以通过
 
 
 

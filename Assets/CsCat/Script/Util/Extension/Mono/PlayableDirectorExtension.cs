@@ -11,7 +11,7 @@ namespace CsCat
     public static List<Object> CloneTrack(this PlayableDirector self, PlayableDirector dest, string track_name)
     {
       List<Object> to_remove_list = new List<Object>();
-      TimelineAsset source_timelineAsset = (TimelineAsset) self.playableAsset;
+      TimelineAsset source_timelineAsset = (TimelineAsset)self.playableAsset;
       TimelineAsset clone_timelineAsset = source_timelineAsset.CloneTrackAsset(track_name);
       dest.playableAsset = clone_timelineAsset;
       to_remove_list.Add(clone_timelineAsset);
@@ -44,13 +44,13 @@ namespace CsCat
 
     public static T GetTrackAsset<T>(this PlayableDirector self, string track_name) where T : TrackAsset
     {
-      TimelineAsset timelineAsset = (TimelineAsset) self.playableAsset;
-      return (T) timelineAsset.GetTrackAsset(track_name);
+      TimelineAsset timelineAsset = (TimelineAsset)self.playableAsset;
+      return (T)timelineAsset.GetTrackAsset(track_name);
     }
 
     public static TrackAsset GetTrackAsset(this PlayableDirector self, string track_name)
     {
-      TimelineAsset timelineAsset = (TimelineAsset) self.playableAsset;
+      TimelineAsset timelineAsset = (TimelineAsset)self.playableAsset;
       return timelineAsset.GetTrackAsset(track_name);
     }
 

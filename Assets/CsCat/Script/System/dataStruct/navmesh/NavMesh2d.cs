@@ -70,7 +70,7 @@ namespace CsCat
 
       if (start_cell == end_cell)
       {
-        outPath = new List<Vector2> {start_point, end_point};
+        outPath = new List<Vector2> { start_point, end_point };
       }
       else
       {

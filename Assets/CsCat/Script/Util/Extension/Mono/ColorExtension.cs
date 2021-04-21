@@ -88,7 +88,7 @@ namespace CsCat
         return to_default_value;
       return self.ToHtmlStringRGBA();
     }
-    
+
 
   }
 }

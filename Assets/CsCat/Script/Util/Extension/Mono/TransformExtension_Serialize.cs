@@ -7,7 +7,7 @@ namespace CsCat
 {
   public static partial class TransformExtension
   {
-    
+
     public static Hashtable GetSerializeHashtable(this Transform self)
     {
       Hashtable hashtable = new Hashtable();
@@ -24,7 +24,7 @@ namespace CsCat
       self.localEulerAngles = hashtable.Get<string>("localEulerAngles").ToVector3OrDefault();
       self.localScale = hashtable.Get<string>("localScale").ToVector3OrDefault(null, Vector3.one);
     }
-    
+
 
   }
 }

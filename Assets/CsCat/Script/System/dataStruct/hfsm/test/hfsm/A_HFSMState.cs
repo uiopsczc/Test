@@ -11,8 +11,8 @@ namespace CsCat
     public override void Enter(object[] args)
     {
       base.Enter(args);
-      LogCat.log("Enter A_HFSMState",key);
-      
+      LogCat.log("Enter A_HFSMState", key);
+
     }
 
     protected override void __Update(float deltaTime = 0, float unscaledDeltaTime = 0)

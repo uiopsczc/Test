@@ -137,7 +137,7 @@ namespace CsCat
 
     public static Vector3 AddX(this Vector3 self, float args)
     {
-      return self.Set("x", self.x+args);
+      return self.Set("x", self.x + args);
     }
 
     public static Vector3 AddY(this Vector3 self, float args)
@@ -229,7 +229,7 @@ namespace CsCat
 
     public static Vector3Int ToVector3Int(this Vector3 self)
     {
-      return new Vector3Int((int) self.x, (int) self.y, (int) self.z);
+      return new Vector3Int((int)self.x, (int)self.y, (int)self.z);
     }
 
 

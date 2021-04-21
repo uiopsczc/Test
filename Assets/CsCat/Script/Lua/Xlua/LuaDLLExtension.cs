@@ -19,7 +19,7 @@ namespace CsCat
 
     public static string lua_typename(IntPtr luaState, LuaTypes type)
     {
-      var t = (int) type;
+      var t = (int)type;
       return type.ToString();
     }
   }

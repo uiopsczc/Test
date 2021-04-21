@@ -65,7 +65,7 @@ namespace CsCat
         cell_pos.x -= cell_pos.x % target.cell_size.x; //取整
         cell_pos.y -= cell_pos.y % target.cell_size.y; //取整
         cell_rect.position = cell_pos;
-        local_brush_position = (Vector2) target.transform.InverseTransformPoint(ray.GetPoint(distance));
+        local_brush_position = (Vector2)target.transform.InverseTransformPoint(ray.GetPoint(distance));
       }
     }
 

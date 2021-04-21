@@ -41,19 +41,19 @@ namespace CsCat
           case DateTimeType.Day:
             t1 = new TimeSpan(date1.GetTime().Ticks);
             t2 = new TimeSpan(date2.GetTime().Ticks);
-            return (float) t1.Subtract(t2).TotalDays;
+            return (float)t1.Subtract(t2).TotalDays;
           case DateTimeType.Hour:
             t1 = new TimeSpan(date1.GetTime(date1.Hour).Ticks);
             t2 = new TimeSpan(date2.GetTime(date2.Hour).Ticks);
-            return (float) t1.Subtract(t2).TotalHours;
+            return (float)t1.Subtract(t2).TotalHours;
           case DateTimeType.Minute:
             t1 = new TimeSpan(date1.GetTime(date1.Hour, date1.Minute).Ticks);
             t2 = new TimeSpan(date2.GetTime(date2.Hour, date1.Minute).Ticks);
-            return (float) t1.Subtract(t2).TotalMinutes;
+            return (float)t1.Subtract(t2).TotalMinutes;
           case DateTimeType.Second:
             t1 = new TimeSpan(date1.Ticks);
             t2 = new TimeSpan(date2.Ticks);
-            return (float) t1.Subtract(t2).TotalSeconds;
+            return (float)t1.Subtract(t2).TotalSeconds;
         }
       }
       else
@@ -67,13 +67,13 @@ namespace CsCat
           case DateTimeType.Month:
             throw new Exception("不支持月比较");
           case DateTimeType.Day:
-            return (float) t1.Subtract(t2).TotalDays;
+            return (float)t1.Subtract(t2).TotalDays;
           case DateTimeType.Hour:
-            return (float) t1.Subtract(t2).TotalHours;
+            return (float)t1.Subtract(t2).TotalHours;
           case DateTimeType.Minute:
-            return (float) t1.Subtract(t2).TotalMinutes;
+            return (float)t1.Subtract(t2).TotalMinutes;
           case DateTimeType.Second:
-            return (float) t1.Subtract(t2).TotalSeconds;
+            return (float)t1.Subtract(t2).TotalSeconds;
         }
       }
 
@@ -223,7 +223,7 @@ namespace CsCat
     /// <returns></returns>
     public static int DayDiff(long date1, long date2)
     {
-      return (int) ((date1 - date2) / 86400000L);
+      return (int)((date1 - date2) / 86400000L);
     }
 
     /// <summary>

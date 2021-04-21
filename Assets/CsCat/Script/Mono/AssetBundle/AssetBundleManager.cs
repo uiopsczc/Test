@@ -72,7 +72,7 @@ namespace CsCat
     public override void Init()
     {
       base.Init();
-      
+
       AddListener<ResourceWebRequester>(AssetBundleEventNameConst.On_ResourceWebRequester_Done,
         OnResourceWebRequesterDone);
 
@@ -136,14 +136,14 @@ namespace CsCat
 
       LogCat.Log("AssetMananger init finished");
     }
-    
 
 
-    
 
-    
 
-    
+
+
+
+
 
     public override void Update(float deltaTime = 0, float unscaledDeltaTime = 0)
     {
@@ -182,7 +182,7 @@ namespace CsCat
       if (!resourceWebRequester_prosessing_list.Contains(resourceWebRequester))
         return;
       resourceWebRequester_prosessing_list.Remove(resourceWebRequester);
-      resourceWebRequester_all_dict.RemoveByFunc((k,v)=>v== resourceWebRequester);
+      resourceWebRequester_all_dict.RemoveByFunc((k, v) => v == resourceWebRequester);
       // 无缓存，不计引用计数、Creater使用后由上层回收，所以这里不需要做任何处理
       if (!resourceWebRequester.is_not_cache)
       {

@@ -23,7 +23,7 @@ namespace CsCat
             _assetAsyncloader.assetCat.asset_path.Equals(asset_path));
         if (assetAsyncloader != null && !assetAsyncloader.resultInfo.is_done)
         {
-          if(!assetAsyncloader.GetAssetBundlePathList().IsNullOrEmpty())
+          if (!assetAsyncloader.GetAssetBundlePathList().IsNullOrEmpty())
             assetBundle_name_list.AddRange(assetAsyncloader.GetAssetBundlePathList());
         }
       }
@@ -59,7 +59,7 @@ namespace CsCat
     {
       if (GetNeedDownloadBytes() == 0)
         return 1;
-      return (float) GetDownloadedBytes() / GetNeedDownloadBytes();
+      return (float)GetDownloadedBytes() / GetNeedDownloadBytes();
     }
   }
 }

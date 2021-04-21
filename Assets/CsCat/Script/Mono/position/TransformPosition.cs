@@ -7,7 +7,7 @@ namespace CsCat
     public Transform transform;
     public string socket_name;
 
-    public TransformPosition(Transform transform,string socket_name=null)
+    public TransformPosition(Transform transform, string socket_name = null)
     {
       this.transform = transform;
       this.socket_name = socket_name;

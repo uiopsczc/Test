@@ -16,7 +16,7 @@ namespace CsCat
     }
 
 
-    public EventListenerInfo<P0, P1> Init(EventName eventName, Action<P0,P1> handler)
+    public EventListenerInfo<P0, P1> Init(EventName eventName, Action<P0, P1> handler)
     {
       base.Init(eventName, handler);
       this.handler = handler;
@@ -27,7 +27,7 @@ namespace CsCat
     {
       if (!(obj is EventListenerInfo<P0, P1>))
         return false;
-      var other = (EventListenerInfo<P0, P1>) obj;
+      var other = (EventListenerInfo<P0, P1>)obj;
       return ObjectUtil.Equals(this.eventName, other.eventName) && ObjectUtil.Equals(this.handler, other.handler);
     }
 

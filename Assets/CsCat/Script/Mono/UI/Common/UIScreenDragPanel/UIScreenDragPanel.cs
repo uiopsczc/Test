@@ -44,7 +44,7 @@ namespace CsCat
       this.RegisterOnPointerDown(graphicComponent.gameObject, this.OnUIScreenPointerDown);
       this.RegisterOnPointerUp(graphicComponent.gameObject, this.OnUIScreenPointerUp);
     }
-    
+
 
     protected override void __SetIsEnabled(bool is_enabled)
     {

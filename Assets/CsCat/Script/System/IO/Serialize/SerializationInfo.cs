@@ -28,7 +28,7 @@ namespace CsCat
     {
       var value = GetValue(name, typeof(T));
       if (value == null) return default;
-      return (T) value;
+      return (T)value;
     }
 
     public object GetValue(string name, Type type)

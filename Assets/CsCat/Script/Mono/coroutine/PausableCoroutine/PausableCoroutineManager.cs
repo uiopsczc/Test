@@ -82,7 +82,7 @@ namespace CsCat
 
       object returnValue;
 
-      returnValue = methodInfo.Invoke(this_reference, value == null ? null : new[] {value});
+      returnValue = methodInfo.Invoke(this_reference, value == null ? null : new[] { value });
 
       if (returnValue is IEnumerator enumerator)
         return instance.GoStartCoroutine(enumerator, this_reference);
@@ -195,7 +195,7 @@ namespace CsCat
 
     void Update()
     {
-//      LogCat.log("ggggg");
+      //      LogCat.log("ggggg");
       float deltaTime = Time.deltaTime;
 #if UNITY_EDITOR
       if (!EditorApplication.isPlayingOrWillChangePlaymode)

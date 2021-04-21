@@ -18,7 +18,7 @@ namespace CsCat
         return icon_texture_cache_dict[name];
 
       Texture2D texture = (Texture2D)EditorGUIUtility.Load(name);
-      icon_texture_cache_dict[name]=texture;
+      icon_texture_cache_dict[name] = texture;
       return texture;
     }
 
@@ -43,7 +43,7 @@ namespace CsCat
       icon_texture_cache_dict.Add(name, texture);
       return texture;
     }
-    
+
   }
 }
 #endif

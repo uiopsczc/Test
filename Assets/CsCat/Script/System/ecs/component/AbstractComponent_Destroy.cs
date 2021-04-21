@@ -11,7 +11,7 @@ namespace CsCat
     {
       return this.__is_destroyed;
     }
-    
+
 
     public void Destroy()
     {
@@ -35,7 +35,7 @@ namespace CsCat
       destroy_callback = null;
     }
 
-    
+
     public void OnDespawn()
     {
       __OnDespawn_();

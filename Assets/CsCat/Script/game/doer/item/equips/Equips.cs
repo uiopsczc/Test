@@ -161,7 +161,7 @@ namespace CsCat
     public void ClearEquips()
     {
       SubDoerUtil1.ClearSubDoers<Item>(this.parent_doer, this.sub_doer_key,
-        (equip) => { ((Critter) this.parent_doer).TakeOffEquip(equip); });
+        (equip) => { ((Critter)this.parent_doer).TakeOffEquip(equip); });
     }
   }
 }

@@ -27,7 +27,7 @@ namespace CsCat
     public static T Deserialize<T>(byte[] data_bytes) where T : Google.Protobuf.IMessage, new()
     {
       T result = new T();
-      result = (T) typeof(T).GetPropertyValue<MessageDescriptor>("Descriptor").Parser.ParseFrom(data_bytes);
+      result = (T)typeof(T).GetPropertyValue<MessageDescriptor>("Descriptor").Parser.ParseFrom(data_bytes);
       return result;
     }
 

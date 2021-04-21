@@ -27,12 +27,12 @@ namespace CsCat
 
     public static void Test_GetField()
     {
-      LogCat.log(AStarUtil.GetField((int) Math.Pow(2, 9)));
+      LogCat.log(AStarUtil.GetField((int)Math.Pow(2, 9)));
     }
 
     public static void Test_IsSameField()
     {
-      LogCat.log(AStarUtil.IsSameField((int) Math.Pow(2, 9), (int) Math.Pow(2, 8)));
+      LogCat.log(AStarUtil.IsSameField((int)Math.Pow(2, 9), (int)Math.Pow(2, 8)));
     }
 
     public static void Test_GetBlockPoint()

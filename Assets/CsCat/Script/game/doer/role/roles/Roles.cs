@@ -99,7 +99,7 @@ namespace CsCat
     public void ClearRoles()
     {
       SubDoerUtil1.ClearSubDoers<Role>(this.parent_doer, this.sub_doer_key,
-        (role) => { ((User) this.parent_doer).RemoveRole(role); });
+        (role) => { ((User)this.parent_doer).RemoveRole(role); });
     }
   }
 }

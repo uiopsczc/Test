@@ -336,7 +336,7 @@ namespace CsCat
       bool is_depth_test = true)
     {
       if (!Is_Debug_Enable) return;
-      var cube = new Cube3d((min+max)/2, (max-min).Abs());
+      var cube = new Cube3d((min + max) / 2, (max - min).Abs());
       cube.GetDrawLineList().ForEach(kv => { DebugLine(kv.Key, kv.Value, color, duration, is_depth_test); });
     }
     #endregion

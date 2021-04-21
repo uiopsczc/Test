@@ -57,8 +57,8 @@ namespace CsCat
       Client.instance.redDotManager.AddRedDot(UITestPanel_gameObject, "Test任务");
 
       //    Client.instance.Broadcast("OnShowRedDotTest0");
-//    Client.instance.Broadcast("OnShowRedDotTest1");
-//    Client.instance.Broadcast("OnShowRedDotTest2");
+      //    Client.instance.Broadcast("OnShowRedDotTest1");
+      //    Client.instance.Broadcast("OnShowRedDotTest2");
     }
   }
 }

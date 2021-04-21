@@ -36,7 +36,7 @@ namespace CsCat
       System.Type internalEditorUtility_type = typeof(InternalEditorUtility);
       PropertyInfo sorting_layers_property = internalEditorUtility_type.GetPropertyInfo(
         "sortingLayerNames", BindingFlags.Static | BindingFlags.NonPublic);
-      return (string[]) sorting_layers_property.GetValue(null, new object[0]);
+      return (string[])sorting_layers_property.GetValue(null, new object[0]);
     }
 
     // Get the sorting layer UniqueIds
@@ -45,7 +45,7 @@ namespace CsCat
       System.Type internalEditorUtility_type = typeof(InternalEditorUtility);
       PropertyInfo sorting_layers_property = internalEditorUtility_type.GetPropertyInfo(
         "sortingLayerUniqueIDs", BindingFlags.Static | BindingFlags.NonPublic);
-      return (int[]) sorting_layers_property.GetValue(null, new object[0]);
+      return (int[])sorting_layers_property.GetValue(null, new object[0]);
     }
 
   }

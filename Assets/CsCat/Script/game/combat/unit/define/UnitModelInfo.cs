@@ -22,7 +22,7 @@ namespace CsCat
     public const string On_Unit_Is_Can_Cast_Skill_Change = "On_Unit_Is_Can_Cast_Skill_Change";
     public const string On_Unit_Is_Can_Normal_Attack_Change = "On_Unit_Is_Can_Normal_Attack_Change";
     public const string On_Unit_Is_Can_Control_Change = "On_Unit_Is_Can_Control_Change";
-    
+
 
   }
 }

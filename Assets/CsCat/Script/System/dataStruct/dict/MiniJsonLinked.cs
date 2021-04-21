@@ -297,7 +297,7 @@ namespace CsCat
               }
 
               // convert the integer codepoint to a unicode char and add to string
-              s.Append(Char.ConvertFromUtf32((int) codePoint));
+              s.Append(Char.ConvertFromUtf32((int)codePoint));
               // skip 4 chars
               index += 4;
             }
@@ -465,25 +465,25 @@ namespace CsCat
 
       if (value is string)
       {
-        success = SerializeString((string) value, builder);
+        success = SerializeString((string)value, builder);
       }
       else if (value is LinkedHashtable)
       {
-        success = SerializeObject((LinkedHashtable) value, builder);
+        success = SerializeObject((LinkedHashtable)value, builder);
       }
       else if (value is IGetLinkedHashtable)
       {
-        success = SerializeObject(((IGetLinkedHashtable) value).GetLinkedHashtable(), builder);
+        success = SerializeObject(((IGetLinkedHashtable)value).GetLinkedHashtable(), builder);
       }
       else if (value is ArrayList)
       {
-        success = SerializeArray((ArrayList) value, builder);
+        success = SerializeArray((ArrayList)value, builder);
       }
-      else if ((value is Boolean) && ((Boolean) value == true))
+      else if ((value is Boolean) && ((Boolean)value == true))
       {
         builder.Append("true");
       }
-      else if ((value is Boolean) && ((Boolean) value == false))
+      else if ((value is Boolean) && ((Boolean)value == false))
       {
         builder.Append("false");
       }

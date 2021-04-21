@@ -64,9 +64,9 @@ namespace CsCat
       if (!assetCat_dict.ContainsKey(assetCat))
         return;
       foreach (var callback_cuase_dict in assetCat_dict.Values)
-      foreach (var callback_cuase in callback_cuase_dict.Keys)
-        resLoadComponent.CancelLoadCallback(assetCat, callback_cuase.GetNullableKey());
-        
+        foreach (var callback_cuase in callback_cuase_dict.Keys)
+          resLoadComponent.CancelLoadCallback(assetCat, callback_cuase.GetNullableKey());
+
       assetCat_dict.Remove(assetCat);
     }
 
@@ -87,8 +87,8 @@ namespace CsCat
     public void Destroy()
     {
       foreach (var assetCat in assetCat_dict.Keys)
-      foreach (var callbak_cause in assetCat_dict[assetCat].Keys)
-        resLoadComponent.CancelLoadCallback(assetCat, callbak_cause.GetNullableKey());
+        foreach (var callbak_cause in assetCat_dict[assetCat].Keys)
+          resLoadComponent.CancelLoadCallback(assetCat, callbak_cause.GetNullableKey());
       assetCat_dict.Clear();
       resLoadComponent = null;
     }

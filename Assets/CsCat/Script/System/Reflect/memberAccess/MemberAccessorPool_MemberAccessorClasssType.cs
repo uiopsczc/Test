@@ -39,7 +39,7 @@ namespace CsCat
       public override bool Equals(object obj)
       {
         if (obj == null || GetType() != obj.GetType()) return false;
-        var other = (MemberAccessorClasssType) obj;
+        var other = (MemberAccessorClasssType)obj;
         return class_type.Equals(other.class_type) && bindingFlags.Equals(other.bindingFlags);
       }
 

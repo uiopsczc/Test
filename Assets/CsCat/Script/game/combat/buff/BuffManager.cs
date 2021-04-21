@@ -180,7 +180,7 @@ namespace CsCat
       base.__Destroy();
       foreach (var buff_id in new List<string>(buff_dict.Keys))
         this.RemoveBuff(buff_id);
-      
+
     }
   }
 }

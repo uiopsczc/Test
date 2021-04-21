@@ -21,7 +21,7 @@ namespace CsCat
       return Activator.CreateInstance(transformFinder_type) as TransformFinderBase;
     }
 
-    public T CreateInstance<T>()where  T: TransformFinderBase
+    public T CreateInstance<T>() where T : TransformFinderBase
     {
       return CreateInstance() as T;
     }

@@ -176,7 +176,7 @@ namespace CsCat
 
     public static void OnMouseRightButtonClickCallback(Rect position_rect, TimelinableTrackBase[] tracks)
     {
-      GUIContent[] menu_items = new[] {new GUIContent("Past"), new GUIContent("Delete")};
+      GUIContent[] menu_items = new[] { new GUIContent("Past"), new GUIContent("Delete") };
       EditorUtility.DisplayCustomMenu(position_rect, menu_items, -1, OnMenuItem, tracks);
     }
 

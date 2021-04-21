@@ -23,7 +23,7 @@ namespace CsCat
         GenericMenuItemAttribute genericMenuItemAttribute = memberInfo.GetCustomAttribute<GenericMenuItemAttribute>();
         GenericMenuCat genericMenuCat =
           dict.GetOrAddDefault(genericMenuItemAttribute.rootName, () => new GenericMenuCat());
-        genericMenuCat.InitOrUpdateRoot(genericMenuItemAttribute, (MethodInfo) memberInfo);
+        genericMenuCat.InitOrUpdateRoot(genericMenuItemAttribute, (MethodInfo)memberInfo);
       }
     }
 

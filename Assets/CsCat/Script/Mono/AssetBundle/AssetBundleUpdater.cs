@@ -76,7 +76,7 @@ namespace CsCat
           need_download_dict[assetBundle_name] = new Hashtable();
           need_download_dict[assetBundle_name]["is_finished"] = false;
           need_download_dict[assetBundle_name]["total_bytes"] = server_buildInfo.assetBundleMap.dict[assetBundle_name];
-          need_download_dict[assetBundle_name]["downloded_bytes"] = (long) 0;
+          need_download_dict[assetBundle_name]["downloded_bytes"] = (long)0;
           total_need_download_bytes += server_buildInfo.assetBundleMap.dict[assetBundle_name];
         }
 
@@ -115,7 +115,7 @@ namespace CsCat
       //LogCat.LogWarning(isUpdatingRes);
       if (!is_updating_res)
         return;
-      
+
       while (downloading_request_list.Count < Max_DownLoad_Num && need_download_list.Count > 0)
       {
         var file_path = need_download_list[need_download_list.Count - 1];
@@ -127,11 +127,11 @@ namespace CsCat
       }
 
       foreach (var downloading_request in downloading_request_list)
-        need_download_dict[downloading_request.cache.Get<string>("file_path")]["downloded_bytes"] =downloading_request.GetDownloadedBytes();
+        need_download_dict[downloading_request.cache.Get<string>("file_path")]["downloded_bytes"] = downloading_request.GetDownloadedBytes();
 
       long current_downloaded_bytes = 0;
       foreach (var download in need_download_dict.Values)
-        current_downloaded_bytes += download.GetOrGetDefault<long>("downloded_bytes", () => (long) 0);
+        current_downloaded_bytes += download.GetOrGetDefault<long>("downloded_bytes", () => (long)0);
       Client.instance.uiManager.uiLoadingPanel.SetDesc(string.Format("{0}/{1}",
         NumberUnitUtil.GetString(current_downloaded_bytes, 2, 1000),
         NumberUnitUtil.GetString(total_need_download_bytes, 1, 1000)));
@@ -142,7 +142,7 @@ namespace CsCat
       //    LogCat.LogError("kkkkkkkkkkkkkkk:"+resourceWebRequester.url);
       if (!downloading_request_list.Contains(resourceWebRequester))
         return;
-      
+
       if (!resourceWebRequester.error.IsNullOrWhiteSpace())
       {
         LogCat.LogError("Error when downloading file : " + resourceWebRequester.cache.Get<string>("file_path") + "\n from url : " +
@@ -161,7 +161,7 @@ namespace CsCat
 
       resourceWebRequester.Destroy();
       PoolCatManagerUtil.Despawn(resourceWebRequester);
-      
+
       //    LogCat.LogError("ffffffffffffaaaaaaa:"+downloadingRequest.Count);
       //    LogCat.LogError("ffffffffffffbbbbbbb:" + needDownloadList.Count);
       if (downloading_request_list.Count == 0 && need_download_list.Count == 0)

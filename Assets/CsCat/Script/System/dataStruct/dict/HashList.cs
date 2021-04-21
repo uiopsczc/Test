@@ -7,9 +7,9 @@ namespace CsCat
   public class HashList<T> : List<T>
   {
     private Dictionary<T, bool> dict = new Dictionary<T, bool>();
-    
 
-    public new  void Add(T item)
+
+    public new void Add(T item)
     {
       if (dict.ContainsKey(item))
         return;
@@ -23,28 +23,28 @@ namespace CsCat
       base.Clear();
     }
 
-    public new  bool Contains(T item)
+    public new bool Contains(T item)
     {
       return dict.ContainsKey(item);
     }
-    
 
-    public new  bool Remove(T item)
+
+    public new bool Remove(T item)
     {
       dict.Remove(item);
       return base.Remove(item);
     }
-    
 
-    public new  void Insert(int index, T item)
+
+    public new void Insert(int index, T item)
     {
       if (dict.ContainsKey(item))
         return;
       dict[item] = true;
-      base.Insert(index,item);
+      base.Insert(index, item);
     }
 
-    public new  void RemoveAt(int index)
+    public new void RemoveAt(int index)
     {
       T item = base[index];
       dict.Remove(item);

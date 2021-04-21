@@ -32,7 +32,7 @@ namespace CsCat
     {
       this.dotweenPluginComponent.RemoveAllDOTweens();
     }
-    
-    
+
+
   }
 }

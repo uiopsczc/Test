@@ -13,8 +13,8 @@ namespace CsCat
       hashtable["isTrigger"] = self.isTrigger;
       hashtable["usedByEffector"] = self.usedByEffector;
       hashtable["offset"] = self.offset.ToStringOrDefault();
-      hashtable["geometryType"] = (int) self.geometryType;
-      hashtable["generationType"] = (int) self.generationType;
+      hashtable["geometryType"] = (int)self.geometryType;
+      hashtable["generationType"] = (int)self.generationType;
       hashtable["vertexDistance"] = self.vertexDistance;
       hashtable["offsetDistance"] = self.offsetDistance;
       hashtable["edgeRadius"] = self.edgeRadius;

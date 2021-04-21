@@ -49,7 +49,7 @@ namespace CsCat
     {
       if (!(obj is MemberToRestoreBase))
         return false;
-      MemberToRestoreBase other = (MemberToRestoreBase) obj;
+      MemberToRestoreBase other = (MemberToRestoreBase)obj;
       return other.toRestoreBase.Equals(toRestoreBase);
     }
 

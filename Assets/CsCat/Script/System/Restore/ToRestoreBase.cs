@@ -48,7 +48,7 @@ namespace CsCat
     {
       if (!(obj is ToRestoreBase))
         return false;
-      ToRestoreBase other = (ToRestoreBase) obj;
+      ToRestoreBase other = (ToRestoreBase)obj;
       if (other.owner == owner && other.name_to_restore.Equals(name_to_restore))
         return true;
       else

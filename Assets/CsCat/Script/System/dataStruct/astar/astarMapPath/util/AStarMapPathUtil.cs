@@ -86,7 +86,7 @@ namespace CsCat
       int dv = point_b.x > point_a.x ? 1 : -1;
       for (int x = point_a.x + dv; x * dv <= point_b.x * dv; x += dv)
       {
-//      LogCat.log(x, point_a.y);
+        //      LogCat.log(x, point_a.y);
         if (!AStarUtil.CanPass(astarMapPath, x, point_a.y, can_pass_obstacle_types, can_pass_terrain_types))
           return null;
         list.Add(new Vector2Int(x, point_a.y));

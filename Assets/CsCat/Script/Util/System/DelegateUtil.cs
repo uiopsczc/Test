@@ -9,7 +9,7 @@ namespace CsCat
       Type action_type = typeof(Action<>).MakeGenericType(generic_types);
 
       var target_methodInfo = target.GetGenericMethodInfo2(method_name, generic_types);
-      Delegate result = Delegate.CreateDelegate(action_type, (target is Type)?null:target, target_methodInfo);
+      Delegate result = Delegate.CreateDelegate(action_type, (target is Type) ? null : target, target_methodInfo);
       return result;
     }
     public static Delegate CreateGenericFunc(Type[] generic_types, object target, string method_name)

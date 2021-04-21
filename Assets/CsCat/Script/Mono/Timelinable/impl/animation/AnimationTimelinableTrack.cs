@@ -45,7 +45,7 @@ namespace CsCat
           animator.speed = animator_speed_when_paused;
       }
     }
-    
+
 
     public override void Retime(float time, params object[] args)
     {
@@ -59,6 +59,6 @@ namespace CsCat
     {
       base.Tick(time, args.ToList().AddFirst(this.animator).ToArray());
     }
-    
+
   }
 }

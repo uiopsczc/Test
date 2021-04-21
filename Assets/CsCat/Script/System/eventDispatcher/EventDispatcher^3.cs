@@ -52,7 +52,7 @@ namespace CsCat
       {
         eventName.Despawn();
       }
-      
+
 
     }
 

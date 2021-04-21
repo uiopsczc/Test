@@ -44,7 +44,7 @@ namespace CsCat
       this.parent.RemoveChild(this.key);
     }
 
-    public void ApplyToTransformComponent(Vector3? position, Vector3? eulerAngles,Vector3? scale = null)
+    public void ApplyToTransformComponent(Vector3? position, Vector3? eulerAngles, Vector3? scale = null)
     {
       if (position != null)
         this.transformComponent.position = position.Value;

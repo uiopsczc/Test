@@ -14,14 +14,14 @@ namespace CsCat
     {
       return Enum.GetNames(typeof(T)).ToList();
     }
-    public static string  GetName<T>(int i)
+    public static string GetName<T>(int i)
     {
       return GetNames<T>()[i];
     }
 
     public static List<T> GetValues<T>()
     {
-      return ((T[]) Enum.GetValues(typeof(T))).ToList();
+      return ((T[])Enum.GetValues(typeof(T))).ToList();
     }
 
     public static T GetValue<T>(int i)
@@ -36,7 +36,7 @@ namespace CsCat
         result.Add(Convert.ToInt32(e));
       return result;
     }
-    
+
 
 
     public static bool IsEnum<T>()

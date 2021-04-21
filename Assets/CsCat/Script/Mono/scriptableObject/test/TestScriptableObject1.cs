@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public class TestScriptableObject1:ScriptableObject
+  public class TestScriptableObject1 : ScriptableObject
   {
     [NonSerialized]
     public List<TestScriptableObjectAA> indexes = new List<TestScriptableObjectAA>();

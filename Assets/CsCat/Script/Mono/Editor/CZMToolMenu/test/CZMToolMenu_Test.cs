@@ -14,7 +14,7 @@ namespace CsCat
     public static void Test()
     {
       //      ScriptableObjectTest.CreateInstance();
-//      EditorWindow.GetWindow<AnimationTimelinableTestEditorWindow>();
+      //      EditorWindow.GetWindow<AnimationTimelinableTestEditorWindow>();
       //      EditorWindow.GetWindow<MountTimelinableTestEditorWindow>();
       EditorWindow.GetWindow<SkinnedMeshRendererTimelinableTestEditorWindow>();
       //      List<AC> list = new List<AC>();
@@ -27,7 +27,7 @@ namespace CsCat
       //    LogCat.log(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(obj)));
       //    LogCat.log(AssetDatabase.GUIDToAssetPath(AssetDatabase.AssetPathToGUID(AssetDatabase.GetAssetPath(obj))));
     }
-    
+
 
     [UnityEditor.MenuItem(CZMToolConst.MenuRoot + "Test2")]
     public static void Test2()
@@ -38,7 +38,7 @@ namespace CsCat
       //      dict["hh"] = "gg";
       //      LogCat.log("after:", dict.GetHashCode());
     }
-    
+
 
     public static void T1()
     {

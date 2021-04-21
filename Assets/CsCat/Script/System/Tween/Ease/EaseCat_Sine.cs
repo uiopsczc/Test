@@ -12,17 +12,17 @@ namespace CsCat
     {
       public static float EaseIn(float t, float b, float c, float d)
       {
-        return -c * (float) Math.Cos(t / d * Half_PI) + c + b;
+        return -c * (float)Math.Cos(t / d * Half_PI) + c + b;
       }
 
       public static float EaseOut(float t, float b, float c, float d)
       {
-        return c * (float) Math.Sin(t / d * Half_PI) + b;
+        return c * (float)Math.Sin(t / d * Half_PI) + b;
       }
 
       public static float EaseInOut(float t, float b, float c, float d)
       {
-        return -c / 2 * (float) (Math.Cos(Math.PI * t / d) - 1) + b;
+        return -c / 2 * (float)(Math.Cos(Math.PI * t / d) - 1) + b;
       }
 
       /////////////////////////////////////////////////////////////////////////

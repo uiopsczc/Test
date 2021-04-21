@@ -9,7 +9,7 @@ namespace CsCat
 
     //持续时间
     public int duration_tick;
-    
+
 
     //lerp_tick的范围在[0, 这个this的duration_tick]之间
     public T Tween(AbstractPhase<T> to_phase, int lerp_tick, Func<T, T, float, T> lerp_callback)

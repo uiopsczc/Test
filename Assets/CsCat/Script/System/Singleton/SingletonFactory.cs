@@ -56,8 +56,8 @@ namespace CsCat
       object result = null;
       Type type = typeof(T);
       if (!dict.ContainsKey(type))
-        dict[type] = SingletonUtil.GetInstnace((T) result);
-      return (T) dict[type];
+        dict[type] = SingletonUtil.GetInstnace((T)result);
+      return (T)dict[type];
     }
 
     /// <summary>
@@ -70,7 +70,7 @@ namespace CsCat
       object result = null;
       Type type = typeof(T);
       if (!mono_dict.ContainsKey(type) || mono_dict[type] == null)
-        mono_dict[type] = SingletonUtil.GetInstnaceMono((T) result).gameObject;
+        mono_dict[type] = SingletonUtil.GetInstnaceMono((T)result).gameObject;
 
       return mono_dict[type].GetComponent(typeof(T)) as T;
     }

@@ -20,7 +20,7 @@ namespace CsCat
 
     public static GameObjectPoolCat GetOrAddGameObjectPool(string pool_name, GameObject prefab, string category = null)
     {
-      return PoolCatManager.instance.GetOrAddPool(typeof(GameObjectPoolCat), pool_name,prefab, category) as GameObjectPoolCat;
+      return PoolCatManager.instance.GetOrAddPool(typeof(GameObjectPoolCat), pool_name, prefab, category) as GameObjectPoolCat;
     }
 
   }

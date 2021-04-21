@@ -23,7 +23,7 @@ namespace CsCat
         sequence.DrawGUISetting_Tracks(timelineRect.play_time);
       }
     }
-    
-    
+
+
   }
 }

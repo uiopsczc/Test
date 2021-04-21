@@ -48,10 +48,10 @@ namespace CsCat
       {
         foreach (var compare_rule in compare_rules)
         {
-          if(compare_rule==null)
+          if (compare_rule == null)
             continue;
           int result = compare_rule(a, b);
-          if(result==0)
+          if (result == 0)
             continue;
           return result < 0;
         }

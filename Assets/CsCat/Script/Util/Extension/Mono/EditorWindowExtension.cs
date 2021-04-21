@@ -27,15 +27,15 @@ namespace CsCat
       self.ShowNotification(LogCat.GetLogString(args).ToGUIContent());
     }
 
-    private static void _ShowNotificationAndCallback(this EditorWindow self,Action action, params object[] args)
+    private static void _ShowNotificationAndCallback(this EditorWindow self, Action action, params object[] args)
     {
       self.ShowNotification2(args);
       action();
     }
 
-    
 
-    
+
+
 
 
 

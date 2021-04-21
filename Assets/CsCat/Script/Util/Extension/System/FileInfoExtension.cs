@@ -66,7 +66,7 @@ namespace CsCat
       var fis = new FileStream(self.FullName, FileMode.Open, FileAccess.Read);
       try
       {
-        var data = new byte[(int) self.Length];
+        var data = new byte[(int)self.Length];
         fis.Read(data, 0, data.Length);
         return data;
       }

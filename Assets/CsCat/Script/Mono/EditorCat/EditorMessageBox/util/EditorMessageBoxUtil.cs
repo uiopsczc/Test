@@ -8,9 +8,9 @@ namespace CsCat
 {
   public static class EditorMessageBoxUtil
   {
-    public static EditorMessageBox Show(string title, string content,string button1_text, Action on_button1_callback=null, string button2_text=null, Action on_button2_callback=null, Action on_cancel_callback = null)
+    public static EditorMessageBox Show(string title, string content, string button1_text, Action on_button1_callback = null, string button2_text = null, Action on_button2_callback = null, Action on_cancel_callback = null)
     {
-      EditorMessageBox editorMessageBox= EditorWindow.CreateWindow<EditorMessageBox>();
+      EditorMessageBox editorMessageBox = EditorWindow.CreateWindow<EditorMessageBox>();
       editorMessageBox.minSize = new Vector2(EditorMessageBoxConst.Width, EditorMessageBoxConst.Height);
       editorMessageBox.maxSize = editorMessageBox.minSize;
       editorMessageBox.message_title = title;
@@ -29,10 +29,10 @@ namespace CsCat
       return editorMessageBox;
     }
 
-    public static EditorMessageBox FadeShow(string title, string content, float duration=1f)
+    public static EditorMessageBox FadeShow(string title, string content, float duration = 1f)
     {
-      var editorMessageBox = Show(title, content,null);
-      editorMessageBox.minSize = new Vector2(EditorMessageBoxConst.Width, EditorMessageBoxConst.Height/2);
+      var editorMessageBox = Show(title, content, null);
+      editorMessageBox.minSize = new Vector2(EditorMessageBoxConst.Width, EditorMessageBoxConst.Height / 2);
       editorMessageBox.maxSize = editorMessageBox.minSize;
       PausableCoroutineManager.instance.StartCoroutine(IEFade(editorMessageBox, duration), editorMessageBox);
       return editorMessageBox;

@@ -10,7 +10,7 @@ namespace CsCat
       return false;
     }
 
-    public virtual void DebugDraw(Vector3 offset,Color color)
+    public virtual void DebugDraw(Vector3 offset, Color color)
     {
     }
   }

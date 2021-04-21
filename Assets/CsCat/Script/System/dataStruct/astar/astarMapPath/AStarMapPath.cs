@@ -25,7 +25,7 @@ namespace CsCat
       foreach (var _key in _data_dict.Keys)
       {
         Vector2 v = _key.To<string>().ToVector2();
-        Vector2Int key = new Vector2Int((int) v.x, (int) v.y);
+        Vector2Int key = new Vector2Int((int)v.x, (int)v.y);
         int value = _data_dict[_key].To<int>();
         data_dict[key] = value;
       }

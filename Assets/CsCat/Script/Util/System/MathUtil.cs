@@ -51,7 +51,7 @@ namespace CsCat
     //获取最近的2次方
     public static int GetNearestPowerOf2(int num)
     {
-      return (int) (Mathf.Pow(2, Mathf.Ceil(Mathf.Log(num) / Mathf.Log(2))));
+      return (int)(Mathf.Pow(2, Mathf.Ceil(Mathf.Log(num) / Mathf.Log(2))));
     }
 
     //判断一个数是否2的次方
@@ -86,6 +86,20 @@ namespace CsCat
       }
 
       return a;
+    }
+
+    //返回a*a+b*b的开根
+    public static float Hypotenuse(params float[] args)
+    {
+      return Mathf.Sqrt(HypotenuseSquare(args));
+    }
+    //返回a*a+b*b
+    public static float HypotenuseSquare(params float[] args)
+    {
+      float result = 0;
+      foreach (var arg in args)
+        result += arg * arg;
+      return result;
     }
 
     #region 排列组合
@@ -177,8 +191,8 @@ namespace CsCat
 
       //旋转的弧度
       var radian = angle * Math.PI / 180;
-      var cosAngle = (float) Math.Cos(radian);
-      var sinAngle = (float) Math.Sin(radian);
+      var cosAngle = (float)Math.Cos(radian);
+      var sinAngle = (float)Math.Sin(radian);
 
       //矩阵的数据
       //这里看不懂的自行科普矩阵知识
@@ -196,8 +210,8 @@ namespace CsCat
       var v = new Vector4(from.x, from.y, from.z, 0);
       var vector = new Vector3();
       for (var i = 0; i < 3; ++i)
-      for (var j = 0; j < 3; j++)
-        vector[i] += v[j] * rotateMatrix[j, i];
+        for (var j = 0; j < 3; j++)
+          vector[i] += v[j] * rotateMatrix[j, i];
       return vector;
     }
 

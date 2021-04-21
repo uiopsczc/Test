@@ -15,7 +15,7 @@ namespace CsCat
     {
       if (!(obj is DOTweenId))
         return false;
-      DOTweenId other = (DOTweenId) obj;
+      DOTweenId other = (DOTweenId)obj;
       if (ObjectUtil.Equals(this.prefix, other.prefix) && ObjectUtil.Equals(this.owner, other.owner))
         return true;
       else

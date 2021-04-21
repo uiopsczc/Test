@@ -58,7 +58,7 @@ namespace CsCat
       this.priority = priority;
     }
 
-    public GenericMenuItemAttribute(string itemName, bool isValidate, int priority,object source)
+    public GenericMenuItemAttribute(string itemName, bool isValidate, int priority, object source)
     {
       this.names = itemName.Split("/");
       this.rootName = names[0];

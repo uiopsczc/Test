@@ -20,53 +20,53 @@ namespace CsCat
       return value.ToEnum<ExcelDataType>();
     }
 
-//  /// <summary>
-//  ///   ExcelDataType转为对应Type的类型
-//  /// </summary>
-//  /// <param name="type"></param>
-//  /// <returns></returns>
-//  public static Type DataType2Type(ExcelDataType type)
-//  {
-//    switch (type)
-//    {
-//      case ExcelDataType.INT:
-//        return typeof(int);
-//      case ExcelDataType.FLOAT:
-//        return typeof(float);
-//      case ExcelDataType.TRANSLATION:
-//        return typeof(string);
-//      case ExcelDataType.VECTOR3:
-//        return typeof(Vector3);
-//      case ExcelDataType.BOOLEAN:
-//        return typeof(bool);
-//      case ExcelDataType.INT_ARRAY:
-//        return typeof(int[]);
-//      case ExcelDataType.FLOAT_ARRAY:
-//        return typeof(float[]);
-//      case ExcelDataType.BOOLEAN_ARRAY:
-//        return typeof(bool[]);
-//      case ExcelDataType.STRING_ARRAY:
-//        return typeof(string[]);
-//      case ExcelDataType.DICT_STRING_INT:
-//        return typeof(Dictionary<string,int>);
-//      case ExcelDataType.DICT_STRING_FLOAT:
-//        return typeof(Dictionary<string, float>);
-//      case ExcelDataType.DICT_STRING_BOOLEAN:
-//        return typeof(Dictionary<string, bool>);
-//      case ExcelDataType.DICT_STRING_STRING:
-//        return typeof(Dictionary<string, string>);
-//      case ExcelDataType.DICT_INT_INT:
-//        return typeof(Dictionary<int, int>);
-//      case ExcelDataType.DICT_INT_FLOAT:
-//        return typeof(Dictionary<int, float>);
-//      case ExcelDataType.DICT_INT_BOOLEAN:
-//        return typeof(Dictionary<int, bool>);
-//      case ExcelDataType.DICT_INT_STRING:
-//        return typeof(Dictionary<int, string>);
-//    }
-//
-//    return typeof(string);
-//  }
+    //  /// <summary>
+    //  ///   ExcelDataType转为对应Type的类型
+    //  /// </summary>
+    //  /// <param name="type"></param>
+    //  /// <returns></returns>
+    //  public static Type DataType2Type(ExcelDataType type)
+    //  {
+    //    switch (type)
+    //    {
+    //      case ExcelDataType.INT:
+    //        return typeof(int);
+    //      case ExcelDataType.FLOAT:
+    //        return typeof(float);
+    //      case ExcelDataType.TRANSLATION:
+    //        return typeof(string);
+    //      case ExcelDataType.VECTOR3:
+    //        return typeof(Vector3);
+    //      case ExcelDataType.BOOLEAN:
+    //        return typeof(bool);
+    //      case ExcelDataType.INT_ARRAY:
+    //        return typeof(int[]);
+    //      case ExcelDataType.FLOAT_ARRAY:
+    //        return typeof(float[]);
+    //      case ExcelDataType.BOOLEAN_ARRAY:
+    //        return typeof(bool[]);
+    //      case ExcelDataType.STRING_ARRAY:
+    //        return typeof(string[]);
+    //      case ExcelDataType.DICT_STRING_INT:
+    //        return typeof(Dictionary<string,int>);
+    //      case ExcelDataType.DICT_STRING_FLOAT:
+    //        return typeof(Dictionary<string, float>);
+    //      case ExcelDataType.DICT_STRING_BOOLEAN:
+    //        return typeof(Dictionary<string, bool>);
+    //      case ExcelDataType.DICT_STRING_STRING:
+    //        return typeof(Dictionary<string, string>);
+    //      case ExcelDataType.DICT_INT_INT:
+    //        return typeof(Dictionary<int, int>);
+    //      case ExcelDataType.DICT_INT_FLOAT:
+    //        return typeof(Dictionary<int, float>);
+    //      case ExcelDataType.DICT_INT_BOOLEAN:
+    //        return typeof(Dictionary<int, bool>);
+    //      case ExcelDataType.DICT_INT_STRING:
+    //        return typeof(Dictionary<int, string>);
+    //    }
+    //
+    //    return typeof(string);
+    //  }
 
     /// <summary>
     ///   将content转换为对应的列所对应的类型【type】的数据
@@ -80,54 +80,54 @@ namespace CsCat
       switch (header_type)
       {
         case ExcelDataType.INT:
-        {
-          var int_value = 0;
-          int.TryParse(content, out int_value);
-          result = int_value;
-          return result;
-        }
-        case ExcelDataType.TRANSLATION:
-        {
-          result = Translation.GetText(content);
-          return result;
-        }
-        case ExcelDataType.FLOAT:
-        {
-          var float_value = 0f;
-          float.TryParse(content, out float_value);
-          result = float_value;
-          return result;
-        }
-        case ExcelDataType.VECTOR3:
-        {
-          result = Vector3.zero;
-          if (content.IsNullOrWhiteSpace())
-            return result;
-          var contents = content.Split(',');
-          if (contents.Length == 3)
           {
-            var x = 0f;
-            var y = 0f;
-            var z = 0f;
-            float.TryParse(contents[0], out x);
-            float.TryParse(contents[1], out y);
-            float.TryParse(contents[2], out z);
-            result = new Vector3(x, y, z);
+            var int_value = 0;
+            int.TryParse(content, out int_value);
+            result = int_value;
+            return result;
+          }
+        case ExcelDataType.TRANSLATION:
+          {
+            result = Translation.GetText(content);
+            return result;
+          }
+        case ExcelDataType.FLOAT:
+          {
+            var float_value = 0f;
+            float.TryParse(content, out float_value);
+            result = float_value;
+            return result;
+          }
+        case ExcelDataType.VECTOR3:
+          {
+            result = Vector3.zero;
+            if (content.IsNullOrWhiteSpace())
+              return result;
+            var contents = content.Split(',');
+            if (contents.Length == 3)
+            {
+              var x = 0f;
+              var y = 0f;
+              var z = 0f;
+              float.TryParse(contents[0], out x);
+              float.TryParse(contents[1], out y);
+              float.TryParse(contents[2], out z);
+              result = new Vector3(x, y, z);
+              return result;
+            }
+
             return result;
           }
 
-          return result;
-        }
-
         case ExcelDataType.BOOLEAN:
-        {
-          var bool_value = false;
-          if (content.IsNullOrWhiteSpace())
-            return bool_value;
-          bool.TryParse(content, out bool_value);
-          result = bool_value;
-          return result;
-        }
+          {
+            var bool_value = false;
+            if (content.IsNullOrWhiteSpace())
+              return bool_value;
+            bool.TryParse(content, out bool_value);
+            result = bool_value;
+            return result;
+          }
 
         case ExcelDataType.INT_ARRAY:
           result = content.ToList<int>().ToArray();

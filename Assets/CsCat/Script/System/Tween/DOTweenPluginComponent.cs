@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using DG.Tweening;
 namespace CsCat
 {
-  public class DOTweenPluginComponent:AbstractComponent
+  public class DOTweenPluginComponent : AbstractComponent
   {
     private DOTweenPlugin dotweenPlugin;
     public void Init(DOTweenPlugin dotweenPlugin)
@@ -31,7 +31,7 @@ namespace CsCat
     {
       dotweenPlugin.RemoveDOTween(tween);
     }
-    
+
 
     protected override void __SetIsPaused(bool is_paused)
     {

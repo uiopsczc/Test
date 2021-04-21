@@ -101,7 +101,7 @@ namespace CsCat
     {
       this.arrow_gameObject.SetActive(is_active);
     }
-    
+
 
     protected void Update(float deltaTime = 0, float unscaledDeltaTime = 0)
     {
@@ -158,7 +158,7 @@ namespace CsCat
         return;
       var dx = eventData.position.x - this.uiRocker_down_pos_in_eventData.x;
       var dy = eventData.position.y - this.uiRocker_down_pos_in_eventData.y;
-      var distance = (float) Math.Sqrt(dx * dx + dy * dy);
+      var distance = (float)Math.Sqrt(dx * dx + dy * dy);
 
       var _dx = Mathf.Clamp(dx, -this.uiRocker_radius_in_eventData, this.uiRocker_radius_in_eventData); // 不能超过半径
       var _dy = Mathf.Clamp(dy, -this.uiRocker_radius_in_eventData, this.uiRocker_radius_in_eventData); // 不能超过半径

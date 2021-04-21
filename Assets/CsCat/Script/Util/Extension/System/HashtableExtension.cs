@@ -14,6 +14,6 @@ namespace CsCat
       return dict;
     }
 
-    
+
   }
 }

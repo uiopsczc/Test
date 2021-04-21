@@ -11,7 +11,7 @@ namespace CsCat
       user.AddItems("6", 6);
       user.PutOnEquip("6", user.main_role);
       user.EmbedOn(user.main_role.GetEquipOfTypes("装备", "武器"), "5");
-//    user.EmbedOff(user.main_role.GetEquipOfTypes("装备", "武器"), "5");
+      //    user.EmbedOff(user.main_role.GetEquipOfTypes("装备", "武器"), "5");
 
       var dict = new Hashtable();
       var dict_tmp = new Hashtable();

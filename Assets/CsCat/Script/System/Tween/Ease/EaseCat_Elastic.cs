@@ -48,10 +48,10 @@ namespace CsCat
         }
         else
         {
-          s = p / Two_PI * (float) Math.Asin(c / a);
+          s = p / Two_PI * (float)Math.Asin(c / a);
         }
 
-        return -(a * (float) Math.Pow(2, 10 * (t -= 1)) * (float) Math.Sin((t * d - s) * Two_PI / p)) + b;
+        return -(a * (float)Math.Pow(2, 10 * (t -= 1)) * (float)Math.Sin((t * d - s) * Two_PI / p)) + b;
       }
 
       public static float EaseOut(float t, float b, float c, float d, float a, float p)
@@ -70,10 +70,10 @@ namespace CsCat
         }
         else
         {
-          s = p / Two_PI * (float) Math.Asin(c / a);
+          s = p / Two_PI * (float)Math.Asin(c / a);
         }
 
-        return a * (float) Math.Pow(2, -10 * t) * (float) Math.Sin((t * d - s) * Two_PI / p) + c + b;
+        return a * (float)Math.Pow(2, -10 * t) * (float)Math.Sin((t * d - s) * Two_PI / p) + c + b;
       }
 
       public static float EaseInOut(float t, float b, float c, float d, float a, float p)
@@ -92,12 +92,12 @@ namespace CsCat
         }
         else
         {
-          s = p / Two_PI * (float) Math.Asin(c / a);
+          s = p / Two_PI * (float)Math.Asin(c / a);
         }
 
         if (t < 1)
-          return -.5f * (a * (float) Math.Pow(2, 10 * (t -= 1)) * (float) Math.Sin((t * d - s) * Two_PI / p)) + b;
-        return a * (float) Math.Pow(2, -10 * (t -= 1)) * (float) Math.Sin((t * d - s) * Two_PI / p) * .5f + c + b;
+          return -.5f * (a * (float)Math.Pow(2, 10 * (t -= 1)) * (float)Math.Sin((t * d - s) * Two_PI / p)) + b;
+        return a * (float)Math.Pow(2, -10 * (t -= 1)) * (float)Math.Sin((t * d - s) * Two_PI / p) * .5f + c + b;
       }
 
 

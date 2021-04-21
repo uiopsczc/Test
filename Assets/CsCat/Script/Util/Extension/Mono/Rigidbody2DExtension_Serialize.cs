@@ -10,13 +10,13 @@ namespace CsCat
     public static Hashtable GetSerializeHashtable(this Rigidbody2D self)
     {
       Hashtable hashtable = new Hashtable();
-      hashtable["bodyType"] = (int) self.bodyType;
+      hashtable["bodyType"] = (int)self.bodyType;
       hashtable["simulated"] = self.simulated;
       hashtable["useFullKinematicContacts"] = self.useFullKinematicContacts;
-      hashtable["collisionDetectionMode"] = (int) self.collisionDetectionMode;
-      hashtable["sleepMode"] = (int) self.sleepMode;
-      hashtable["interpolation"] = (int) self.interpolation;
-      hashtable["constraints"] = (int) self.constraints;
+      hashtable["collisionDetectionMode"] = (int)self.collisionDetectionMode;
+      hashtable["sleepMode"] = (int)self.sleepMode;
+      hashtable["interpolation"] = (int)self.interpolation;
+      hashtable["constraints"] = (int)self.constraints;
       hashtable.Trim();
       return hashtable;
     }

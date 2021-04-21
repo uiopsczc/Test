@@ -110,7 +110,7 @@ namespace CsCat
       }
 
       if (this.__IsUnitMatchCondition(source_unit, target_unit, is_control, spellDefinition, spell_class))
-        return new List<Unit>() {target_unit};
+        return new List<Unit>() { target_unit };
       return null;
     }
 
@@ -154,7 +154,7 @@ namespace CsCat
       if (target_unit == null)
         return null;
       if (spellDefinition.select_unit_arg_dict.IsNullOrEmpty())
-        return target_unit_list ?? new List<Unit>() {target_unit};
+        return target_unit_list ?? new List<Unit>() { target_unit };
 
       var select_unit_arg_dict = DoerAttrParserUtil.ConvertTableWithTypeString(spellDefinition.select_unit_arg_dict);
       var select_unit_faction = select_unit_arg_dict.Get<string>("select_unit_faction");
@@ -179,7 +179,7 @@ namespace CsCat
       //TODO select_unit
       new_target_list = target_unit_list.Sub(0, Math.Min(target_unit_list.Count, count));
       if (new_target_list.Count == 0)
-        return new List<Unit>() {target_unit};
+        return new List<Unit>() { target_unit };
       return new_target_list;
     }
 

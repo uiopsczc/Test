@@ -15,7 +15,7 @@ namespace CsCat
       Golbal_Indent_Level += add;
       GUILayout.BeginHorizontal();
       GUILayout.Space(Golbal_Indent_Level * Width_Of_Per_Indent_Level);
-//      GUILayout.FlexibleSpace();
+      //      GUILayout.FlexibleSpace();
     }
 
     public GUILayoutBeginVerticalIndentLevelScope(int add = 1)
@@ -24,7 +24,7 @@ namespace CsCat
       GUILayout.BeginVertical();
     }
 
-    public GUILayoutBeginVerticalIndentLevelScope(int add = 1,params GUILayoutOption[] layoutOptions)
+    public GUILayoutBeginVerticalIndentLevelScope(int add = 1, params GUILayoutOption[] layoutOptions)
     {
       _Init(add);
       GUILayout.BeginVertical(layoutOptions);

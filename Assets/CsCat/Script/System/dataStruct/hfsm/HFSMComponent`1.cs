@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace CsCat
 {
-  public  class HFSMComponent<T> : AbstractComponent where T: HFSM
+  public class HFSMComponent<T> : AbstractComponent where T : HFSM
   {
     public T hfsm;
     public void Init(T hfsm)

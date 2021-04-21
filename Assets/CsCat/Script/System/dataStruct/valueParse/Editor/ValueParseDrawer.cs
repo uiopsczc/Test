@@ -35,7 +35,7 @@ namespace CsCat
           var valueRect = new Rect(valueLableRect.xMax + splitWidth, position.y, valueRectWidth, position.height);
 
 
-          var valueParseTypeList = ValueParseUtil.GetValueParseList().ConvertAll(e => ((Type) e["type"])).ToList();
+          var valueParseTypeList = ValueParseUtil.GetValueParseList().ConvertAll(e => ((Type)e["type"])).ToList();
           var valueParseTypeFullNames = valueParseTypeList.ConvertAll(e => e.FullName).ToArray();
           var valueParseTypeDisplayNames = valueParseTypeList.ConvertAll(e => e.Name.ToGUIContent()).ToArray();
 

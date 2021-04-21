@@ -11,7 +11,7 @@ namespace CsCat
       using (new GUILayoutBeginHorizontalScope())
       {
         GUILayout.Label("sequence", GUILayout.Width(64));
-        sequence = (T) EditorGUILayout.ObjectField(sequence,
+        sequence = (T)EditorGUILayout.ObjectField(sequence,
           typeof(T), false);
         GUILayout.FlexibleSpace();
 
@@ -24,10 +24,10 @@ namespace CsCat
             "asset");
           if (!path.IsNullOrEmpty())
           {
-            Delegate OnCreateSequence_Delegate = DelegateUtil.CreateGenericAction(new[] {typeof(T)},
+            Delegate OnCreateSequence_Delegate = DelegateUtil.CreateGenericAction(new[] { typeof(T) },
               typeof(TimelinableEditorWindowUtil), "OnCreateSequence");
             sequence = typeof(ScriptableObjectUtil).InvokeGenericMethod<T>(
-              "CreateAsset", new Type[] {typeof(T)}, false, path, OnCreateSequence_Delegate);
+              "CreateAsset", new Type[] { typeof(T) }, false, path, OnCreateSequence_Delegate);
           }
         }
 
@@ -41,6 +41,6 @@ namespace CsCat
     {
       sequence.AddTrack(sequence.tracks.GetType().GetElementType().CreateInstance<TimelinableTrackBase>());
     }
-    
+
   }
 }

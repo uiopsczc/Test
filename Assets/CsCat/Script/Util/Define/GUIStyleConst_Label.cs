@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public  static partial class GUIStyleConst
+  public static partial class GUIStyleConst
   {
     public static GUIStyle Label_Style = new GUIStyle()
     {

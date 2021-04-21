@@ -37,7 +37,7 @@ namespace CsCat
       var components = gameObject.GetComponents(type);
       if (components == null) return;
       var num = components.Length;
-      for (var i = 0; i < num; i++) ((MonoBehaviour) components[i]).enabled = is_enable;
+      for (var i = 0; i < num; i++) ((MonoBehaviour)components[i]).enabled = is_enable;
     }
 
     public static void EnableComponents<T>(GameObject gameObject, bool is_enable) where T : MonoBehaviour
@@ -132,7 +132,7 @@ namespace CsCat
 
     public static GameObject GetOrNewGameObject(string path, GameObject parent_gameObject)
     {
-      
+
       if (parent_gameObject == null)
       {
         var result = GameObject.Find(path);
@@ -145,10 +145,10 @@ namespace CsCat
         if (result != null)
           return result.gameObject;
       }
-      string name= path.GetPreString("/");
+      string name = path.GetPreString("/");
       GameObject gameObject = new GameObject(name);
       gameObject.name = name;
-      if(parent_gameObject!=null)
+      if (parent_gameObject != null)
         gameObject.transform.ResetToParent(parent_gameObject.transform);
       if (!name.Equals(path))
         return GetOrNewGameObject(path.GetPostString("/"), gameObject);
@@ -168,7 +168,7 @@ namespace CsCat
       {
         var fieldInfo = component.GetType().GetFieldInfo(fieldInfo_string);
         if (fieldInfo != null)
-          return (T) fieldInfo.GetValue(fieldInfo_string);
+          return (T)fieldInfo.GetValue(fieldInfo_string);
       }
 
       return defalut_value;
@@ -196,7 +196,7 @@ namespace CsCat
       {
         var propertyInfo = component.GetType().GetPropertyInfo(propertyInfo_string);
         if (propertyInfo != null)
-          return (T) propertyInfo.GetValue(propertyInfo_string, index);
+          return (T)propertyInfo.GetValue(propertyInfo_string, index);
       }
 
       return defalut_value;

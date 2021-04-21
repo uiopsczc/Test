@@ -39,6 +39,6 @@ namespace CsCat
     {
       dotweenPlugin.SetIsPaused(is_paused);
     }
-    
+
   }
 }

@@ -40,7 +40,7 @@ namespace CsCat
     {
       if (weakReference.IsAlive)
       {
-        return new ValueResult<V>(true, (V) weakReference.Target);
+        return new ValueResult<V>(true, (V)weakReference.Target);
       }
       else
       {
@@ -52,7 +52,7 @@ namespace CsCat
     {
       if (weakReference.IsAlive)
       {
-        return (V) weakReference.Target;
+        return (V)weakReference.Target;
       }
       else
       {

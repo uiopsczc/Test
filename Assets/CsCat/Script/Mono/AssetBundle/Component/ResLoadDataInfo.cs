@@ -6,10 +6,10 @@ namespace CsCat
   public class ResLoadDataInfo
   {
     public ResLoadData resLoadData;
-    public Dictionary<object,bool> callback_cause_dict = new Dictionary<object, bool>();
+    public Dictionary<object, bool> callback_cause_dict = new Dictionary<object, bool>();
     private bool is_not_check_destroy;
 
-    public ResLoadDataInfo(ResLoadData resLoadData,bool is_not_check_destroy)
+    public ResLoadDataInfo(ResLoadData resLoadData, bool is_not_check_destroy)
     {
       this.resLoadData = resLoadData;
       this.is_not_check_destroy = is_not_check_destroy;
@@ -44,7 +44,7 @@ namespace CsCat
 
     void CheckDestroy()
     {
-      if(this.callback_cause_dict.Count==0)
+      if (this.callback_cause_dict.Count == 0)
         resLoadData.Destroy();
     }
 

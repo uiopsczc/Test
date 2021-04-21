@@ -307,7 +307,7 @@ namespace CsCat
       var fis = new FileStream(file.FullName, FileMode.Open, FileAccess.Read);
       try
       {
-        var data = new byte[(int) file.Length];
+        var data = new byte[(int)file.Length];
         fis.Read(data, 0, data.Length);
         return data;
       }
@@ -474,7 +474,7 @@ namespace CsCat
         if (!dir2.IsDirectory())
           throw new IOException("无法创建目录" + dir2);
 
-        FileSystemInfo[] srcs = ((DirectoryInfo) src).GetFileSystemInfos();
+        FileSystemInfo[] srcs = ((DirectoryInfo)src).GetFileSystemInfos();
         foreach (FileSystemInfo t in srcs)
           CopyFile(t, dir2);
       }
@@ -486,17 +486,17 @@ namespace CsCat
           FileInfo dstInfo;
           if (dst.IsDirectory())
           {
-            dstInfo = new FileInfo(((DirectoryInfo) dst).SubPath(src.Name));
+            dstInfo = new FileInfo(((DirectoryInfo)dst).SubPath(src.Name));
             dstInfo.Create().Close();
           }
           else
           {
-            DirectoryInfo pdir2 = ((FileInfo) dst).Directory; // 目标文件dst的父级目录
+            DirectoryInfo pdir2 = ((FileInfo)dst).Directory; // 目标文件dst的父级目录
             if (pdir2 != null)
               pdir2.Create();
             if (pdir2 == null || !pdir2.Exists)
               throw new IOException("无法创建目录:" + pdir2);
-            dstInfo = (FileInfo) dst;
+            dstInfo = (FileInfo)dst;
             dstInfo.Create().Close();
           }
 
@@ -545,7 +545,7 @@ namespace CsCat
       if (!file.Exists)
         return;
       if (file.IsDirectory())
-        ClearDir((DirectoryInfo) file);
+        ClearDir((DirectoryInfo)file);
       file.Delete();
     }
 
@@ -596,7 +596,7 @@ namespace CsCat
       foreach (FileSystemInfo t in fs)
       {
         if (t.IsDirectory())
-          SearchFiles((DirectoryInfo) t, filter, results);
+          SearchFiles((DirectoryInfo)t, filter, results);
         else
           results.Add(t);
       }

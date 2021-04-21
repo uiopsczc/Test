@@ -34,7 +34,7 @@ namespace CsCat
       for (int i = 0; i < child_key_list.Count; i++)
       {
         child = GetChild(child_key_list[i]);
-        if (child != null&& child_type.IsInstanceOfType(child))
+        if (child != null && child_type.IsInstanceOfType(child))
           yield return child;
       }
     }
@@ -49,8 +49,8 @@ namespace CsCat
           yield return child;
       }
     }
-    
-    
+
+
 
 
     void __OnDespawn_Child()

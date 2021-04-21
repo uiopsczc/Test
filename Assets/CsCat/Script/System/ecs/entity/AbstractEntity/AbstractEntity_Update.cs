@@ -7,7 +7,7 @@ namespace CsCat
   {
     public virtual bool IsCanUpdate()
     {
-      return is_enabled&&!this.is_paused && !IsDestroyed();
+      return is_enabled && !this.is_paused && !IsDestroyed();
     }
   }
 }

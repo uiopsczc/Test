@@ -10,7 +10,7 @@ namespace CsCat
     {
       var resourceWebRequester = PoolCatManagerUtil.Spawn<ResourceWebRequester>();
       resourceWebRequester.Init(url, true);
-      resourceWebRequester_all_dict[url]= resourceWebRequester;
+      resourceWebRequester_all_dict[url] = resourceWebRequester;
       resourceWebRequester_waiting_queue.Enqueue(resourceWebRequester);
       return resourceWebRequester;
     }
@@ -21,13 +21,13 @@ namespace CsCat
       var resourceWebRequester = PoolCatManagerUtil.Spawn<ResourceWebRequester>();
       var url = download_url + file_path;
       resourceWebRequester.Init(url, true);
-      resourceWebRequester_all_dict[url]= resourceWebRequester;
+      resourceWebRequester_all_dict[url] = resourceWebRequester;
       resourceWebRequester_waiting_queue.Enqueue(resourceWebRequester);
       return resourceWebRequester;
     }
 
     //max_reload_count 失败的重新load的最大次数
-    public IEnumerator DownloadFileAsync(string url,int max_reload_count, int cur_reload_count=0)
+    public IEnumerator DownloadFileAsync(string url, int max_reload_count, int cur_reload_count = 0)
     {
       var resourceWebRequester = DownloadFileAsyncNoCache(url);
       cur_reload_count++;

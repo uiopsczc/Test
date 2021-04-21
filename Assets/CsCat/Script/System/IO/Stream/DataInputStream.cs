@@ -96,7 +96,7 @@ namespace CsCat
     public sbyte ReadByte()
     {
       inputStream.Read(buff, 0, 1);
-      return (sbyte) buff[0];
+      return (sbyte)buff[0];
     }
 
     public byte[] ReadBytes()
@@ -130,7 +130,7 @@ namespace CsCat
     public short ReadInt16()
     {
       inputStream.Read(buff, 0, 2);
-      return (short) (buff[1] | (buff[0] << 8));
+      return (short)(buff[1] | (buff[0] << 8));
     }
 
     public int ReadInt32()
@@ -142,28 +142,28 @@ namespace CsCat
     public long ReadInt64()
     {
       inputStream.Read(buff, 0, 8);
-      var value1 = (ulong) (buff[3] | (buff[2] << 8) | (buff[1] << 16) | (buff[0] << 24));
-      var value2 = (uint) (buff[7] | (buff[6] << 8) | (buff[5] << 16) | (buff[4] << 24));
-      return (long) ((value1 << 32) | value2);
+      var value1 = (ulong)(buff[3] | (buff[2] << 8) | (buff[1] << 16) | (buff[0] << 24));
+      var value2 = (uint)(buff[7] | (buff[6] << 8) | (buff[5] << 16) | (buff[4] << 24));
+      return (long)((value1 << 32) | value2);
     }
 
     public ushort ReadUInt16()
     {
       inputStream.Read(buff, 0, 2);
-      return (ushort) (buff[1] | (buff[0] << 8));
+      return (ushort)(buff[1] | (buff[0] << 8));
     }
 
     public uint ReadUInt32()
     {
       inputStream.Read(buff, 0, 4);
-      return (uint) (buff[3] | (buff[2] << 8) | (buff[1] << 16) | (buff[0] << 24));
+      return (uint)(buff[3] | (buff[2] << 8) | (buff[1] << 16) | (buff[0] << 24));
     }
 
     public ulong ReadUInt64()
     {
       inputStream.Read(buff, 0, 8);
-      var value1 = (ulong) (buff[3] | (buff[2] << 8) | (buff[1] << 16) | (buff[0] << 24));
-      var value2 = (uint) (buff[7] | (buff[6] << 8) | (buff[5] << 16) | (buff[4] << 24));
+      var value1 = (ulong)(buff[3] | (buff[2] << 8) | (buff[1] << 16) | (buff[0] << 24));
+      var value2 = (uint)(buff[7] | (buff[6] << 8) | (buff[5] << 16) | (buff[4] << 24));
       return (value1 << 32) | value2;
     }
 

@@ -332,7 +332,7 @@ namespace CsCat
       }
 
       ///最小值放在最前面的list
-      all_point_list.Sort(delegate(Vector2 v1, Vector2 v2)
+      all_point_list.Sort(delegate (Vector2 v1, Vector2 v2)
         {
           float d1 = Vector2.Dot(line.GetDirection(), ((v1 - line.point_A).normalized));
           float d2 = Vector2.Dot(line.GetDirection(), ((v2 - line.point_A).normalized));
@@ -506,7 +506,7 @@ namespace CsCat
       dx = p2.x - xc;
       dy = p2.y - yc;
       rsqr = dx * dx + dy * dy;
-      r = (float) Math.Sqrt(rsqr);
+      r = (float)Math.Sqrt(rsqr);
 
       return new Circle(new Vector2(xc, yc), r);
     }
@@ -534,14 +534,14 @@ namespace CsCat
 
       cosfi = dsx * dex + dsy * dey;
       norm = (dsx * dsx + dsy * dsy) * (dex * dex + dey * dey);
-      cosfi /= ((float) Math.Sqrt(norm));
+      cosfi /= ((float)Math.Sqrt(norm));
 
       if (cosfi >= 1.0)
         return 0;
       if (cosfi <= -1.0)
-        return (float) -Math.PI;
+        return (float)-Math.PI;
 
-      fi = (float) Math.Acos(cosfi);
+      fi = (float)Math.Acos(cosfi);
 
       if (dsx * dey - dsy * dex > 0)
         return fi; // 说明矢量oe 在矢量 os的逆时针方向 

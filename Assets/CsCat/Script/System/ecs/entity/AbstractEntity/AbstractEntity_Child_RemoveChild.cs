@@ -9,7 +9,7 @@ namespace CsCat
     {
       if (child.IsDestroyed())
         return null;
-      
+
       child.Destroy();
       if (!this.is_not_delete_child_relationship_immediately)
       {
@@ -31,7 +31,7 @@ namespace CsCat
       return RemoveChild(child);
     }
 
-    
+
 
     public AbstractEntity RemoveChild(Type child_type)
     {
@@ -41,7 +41,7 @@ namespace CsCat
       return child;
     }
 
-    public T RemoveChild<T>() where T:AbstractEntity
+    public T RemoveChild<T>() where T : AbstractEntity
     {
       return RemoveChild(typeof(T)) as T;
     }
@@ -74,7 +74,7 @@ namespace CsCat
     {
       return (T[])RemoveChildren(typeof(T));
     }
-    
+
 
     public AbstractEntity[] RemoveChildrenStrictly(Type child_type)
     {

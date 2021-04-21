@@ -16,7 +16,7 @@ namespace CsCat
 
     public EventListenerInfo<P0, P1> AddListener(EventName eventName, Action<P0, P1> handler)
     {
-      var handler_info = PoolCatManagerUtil.Spawn <KeyValuePairCat<Action<P0, P1>, bool>>().Init(handler, true);
+      var handler_info = PoolCatManagerUtil.Spawn<KeyValuePairCat<Action<P0, P1>, bool>>().Init(handler, true);
       listener_dict.Add(eventName, handler_info);
       return PoolCatManagerUtil.Spawn<EventListenerInfo<P0, P1>>().Init(eventName, handler);
     }
@@ -53,7 +53,7 @@ namespace CsCat
       {
         eventName.Despawn();
       }
-      
+
     }
 
     public bool RemoveListener(Action<P0, P1> handler)

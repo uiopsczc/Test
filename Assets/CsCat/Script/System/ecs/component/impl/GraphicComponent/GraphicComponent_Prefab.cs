@@ -12,7 +12,7 @@ namespace CsCat
 
 
     public string prefab_path { get => _prefab_path; }
-    
+
 
     public void SetPrefabPath(string prefab_path)
     {
@@ -23,8 +23,8 @@ namespace CsCat
     public void LoadPrefabPath()
     {
       if (!this.prefab_path.IsNullOrWhiteSpace())
-        this.prefab_assetCat = resLoadComponentPlugin.GetOrLoadAsset(prefab_path, null ,null,
-          assetCat => { is_load_done = true;},this);
+        this.prefab_assetCat = resLoadComponentPlugin.GetOrLoadAsset(prefab_path, null, null,
+          assetCat => { is_load_done = true; }, this);
     }
 
     public bool IsLoadDone()
@@ -40,7 +40,7 @@ namespace CsCat
         GameObject clone = InstantiateGameObject(prefab);
         clone.name = prefab.name;
         clone.transform.CopyFrom(prefab.transform);
-        SetGameObject(clone,null);
+        SetGameObject(clone, null);
       }
 
       if (this.parent_transform != null)

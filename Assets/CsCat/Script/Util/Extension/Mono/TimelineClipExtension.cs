@@ -15,13 +15,13 @@ namespace CsCat
     public static float GetLocalTime(this TimelineClip self, double global_time)
     {
       double timeOffset = global_time - self.start;
-      return (float) timeOffset;
+      return (float)timeOffset;
     }
 
 
     public static float GetPercent(this TimelineClip self, double global_time)
     {
-      return (float) (self.GetLocalTime(global_time) / self.duration);
+      return (float)(self.GetLocalTime(global_time) / self.duration);
     }
 
 

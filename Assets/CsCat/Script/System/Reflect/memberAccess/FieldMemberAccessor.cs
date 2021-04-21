@@ -69,7 +69,7 @@ namespace CsCat
       if (fieldInfo.FieldType.IsValueType) //FieldType  fieldInfo的类型
         ilGenerator.Emit(OpCodes.Box, fieldInfo.FieldType); //封箱 ，对fieldInfo进行封箱操作
       ilGenerator.Emit(OpCodes.Ret); //Ret:方法结束  return fieldInfo
-      getter = (Func<object, object>) dynamicMethod.CreateDelegate(typeof(Func<object, object>));
+      getter = (Func<object, object>)dynamicMethod.CreateDelegate(typeof(Func<object, object>));
     }
 
     /// <summary>
@@ -97,7 +97,7 @@ namespace CsCat
         ilGenerator.Emit(OpCodes.Castclass, fieldInfo.FieldType);
       ilGenerator.Emit(OpCodes.Stfld, fieldInfo); //Stfld set field  有两个参数   参数0：this  参数1：属性的值 fieldInfo.value=arg_1
       ilGenerator.Emit(OpCodes.Ret); //Ret:方法结束
-      setter = (Action<object, object>) dynamicMethod.CreateDelegate(typeof(Action<object, object>));
+      setter = (Action<object, object>)dynamicMethod.CreateDelegate(typeof(Action<object, object>));
     }
 
     #endregion

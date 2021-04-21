@@ -18,7 +18,7 @@ namespace CsCat
       }
       set
       {
-        this.SetFieldValue(string.Format("_transformFinder{0}", index),value);
+        this.SetFieldValue(string.Format("_transformFinder{0}", index), value);
       }
     }
 
@@ -36,7 +36,7 @@ namespace CsCat
       _transformFinder1.CopyFrom(_source._transformFinder1);
     }
 
-    
-    
+
+
   }
 }

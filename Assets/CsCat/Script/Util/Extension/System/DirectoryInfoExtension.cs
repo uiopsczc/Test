@@ -46,7 +46,7 @@ namespace CsCat
           result.Add(f);
         if (f.IsDirectory())
         {
-          List<FileSystemInfo> sub_result_list = SearchFiles((DirectoryInfo) f, filter);
+          List<FileSystemInfo> sub_result_list = SearchFiles((DirectoryInfo)f, filter);
           if (sub_result_list.Count > 0)
             result.AddRange(sub_result_list);
         }

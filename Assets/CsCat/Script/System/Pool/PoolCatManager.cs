@@ -52,7 +52,7 @@ namespace CsCat
     }
 
 
-    public void Despawn(object despawn_object,string pool_name = null)
+    public void Despawn(object despawn_object, string pool_name = null)
     {
       pool_name = despawn_object.GetType().Name;
       if (!pool_dict.ContainsKey(pool_name))
@@ -69,17 +69,17 @@ namespace CsCat
 
     public void Trim()
     {
-//      List<string> to_remove_list = new List<string>();
-//      foreach (var key in pool_dict.Keys)
-//      {
-//        var pool = pool_dict[key];
-//        pool.Trim();
-//        if (pool.IsEmpty())
-//          to_remove_list.Add(key);
-//      }
-//
-//      foreach (var to_remove_key in to_remove_list)
-//        pool_dict.Remove(to_remove_key);
+      //      List<string> to_remove_list = new List<string>();
+      //      foreach (var key in pool_dict.Keys)
+      //      {
+      //        var pool = pool_dict[key];
+      //        pool.Trim();
+      //        if (pool.IsEmpty())
+      //          to_remove_list.Add(key);
+      //      }
+      //
+      //      foreach (var to_remove_key in to_remove_list)
+      //        pool_dict.Remove(to_remove_key);
 
 
       foreach (var key in pool_dict.Keys)
@@ -100,8 +100,8 @@ namespace CsCat
     public T Spawn<T>(Action<T> on_spawn_callback = null)
     {
       if (on_spawn_callback == null)
-        return (T) Spawn(typeof(T));
-      return (T)Spawn(typeof(T),obj=>on_spawn_callback((T)obj));
+        return (T)Spawn(typeof(T));
+      return (T)Spawn(typeof(T), obj => on_spawn_callback((T)obj));
     }
   }
 }

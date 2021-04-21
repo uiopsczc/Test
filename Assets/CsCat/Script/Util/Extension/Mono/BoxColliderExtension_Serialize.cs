@@ -5,7 +5,7 @@ namespace CsCat
 {
   public static partial class BoxColliderExtension
   {
-    
+
 
     public static Hashtable GetSerializeHashtable(this BoxCollider self)
     {

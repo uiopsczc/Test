@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public partial class MountTimelinableTrack 
+  public partial class MountTimelinableTrack
   {
     public override void DrawGUISetting_Detail()
     {

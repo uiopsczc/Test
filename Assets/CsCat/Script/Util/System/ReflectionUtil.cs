@@ -15,7 +15,7 @@ namespace CsCat
     {
       Type type = TypeUtil.GetType(full_class_path, dll_name);
       object obj = Activator.CreateInstance(type, parameters); //根据类型创建实例
-      return (T) obj; //类型转换并返回
+      return (T)obj; //类型转换并返回
     }
 
     #endregion
@@ -41,7 +41,7 @@ namespace CsCat
     public static Type GetReflectionType(object obj)
     {
       if (obj is Type)
-        return (Type) obj;
+        return (Type)obj;
       else
         return obj.GetType();
     }
@@ -50,14 +50,14 @@ namespace CsCat
 
     #region GetMethodInfo
 
-    public static MethodInfo GetMethodInfo2(Type type, string method_name, 
+    public static MethodInfo GetMethodInfo2(Type type, string method_name,
       BindingFlags bindingFlags = BindingFlagsConst.All, Func<MethodInfo> get_methodInfo_func = null)
     {
       if (IsContainsMethodInfoCache2(type, method_name))
       {
         return GetMethodInfoCache2(type, method_name);
       }
-      var result = get_methodInfo_func==null? type.GetMethod(method_name, bindingFlags): get_methodInfo_func();
+      var result = get_methodInfo_func == null ? type.GetMethod(method_name, bindingFlags) : get_methodInfo_func();
       SetMethodInfoCache2(type, method_name, result);
       return result;
     }
@@ -70,7 +70,7 @@ namespace CsCat
         return GetMethodInfoCache(type, method_name, source_parameter_types);
       }
 
-      MethodInfo[] methodInfos = get_methodInfos_func == null ? type.GetMethods(bindingFlags): get_methodInfos_func();
+      MethodInfo[] methodInfos = get_methodInfos_func == null ? type.GetMethods(bindingFlags) : get_methodInfos_func();
       if (methodInfos.IsNullOrEmpty())
       {
         SetMethodInfoCache(type, method_name, source_parameter_types, null);
@@ -81,7 +81,7 @@ namespace CsCat
       {
         if (methodInfo.Name.Equals(method_name))
         {
-          
+
           ParameterInfo[] methodInfo_parameters = methodInfo.GetParameters();
           if (methodInfo_parameters.Length == 0)
           {
@@ -93,7 +93,7 @@ namespace CsCat
               return methodInfo;
             }
           }
-          
+
           ParameterInfo final_methodInfo_parameter = methodInfo_parameters[methodInfo_parameters.Length - 1];
           bool is_final_params =
             final_methodInfo_parameter.GetCustomAttributes(typeof(ParamArrayAttribute), false).Length > 0;
@@ -184,7 +184,7 @@ namespace CsCat
         type = TypeUtil.GetType(full_class_path);
       if (type == null)
         return null;
-      return  GetMethodInfo(type, method_name, bindingFlags, get_methodInfos_func, source_parameters);
+      return GetMethodInfo(type, method_name, bindingFlags, get_methodInfos_func, source_parameters);
     }
 
     #endregion
@@ -217,7 +217,7 @@ namespace CsCat
       }
 
       FieldInfo result = type.GetField(field_name, bindingFlags);
-      SetFieldInfoCache(type, field_name,result);
+      SetFieldInfoCache(type, field_name, result);
       return result;
     }
 
@@ -230,10 +230,10 @@ namespace CsCat
     {
       List<object> parameter_list_to_send = new List<object>();
       ParameterInfo[] methodInfo_parameters = methodInfo.GetParameters();
-      
+
 
       if (methodInfo_parameters.Length == 0 && (parameters == null || parameters.Length == 0))
-        return (T) methodInfo.Invoke(GetReflectionObject(obj), parameters);
+        return (T)methodInfo.Invoke(GetReflectionObject(obj), parameters);
 
       ParameterInfo final_methodInfo_parameter = methodInfo_parameters[methodInfo_parameters.Length - 1];
       bool is_final_params =
@@ -272,7 +272,7 @@ namespace CsCat
             parameter_list_to_send.Add(null);
         }
       }
-      return (T) methodInfo.Invoke(GetReflectionObject(obj), parameter_list_to_send.ToArray());
+      return (T)methodInfo.Invoke(GetReflectionObject(obj), parameter_list_to_send.ToArray());
     }
 
     public static void Invoke(object obj, MethodInfo methodInfo, params object[] parameters)
@@ -284,7 +284,7 @@ namespace CsCat
       bool is_miss_not_invoke = true, params object[] parameters)
     {
       MethodInfo methodInfo = GetMethodInfo(full_class_path, methodInfo_string,
-        GetReflectionObject(obj) == null ? BindingFlagsConst.Static : BindingFlagsConst.Instance,null,
+        GetReflectionObject(obj) == null ? BindingFlagsConst.Static : BindingFlagsConst.Instance, null,
         ReflectionUtil.GetReflectionType(obj).Assembly, parameters);
       if (methodInfo == null && is_miss_not_invoke)
         return default(T);
@@ -302,7 +302,7 @@ namespace CsCat
       bool is_miss_not_invoke = true, params object[] parameters)
     {
       MethodInfo methodInfo = GetMethodInfo(full_class_path, methodInfo_string,
-        GetReflectionObject(obj) == null ? BindingFlagsConst.Static : BindingFlagsConst.Instance,null,
+        GetReflectionObject(obj) == null ? BindingFlagsConst.Static : BindingFlagsConst.Instance, null,
         ReflectionUtil.GetReflectionType(obj).Assembly.FullName, parameters);
       if (methodInfo == null && is_miss_not_invoke)
         return;

@@ -57,7 +57,7 @@ namespace CsCat
                 cur_loaded_count++;
             }
 
-            Client.instance.uiManager.SetLoadingPct(cur_loaded_count / (float) downloading_count);
+            Client.instance.uiManager.SetLoadingPct(cur_loaded_count / (float)downloading_count);
 
 
           }

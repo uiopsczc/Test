@@ -4,7 +4,7 @@ using UnityEngine.Tilemaps;
 
 namespace CsCat
 {
-  public  static partial class TilemapExtension
+  public static partial class TilemapExtension
   {
 
     private static void SetTile(Tilemap tilemap, Vector3Int cell_pos, TileBase tileBase, Hashtable tile_detail_dict)

@@ -16,7 +16,7 @@ namespace CsCat
       var dict_tmp = new Hashtable();
       Client.instance.user.DoSave(dict, dict_tmp);
       LogCat.log(dict, dict_tmp);
-//    LogCat.log(result);
+      //    LogCat.log(result);
     }
   }
 }

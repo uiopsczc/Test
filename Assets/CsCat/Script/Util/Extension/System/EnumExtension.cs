@@ -30,7 +30,7 @@ namespace CsCat
       if (!typeof(T).GetType().IsEnum)
         throw new ArgumentException("T must be enum Type");
       int value = self.ToInt();
-      return (T) value.ToEnum<T>();
+      return (T)value.ToEnum<T>();
     }
   }
 }

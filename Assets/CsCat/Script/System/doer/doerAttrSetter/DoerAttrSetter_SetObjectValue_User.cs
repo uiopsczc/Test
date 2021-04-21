@@ -10,7 +10,7 @@ namespace CsCat
         User user = doer as User;
         if (object_value is string)
         {
-          string value = (string) object_value;
+          string value = (string)object_value;
 
           if (this.SetObjectValue_User_AddAttrEquip(user, key, value, is_add))
             return true;

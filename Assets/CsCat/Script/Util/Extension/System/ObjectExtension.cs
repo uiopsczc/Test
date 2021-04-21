@@ -226,18 +226,18 @@ namespace CsCat
       if (self == null)
         return dv;
       if (self.IsBool())
-        return (bool) self;
+        return (bool)self;
       if (self.IsNumber())
         return ToIntOrToDefault(self, 0) != 0;
       if (self.IsString())
       {
-        if ("true".Equals(((string) self).ToLower()))
+        if ("true".Equals(((string)self).ToLower()))
           return true;
-        if ("false".Equals(((string) self).ToUpper()))
+        if ("false".Equals(((string)self).ToUpper()))
           return false;
         try
         {
-          return double.Parse((string) self) != 0.0D;
+          return double.Parse((string)self) != 0.0D;
         }
         catch
         {
@@ -256,28 +256,28 @@ namespace CsCat
         return dv;
       if (self.IsBool())
       {
-        if ((bool) self)
+        if ((bool)self)
           return 1;
         return 0;
       }
 
       if (self.IsByte())
-        return ((byte) self);
+        return ((byte)self);
       if (self.IsShort())
-        return ((byte) (short) self);
+        return ((byte)(short)self);
       if (self.IsInt())
-        return ((byte) (int) self);
+        return ((byte)(int)self);
       if (self.IsLong())
-        return ((byte) (long) self);
+        return ((byte)(long)self);
       if (self.IsFloat())
-        return ((byte) (float) self);
+        return ((byte)(float)self);
       if (self.IsDouble())
-        return ((byte) (double) self);
+        return ((byte)(double)self);
       if (self.IsString())
       {
         try
         {
-          return byte.Parse((string) self);
+          return byte.Parse((string)self);
         }
         catch
         {
@@ -298,22 +298,22 @@ namespace CsCat
       if (self.IsBool())
         return ToByteOrToDefault(self, 0);
       if (self.IsByte())
-        return ((byte) self);
+        return ((byte)self);
       if (self.IsShort())
-        return ((short) self);
+        return ((short)self);
       if (self.IsInt())
-        return ((short) (int) self);
+        return ((short)(int)self);
       if (self.IsLong())
-        return ((short) (long) self);
+        return ((short)(long)self);
       if (self.IsFloat())
-        return ((short) (float) self);
+        return ((short)(float)self);
       if (self.IsDouble())
-        return ((short) (double) self);
+        return ((short)(double)self);
       if (self.IsString())
       {
         try
         {
-          return short.Parse((string) self);
+          return short.Parse((string)self);
         }
         catch
         {
@@ -327,27 +327,27 @@ namespace CsCat
     /// <summary>
     /// 将o转化为char，失败时返回dv
     /// </summary>
-    public static char ToCharOrToDefault(this object self, char dv = (char) 0x0)
+    public static char ToCharOrToDefault(this object self, char dv = (char)0x0)
     {
       if (self == null)
         return dv;
       if (IsChar(self))
-        return ((char) self);
+        return ((char)self);
       if (self.IsByte())
-        return (char) ((byte) self);
+        return (char)((byte)self);
       if (self.IsShort())
-        return (char) ((short) self);
+        return (char)((short)self);
       if (self.IsInt())
-        return (char) ((int) self);
+        return (char)((int)self);
       if (self.IsLong())
-        return (char) ((long) self);
+        return (char)((long)self);
       if (self.IsFloat())
-        return (char) ((float) self);
+        return (char)((float)self);
       if (self.IsDouble())
-        return (char) ((double) self);
+        return (char)((double)self);
       if (self.IsString())
       {
-        var s = (string) self;
+        var s = (string)self;
         if (s.Length == 1)
           return s[0];
       }
@@ -365,22 +365,22 @@ namespace CsCat
       if (self.IsBool())
         return ToByteOrToDefault(self, 0);
       if (IsByte(self))
-        return ((byte) self);
+        return ((byte)self);
       if (self.IsShort())
-        return ((short) self);
+        return ((short)self);
       if (self.IsInt())
-        return ((int) self);
+        return ((int)self);
       if (self.IsLong())
-        return (int) ((long) self);
+        return (int)((long)self);
       if (self.IsFloat())
-        return (int) ((float) self);
+        return (int)((float)self);
       if (self.IsDouble())
-        return (int) ((double) self);
+        return (int)((double)self);
       if (self.IsString())
       {
         try
         {
-          return int.Parse((string) self);
+          return int.Parse((string)self);
         }
         catch
         {
@@ -401,22 +401,22 @@ namespace CsCat
       if (self.IsBool())
         return ToByteOrToDefault(self, 0);
       if (self.IsByte())
-        return ((byte) self);
+        return ((byte)self);
       if (self.IsShort())
-        return ((short) self);
+        return ((short)self);
       if (self.IsInt())
-        return ((int) self);
+        return ((int)self);
       if (self.IsLong())
-        return ((long) self);
+        return ((long)self);
       if (self.IsFloat())
-        return (long) ((float) self);
+        return (long)((float)self);
       if (self.IsDouble())
-        return (long) ((double) self);
+        return (long)((double)self);
       if (self.IsString())
       {
         try
         {
-          return long.Parse((string) self);
+          return long.Parse((string)self);
         }
         catch
         {
@@ -437,22 +437,22 @@ namespace CsCat
       if (self.IsBool())
         return ToByteOrToDefault(self, 0);
       if (self.IsByte())
-        return ((byte) self);
+        return ((byte)self);
       if (self.IsShort())
-        return ((short) self);
+        return ((short)self);
       if (self.IsInt())
-        return ((int) self);
+        return ((int)self);
       if (self.IsLong())
-        return ((long) self);
+        return ((long)self);
       if (self.IsFloat())
-        return ((float) self);
+        return ((float)self);
       if (self.IsDouble())
-        return (float) ((double) self);
+        return (float)((double)self);
       if (self.IsString())
       {
         try
         {
-          return float.Parse((string) self);
+          return float.Parse((string)self);
         }
         catch
         {
@@ -473,24 +473,24 @@ namespace CsCat
       if (self.IsBool())
         return ToByteOrToDefault(self, 0);
       if (IsByte(self))
-        return ((byte) self);
+        return ((byte)self);
       if (self.IsShort())
-        return ((short) self);
+        return ((short)self);
       if (self.IsInt())
-        return ((int) self);
+        return ((int)self);
       if (self.IsLong())
-        return ((long) self);
+        return ((long)self);
       if (self.IsFloat())
-        return ((float) self);
+        return ((float)self);
       if (self.IsDouble())
-        return ((double) self);
+        return ((double)self);
       if (self.IsDateTime())
-        return ((DateTime) self).Ticks;
+        return ((DateTime)self).Ticks;
       if (self.IsString())
       {
         try
         {
-          return double.Parse((string) self);
+          return double.Parse((string)self);
         }
         catch
         {
@@ -509,12 +509,12 @@ namespace CsCat
       if (self == null)
         return dv;
       if (self.IsLong())
-        return new DateTime((long) self);
+        return new DateTime((long)self);
       if (self.IsDateTime())
-        return (DateTime) self;
+        return (DateTime)self;
       if (self.IsString())
       {
-        return ((string) self).ToDateTime(pattern);
+        return ((string)self).ToDateTime(pattern);
       }
 
       return dv;
@@ -560,7 +560,7 @@ namespace CsCat
     public static List<T> ToListOrToDefault<T>(this object self, List<T> dv = null)
     {
       if (IsList<T>(self))
-        return (List<T>) self;
+        return (List<T>)self;
       return dv;
     }
 
@@ -570,7 +570,7 @@ namespace CsCat
     public static Dictionary<T, V> ToDictionaryOrToDefault<T, V>(this object self, Dictionary<T, V> dv = null)
     {
       if (IsDictionary<T, V>(self))
-        return (Dictionary<T, V>) self;
+        return (Dictionary<T, V>)self;
       return dv;
     }
 
@@ -584,7 +584,7 @@ namespace CsCat
         return booleans;
       if (self.IsArray())
       {
-        var array = (Array) self;
+        var array = (Array)self;
         int len = array.Length;
         dv = new bool[len];
         for (int i = 0; i < len; i++)
@@ -604,7 +604,7 @@ namespace CsCat
         return bytes;
       if (self.IsArray())
       {
-        var array = (Array) self;
+        var array = (Array)self;
         int len = array.Length;
         dv = new byte[len];
         for (int i = 0; i < len; i++)
@@ -624,7 +624,7 @@ namespace CsCat
         return shorts;
       if (self.IsArray())
       {
-        var array = (Array) self;
+        var array = (Array)self;
         int len = array.Length;
         dv = new short[len];
         for (int i = 0; i < len; i++)
@@ -644,7 +644,7 @@ namespace CsCat
         return ints;
       if (self.IsArray())
       {
-        var array = (Array) self;
+        var array = (Array)self;
         int len = array.Length;
         dv = new int[len];
         for (int i = 0; i < len; i++)
@@ -664,7 +664,7 @@ namespace CsCat
         return longs;
       if (self.IsArray())
       {
-        var array = (Array) self;
+        var array = (Array)self;
         int len = array.Length;
         dv = new long[len];
         for (int i = 0; i < len; i++)
@@ -684,7 +684,7 @@ namespace CsCat
         return floats;
       if (self.IsArray())
       {
-        var array = (Array) self;
+        var array = (Array)self;
         int len = array.Length;
         dv = new float[len];
         for (int i = 0; i < len; i++)
@@ -704,7 +704,7 @@ namespace CsCat
         return doubles;
       if (self.IsArray())
       {
-        var array = (Array) self;
+        var array = (Array)self;
         int len = array.Length;
         dv = new double[len];
         for (int i = 0; i < len; i++)
@@ -724,7 +724,7 @@ namespace CsCat
         return strings;
       if (self.IsArray())
       {
-        var array = (Array) self;
+        var array = (Array)self;
         int len = array.Length;
         dv = new string[len];
 
@@ -770,7 +770,7 @@ namespace CsCat
         return objects;
       if (self.IsArray())
       {
-        var array = (Array) self;
+        var array = (Array)self;
         Array dvArray = null;
         int len = array.Length;
         if (self is bool[])
@@ -801,7 +801,7 @@ namespace CsCat
 
     public static T To<T>(this object self)
     {
-      return (T) Convert.ChangeType(self, typeof(T));
+      return (T)Convert.ChangeType(self, typeof(T));
     }
 
     public static object To(this object self, Type type)
@@ -822,15 +822,15 @@ namespace CsCat
       if (self == null)
         return "null";
       if (self.IsString())
-        return (string) self;
+        return (string)self;
       if (self.IsDateTime())
-        return ((DateTime) self).ToString("yyyy-MM-dd HH:mm:ss");
+        return ((DateTime)self).ToString("yyyy-MM-dd HH:mm:ss");
       if (IsChar(self))
-        return ((char) self) + "";
+        return ((char)self) + "";
       if (IsChars(self))
-        return new string((char[]) self);
+        return new string((char[])self);
       if (IsBytes(self))
-        return ByteUtil.ToString((byte[]) self, 0, ((byte[]) self).Length);
+        return ByteUtil.ToString((byte[])self, 0, ((byte[])self).Length);
       return self.ToString();
     }
 
@@ -853,7 +853,7 @@ namespace CsCat
     public static MethodInfo GetMethodInfo(this object self, string method_name,
       BindingFlags bindingFlags = BindingFlagsConst.All, params Type[] sourceParameterTypes)
     {
-      return ReflectionUtil.GetReflectionType(self).GetMethodInfo( method_name, bindingFlags, sourceParameterTypes);
+      return ReflectionUtil.GetReflectionType(self).GetMethodInfo(method_name, bindingFlags, sourceParameterTypes);
     }
     //////////////////////////Generic//////////////////////////////
     public static MethodInfo GetGenericMethodInfo2(this object self, string method_name, Type[] generic_types,
@@ -885,7 +885,7 @@ namespace CsCat
 
     #region FiledValue
 
-    public static FieldInfo GetFieldInfo(this object self, string field_name,BindingFlags bindingFlags = BindingFlagsConst.All)
+    public static FieldInfo GetFieldInfo(this object self, string field_name, BindingFlags bindingFlags = BindingFlagsConst.All)
     {
       return ReflectionUtil.GetReflectionType(self).GetFieldInfo(field_name, bindingFlags);
     }
@@ -899,13 +899,13 @@ namespace CsCat
     public static T GetFieldValue<T>(this object self, string field_name,
       BindingFlags bindingFlags = BindingFlagsConst.All)
     {
-      return (T) GetFieldValue(self, field_name, bindingFlags);
+      return (T)GetFieldValue(self, field_name, bindingFlags);
     }
 
     public static object GetFieldValue(this object self, string field_name,
       BindingFlags bindingFlags = BindingFlagsConst.All)
     {
-      return ReflectionUtil.GetReflectionType(self).GetFieldInfo( field_name, bindingFlags).GetValue(self);
+      return ReflectionUtil.GetReflectionType(self).GetFieldInfo(field_name, bindingFlags).GetValue(self);
     }
 
     #endregion
@@ -925,7 +925,7 @@ namespace CsCat
 
     public static T GetPropertyValue<T>(this object self, string property_name, object[] index = null)
     {
-      return (T) GetPropertyValue(self, property_name, index);
+      return (T)GetPropertyValue(self, property_name, index);
     }
 
     public static object GetPropertyValue(this object self, string property_name, object[] index = null)
@@ -966,7 +966,7 @@ namespace CsCat
     {
       return ReflectionUtil.InvokeGeneric<T>(self, method_name, generic_types, is_miss_not_invoke, parameters);
     }
-    
+
     public static void InvokeGenericMethod(this object self, string method_name, Type[] generic_types, bool is_miss_not_invoke = true,
       params object[] parameters)
     {

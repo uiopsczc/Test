@@ -67,7 +67,7 @@ namespace CsCat
       get { return dict.GetOrAddDefault(typeof(AudioSource), () => { return owner.GetComponent<AudioSource>(); }); }
     }
 
-//  public GUIElement guiElement { get { return dict.GetOrAddDefault(typeof(GUIElement), () => { return owner.GetComponent<GUIElement>(); }); } }
+    //  public GUIElement guiElement { get { return dict.GetOrAddDefault(typeof(GUIElement), () => { return owner.GetComponent<GUIElement>(); }); } }
     public Collider collider
     {
       get { return dict.GetOrAddDefault(typeof(Collider), () => { return owner.GetComponent<Collider>(); }); }

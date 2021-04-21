@@ -51,6 +51,6 @@ namespace CsCat
     {
       timerManagerPlugin.SetIsPaused(is_paused);
     }
-    
+
   }
 }

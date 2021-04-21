@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public partial class TimelinableSequenceBase:ScriptableObject
+  public partial class TimelinableSequenceBase : ScriptableObject
   {
     public virtual TimelinableTrackBase[] tracks
     {
@@ -13,7 +13,7 @@ namespace CsCat
     //相对于Tick，效率低一些
     public void Retime(float time, params object[] args)
     {
-      tracks.Foreach(track=> track.Retime(time, args));
+      tracks.Foreach(track => track.Retime(time, args));
     }
 
     public void Tick(float time, params object[] args)

@@ -235,7 +235,7 @@ namespace CsCat
     {
       eventDispatchersPlugin.RemoveAllListeners();
     }
-    
+
 
   }
 }

@@ -219,7 +219,7 @@ namespace CsCat
       var a = base_distance;
       var b = base_distance;
       var c = self_unit_radius * 2;
-      var delta_angle = (float) Math.Acos((a * a - b * b - c * c) / (-2 * b * c)) * Mathf.Rad2Deg;
+      var delta_angle = (float)Math.Acos((a * a - b * b - c * c) / (-2 * b * c)) * Mathf.Rad2Deg;
       Vector3 left_pos, right_pos;
       while (true)
       {

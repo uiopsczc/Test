@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace CsCat
 {
-  public class CoroutinePluginComponent:AbstractComponent
+  public class CoroutinePluginComponent : AbstractComponent
   {
     private CoroutinePlugin coroutinePlugin;
     public void Init(CoroutinePlugin coroutinePlugin)

@@ -12,7 +12,7 @@ namespace CsCat
     {
       base.Init();
       var gameObject = GameObject.Find("UnitManager") ?? new GameObject("UnitManager");
-      graphicComponent.SetGameObject(gameObject,  true);
+      graphicComponent.SetGameObject(gameObject, true);
       this.InitFactionUnitDict();
       this.InitFactionStateInfoDict();
 

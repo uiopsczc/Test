@@ -8,7 +8,7 @@ namespace CsCat
   public partial class TimelineRect
   {
     private Rect play_time_line_rect;
-    
+
     private float _play_time;
 
     public float play_time

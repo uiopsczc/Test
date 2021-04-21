@@ -49,13 +49,13 @@ namespace CsCat
     {
       var ret = new List<Line>();
       foreach (var innerPolygon in innerPolygons)
-      foreach (var innnerLine in innerPolygon.line_list)
-      foreach (var outerLine in outerPolygon.line_list)
-        if (outerLine.Contains(innnerLine))
-        {
-          ret.Add(innnerLine);
-          break;
-        }
+        foreach (var innnerLine in innerPolygon.line_list)
+          foreach (var outerLine in outerPolygon.line_list)
+            if (outerLine.Contains(innnerLine))
+            {
+              ret.Add(innnerLine);
+              break;
+            }
 
       return ret;
     }
@@ -65,15 +65,15 @@ namespace CsCat
       var ret = new List<Vector2>();
       var lines = GetOverLapInnerLines();
       foreach (var line1 in lines)
-      foreach (var line2 in lines)
-      {
-        if (line1.Equals(line2))
-          continue;
-        if (line1.point_A == line2.point_A || line1.point_A == line2.point_B)
-          ret.Add(line1.point_A);
-        if (line1.point_B == line2.point_A || line1.point_B == line2.point_B)
-          ret.Add(line1.point_B);
-      }
+        foreach (var line2 in lines)
+        {
+          if (line1.Equals(line2))
+            continue;
+          if (line1.point_A == line2.point_A || line1.point_A == line2.point_B)
+            ret.Add(line1.point_A);
+          if (line1.point_B == line2.point_A || line1.point_B == line2.point_B)
+            ret.Add(line1.point_B);
+        }
 
       return ret;
     }

@@ -14,14 +14,14 @@ namespace CsCat
     {
       get
       {
-        var bytes_index = (uint) (index / byte_width);
+        var bytes_index = (uint)(index / byte_width);
         var bit_index = index % byte_width;
         var b = (bytes[bytes_index] >> bit_index) & 1u;
         return Convert.ToBoolean(b);
       }
       set
       {
-        var bytes_index = (uint) (index / byte_width);
+        var bytes_index = (uint)(index / byte_width);
         var bit_index = index % byte_width;
         var b = 1u << bit_index;
         if (value)
@@ -98,7 +98,7 @@ namespace CsCat
 
       // If parameter cannot be cast to BitMask return false.
       var m = obj as BitMask;
-      if (null == (object) m) return false;
+      if (null == (object)m) return false;
 
       return _isEqual(this, m);
     }

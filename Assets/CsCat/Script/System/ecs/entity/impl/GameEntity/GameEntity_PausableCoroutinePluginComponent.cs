@@ -8,7 +8,7 @@ namespace CsCat
 {
   public partial class GameEntity
   {
-    
+
 
     public string StartPausableCoroutine(IEnumerator ie, string key = null)
     {

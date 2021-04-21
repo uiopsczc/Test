@@ -22,7 +22,7 @@ namespace CsCat
         int index = path.IndexOf("/");
         if (index > 0)
         {
-          var name = path.Substring(0,index);
+          var name = path.Substring(0, index);
           gameObject.name = name;
           NewChildGameObject(gameObject.transform, path.Substring(index + 1));
         }
@@ -64,7 +64,7 @@ namespace CsCat
       {
         text.alignment = alignment.GetValueOrDefault(default(TextAnchor));
         text.color = color.GetValueOrDefault(Color.black);
-        text.font = font ?? (Font) Resources.GetBuiltinResource(typeof(Font), "Arial.ttf");
+        text.font = font ?? (Font)Resources.GetBuiltinResource(typeof(Font), "Arial.ttf");
         text.fontSize = font_size;
         text.horizontalOverflow = HorizontalWrapMode.Overflow;
         text.verticalOverflow = VerticalWrapMode.Overflow;
@@ -76,7 +76,7 @@ namespace CsCat
       return text;
     }
 
-    public static GameObject GetOrNewGameObject(this Component self,string path)
+    public static GameObject GetOrNewGameObject(this Component self, string path)
     {
       return GameObjectUtil.GetOrNewGameObject(path, self.gameObject);
     }

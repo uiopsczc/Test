@@ -4,7 +4,7 @@ using UnityEngine;
 namespace CsCat
 {
   [Serializable]
-  public partial class TransformFinder0:TransformFinderBase
+  public partial class TransformFinder0 : TransformFinderBase
   {
     public string path;
 

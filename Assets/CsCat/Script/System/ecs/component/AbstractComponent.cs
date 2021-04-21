@@ -8,7 +8,7 @@ namespace CsCat
     public AbstractEntity entity;
     public bool is_key_using_parent_idPool;
     protected Cache cache = new Cache();
-    
+
 
     public AbstractComponent()
     {
@@ -24,7 +24,7 @@ namespace CsCat
 
     public T GetEntity<T>() where T : AbstractEntity
     {
-      return this.cache.GetOrAddDefault("entity_" + typeof(T), () => (T) this.entity);
+      return this.cache.GetOrAddDefault("entity_" + typeof(T), () => (T)this.entity);
     }
 
     void __OnDespawn_()

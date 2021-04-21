@@ -63,26 +63,26 @@ namespace CsCat
       {
         if (memberInfo.MemberType == MemberTypes.Field) //处理filedInfo
         {
-          result = new FieldMemberAccessor((FieldInfo) memberInfo);
+          result = new FieldMemberAccessor((FieldInfo)memberInfo);
         }
         else
         {
           //处理PropertyInfo
           if (memberInfo.MemberType != MemberTypes.Property)
             throw new NotSupportedException(memberInfo.MemberType.ToString());
-          result = new PropertyMemberAccessor((PropertyInfo) memberInfo);
+          result = new PropertyMemberAccessor((PropertyInfo)memberInfo);
         }
       }
       catch (Exception)
       {
         if (memberInfo.MemberType == MemberTypes.Field) //处理filedInfo
         {
-          result = new FieldMember((FieldInfo) memberInfo);
+          result = new FieldMember((FieldInfo)memberInfo);
         }
         else
         {
           if (memberInfo.MemberType == MemberTypes.Property) //处理PropertyInfo
-            result = new PropertyMember((PropertyInfo) memberInfo);
+            result = new PropertyMember((PropertyInfo)memberInfo);
           else
             result = null;
         }

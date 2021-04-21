@@ -492,7 +492,7 @@ namespace CsCat
       }
     }
 
-    public static ArrayList DoSaveList<T>(this IList<T> self, Action<T,Hashtable> doSave_callback)
+    public static ArrayList DoSaveList<T>(this IList<T> self, Action<T, Hashtable> doSave_callback)
     {
       ArrayList result = new ArrayList();
       for (int i = 0; i < self.Count; i++)
@@ -505,7 +505,7 @@ namespace CsCat
       return result;
     }
 
-    public static void DoRestoreList<T>(this IList<T> self, ArrayList arrayList, Func<Hashtable,T> doRestore_callback)
+    public static void DoRestoreList<T>(this IList<T> self, ArrayList arrayList, Func<Hashtable, T> doRestore_callback)
     {
       for (int i = 0; i < arrayList.Count; i++)
       {
@@ -542,9 +542,9 @@ namespace CsCat
       return result;
     }
 #if UNITY_EDITOR
-    public static void ToReorderableList(this IList to_reorder_list,ref ReorderableList _reorderableList)
+    public static void ToReorderableList(this IList to_reorder_list, ref ReorderableList _reorderableList)
     {
-      ReorderableListUtil.ToReorderableList(to_reorder_list,ref _reorderableList);
+      ReorderableListUtil.ToReorderableList(to_reorder_list, ref _reorderableList);
     }
 #endif
 

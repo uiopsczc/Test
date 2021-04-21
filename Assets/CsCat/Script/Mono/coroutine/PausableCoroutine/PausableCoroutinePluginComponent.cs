@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace CsCat
 {
-  public class PausableCoroutinePluginComponent:AbstractComponent
+  public class PausableCoroutinePluginComponent : AbstractComponent
   {
     private PausableCoroutinePlugin pausableCoroutinePlugin;
     public void Init(PausableCoroutinePlugin pausableCoroutinePlugin)

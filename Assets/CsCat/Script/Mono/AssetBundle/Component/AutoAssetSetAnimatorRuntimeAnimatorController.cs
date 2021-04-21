@@ -32,7 +32,7 @@ namespace CsCat
       {
         SetAnimatorRuntimeAnimatorController(component, asset);
         on_load_success_callback?.Invoke(component, asset);
-      }, on_load_fail_callback, (component, asset)=>
+      }, on_load_fail_callback, (component, asset) =>
       {
         on_load_done_callback?.Invoke(component, asset);
         is_done = true;

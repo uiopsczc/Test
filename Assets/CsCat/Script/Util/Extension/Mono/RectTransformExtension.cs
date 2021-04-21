@@ -102,7 +102,7 @@ namespace CsCat
 
     public static void SetLeft(this RectTransform self, float value)
     {
-      self.offsetMin = new Vector2(value, self.offsetMin.y );
+      self.offsetMin = new Vector2(value, self.offsetMin.y);
     }
     public static void SetRight(this RectTransform self, float value)
     {

@@ -24,7 +24,7 @@ namespace CsCat
       }
       set
       {
-          this._data[key] = value;
+        this._data[key] = value;
       }
     }
   }

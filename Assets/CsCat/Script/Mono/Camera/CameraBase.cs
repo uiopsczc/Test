@@ -20,7 +20,7 @@ namespace CsCat
     private float current_fov;
 
 
-    public void Init(Camera camera,bool is_not_destroy_gameObject)
+    public void Init(Camera camera, bool is_not_destroy_gameObject)
     {
       base.Init();
       this.camera = camera;

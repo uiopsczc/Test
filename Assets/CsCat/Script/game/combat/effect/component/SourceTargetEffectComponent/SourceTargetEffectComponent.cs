@@ -19,7 +19,7 @@ namespace CsCat
 
     public Action on_reach_callback;
 
-    
+
 
     public void SetSocket()
     {
@@ -30,7 +30,7 @@ namespace CsCat
       target_iposition?.SetSocketName(this.target_socket_name);
     }
 
-   
+
 
 
     // 计算sourcePosition,targetPosition,eulerAngles

@@ -15,7 +15,7 @@ namespace CsCat
 
     void Reset();
     void Dispose();
-    
+
   }
 }
 

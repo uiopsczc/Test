@@ -598,7 +598,7 @@ namespace CsCat
       if (colour.HasValue)
         GUI.color = colour.Value;
 
-//    Vector2 size = GUI.skin.label.CalcSize(new GUIContent(text));
+      //    Vector2 size = GUI.skin.label.CalcSize(new GUIContent(text));
       Handles.Label(position, text);
       GUI.color = save_color;
       Handles.EndGUI();

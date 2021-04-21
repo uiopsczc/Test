@@ -373,7 +373,7 @@ namespace CsCat
 
       double l = (a + b + c) / 2d; // 周长的一半
       double s = Math.Sqrt(l * (l - a) * (l - b) * (l - c)); // 海伦公式求面积，也可以用矢量求
-      return (int) (2 * s / c);
+      return (int)(2 * s / c);
     }
 
     public static int GetMapDistance(Vector2Int point_a, Vector2Int point_b)
@@ -382,7 +382,7 @@ namespace CsCat
       int dy = point_a.y - point_b.y;
       int ddx = dx - dy;
       int ddy = dx + dy;
-      return (int) Math.Sqrt(0.8 * ddx * ddx + 0.2 * ddy * ddy);
+      return (int)Math.Sqrt(0.8 * ddx * ddx + 0.2 * ddy * ddy);
     }
 
 

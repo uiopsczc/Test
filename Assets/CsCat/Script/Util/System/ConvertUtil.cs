@@ -134,15 +134,15 @@ namespace CsCat
       if (target_type.IsByRef) target_type = target_type.GetElementType();
       // 总是可以转换为 Object。
       if (target_type == typeof(object)) return true;
-//      if (source_type == target_type || source_type.IsSubclassOf(target_type)) return true;
+      //      if (source_type == target_type || source_type.IsSubclassOf(target_type)) return true;
       if (source_type.IsSubTypeOf(target_type))
         return true;
       //Nullable处理
       Type underlyingType = Nullable.GetUnderlyingType(target_type);
       if (underlyingType != null)
       {
-//        if (source_type == underlyingType || source_type.IsSubclassOf(underlyingType))
-        if(source_type.IsSubTypeOf(underlyingType))
+        //        if (source_type == underlyingType || source_type.IsSubclassOf(underlyingType))
+        if (source_type.IsSubTypeOf(underlyingType))
           return true;
       }
       return false;

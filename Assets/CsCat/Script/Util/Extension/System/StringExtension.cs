@@ -131,7 +131,7 @@ namespace CsCat
     public static int IndexEndOf(this string self, string value, int start_index, int count)
     {
       count = start_index + count > self.Length ? self.Length - start_index : count;
-      var index = self.IndexOf(value, start_index,count);
+      var index = self.IndexOf(value, start_index, count);
       if (index == -1)
         return index;
       return index + value.Length - 1;
@@ -224,7 +224,7 @@ namespace CsCat
       return new AssetPathInfo(self);
     }
 
-    public static string GetPreString(this string self,string split_content)
+    public static string GetPreString(this string self, string split_content)
     {
       int index = self.IndexOf(split_content);
       if (index == -1)
@@ -239,7 +239,7 @@ namespace CsCat
       if (index == -1)
         return self;
       else
-        return self.Substring(index+1);
+        return self.Substring(index + 1);
     }
 
     public static string Format(this string self, params object[] args)
@@ -429,7 +429,7 @@ namespace CsCat
         ignore_right = ignore_left;
       var result_list = new List<string>();
       //https://blog.csdn.net/scrOUT/article/details/90517304
-//    var regex = new Regex("(" + split + ")" + "(?=([^\\\"]*\\\"[^\\\"]*\\\")*[^\\\"]*$)"); //双引号内的逗号不分割  双引号外的逗号进行分割
+      //    var regex = new Regex("(" + split + ")" + "(?=([^\\\"]*\\\"[^\\\"]*\\\")*[^\\\"]*$)"); //双引号内的逗号不分割  双引号外的逗号进行分割
       string pattern = string.Format("({0})(?=([^{1}]*{2}[^{3}]*{4})*[^{5}]*$)", split, ignore_left, ignore_left,
         ignore_right, ignore_right, ignore_right);
       var regex = new Regex(pattern);
@@ -543,7 +543,7 @@ namespace CsCat
 
     public static T ToEnum<T>(this string self)
     {
-      return (T) Enum.Parse(typeof(T), self);
+      return (T)Enum.Parse(typeof(T), self);
     }
 
     public static bool IsEnum<T>(this string self)
@@ -589,7 +589,7 @@ namespace CsCat
       if (self == null)
         return null;
       if (slice_len <= 0 || self.Length <= slice_len)
-        return new[] {self};
+        return new[] { self };
       var list = new List<string>();
       for (var i = 0; i < self.Length / slice_len; i++)
         list.Add(self.Substring(i * slice_len, (i + 1) * slice_len));
@@ -606,13 +606,13 @@ namespace CsCat
       if (self == null)
         return null;
       if (string.IsNullOrEmpty(sep))
-        return new[] {self};
+        return new[] { self };
 
       var sep_len = sep.Length;
       var sep_index = self.IndexOf(sep, StringComparison.Ordinal);
       if (sep_index != -1)
       {
-        var list = new List<string> {self.Substring(0, sep_index)};
+        var list = new List<string> { self.Substring(0, sep_index) };
         var sub_index = sep_index + sep_len;
         while ((sep_index = self.IndexOf(sep, sub_index)) != -1)
         {
@@ -626,7 +626,7 @@ namespace CsCat
         return list.ToArray();
       }
 
-      return new[] {self};
+      return new[] { self };
     }
 
     #endregion
@@ -939,7 +939,7 @@ namespace CsCat
             from_base));
         try
         {
-          result += (long) Math.Pow(from_base, i) * GetCharIndex(const_chars, value[value.Length - i - 1]); //   2
+          result += (long)Math.Pow(from_base, i) * GetCharIndex(const_chars, value[value.Length - i - 1]); //   2
         }
         catch
         {
@@ -958,7 +958,7 @@ namespace CsCat
       return 0;
     }
 
-    
+
 
     #endregion
   }

@@ -16,7 +16,7 @@ namespace CsCat
       Init(args);
     }
 
-    public Args(object args0,params object[] args)
+    public Args(object args0, params object[] args)
     {
       Init(args0, args);
     }
@@ -37,7 +37,7 @@ namespace CsCat
 
     public override bool Equals(object obj)
     {
-      Args other = (Args) obj;
+      Args other = (Args)obj;
 
       if (other == null)
         return false;
@@ -53,7 +53,7 @@ namespace CsCat
       {
         for (int i = 0; i < this.args.Length; i++)
         {
-          if (!ObjectUtil.Equals(args[i],other.args[i]))
+          if (!ObjectUtil.Equals(args[i], other.args[i]))
           {
             return false;
           }

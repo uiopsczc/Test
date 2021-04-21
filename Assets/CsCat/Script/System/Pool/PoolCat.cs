@@ -13,8 +13,8 @@ namespace CsCat
     protected Dictionary<object, bool> all_object_dict = new Dictionary<object, bool>();
     private Type spawn_type;
     public string pool_name;
-    
-    
+
+
 
     public PoolCat(string pool_name, Type spawn_type)
     {
@@ -27,7 +27,7 @@ namespace CsCat
       for (int i = 0; i < init_count; i++)
         Despawn(Spawn(on_spawn_callback));
     }
-    
+
 
     #region virtual method
 
@@ -59,14 +59,14 @@ namespace CsCat
 
     public T Spawn<T>(Action<object> on_spawn_callback = null)
     {
-      return (T) Spawn(on_spawn_callback);
+      return (T)Spawn(on_spawn_callback);
     }
 
     public virtual void Despawn(object obj)
     {
       if (obj == null)
         return;
-      if (!all_object_dict.ContainsKey(obj)|| all_object_dict[obj] == false)
+      if (!all_object_dict.ContainsKey(obj) || all_object_dict[obj] == false)
         return;
       despawned_object_stack.Push(obj);
       all_object_dict[obj] = false;

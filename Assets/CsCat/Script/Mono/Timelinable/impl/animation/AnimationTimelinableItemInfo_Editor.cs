@@ -10,7 +10,7 @@ namespace CsCat
     public void SyncAnimationWindow(float play_time)
     {
       float elasped_duration = (play_time - time) * speed;
-      int new_current_frame = (int) (elasped_duration * animationClip.frameRate);
+      int new_current_frame = (int)(elasped_duration * animationClip.frameRate);
       var AnimationWindow_type = typeof(EditorWindow).Assembly.GetType("UnityEditor.AnimationWindow");
       var animationWindows =
         AnimationWindow_type.InvokeMethod<object>("GetAllAnimationWindows"); //List<AnimationWindow>
@@ -26,7 +26,7 @@ namespace CsCat
         currentFrame = animationWindowState.GetPropertyValue("currentFrame");
         //          LogCat.log("after set currentFrame: " , currentFrame);
         var selection = animEditor.GetPropertyValue("selection"); //AnimationWindowSelectionItem
-        var animationClip = (AnimationClip) selection.GetPropertyValue("animationClip");
+        var animationClip = (AnimationClip)selection.GetPropertyValue("animationClip");
         if (animationClip != this.animationClip)
         {
           selection.SetPropertyValue("animationClip", animationClip);

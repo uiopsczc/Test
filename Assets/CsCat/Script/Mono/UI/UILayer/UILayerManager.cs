@@ -4,7 +4,7 @@ using RectTransform = UnityEngine.RectTransform;
 
 namespace CsCat
 {
-  public class UILayerManager:UIObject
+  public class UILayerManager : UIObject
   {
     public Dictionary<EUILayerName, UILayer> uiLayer_dict = new Dictionary<EUILayerName, UILayer>();
 

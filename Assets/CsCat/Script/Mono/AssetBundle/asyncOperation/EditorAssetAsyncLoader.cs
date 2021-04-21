@@ -11,7 +11,7 @@ namespace CsCat
     public override void Update()
     {
     }
-    
+
 
     protected override float GetProgress()
     {

@@ -1,6 +1,6 @@
 namespace CsCat
 {
-  public class EventName:ISpawnable
+  public class EventName : ISpawnable
   {
     public string name;
     public object source;
@@ -10,7 +10,7 @@ namespace CsCat
     }
     public EventName(object source, string name)
     {
-      Init(source,name);
+      Init(source, name);
     }
 
 
@@ -37,7 +37,7 @@ namespace CsCat
     {
       if (!(obj is EventName))
         return false;
-      var other = (EventName) obj;
+      var other = (EventName)obj;
       if (ObjectUtil.Equals(source, other.source) && ObjectUtil.Equals(name, other.name))
         return true;
       return false;
