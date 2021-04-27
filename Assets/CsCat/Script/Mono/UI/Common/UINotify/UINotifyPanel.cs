@@ -7,7 +7,7 @@ namespace CsCat
   {
     public override EUILayerName layerName
     {
-      get { return EUILayerName.NotifyLayer; }
+      get { return EUILayerName.NotifyUILayer; }
     }
 
 

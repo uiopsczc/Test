@@ -8,7 +8,7 @@ namespace CsCat
   /// 通过拖拽屏幕移动摄像头控制器
   /// 屏幕缩放和左右上下移动
   /// </summary>
-  public class UIScreenDragPanel : UIBottomPanelLayerPanel
+  public class UIScreenDragPanel : UIBackgroundPanel
   {
 
     private object move_range;

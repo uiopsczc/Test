@@ -12,7 +12,7 @@ namespace CsCat
 
     public override EUILayerName layerName
     {
-      get { return EUILayerName.WaitingLayer; }
+      get { return EUILayerName.LoadingUILayer; }
     }
 
     private float pct;
@@ -22,7 +22,8 @@ namespace CsCat
     public void Init(GameObject gameObject)
     {
       base.Init();
-      graphicComponent.SetGameObject(gameObject, gameObject.activeSelf);
+      graphicComponent.SetGameObject(gameObject, true);
+      graphicComponent.SetIsShow(false);
     }
 
     public override void InitGameObjectChildren()

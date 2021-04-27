@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public partial class UIGMPanelBase : UISecondPanelLayerPanel
+  public partial class UIGMPanelBase : UIPopUpPanel
   {
 
     protected List<Dictionary<string, object>> config_list = new List<Dictionary<string, object>>();

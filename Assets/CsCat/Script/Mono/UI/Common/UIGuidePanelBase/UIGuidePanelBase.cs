@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public partial class UIGuidePanelBase : UISecondPanelLayerPanel
+  public partial class UIGuidePanelBase : UIPopUpPanel
   {
 
     private GameObject bg_prefab;

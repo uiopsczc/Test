@@ -14,6 +14,7 @@ namespace CsCat
     public UIShowLogoPanel uiShowLogoPanel;
     public UIFadePanel uiFadePanel;
     public UIBloodManager uiBloodManager;
+    public UIBlackMaskPanel uiBlackMaskPanel;
 
 
     public Camera uiCamera => cache.GetOrAddDefault("uiCamera",
@@ -46,16 +47,23 @@ namespace CsCat
 
     void InitPanels()
     {
-      uiWaitingPanel = CreateChildPanel("UIWaitingPanel", default(UIWaitingPanel), null, false,
-        GameObject.Find("UIManager/UICanvas/WaitingLayer/UIWaitingPanel"));
-      uiLoadingPanel = CreateChildPanel("UILoadingPanel", default(UILoadingPanel), null, false,
-        GameObject.Find("UIManager/UICanvas/WaitingLayer/UILoadingPanel"));
-      uiShowLogoPanel = CreateChildPanel("UIShowLogoPanel", default(UIShowLogoPanel), null, false,
-        GameObject.Find("UIManager/UICanvas/WaitingLayer/UIShowLogoPanel"));
-      uiFadePanel = CreateChildPanel("UIFadePanel", default(UIFadePanel), null, false,
-        GameObject.Find("UIManager/UICanvas/FadeLayer/UIFadePanel"));
-      uiLanternNotifyPanel = CreateChildPanel("UILanternNotifyPanel", default(UILanternNotifyPanel), null, false,
-        GameObject.Find("UIManager/UICanvas/NotifyLayer/UILanternNotifyPanel"));
+      uiBlackMaskPanel = CreateChildPanel("UIBlackMaskPanel", default(UIBlackMaskPanel), null,
+        GameObject.Find("UIManager/UICanvas/BlackMaskUILayer/UIBlackMaskPanel"));
+
+      uiShowLogoPanel = CreateChildPanel("UIShowLogoPanel", default(UIShowLogoPanel), null,
+        GameObject.Find("UIManager/UICanvas/BackgroundUILayer/UIShowLogoPanel"));
+
+      uiLoadingPanel = CreateChildPanel("UILoadingPanel", default(UILoadingPanel), null,
+        GameObject.Find("UIManager/UICanvas/LoadingUILayer/UILoadingPanel"));
+
+      uiFadePanel = CreateChildPanel("UIFadePanel", default(UIFadePanel), null,
+        GameObject.Find("UIManager/UICanvas/FadeUILayer/UIFadePanel"));
+
+      uiWaitingPanel = CreateChildPanel("UIWaitingPanel", default(UIWaitingPanel), null,
+        GameObject.Find("UIManager/UICanvas/WaitingUILayer/UIWaitingPanel"));
+      
+      uiLanternNotifyPanel = CreateChildPanel("UILanternNotifyPanel", default(UILanternNotifyPanel), null,
+        GameObject.Find("UIManager/UICanvas/NotifyUILayer/UILanternNotifyPanel"));
     }
 
 

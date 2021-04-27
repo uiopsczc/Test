@@ -14,7 +14,7 @@ namespace CsCat
 
     public override EUILayerName layerName
     {
-      get { return EUILayerName.NotifyLayer; }
+      get { return EUILayerName.NotifyUILayer; }
     }
 
     private Text desc_text;
@@ -31,6 +31,7 @@ namespace CsCat
     {
       base.Init();
       graphicComponent.SetGameObject(gameObject, true);
+      graphicComponent.SetIsShow(false);
     }
 
     public override void InitGameObjectChildren()

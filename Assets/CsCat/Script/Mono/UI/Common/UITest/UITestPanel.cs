@@ -2,13 +2,8 @@ using UnityEngine.UI;
 
 namespace CsCat
 {
-  public class UITestPanel : UIPanel
+  public class UITestPanel : UIBackgroundPanel
   {
-    public override EUILayerName layerName
-    {
-      get { return EUILayerName.FirstPanelLayer; }
-    }
-
     public override void Init()
     {
       base.Init();

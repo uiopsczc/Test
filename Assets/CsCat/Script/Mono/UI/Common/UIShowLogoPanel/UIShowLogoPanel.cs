@@ -2,17 +2,13 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public class UIShowLogoPanel : UIPanel
+  public class UIShowLogoPanel : UIBackgroundPanel
   {
     public override bool is_resident
     {
       get { return true; }
     }
-
-    public override EUILayerName layerName
-    {
-      get { return EUILayerName.WaitingLayer; }
-    }
+    
 
     public void Init(GameObject gameObject)
     {

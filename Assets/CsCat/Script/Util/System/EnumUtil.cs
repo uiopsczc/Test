@@ -38,6 +38,8 @@ namespace CsCat
     }
 
 
+    
+
 
     public static bool IsEnum<T>()
     {

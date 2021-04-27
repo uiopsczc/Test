@@ -6,7 +6,7 @@ using UnityEngine.UI;
 
 namespace CsCat
 {
-  public class UIMessageBoxPanel : UISecondPanelLayerPanel
+  public class UIMessageBoxPanel : UIPopUpPanel
   {
 
     private Text title_text;

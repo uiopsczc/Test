@@ -8,10 +8,9 @@ namespace CsCat
 {
   public partial class UIObject
   {
-    public List<UIPanel> child_panel_stack = new List<UIPanel>();
     public Dictionary<string, UIPanel> child_panel_dict = new Dictionary<string, UIPanel>();
 
-    public T __CreateChildPanel<T>(string key, T t, Transform parent_transform, bool is_add_to_child_panel_stack,
+    public T __CreateChildPanel<T>(string key, T t, Transform parent_transform, 
       Action<UIPanel> init_callback) where T : UIPanel, new()
     {
       T child_panel = default(T);
@@ -21,19 +20,17 @@ namespace CsCat
         return child_panel;
       child_panel = this.AddChildWithoutInit<T>(key);
       init_callback(child_panel);
-      child_panel.OnInitPanel(parent_transform, is_add_to_child_panel_stack);
+      child_panel.OnInitPanel(parent_transform);
       child_panel.PostInit();
       child_panel.SetIsEnabled(true, false);
       child_panel_dict[child_panel.key] = child_panel;
-      if (child_panel.is_add_to_child_panel_stack)
-        child_panel_stack.Push(child_panel);
       return child_panel;
     }
 
     public virtual T CreateChildPanel<T>(string key, T t, Transform parent_transform = null,
-      bool is_add_to_child_panel_stack = false, params object[] args) where T : UIPanel, new()
+       params object[] args) where T : UIPanel, new()
     {
-      return this.__CreateChildPanel(key, t, parent_transform, is_add_to_child_panel_stack,
+      return this.__CreateChildPanel(key, t, parent_transform, 
         (child_panel) => child_panel.InvokeMethod("Init", false, args));
     }
 
@@ -46,29 +43,7 @@ namespace CsCat
     {
       return GetChildPanel(key) as T;
     }
-
-    private void RemoveFormChildPanelStack(string key, bool isOnlyCheckTop)
-    {
-      if (child_panel_stack.Count == 0)
-        return;
-      int index = -1;
-      for (int i = child_panel_stack.Count - 1; i >= 0; i--)
-      {
-        var panel = child_panel_stack[i];
-        string _key = panel.key;
-        if (_key.Equals(key))
-        {
-          index = i;
-          break;
-        }
-      }
-
-      if (index == -1)
-        return;
-      if (isOnlyCheckTop && index != child_panel_stack.Count - 1)
-        return;
-      child_panel_stack.RemoveAt(index);
-    }
+    
 
     // 从Panle中Close，再调到这里来，不要直接使用这个
     public void CloseChildPanel(string key)
@@ -76,8 +51,6 @@ namespace CsCat
       var child_panel = GetChildPanel(key);
       if (child_panel == null)
         return;
-      if (child_panel.is_add_to_child_panel_stack)
-        RemoveFormChildPanelStack(key, true);
       if (child_panel_dict.ContainsKey(key))
         child_panel_dict.Remove(key);
       this.RemoveChild(key);

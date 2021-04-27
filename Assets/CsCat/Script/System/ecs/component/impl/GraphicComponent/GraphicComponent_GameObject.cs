@@ -39,7 +39,11 @@ namespace CsCat
     {
       this.is_hide = !is_show;
       if (this.gameObject != null)
+      {
+        if(this.gameObject.name.Equals("UIBlackMaskPanel"))
+          LogCat.warn("333333333", !this.is_hide);
         this.gameObject.SetActive(!this.is_hide);
+      }
     }
 
     protected virtual void InitGameObjectChildren()
@@ -58,7 +62,12 @@ namespace CsCat
       if (is_not_destroy_gameObject != null)
         this.is_not_destroy_gameObject = is_not_destroy_gameObject.Value;
       InitGameObjectChildren();
-      SetIsShow(gameObject.activeSelf);
+      SetIsShow(!is_hide);
+    }
+
+    public bool IsShow()
+    {
+      return !this.is_hide;
     }
 
 

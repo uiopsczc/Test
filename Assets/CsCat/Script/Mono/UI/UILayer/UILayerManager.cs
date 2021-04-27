@@ -25,13 +25,25 @@ namespace CsCat
         var layer = this.AddChild<UILayer>(null, layer_gameObject, uiLayerConfig);
         uiLayer_dict[uiLayerConfig.name] = layer;
       }
+
+      this.AddListener<EUILayerName, bool>(UIEventNameConst.SetIsHideUILayer, SetIsHideUILayer);
     }
 
     //供lua端调用，不要删除
     public UILayer GetUILayer(string uiLayer_name)
     {
       EUILayerName eUILayerName = uiLayer_name.ToEnum<EUILayerName>();
+      return GetUILayer(eUILayerName);
+    }
+
+    public UILayer GetUILayer(EUILayerName eUILayerName)
+    {
       return uiLayer_dict[eUILayerName];
+    }
+
+    void SetIsHideUILayer(EUILayerName eUILayerName, bool is_hide)
+    {
+      GetUILayer(eUILayerName).graphicComponent.SetIsShow(!is_hide);
     }
   }
 }

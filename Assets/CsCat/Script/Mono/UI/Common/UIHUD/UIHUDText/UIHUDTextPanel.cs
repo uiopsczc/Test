@@ -1,6 +1,6 @@
 namespace CsCat
 {
-  public class UIHUDTextPanel : UIHUDLayerPanel
+  public class UIHUDTextPanel : UIHUDPanel
   {
 
     public override void Init()

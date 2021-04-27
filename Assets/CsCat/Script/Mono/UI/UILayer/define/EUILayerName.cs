@@ -2,13 +2,15 @@ namespace CsCat
 {
   public enum EUILayerName
   {
-    SceneLayer,
-    HUDLayer,
-    BottomPanelLayer,
-    FirstPanelLayer,
-    SecondPanelLayer,
-    WaitingLayer,
-    FadeLayer,
-    NotifyLayer,
+    BlackMaskUILayer,
+    SceneUILayer,
+    HUDUILayer,
+    BackgroundUILayer,
+    FrontUILayer,
+    PopUpUILayer,
+    LoadingUILayer,
+    FadeUILayer,
+    WaitingUILayer,
+    NotifyUILayer,
   }
 }

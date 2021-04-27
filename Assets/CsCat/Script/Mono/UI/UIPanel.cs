@@ -6,13 +6,12 @@ namespace CsCat
   public class UIPanel : UIObject
   {
     private int _sortingOrder = int.MinValue;
-    public bool is_add_to_child_panel_stack;// uiManager中设置
 
     /// <summary>
     /// 是否是常驻的,即不被销毁
     /// </summary>
     public virtual bool is_resident => false;
-    public virtual EUILayerName layerName => EUILayerName.SecondPanelLayer;
+    public virtual EUILayerName layerName => EUILayerName.PopUpUILayer;
     public UILayer uiLayer => Client.instance.uiManager.uiLayerManager.uiLayer_dict[layerName];
     protected Transform frame_transform => this.cache.GetOrAddDefault("frameTransform", () => this.graphicComponent.gameObject.transform.Find("frame"));
     protected Transform content_transform => this.cache.GetOrAddDefault("contentTransform", () => frame_transform.Find("content"));
@@ -29,7 +28,12 @@ namespace CsCat
       }
     }
 
-    protected void OnSortingOrderChange()
+    public virtual bool is_hide_blackMaskBehide
+    {
+      get => false;
+    }
+
+    protected virtual void OnSortingOrderChange()
     {
       if (graphicComponent.gameObject == null)
         return;
@@ -62,10 +66,9 @@ namespace CsCat
       OnSortingOrderChange();
     }
 
-    public void OnInitPanel(Transform parent_transform, bool is_add_to_child_panel_stack)
+    public void OnInitPanel(Transform parent_transform)
     {
       graphicComponent.SetParentTransform(parent_transform == null ? uiLayer.graphicComponent.transform : parent_transform);
-      this.is_add_to_child_panel_stack = is_add_to_child_panel_stack;
       this.uiLayer.AddPanel(this);
     }
 

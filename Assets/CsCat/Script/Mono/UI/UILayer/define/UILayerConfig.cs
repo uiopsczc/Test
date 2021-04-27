@@ -4,14 +4,16 @@ namespace CsCat
   {
     public EUILayerName name;
     public int order_in_layer;
-    public float plane_distance;
+    public UILayerRule uiLayerRule;
 
-
-    public UILayerConfig(EUILayerName name, int order_in_layer, float plane_distance)
+    public UILayerConfig(EUILayerName name, int order_in_layer, UILayerRule uiLayerRule)
     {
       this.name = name;
       this.order_in_layer = order_in_layer;
-      this.plane_distance = plane_distance;
+      this.uiLayerRule = uiLayerRule;
     }
+
+
+
   }
 }

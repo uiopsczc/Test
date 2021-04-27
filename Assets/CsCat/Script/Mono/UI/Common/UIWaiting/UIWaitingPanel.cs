@@ -11,7 +11,7 @@ namespace CsCat
 
     public override EUILayerName layerName
     {
-      get { return EUILayerName.WaitingLayer; }
+      get { return EUILayerName.WaitingUILayer; }
     }
 
     private int waiting_count = 0;
@@ -22,6 +22,7 @@ namespace CsCat
     {
       base.Init();
       graphicComponent.SetGameObject(gameObject, true);
+      graphicComponent.SetIsShow(false);
     }
 
     public override void InitGameObjectChildren()

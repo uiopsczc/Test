@@ -6,7 +6,7 @@ namespace CsCat
   {
     public override EUILayerName layerName
     {
-      get { return EUILayerName.FirstPanelLayer; }
+      get { return EUILayerName.PopUpUILayer; }
     }
 
     public override void Init()

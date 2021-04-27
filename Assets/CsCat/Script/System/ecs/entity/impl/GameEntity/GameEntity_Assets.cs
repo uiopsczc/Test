@@ -44,7 +44,6 @@ namespace CsCat
       is_all_assets_load_done = true;
       all_assets_load_done_callback?.Invoke();
       all_assets_load_done_callback = null;
-      this.Refresh();
     }
 
   }
