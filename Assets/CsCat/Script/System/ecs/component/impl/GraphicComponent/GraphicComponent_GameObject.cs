@@ -40,8 +40,6 @@ namespace CsCat
       this.is_hide = !is_show;
       if (this.gameObject != null)
       {
-        if(this.gameObject.name.Equals("UIBlackMaskPanel"))
-          LogCat.warn("333333333", !this.is_hide);
         this.gameObject.SetActive(!this.is_hide);
       }
     }

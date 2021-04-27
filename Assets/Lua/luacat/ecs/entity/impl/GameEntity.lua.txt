@@ -235,7 +235,6 @@ function GameEntity:OnAllAssetsLoadDone()
   self.is_all_assets_load_done = true
   DelegateUtil.InvokeCallback(self.all_assets_load_done_callback)
   self.all_assets_load_done_callback = nil
-  self:Refresh()
 end
 
 ----------------------------------------------------------------------

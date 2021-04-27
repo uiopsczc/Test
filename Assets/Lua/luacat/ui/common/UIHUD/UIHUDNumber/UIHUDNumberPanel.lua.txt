@@ -1,5 +1,5 @@
----@class UIHUDNumberPanel:UIHUDLayerPanel
-local UIHUDNumberPanel = Class("UIHUDNumberPanel",UIHUDLayerPanel)
+---@class UIHUDNumberPanel:UIHUDPanel
+local UIHUDNumberPanel = Class("UIHUDNumberPanel", UIHUDPanel)
 
 function UIHUDNumberPanel:Init()
   UIHUDNumberPanel.super.Init(self)

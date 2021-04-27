@@ -3,12 +3,14 @@ local UIObject = Class("UIObject", GameEntity)
 
 function UIObject:Init()
   UIObject.super.Init(self)
-  ---@type UIPanel[]
-  self.child_panel_stack = self.child_panel_stack or {}
   ---@type table<string,UIPanel>
   self.child_panel_dict = self.child_panel_dict or {}
   ---@type CS.CsCat.UGUIEventListener
   self.registered_uguiEventListener_list = self.registered_uguiEventListener_list or {}
+end
+
+function UIObject:CreateGraphicComponent()
+  return self:AddComponent(nil, UIGraphicComponent, self.resLoadComponent)
 end
 
 ----------------------------------------------------------------------
@@ -97,7 +99,7 @@ end
 ---@param parent_transform CS.UnityEngine.Transform
 ---@param class_type T
 ---@return T
-function UIObject:CreateChildPanel(key, class_type, parent_transform, is_add_to_child_panel_stack, ...)
+function UIObject:CreateChildPanel(key, class_type, parent_transform, ...)
   ---@type UIPanel
   local child_panel
   if key then
@@ -109,38 +111,25 @@ function UIObject:CreateChildPanel(key, class_type, parent_transform, is_add_to_
   end
   child_panel = self:AddChildWithoutInit(key, class_type)
   child_panel:Init(...)
-  child_panel:OnInitPanel(parent_transform, is_add_to_child_panel_stack)
+  child_panel:OnInitPanel(parent_transform)
   child_panel:PostInit()
   child_panel:SetIsEnabled(true, false)
   self.child_panel_dict[child_panel.key] = child_panel
-  if is_add_to_child_panel_stack then
-    table.Push_Array(self.child_panel_stack, child_panel)
-  end
   return child_panel
 end
 
-function UIObject:RemoveFormChildPanelStack(key, isOnlyCheckTop)
-  if #self.child_panel_stack == 0 then
-    return
-  end
-  local index = -1
-  for i= #self.child_panel_stack, 1, -1 do
-    local child_panel = self.child_panel_stack[i]
-    local _key = child_panel.key
-    if _key == key then
-      index = i
-      break
-    end
-  end
-
-  if index == -1 then
-    return
-  end
-  if isOnlyCheckTop and index ~= #self.child_panel_stack.Count then
-    return
-  end
-  table.remove(self.child_panel_stack, index)
+function UIObject:Open()
+  self:AddUnityEvents()
+  self:AddGameEvents()
 end
+
+
+function UIObject:AddUnityEvents()
+end
+
+function UIObject:AddGameEvents()
+end
+
 
 ---@return UIPanel
 function UIObject:GetChildPanel(key)
@@ -153,9 +142,6 @@ function UIObject:CloseChildPanel(key)
   local child_panel = self:GetChildPanel(key)
   if not child_panel then
     return
-  end
-  if child_panel.is_add_to_child_panel_stack then
-    self:RemoveFormChildPanelStack(key,true)
   end
   if self.child_panel_dict[key] then
     self.child_panel_dict[key] = nil

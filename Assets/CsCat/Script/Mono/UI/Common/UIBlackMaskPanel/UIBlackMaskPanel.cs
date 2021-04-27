@@ -34,9 +34,21 @@ namespace CsCat
       base.InitGameObjectChildren();
       bg_image = this.frame_transform.Find("bg").GetComponent<Image>();
 
+      
+
+      
+    }
+
+    protected override void AddUntiyEvnts()
+    {
+      base.AddUntiyEvnts();
       this.RegisterOnClick(bg_image,
         () => { close_action?.Invoke(); });
+    }
 
+    protected override void AddGameEvents()
+    {
+      base.AddGameEvents();
       this.AddListener<int, object>(UIEventNameConst.ShowUIBlackMask, ShowUIBlackMask);
       this.AddListener(UIEventNameConst.HideUIBlackMask, HideUIBlackMask);
     }
@@ -45,6 +57,7 @@ namespace CsCat
     {
       this.graphicComponent.SetIsShow(true);
       this.canvas.sortingOrder = target_panel_sorttingOrder + UIBlackMaskPanelConst.Offset;
+
 
       if (target_panel is UIPanel uiPanel)
         close_action = uiPanel.Close;

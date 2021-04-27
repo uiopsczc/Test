@@ -2,11 +2,13 @@
 ---@field is_add_to_child_panel_stack
 ---@field layerName string
 ---@field is_resident boolean
+---@field is_hide_blackMaskBehide boolean
 local UIPanel = Class("UIPanel", UIObject)
 
 function UIPanel:Init()
   UIPanel.super.Init(self)
   self.sortingOrder = math.mininteger
+  self.is_hide_blackMaskBehide = false
 end
 
 
@@ -28,13 +30,10 @@ function UIPanel:InitGameObjectChildren()
 end
 
 ---@param parent_transform CS.UnityEngine.Transform
----@param is_add_to_child_panel_stack boolean
----@param uiLayer CS.CsCat.UILayer
-function UIPanel:OnInitPanel(parent_transform, is_add_to_child_panel_stack)
+function UIPanel:OnInitPanel(parent_transform)
   ---@type CS.CsCat.UILayer
   self.uiLayer = global.client.uiManager.uiLayerManager:GetUILayer(self.layerName)
   self.graphicComponent:SetParentTransform(parent_transform or self.uiLayer.graphicComponent.transform)
-  self.is_add_to_child_panel_stack = is_add_to_child_panel_stack
   self.uiLayer:AddPanel(self)
 end
 
@@ -49,6 +48,10 @@ end
 
 function UIPanel:GetSortingOrder()
   return self.sortingOrder
+end
+
+function UIPanel:IsHideBlackMaskBehide()
+  return self.is_hide_blackMaskBehide
 end
 
 ---@param sortingOrder number
@@ -86,6 +89,7 @@ function UIPanel:__Destroy()
   UIPanel.super.__Destroy(self)
   self.sortingOrder = math.mininteger
   self.canvas = nil
+  self.is_hide_blackMaskBehide = false
 end
 
 function UIPanel:Close()

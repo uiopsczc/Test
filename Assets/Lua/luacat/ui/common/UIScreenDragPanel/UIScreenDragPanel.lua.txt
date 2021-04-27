@@ -1,7 +1,7 @@
 -- 通过拖拽屏幕移动摄像头控制器
 -- 屏幕缩放和左右上下移动
----@class UIScreenDragPanel:UIBottomPanelLayerPanel
-local UIScreenDragPanel = Class("UIScreenDragPanel",UIBottomPanelLayerPanel)
+---@class UIScreenDragPanel:UIBackgroundPanel
+local UIScreenDragPanel = Class("UIScreenDragPanel", UIBackgroundPanel)
 
 function UIScreenDragPanel:Init(move_range)
   UIScreenDragPanel.super.Init(self)
@@ -22,12 +22,14 @@ function UIScreenDragPanel:Init(move_range)
 
 end
 
-function UIScreenDragPanel:OnAllAssetsLoadDone()
-  UIScreenDragPanel.super.OnAllAssetsLoadDone(self)
+function UIScreenDragPanel:AddUnityEvents()
+  UIScreenDragPanel.super.AddUnityEvents(self)
   self:RegisterOnDrag(self.graphicComponent.gameObject, function(...) self:OnUIScreenDrag(...) end)
   self:RegisterOnPointerDown(self.graphicComponent.gameObject, function(...) self:OnUIScreenPointerDown(...) end)
   self:RegisterOnPointerUp(self.graphicComponent.gameObject, function(...) self:OnUIScreenPointerUp(...) end)
 end
+
+
 
 
 

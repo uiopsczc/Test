@@ -63,7 +63,7 @@ function GraphicComponent:SetGameObject(gameObject, is_not_destroy_gameObject)
     self.is_not_destroy_gameObject = is_not_destroy_gameObject
   end
   self:InitGameObjectChildren()
-  self:SetIsShow(gameObject.activeSelf)
+  self:SetIsShow(not self.is_hide)
 end
 
 

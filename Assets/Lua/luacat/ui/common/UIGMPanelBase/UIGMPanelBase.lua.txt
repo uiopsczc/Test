@@ -2,8 +2,8 @@ local UIGMPanelBase_InputItem = require("luacat.ui.common.UIGMPanelBase.UIGMPane
 local UIGMPanelBase_InputItem2 = require("luacat.ui.common.UIGMPanelBase.UIGMPanelBase_InputItem2")
 local UIGMPanelBase_SwitchItem = require("luacat.ui.common.UIGMPanelBase.UIGMPanelBase_SwitchItem")
 
----@class UIGMPanelBase:UISecondPanelLayerPanel
-local UIGMPanelBase = Class("UIGMPanelBase",UISecondPanelLayerPanel)
+---@class UIGMPanelBase:UIPopUpPanel
+local UIGMPanelBase = Class("UIGMPanelBase", UIPopUpPanel)
 
 function UIGMPanelBase:Init()
   UIGMPanelBase.super.Init(self)
@@ -20,10 +20,14 @@ function UIGMPanelBase:InitGameObjectChildren()
   self.input_item2_prefab = self.inner_content_transform:Find("input_item_2").gameObject
   self.close_btn_gameObject = self.frame_transform:Find("content/close_btn").gameObject
 
+
+end
+
+function UIGMPanelBase:AddUnityEvents()
+  UIGMPanelBase.super.AddUnityEvents(self)
   self:RegisterOnClick(self.close_btn_gameObject, function()
     self:Close()
   end)
-
 end
 
 function UIGMPanelBase:OnAllAssetsLoadDone()

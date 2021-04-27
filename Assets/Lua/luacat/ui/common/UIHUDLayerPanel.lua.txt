@@ -1,9 +1,0 @@
----@class UIHUDLayerPanel:UIPanel
-local UIHUDLayerPanel = Class("UIHUDLayerPanel", UIPanel)
-
-function UIHUDLayerPanel:Init(...)
-  self.layerName = "HUDLayer"
-  UIHUDLayerPanel.super.Init(self,...)
-end
-
-return UIHUDLayerPanel

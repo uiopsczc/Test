@@ -4,8 +4,8 @@ local UIGuidePanelBase_DescItem = require("luacat.ui.common.UIGuidePanelBase.UIG
 local UIGuidePanelBase_DialogItem = require("luacat.ui.common.UIGuidePanelBase.UIGuidePanelBase_DialogItem")
 local UIGuidePanelBase_FingerItem = require("luacat.ui.common.UIGuidePanelBase.UIGuidePanelBase_FingerItem")
 
----@class UIGuidePanelBase:UISecondPanelLayerPanel
-local UIGuidePanelBase = Class("UIGuidePanelBase",UISecondPanelLayerPanel)
+---@class UIGuidePanelBase:UIPopUpPanel
+local UIGuidePanelBase = Class("UIGuidePanelBase", UIPopUpPanel)
 
 function UIGuidePanelBase:Init()
   UIGuidePanelBase.super.Init(self)

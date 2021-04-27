@@ -31,8 +31,13 @@ namespace CsCat
         yes_btn = graphicComponent.transform.FindComponentInChildren<Button>("yes_btn");
 
         this.desc_text.text = desc;
+      }
+      protected override void AddUntiyEvnts()
+      {
+        base.AddUntiyEvnts();
         this.RegisterOnClick(yes_btn, () => { yes_callback(inputField); });
       }
+
 
     }
   }

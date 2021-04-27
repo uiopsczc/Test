@@ -30,6 +30,8 @@ function UIManager:InitListeners()
 end
 
 function UIManager:InitPanels()
+  ---@type CS.CsCat.UIBlackMaskPanel
+  self.uiBlackMaskPanel = self.cs_uiManager.uiBlackMaskPanel
   ---@type CS.CsCat.UILoadingPanel
   self.uiLoadingPanel = self.cs_uiManager.uiLoadingPanel
   ---@type CS.CsCat.UIWaitingPanel

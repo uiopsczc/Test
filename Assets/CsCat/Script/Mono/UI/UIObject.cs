@@ -18,6 +18,23 @@ namespace CsCat
       get { return cache.GetOrAddDefault("parent_uiPanel", () => parent as UIPanel); }
     }
 
+    protected override GraphicComponent CreateGraphicComponent()
+    {
+      return this.AddComponent<UIGraphicComponent>(null, this.resLoadComponent);
+    }
+
+    public virtual void Open()
+    {
+      this.AddUntiyEvnts();
+      this.AddGameEvents();
+    }
+
+    protected virtual void AddUntiyEvnts()
+    {
+    }
+    protected virtual void AddGameEvents()
+    {
+    }
 
 
     public void SetImageAsync(Image image, string asset_path, Action<Image> callbak = null,
@@ -47,6 +64,7 @@ namespace CsCat
         callbak?.Invoke(image);
       }, null, null, this);
     }
+    
 
 
     protected override void __Reset()

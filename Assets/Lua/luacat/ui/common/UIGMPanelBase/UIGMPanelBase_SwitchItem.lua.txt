@@ -20,6 +20,11 @@ function UIGMPanelBase_SwitchItem:InitGameObjectChildren()
 
   self.desc_text.text = self.desc
 
+
+end
+
+function UIGMPanelBase_SwitchItem:AddUnityEvents()
+  UIGMPanelBase_SwitchItem.super.AddUnityEvents(self)
   if self.yes_callback then
     self:RegisterOnClick(self.yes_btn, self.yes_callback)
   end

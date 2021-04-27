@@ -1,5 +1,5 @@
----@class UICombatTestPanel:UIPanel
-local UICombatTestPanel = Class("UICombatTestPanel", UIFirstPanelLayerPanel)
+---@class UICombatTestPanel:UIBackgroundPanel
+local UICombatTestPanel = Class("UICombatTestPanel", UIBackgroundPanel)
 
 function UICombatTestPanel:Init(...)
   UICombatTestPanel.super.Init(self, ...)

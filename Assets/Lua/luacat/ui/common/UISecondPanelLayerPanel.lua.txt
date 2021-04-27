@@ -1,9 +1,0 @@
----@class UISecondPanelLayerPanel:UIPanel
-local UISecondPanelLayerPanel = Class("UISecondPanelLayerPanel", UIPanel)
-
-function UISecondPanelLayerPanel:Init(...)
-  self.layerName = "SecondPanelLayer"
-  UISecondPanelLayerPanel.super.Init(self,...)
-end
-
-return UISecondPanelLayerPanel

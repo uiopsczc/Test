@@ -14,9 +14,9 @@ namespace CsCat
     {
       base.Init();
       this.uiManager = uiManager;
-      for (int i = 0; i < UILayerConst.UILayerConfig_dict.Values.Count; i++)
+      for (int i = 0; i < UILayerConst.uiLayerConfig_dict.Values.Count; i++)
       {
-        UILayerConfig uiLayerConfig = UILayerConst.UILayerConfig_dict.Values[i];
+        UILayerConfig uiLayerConfig = UILayerConst.uiLayerConfig_dict.Values[i];
         string name = uiLayerConfig.name.ToString();
         Transform layer_transform = uiManager.graphicComponent.transform.Find("UICanvas/" + name);
         GameObject layer_gameObject = layer_transform != null ? layer_transform.gameObject : new GameObject(name);

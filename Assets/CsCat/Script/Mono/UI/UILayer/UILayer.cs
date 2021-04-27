@@ -34,7 +34,7 @@ namespace CsCat
       for (var i = 0; i < panel_list.Count; i++)
       {
         object panel = panel_list[i];
-        int sortingOrder = uiLayerConfig.order_in_layer + i * UILayerConst.Order_Per_Panel;
+        int sortingOrder = uiLayerConfig.order_in_layer + (i+1) * UILayerConst.Order_Per_Panel;
         
         if (panel is UIPanel uiPanel)
         {
@@ -59,7 +59,8 @@ namespace CsCat
         this.Broadcast(UIEventNameConst.SetIsHideUILayer, EUILayerName.BackgroundUILayer, panel_list.Count > 0);
       if(uiLayerConfig.uiLayerRule.IsHideFrontUILayer())
         this.Broadcast(UIEventNameConst.SetIsHideUILayer, EUILayerName.FrontUILayer, panel_list.Count > 0);
-      HandleLayerAddBlackMaskBehide();
+      if(uiLayerConfig.uiLayerRule.IsAddBlackMaskBehide())
+        HandleLayerAddBlackMaskBehide();
     }
 
     public void RemovePanel(object panel)
@@ -127,10 +128,10 @@ namespace CsCat
             else
             {
               LuaTable panel_luaTable = (LuaTable)panel;
-              if (panel_luaTable.InvokeFunc<bool>("is_hide_blackMaskBehide"))
+              if (!panel_luaTable.InvokeFunc<bool>("IsHideBlackMaskBehide"))
               {
                 target_panel = panel;
-                target_panel_sorttingOrder = panel_luaTable.InvokeFunc<int>("GetSorttingOrder");
+                target_panel_sorttingOrder = panel_luaTable.InvokeFunc<int>("GetSortingOrder");
                 break;
               }
             }

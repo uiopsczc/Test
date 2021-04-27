@@ -37,13 +37,14 @@ namespace CsCat
       this.cameraManager.SetMainCameraMoveRange(move_range);
     }
 
-    public override void OnAllAssetsLoadDone()
+    protected override void AddUntiyEvnts()
     {
-      base.OnAllAssetsLoadDone();
+      base.AddUntiyEvnts();
       this.RegisterOnDrag(graphicComponent.gameObject, this.OnUIScreenDrag);
       this.RegisterOnPointerDown(graphicComponent.gameObject, this.OnUIScreenPointerDown);
       this.RegisterOnPointerUp(graphicComponent.gameObject, this.OnUIScreenPointerUp);
     }
+    
 
 
     protected override void __SetIsEnabled(bool is_enabled)

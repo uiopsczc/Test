@@ -14,6 +14,8 @@ namespace CsCat
 
     public UIGuidePanelBase.BgItem bgItem;
 
+    public override bool is_hide_blackMaskBehide { get=>true; }
+
     public override void Init()
     {
       base.Init();

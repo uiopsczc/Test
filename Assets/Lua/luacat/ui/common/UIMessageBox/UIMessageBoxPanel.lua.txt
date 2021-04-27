@@ -1,6 +1,6 @@
 local UIItemBase = require("luacat.ui.common.UIItemBase.UIItemBase")
----@class UIMessageBoxPanel:UISecondPanelLayerPanel
-local UIMessageBoxPanel = Class("UIMessageBoxPanel",UISecondPanelLayerPanel)
+---@class UIMessageBoxPanel:UIPopUpPanel
+local UIMessageBoxPanel = Class("UIMessageBoxPanel", UIPopUpPanel)
 
 function UIMessageBoxPanel:Init(...)
   UIMessageBoxPanel.super.Init(self,...)

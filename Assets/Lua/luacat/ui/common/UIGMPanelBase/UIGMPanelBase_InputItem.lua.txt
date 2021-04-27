@@ -18,6 +18,11 @@ function UIGMPanelBase_InputItem:InitGameObjectChildren()
   self.yes_btn = self.graphicComponent.transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Button),"yes_btn",true,true)
 
   self.desc_text.text = self.desc
+
+end
+
+function UIGMPanelBase_InputItem:AddUnityEvents()
+  UIGMPanelBase_InputItem.super.AddUnityEvents(self)
   if self.yes_callback then
     self:RegisterOnClick(self.yes_btn, self.yes_callback)
   end
