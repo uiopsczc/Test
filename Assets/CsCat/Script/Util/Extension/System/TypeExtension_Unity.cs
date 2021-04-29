@@ -5,7 +5,7 @@ using UnityEditor;
 #endif
 namespace CsCat
 {
-  public static partial class TypeExtension
+  public static partial class TypeExtension_Unity
   {
 #if UNITY_EDITOR
     public static Texture2D GetMiniTypeThumbnail(this Type self)

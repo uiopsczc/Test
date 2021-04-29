@@ -53,7 +53,6 @@ namespace CsCat
       if (Input.GetKeyDown("f2"))
       {
         //        panel = Client.instance.uiManager.CreateChildPanel(null, default(UIGMTestPanel2));
-        LogCat.warn(Selection.activeTransform.GetRelativePath(GameObject.Find("EffectPool").transform));
       }
 
       if (Input.GetKeyDown("f3"))

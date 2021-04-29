@@ -215,6 +215,6 @@ public static class LuaConfig
     new List<string> { "UnityEngine.MeshRenderer", "scaleInLightmap"},
     new List<string> { "UnityEngine.AnimatorControllerParameter", "name"},
     new List<string>{"System.Type", "IsSZArray" },
-
+    new List<string>{"System.Type", "GetMiniTypeThumbnail" },
   };
 }
