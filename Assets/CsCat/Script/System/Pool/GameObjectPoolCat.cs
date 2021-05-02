@@ -50,7 +50,7 @@ namespace CsCat
       GameObject clone = obj as GameObject;
       foreach (var clone_component in clone.GetComponents<Component>())
       {
-        if (clone_component is ISpawnable ispanwable)
+        if (clone_component is IDespawn ispanwable)
           ispanwable.OnDespawn();
       }
       clone.SetActive(false);

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public partial class Act : ISpawnable
+  public partial class Act : IDespawn
   {
     protected MonoBehaviour _owner;
     public string id;

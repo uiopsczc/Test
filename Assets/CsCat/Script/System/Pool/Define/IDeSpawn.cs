@@ -1,6 +1,6 @@
 namespace CsCat
 {
-  public interface ISpawnable
+  public interface IDespawn
   {
     void OnDespawn();
   }

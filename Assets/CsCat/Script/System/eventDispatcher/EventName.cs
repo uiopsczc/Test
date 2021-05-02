@@ -1,6 +1,6 @@
 namespace CsCat
 {
-  public class EventName : ISpawnable
+  public class EventName : IDespawn
   {
     public string name;
     public object source;

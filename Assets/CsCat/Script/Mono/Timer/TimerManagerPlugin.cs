@@ -27,10 +27,11 @@ namespace CsCat
     /// <param name="priority"></param>
     public Timer AddTimer(Func<object[], bool> updateFunc, float delay = 0, float interval = 0, int need_run_count = 0,
       UpdateModeCat updateMode = UpdateModeCat.Update, bool is_use_unscaledDeltaTime = false, int priority = 1,
-      params object[] func_args)
+      params object[] updateFunc_args)
     {
-      Timer timer = new Timer(updateFunc, delay, interval, need_run_count, updateMode, is_use_unscaledDeltaTime,
-        priority, func_args);
+      Timer timer = PoolCatManagerUtil.Spawn<Timer>();
+      timer.Init(updateFunc, delay, interval, need_run_count, updateMode, is_use_unscaledDeltaTime,
+        priority, updateFunc_args);
       return AddTimer(timer);
     }
 

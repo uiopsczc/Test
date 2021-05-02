@@ -2,7 +2,7 @@ using System;
 
 namespace CsCat
 {
-  public class ResultInfo : ISpawnable
+  public class ResultInfo : IDespawn
   {
     private bool _is_success;
     private bool _is_fail;

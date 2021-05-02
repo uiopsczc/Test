@@ -57,7 +57,7 @@ namespace CsCat
 
       if (Input.GetKeyDown("f3"))
       {
-        panel.SetToBottom();
+//        panel.SetToBottom();
         //        LogCat.log(dict);
       }
 

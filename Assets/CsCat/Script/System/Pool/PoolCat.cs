@@ -70,7 +70,7 @@ namespace CsCat
         return;
       despawned_object_stack.Push(obj);
       all_object_dict[obj] = false;
-      if (obj is ISpawnable spawnable)
+      if (obj is IDespawn spawnable)
         spawnable.OnDespawn();
     }
 

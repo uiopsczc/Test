@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CsCat
 {
-  public partial class AbstractEntity : ISpawnable
+  public partial class AbstractEntity : IDespawn
   {
     public string key;
 

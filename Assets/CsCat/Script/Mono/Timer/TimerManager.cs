@@ -48,10 +48,11 @@ namespace CsCat
     /// <param name="priority"></param>
     public Timer AddTimer(Func<object[], bool> updateFunc, float delay = 0, float interval = 0, int need_run_count = 0,
       UpdateModeCat updateMode = UpdateModeCat.Update, bool is_use_unscaledDeltaTime = false, int priority = 1,
-      params object[] func_args)
+      params object[] updateFunc_args)
     {
-      Timer timer = new Timer(updateFunc, delay, interval, need_run_count, updateMode, is_use_unscaledDeltaTime,
-        priority, func_args);
+      Timer timer = PoolCatManagerUtil.Spawn<Timer>();
+      timer.Init(updateFunc, delay, interval, need_run_count, updateMode, is_use_unscaledDeltaTime,
+        priority, updateFunc_args);
       AddTimer(timer);
       return timer;
     }
@@ -85,6 +86,7 @@ namespace CsCat
     public void RemoveTimer(Timer timer)
     {
       timer.Finish();
+      PoolCatManagerUtil.Despawn(timer);
     }
 
     #endregion
@@ -102,13 +104,13 @@ namespace CsCat
       int index = timer_list.Count;
       for (int i = 0; i < timer_list.Count; i++)
       {
-        Timer element = timer_list[i];
+        Timer _timer = timer_list[i];
         if (!is_timer_exist)
         {
-          is_timer_exist = (element == timer);
+          is_timer_exist = (_timer == timer);
         }
 
-        if (timer.priority > element.priority)
+        if (timer.priority > _timer.priority)
         {
           index = i - 1;
         }
@@ -120,19 +122,7 @@ namespace CsCat
         timer.Start();
       }
     }
-
-    private void Remove(List<Timer> timer_list, Timer timer)
-    {
-      for (int i = timer_list.Count - 1; i >= 0; i--)
-      {
-        Timer element = timer_list[i];
-        if (element == timer)
-        {
-          timer_list.RemoveAt(i);
-          break;
-        }
-      }
-    }
+    
 
     /// <summary>
     /// 1.添加toaddTimerList的timer到对应的TimerList中
@@ -164,7 +154,10 @@ namespace CsCat
       {
         Timer timer = timer_list[j];
         if (timer.is_finished)
+        {
           timer_list.RemoveAt(j);
+          timer.Despawn();
+        }
       }
 
       this.is_updating = false;

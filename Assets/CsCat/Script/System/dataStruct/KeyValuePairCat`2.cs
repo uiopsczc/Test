@@ -1,6 +1,6 @@
 namespace CsCat
 {
-  public class KeyValuePairCat<K, V> : IToString2, ISpawnable
+  public class KeyValuePairCat<K, V> : IToString2, IDespawn
   {
     public K key { set; get; }
     public V value { set; get; }

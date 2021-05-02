@@ -3,7 +3,7 @@ using System.Text;
 
 namespace CsCat
 {
-  public class Args : ISpawnable
+  public class Args : IDespawn
   {
     private object[] args;
 

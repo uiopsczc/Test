@@ -7,37 +7,33 @@ namespace CsCat
   /// 有父timer    _parent
   /// 也有子孩子timers children
   /// </summary>
-  public class Timer
+  public class Timer: IDespawn
   {
     #region field
-
     private bool _is_use_unscaledDeltaTime;
-
     /// <summary>
     /// 该timer的顺序
     /// </summary>
     internal int priority;
-
-    /// <summary>
-    /// 是否已经完成
-    /// </summary>
-    internal bool _is_finished;
-
     /// <summary>
     /// 该timer的状态
     /// </summary>
     private TimerStatus _status;
-
     /// <summary>
     ///timeScale
     /// </summary>
     private float _timeScale = 1;
-
     /// <summary>
     /// update模式
     /// </summary>
     private UpdateModeCat _updateMode;
-
+    private float _delay;
+    private float _interval;
+    private int _need_run_count;
+    private long _cur_run_count;
+    private float _passed_time;
+    public TimerStatus status_pre; //之前的status
+    private object[] _updateFunc_args;
     #endregion
 
     #region property
@@ -45,61 +41,44 @@ namespace CsCat
     /// <summary>
     /// 第一次延迟多少秒运行
     /// </summary>
-    public float delay { get; set; }
-
+    public float delay { get=>_delay; set=>_delay = value; }
     /// <summary>
     /// 每隔多少秒运行一次
     /// </summary>
-    public float interval { get; set; }
-
+    public float interval { get=> _interval; set=> _interval=value; }
     /// <summary>
     /// 总共需要运行多少次
     /// </summary>
-    public int need_run_count { get; set; }
-
+    public int need_run_count { get=> _need_run_count; set=> _need_run_count= value; }
     /// <summary>
     /// 当前运行次数
     /// </summary>
-    public long cur_run_count { get; set; }
-
+    public long cur_run_count { get=> _cur_run_count; set=> _cur_run_count = value; }
     /// <summary>
     /// 是否已结束
     /// </summary>
-    public bool is_finished
-    {
-      get { return status == TimerStatus.Finished; }
-    }
+    public bool is_finished => status == TimerStatus.Finished;
 
     /// <summary>
     /// 已经消逝的时间，从开始到现在的时间，包括delay的时间
     /// </summary>
-    public float passed_time { get; set; }
-
-    public TimerStatus status_pre; //之前的status
-
+    public float passed_time { get=> _passed_time; set=> _passed_time=value; }
     /// <summary>
     /// 当前状态
     /// </summary>
-    public TimerStatus status
-    {
-      get { return this._status; }
-      private set { this._status = value; }
-    }
-
+    public TimerStatus status { get => this._status; private set => this._status = value; }
     /// <summary>
     /// timeScale
     /// </summary>
     public float timeScale
     {
-      get { return this._timeScale; }
+      get => this._timeScale;
       set
       {
         float org_timeScale = this._timeScale;
-        if (org_timeScale == value)
-        {
-          this._timeScale = value;
-          this.OnTimeScaleChange(org_timeScale, value);
-        }
+        if (org_timeScale != value) return;
+        this._timeScale = value;
+        this.OnTimeScaleChange(org_timeScale, value);
       }
     }
 
@@ -107,46 +86,29 @@ namespace CsCat
     /// Update函数
     /// 返回false表示不继续执行，结束
     /// </summary>
-    public Func<object[], bool> updateFunc
-    {
-      get { return this._updateFunc; }
-    }
+    public Func<object[], bool> updateFunc => this._updateFunc;
 
-    public object[] func_args
-    {
-      get { return this._func_args; }
-    }
+    public object[] updateFunc_args => this._updateFunc_args;
 
     /// <summary>
     /// UpdateModeCat
     /// </summary>
-    public UpdateModeCat updateMode
-    {
-      get { return this._updateMode; }
-    }
+    public UpdateModeCat updateMode => this._updateMode;
 
-    public bool is_use_unscaledDeltaTime
-    {
-      get { return this._is_use_unscaledDeltaTime; }
-    }
+    public bool is_use_unscaledDeltaTime => this._is_use_unscaledDeltaTime;
 
     #endregion
 
     #region delegate
-
     /// <summary>
     /// 当timeScale改变的时候的回调
     /// </summary>
-    public Action<float, float> onTimeScaleChanged;
-
+    public Action<float, float> on_timeScale_changed;
     /// <summary>
     /// update回调
     /// 返回false表示不继续执行，结束
     /// </summary>
     private Func<object[], bool> _updateFunc;
-
-    private object[] _func_args;
-
     #endregion
 
 
@@ -155,6 +117,9 @@ namespace CsCat
 
     #region ctor
 
+    public Timer()
+    {
+    }
     /// <summary>
     /// duration needRunCount 里面随便一个触碰底线都会结束
     /// </summary>
@@ -166,9 +131,9 @@ namespace CsCat
     /// <param name="mode"></param>
     /// <param name="parent"></param>
     /// <param name="priority"></param>
-    public Timer(Func<object[], bool> updateFunc, float delay = 0, float interval = 0, int need_run_count = 0,
+    public void Init(Func<object[], bool> updateFunc, float delay = 0, float interval = 0, int need_run_count = 0,
       UpdateModeCat updateMode = UpdateModeCat.Update, bool is_use_unscaledDeltaTime = false, int priority = 1,
-      params object[] func_args)
+      params object[] updateFunc_args)
     {
       this._updateFunc = updateFunc;
       this._updateMode = updateMode;
@@ -176,7 +141,7 @@ namespace CsCat
       this.interval = interval;
       this.need_run_count = need_run_count;
       this.delay = delay;
-      this._func_args = func_args;
+      this._updateFunc_args = updateFunc_args;
       this._is_use_unscaledDeltaTime = is_use_unscaledDeltaTime;
     }
 
@@ -257,7 +222,7 @@ namespace CsCat
         return;
       //运行状态
       float target_deltaTime = (is_use_unscaledDeltaTime ? unscaledDeltaTime : deltaTime * timeScale);
-      float exec_time = CalcExecTime(); //执行的时间，不包括delay的时间
+//      float exec_time = CalcExecTime(); //执行的时间，不包括delay的时间
       passed_time += target_deltaTime; //已经消逝的时间，从开始到现在的时间，包括delay的时间
       if (passed_time < delay)
         return;
@@ -268,11 +233,11 @@ namespace CsCat
 
       if (delta_count > 0)
       {
-        float valid_detalTime = CalcExecTime() - exec_time;
-        float each_deltaTime = valid_detalTime / delta_count; //每次的deltaTime
+//        float valid_detalTime = CalcExecTime() - exec_time;
+//        float each_deltaTime = valid_detalTime / delta_count; //每次的deltaTime
         for (int i = 0; i < delta_count; i++)
         {
-          bool is_not_finished = this.updateFunc(this._func_args);
+          bool is_not_finished = this.updateFunc(this._updateFunc_args);
           if (!is_not_finished)
           {
             Finish();
@@ -296,8 +261,7 @@ namespace CsCat
     /// </summary>
     protected void OnTimeScaleChange(float org_timeScale, float cur_timeScale)
     {
-      if (this.onTimeScaleChanged != null)
-        this.onTimeScaleChanged(org_timeScale, cur_timeScale);
+      on_timeScale_changed?.Invoke(org_timeScale, cur_timeScale);
     }
 
     #endregion
@@ -317,5 +281,23 @@ namespace CsCat
     }
 
     #endregion
+
+    public void OnDespawn()
+    {
+      _is_use_unscaledDeltaTime = false;
+      priority = 1;
+      _status = TimerStatus.Not_Started;
+      _timeScale = 1;
+      _updateMode = UpdateModeCat.Update;
+      _delay = 0;
+      _interval = 0;
+      _need_run_count = 0;
+      _cur_run_count = 0;
+      _passed_time = 0;
+      status_pre = TimerStatus.Not_Started;
+      _updateFunc_args = null;
+      on_timeScale_changed = null;
+      _updateFunc = null;
+    }
   }
 }
