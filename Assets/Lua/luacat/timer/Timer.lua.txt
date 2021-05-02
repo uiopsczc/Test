@@ -78,7 +78,9 @@ function Timer:DoUpdate(deltaTime, unscaledDeltaTime)
   else
     self.remain_duration = self.remain_duration - target_deltaTime
   end
-
+  --if self.a =="a" then
+  --  log(self.remain_duration)
+  --end
   if self.remain_duration > 0 then
     return
   end
@@ -130,6 +132,19 @@ end
 -- 是否已经完成计时
 function Timer:IsFinished()
   return self.state == Timer.State.Finished
+end
+
+function Timer:OnDespawn()
+  self.delay = 0
+  self.target_func = nil
+  self.target_func_args = nil
+  self.interval = 0
+  self.is_use_unscaledDeltaTime = nil
+  self.update_mode = Timer.UpdateMode.Update
+  self.is_coroutine_timer = nil
+  self.is_use_frame = nil
+  self.remain_duration = nil
+  self.state = Timer.State.Idle
 end
 
 return Timer

@@ -57,34 +57,43 @@ namespace CsCat
       return timer;
     }
 
+    private List<Timer> GetTimerList(UpdateModeCat updateMode)
+    {
+      switch (updateMode)
+      {
+        case UpdateModeCat.Update:
+          return this.update_timer_list;
+        case UpdateModeCat.LateUpdate:
+          return this.lateUpdate_timer_list;
+        case UpdateModeCat.FixedUpdate:
+          return this.fixedUpdate_timer_list;
+        default:
+          return null;
+      }
+    }
+    
+
     /// <summary>
     /// 添加到对应的TimerList中
     /// </summary>
     /// <param name="timer"></param>
     public void AddTimer(Timer timer)
     {
-      switch (timer.updateMode)
-      {
-        case UpdateModeCat.Update:
-          this.Add(this.update_timer_list, timer);
-          return;
-        case UpdateModeCat.LateUpdate:
-          this.Add(this.lateUpdate_timer_list, timer);
-          return;
-        case UpdateModeCat.FixedUpdate:
-          this.Add(this.fixedUpdate_timer_list, timer);
-          return;
-        default:
-          return;
-      }
+      this.Add(this.GetTimerList(timer.updateMode), timer);
     }
 
     /// <summary>
     /// 添加到对应的TimerList中
     /// </summary>
     /// <param name="timer"></param>
-    public void RemoveTimer(Timer timer)
+    public void RemoveTimer(Timer timer, int? index = null)
     {
+      List<Timer> timer_list = this.GetTimerList(timer.updateMode);
+      if (index != null)
+        timer_list.RemoveAt(index.Value);
+      else
+        timer_list.Remove(timer);
+
       timer.Finish();
       PoolCatManagerUtil.Despawn(timer);
     }
@@ -154,10 +163,7 @@ namespace CsCat
       {
         Timer timer = timer_list[j];
         if (timer.is_finished)
-        {
-          timer_list.RemoveAt(j);
-          timer.Despawn();
-        }
+          this.RemoveTimer(timer,j);
       }
 
       this.is_updating = false;

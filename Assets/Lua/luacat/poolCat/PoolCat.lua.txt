@@ -53,7 +53,7 @@ function PoolCat:Despawn(despawn_object)
 
   self.despawned_object_queue:push(despawn_object)
   self.all_object_dict[despawn_object] = false
-  if IsTable(despawn_object) or IsUserData(despawn_object) then
+  if IsTable(despawn_object) then
     if despawn_object.OnDespawn then
       despawn_object:OnDespawn()
     end

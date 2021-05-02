@@ -124,7 +124,7 @@ local function __DoAction(action, abort, ...)
 
   if abort then
     if action.timer then
-      action.timer:Stop()
+      --action.timer:Stop()
       action.timerManager:RemoveTimer(action.timer)
     end
     action_dict[action.co] = nil
@@ -261,7 +261,9 @@ end
 -- 等同于Unity侧的yield return new WaitForFixedUpdate
 function Coroutine.WaitForFixedUpdate(timerManager)
   local co = coroutine.running() or error("coroutine.waitforfixedupdate must be run in coroutine")
-  local timer = Timer.New(__DoAction,nil,0,0,Timer.UpdateMode.FixedUpdate,nil,true,true)
+  ---@type Timer
+  local timer = PoolCatManagerUtil.Spawn(Timer)
+  timer:Init(__DoAction,nil,0,0,Timer.UpdateMode.FixedUpdate,nil,true,true)
   local action = __GetAction(co, timer)
   timer.target_func_args = {action}
   action.timerManager = timerManager or global.client.timerManager
@@ -274,7 +276,9 @@ end
 function Coroutine.WaitForFrames(frames, timerManager)
   assert(type(frames) == "number" and frames >= 1 and math.floor(frames) == frames)
   local co = coroutine.running() or error("coroutine.waitforframes must be run in coroutine")
-  local timer = Timer.New(__DoAction,nil,frames,0,Timer.UpdateMode.Update,nil,true,true)
+  ---@type Timer
+  local timer = PoolCatManagerUtil.Spawn(Timer)
+  timer:Init(__DoAction,nil,frames,0,Timer.UpdateMode.Update,nil,true,true)
   local action = __GetAction(co, timer)
   timer.target_func_args = {action}
   action.timerManager = timerManager or global.client.timerManager
@@ -288,7 +292,9 @@ end
 function Coroutine.WaitForSeconds(seconds,timerManager)
   assert(type(seconds) == "number" and seconds >= 0)
   local co = coroutine.running() or error("coroutine.waitforsenconds must be run in coroutine")
-  local timer = Timer.New(__DoAction,nil,seconds,nil,Timer.UpdateMode.Update,nil,true,false)
+  ---@type Timer
+  local timer = PoolCatManagerUtil.Spawn(Timer)
+  timer:Init(__DoAction,nil,seconds,nil,Timer.UpdateMode.Update,nil,true,false)
   local action = __GetAction(co, timer)
   timer.target_func_args = {action}
   action.timerManager = timerManager or global.client.timerManager
@@ -319,7 +325,9 @@ function Coroutine.WaitForAsyncOp(async_operation, callback,timerManager)
   ---@field is_done boolean
   assert(async_operation)
   local co = coroutine.running() or error("coroutine.waitforasyncop must be run in coroutine")
-  local timer = Timer.New(__DoActionLoop,nil,1,1,Timer.UpdateMode.Update,nil,true,true)--每帧都检测
+  ---@type Timer
+  local timer = PoolCatManagerUtil.Spawn(Timer)
+  timer:Init(__DoActionLoop,nil,1,1,Timer.UpdateMode.Update,nil,true,true)--每帧都检测
   local action = __GetAction(co, timer, __AsyncOpCheck, table.SafePack(co, async_operation, callback), true)
   timer.target_func_args = {action}
   action.timerManager = timerManager or global.client.timerManager
@@ -334,7 +342,9 @@ function Coroutine.WaitUntil(timerManager, func, ...)
   assert(func)
   local co = coroutine.running() or error("coroutine.waituntil must be run in coroutine")
   local func_args = table.SafePack(...)
-  local timer = Timer.New(__DoActionLoop,nil,1,1,Timer.UpdateMode.Update,nil,true,true)--每帧都检测
+  ---@type Timer
+  local timer = PoolCatManagerUtil.Spawn(Timer)
+  timer:Init(__DoActionLoop,nil,1,1,Timer.UpdateMode.Update,nil,true,true)--每帧都检测
   local action = __GetAction(co, timer, func, func_args, true)
   timer.target_func_args = {action}
   action.timerManager = timerManager or global.client.timerManager
@@ -348,7 +358,9 @@ end
 function Coroutine.WaitWhile(timerManager,func, ...)
   assert(func)
   local co = coroutine.running() or error("coroutine.waitwhile must be run in coroutine")
-  local timer = Timer.New(__DoActionLoop,nil,1,1,Timer.UpdateMode.Update,nil,true,true)--每帧都检测
+  ---@type Timer
+  local timer = PoolCatManagerUtil.Spawn(Timer)
+  timer:Init(__DoActionLoop,nil,1,1,Timer.UpdateMode.Update,nil,true,true)--每帧都检测
   local func_args = table.SafePack(...)
   local action = __GetAction(co, timer, func, func_args, false)
   timer.target_func_args = {action}
@@ -362,7 +374,9 @@ end
 -- 等同于Unity侧的yield return new WaitForEndOfFrame
 function Coroutine.WaitForEndOfFrame(timerManager)
   local co = coroutine.running() or error("coroutine.waitforendofframe must be run in coroutine")
-  local timer = Timer.New(__DoActionLoop,nil,1,1,Timer.UpdateMode.LateUpdate,nil,true,true)--每帧都检测
+  ---@type Timer
+  local timer = PoolCatManagerUtil.Spawn(Timer)
+  timer:Init(__DoActionLoop,nil,1,1,Timer.UpdateMode.LateUpdate,nil,true,true)--每帧都检测
   local action = __GetAction(co, timer)
   timer.target_func_args = {action}
   action.timerManager = timerManager or global.client.timerManager

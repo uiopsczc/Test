@@ -30,8 +30,13 @@ function DefaultInputManager:__Update(deltaTime, unscaledDeltaTime)
     global.client:GoTo(StageTest, 0.2)
   end
   if Input.GetKeyDown("f8") then
-    self:AddChild(nil, StageTest)
-    log("5555")
+    self.t = self:AddTimer(function()
+      warn(11111)
+      return true
+    end,nil,0,1)
+    self.t.a="a"
+    --self:AddChild(nil, StageTest)
+    --log("5555")
     --warn("88888888")
     --self.panel = global.client.uiManager:CreateChildPanel("UIGMPanel2",require("luacat.ui.common.UIGMPanelBase.test.UIGMTestPanel2"))
     --require("luacat.ui.common.UIBlood.test.UIBloodTest").Test1()
@@ -41,6 +46,7 @@ function DefaultInputManager:__Update(deltaTime, unscaledDeltaTime)
     --self.hfsm1:Test1()
   end
   if Input.GetKeyDown("f9") then
+    self:RemoveTimer(self.t)
     --self.panel:SetToBottom()
     --require("luacat.ui.common.UIBlood.test.UIBloodTest").Test2()
     --self.hfsmComponent.hfsm:Test2()

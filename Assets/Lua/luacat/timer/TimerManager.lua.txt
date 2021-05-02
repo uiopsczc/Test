@@ -31,29 +31,36 @@ local function __Add(timer_list, timer)
   timer:Start()
 end
 
-local function __Remove(timer_list, timer)
-  table.RemoveByValue_Array(timer_list, timer)
+function TimerManager:GetTimerList(update_mode, is_coroutine_timer)
+  if update_mode == Timer.UpdateMode.Update then
+    return not is_coroutine_timer and self.__update_timer_list or self.__co_update_timer_list
+  end
+
+  if update_mode == Timer.UpdateMode.LateUpdate then
+    return not is_coroutine_timer and self.__lateUpdate_timer_list or self.__co_lateUpdate_timer_list
+  end
+
+  if update_mode == Timer.UpdateMode.FixedUpdate then
+    return not is_coroutine_timer and self.__fixedUpdate_timer_list or self.__co_fixedUpdate_timer_list
+  end
 end
+
 
 ---@param timer Timer
 function TimerManager:AddTimer2(timer)
-  local update_timer_list = not timer.is_coroutine_timer and self.__update_timer_list or self.__co_update_timer_list
-  local lateUpdate_timer_list = not timer.is_coroutine_timer and self.__lateUpdate_timer_list or self.__co_lateUpdate_timer_list
-  local fixedUpdate_timer_list = not timer.is_coroutine_timer and self.__fixedUpdate_timer_list or self.__co_fixedUpdate_timer_list
-  if timer.update_mode == Timer.UpdateMode.Update then
-    __Add(update_timer_list, timer)
-  end
-  if timer.update_mode == Timer.UpdateMode.LateUpdate then
-    __Add(lateUpdate_timer_list, timer)
-  end
-  if timer.update_mode == Timer.UpdateMode.FixedUpdate then
-    __Add(fixedUpdate_timer_list, timer)
-  end
+  __Add(self:GetTimerList(timer.update_mode, timer.is_coroutine_timer), timer)
 end
 
 ---@param timer Timer
-function TimerManager:RemoveTimer(timer)
+function TimerManager:RemoveTimer(timer , index)
+  local timer_list = self:GetTimerList(timer.update_mode, timer.is_coroutine_timer)
+  if index then
+    table.remove(timer_list, index)
+  else
+    table.RemoveByValue_Array(timer_list,timer)
+  end
   timer:Finish()
+  PoolCatManagerUtil.Despawn(timer)
 end
 
 -------------------------------------------------------------------------------------------------------
@@ -61,7 +68,8 @@ end
 ---@return Timer
 function TimerManager:AddTimer(target_func, target_func_args, delay, interval, update_mode, is_use_unscaledDeltaTime, is_coroutine_timer, is_use_frame)
   ---@type Timer
-  local timer = Timer.New(target_func, target_func_args, delay, interval, update_mode, is_use_unscaledDeltaTime, is_coroutine_timer, is_use_frame)
+  local timer = PoolCatManagerUtil.Spawn(Timer)
+  timer:Init(target_func, target_func_args, delay, interval, update_mode, is_use_unscaledDeltaTime, is_coroutine_timer, is_use_frame)
   self:AddTimer2(timer)
   return timer
 end
@@ -98,7 +106,7 @@ local function __DoUpdate(self, timer_list, deltaTime, unscaledDeltaTime)
   self.is_updating = true
   for i = 1, #timer_list do
     local timer = timer_list[i]
-    if not timer:IsFinished() then
+    if timer and  not timer:IsFinished() then
       timer:DoUpdate(deltaTime, unscaledDeltaTime)
     end
   end
@@ -106,7 +114,7 @@ local function __DoUpdate(self, timer_list, deltaTime, unscaledDeltaTime)
   for i = #timer_list, 1 ,-1 do
     local timer = timer_list[i]
     if timer:IsFinished() then
-      table.remove(timer_list,i)
+      self:RemoveTimer(timer,i)
     end
   end
   self.is_updating = false

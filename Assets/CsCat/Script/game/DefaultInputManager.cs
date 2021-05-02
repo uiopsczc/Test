@@ -32,6 +32,7 @@ namespace CsCat
 
     private static int i;
     private UIGMTestPanel2 panel;
+    private Timer t;
     private void HandleMouseEvent()
     {
       if (Input.GetMouseButtonDown(0))
@@ -52,11 +53,17 @@ namespace CsCat
 
       if (Input.GetKeyDown("f2"))
       {
+        t = this.AddTimer(args =>
+        {
+          LogCat.warn(Time.time);
+          return true;
+        }, 0, 1);
         //        panel = Client.instance.uiManager.CreateChildPanel(null, default(UIGMTestPanel2));
       }
 
       if (Input.GetKeyDown("f3"))
       {
+        this.RemoveTimer(t);
 //        panel.SetToBottom();
         //        LogCat.log(dict);
       }
