@@ -100,5 +100,8 @@ namespace CsCat
     {
       return (T[])GetChildrenStrictly(typeof(T));
     }
+
+
+   
   }
 }

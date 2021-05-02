@@ -20,23 +20,38 @@ namespace CsCat
       return !is_can_not_update && base.IsCanUpdate();
     }
 
+    private TickObject child;
+    private AbstractComponent component;
+
     public virtual void Update(float deltaTime = 0, float unscaledDeltaTime = 0)
     {
       if (!this.IsCanUpdate()) return;
-      foreach (var child in ForeachChild<TickObject>())
-        child.Update(deltaTime, unscaledDeltaTime);
-      foreach (var component in ForeachComponent())
-        component.Update(deltaTime, unscaledDeltaTime);
+      foreach (var child_key in child_key_list)
+      {
+        child = GetChild(child_key) as TickObject;
+        child?.Update(deltaTime, unscaledDeltaTime);
+      }
+      foreach (var component_key in component_key_list)
+      {
+        component = GetComponent(component_key);
+        component?.Update(deltaTime, unscaledDeltaTime);
+      }
       __Update(deltaTime, unscaledDeltaTime);
     }
 
     public virtual void FixedUpdate(float deltaTime = 0, float unscaledDeltaTime = 0)
     {
       if (!this.IsCanUpdate()) return;
-      foreach (var child in ForeachChild<TickObject>())
-        child.FixedUpdate(deltaTime, unscaledDeltaTime);
-      foreach (var component in ForeachComponent())
-        component.FixedUpdate(deltaTime, unscaledDeltaTime);
+      foreach (var child_key in child_key_list)
+      {
+        child = GetChild(child_key) as TickObject;
+        child?.FixedUpdate(deltaTime, unscaledDeltaTime);
+      }
+      foreach (var component_key in component_key_list)
+      {
+        component = GetComponent(component_key);
+        component?.FixedUpdate(deltaTime, unscaledDeltaTime);
+      }
       __FixedUpdate(deltaTime, unscaledDeltaTime);
     }
 
@@ -44,10 +59,16 @@ namespace CsCat
     public virtual void LateUpdate(float deltaTime = 0, float unscaledDeltaTime = 0)
     {
       if (!this.IsCanUpdate()) return;
-      foreach (var child in ForeachChild<TickObject>())
-        child.LateUpdate(deltaTime, unscaledDeltaTime);
-      foreach (var component in ForeachComponent())
-        component.LateUpdate(deltaTime, unscaledDeltaTime);
+      foreach (var child_key in child_key_list)
+      {
+        child = GetChild(child_key) as TickObject;
+        child?.LateUpdate(deltaTime, unscaledDeltaTime);
+      }
+      foreach (var component_key in component_key_list)
+      {
+        component = GetComponent(component_key);
+        component?.LateUpdate(deltaTime, unscaledDeltaTime);
+      }
       __LateUpdate(deltaTime, unscaledDeltaTime);
     }
 

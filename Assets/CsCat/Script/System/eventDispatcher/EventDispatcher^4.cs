@@ -128,7 +128,7 @@ namespace CsCat
 
     void CheckEmpty()
     {
-      var to_remove_eventName_list = PoolCatManagerUtil.Spawn<List<EventName>>();
+      var to_remove_eventName_list = PoolCatManagerUtil.Spawn<List<EventName>>(PoolNameConst.EventName_List);
       foreach (var eventName in listener_dict.Keys)
       {
         if (listener_dict[eventName].Count == 0)

@@ -65,6 +65,7 @@ namespace CsCat
       return AddChild(child_key, typeof(T), init_args) as T;
     }
 
+    
 
     void __AddChildRelationship(AbstractEntity child)
     {
@@ -74,5 +75,7 @@ namespace CsCat
       if (!child_type_list.Contains(child.GetType()))
         child_type_list.Add(child.GetType());
     }
+
+    
   }
 }

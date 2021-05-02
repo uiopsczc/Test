@@ -10,6 +10,7 @@ namespace CsCat
     protected Dictionary<Type, List<AbstractEntity>> type_to_childList_dict =
       new Dictionary<Type, List<AbstractEntity>>(); //准确的类型
 
+
     protected List<string> child_key_list = new List<string>();
     protected List<Type> child_type_list = new List<Type>();
     protected AbstractEntity _parent;
@@ -49,6 +50,7 @@ namespace CsCat
           yield return child;
       }
     }
+
 
 
 

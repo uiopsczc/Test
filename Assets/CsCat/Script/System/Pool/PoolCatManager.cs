@@ -54,7 +54,7 @@ namespace CsCat
 
     public void Despawn(object despawn_object, string pool_name = null)
     {
-      pool_name = despawn_object.GetType().Name;
+      pool_name = pool_name??despawn_object.GetType().Name;
       if (!pool_dict.ContainsKey(pool_name))
         return;
       pool_dict[pool_name].Despawn(despawn_object);
@@ -89,19 +89,22 @@ namespace CsCat
       }
     }
 
-    public object Spawn(Type spawn_type, Action<object> on_spawn_callback = null)
+    public object Spawn(Type spawn_type,string pool_name = null, Action<object> on_spawn_callback = null)
     {
-      var spawn_type_name = spawn_type.ToString();
-      var pool = pool_dict.GetOrAddDefault(spawn_type_name, () => new PoolCat(spawn_type_name, spawn_type));
+      pool_name = pool_name??spawn_type.ToString();
+      if (!pool_dict.ContainsKey(pool_name))
+        pool_dict[pool_name] = new PoolCat(pool_name, spawn_type);
+      var pool = pool_dict[pool_name];
       var spawn = pool.Spawn(on_spawn_callback);
       return spawn;
     }
+    
 
-    public T Spawn<T>(Action<T> on_spawn_callback = null)
+    public T Spawn<T>(string pool_name = null,Action < T> on_spawn_callback = null)
     {
       if (on_spawn_callback == null)
-        return (T)Spawn(typeof(T));
-      return (T)Spawn(typeof(T), obj => on_spawn_callback((T)obj));
+        return (T)Spawn(typeof(T), pool_name);
+      return (T)Spawn(typeof(T), pool_name, obj => on_spawn_callback((T)obj));
     }
   }
 }

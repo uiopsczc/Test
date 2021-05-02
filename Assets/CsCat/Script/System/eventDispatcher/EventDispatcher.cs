@@ -8,6 +8,7 @@ namespace CsCat
     public ValueListDictionary<EventName, KeyValuePairCat<Action, bool>> listener_dict =
       new ValueListDictionary<EventName, KeyValuePairCat<Action, bool>>();
 
+
     public EventListenerInfo AddListener(string eventName, Action handler)
     {
       return AddListener(eventName.ToEventName(), handler);
@@ -89,7 +90,7 @@ namespace CsCat
       {
         var handler_info_list = PoolCatManagerUtil.Spawn<List<KeyValuePairCat<Action, bool>>>();
         handler_info_list.AddRange(listener_dict[eventName]);
-        foreach (var handler_info in listener_dict[eventName])
+        foreach (var handler_info in handler_info_list)
           try
           {
             if (handler_info.value)
@@ -127,7 +128,7 @@ namespace CsCat
 
     void CheckEmpty()
     {
-      var to_remove_eventName_list = PoolCatManagerUtil.Spawn<List<EventName>>();
+      var to_remove_eventName_list = PoolCatManagerUtil.Spawn<List<EventName>>(PoolNameConst.EventName_List);
       foreach (var eventName in listener_dict.Keys)
       {
         if (listener_dict[eventName].Count == 0)
