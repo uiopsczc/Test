@@ -8,9 +8,14 @@ end
 
 function UICombatTestPanel:InitGameObjectChildren()
   UICombatTestPanel.super.InitGameObjectChildren(self)
-  local gm_btn = self.frame_transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Button), "gm_btn")
-  local test_btn = self.frame_transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Button), "test_btn")
-  self:RegisterOnClick(test_btn, function()
+  self.gm_btn = self.frame_transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Button), "gm_btn")
+  self.test_btn = self.frame_transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Button), "test_btn")
+end
+
+
+function UICombatTestPanel:AddUnityEvents()
+  UICombatTestPanel.super.AddUnityEvents(self)
+  self:RegisterOnClick(self.test_btn, function()
     self:Test()
   end)
 end

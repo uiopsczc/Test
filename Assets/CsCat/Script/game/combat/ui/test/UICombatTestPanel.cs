@@ -4,10 +4,9 @@ namespace CsCat
 {
   public class UICombatTestPanel : UIPanel
   {
-    public override EUILayerName layerName
-    {
-      get { return EUILayerName.BackgroundUILayer; }
-    }
+    private Button gm_btn;
+    private Button test_btn;
+    public override EUILayerName layerName => EUILayerName.BackgroundUILayer;
 
     public override void Init()
     {
@@ -18,8 +17,14 @@ namespace CsCat
     public override void InitGameObjectChildren()
     {
       base.InitGameObjectChildren();
-      Button gm_btn = this.frame_transform.FindComponentInChildren<Button>("gm_btn");
-      Button test_btn = this.frame_transform.FindComponentInChildren<Button>("test_btn");
+      gm_btn = this.frame_transform.FindComponentInChildren<Button>("gm_btn");
+      test_btn = this.frame_transform.FindComponentInChildren<Button>("test_btn");
+      
+    }
+
+    protected override void AddUntiyEvnts()
+    {
+      base.AddUntiyEvnts();
       this.RegisterOnClick(test_btn, Test);
     }
 
