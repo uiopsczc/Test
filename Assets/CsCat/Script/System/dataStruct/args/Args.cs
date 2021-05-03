@@ -3,7 +3,7 @@ using System.Text;
 
 namespace CsCat
 {
-  public class Args : IDespawn
+  public class Args
   {
     private object[] args;
 
@@ -92,9 +92,9 @@ namespace CsCat
       }
     }
 
-    public void OnDespawn()
-    {
-      args = null;
-    }
+//    public void OnDespawn()
+//    {
+//      args = null;
+//    }
   }
 }

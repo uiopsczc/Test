@@ -41,7 +41,7 @@ namespace CsCat
 
     public string ToString2(bool is_fill_string_with_double_quote = false)
     {
-      return string.Format("[{0},{1}]", key.ToString(), value.ToString());
+      return string.Format("[{0},{1}]", key, value);
     }
 
     public void OnDespawn()
