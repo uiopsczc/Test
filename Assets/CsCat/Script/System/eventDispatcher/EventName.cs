@@ -21,23 +21,7 @@ namespace CsCat
       this.name = name;
       return this;
     }
-
-    public static EventName Spawn(object soruce, string name)
-    {
-      var result = PoolCatManagerUtil.SpawnEventName();
-      result.Init(soruce, name);
-      return result;
-    }
-
-    private static EventName NewEventName()
-    {
-      return new EventName();
-    }
-
-    public static EventName Spawn(string name)
-    {
-      return Spawn(null, name);
-    }
+    
 
     public override bool Equals(object obj)
     {

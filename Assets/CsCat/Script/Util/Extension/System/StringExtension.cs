@@ -197,7 +197,7 @@ namespace CsCat
 
     public static EventName ToEventName(this string self, object source = null)
     {
-      return EventName.Spawn(source, self);
+      return EventNameUtil.Spawn(source, self);
     }
 
     public static bool ContainTags(this string self, params string[] check_tags)
