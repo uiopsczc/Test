@@ -114,9 +114,27 @@ namespace CsCat
       return (T)Spawn(typeof(T), pool_name, obj => on_spawn_callback((T)obj));
     }
 
-    
+
+    public object Spawn(Func<object> spawn_func, string pool_name , Action<object> on_spawn_callback = null)
+    {
+      if (!pool_dict.TryGetValue(pool_name, out var pool))
+      {
+        pool = new PoolCat(pool_name, spawn_func);
+        pool_dict[pool_name] = pool;
+      }
+      var spawn = pool.Spawn(on_spawn_callback);
+      return spawn;
+    }
+
+    public T Spawn<T>(Func<object> spawn_func, string pool_name = null, Action<T> on_spawn_callback = null)
+    {
+
+      if (on_spawn_callback == null)
+        return (T)Spawn(spawn_func, pool_name??typeof(T).FullName);
+      return (T)Spawn(spawn_func, pool_name ?? typeof(T).FullName, obj => on_spawn_callback((T)obj));
+    }
 
 
-    
+
   }
 }

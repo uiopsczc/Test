@@ -2,8 +2,8 @@ namespace CsCat
 {
   public class EventName : IDespawn
   {
-    public  string name;
-    public  object source;
+    public string name;
+    public object source;
 
     public EventName()
     {
@@ -27,6 +27,11 @@ namespace CsCat
       var result = PoolCatManagerUtil.SpawnEventName();
       result.Init(soruce, name);
       return result;
+    }
+
+    private static EventName NewEventName()
+    {
+      return new EventName();
     }
 
     public static EventName Spawn(string name)

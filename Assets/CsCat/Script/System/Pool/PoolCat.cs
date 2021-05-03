@@ -13,6 +13,7 @@ namespace CsCat
     protected Dictionary<object, bool> all_object_dict = new Dictionary<object, bool>();
     private Type spawn_type;
     public string pool_name;
+    private Func<object> spawn_func;
     
 
 
@@ -20,6 +21,12 @@ namespace CsCat
     {
       this.pool_name = pool_name;
       this.spawn_type = spawn_type;
+    }
+
+    public PoolCat(string pool_name, Func<object> spawn_func)
+    {
+      this.pool_name = pool_name;
+      this.spawn_func = spawn_func;
     }
 
     public void InitPool(int init_count = 1, Action<object> on_spawn_callback = null)
@@ -38,7 +45,8 @@ namespace CsCat
     /// <returns></returns>
     protected virtual object __Spawn()
     {
-      return Activator.CreateInstance(spawn_type);
+//      LogCat.warn(pool_name);
+      return spawn_func != null ? spawn_func() : Activator.CreateInstance(spawn_type);
     }
 
     #endregion

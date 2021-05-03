@@ -68,6 +68,17 @@ namespace CsCat
       return PoolCatManager.instance.Spawn<T>(pool_name,obj => on_spawn_callback((T)obj));
     }
 
+
+    public static object Spawn(Func<object> spawn_func, string pool_name, Action<object> on_spawn_callback = null)
+    {
+      return PoolCatManager.instance.Spawn(spawn_func, pool_name, on_spawn_callback);
+    }
+
+    public static T Spawn<T>(Func<object> spawn_func,string pool_name = null, Action<T> on_spawn_callback = null)
+    {
+      return PoolCatManager.instance.Spawn<T>(spawn_func, pool_name, on_spawn_callback);
+    }
+
     public static EventName SpawnEventName()
     {
       if (!PoolCatManager.instance.TryGetPool(PoolNameConst.EventName, out var pool))
