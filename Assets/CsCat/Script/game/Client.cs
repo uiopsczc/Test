@@ -51,7 +51,17 @@ namespace CsCat
     //通用模块
     public override TimerManager timerManager
     {
-      get { return cache.GetOrAddDefault(() => { return new TimerManager(); }); }
+      get
+      {
+        if (!cache.dict.TryGetValue(typeof(TimerManager), out var result))
+        {
+          result = new TimerManager();
+          cache.dict[typeof(TimerManager)] = result;
+        }
+        return (TimerManager)result;
+
+//        return cache.GetOrAddDefault(() => { return new TimerManager(); });
+      }
     }
 
     public UIManager uiManager;
@@ -59,7 +69,16 @@ namespace CsCat
 
     public EventDispatchers eventDispatchers
     {
-      get { return cache.GetOrAddDefault(() => { return new EventDispatchers(this); }); }
+      get
+      {
+        if (!cache.dict.TryGetValue(typeof(EventDispatchers), out var result))
+        {
+          result = new EventDispatchers(this);
+          cache.dict[typeof(EventDispatchers)] = result;
+        }
+        return (EventDispatchers)result;
+//        return cache.GetOrAddDefault(() => { return new EventDispatchers(this); });
+      }
     }
 
     public string language;

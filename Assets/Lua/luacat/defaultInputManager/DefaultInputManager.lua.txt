@@ -76,6 +76,7 @@ function DefaultInputManager:__Update(deltaTime, unscaledDeltaTime)
     --require("luacat.redDot.test.RedDotTest").Test()
   end
   if Input.GetKeyDown("f10") then
+    log("9999")
     --self.panel:SetToTop()
     --require("luacat.ui.common.UIBlood.test.UIBloodTest").Test3()
     --self.hfsmComponent.hfsm:Test3()

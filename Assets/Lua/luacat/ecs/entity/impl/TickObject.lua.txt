@@ -26,29 +26,29 @@ function TickObject:Update(deltaTime, unscaledDeltaTime)
 end
 
 function TickObject:FixedUpdate(deltaTime, unscaledDeltaTime)
-  --if not self:IsCanUpdate() then
-  --  return
-  --end
-  --for _, child in self:ForeachChildOfType(TickObject) do
-  --  child:FixedUpdate(deltaTime, unscaledDeltaTime)
-  --end
-  --for _, component in self:ForeachComponent() do
-  --  component:FixedUpdate(deltaTime, unscaledDeltaTime)
-  --end
-  --self:__FixedUpdate(deltaTime, unscaledDeltaTime)
+  if not self:IsCanUpdate() then
+    return
+  end
+  for _, child in self:ForeachChildOfType(TickObject) do
+    child:FixedUpdate(deltaTime, unscaledDeltaTime)
+  end
+  for _, component in self:ForeachComponent() do
+    component:FixedUpdate(deltaTime, unscaledDeltaTime)
+  end
+  self:__FixedUpdate(deltaTime, unscaledDeltaTime)
 end
 
 function TickObject:LateUpdate(deltaTime, unscaledDeltaTime)
-  --if not self:IsCanUpdate() then
-  --  return
-  --end
-  --for _, child in self:ForeachChildOfType(TickObject) do
-  --  child:LateUpdate(deltaTime, unscaledDeltaTime)
-  --end
-  --for _, component in self:ForeachComponent() do
-  --  component:LateUpdate(deltaTime, unscaledDeltaTime)
-  --end
-  --self:__LateUpdate(deltaTime, unscaledDeltaTime)
+  if not self:IsCanUpdate() then
+    return
+  end
+  for _, child in self:ForeachChildOfType(TickObject) do
+    child:LateUpdate(deltaTime, unscaledDeltaTime)
+  end
+  for _, component in self:ForeachComponent() do
+    component:LateUpdate(deltaTime, unscaledDeltaTime)
+  end
+  self:__LateUpdate(deltaTime, unscaledDeltaTime)
 end
 
 function TickObject:__Update(deltaTime, unscaledDeltaTime)

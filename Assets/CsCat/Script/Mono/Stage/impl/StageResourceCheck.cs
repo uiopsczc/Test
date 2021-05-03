@@ -29,8 +29,8 @@ namespace CsCat
         yield return LuaRequireLoader.LoadLuaFiles();
       }
 
-//      XLuaManager.instance.OnInit();
-//      XLuaManager.instance.StartXLua();
+      XLuaManager.instance.OnInit();
+      XLuaManager.instance.StartXLua();
       Client.instance.Goto<StageTest>(0,
         () => { Client.instance.uiManager.uiLoadingPanel.Reset(); });
     }

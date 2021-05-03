@@ -100,6 +100,7 @@ namespace CsCat
           {
             LogCat.LogError(ex);
           }
+
         handler_info_list.Clear();
         handler_info_list.Despawn();
       }

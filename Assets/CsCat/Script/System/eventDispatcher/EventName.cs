@@ -2,12 +2,13 @@ namespace CsCat
 {
   public class EventName : IDespawn
   {
-    public string name;
-    public object source;
+    public  string name;
+    public  object source;
 
     public EventName()
     {
     }
+
     public EventName(object source, string name)
     {
       Init(source, name);
@@ -23,7 +24,7 @@ namespace CsCat
 
     public static EventName Spawn(object soruce, string name)
     {
-      var result = PoolCatManagerUtil.Spawn<EventName>();
+      var result = PoolCatManagerUtil.SpawnEventName();
       result.Init(soruce, name);
       return result;
     }
@@ -35,17 +36,31 @@ namespace CsCat
 
     public override bool Equals(object obj)
     {
-      if (!(obj is EventName))
+      var other = obj as EventName;
+      if (other == null)
         return false;
-      var other = (EventName)obj;
-      if (ObjectUtil.Equals(source, other.source) && ObjectUtil.Equals(name, other.name))
+      if (((source == null && other.source == null) || (source != null && source.Equals(other.source))) &&
+          ((name == null && other.name == null) || (name != null && name.Equals(other.name)))
+      )
         return true;
       return false;
     }
 
     public override int GetHashCode()
     {
-      return ObjectUtil.GetHashCode(source, name);
+      int result = int.MinValue;
+      if (source != null)
+      {
+        result = source.GetHashCode();
+      }
+
+      if (name == null) return result;
+      if (result != int.MinValue)
+        result ^= name.GetHashCode();
+      else
+        result = name.GetHashCode();
+
+      return result;
     }
 
     public void OnDespawn()

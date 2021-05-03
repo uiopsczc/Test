@@ -5,15 +5,15 @@ namespace CsCat
 {
   public class PoolCat
   {
-
     /// <summary>
     /// 存放object的数组
     /// </summary>
     protected Stack<object> despawned_object_stack = new Stack<object>();
+
     protected Dictionary<object, bool> all_object_dict = new Dictionary<object, bool>();
     private Type spawn_type;
     public string pool_name;
-
+    
 
 
     public PoolCat(string pool_name, Type spawn_type)
@@ -59,7 +59,7 @@ namespace CsCat
 
     public T Spawn<T>(Action<object> on_spawn_callback = null)
     {
-      return (T)Spawn(on_spawn_callback);
+      return (T) Spawn(on_spawn_callback);
     }
 
     public virtual void Despawn(object obj)
@@ -84,6 +84,7 @@ namespace CsCat
 
       despawned_object_stack.Clear();
     }
+
     protected virtual void __Trim(object despawned_object)
     {
     }
@@ -106,6 +107,9 @@ namespace CsCat
 
     public virtual void Destroy()
     {
+      spawn_type = null;
+      pool_name = null;
+
       despawned_object_stack.Clear();
       all_object_dict.Clear();
     }
