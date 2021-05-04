@@ -9,13 +9,13 @@ namespace CsCat
     {
     }
 
-    public EventName(object source, string name)
+    public EventName( string name, object source)
     {
-      Init(source, name);
+      Init( name, source);
     }
 
 
-    public EventName Init(object source, string name)
+    public EventName Init(string name, object source)
     {
       this.source = source;
       this.name = name;
@@ -50,6 +50,11 @@ namespace CsCat
         result = name.GetHashCode();
 
       return result;
+    }
+
+    public EventName Clone()
+    {
+      return this.name.ToEventName(source);
     }
 
     public void OnDespawn()

@@ -2,16 +2,16 @@ namespace CsCat
 {
   public static class EventNameUtil
   {
-    public static EventName Spawn(object soruce, string name)
+    public static EventName Spawn(string name, object soruce)
     {
       var result = PoolCatManagerUtil.SpawnEventName();
-      result.Init(soruce, name);
+      result.Init( name, soruce);
       return result;
     }
 
     public static EventName Spawn(string name)
     {
-      return Spawn(null, name);
+      return Spawn(name,null );
     }
   }
 }

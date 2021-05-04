@@ -35,6 +35,11 @@ namespace CsCat
       return ObjectUtil.GetHashCode(eventName, handler);
     }
 
+    public EventListenerInfo<P0, P1, P2,P3> Clone()
+    {
+      return PoolCatManagerUtil.Spawn<EventListenerInfo<P0, P1, P2, P3>>().Init(eventName.Clone(), handler);
+    }
+
     public override void OnDespawn()
     {
       base.OnDespawn();

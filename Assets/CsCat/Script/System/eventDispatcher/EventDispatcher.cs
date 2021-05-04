@@ -58,7 +58,7 @@ namespace CsCat
     {
       foreach (var eventName in this.listener_dict.Keys)
       {
-        var result = RemoveListener(PoolCatManagerUtil.Spawn<EventName>().Init(eventName.source, eventName.name),
+        var result = RemoveListener(eventName.Clone(),
           handler);
         if (result)
           return result;
