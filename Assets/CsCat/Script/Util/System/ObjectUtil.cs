@@ -1,4 +1,5 @@
 using System;
+using System.Text;
 
 namespace CsCat
 {
@@ -67,6 +68,26 @@ namespace CsCat
       T c = b;
       b = a;
       a = c;
+    }
+
+    public static string ToString(params object[] objs)
+    {
+      StringBuilder stringBuilder = new StringBuilder();
+      foreach (var obj in objs)
+        stringBuilder.Append(obj+" ");
+      if (stringBuilder.Length > 0)
+        stringBuilder.Remove(stringBuilder.Length - 1, 1);
+      return stringBuilder.ToString();
+    }
+
+    public static string ToString2(params object[] objs)
+    {
+      StringBuilder stringBuilder = new StringBuilder();
+      foreach (var obj in objs)
+        stringBuilder.Append(obj.ToString2() + " ");
+      if (stringBuilder.Length > 0)
+        stringBuilder.Remove(stringBuilder.Length - 1, 1);
+      return stringBuilder.ToString();
     }
   }
 }

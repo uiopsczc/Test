@@ -7,7 +7,6 @@ local CustomPoolCat = require("luacat.poolCat.CustomPoolCat")
 ---@param pool_dict table<string,PoolCat>
 local PoolCatManager = Class("PoolCatManager")
 
-
 function PoolCatManager:Init()
   ---@type table<string,PoolCat>
   self.pool_dict = {}
@@ -51,7 +50,7 @@ end
 ---@param ... @pool_construct_args
 ---@return PoolCat
 function PoolCatManager:GetOrAddPool(pool_class_type, ...)
-  local pool_construct_args  = table.SafePack(...)
+  local pool_construct_args = table.SafePack(...)
   local pool_name = pool_construct_args[1]
   local poolCat = table.GetOrAddDefault_Dict(self.pool_dict, pool_name, function()
     return pool_class_type.New(table.SafeUnpack(pool_construct_args))
@@ -61,7 +60,7 @@ end
 
 ---@param despawn_object any
 ---@param pool_name string
-function PoolCatManager:Despawn(despawn_object,pool_name)
+function PoolCatManager:Despawn(despawn_object, pool_name)
   if pool_name == nil then
     pool_name = despawn_object.__class_name
   end
@@ -85,24 +84,29 @@ function PoolCatManager:Trim()
 end
 
 ---@param spawn_class_type Class
+---@param pool_name string
 ---@param on_spawn_callback fun(spawn:any)
 ---@return any
-function PoolCatManager:Spawn(spawn_class_type, on_spawn_callback)
-  local spawn_type_name = spawn_class_type.__class_name
-  local pool = table.GetOrAddDefault_Dict(self.pool_dict, spawn_type_name, function()
-    return PoolCat.New(spawn_type_name, spawn_class_type)
+function PoolCatManager:Spawn(spawn_class_type, pool_name, on_spawn_callback)
+  local pool_name = pool_name or spawn_class_type.__class_name
+  local pool = table.GetOrAddDefault_Dict(self.pool_dict, pool_name, function()
+    return PoolCat.New(pool_name, spawn_class_type)
   end)
   local spawn = pool:Spawn(on_spawn_callback)
   return spawn
 end
 
-
-
-
-
-
-
-
+---@param spawn_func fun():any
+---@param pool_name string
+---@param on_spawn_callback fun(spawn:any)
+---@return any
+function PoolCatManager:SpawnByFunc(spawn_func, pool_name, on_spawn_callback)
+  local pool = table.GetOrAddDefault_Dict(self.pool_dict, pool_name, function()
+    return PoolCat.New(pool_name, nil, spawn_func)
+  end)
+  local spawn = pool:Spawn(on_spawn_callback)
+  return spawn
+end
 
 return PoolCatManager
 

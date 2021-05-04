@@ -113,6 +113,12 @@ function DefaultInputManager:__Update(deltaTime, unscaledDeltaTime)
 
   end
   if Input.GetKeyDown("f11") then
+    self.list = list.new()
+    self.list:push("aaa")
+    self.list:push("bbb")
+    self.list:push("ccc")
+    self.list:push("ddd")
+
     --require("luacat.ui.common.UIBlood.test.UIBloodTest").Test4()
     --self.hfsmComponent.hfsm:Test4()
     --self:RemoveAllComponents()
@@ -125,10 +131,13 @@ function DefaultInputManager:__Update(deltaTime, unscaledDeltaTime)
     --global.client.redDotManager:CleanListenEvent(GameObject.Find("gm_btn"))
     --global.client.uiManager:CloseAllChildPanels()
     --self.d = self.pool:Spawn()
-    Profiler:Start()
+    --Profiler:Start()
   end
   if Input.GetKeyDown("f12") then
-    Profiler:Stop()
+    for _,value in ilist(self.list) do
+    log(value)
+    end
+    --Profiler:Stop()
     --PoolCatManagerUtil.DespawnGameObject(self.d)
     --self.hfsmComponent.hfsm:Test5()
     --self.hfsm1:Test5()

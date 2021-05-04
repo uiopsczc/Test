@@ -34,9 +34,6 @@ function UnityObjectPoolCat:__Trim(despawned_object)
 end
 
 function UnityObjectPoolCat:Destroy()
-  for obj, _ in pairs(self.all_object_dict) do
-    obj:Destroy()
-  end
   UnityObjectPoolCat.super.Destroy(self)
 end
 

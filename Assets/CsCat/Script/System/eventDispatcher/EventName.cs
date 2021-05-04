@@ -28,11 +28,8 @@ namespace CsCat
       var other = obj as EventName;
       if (other == null)
         return false;
-      if (((source == null && other.source == null) || (source != null && source.Equals(other.source))) &&
-          ((name == null && other.name == null) || (name != null && name.Equals(other.name)))
-      )
-        return true;
-      return false;
+      return ((source == null && other.source == null) || (source != null && source.Equals(other.source))) &&
+             ((name == null && other.name == null) || (name != null && name.Equals(other.name)));
     }
 
     public override int GetHashCode()
@@ -55,6 +52,11 @@ namespace CsCat
     public EventName Clone()
     {
       return this.name.ToEventName(source);
+    }
+
+    public override string ToString()
+    {
+      return ObjectUtil.ToString(this.name, this.source);
     }
 
     public void OnDespawn()

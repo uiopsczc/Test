@@ -44,10 +44,19 @@ function PoolCatManagerUtil.DespawnAll(pool_name)
 end
 
 ---@param spawn_class_type Class
+---@param pool_name string
 ---@param on_spawn_callback fun(spawn:any)
 ---@return any
-function PoolCatManagerUtil.Spawn(spawn_class_type,on_spawn_callback)
-  return global.poolCatManager:Spawn(spawn_class_type, on_spawn_callback)
+function PoolCatManagerUtil.Spawn(spawn_class_type,pool_name, on_spawn_callback)
+  return global.poolCatManager:Spawn(spawn_class_type, pool_name, on_spawn_callback)
+end
+
+---@param spawn_func fun():any
+---@param pool_name string
+---@param on_spawn_callback fun(spawn:any)
+---@return any
+function PoolCatManagerUtil.SpawnByFunc(spawn_func, pool_name, on_spawn_callback)
+  return global.poolCatManager:SpawnByFunc(spawn_func, pool_name, on_spawn_callback)
 end
 
 ----------------------------------------------------------------------

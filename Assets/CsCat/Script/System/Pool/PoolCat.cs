@@ -10,7 +10,7 @@ namespace CsCat
     /// </summary>
     protected Stack<object> despawned_object_stack = new Stack<object>();
 
-    protected Dictionary<object, bool> all_object_dict = new Dictionary<object, bool>();
+    protected List<object> spawned_object_list = new List<object>();
     private Type spawn_type;
     public string pool_name;
     private Func<object> spawn_func;
@@ -61,7 +61,7 @@ namespace CsCat
       object spawn = null;
       spawn = despawned_object_stack.Count > 0 ? despawned_object_stack.Pop() : __Spawn();
       on_spawn_callback?.Invoke(spawn);
-      all_object_dict[spawn] = true;
+      spawned_object_list.Add(spawn);
       return spawn;
     }
 
@@ -74,10 +74,14 @@ namespace CsCat
     {
       if (obj == null)
         return;
-      if (!all_object_dict.ContainsKey(obj) || all_object_dict[obj] == false)
+      if (!spawned_object_list.Contains(obj))
+      {
+//        LogCat.error(string.Format("pool: {0} not contained::{1}",pool_name, obj));
         return;
+      }
+        
       despawned_object_stack.Push(obj);
-      all_object_dict[obj] = false;
+      spawned_object_list.Remove(obj);
       if (obj is IDespawn spawnable)
         spawnable.OnDespawn();
     }
@@ -85,11 +89,7 @@ namespace CsCat
     public virtual void Trim()
     {
       foreach (var despawned_object in despawned_object_stack)
-      {
-        all_object_dict.Remove(despawned_object);
         __Trim(despawned_object);
-      }
-
       despawned_object_stack.Clear();
     }
 
@@ -99,27 +99,28 @@ namespace CsCat
 
     public void DespawnAll()
     {
-      foreach (var obj in all_object_dict.Keys)
-      {
-        if (!all_object_dict[obj])
-          Despawn(obj);
-      }
+      for(int i =spawned_object_list.Count-1;i>=0;i--)
+        Despawn(spawned_object_list[i]);
     }
 
     public bool IsEmpty()
     {
-      if (this.all_object_dict.Count == 0)
+      if (this.spawned_object_list.Count == 0&& despawned_object_stack.Count==0)
         return true;
       return false;
     }
 
     public virtual void Destroy()
     {
+      DespawnAll();
+      Trim();
+
       spawn_type = null;
       pool_name = null;
+      spawn_func = null;
 
       despawned_object_stack.Clear();
-      all_object_dict.Clear();
+      spawned_object_list.Clear();
     }
   }
 }

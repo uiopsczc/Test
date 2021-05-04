@@ -39,11 +39,6 @@ namespace CsCat
 
     public override void Destroy()
     {
-      foreach (var obj in all_object_dict.Keys)
-      {
-        (obj as Object).Destroy();
-      }
-
       base.Destroy();
     }
   }
