@@ -10,20 +10,26 @@ namespace CsCat
 
     public EventListenerInfo<P0, P1, P2> AddListener(string eventName, Action<P0, P1, P2> handler)
     {
-      return AddListener(eventName.ToEventName(), handler);
+      var _eventName = eventName.ToEventName();
+      var result = AddListener(_eventName, handler);
+      _eventName.Despawn();
+      return result;
     }
 
     public EventListenerInfo<P0, P1, P2> AddListener(EventName eventName, Action<P0, P1, P2> handler)
     {
       var handler_info = PoolCatManagerUtil.Spawn<KeyValuePairCat<Action<P0, P1, P2>, bool>>().Init(handler, true);
-      listener_dict.Add(eventName, handler_info);
-      return PoolCatManagerUtil.Spawn<EventListenerInfo<P0, P1, P2>>().Init(eventName, handler);
+      listener_dict.Add(eventName.Clone(), handler_info);
+      return PoolCatManagerUtil.Spawn<EventListenerInfo<P0, P1, P2>>().Init(eventName.Clone(), handler);
     }
 
 
     public bool RemoveListener(string eventName, Action<P0, P1, P2> handler)
     {
-      return RemoveListener(eventName.ToEventName(), handler);
+      var _eventName = eventName.ToEventName();
+      var result = RemoveListener(_eventName, handler);
+      _eventName.Despawn();
+      return result;
     }
 
     public bool RemoveListener(EventListenerInfo<P0, P1, P2> eventListenerInfo)
@@ -33,25 +39,17 @@ namespace CsCat
 
     public bool RemoveListener(EventName eventName, Action<P0, P1, P2> handler)
     {
-      try
-      {
-        if (!listener_dict.ContainsKey(eventName))
-          return false;
-        foreach (var handler_info in listener_dict[eventName])
-        {
-          if (handler_info.value && handler_info.key.Equals(handler))
-          {
-            handler_info.value = false;
-            return true;
-          }
-        }
-
+      if (!listener_dict.ContainsKey(eventName))
         return false;
-      }
-      finally
+      foreach (var handler_info in listener_dict[eventName])
       {
-        eventName.Despawn();
+        if (handler_info.value && handler_info.key.Equals(handler))
+        {
+          handler_info.value = false;
+          return true;
+        }
       }
+      return false;
 
 
     }
@@ -60,9 +58,14 @@ namespace CsCat
     {
       foreach (var eventName in this.listener_dict.Keys)
       {
-        var result = RemoveListener(eventName.Clone(), handler);
-        if (result)
-          return result;
+        foreach (var handler_info in listener_dict[eventName])
+        {
+          if (handler_info.value && handler_info.key.Equals(handler))
+          {
+            handler_info.value = false;
+            return true;
+          }
+        }
       }
 
       return false;
@@ -108,7 +111,6 @@ namespace CsCat
       // check remove
       CheckRemoved();
       CheckEmpty();
-      eventName.Despawn();
     }
 
     void CheckRemoved()

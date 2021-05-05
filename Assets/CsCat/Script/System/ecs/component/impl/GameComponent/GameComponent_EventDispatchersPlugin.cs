@@ -23,7 +23,15 @@ namespace CsCat
 
     public EventListenerInfo AddListener(EventName eventName, Action handler)
     {
-      return eventDispatchersPlugin.AddListener(eventName, handler);
+      try
+      {
+        return eventDispatchersPlugin.AddListener(eventName, handler);
+      }
+      finally
+      {
+        eventName.Despawn();
+      }
+
     }
 
     public bool RemoveListener(string eventName, Action handler)
@@ -33,12 +41,28 @@ namespace CsCat
 
     public bool RemoveListener(EventName eventName, Action handler)
     {
-      return eventDispatchersPlugin.RemoveListener(eventName, handler);
+      try
+      {
+        return eventDispatchersPlugin.RemoveListener(eventName, handler);
+      }
+      finally
+      {
+        eventName.Despawn();
+      }
+
     }
 
     public bool RemoveListener(EventListenerInfo eventListenerInfo)
     {
-      return eventDispatchersPlugin.RemoveListener(eventListenerInfo);
+      try
+      {
+        return eventDispatchersPlugin.RemoveListener(eventListenerInfo);
+      }
+      finally
+      {
+        eventListenerInfo.Despawn();
+      }
+
     }
 
     public bool RemoveListener(Action handler)
@@ -53,7 +77,15 @@ namespace CsCat
 
     public void Broadcast(EventName eventName)
     {
-      eventDispatchersPlugin.Broadcast(eventName);
+      try
+      {
+        eventDispatchersPlugin.Broadcast(eventName);
+      }
+      finally
+      {
+        eventName.Despawn();
+      }
+
     }
 
 
@@ -65,7 +97,15 @@ namespace CsCat
 
     public EventListenerInfo<P0> AddListener<P0>(EventName eventName, Action<P0> handler)
     {
-      return eventDispatchersPlugin.AddListener(eventName, handler);
+      try
+      {
+        return eventDispatchersPlugin.AddListener(eventName, handler);
+      }
+      finally
+      {
+        eventName.Despawn();
+      }
+
     }
 
     public bool RemoveListener<P0>(string eventName, Action<P0> handler)
@@ -75,12 +115,28 @@ namespace CsCat
 
     public bool RemoveListener<P0>(EventName eventName, Action<P0> handler)
     {
-      return eventDispatchersPlugin.RemoveListener(eventName, handler);
+      try
+      {
+        return eventDispatchersPlugin.RemoveListener(eventName, handler);
+      }
+      finally
+      {
+        eventName.Despawn();
+      }
+
     }
 
     public bool RemoveListener<P0>(EventListenerInfo<P0> eventListenerInfo)
     {
-      return eventDispatchersPlugin.RemoveListener(eventListenerInfo);
+      try
+      {
+        return eventDispatchersPlugin.RemoveListener(eventListenerInfo);
+      }
+      finally
+      {
+        eventListenerInfo.Despawn();
+      }
+
     }
 
     public bool RemoveListener<P0>(Action<P0> handler)
@@ -95,7 +151,15 @@ namespace CsCat
 
     public void Broadcast<P0>(EventName eventName, P0 p0)
     {
-      eventDispatchersPlugin.Broadcast(eventName, p0);
+      try
+      {
+        eventDispatchersPlugin.Broadcast(eventName, p0);
+      }
+      finally
+      {
+        eventName.Despawn();
+      }
+
     }
 
 
@@ -107,7 +171,15 @@ namespace CsCat
 
     public EventListenerInfo<P0, P1> AddListener<P0, P1>(EventName eventName, Action<P0, P1> handler)
     {
-      return eventDispatchersPlugin.AddListener(eventName, handler);
+      try
+      {
+        return eventDispatchersPlugin.AddListener(eventName, handler);
+      }
+      finally
+      {
+        eventName.Despawn();
+      }
+
     }
 
     public bool RemoveListener<P0, P1>(string eventName, Action<P0, P1> handler)
@@ -117,12 +189,28 @@ namespace CsCat
 
     public bool RemoveListener<P0, P1>(EventName eventName, Action<P0, P1> handler)
     {
-      return eventDispatchersPlugin.RemoveListener(eventName, handler);
+      try
+      {
+        return eventDispatchersPlugin.RemoveListener(eventName, handler);
+      }
+      finally
+      {
+        eventName.Despawn();
+      }
+
     }
 
     public bool RemoveListener<P0, P1>(EventListenerInfo<P0, P1> eventListenerInfo)
     {
-      return eventDispatchersPlugin.RemoveListener(eventListenerInfo);
+      try
+      {
+        return eventDispatchersPlugin.RemoveListener(eventListenerInfo);
+      }
+      finally
+      {
+        eventListenerInfo.Despawn();
+      }
+
     }
 
     public bool RemoveListener<P0, P1>(Action<P0, P1> handler)
@@ -137,7 +225,15 @@ namespace CsCat
 
     public void Broadcast<P0, P1>(EventName eventName, P0 p0, P1 p1)
     {
-      eventDispatchersPlugin.Broadcast(eventName, p0, p1);
+      try
+      {
+        eventDispatchersPlugin.Broadcast(eventName, p0, p1);
+      }
+      finally
+      {
+        eventName.Despawn();
+      }
+
     }
 
 
@@ -150,7 +246,15 @@ namespace CsCat
 
     public EventListenerInfo<P0, P1, P2> AddListener<P0, P1, P2>(EventName eventName, Action<P0, P1, P2> handler)
     {
-      return eventDispatchersPlugin.AddListener(eventName, handler);
+      try
+      {
+        return eventDispatchersPlugin.AddListener(eventName, handler);
+      }
+      finally
+      {
+        eventName.Despawn();
+      }
+
     }
 
     public bool RemoveListener<P0, P1, P2>(string eventName, Action<P0, P1, P2> handler)
@@ -160,12 +264,28 @@ namespace CsCat
 
     public bool RemoveListener<P0, P1, P2>(EventName eventName, Action<P0, P1, P2> handler)
     {
-      return eventDispatchersPlugin.RemoveListener(eventName, handler);
+      try
+      {
+        return eventDispatchersPlugin.RemoveListener(eventName, handler);
+      }
+      finally
+      {
+        eventName.Despawn();
+      }
+
     }
 
     public bool RemoveListener<P0, P1, P2>(EventListenerInfo<P0, P1, P2> eventListenerInfo)
     {
-      return eventDispatchersPlugin.RemoveListener(eventListenerInfo);
+      try
+      {
+        return eventDispatchersPlugin.RemoveListener(eventListenerInfo);
+      }
+      finally
+      {
+        eventListenerInfo.Despawn();
+      }
+
     }
 
     public bool RemoveListener<P0, P1, P2>(Action<P0, P1, P2> handler)
@@ -180,7 +300,15 @@ namespace CsCat
 
     public void Broadcast<P0, P1, P2>(EventName eventName, P0 p0, P1 p1, P2 p2)
     {
-      eventDispatchersPlugin.Broadcast(eventName, p0, p1, p2);
+      try
+      {
+        eventDispatchersPlugin.Broadcast(eventName, p0, p1, p2);
+      }
+      finally
+      {
+        eventName.Despawn();
+      }
+
     }
 
 
@@ -194,7 +322,15 @@ namespace CsCat
     public EventListenerInfo<P0, P1, P2, P3> AddListener<P0, P1, P2, P3>(EventName eventName,
       Action<P0, P1, P2, P3> handler)
     {
-      return eventDispatchersPlugin.AddListener(eventName, handler);
+      try
+      {
+        return eventDispatchersPlugin.AddListener(eventName, handler);
+      }
+      finally
+      {
+        eventName.Despawn();
+      }
+
     }
 
     public bool RemoveListener<P0, P1, P2, P3>(string eventName,
@@ -206,13 +342,29 @@ namespace CsCat
     public bool RemoveListener<P0, P1, P2, P3>(EventName eventName,
       Action<P0, P1, P2, P3> handler)
     {
-      return eventDispatchersPlugin.RemoveListener(eventName, handler);
+      try
+      {
+        return eventDispatchersPlugin.RemoveListener(eventName, handler);
+      }
+      finally
+      {
+        eventName.Despawn();
+      }
+
     }
 
     public bool RemoveListener<P0, P1, P2, P3>(
       EventListenerInfo<P0, P1, P2, P3> eventListenerInfo)
     {
-      return eventDispatchersPlugin.RemoveListener(eventListenerInfo);
+      try
+      {
+        return eventDispatchersPlugin.RemoveListener(eventListenerInfo);
+      }
+      finally
+      {
+        eventListenerInfo.Despawn();
+      }
+
     }
 
     public bool RemoveListener<P0, P1, P2, P3>(Action<P0, P1, P2, P3> handler)
@@ -227,7 +379,15 @@ namespace CsCat
 
     public void Broadcast<P0, P1, P2, P3>(EventName eventName, P0 p0, P1 p1, P2 p2, P3 p3)
     {
-      eventDispatchersPlugin.Broadcast(eventName, p0, p1, p2, p3);
+      try
+      {
+        eventDispatchersPlugin.Broadcast(eventName, p0, p1, p2, p3);
+      }
+      finally
+      {
+        eventName.Despawn();
+      }
+
     }
 
 

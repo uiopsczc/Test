@@ -17,26 +17,42 @@ namespace CsCat
 
     public EventListenerInfo AddListener(string eventName, Action handler)
     {
-      return AddListener(eventName.ToEventName(eventDispatchers.source), handler);
+      var _eventName = eventName.ToEventName(eventDispatchers.source);
+      var result =  AddListener(_eventName, handler);
+      _eventName.Despawn();
+      return result;
     }
 
     public EventListenerInfo AddListener(EventName eventName, Action handler)
     {
       var eventListenerInfo = eventDispatchers.AddListener(eventName, handler);
-      listener_dict.GetOrAddDefault(eventListenerInfo,
-        () => PoolCatManagerUtil.Spawn<KeyValuePairCat<Action, int>>().Init(() => RemoveListener(eventName, handler), 0));
+      if (!listener_dict.ContainsKey(eventListenerInfo))
+      {
+        var _eventName = eventName.Clone();
+        listener_dict[eventListenerInfo] = PoolCatManagerUtil.Spawn<KeyValuePairCat<Action, int>>().Init(() =>
+        {
+          RemoveListener(_eventName, handler);
+          _eventName.Despawn();
+        }, 0);
+      }
       listener_dict[eventListenerInfo].value += 1;//个数加1
       return eventListenerInfo;
     }
 
     public bool RemoveListener(string eventName, Action handler)
     {
-      return RemoveListener(eventName.ToEventName(eventDispatchers.source), handler);
+      var _eventName = eventName.ToEventName(eventDispatchers.source);
+      var result =  RemoveListener(_eventName, handler);
+      _eventName.Despawn();
+      return result;
     }
 
     public bool RemoveListener(EventName eventName, Action handler)
     {
-      return RemoveListener(PoolCatManagerUtil.Spawn<EventListenerInfo>().Init(eventName, handler));
+      var _eventListenerInfo = PoolCatManagerUtil.Spawn<EventListenerInfo>().Init(eventName.Clone(), handler);
+      var result =  RemoveListener(_eventListenerInfo);
+      _eventListenerInfo.Despawn();
+      return result;
     }
 
     public bool RemoveListener(EventListenerInfo eventListenerInfo)
@@ -64,19 +80,23 @@ namespace CsCat
       {
         if (key.GetType() == typeof(EventListenerInfo) && key._handler.Equals(handler))
         {
-          listener = PoolCatManagerUtil.Spawn<EventListenerInfo>().Init(key.eventName, handler);
+          listener = PoolCatManagerUtil.Spawn<EventListenerInfo>().Init(key.eventName.Clone(), handler);
           break;
         }
       }
 
       if (listener == null)
         return false;
-      return RemoveListener(listener);
+      var result = RemoveListener(listener);
+      listener.Despawn();
+      return result;
     }
 
     public void Broadcast(string eventName)
     {
-      Broadcast(eventName.ToEventName(eventDispatchers.source));
+      var _eventName = eventName.ToEventName(eventDispatchers.source);
+      Broadcast(_eventName);
+      _eventName.Despawn();
     }
 
     public void Broadcast(EventName eventName)
@@ -88,26 +108,42 @@ namespace CsCat
 
     public EventListenerInfo<P0> AddListener<P0>(string eventName, Action<P0> handler)
     {
-      return AddListener(eventName.ToEventName(eventDispatchers.source), handler);
+      var _eventName = eventName.ToEventName(eventDispatchers.source);
+      var result = AddListener(_eventName, handler);
+      _eventName.Despawn();
+      return result;
     }
 
     public EventListenerInfo<P0> AddListener<P0>(EventName eventName, Action<P0> handler)
     {
       var eventListenerInfo = eventDispatchers.AddListener(eventName, handler);
-      listener_dict.GetOrAddDefault(eventListenerInfo,
-        () => PoolCatManagerUtil.Spawn<KeyValuePairCat<Action, int>>().Init(() => RemoveListener(eventName, handler), 0));
+      if (!listener_dict.ContainsKey(eventListenerInfo))
+      {
+        var _eventName = eventName.Clone();
+        listener_dict[eventListenerInfo] = PoolCatManagerUtil.Spawn<KeyValuePairCat<Action, int>>().Init(() =>
+        {
+          RemoveListener(_eventName, handler);
+          _eventName.Despawn();
+        }, 0);
+      }
       listener_dict[eventListenerInfo].value += 1;//个数加1
       return eventListenerInfo;
     }
 
     public bool RemoveListener<P0>(string eventName, Action<P0> handler)
     {
-      return RemoveListener(eventName.ToEventName(eventDispatchers.source), handler);
+      var _eventName = eventName.ToEventName(eventDispatchers.source);
+      var result = RemoveListener(_eventName, handler);
+      _eventName.Despawn();
+      return result;
     }
 
     public bool RemoveListener<P0>(EventName eventName, Action<P0> handler)
     {
-      return RemoveListener(PoolCatManagerUtil.Spawn<EventListenerInfo<P0>>().Init(eventName, handler));
+      var _eventListenerInfo = PoolCatManagerUtil.Spawn<EventListenerInfo<P0>>().Init(eventName.Clone(), handler);
+      var result = RemoveListener(_eventListenerInfo);
+      _eventListenerInfo.Despawn();
+      return result;
     }
 
     public bool RemoveListener<P0>(EventListenerInfo<P0> eventListenerInfo)
@@ -135,19 +171,23 @@ namespace CsCat
       {
         if (key.GetType() == typeof(EventListenerInfo<P0>) && key._handler.Equals(handler))
         {
-          listener = PoolCatManagerUtil.Spawn<EventListenerInfo<P0>>().Init(key.eventName, handler);
+          listener = PoolCatManagerUtil.Spawn<EventListenerInfo<P0>>().Init(key.eventName.Clone(), handler);
           break;
         }
       }
 
       if (listener == null)
         return false;
-      return RemoveListener(listener);
+      var result = RemoveListener(listener);
+      listener.Despawn();
+      return result;
     }
 
     public void Broadcast<P0>(string eventName, P0 p0)
     {
-      Broadcast(eventName.ToEventName(eventDispatchers.source), p0);
+      var _eventName = eventName.ToEventName(eventDispatchers.source);
+      Broadcast(_eventName,p0);
+      _eventName.Despawn();
     }
 
     public void Broadcast<P0>(EventName eventName, P0 p0)
@@ -159,26 +199,42 @@ namespace CsCat
 
     public EventListenerInfo<P0, P1> AddListener<P0, P1>(string eventName, Action<P0, P1> handler)
     {
-      return AddListener(eventName.ToEventName(eventDispatchers.source), handler);
+      var _eventName = eventName.ToEventName(eventDispatchers.source);
+      var result = AddListener(_eventName, handler);
+      _eventName.Despawn();
+      return result;
     }
 
     public EventListenerInfo<P0, P1> AddListener<P0, P1>(EventName eventName, Action<P0, P1> handler)
     {
       var eventListenerInfo = eventDispatchers.AddListener(eventName, handler);
-      listener_dict.GetOrAddDefault(eventListenerInfo,
-        () => PoolCatManagerUtil.Spawn<KeyValuePairCat<Action, int>>().Init(() => RemoveListener(eventName, handler), 0));
+      if (!listener_dict.ContainsKey(eventListenerInfo))
+      {
+        var _eventName = eventName.Clone();
+        listener_dict[eventListenerInfo] = PoolCatManagerUtil.Spawn<KeyValuePairCat<Action, int>>().Init(() =>
+        {
+          RemoveListener(_eventName, handler);
+          _eventName.Despawn();
+        }, 0);
+      }
       listener_dict[eventListenerInfo].value += 1;//个数加1
       return eventListenerInfo;
     }
 
     public bool RemoveListener<P0, P1>(string eventName, Action<P0, P1> handler)
     {
-      return RemoveListener(eventName.ToEventName(eventDispatchers.source), handler);
+      var _eventName = eventName.ToEventName(eventDispatchers.source);
+      var result = RemoveListener(_eventName, handler);
+      _eventName.Despawn();
+      return result;
     }
 
     public bool RemoveListener<P0, P1>(EventName eventName, Action<P0, P1> handler)
     {
-      return RemoveListener(PoolCatManagerUtil.Spawn<EventListenerInfo<P0, P1>>().Init(eventName, handler));
+      var _eventListenerInfo = PoolCatManagerUtil.Spawn<EventListenerInfo<P0,P1>>().Init(eventName.Clone(), handler);
+      var result = RemoveListener(_eventListenerInfo);
+      _eventListenerInfo.Despawn();
+      return result;
     }
 
     public bool RemoveListener<P0, P1>(EventListenerInfo<P0, P1> eventListenerInfo)
@@ -196,30 +252,33 @@ namespace CsCat
         to_despawn.Despawn();
       }
 
-      eventDispatchers.RemoveListener(eventListenerInfo);
-      return true;
+      return eventDispatchers.RemoveListener(eventListenerInfo);
     }
 
     public bool RemoveListener<P0, P1>(Action<P0, P1> handler)
     {
-      EventListenerInfo<P0, P1> listener = null;
+      EventListenerInfo<P0,P1> listener = null;
       foreach (var key in this.listener_dict.Keys)
       {
-        if (key.GetType() == typeof(EventListenerInfo<P0, P1>) && key._handler.Equals(handler))
+        if (key.GetType() == typeof(EventListenerInfo<P0,P1>) && key._handler.Equals(handler))
         {
-          listener = PoolCatManagerUtil.Spawn<EventListenerInfo<P0, P1>>().Init(key.eventName, handler);
+          listener = PoolCatManagerUtil.Spawn<EventListenerInfo<P0,P1>>().Init(key.eventName.Clone(), handler);
           break;
         }
       }
 
       if (listener == null)
         return false;
-      return RemoveListener(listener);
+      var result = RemoveListener(listener);
+      listener.Despawn();
+      return result;
     }
 
     public void Broadcast<P0, P1>(string eventName, P0 p0, P1 p1)
     {
-      Broadcast(eventName.ToEventName(eventDispatchers.source), p0, p1);
+      var _eventName = eventName.ToEventName(eventDispatchers.source);
+      Broadcast(_eventName,p0,p1);
+      _eventName.Despawn();
     }
 
     public void Broadcast<P0, P1>(EventName eventName, P0 p0, P1 p1)
@@ -231,26 +290,42 @@ namespace CsCat
 
     public EventListenerInfo<P0, P1, P2> AddListener<P0, P1, P2>(string eventName, Action<P0, P1, P2> handler)
     {
-      return AddListener(eventName.ToEventName(eventDispatchers.source), handler);
+      var _eventName = eventName.ToEventName(eventDispatchers.source);
+      var result = AddListener(_eventName, handler);
+      _eventName.Despawn();
+      return result;
     }
 
     public EventListenerInfo<P0, P1, P2> AddListener<P0, P1, P2>(EventName eventName, Action<P0, P1, P2> handler)
     {
       var eventListenerInfo = eventDispatchers.AddListener(eventName, handler);
-      listener_dict.GetOrAddDefault(eventListenerInfo,
-        () => PoolCatManagerUtil.Spawn<KeyValuePairCat<Action, int>>().Init(() => RemoveListener(eventName, handler), 0));
+      if (!listener_dict.ContainsKey(eventListenerInfo))
+      {
+        var _eventName = eventName.Clone();
+        listener_dict[eventListenerInfo] = PoolCatManagerUtil.Spawn<KeyValuePairCat<Action, int>>().Init(() =>
+        {
+          RemoveListener(_eventName, handler);
+          _eventName.Despawn();
+        }, 0);
+      }
       listener_dict[eventListenerInfo].value += 1;//个数加1
       return eventListenerInfo;
     }
 
     public bool RemoveListener<P0, P1, P2>(string eventName, Action<P0, P1, P2> handler)
     {
-      return RemoveListener(eventName.ToEventName(eventDispatchers.source), handler);
+      var _eventName = eventName.ToEventName(eventDispatchers.source);
+      var result = RemoveListener(_eventName, handler);
+      _eventName.Despawn();
+      return result;
     }
 
     public bool RemoveListener<P0, P1, P2>(EventName eventName, Action<P0, P1, P2> handler)
     {
-      return RemoveListener(PoolCatManagerUtil.Spawn<EventListenerInfo<P0, P1, P2>>().Init(eventName, handler));
+      var _eventListenerInfo = PoolCatManagerUtil.Spawn<EventListenerInfo<P0,P1,P2>>().Init(eventName.Clone(), handler);
+      var result = RemoveListener(_eventListenerInfo);
+      _eventListenerInfo.Despawn();
+      return result;
     }
 
     public bool RemoveListener<P0, P1, P2>(EventListenerInfo<P0, P1, P2> eventListenerInfo)
@@ -273,24 +348,28 @@ namespace CsCat
 
     public bool RemoveListener<P0, P1, P2>(Action<P0, P1, P2> handler)
     {
-      EventListenerInfo<P0, P1, P2> listener = null;
+      EventListenerInfo<P0,P1,P2> listener = null;
       foreach (var key in this.listener_dict.Keys)
       {
         if (key.GetType() == typeof(EventListenerInfo<P0, P1, P2>) && key._handler.Equals(handler))
         {
-          listener = PoolCatManagerUtil.Spawn<EventListenerInfo<P0, P1, P2>>().Init(key.eventName, handler);
+          listener = PoolCatManagerUtil.Spawn<EventListenerInfo<P0, P1, P2>>().Init(key.eventName.Clone(), handler);
           break;
         }
       }
 
       if (listener == null)
         return false;
-      return RemoveListener(listener);
+      var result = RemoveListener(listener);
+      listener.Despawn();
+      return result;
     }
 
     public void Broadcast<P0, P1, P2>(string eventName, P0 p0, P1 p1, P2 p2)
     {
-      Broadcast(eventName.ToEventName(eventDispatchers.source), p0, p1, p2);
+      var _eventName = eventName.ToEventName(eventDispatchers.source);
+      Broadcast(_eventName,p0,p1,p2);
+      _eventName.Despawn();
     }
 
     public void Broadcast<P0, P1, P2>(EventName eventName, P0 p0, P1 p1, P2 p2)
@@ -303,15 +382,25 @@ namespace CsCat
     public EventListenerInfo<P0, P1, P2, P3> AddListener<P0, P1, P2, P3>(string eventName,
       Action<P0, P1, P2, P3> handler)
     {
-      return AddListener(eventName.ToEventName(eventDispatchers.source), handler);
+      var _eventName = eventName.ToEventName(eventDispatchers.source);
+      var result = AddListener(_eventName, handler);
+      _eventName.Despawn();
+      return result;
     }
 
     public EventListenerInfo<P0, P1, P2, P3> AddListener<P0, P1, P2, P3>(EventName eventName,
       Action<P0, P1, P2, P3> handler)
     {
       var eventListenerInfo = eventDispatchers.AddListener(eventName, handler);
-      listener_dict.GetOrAddDefault(eventListenerInfo,
-        () => PoolCatManagerUtil.Spawn<KeyValuePairCat<Action, int>>().Init(() => RemoveListener(eventName, handler), 0));
+      if (!listener_dict.ContainsKey(eventListenerInfo))
+      {
+        var _eventName = eventName.Clone();
+        listener_dict[eventListenerInfo] = PoolCatManagerUtil.Spawn<KeyValuePairCat<Action, int>>().Init(() =>
+        {
+          RemoveListener(_eventName, handler);
+          _eventName.Despawn();
+        }, 0);
+      }
       listener_dict[eventListenerInfo].value += 1;//个数加1
       return eventListenerInfo;
     }
@@ -319,13 +408,19 @@ namespace CsCat
     public bool RemoveListener<P0, P1, P2, P3>(string eventName,
       Action<P0, P1, P2, P3> handler)
     {
-      return RemoveListener(eventName.ToEventName(eventDispatchers.source), handler);
+      var _eventName = eventName.ToEventName(eventDispatchers.source);
+      var result = RemoveListener(_eventName, handler);
+      _eventName.Despawn();
+      return result;
     }
 
     public bool RemoveListener<P0, P1, P2, P3>(EventName eventName,
       Action<P0, P1, P2, P3> handler)
     {
-      return RemoveListener(PoolCatManagerUtil.Spawn<EventListenerInfo<P0, P1, P2, P3>>().Init(eventName, handler));
+      var _eventListenerInfo = PoolCatManagerUtil.Spawn<EventListenerInfo<P0,P1,P2,P3>>().Init(eventName.Clone(), handler);
+      var result = RemoveListener(_eventListenerInfo);
+      _eventListenerInfo.Despawn();
+      return result;
     }
 
     public bool RemoveListener<P0, P1, P2, P3>(
@@ -349,24 +444,28 @@ namespace CsCat
 
     public bool RemoveListener<P0, P1, P2, P3>(Action<P0, P1, P2, P3> handler)
     {
-      EventListenerInfo<P0, P1, P2, P3> listener = null;
+      EventListenerInfo<P0,P1,P2,P3> listener = null;
       foreach (var key in this.listener_dict.Keys)
       {
         if (key.GetType() == typeof(EventListenerInfo<P0, P1, P2, P3>) && key._handler.Equals(handler))
         {
-          listener = PoolCatManagerUtil.Spawn<EventListenerInfo<P0, P1, P2, P3>>().Init(key.eventName, handler);
+          listener = PoolCatManagerUtil.Spawn<EventListenerInfo<P0, P1, P2, P3>>().Init(key.eventName.Clone(), handler);
           break;
         }
       }
 
       if (listener == null)
         return false;
-      return RemoveListener(listener);
+      var result = RemoveListener(listener);
+      listener.Despawn();
+      return result;
     }
 
     public void Broadcast<P0, P1, P2, P3>(string eventName, P0 p0, P1 p1, P2 p2, P3 p3)
     {
-      Broadcast(eventName.ToEventName(eventDispatchers.source), p0, p1, p2, p3);
+      var _eventName = eventName.ToEventName(eventDispatchers.source);
+      Broadcast(_eventName,p0,p1,p2,p3);
+      _eventName.Despawn();
     }
 
     public void Broadcast<P0, P1, P2, P3>(EventName eventName, P0 p0, P1 p1, P2 p2, P3 p3)
