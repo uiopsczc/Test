@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace CsCat
 {
   public static class SpellEventNameConst

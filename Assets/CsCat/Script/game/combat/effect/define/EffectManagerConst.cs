@@ -1,5 +1,3 @@
-using UnityEngine;
-
 namespace CsCat
 {
   public static class EffectManagerConst

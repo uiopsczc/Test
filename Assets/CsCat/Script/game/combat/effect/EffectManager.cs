@@ -1,6 +1,3 @@
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace CsCat
 {
   public partial class EffectManager : TickObject
