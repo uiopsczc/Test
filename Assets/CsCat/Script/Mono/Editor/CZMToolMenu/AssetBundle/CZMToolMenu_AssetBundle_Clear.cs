@@ -14,7 +14,7 @@ namespace CsCat
       LogCat.ClearLogs();
       StdioUtil.ClearDir(BuildConst.Output_Path);
       StdioUtil.ClearDir(FilePathConst.PersistentAssetBundleRoot);
-      LogCat.log("AssetBundle PC_Persistent Clear Finished");
+      EditorUtilityCat.DisplayDialog("AssetBundle PC_Persistent Clear Finished");
     }
 
     [MenuItem(CZMToolConst.MenuRoot + "AssetBundle/Clear/Server")]
@@ -22,7 +22,7 @@ namespace CsCat
     {
       LogCat.ClearLogs();
       StdioUtil.ClearDir(BuildConst.Output_Path);
-      LogCat.log("AssetBundle Server Clear Finished");
+      EditorUtilityCat.DisplayDialog("AssetBundle Server Clear Finished", BuildConst.Output_Path);
     }
 
     [MenuItem(CZMToolConst.MenuRoot + "AssetBundle/Clear/PC_Persistent")]
@@ -30,7 +30,7 @@ namespace CsCat
     {
       LogCat.ClearLogs();
       StdioUtil.ClearDir(FilePathConst.PersistentAssetBundleRoot);
-      LogCat.log("AssetBundle PC_Persistent Clear Finished");
+      EditorUtilityCat.DisplayDialog("AssetBundle PC_Persistent Clear Finished", FilePathConst.PersistentAssetBundleRoot);
     }
   }
 }

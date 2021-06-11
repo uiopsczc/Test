@@ -19,7 +19,7 @@ namespace CsCat
       {
         SetFileEncoding(file_path.Replace('\\', '/'));
       }
-      LogCat.log("EncodingToUtf8 完成");
+      EditorUtilityCat.DisplayDialog("EncodingToUtf8 完成");
     }
 
     static void SetFileEncoding(string file_path, Encoding target_encoding = null)

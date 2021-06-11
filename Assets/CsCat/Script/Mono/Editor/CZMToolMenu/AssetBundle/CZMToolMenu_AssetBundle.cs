@@ -26,9 +26,9 @@ namespace CsCat
       AssetBundleMapBuildUtil.Build(manifest);
       ResVersionBuildUtil.Build();
       AssetPathRefBuildUtil.Build();
-      Debug.Log("AssetBundle Build Finished,output:" + BuildConst.Output_Path);
       var NetBox_Path = (BuildConst.Output_Base_Path + "/NetBox.exe").Replace("/", "\\");
       Process.Start(NetBox_Path);
+      EditorUtilityCat.DisplayDialog(string.Format("AssetBundle Build Finished,output:\n  {0}", BuildConst.Output_Path), BuildConst.Output_Path);
     }
 
     [MenuItem(CZMToolConst.MenuRoot + "AssetBundle/AssetBundle Browser")]

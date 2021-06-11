@@ -22,8 +22,7 @@ namespace CsCat
       LogCat.ClearLogs();
       File.Delete(SerializeDataConst.Save_File_Path_cs);
       File.Delete(SerializeDataConst.Save_File_Path_cs2);
-      LogCat.log(string.Format("{0} Clear Finished", SerializeDataConst.Save_File_Path_cs));
-      LogCat.log(string.Format("{0} Clear Finished", SerializeDataConst.Save_File_Path_cs2));
+      EditorUtilityCat.DisplayDialog(string.Format("{0} Clear Finished\n{1} Clear Finished", SerializeDataConst.Save_File_Path_cs, SerializeDataConst.Save_File_Path_cs2));
     }
 
     [MenuItem(CZMToolConst.MenuRoot + "GameData/Clear/lua端")]
@@ -31,7 +30,7 @@ namespace CsCat
     {
       LogCat.ClearLogs();
       File.Delete(SerializeDataConst.Save_File_Path_lua);
-      LogCat.log(string.Format("{0} Clear Finished", SerializeDataConst.Save_File_Path_lua));
+      EditorUtilityCat.DisplayDialog(string.Format("{0} Clear Finished", SerializeDataConst.Save_File_Path_lua));
     }
 
     [MenuItem(CZMToolConst.MenuRoot + "GameData/Clear/All")]
@@ -41,9 +40,8 @@ namespace CsCat
       File.Delete(SerializeDataConst.Save_File_Path_cs);
       File.Delete(SerializeDataConst.Save_File_Path_cs2);
       File.Delete(SerializeDataConst.Save_File_Path_lua);
-      LogCat.log(string.Format("{0} Clear Finished", SerializeDataConst.Save_File_Path_cs));
-      LogCat.log(string.Format("{0} Clear Finished", SerializeDataConst.Save_File_Path_cs2));
-      LogCat.log(string.Format("{0} Clear Finished", SerializeDataConst.Save_File_Path_lua));
+
+      EditorUtilityCat.DisplayDialog(string.Format("{0} Clear Finished\n{1} Clear Finished\n{2} Clear Finished", SerializeDataConst.Save_File_Path_cs, SerializeDataConst.Save_File_Path_cs2, SerializeDataConst.Save_File_Path_lua));
     }
   }
 }

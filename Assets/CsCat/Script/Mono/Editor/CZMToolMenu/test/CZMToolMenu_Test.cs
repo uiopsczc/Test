@@ -32,6 +32,8 @@ namespace CsCat
     [UnityEditor.MenuItem(CZMToolConst.MenuRoot + "Test2")]
     public static void Test2()
     {
+//      LogCat.log(Application.dataPath);
+      ShellUtilTest.Test();
       //      Dictionary<string,string> dict = new Dictionary<string, string>();
       //      dict["kk"] = "ff";
       //      LogCat.log("before:", dict.GetHashCode());

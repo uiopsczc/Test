@@ -14,6 +14,7 @@ namespace CsCat
     {
       AssetPathRefManager.instance.Save();
       AssetDatabase.Refresh();
+      EditorUtilityCat.DisplayDialog("AssetPathRef Saved");
     }
 
     [MenuItem(CZMToolConst.MenuRoot + "AssetPathRef/Add")]
@@ -47,6 +48,7 @@ namespace CsCat
     {
       AssetPathRefManager.instance.ClearAll();
       AssetDatabase.Refresh();
+      EditorUtilityCat.DisplayDialog("AssetPathRef Clear All");
     }
   }
 }

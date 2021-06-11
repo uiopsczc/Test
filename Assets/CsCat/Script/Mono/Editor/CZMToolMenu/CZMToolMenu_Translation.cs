@@ -34,16 +34,18 @@ namespace CsCat
     public static void TranslateToEnglish()
     {
       TranslateToLanguage("english");
+      
     }
 
     [MenuItem(CZMToolConst.MenuRoot + "多语言/导出所有TanslationId")]
     public static void ExportTranslationIds()
     {
-      ExportUIText();
+      var file_path = ExportUIText();
       Process.Start(FilePathConst.ProjectPath + "py_tools/translation/" + "Translation.bat");
+      EditorUtilityCat.DisplayDialog("多语言/导出所有TanslationId 完成",file_path);
     }
 
-    public static void ExportUIText()
+    public static string ExportUIText()
     {
       var file_path = FilePathConst.ProjectPath + "py_tools/translation/excel/ui_string.xlsx";
       var check_path = "Assets/Resources/"; //检测的路径
@@ -69,6 +71,7 @@ namespace CsCat
       StdioUtil.RemoveFiles(file_path);
       WriteToExcel(file_path, all_string_list);
       LogCat.log("UI上的Text已经输出到", file_path);
+      return file_path;
     }
 
     private static bool IsAllExcludeChars(string s)
