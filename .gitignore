@@ -6,6 +6,8 @@ Assets/StreamingAssets.meta
 Assets/StreamingAssets/
 Assets/xLuaTest.meta
 Assets/xLuaTest/
+/Assets/XLua/Gen
+/Assets/XLua/Gen.meta
 /*.csproj
 /*.sln
 /build/build*
