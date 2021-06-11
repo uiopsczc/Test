@@ -21,7 +21,7 @@ namespace CsCat
         if (is_gray)
         {
           monoBehaviourCache[Text_Orgin_Color_Of_Gray_Key] = text.color;
-          text.color = Color.gray;
+          text.color = text.color.ToGray();
         }
         else
           text.color = monoBehaviourCache.Get<Color>(Text_Orgin_Color_Of_Gray_Key);

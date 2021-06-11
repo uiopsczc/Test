@@ -1,11 +1,13 @@
 ---@class ColorUtil
 ColorUtil = {}
 
+---@return Color
 function ColorUtil.Inverted(color)
   return Color(1 - color.r, 1 - color.g, 1 - color.b, color.a)
 end
 
 
+---@return string
 function ColorUtil.ToHtmlStringRGB(color)
   local r = math.Clamp(color.r,0,1)
   local g = math.Clamp(color.g,0,1)
@@ -17,6 +19,7 @@ function ColorUtil.ToHtmlStringRGB(color)
   return string.format("%06X",num)
 end
 
+---@return Color
 function ColorUtil.ToHtmlStringRGBA(color)
   local r = math.Clamp(color.r,0,1)
   local g = math.Clamp(color.g,0,1)
@@ -28,6 +31,13 @@ function ColorUtil.ToHtmlStringRGBA(color)
   a = math.Round(a * 255)
   local num = a+256*b+256*256*g+256*256*256*r
   return string.format("%08X",num)
+end
+
+---@return Color
+function ColorUtil.ToGray(color)
+  local lum = color.r * 0.3 + color.g * 0.59 + color.b * 0.11
+  local result = Color.New(lum, lum, lum, color.a)
+  return result
 end
 
 

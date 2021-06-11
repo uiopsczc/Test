@@ -89,6 +89,11 @@ namespace CsCat
       return self.ToHtmlStringRGBA();
     }
 
+    public static Color ToGray(this Color self)
+    {
+        return ColorUtil.ToGray(self);
+    }
+
 
   }
 }
