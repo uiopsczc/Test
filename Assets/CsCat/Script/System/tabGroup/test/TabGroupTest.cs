@@ -17,7 +17,7 @@ namespace CsCat
         int j = i;//这样才能形成闭包，否则直接用i是形成不了闭包的
         tabGroup.AddTab(new Tab(() => toggles[j] = true, () => toggles[j] = false));
       }
-      tabGroup.GetTab(1).Select();
+      tabGroup.TriggerTab(1);
     }
 
     private static void Clear()

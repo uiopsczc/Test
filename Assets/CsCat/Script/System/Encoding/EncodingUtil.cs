@@ -113,5 +113,18 @@ namespace CsCat
 
       return true;
     }
+
+
+    public static string GBK2UTF8(string gbk_string)
+    {
+      return Convert(gbk_string, Encoding.GetEncoding(936), Encoding.UTF8);
+    }
+
+    private static string Convert(string source_content, Encoding soruce_encoding, Encoding target_encoding)
+    {
+      byte[] unicode_bytes = soruce_encoding.GetBytes(source_content);
+      byte[] tareget_encoding_bytes = Encoding.Convert(soruce_encoding, target_encoding, unicode_bytes);
+      return target_encoding.GetString(tareget_encoding_bytes);
+    }
   }
 }

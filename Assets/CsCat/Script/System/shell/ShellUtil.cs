@@ -97,9 +97,9 @@ namespace CsCat
             processStartInfo.StandardErrorEncoding = Encoding.UTF8;
           }
           process = Process.Start(processStartInfo);
-          process.ErrorDataReceived += delegate(object sender, DataReceivedEventArgs e) { LogCat.LogError(e.Data); };
-          process.OutputDataReceived += delegate(object sender, DataReceivedEventArgs e) { LogCat.LogError(e.Data); };
-          process.Exited += delegate(object sender, System.EventArgs e) { LogCat.LogError(e.ToString()); };
+          process.ErrorDataReceived += delegate(object sender, DataReceivedEventArgs e) { LogCat.LogError(EncodingUtil.GBK2UTF8(e.Data)); };
+          process.OutputDataReceived += delegate(object sender, DataReceivedEventArgs e) { LogCat.LogError(EncodingUtil.GBK2UTF8(e.Data)); };
+          process.Exited += delegate(object sender, EventArgs e) { LogCat.LogError(e.ToString()); };
 
           bool is_has_error = false;
           do

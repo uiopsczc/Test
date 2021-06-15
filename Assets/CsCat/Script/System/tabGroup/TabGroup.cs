@@ -6,20 +6,8 @@ namespace CsCat
   public class TabGroup
   {
     private List<Tab> tab_list = new List<Tab>();
-    public int selected_index
-    {
-      get
-      {
-        for (int i = 0; i < tab_list.Count; i++)
-        {
-          if (tab_list[i].is_selected)
-            return i;
-        }
-        return -1;
-      }
-    }
-
-
+    public int cur_selected_index = -1;//默认全部不选中
+    private int pre_selected_index = -1;
     public TabGroup()
     {
     }
@@ -29,9 +17,9 @@ namespace CsCat
       tab_list.Add(tab);
     }
 
-    public Tab GetTab(int i)
+    public Tab GetTab(int index)
     {
-      return tab_list[i];
+      return tab_list[index];
     }
 
     public void ClearTabs()
@@ -41,13 +29,14 @@ namespace CsCat
 
     public void TriggerTab(int index)
     {
-      if (index == selected_index)
+      if (index == cur_selected_index)
         return;
-      int pre_selected_index = selected_index;
-      int current_selected_index = index;
       if (pre_selected_index != -1)
         tab_list[pre_selected_index].UnSelect();
-      tab_list[current_selected_index].Select();
+      pre_selected_index = cur_selected_index;
+
+      cur_selected_index = index;
+      tab_list[cur_selected_index].Select();
     }
   }
 }

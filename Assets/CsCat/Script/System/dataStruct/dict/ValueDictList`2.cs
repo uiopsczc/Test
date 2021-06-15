@@ -7,7 +7,7 @@ namespace CsCat
   {
     public void Add(Dictionary<TKey, TValue> dict)
     {
-      this.Add(dict);
+      base.Add(dict);
     }
 
     public void Add(string dict_string)

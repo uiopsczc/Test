@@ -6,7 +6,9 @@ namespace CsCat
   {
     public Action on_select_callback;
     public Action on_unselect_callback;
-    public bool is_selected;
+    private bool _is_selected;
+
+    public bool is_selected => _is_selected;
 
     public Tab(Action on_select_callback, Action on_unselect_callback)
     {
@@ -16,12 +18,12 @@ namespace CsCat
 
     public void Select()
     {
-      is_selected = true;
+      _is_selected = true;
       on_select_callback?.Invoke();
     }
     public void UnSelect()
     {
-      is_selected = false;
+      _is_selected = false;
       on_unselect_callback?.Invoke();
     }
 
