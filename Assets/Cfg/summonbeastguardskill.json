@@ -1,0 +1,130 @@
+{
+  "data_list": [
+    {
+      "id": 1,
+      "summonbeast_id": 411001,
+      "star": 0,
+      "star_fighting": 1000,
+      "skill_desc_lang1": "",
+      "skill_desc_args1": [],
+      "skill_desc_lang2": "",
+      "skill_desc_args2": [
+        1,
+        2,
+        3
+      ],
+      "skill_desc_lang3": "",
+      "skill_desc_args3": {},
+      "skill_desc_lang4": "",
+      "skill_desc_args4": []
+    },
+    {
+      "id": 2,
+      "summonbeast_id": 411001,
+      "star": 1,
+      "star_fighting": 2000,
+      "skill_desc_lang1": "",
+      "skill_desc_args1": [],
+      "skill_desc_lang2": "",
+      "skill_desc_args2": [
+        "hello",
+        "world"
+      ],
+      "skill_desc_lang3": "",
+      "skill_desc_args3": {},
+      "skill_desc_lang4": "",
+      "skill_desc_args4": []
+    },
+    {
+      "id": 3,
+      "summonbeast_id": 411001,
+      "star": 2,
+      "star_fighting": 3000,
+      "skill_desc_lang1": "",
+      "skill_desc_args1": [],
+      "skill_desc_lang2": "",
+      "skill_desc_args2": [],
+      "skill_desc_lang3": "",
+      "skill_desc_args3": {
+        "ab": "cd",
+        "ef": 6
+      },
+      "skill_desc_lang4": "",
+      "skill_desc_args4": []
+    },
+    {
+      "id": 4,
+      "summonbeast_id": 411002,
+      "star": 0,
+      "star_fighting": 4000,
+      "skill_desc_lang1": "",
+      "skill_desc_args1": [],
+      "skill_desc_lang2": "",
+      "skill_desc_args2": [],
+      "skill_desc_lang3": "",
+      "skill_desc_args3": {},
+      "skill_desc_lang4": "",
+      "skill_desc_args4": []
+    },
+    {
+      "id": 5,
+      "summonbeast_id": 411001,
+      "star": 5,
+      "star_fighting": 1000,
+      "skill_desc_lang1": "陈智权",
+      "skill_desc_args1": [],
+      "skill_desc_lang2": "",
+      "skill_desc_args2": [],
+      "skill_desc_lang3": "",
+      "skill_desc_args3": {},
+      "skill_desc_lang4": "",
+      "skill_desc_args4": []
+    }
+  ],
+  "index_dict": {
+    "unique": {
+      "id": {
+        "1": 0,
+        "2": 1,
+        "3": 2,
+        "4": 3,
+        "5": 4
+      },
+      "summonbeast_id_and_star": {
+        "411001.0": 0,
+        "411001.1": 1,
+        "411001.2": 2,
+        "411002.0": 3,
+        "411001.5": 4
+      }
+    },
+    "multiple": {
+      "summonbeast_id": {
+        "411001": [
+          0,
+          1,
+          2,
+          4
+        ],
+        "411002": [
+          3
+        ]
+      },
+      "summonbeast_id_and_star_fighting": {
+        "411001.1000": [
+          0,
+          4
+        ],
+        "411001.2000": [
+          1
+        ],
+        "411001.3000": [
+          2
+        ],
+        "411002.4000": [
+          3
+        ]
+      }
+    }
+  }
+}

@@ -23,6 +23,7 @@ namespace CsCat
     public GuidManager guidManager;
     public RandomManager randomManager = new RandomManager();
     public RedDotManager redDotManager;
+    public CfgManager cfgManager;
 
 
 
@@ -101,6 +102,7 @@ namespace CsCat
       guidManager = new GuidManager(GameData.instance.guid_current);
       assetBundleUpdater = AddChild<AssetBundleUpdater>("AssetBundleUpdater");
       assetBundleManager = AddChild<AssetBundleManager>("AssetBundleManager");
+      cfgManager = AddChild<CfgManager>("CfgManager");
       audioManager = AddChild<AudioManager>("AudioManager");
       physicsManager = AddChild<PhysicsManager>("physicsManager");
       defaultInputManager = AddChild<DefaultInputManager>("DefaultInputManager");

@@ -752,7 +752,7 @@ namespace CsCat
 
     #region 大小写第一个字母
 
-    public static string UppterFirstLetter(this string self)
+    public static string UpperFirstLetter(this string self)
     {
       return self.Substring(0, 1).ToUpper() + self.Substring(1);
     }
@@ -762,7 +762,7 @@ namespace CsCat
       return self.Substring(0, 1).ToLower() + self.Substring(1);
     }
 
-    public static bool IsFirstLetterUppter(this string self)
+    public static bool IsFirstLetterUpper(this string self)
     {
       return self[0].IsUpper();
     }

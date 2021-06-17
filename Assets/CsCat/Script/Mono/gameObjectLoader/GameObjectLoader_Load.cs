@@ -81,7 +81,7 @@ namespace CsCat
       foreach (var _child_hashtable_key in child_hashtable.Keys)
       {
         string child_hashtable_key = _child_hashtable_key.ToString();
-        if (child_hashtable_key.IsFirstLetterUppter() && !except_list.Contains(child_hashtable_key))
+        if (child_hashtable_key.IsFirstLetterUpper() && !except_list.Contains(child_hashtable_key))
         {
           string component_type_name = child_hashtable_key.Substring(0, child_hashtable_key.IndexOf("_"));
           Component component = GetOrAddComponent(child_gameObject, TypeUtil.GetType(component_type_name), is_prefab);
