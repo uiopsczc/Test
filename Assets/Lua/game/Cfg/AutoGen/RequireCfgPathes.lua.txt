@@ -1,0 +1,2 @@
+--AutoGen. DO NOT EDIT!!!
+CfgSummonbeastguardskill = require("game.Cfg.AutoGen.CfgSummonbeastguardskill")

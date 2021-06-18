@@ -24,6 +24,19 @@ class ExportXlsx2Lua(object):
 
     content += ExportXlsx2Lua.ExportCfg(sheet,json_dict["index_dict"], indent)
     FileUtil.WriteFile(export_file_path, content)
+    ExportXlsx2Lua.Export2CfgRequire(sheet, export_relative_dir_path)
+
+  @staticmethod
+  def Export2CfgRequire(sheet, export_relative_dir_path):
+    require_path = ExportXlsxConst.Export_2_Lua_Require_Root_Dir_Path + export_relative_dir_path.replace("\\\\","\\").replace("\\",".")+ ExportXlsxUtil.GetCfgName(sheet)
+    require_path = "%s = require(\"%s\")"%(ExportXlsxUtil.GetCfgName(sheet), require_path)
+    if os.path.exists(ExportXlsxConst.Export_2_Lua_RequireCfgPathes):
+      FileUtil.WriteFile(ExportXlsxConst.Export_2_Lua_RequireCfgPathes,"\n"+require_path,"a")
+    else:
+      require_path = "--AutoGen. DO NOT EDIT!!!\n" + require_path
+      FileUtil.WriteFile(ExportXlsxConst.Export_2_Lua_RequireCfgPathes, require_path)
+
+
 
   @staticmethod
   def ExportCfgDataComments(sheet, indent):
@@ -66,7 +79,7 @@ class ExportXlsx2Lua(object):
           content += "%s%s = {\n"%(StringUtil.GetSpace(indent),specific_index_key)
           indent += 1
           for key in index_dict[index_group][specific_index_key].keys():
-            content += "%s[\"%s\"] = %s,\n"%(StringUtil.GetSpace(indent), key, index_dict[index_group][specific_index_key][key])
+            content += "%s[\"%s\"] = %s,\n"%(StringUtil.GetSpace(indent), key, index_dict[index_group][specific_index_key][key]+1)#lua是从1开始
           indent -= 1
           content += "%s},\n" % (StringUtil.GetSpace(indent))
         elif index_group == ExportXlsxConst.Sheet_Multiple_Tag:
@@ -76,7 +89,7 @@ class ExportXlsx2Lua(object):
             content += "%s[\"%s\"] = {\n" % (StringUtil.GetSpace(indent), key)
             indent +=1
             for index in index_dict[index_group][specific_index_key][key]:
-              content += "%s%s,\n"%(StringUtil.GetSpace(indent), index)
+              content += "%s%s,\n"%(StringUtil.GetSpace(indent), index+1)#lua是从1开始
             indent -=1
             content += "%s},\n" % (StringUtil.GetSpace(indent))
           indent -= 1

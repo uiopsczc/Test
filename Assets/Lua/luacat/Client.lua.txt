@@ -71,7 +71,7 @@ end
 
 
 function Client:Test()
-    log(require("luacat.CfgKK").GetById(3).name)
+    log(CfgSummonbeastguardskillDataUtil.GetRid(CfgSummonbeastguardskill.get_by_id(3)))
   --log(self:IsInstanceOf(ResLoad))
   ---@type IdPool
   --require("luacat.timer.test.TimerManagerTest")

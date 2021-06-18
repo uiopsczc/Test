@@ -142,6 +142,8 @@ AnimatorCompConst = require("luacat.animatorComp.define.AnimatorCompConst")
 AnimatorParameterInfo = require("luacat.animatorComp.AnimatorParameterInfo")
 AnimatorComp = require("luacat.animatorComp.AnimatorComp")
 ------------------------------Game--------------------------------------------------
+require("game.Cfg.AutoGen.RequireCfgPathes")
+require("game.Cfg.util.RequireCfgDataUtil")
 CombatUtil = require("game.combat.combat.util.CombatUtil")
 CombatConst = require("game.combat.combat.define.CombatConst")
 CombatStageBase = require("game.combat.stage.CombatStageBase")
