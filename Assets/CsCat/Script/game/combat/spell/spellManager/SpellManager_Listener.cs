@@ -93,7 +93,7 @@ namespace CsCat
           this.ListenerCallback(listenerInfo, target_unit, spell, args);
       }
 
-      if ("普攻".Equals(spell.spellDefinition.type))
+      if ("普攻".Equals(spell.cfgSpellData.type))
       {
         foreach (var listenerInfo in this.listener_dict["normal_attack"])
         {

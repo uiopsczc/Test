@@ -47,7 +47,7 @@ namespace CsCat
     public bool __CheckUnit(Unit unit, IPosition origin_iposition, Hashtable range_info, string faction, string scope,
       bool is_only_attackable, bool is_can_select_hide_unit = false)
     {
-      if ("技能物体".Equals(unit.unitDefinition.type))
+      if ("技能物体".Equals(unit.cfgUnitData.type))
         return false;
       if (is_only_attackable)
         if (unit.IsInvincible())

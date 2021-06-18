@@ -1,0 +1,49 @@
+--AutoGen. DO NOT EDIT!!!
+---@class CfgRoleData
+---@field id
+---@field name
+---@field class_path_lua
+---@field class_path_cs
+local _
+
+
+
+---@type CfgRoleData[]
+local data_list = {
+  {
+    id = [=[1]=],
+    name = [=[小星]=],
+    class_path_lua = [=[]=],
+    class_path_cs = [=[]=],
+  },
+}
+
+local index_dict = {
+  unique = {
+    id = {
+      ["1"] = 1,
+    },
+  },
+}
+
+local cfg = {}
+
+function cfg.All()
+  return data_list
+end
+
+function cfg.Get(index)
+  return data_list[index]
+end
+
+function cfg.get_by_id(id)
+  local key = tostring(id)
+  return cfg.Get(index_dict.unique.id[key])
+end
+
+function cfg.contain_key_by_id(id)
+  local key = tostring(id)
+  return index_dict.unique.id[key] ~= nil
+end
+
+return cfg

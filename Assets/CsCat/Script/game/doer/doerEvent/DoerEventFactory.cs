@@ -5,26 +5,18 @@ namespace CsCat
 {
   public class DoerEventFactory : DoerFactory
   {
-    protected override string default_doer_class_path
-    {
-      get { return "CsCat.DoerEvent"; }
-    }
+    protected override string default_doer_class_path => "CsCat.DoerEvent";
 
     private Dictionary<string, DoerEvent> doerEvent_dict = new Dictionary<string, DoerEvent>();
 
-    public override ExcelAssetBase GetDefinitions()
+    protected override string GetClassPath(string id)
     {
-      return DefinitionManager.instance.doerEventDefinition;
+      return this.GetCfgDoerEventData(id).class_path_cs.IsNullOrWhiteSpace() ? base.GetClassPath(id): GetCfgDoerEventData(id).class_path_cs;
     }
 
-    public override ExcelAssetBase GetDefinition(string id)
+    public CfgDoerEventData GetCfgDoerEventData(string id)
     {
-      return GetDefinitions().GetData<DoerEventDefinition>(id);
-    }
-
-    public DoerEventDefinition GetDoerEventDefinition(string id)
-    {
-      return GetDefinition(id) as DoerEventDefinition;
+      return CfgDoerEvent.Instance.get_by_id(id);
     }
 
     protected override DBase __NewDBase(string id_or_rid)
@@ -36,14 +28,13 @@ namespace CsCat
     public override void Init()
     {
       base.Init();
-      var definitions = GetDefinitions() as DoerEventDefinition;
-      foreach (var id in definitions.GetIdList())
-        LoadDoerEvent(id);
+      foreach (var cfgDoerEventData in CfgDoerEvent.Instance.All())
+        LoadDoerEvent(cfgDoerEventData.id);
     }
 
     private void LoadDoerEvent(string id)
     {
-      var definition = this.GetDoerEventDefinition(id);
+      var definition = this.GetCfgDoerEventData(id);
       var class_path = definition.class_path_cs.IsNullOrWhiteSpace() ? default_doer_class_path : definition.class_path_cs;
       Type type = TypeUtil.GetType(class_path);
       DoerEvent doerEvent = this.AddChildWithoutInit(null, type) as DoerEvent;

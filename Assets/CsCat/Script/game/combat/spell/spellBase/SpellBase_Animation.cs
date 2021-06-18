@@ -11,35 +11,35 @@ namespace CsCat
 
     protected void PlaySpellAnimation(Vector3? face_to_position = null)
     {
-      if (this.spellDefinition.animation_duration > 0)
+      if (this.cfgSpellData.animation_duration > 0)
       {
         this.__animation_time_pct = 0;
         this.__animation_start_time = CombatUtil.GetTime();
       }
 
-      if (!this.spellDefinition.animation_name.IsNullOrWhiteSpace())
+      if (!this.cfgSpellData.animation_name.IsNullOrWhiteSpace())
       {
         if (face_to_position == null && this.target_unit != null)
           face_to_position = this.target_unit.GetPosition();
         // 不转向
-        if (this.spellDefinition.is_not_face_to_target)
+        if (this.cfgSpellData.is_not_face_to_target)
           face_to_position = null;
-        float speed = this.spellDefinition.type == "普攻" ? this.source_unit.GetCalcPropValue("攻击速度") : 1;
-        this.source_unit.PlayAnimation(this.spellDefinition.animation_name, null, speed, face_to_position,
-          this.spellDefinition.is_can_move_while_cast);
+        float speed = this.cfgSpellData.type == "普攻" ? this.source_unit.GetCalcPropValue("攻击速度") : 1;
+        this.source_unit.PlayAnimation(this.cfgSpellData.animation_name, null, speed, face_to_position,
+          this.cfgSpellData.is_can_move_while_cast);
       }
     }
 
     protected void StopSpellAnimation()
     {
-      if (!this.spellDefinition.animation_name.IsNullOrWhiteSpace())
-        this.source_unit.StopAnimation(this.spellDefinition.animation_name);
+      if (!this.cfgSpellData.animation_name.IsNullOrWhiteSpace())
+        this.source_unit.StopAnimation(this.cfgSpellData.animation_name);
     }
 
     //注意：只能在start时调用，不能在事件中调用
     protected void RegisterAnimationEvent(float? time_pct, string invoke_method_name, Hashtable arg_dict = null)
     {
-      if (this.spellDefinition.animation_duration == 0 || time_pct == null || time_pct.Value <= 0)
+      if (this.cfgSpellData.animation_duration == 0 || time_pct == null || time_pct.Value <= 0)
       {
         this.InvokeMethod(invoke_method_name, false, arg_dict);
         return;
@@ -68,7 +68,7 @@ namespace CsCat
       if (this.__animation_time_pct == 0)
         return;
       this.__animation_time_pct = this.__animation_time_pct + deltaTime /
-                                  (this.spellDefinition.animation_duration /
+                                  (this.cfgSpellData.animation_duration /
                                    (1 + this.source_unit.GetCalcPropValue("攻击速度")));
       while (true)
       {

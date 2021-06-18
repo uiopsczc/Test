@@ -34,14 +34,15 @@ class ExportXlsx2Json(object):
     fieldInfo_list = ExportXlsxUtil.GetExportSheetFiledInfoList(sheet)
     data_list = []
     for row in range(ExportXlsxConst.Sheet_Data_Start_Row, max_row + 1):
+      if sheet.cell(row,1).value is None:
+        continue
       data = {}
       for fieldInfo in fieldInfo_list:
         column = fieldInfo["column"]
         cell = sheet.cell(row=row, column=column)
-        cell_value = cell.value
         fileInfo_type = fieldInfo["type"]
         fileInfo_name = fieldInfo["name"]
-        cell_value = ExportXlsxUtil.GetExportJsonValueOrDefault(cell_value, fileInfo_type)
+        cell_value = ExportXlsxUtil.GetExportJsonValueOrDefault(cell, fileInfo_type)
         if fileInfo_type == ExportXlsxConst.Sheet_FieldInfo_Type_Array or fileInfo_type == ExportXlsxConst.Sheet_FieldInfo_Type_Json:
           data[fileInfo_name] = json.loads(cell_value)
         else:

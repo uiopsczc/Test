@@ -144,7 +144,7 @@ namespace CsCat
       {
         if (mission.IsReady())
         {
-          if (mission.GetMissionDefinition().is_auto_check_finish)
+          if (mission.GetCfgMissionData().is_auto_check_finish)
             to_finish_mission_list.Add(mission);
         }
       }

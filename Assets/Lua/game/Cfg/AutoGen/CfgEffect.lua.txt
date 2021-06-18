@@ -1,0 +1,62 @@
+--AutoGen. DO NOT EDIT!!!
+---@class CfgEffectData
+---@field id
+---@field name
+---@field prefab_path
+---@field duration
+---@field socket_name_1
+---@field socket_name_2
+local _
+
+
+
+---@type CfgEffectData[]
+local data_list = {
+  {
+    id = [=[1]=],
+    name = [=[特效1]=],
+    prefab_path = [=[Assets/ccc.prefab]=],
+    duration = 0.0,
+    socket_name_1 = [=[]=],
+    socket_name_2 = [=[]=],
+  },
+  {
+    id = [=[2]=],
+    name = [=[特效2]=],
+    prefab_path = [=[Assets/Resources/common/effect/4/10010720.prefab]=],
+    duration = 0.0,
+    socket_name_1 = [=[]=],
+    socket_name_2 = [=[]=],
+  },
+}
+
+local index_dict = {
+  unique = {
+    id = {
+      ["1"] = 1,
+      ["2"] = 2,
+    },
+  },
+}
+
+local cfg = {}
+
+function cfg.All()
+  return data_list
+end
+
+function cfg.Get(index)
+  return data_list[index]
+end
+
+function cfg.get_by_id(id)
+  local key = tostring(id)
+  return cfg.Get(index_dict.unique.id[key])
+end
+
+function cfg.contain_key_by_id(id)
+  local key = tostring(id)
+  return index_dict.unique.id[key] ~= nil
+end
+
+return cfg

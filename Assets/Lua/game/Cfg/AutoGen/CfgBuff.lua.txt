@@ -1,0 +1,61 @@
+--AutoGen. DO NOT EDIT!!!
+---@class CfgBuffData
+---@field id
+---@field name
+---@field type_1
+---@field type_2
+---@field duration
+---@field effect_ids
+---@field state
+---@field is_unique
+---@field trigger_spell_id
+---@field property_dict
+local _
+
+
+
+---@type CfgBuffData[]
+local data_list = {
+  {
+    id = [=[1]=],
+    name = [=[buff1]=],
+    type_1 = [=[]=],
+    type_2 = [=[]=],
+    duration = 3,
+    effect_ids = json:decode([=[["1"]]=]),
+    state = [=[]=],
+    is_unique = false,
+    trigger_spell_id = [=[]=],
+    property_dict = json:decode([=[{}]=]),
+  },
+}
+
+local index_dict = {
+  unique = {
+    id = {
+      ["1"] = 1,
+    },
+  },
+}
+
+local cfg = {}
+
+function cfg.All()
+  return data_list
+end
+
+function cfg.Get(index)
+  return data_list[index]
+end
+
+function cfg.get_by_id(id)
+  local key = tostring(id)
+  return cfg.Get(index_dict.unique.id[key])
+end
+
+function cfg.contain_key_by_id(id)
+  local key = tostring(id)
+  return index_dict.unique.id[key] ~= nil
+end
+
+return cfg

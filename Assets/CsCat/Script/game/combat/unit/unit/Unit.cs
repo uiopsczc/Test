@@ -29,7 +29,7 @@ namespace CsCat
     public bool is_move_occupy;
 
 
-    public UnitDefinition unitDefinition;
+    public CfgUnitData cfgUnitData;
     public string unit_id;
     public string player_name;
     public Vector2 show_name_offset;
@@ -78,8 +78,8 @@ namespace CsCat
     public void SetPosition(Vector3 pos)
     {
       if (graphicComponent.transform)
-        graphicComponent.transform.position = this.unitDefinition.offset_y != 0
-          ? (pos + new Vector3(0, this.unitDefinition.offset_y, 0))
+        graphicComponent.transform.position = this.cfgUnitData.offset_y != 0
+          ? (pos + new Vector3(0, this.cfgUnitData.offset_y, 0))
           : pos;
       this.position = pos;
     }

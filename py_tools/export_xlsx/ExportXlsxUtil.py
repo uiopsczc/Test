@@ -3,6 +3,7 @@ import json
 from export_xlsx.ExportXlsxConst import *
 from pythoncat.util.StringUtil import *
 from pythoncat.util.DictUtil import *
+from pythoncat.util.NumberUtil import *
 
 
 class ExportXlsxUtil(object):
@@ -10,6 +11,8 @@ class ExportXlsxUtil(object):
   def IsExportSheet(sheet):
     file_name = sheet.cell(row=ExportXlsxConst.Sheet_CfgName_Cell_Row,
                            column=ExportXlsxConst.Sheet_CfgName_Cell_Column).value
+    if file_name is None:
+      return False
     return file_name.find(ExportXlsxConst.Sheet_CfgName_Tag) != -1
 
   @staticmethod
@@ -59,6 +62,8 @@ class ExportXlsxUtil(object):
     else:  # string等
       return ""
 
+
+
   @staticmethod
   def GetExportCsType(type):
     if type == ExportXlsxConst.Sheet_FieldInfo_Type_Int:
@@ -75,10 +80,12 @@ class ExportXlsxUtil(object):
       return "string"
 
   @staticmethod
-  def GetExportJsonValueOrDefault(value, type):
-    if value is None:
-      return ExportXlsxUtil.GetExportJsonTypeDefaultValue(type)
-    return value
+  def GetExportJsonValueOrDefault(cell, target_type):
+    if cell.value is None:
+      return ExportXlsxUtil.GetExportJsonTypeDefaultValue(target_type)
+    if target_type==ExportXlsxConst.Sheet_FieldInfo_Type_String and (NumberUtil.IsNumber(cell.value)):
+      return "%s"%(cell.value)
+    return cell.value
 
   def GetExportLuaValueOrDefault(value, type):
     if type == ExportXlsxConst.Sheet_FieldInfo_Type_Array:
@@ -87,6 +94,11 @@ class ExportXlsxUtil(object):
       return "json:decode([=[%s]=])"%(json.dumps(value,ensure_ascii=False))
     elif type == ExportXlsxConst.Sheet_FieldInfo_Type_String:
       return "[=[%s]=]"%(value)
+    elif type == ExportXlsxConst.Sheet_FieldInfo_Type_Bool:
+      if value:
+        return "true"
+      else:
+        return "false"
     else:
       return value
 

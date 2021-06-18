@@ -142,12 +142,10 @@ namespace CsCat
       {
         string value = item_dict[item_id];
         Hashtable add_attr_dict = new Hashtable(); //带属性
-        int pos = value.IndexOf("\"");
-        if (pos == -1)
-          pos = value.IndexOf("“");
+        int pos = value.IndexOf("(");
         if (pos != -1)
         {
-          string attr_string = value.Substring(pos + 1, value.Length - pos - 2); //最后一个"也要删除
+          string attr_string = value.Substring(pos + 1, value.Length - pos - 2); //最后一个)也要删除
           value = value.Substring(0, pos);
 
           add_attr_dict = attr_string.ToDictionary<string, string>().ToHashtable();

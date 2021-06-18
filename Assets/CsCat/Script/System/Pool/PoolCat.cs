@@ -76,7 +76,7 @@ namespace CsCat
         return;
       if (!spawned_object_list.Contains(obj))
       {
-        LogCat.error(string.Format("pool: {0} not contained::{1}",pool_name, obj));
+//        LogCat.error(string.Format("pool: {0} not contained::{1}",pool_name, obj));
         return;
       }
         

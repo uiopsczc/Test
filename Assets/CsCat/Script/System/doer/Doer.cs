@@ -139,10 +139,6 @@ namespace CsCat
       return GetDBase() as T;
     }
 
-    public string GetName()
-    {
-      return this.GetDefinition().name;
-    }
 
     public string GetShort()
     {
@@ -202,33 +198,16 @@ namespace CsCat
         return default_value;
       return this.dbase.db_tmp[key].To<T>();
     }
+    
 
-    public ExcelAssetBase GetDefinition()
-    {
-      if (this.definition == null && this.factory != null)
-        this.definition = this.factory.GetDefinition(this.GetId());
-      return definition;
-    }
-
-    public string GetType1()
-    {
-      return this.GetDefinition().type_1;
-    }
-
-    public string GetType2()
-    {
-      return this.GetDefinition().type_2;
-    }
+    
 
     public int GetCount()
     {
       return this.Get<int>("count");
     }
 
-    public bool CanFold()
-    {
-      return GetDefinition().can_fold;
-    }
+    
 
     // 获得物件所在环境
     public Doer GetEnv()

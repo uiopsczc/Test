@@ -1,1 +1,17 @@
+Assets/Cfg/buff.json
+Assets/Cfg/buffState.json
+Assets/Cfg/scene.json
+Assets/Cfg/doerEvent.json
+Assets/Cfg/doerEventStep.json
+Assets/Cfg/unit.json
+Assets/Cfg/public.json
+Assets/Cfg/spell.json
+Assets/Cfg/spellTrigger.json
+Assets/Cfg/role.json
+Assets/Cfg/quality.json
+Assets/Cfg/mission.json
+Assets/Cfg/property.json
+Assets/Cfg/effect.json
+Assets/Cfg/item.json
 Assets/Cfg/summonbeastguardskill.json
+Assets/Cfg/Test/test.json

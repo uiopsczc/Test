@@ -8,9 +8,9 @@ namespace CsCat
       return this.factory as RoleFactory;
     }
 
-    public RoleDefinition GetRoleDefinition()
+    public CfgRoleData GetCfgRoleData()
     {
-      return GetRoleFactory().GetRoleDefinition(this.GetId());
+      return GetRoleFactory().GetCfgRoleData(this.GetId());
     }
 
     //////////////////////OnXXX/////////////////////////////////////

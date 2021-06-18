@@ -13,7 +13,7 @@ namespace CsCat
       Vector3? force_eulerAngles = null, float sector_angle = 0)
     {
       base.Init();
-      attach_entity_iposition.SetSocketName(this.effectEntity.effectDefinition.socket_name_1);
+      attach_entity_iposition.SetSocketName(this.effectEntity.cfgEffectData.socket_name_1);
       this.attach_entity_transform = attach_entity_iposition.GetTransform();
       this.force_eulerAngles = force_eulerAngles;
       this.sector_angle = sector_angle;

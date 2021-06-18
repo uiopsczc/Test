@@ -17,7 +17,7 @@ namespace CsCat
     {
       base.Init();
       this.unit = unit;
-      this.walk_step_length = this.unit.unitDefinition.walk_step_length;
+      this.walk_step_length = this.unit.cfgUnitData.walk_step_length;
       this.unitMoveInfo.speed = this.unit.GetSpeed();
       this.unitMoveInfo.target_pos = this.unit.GetPosition();
       this.unitMoveInfo.end_rotation = this.unit.GetRotation();

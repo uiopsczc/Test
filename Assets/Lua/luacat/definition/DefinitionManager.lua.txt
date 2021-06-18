@@ -36,8 +36,6 @@ function DefinitionManager:Init()
   self.spellTriggerDefinition = MetatableUtil.NewReadOnlyTableWithIdListDict("game.definition.export.SpellTriggerDefinition",self.idDefinition)
 
 
-  ---@type table<string,TestDefinition>
-  self.testDefinition = MetatableUtil.NewReadOnlyTableWithIdListDict("game.definition.export.test.TestDefinition",self.idDefinition)
   self:PostInit()
 end
 

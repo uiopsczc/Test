@@ -12,12 +12,12 @@ namespace CsCat
     public override void Start()
     {
       base.Start();
-      if ("被动".Equals(this.spellDefinition.type))
+      if ("被动".Equals(this.cfgSpellData.type))
         this.CounterIncrease(); // 被动默认不被消耗
       this.CounterIncrease();
 
       this.target_unit_list = Client.instance.combat.spellManager.RecommendSpellRule(this.source_unit, this.target_unit,
-        this.spellDefinition, this.origin_position.Value);
+        this.cfgSpellData, this.origin_position.Value);
       this.target_unit = this.target_unit_list.IsNullOrEmpty() ? null : this.target_unit_list[0];
       if (this.IsHasMethod("OnStart"))
         this.InvokeMethod("OnStart", false);
@@ -25,7 +25,7 @@ namespace CsCat
       this.Broadcast<Unit, Unit, SpellBase>(SpellEventNameConst.On_Spell_Start, this.source_unit, this.target_unit, this);
       Client.instance.combat.spellManager.UnRegisterListener("on_start", this.source_unit, this,
         "RegisterTriggerSpell");
-      if (!this.spellDefinition.action_name.IsNullOrWhiteSpace())
+      if (!this.cfgSpellData.action_name.IsNullOrWhiteSpace())
       {
         //      if not self.source_unit.action_dict or
         //      not self.source_unit.action_dict[self.spellDefinition.action_name] then
@@ -40,18 +40,18 @@ namespace CsCat
         if (this.IsHasMethod("OnCast"))
         {
           //起手前摇
-          var cast_time_pct = this.GetAnimationTimePct(this.spellDefinition.cast_time, 0);
+          var cast_time_pct = this.GetAnimationTimePct(this.cfgSpellData.cast_time, 0);
           this.RegisterAnimationEvent(cast_time_pct, "__OnCast");
         }
 
         //可打断后摇
-        var break_time_pct = this.GetAnimationTimePct(this.spellDefinition.break_time, 1);
+        var break_time_pct = this.GetAnimationTimePct(this.cfgSpellData.break_time, 1);
         this.RegisterAnimationEvent(break_time_pct
           , "PassBreakTime");
-        if ("触发".Equals(this.spellDefinition.cast_type))
+        if ("触发".Equals(this.cfgSpellData.cast_type))
         {
-          var _cast_time_pct = this.GetAnimationTimePct(this.spellDefinition.cast_time, 0);
-          var _break_time_pct = this.GetAnimationTimePct(this.spellDefinition.break_time, 1);
+          var _cast_time_pct = this.GetAnimationTimePct(this.cfgSpellData.cast_time, 0);
+          var _break_time_pct = this.GetAnimationTimePct(this.cfgSpellData.break_time, 1);
           if (_break_time_pct < _cast_time_pct)
             LogCat.LogError("技能脱手时间比出手时间快");
           this.RegisterAnimationEvent(_break_time_pct, "OnSpellAnimationFinished");
@@ -63,8 +63,8 @@ namespace CsCat
 
     private float GetAnimationTimePct(float time, float default_value)
     {
-      if (this.spellDefinition.animation_duration != 0)
-        return time / this.spellDefinition.animation_duration;
+      if (this.cfgSpellData.animation_duration != 0)
+        return time / this.cfgSpellData.animation_duration;
       return default_value;
     }
 
@@ -79,24 +79,24 @@ namespace CsCat
     protected void RegisterTriggerSpell()
     {
       //注册表里填的技能触发事件，由简单的技能按顺序触发组成复杂的技能
-      var new_spell_trigger_ids = this.spellDefinition.new_spell_trigger_ids;
+      var new_spell_trigger_ids = this.cfgSpellData.new_spell_trigger_ids;
       if (new_spell_trigger_ids.IsNullOrEmpty())
         return;
       foreach (var new_spell_trigger_id in new_spell_trigger_ids)
-        this.__RegisterTriggerSpell(new_spell_trigger_id);
+        this.__RegisterTriggerSpell(new_spell_trigger_id.ToString());
     }
 
     public void __RegisterTriggerSpell(string new_spell_trigger_id)
     {
-      var spellTriggerDefinition = DefinitionManager.instance.spellTriggerDefinition.GetData(new_spell_trigger_id);
-      var trigger_type = spellTriggerDefinition.trigger_type;
+      var cfgSpellTriggerData = CfgSpellTrigger.Instance.get_by_id(new_spell_trigger_id);
+      var trigger_type = cfgSpellTriggerData.trigger_type;
       trigger_type = SpellConst.Trigger_Type_Dict[trigger_type];
-      var trigger_spell_id = spellTriggerDefinition.trigger_spell_id; // 触发的技能id
-      var trigger_spell_delay_duration = spellTriggerDefinition.trigger_spell_delay_duration;
+      var trigger_spell_id = cfgSpellTriggerData.trigger_spell_id; // 触发的技能id
+      var trigger_spell_delay_duration = cfgSpellTriggerData.trigger_spell_delay_duration;
       Action<Unit, Unit, SpellBase> func = (source_unit, target_unit, spell) =>
       {
         //这里可以添加是否满足其它触发条件判断
-        if (!this.CheckTriggerCondition(spellTriggerDefinition, source_unit, target_unit))
+        if (!this.CheckTriggerCondition(cfgSpellTriggerData, source_unit, target_unit))
           return;
         var trigger_arg_dict = new Hashtable();
         trigger_arg_dict["source_spell"] = this;
@@ -126,7 +126,7 @@ namespace CsCat
     }
 
 
-    protected bool CheckTriggerCondition(SpellTriggerDefinition spellTriggerDefinition, Unit source_unit,
+    protected bool CheckTriggerCondition(CfgSpellTriggerData cfgSpellTriggerData, Unit source_unit,
       Unit target_unit)
     {
       return true;
@@ -174,7 +174,7 @@ namespace CsCat
       Client.instance.combat.spellManager.OnSpellAnimationFinished(this);
       if (this.counter.count <= 0)
         this.RemoveSelf();
-      if (this.spellDefinition.is_can_move_while_cast && this.source_unit != null && !this.source_unit.IsDead())
+      if (this.cfgSpellData.is_can_move_while_cast && this.source_unit != null && !this.source_unit.IsDead())
         this.source_unit.SetIsMoveWithMoveAnimation(true);
     }
 
@@ -185,7 +185,7 @@ namespace CsCat
     }
 
     //子类添加 FilterUnit 函数可以自定义过滤掉不需要的目标
-    protected bool FilterUnit(Unit unit, string spell_id, Unit target_unit, SpellDefinition spellDefinition)
+    protected bool FilterUnit(Unit unit, string spell_id, Unit target_unit, CfgSpellTriggerData cfgSpellTriggerData)
     {
       return true;
     }

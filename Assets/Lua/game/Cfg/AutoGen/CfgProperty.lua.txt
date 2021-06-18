@@ -1,0 +1,47 @@
+--AutoGen. DO NOT EDIT!!!
+---@class CfgPropertyData
+---@field id
+---@field name
+---@field is_pct
+local _
+
+
+
+---@type CfgPropertyData[]
+local data_list = {
+  {
+    id = [=[力量]=],
+    name = [=[力量]=],
+    is_pct = false,
+  },
+}
+
+local index_dict = {
+  unique = {
+    id = {
+      ["力量"] = 1,
+    },
+  },
+}
+
+local cfg = {}
+
+function cfg.All()
+  return data_list
+end
+
+function cfg.Get(index)
+  return data_list[index]
+end
+
+function cfg.get_by_id(id)
+  local key = tostring(id)
+  return cfg.Get(index_dict.unique.id[key])
+end
+
+function cfg.contain_key_by_id(id)
+  local key = tostring(id)
+  return index_dict.unique.id[key] ~= nil
+end
+
+return cfg

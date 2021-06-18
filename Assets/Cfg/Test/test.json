@@ -1,0 +1,36 @@
+{
+  "data_list": [
+    {
+      "id": "3",
+      "name": "chenzhiquan",
+      "country": "china",
+      "age_dict": {}
+    },
+    {
+      "id": "2",
+      "name": "uiopsczc",
+      "country": "usa",
+      "age_dict": {
+        "哒哒星": "你好,我是不不不",
+        "星哥": 3
+      }
+    },
+    {
+      "id": "1",
+      "name": "dadaxing",
+      "country": "sb",
+      "age_dict": {
+        "星仔不不": 4
+      }
+    }
+  ],
+  "index_dict": {
+    "unique": {
+      "id": {
+        "3": 0,
+        "2": 1,
+        "1": 2
+      }
+    }
+  }
+}

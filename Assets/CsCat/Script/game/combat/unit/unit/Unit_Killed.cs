@@ -17,8 +17,8 @@ namespace CsCat
         this.BeThrowed(unitBeThrowedInfo);
       }
 
-      if (!this.unitModelInfo_dict["main"].path.Equals(this.unitDefinition.model_path))
-        this.BuildModel(this.unitDefinition.model_path);
+      if (!this.unitModelInfo_dict["main"].path.Equals(this.cfgUnitData.model_path))
+        this.BuildModel(this.cfgUnitData.model_path);
       this.is_dead = true;
       this.UpdateMixedStates();
       if (is_keep_dead_body)
@@ -26,14 +26,14 @@ namespace CsCat
       if (is_play_dead_animation)
       {
         this.MoveStop();
-        float dead_body_dealy = this.unitDefinition.dead_body_dealy == 0 ? 0.5f : this.unitDefinition.dead_body_dealy;
-        string death_effect_id = this.unitDefinition.death_effect_id;
+        float dead_body_dealy = this.cfgUnitData.dead_body_dealy == 0 ? 0.5f : this.cfgUnitData.dead_body_dealy;
+        string death_effect_id = this.cfgUnitData.death_effect_id;
         if (!death_effect_id.IsNullOrWhiteSpace())
         {
-          var effectDefinition = DefinitionManager.instance.effectDefinition.GetData(death_effect_id);
-          var ground_effect_pos = this.GetSocketPosition(effectDefinition.socket_name_1);
+          var cfgEffectData = CfgEffect.Instance.get_by_id(death_effect_id);
+          var ground_effect_pos = this.GetSocketPosition(cfgEffectData.socket_name_1);
           Client.instance.combat.effectManager.CreateGroundEffectEntity(death_effect_id, this, ground_effect_pos,
-            this.GetRotation().eulerAngles, effectDefinition.duration);
+            this.GetRotation().eulerAngles, cfgEffectData.duration);
         }
 
         if (this.animation != null)
@@ -73,7 +73,7 @@ namespace CsCat
     {
       if (this.is_keep_dead_body)
         return;
-      if (!this.unitDefinition.death_effect_id.IsNullOrWhiteSpace())
+      if (!this.cfgUnitData.death_effect_id.IsNullOrWhiteSpace())
       {
         this.SetIsMoveWithMoveAnimation(false);
         this.AddTimer(args =>

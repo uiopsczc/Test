@@ -2,24 +2,16 @@ namespace CsCat
 {
   public class SceneFactory : DoerFactory
   {
-    protected override string default_doer_class_path
-    {
-      get { return "CsCat.Scene"; }
-    }
+    protected override string default_doer_class_path => "CsCat.Scene";
 
-    public override ExcelAssetBase GetDefinitions()
+    protected override string GetClassPath(string id)
     {
-      return DefinitionManager.instance.sceneDefinition;
+      return this.GetCfgSceneData(id).class_path_cs.IsNullOrWhiteSpace() ? base.GetClassPath(id) : GetCfgSceneData(id).class_path_cs;
     }
-
-    public override ExcelAssetBase GetDefinition(string id)
+    
+    public CfgSceneData GetCfgSceneData(string id)
     {
-      return GetDefinitions().GetData<SceneDefinition>(id);
-    }
-
-    public SceneDefinition GetSceneDefinition(string id)
-    {
-      return GetDefinition(id) as SceneDefinition;
+      return CfgScene.Instance.get_by_id(id);
     }
 
     protected override DBase __NewDBase(string id_or_rid)

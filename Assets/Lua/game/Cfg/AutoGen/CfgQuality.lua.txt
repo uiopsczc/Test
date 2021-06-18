@@ -1,0 +1,71 @@
+--AutoGen. DO NOT EDIT!!!
+---@class CfgQualityData
+---@field id
+---@field name
+---@field icon_path
+local _
+
+
+
+---@type CfgQualityData[]
+local data_list = {
+  {
+    id = [=[1]=],
+    name = [=[白色品质]=],
+    icon_path = [=[Assets/Resources/common/ui/texture/bb_icon_wpk1.png:bb_icon_wpk1]=],
+  },
+  {
+    id = [=[2]=],
+    name = [=[]=],
+    icon_path = [=[Assets/Resources/common/ui/texture/bb_icon_wpk2.png:bb_icon_wpk2]=],
+  },
+  {
+    id = [=[3]=],
+    name = [=[]=],
+    icon_path = [=[Assets/Resources/common/ui/texture/bb_icon_wpk3.png:bb_icon_wpk3]=],
+  },
+  {
+    id = [=[4]=],
+    name = [=[]=],
+    icon_path = [=[Assets/Resources/common/ui/texture/bb_icon_wpk4.png:bb_icon_wpk4]=],
+  },
+  {
+    id = [=[5]=],
+    name = [=[]=],
+    icon_path = [=[Assets/Resources/common/ui/texture/bb_icon_wpk5.png:bb_icon_wpk5]=],
+  },
+}
+
+local index_dict = {
+  unique = {
+    id = {
+      ["1"] = 1,
+      ["2"] = 2,
+      ["3"] = 3,
+      ["4"] = 4,
+      ["5"] = 5,
+    },
+  },
+}
+
+local cfg = {}
+
+function cfg.All()
+  return data_list
+end
+
+function cfg.Get(index)
+  return data_list[index]
+end
+
+function cfg.get_by_id(id)
+  local key = tostring(id)
+  return cfg.Get(index_dict.unique.id[key])
+end
+
+function cfg.contain_key_by_id(id)
+  local key = tostring(id)
+  return index_dict.unique.id[key] ~= nil
+end
+
+return cfg

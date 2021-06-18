@@ -1,0 +1,22 @@
+{
+  "data_list": [
+    {
+      "id": "1",
+      "value": "",
+      "value_dict": {}
+    },
+    {
+      "id": "2",
+      "value": "",
+      "value_dict": {}
+    }
+  ],
+  "index_dict": {
+    "unique": {
+      "id": {
+        "1": 0,
+        "2": 1
+      }
+    }
+  }
+}

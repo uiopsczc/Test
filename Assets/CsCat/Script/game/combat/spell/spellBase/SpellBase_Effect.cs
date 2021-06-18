@@ -8,13 +8,13 @@ namespace CsCat
     //起手特效
     public List<string> CreateHandEffect(float duration)
     {
-      if (this.spellDefinition.hand_effect_ids.IsNullOrEmpty())
+      if (this.cfgSpellData.hand_effect_ids.IsNullOrEmpty())
         return null;
-      var effect_ids = this.spellDefinition.hand_effect_ids;
+      var effect_ids = this.cfgSpellData.hand_effect_ids;
       var guid_list = new List<string>();
       foreach (var effect_id in effect_ids)
       {
-        var effect = Client.instance.combat.effectManager.CreateAttachEffectEntity(effect_id, this.source_unit, duration);
+        var effect = Client.instance.combat.effectManager.CreateAttachEffectEntity(effect_id.ToString(), this.source_unit, duration);
         guid_list.Add(effect.GetGuid());
       }
 
@@ -23,13 +23,13 @@ namespace CsCat
 
     public List<string> CreateGoEffect(float duration)
     {
-      if (this.spellDefinition.go_effect_ids.IsNullOrEmpty())
+      if (this.cfgSpellData.go_effect_ids.IsNullOrEmpty())
         return null;
-      var effect_ids = this.spellDefinition.go_effect_ids;
+      var effect_ids = this.cfgSpellData.go_effect_ids;
       var guid_list = new List<string>();
       foreach (var effect_id in effect_ids)
       {
-        var effect = Client.instance.combat.effectManager.CreateAttachEffectEntity(effect_id, this.source_unit, duration);
+        var effect = Client.instance.combat.effectManager.CreateAttachEffectEntity(effect_id.ToString(), this.source_unit, duration);
         guid_list.Add(effect.GetGuid());
       }
 
@@ -40,7 +40,7 @@ namespace CsCat
     public List<string> CreateHitEffect(Unit source_unit, Unit target_unit, float? duration = null,
       float sector_angle = 0, List<string> force_effect_id_list = null)
     {
-      if (this.spellDefinition.hit_effect_ids.IsNullOrEmpty() && force_effect_id_list.IsNullOrEmpty())
+      if (this.cfgSpellData.hit_effect_ids.IsNullOrEmpty() && force_effect_id_list.IsNullOrEmpty())
         return null;
       Vector3? force_dir = null;
       if (source_unit != null)
@@ -52,7 +52,7 @@ namespace CsCat
 
       var effect_ids = force_effect_id_list != null
         ? force_effect_id_list.ToArray()
-        : this.spellDefinition.hit_effect_ids;
+        : this.cfgSpellData.hit_effect_ids.ToArray<string>();
       var guid_list = new List<string>();
       foreach (var effect_id in effect_ids)
       {
@@ -69,7 +69,7 @@ namespace CsCat
     public List<string> CreateGroundEffect(Vector3? position, Vector3? eulerAngles, float duration,
       List<string> force_effect_id_list = null, Vector3? force_position = null, bool is_hide = false)
     {
-      if (this.spellDefinition.ground_effect_ids.IsNullOrEmpty() && force_effect_id_list.IsNullOrEmpty())
+      if (this.cfgSpellData.ground_effect_ids.IsNullOrEmpty() && force_effect_id_list.IsNullOrEmpty())
         return null;
       Vector3 _position = force_position.GetValueOrDefault(position.GetValueOrDefault(this.source_unit.GetPosition()));
       Vector3 _eulerAngles =
@@ -77,7 +77,7 @@ namespace CsCat
           .eulerAngles);
       var effect_ids = force_effect_id_list != null
         ? force_effect_id_list.ToArray()
-        : this.spellDefinition.ground_effect_ids;
+        : this.cfgSpellData.ground_effect_ids.ToArray<string>();
       var guid_list = new List<string>();
       if (force_position == null)
         _position = Client.instance.combat.pathManager.GetGroundPos(_position);
@@ -95,15 +95,15 @@ namespace CsCat
     //line特效
     public List<string> CreateLineEffect(IPosition target_iposition, float speed, float acc_speed)
     {
-      if (this.spellDefinition.line_effect_ids.IsNullOrEmpty())
+      if (this.cfgSpellData.line_effect_ids.IsNullOrEmpty())
         return null;
       if (target_iposition == null || !target_iposition.IsValid())
         return null;
-      var effect_ids = this.spellDefinition.line_effect_ids;
+      var effect_ids = this.cfgSpellData.line_effect_ids;
       var guid_list = new List<string>();
       foreach (var effect_id in effect_ids)
       {
-        var effect = Client.instance.combat.effectManager.CreateLineEffectEntity(effect_id, this.source_unit,
+        var effect = Client.instance.combat.effectManager.CreateLineEffectEntity(effect_id.ToString(), this.source_unit,
           this.source_unit.ToUnitPosition(), target_iposition, speed, acc_speed);
         guid_list.Add(effect.GetGuid());
       }

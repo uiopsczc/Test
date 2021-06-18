@@ -51,48 +51,48 @@ namespace CsCat
     }
 
 
-    public (bool is_can_cast, SpellDefinition spellDefinition, Type spell_class) CheckIsCanCast(Unit source_unit,
+    public (bool is_can_cast, CfgSpellData cfgSpellData, Type spell_class) CheckIsCanCast(Unit source_unit,
       string spell_id, Unit target_unit, bool is_control)
     {
-      SpellDefinition spellDefinition = DefinitionManager.instance.GetSpellDefinition(spell_id);
+      var cfgSpellData = CfgSpell.Instance.get_by_id(spell_id);
       Type spell_class = null;
-      if (spellDefinition == null)
+      if (cfgSpellData == null)
       {
         LogCat.LogErrorFormat("spell_id(%d) is not exist!", spell_id);
         return (false, null, null);
       }
 
-      if (source_unit == null || (source_unit.IsDead() && !"触发".Equals(spellDefinition.cast_type)))
+      if (source_unit == null || (source_unit.IsDead() && !"触发".Equals(cfgSpellData.cast_type)))
         return (false, null, null);
       if (!source_unit.IsSpellCooldownOk(spell_id))
         return (false, null, null);
-      if (!source_unit.CanBreakCurrentSpell(spell_id, spellDefinition))
+      if (!source_unit.CanBreakCurrentSpell(spell_id, cfgSpellData))
         return (false, null, null);
-      var scope = spellDefinition.target_type ?? "enemy";
+      var scope = cfgSpellData.target_type ?? "enemy";
       //如果是混乱则找任何可以攻击的人
       if (source_unit.IsConfused())
         scope = "all";
       var is_only_attackable = !"friend".Equals(scope);
-      if (spellDefinition.is_need_target)
+      if (cfgSpellData.is_need_target)
       {
         if (target_unit == null)
           return (false, null, null);
         Hashtable range_info = new Hashtable();
         range_info["mode"] = "circle";
-        range_info["radius"] = spellDefinition.range;
+        range_info["radius"] = cfgSpellData.range;
         if (!Client.instance.combat.unitManager.__CheckUnit(target_unit,
           source_unit.ToUnitPosition(), range_info, source_unit.GetFaction(), scope,
           is_only_attackable))
           return (false, null, null);
       }
 
-      spell_class = TypeUtil.GetType(spellDefinition.class_path_cs);
+      spell_class = TypeUtil.GetType(cfgSpellData.class_path_cs);
       if (spell_class.IsHasMethod("CheckIsCanCast") &&
-          !spell_class.InvokeMethod<bool>("CheckIsCanCast", false, source_unit, spell_id, target_unit, spellDefinition,
+          !spell_class.InvokeMethod<bool>("CheckIsCanCast", false, source_unit, spell_id, target_unit, cfgSpellData,
             is_control)
       ) //静态方法CheckIsCanCast
         return (false, null, null);
-      return (true, spellDefinition, spell_class);
+      return (true, cfgSpellData, spell_class);
     }
 
     public List<Unit> RecommendCast(Unit source_unit, string spell_id, Unit target_unit, bool is_control)
@@ -101,15 +101,15 @@ namespace CsCat
         return null;
       if (target_unit == null)
         return null;
-      var spellDefinition = DefinitionManager.instance.GetSpellDefinition(spell_id);
-      var spell_class = TypeUtil.GetType(spellDefinition.class_path_cs);
+      var cfgSpellData = CfgSpell.Instance.get_by_id(spell_id);
+      var spell_class = TypeUtil.GetType(cfgSpellData.class_path_cs);
       if (spell_class == null)
       {
-        LogCat.error("spell code is not exist: ", spellDefinition.class_path_cs);
+        LogCat.error("spell code is not exist: ", cfgSpellData.class_path_cs);
         return null;
       }
 
-      if (this.__IsUnitMatchCondition(source_unit, target_unit, is_control, spellDefinition, spell_class))
+      if (this.__IsUnitMatchCondition(source_unit, target_unit, is_control, cfgSpellData, spell_class))
         return new List<Unit>() { target_unit };
       return null;
     }
@@ -120,18 +120,18 @@ namespace CsCat
         return null;
       if (target_unit_list == null)
         return null;
-      var spellDefinition = DefinitionManager.instance.GetSpellDefinition(spell_id);
-      var spell_class = TypeUtil.GetType(spellDefinition.class_path_cs);
+      var cfgSpellData = CfgSpell.Instance.get_by_id(spell_id);
+      var spell_class = TypeUtil.GetType(cfgSpellData.class_path_cs);
       if (spell_class == null)
       {
-        LogCat.error("spell code is not exist: ", spellDefinition.class_path_cs);
+        LogCat.error("spell code is not exist: ", cfgSpellData.class_path_cs);
         return null;
       }
 
       List<Unit> new_target_unit_list = new List<Unit>();
       foreach (var target_unit in target_unit_list)
       {
-        if (this.__IsUnitMatchCondition(source_unit, target_unit, is_control, spellDefinition, spell_class))
+        if (this.__IsUnitMatchCondition(source_unit, target_unit, is_control, cfgSpellData, spell_class))
           new_target_unit_list.Add(target_unit);
       }
 
@@ -139,7 +139,7 @@ namespace CsCat
     }
 
     public List<Unit> RecommendSpellRule(Unit source_unit, Unit target_unit,
-      SpellDefinition spellDefinition, Vector3 origin_position, List<Unit> target_unit_list = null)
+      CfgSpellData cfgSpellData, Vector3 origin_position, List<Unit> target_unit_list = null)
     {
       //当前敌人
       //随机x个敌人
@@ -153,17 +153,17 @@ namespace CsCat
       //场上所有人(不分敌友)
       if (target_unit == null)
         return null;
-      if (spellDefinition.select_unit_arg_dict.IsNullOrEmpty())
+      if (cfgSpellData.select_unit_arg_dict.IsNullOrEmpty())
         return target_unit_list ?? new List<Unit>() { target_unit };
 
-      var select_unit_arg_dict = DoerAttrParserUtil.ConvertTableWithTypeString(spellDefinition.select_unit_arg_dict);
+      var select_unit_arg_dict = DoerAttrParserUtil.ConvertTableWithTypeString(cfgSpellData.select_unit_arg_dict.ToDict<string,string>());
       var select_unit_faction = select_unit_arg_dict.Get<string>("select_unit_faction");
       var select_unit_count = select_unit_arg_dict.GetOrGetDefault<int>("select_unit_count", () => 1000);
       var scope = SpellConst.Select_Unit_Faction_Dict[select_unit_faction];
 
       var range_info = new Hashtable();
       range_info["mode"] = "circle";
-      range_info["radius"] = spellDefinition.range;
+      range_info["radius"] = cfgSpellData.range;
       var condition_dict = new Hashtable();
 
       condition_dict["order"] = "distance";
@@ -184,23 +184,23 @@ namespace CsCat
     }
 
     public bool __IsUnitMatchCondition(Unit source_unit, Unit target_unit, bool is_control,
-      SpellDefinition spellDefinition,
+      CfgSpellData cfgSpellData,
       Type spell_class)
     {
       if (target_unit.IsDead())
         return false;
       if (!source_unit.IsConfused())
       {
-        if ("enemy".Equals(spellDefinition.target_type) && target_unit.IsInvincible())
+        if ("enemy".Equals(cfgSpellData.target_type) && target_unit.IsInvincible())
           return false;
-        if (spellDefinition.target_type.IsNullOrWhiteSpace() && !"all".Equals(spellDefinition.target_type))
+        if (cfgSpellData.target_type.IsNullOrWhiteSpace() && !"all".Equals(cfgSpellData.target_type))
           if (!Client.instance.combat.unitManager.CheckFaction(source_unit.GetFaction(), target_unit.GetFaction(),
-            spellDefinition.target_type))
+            cfgSpellData.target_type))
             return false;
       }
 
-      if (!spell_class.InvokeMethod<bool>("IsUnitMatchCondition", false, source_unit, spellDefinition.id, target_unit,
-        spellDefinition, is_control))
+      if (!spell_class.InvokeMethod<bool>("IsUnitMatchCondition", false, source_unit, cfgSpellData.id, target_unit,
+        cfgSpellData, is_control))
         return false;
       return true;
     }

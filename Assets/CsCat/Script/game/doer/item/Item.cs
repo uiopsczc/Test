@@ -18,9 +18,9 @@ namespace CsCat
       return this.factory as ItemFactory;
     }
 
-    public ItemDefinition GetItemDefinition()
+    public CfgItemData GetCfgItemData()
     {
-      return GetItemFactory().GetItemDefinition(this.GetId());
+      return CfgItem.Instance.get_by_id(this.GetId());
     }
 
     ///////////////////////////////////////DoXXX//////////////////////////////
@@ -112,6 +112,26 @@ namespace CsCat
     public void SetIsPutOn(bool is_put_on)
     {
       this.SetTmp("o_is_put_on", is_put_on);
+    }
+
+    public string GetType1()
+    {
+      return this.GetCfgItemData().type_1;
+    }
+
+    public string GetType2()
+    {
+      return this.GetCfgItemData().type_2;
+    }
+
+    public bool CanFold()
+    {
+      return this.GetCfgItemData().can_fold;
+    }
+
+    public string GetName()
+    {
+      return this.GetCfgItemData().name;
     }
 
   }

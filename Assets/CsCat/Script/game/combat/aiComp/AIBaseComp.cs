@@ -73,8 +73,8 @@ namespace CsCat
       //如果没到释放的时机，直接就返回false
       if (!this.unit.IsTimeToCastSpell(spell_id))
         return (false, false);
-      var spellDefinition = DefinitionManager.instance.GetSpellDefinition(spell_id);
-      var attack_range = spellDefinition.range;
+      var cfgSpellData = CfgSpell.Instance.get_by_id(spell_id);
+      var attack_range = cfgSpellData.range;
       var recommend_target_unit_list = Client.instance.combat.spellManager.RecommendCast(this.unit, spell_id,
         target_unit_list,
         is_can_attack_without_seeing_target);
@@ -90,7 +90,7 @@ namespace CsCat
 
       //ai需要有目标才放技能放技能
       //  如果技能填了不强制面向目标，则控制的时候不走去攻击范围，但ai还是会走去攻击范围
-      if (attack_range == 0 || (is_can_attack_without_seeing_target && spellDefinition.is_not_face_to_target) ||
+      if (attack_range == 0 || (is_can_attack_without_seeing_target && cfgSpellData.is_not_face_to_target) ||
           !this.IsNeedGotoAttackRange(target_unit, attack_range))
         return (this.unit.CastSpell(spell_id, target_unit, is_can_attack_without_seeing_target) != null, false);
       return (false, false);
@@ -101,8 +101,8 @@ namespace CsCat
       var attack_id = this.unit.GetNormalAttackId();
       if (attack_id.IsNullOrWhiteSpace() || !this.unit.IsCanNormalAttack())
         return (false, false);
-      var spellDefinition = DefinitionManager.instance.GetSpellDefinition(attack_id);
-      var attack_range = spellDefinition.range;
+      var cfgSpellData =  CfgSpell.Instance.get_by_id(attack_id);
+      var attack_range = cfgSpellData.range;
       var recommend_target_unit_list = Client.instance.combat.spellManager.RecommendCast(this.unit, attack_id,
         target_unit_list,
         is_can_attack_without_seeing_target);

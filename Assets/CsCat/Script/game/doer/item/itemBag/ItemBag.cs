@@ -155,8 +155,8 @@ namespace CsCat
     // 对于不可折叠物品则直接加入到对象列表
     public List<Item> AddItems(string id, int count)
     {
-      var definition = DefinitionManager.instance.itemDefinition.GetData(id);
-      var can_fold = definition.can_fold;
+      var cfgItemData = CfgItem.Instance.get_by_id(id);
+      var can_fold = cfgItemData.can_fold;
       Item item = null;
       List<Item> result = new List<Item>();
       if (can_fold)

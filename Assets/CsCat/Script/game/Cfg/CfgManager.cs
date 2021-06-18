@@ -16,6 +16,7 @@ namespace CsCat
     void OnLoadedCfgFilePathes(AssetCat assetCat)
     {
       string file_contnet = assetCat.Get<TextAsset>().text;
+      file_contnet = file_contnet.Replace("\r", "");
       string[] file_pathes = file_contnet.Split('\n');
       loaded_count = 0;
       total_count = file_pathes.Length;

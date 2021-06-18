@@ -6,7 +6,7 @@ namespace CsCat
   public class EffectEntity : GameObjectEntity
   {
     public string effect_id;
-    public EffectDefinition effectDefinition;
+    public CfgEffectData cfgEffectData;
     public Unit unit;
 
 
@@ -15,8 +15,8 @@ namespace CsCat
       base.Init();
       this.effect_id = effect_id;
       this.unit = unit;
-      effectDefinition = DefinitionManager.instance.effectDefinition.GetData(this.effect_id);
-      graphicComponent.SetPrefabPath(effectDefinition.prefab_path);
+      cfgEffectData = CfgEffect.Instance.get_by_id(this.effect_id);
+      graphicComponent.SetPrefabPath(cfgEffectData.prefab_path);
     }
 
     protected override GraphicComponent CreateGraphicComponent()

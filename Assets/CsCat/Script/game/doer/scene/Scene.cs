@@ -23,9 +23,9 @@ namespace CsCat
       return this.factory as SceneFactory;
     }
 
-    public SceneDefinition GetSceneDefinition()
+    public CfgSceneData GetCfgSceneData()
     {
-      return GetSceneFactory().GetSceneDefinition(this.GetId());
+      return GetSceneFactory().GetCfgSceneData(this.GetId());
     }
 
     //////////////////////DoXXX/////////////////////////////////////
@@ -227,8 +227,8 @@ namespace CsCat
         string src = Get<string>("src", "");
         if (src.Length > 0)
         {
-          SceneDefinition definition = Client.instance.sceneFactory.GetDefinition(src) as SceneDefinition;
-          sceneMapInfo = definition.GetSceneMapInfo();
+          var cfgSceneData = CfgScene.Instance.get_by_id(src);
+          sceneMapInfo = cfgSceneData.GetSceneMapInfo();
         }
       }
       else

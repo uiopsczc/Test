@@ -1,0 +1,75 @@
+--AutoGen. DO NOT EDIT!!!
+---@class CfgDoerEventStepData
+---@field id
+---@field name
+---@field trigger_condition
+---@field trigger_desc
+---@field can_not_trigger_desc
+---@field execute_condition
+---@field execute_desc
+---@field can_not_execute_desc
+---@field is_stop_here
+---@field set_attr_dict
+---@field add_attr_dict
+---@field deal_item_dict
+---@field give_up_mission_ids
+---@field accept_mission_ids
+---@field finish_mission_ids
+---@field add_finished_mission_ids
+---@field remove_finished_mission_ids
+local _
+
+
+
+---@type CfgDoerEventStepData[]
+local data_list = {
+  {
+    id = [=[1]=],
+    name = [=[事件子步骤1]=],
+    trigger_condition = [=[{@eval(${u.mp}==0)}]=],
+    trigger_desc = [=[触发事件子步骤1]=],
+    can_not_trigger_desc = [=[不触发事件子步骤1]=],
+    execute_condition = [=[{@eval(${u.tp}==0)}]=],
+    execute_desc = [=[执行事件子步骤1]=],
+    can_not_execute_desc = [=[执行事件子步骤1]=],
+    is_stop_here = false,
+    set_attr_dict = json:decode([=[{}]=]),
+    add_attr_dict = json:decode([=[{"u.cp": "2", "u.dp": "4"}]=]),
+    deal_item_dict = json:decode([=[{"5": "1(atk:5,def:6)"}]=]),
+    give_up_mission_ids = json:decode([=[[]]=]),
+    accept_mission_ids = json:decode([=[[]]=]),
+    finish_mission_ids = json:decode([=[[]]=]),
+    add_finished_mission_ids = json:decode([=[[]]=]),
+    remove_finished_mission_ids = json:decode([=[[]]=]),
+  },
+}
+
+local index_dict = {
+  unique = {
+    id = {
+      ["1"] = 1,
+    },
+  },
+}
+
+local cfg = {}
+
+function cfg.All()
+  return data_list
+end
+
+function cfg.Get(index)
+  return data_list[index]
+end
+
+function cfg.get_by_id(id)
+  local key = tostring(id)
+  return cfg.Get(index_dict.unique.id[key])
+end
+
+function cfg.contain_key_by_id(id)
+  local key = tostring(id)
+  return index_dict.unique.id[key] ~= nil
+end
+
+return cfg

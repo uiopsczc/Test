@@ -1,0 +1,55 @@
+--AutoGen. DO NOT EDIT!!!
+---@class CfgSpellTriggerData
+---@field id
+---@field name
+---@field trigger_type
+---@field trigger_spell_id
+---@field trigger_spell_delay_duration
+---@field check_target
+---@field condition
+local _
+
+
+
+---@type CfgSpellTriggerData[]
+local data_list = {
+  {
+    id = [=[1]=],
+    name = [=[技能触发1]=],
+    trigger_type = [=[]=],
+    trigger_spell_id = [=[]=],
+    trigger_spell_delay_duration = 0.0,
+    check_target = [=[]=],
+    condition = [=[]=],
+  },
+}
+
+local index_dict = {
+  unique = {
+    id = {
+      ["1"] = 1,
+    },
+  },
+}
+
+local cfg = {}
+
+function cfg.All()
+  return data_list
+end
+
+function cfg.Get(index)
+  return data_list[index]
+end
+
+function cfg.get_by_id(id)
+  local key = tostring(id)
+  return cfg.Get(index_dict.unique.id[key])
+end
+
+function cfg.contain_key_by_id(id)
+  local key = tostring(id)
+  return index_dict.unique.id[key] ~= nil
+end
+
+return cfg

@@ -49,8 +49,8 @@ namespace CsCat
       var old_calc_prop_dict = this.calc_prop_dict.Clone_Deep();
       base_prop_dict.Clear();
       //基础属性统计
-      foreach (var id in DefinitionManager.instance.propertyDefinition.GetIdList())
-        base_prop_dict[id] = 0;
+      foreach (var cfgPropertyData in CfgProperty.Instance.All())
+        base_prop_dict[cfgPropertyData.id] = 0;
       foreach (var prop_set in prop_set_dict.Values)
       {
         foreach (var key in prop_set.Keys)

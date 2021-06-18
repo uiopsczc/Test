@@ -141,7 +141,7 @@ namespace CsCat
     {
       add_subDoer.SetOwner(parent_doer);
       string id = add_subDoer.GetId();
-      bool can_fold = add_subDoer.CanFold();
+      bool can_fold = add_subDoer.IsHasMethod("CanFold") && add_subDoer.InvokeMethod<bool>("CanFold");
       var sub_doers = GetSubDoers_ToEdit(parent_doer, sub_doer_key, id);
       if (can_fold)
       {
@@ -180,7 +180,7 @@ namespace CsCat
         return result.ToArray();
       }
 
-      bool can_fold = (sub_doers[0] as T).CanFold();
+      bool can_fold = (sub_doers[0] as T).IsHasMethod("CanFold") && (sub_doers[0] as T).InvokeMethod<bool>("CanFold");
       for (int i = sub_doers.Count - 1; i >= 0; i--)
       {
         var sub_doer = sub_doers[i] as T;

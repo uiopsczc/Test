@@ -52,7 +52,7 @@ namespace CsCat
                              !this.HasState(StateConst.CanNotMove) &&
                              (this.current_attack == null ||
                               this.current_attack.is_past_break_time ||
-                              this.current_attack.spellDefinition.is_can_move_while_cast);
+                              this.current_attack.cfgSpellData.is_can_move_while_cast);
       bool new_is_can_attack = is_common_state &&
                                (!this.HasState(StateConst.CanNotAttack)) &&
                                (this.current_attack == null || this.current_attack.is_past_break_time);

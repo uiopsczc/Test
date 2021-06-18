@@ -1,0 +1,97 @@
+--AutoGen. DO NOT EDIT!!!
+---@class CfgSpellData
+---@field id
+---@field name
+---@field class_path_lua
+---@field class_path_cs
+---@field is_can_move_while_cast
+---@field range
+---@field damage_factor
+---@field type
+---@field target_type
+---@field damage_type
+---@field cast_type
+---@field action_name
+---@field animation_name
+---@field animation_duration
+---@field hand_effect_ids
+---@field go_effect_ids
+---@field hit_effect_ids
+---@field ground_effect_ids
+---@field line_effect_ids
+---@field is_not_face_to_target
+---@field cast_time
+---@field break_time
+---@field new_spell_trigger_ids
+---@field is_need_target
+---@field cooldown_duration
+---@field passive_buff_ids
+---@field select_unit_arg_dict
+---@field arg_dict
+local _
+
+
+
+---@type CfgSpellData[]
+local data_list = {
+  {
+    id = [=[1]=],
+    name = [=[技能1]=],
+    class_path_lua = [=[]=],
+    class_path_cs = [=[]=],
+    is_can_move_while_cast = false,
+    range = 0.0,
+    damage_factor = 0.0,
+    type = [=[]=],
+    target_type = [=[]=],
+    damage_type = [=[]=],
+    cast_type = [=[]=],
+    action_name = [=[]=],
+    animation_name = [=[]=],
+    animation_duration = 0.0,
+    hand_effect_ids = json:decode([=[[]]=]),
+    go_effect_ids = json:decode([=[[]]=]),
+    hit_effect_ids = json:decode([=[[]]=]),
+    ground_effect_ids = json:decode([=[[]]=]),
+    line_effect_ids = json:decode([=[[]]=]),
+    is_not_face_to_target = false,
+    cast_time = 0.0,
+    break_time = 0.0,
+    new_spell_trigger_ids = json:decode([=[[]]=]),
+    is_need_target = false,
+    cooldown_duration = 0.0,
+    passive_buff_ids = json:decode([=[[]]=]),
+    select_unit_arg_dict = json:decode([=[{}]=]),
+    arg_dict = json:decode([=[{}]=]),
+  },
+}
+
+local index_dict = {
+  unique = {
+    id = {
+      ["1"] = 1,
+    },
+  },
+}
+
+local cfg = {}
+
+function cfg.All()
+  return data_list
+end
+
+function cfg.Get(index)
+  return data_list[index]
+end
+
+function cfg.get_by_id(id)
+  local key = tostring(id)
+  return cfg.Get(index_dict.unique.id[key])
+end
+
+function cfg.contain_key_by_id(id)
+  local key = tostring(id)
+  return index_dict.unique.id[key] ~= nil
+end
+
+return cfg

@@ -11,24 +11,11 @@ namespace CsCat
   {
     private Dictionary<string, Dictionary<string, DBase>> id_dict = new Dictionary<string, Dictionary<string, DBase>>();
 
-    protected virtual string default_doer_class_path
-    {
-      get { return null; }
-    }
+    protected virtual string default_doer_class_path => null;
 
-    public virtual ExcelAssetBase GetDefinitions()
+    protected virtual string GetClassPath(string id)
     {
-      return null;
-    }
-
-    public virtual ExcelAssetBase GetDefinition(string id)
-    {
-      return null;
-    }
-
-    public T GetDefinition<T>(string id) where T : ExcelAssetBase
-    {
-      return this.GetDefinitions().GetData<T>(id);
+      return default_doer_class_path;
     }
 
     protected virtual DBase __NewDBase(string id_or_rid)
@@ -38,8 +25,7 @@ namespace CsCat
 
     protected virtual Doer __NewDoer(string id)
     {
-      var definition = this.GetDefinition(id);
-      string class_path = definition.class_path_cs.IsNullOrWhiteSpace() ? default_doer_class_path : definition.class_path_cs;
+      string class_path = GetClassPath(id);
       Type type = TypeUtil.GetType(class_path);
       var doer = this.AddChildWithoutInit(null, type) as Doer;
       return doer;

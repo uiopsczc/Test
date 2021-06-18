@@ -19,7 +19,7 @@ local _
 ---@type CfgSummonbeastguardskillData[]
 local data_list = {
   {
-    id = 1,
+    id = [=[1]=],
     summonbeast_id = 411001,
     star = 0,
     star_fighting = 1000,
@@ -33,7 +33,7 @@ local data_list = {
     skill_desc_args4 = json:decode([=[[]]=]),
   },
   {
-    id = 2,
+    id = [=[2]=],
     summonbeast_id = 411001,
     star = 1,
     star_fighting = 2000,
@@ -47,7 +47,7 @@ local data_list = {
     skill_desc_args4 = json:decode([=[[]]=]),
   },
   {
-    id = 3,
+    id = [=[3]=],
     summonbeast_id = 411001,
     star = 2,
     star_fighting = 3000,
@@ -61,7 +61,7 @@ local data_list = {
     skill_desc_args4 = json:decode([=[[]]=]),
   },
   {
-    id = 4,
+    id = [=[4]=],
     summonbeast_id = 411002,
     star = 0,
     star_fighting = 4000,
@@ -75,7 +75,7 @@ local data_list = {
     skill_desc_args4 = json:decode([=[[]]=]),
   },
   {
-    id = 5,
+    id = [=[5]=],
     summonbeast_id = 411001,
     star = 5,
     star_fighting = 1000,

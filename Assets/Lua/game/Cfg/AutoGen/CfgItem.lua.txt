@@ -1,0 +1,126 @@
+--AutoGen. DO NOT EDIT!!!
+---@class CfgItemData
+---@field id
+---@field name
+---@field class_path_lua
+---@field class_path_cs
+---@field type_1
+---@field type_2
+---@field can_fold
+---@field quality_id
+---@field bg_path
+---@field icon_path
+local _
+
+
+
+---@type CfgItemData[]
+local data_list = {
+  {
+    id = [=[1]=],
+    name = [=[金币]=],
+    class_path_lua = [=[]=],
+    class_path_cs = [=[]=],
+    type_1 = [=[]=],
+    type_2 = [=[]=],
+    can_fold = true,
+    quality_id = [=[1]=],
+    bg_path = [=[]=],
+    icon_path = [=[Assets/Resources/common/ui/texture/zj1_wq_jjq.png:zj1_wq_jjq]=],
+  },
+  {
+    id = [=[2]=],
+    name = [=[钻石]=],
+    class_path_lua = [=[]=],
+    class_path_cs = [=[]=],
+    type_1 = [=[]=],
+    type_2 = [=[]=],
+    can_fold = true,
+    quality_id = [=[1]=],
+    bg_path = [=[]=],
+    icon_path = [=[Assets/Resources/common/ui/texture/zj1_wq_jjq.png:zj1_wq_jjq]=],
+  },
+  {
+    id = [=[3]=],
+    name = [=[体力]=],
+    class_path_lua = [=[]=],
+    class_path_cs = [=[]=],
+    type_1 = [=[]=],
+    type_2 = [=[]=],
+    can_fold = true,
+    quality_id = [=[1]=],
+    bg_path = [=[]=],
+    icon_path = [=[Assets/Resources/common/ui/texture/zj1_wq_jjq.png:zj1_wq_jjq]=],
+  },
+  {
+    id = [=[4]=],
+    name = [=[回复剂]=],
+    class_path_lua = [=[game.doer.item.impl.HuiFuJi]=],
+    class_path_cs = [=[HuiFuJi]=],
+    type_1 = [=[物品]=],
+    type_2 = [=[]=],
+    can_fold = true,
+    quality_id = [=[1]=],
+    bg_path = [=[]=],
+    icon_path = [=[Assets/Resources/common/ui/texture/zj1_wq_jjq.png:zj1_wq_jjq]=],
+  },
+  {
+    id = [=[5]=],
+    name = [=[小刀]=],
+    class_path_lua = [=[]=],
+    class_path_cs = [=[]=],
+    type_1 = [=[装备]=],
+    type_2 = [=[武器]=],
+    can_fold = false,
+    quality_id = [=[1]=],
+    bg_path = [=[]=],
+    icon_path = [=[Assets/Resources/common/ui/texture/zj1_wq_jjq.png:zj1_wq_jjq]=],
+  },
+  {
+    id = [=[6]=],
+    name = [=[大弓]=],
+    class_path_lua = [=[]=],
+    class_path_cs = [=[]=],
+    type_1 = [=[装备]=],
+    type_2 = [=[武器]=],
+    can_fold = false,
+    quality_id = [=[1]=],
+    bg_path = [=[]=],
+    icon_path = [=[Assets/Resources/common/ui/texture/zj1_wq_jjq.png:zj1_wq_jjq]=],
+  },
+}
+
+local index_dict = {
+  unique = {
+    id = {
+      ["1"] = 1,
+      ["2"] = 2,
+      ["3"] = 3,
+      ["4"] = 4,
+      ["5"] = 5,
+      ["6"] = 6,
+    },
+  },
+}
+
+local cfg = {}
+
+function cfg.All()
+  return data_list
+end
+
+function cfg.Get(index)
+  return data_list[index]
+end
+
+function cfg.get_by_id(id)
+  local key = tostring(id)
+  return cfg.Get(index_dict.unique.id[key])
+end
+
+function cfg.contain_key_by_id(id)
+  local key = tostring(id)
+  return index_dict.unique.id[key] ~= nil
+end
+
+return cfg

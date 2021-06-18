@@ -2,24 +2,17 @@ namespace CsCat
 {
   public class MissionFactory : DoerFactory
   {
-    protected override string default_doer_class_path
-    {
-      get { return "CsCat.Mission"; }
-    }
+    protected override string default_doer_class_path => "CsCat.Mission";
 
-    public override ExcelAssetBase GetDefinitions()
+    protected override string GetClassPath(string id)
     {
-      return DefinitionManager.instance.missionDefinition;
+      return this.GetCfgMissionData(id).class_path_cs.IsNullOrWhiteSpace() ? base.GetClassPath(id) : GetCfgMissionData(id).class_path_cs;
     }
+    
 
-    public override ExcelAssetBase GetDefinition(string id)
+    public CfgMissionData GetCfgMissionData(string id)
     {
-      return GetDefinitions().GetData<MissionDefinition>(id);
-    }
-
-    public MissionDefinition GetMissionDefinition(string id)
-    {
-      return GetDefinition(id) as MissionDefinition;
+      return CfgMission.Instance.get_by_id(id);
     }
 
     protected override DBase __NewDBase(string id_or_rid)

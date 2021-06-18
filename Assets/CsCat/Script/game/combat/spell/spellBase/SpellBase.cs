@@ -9,7 +9,7 @@ namespace CsCat
     public Unit source_unit;
     public string spell_id;
     public Unit target_unit;
-    public SpellDefinition spellDefinition;
+    public CfgSpellData cfgSpellData;
     public Hashtable instance_arg_dict;
 
     public Vector3? origin_position;
@@ -22,13 +22,13 @@ namespace CsCat
     public List<Hashtable> animation_event_list = new List<Hashtable>();
 
     public void Init(Unit source_unit, string spell_id,
-      Unit target_unit, SpellDefinition spellDefinition, Hashtable instance_arg_dict)
+      Unit target_unit, CfgSpellData cfgSpellData, Hashtable instance_arg_dict)
     {
       base.Init();
       this.source_unit = source_unit;
       this.spell_id = spell_id;
       this.target_unit = target_unit;
-      this.spellDefinition = spellDefinition;
+      this.cfgSpellData = cfgSpellData;
       this.instance_arg_dict = instance_arg_dict;
 
       this.origin_position =
@@ -37,9 +37,9 @@ namespace CsCat
       this.attack_dir = this.transmit_arg_dict.Get<Vector3>(attack_dir);
       this.new_spell_trigger_id = this.transmit_arg_dict.Get<string>("new_spell_trigger_id"); // 通过哪个trigger_id启动的技能
 
-      this.arg_dict = DoerAttrParserUtil.ConvertTableWithTypeString(this.spellDefinition.arg_dict);
-      this.is_can_move_while_cast = this.spellDefinition.is_can_move_while_cast;
-      this.is_spell_animation_finished = "触发".Equals(this.spellDefinition.cast_type);
+      this.arg_dict = DoerAttrParserUtil.ConvertTableWithTypeString(this.cfgSpellData.arg_dict.ToDict<string,string>());
+      this.is_can_move_while_cast = this.cfgSpellData.is_can_move_while_cast;
+      this.is_spell_animation_finished = "触发".Equals(this.cfgSpellData.cast_type);
 
       if (this.is_can_move_while_cast && this.source_unit != null && !this.source_unit.IsDead())
         this.source_unit.SetIsMoveWithMoveAnimation(false);
@@ -59,7 +59,7 @@ namespace CsCat
         //      end
         this.ProcessAnimationEvent(deltaTime);
       }
-      else if ("触发".Equals(this.spellDefinition.cast_type))
+      else if ("触发".Equals(this.cfgSpellData.cast_type))
         this.ProcessAnimationEvent(deltaTime);
     }
 

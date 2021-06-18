@@ -32,7 +32,7 @@ namespace CsCat
       if (damage_factor != null && damage_factor.Value > 0)
         _damage_factor = damage_factor.Value;
       else
-        _damage_factor = this.spellDefinition.damage_factor == 0 ? 1 : this.spellDefinition.damage_factor;
+        _damage_factor = this.cfgSpellData.damage_factor == 0 ? 1 : this.cfgSpellData.damage_factor;
       //计算原始伤害值
       int damage_value;
       if (force_damage_value == null)
@@ -68,7 +68,7 @@ namespace CsCat
       if (heal_factor != null)
         _heal_factor = heal_factor.Value;
       else
-        _heal_factor = this.spellDefinition.damage_factor == 0 ? 1 : this.spellDefinition.damage_factor;
+        _heal_factor = this.cfgSpellData.damage_factor == 0 ? 1 : this.cfgSpellData.damage_factor;
 
       int heal_value;
       if (force_damage_value != null)
@@ -77,7 +77,7 @@ namespace CsCat
       {
         Hashtable arg_dict = new Hashtable();
         arg_dict["heal_factor"] = _heal_factor;
-        arg_dict["damage_type"] = this.spellDefinition.damage_type;
+        arg_dict["damage_type"] = this.cfgSpellData.damage_type;
         (heal_value, special_effect_dict) =
           source_unit.propertyComp.CalculateOriginalHealValue(arg_dict);
       }

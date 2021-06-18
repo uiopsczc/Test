@@ -11,8 +11,8 @@ namespace CsCat
     {
       if (graphicComponent.transform == null)
         return;
-      move_to_target_pos = this.unitDefinition.offset_y > 0
-        ? (move_to_target_pos + new Vector3(0, this.unitDefinition.offset_y, 0))
+      move_to_target_pos = this.cfgUnitData.offset_y > 0
+        ? (move_to_target_pos + new Vector3(0, this.cfgUnitData.offset_y, 0))
         : move_to_target_pos;
       Client.instance.moveManager.MoveTo(graphicComponent.transform, move_to_target_pos, duration);
     }

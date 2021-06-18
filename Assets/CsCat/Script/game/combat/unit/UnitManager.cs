@@ -40,8 +40,8 @@ namespace CsCat
       unit.Build(arg_dict);
       this.unit_dict[unit.key] = unit;
       this.faction_unit_dict[unit.GetFaction()][unit.GetGuid()] = unit;
-      if (!unit.unitDefinition.ai_class_path_cs.IsNullOrWhiteSpace())
-        unit.RunAI(unit.unitDefinition.ai_class_path_cs);
+      if (!unit.cfgUnitData.ai_class_path_cs.IsNullOrWhiteSpace())
+        unit.RunAI(unit.cfgUnitData.ai_class_path_cs);
       return unit;
     }
 

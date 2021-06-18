@@ -9,8 +9,8 @@ namespace CsCat
 
     public float GetCooldownPct()
     {
-      var spellDefinition = DefinitionManager.instance.GetSpellDefinition(this.spell_id);
-      float cooldown_duration = spellDefinition.cooldown_duration;
+      var cfgSpellData = CfgSpell.Instance.get_by_id(this.spell_id);
+      float cooldown_duration = cfgSpellData.cooldown_duration;
       return this.cooldown_remain_duration / (cooldown_duration * this.cooldown_rate);
     }
   }

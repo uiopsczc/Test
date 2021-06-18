@@ -121,7 +121,7 @@ class ExportXlsx2Cs(object):
     indent += 1
     fieldInfo_list = ExportXlsxUtil.GetExportSheetFiledInfoList(sheet)
     for fieldInfo in fieldInfo_list:
-      content += "%s//%s\n" % (StringUtil.GetSpace(indent), fieldInfo["name_chinese"])
+      content += "%s/*%s*/\n" % (StringUtil.GetSpace(indent), fieldInfo["name_chinese"])
       content += "%spublic %s %s { get; set; }\n" % (StringUtil.GetSpace(indent), ExportXlsxUtil.GetExportCsType(fieldInfo["type"]), fieldInfo["name"])
     indent -= 1
     content += "%s}\n" % (StringUtil.GetSpace(indent))

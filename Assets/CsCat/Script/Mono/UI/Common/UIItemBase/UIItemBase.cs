@@ -17,8 +17,8 @@ namespace CsCat
 
     private string item_id;
     private int item_count;
-    private ItemDefinition itemDefinition;
-    private QualityDefinition qualityDefinition;
+    private CfgItemData cfgItemData;
+    private CfgQualityData cfgQualityData;
 
     public void Init(Transform parent_transform)
     {
@@ -45,23 +45,23 @@ namespace CsCat
       this.item_id = item_id;
       this.item_count = item_count;
 
-      this.itemDefinition = DefinitionManager.instance.itemDefinition.GetData(item_id);
+      this.cfgItemData = CfgItem.Instance.get_by_id(item_id);
       //    LogCat.logError(Client.instance.definitionManager.Quality.GetData(item_data.quality_id));
-      this.qualityDefinition = itemDefinition.quality_id == null
+      this.cfgQualityData = cfgItemData.quality_id == null
         ? null
-        : DefinitionManager.instance.qualityDefinition.GetData(itemDefinition.quality_id);
+        : CfgQuality.Instance.get_by_id(cfgItemData.quality_id);
 
-      if (!itemDefinition.bg_path.IsNullOrWhiteSpace())
-        this.SetImageAsync(this.content_bg_image, itemDefinition.bg_path, null, false);
-      if (this.qualityDefinition != null && !this.qualityDefinition.icon_path.IsNullOrWhiteSpace())
-        this.SetImageAsync(this.content_quality_image, qualityDefinition.icon_path, null, false);
+      if (!cfgItemData.bg_path.IsNullOrWhiteSpace())
+        this.SetImageAsync(this.content_bg_image, cfgItemData.bg_path, null, false);
+      if (this.cfgQualityData != null && !this.cfgQualityData.icon_path.IsNullOrWhiteSpace())
+        this.SetImageAsync(this.content_quality_image, cfgQualityData.icon_path, null, false);
       else
         this.content_bg_image.gameObject.SetActive(false);
       //    LogCat.LogWarning(this.content_icon_image);
       //    LogCat.LogWarning(itemData.icon_path);
-      this.SetImageAsync(this.content_icon_image, itemDefinition.icon_path, null, false);
+      this.SetImageAsync(this.content_icon_image, cfgItemData.icon_path, null, false);
       this.content_count_text.text = (item_count == 0 || item_count == 1) ? "" : string.Format("x{0}", item_count);
-      this.name_text.text = itemDefinition.name;
+      this.name_text.text = cfgItemData.name;
 
     }
   }

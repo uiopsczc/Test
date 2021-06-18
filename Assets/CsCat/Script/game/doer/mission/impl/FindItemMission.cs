@@ -10,7 +10,7 @@ namespace CsCat
       if (!base.OnAccept(user))
         return false;
       DoerAttrParser doerAttrParser = new DoerAttrParser(Client.instance.user, this, this.GetOwner(), null);
-      Dictionary<string, string> find_item_dict = GetMissionDefinition().find_item_dict;
+      Dictionary<string, string> find_item_dict = GetCfgMissionData().find_item_dict.ToDict<string,string>();
       Dictionary<string, int> _find_item_dict = new Dictionary<string, int>();
       foreach (var item_id in find_item_dict.Keys)
       {
@@ -46,7 +46,7 @@ namespace CsCat
       StringBuilder sb = new StringBuilder();
       foreach (var item_id in find_item_dict.Keys)
       {
-        string item_name = DefinitionManager.instance.itemDefinition.GetData(item_id).name;
+        string item_name = CfgItem.Instance.get_by_id(item_id).name;
         int cur_count = user.GetItemCount(item_id);
         int need_count = find_item_dict[item_id];
         if (cur_count > need_count)

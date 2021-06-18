@@ -1,0 +1,16 @@
+{
+  "data_list": [
+    {
+      "id": "力量",
+      "name": "力量",
+      "is_pct": false
+    }
+  ],
+  "index_dict": {
+    "unique": {
+      "id": {
+        "力量": 0
+      }
+    }
+  }
+}

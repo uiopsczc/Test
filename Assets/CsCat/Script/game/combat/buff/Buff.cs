@@ -8,7 +8,7 @@ namespace CsCat
     //因为有些buff可以同时存在多个，但效果只有一个生效
     private List<BuffCache> buffCache_list = new List<BuffCache>(); //效果不累加
     private BuffManager buffManager;
-    public BuffDefinition buffDefinition;
+    public CfgBuffData cfgBuffData;
     private List<EffectEntity> effect_list = new List<EffectEntity>(); // 一个buff可能有多个特效
     public string buff_id;
     private string trigger_spell_guid;
@@ -19,7 +19,7 @@ namespace CsCat
       this.buffManager = buffManager;
       this.buff_id = buff_id;
 
-      buffDefinition = DefinitionManager.instance.buffDefinition.GetData(this.buff_id);
+      cfgBuffData = CfgBuff.Instance.get_by_id(this.buff_id);
 
     }
 
@@ -32,7 +32,7 @@ namespace CsCat
         this.AddEffects();
         this.AddPropertyDict();
         this.AddTriggerSpell();
-        this.buffManager.AddState(this.buffDefinition.state);
+        this.buffManager.AddState(this.cfgBuffData.state);
       }
 
       return this;
@@ -75,15 +75,15 @@ namespace CsCat
 
     private void AddEffects()
     {
-      var effect_ids = buffDefinition.effect_ids;
+      var effect_ids = cfgBuffData.effect_ids;
       if (effect_ids.IsNullOrEmpty())
         return;
       foreach (var effect_id in effect_ids)
       {
-        var effectDefinition = DefinitionManager.instance.effectDefinition.GetData(effect_id);
+        var cfgEffectData = CfgEffect.Instance.get_by_id(effect_id.ToString());
         var effect =
-          Client.instance.combat.effectManager.CreateAttachEffectEntity(effect_id, this.buffManager.unit,
-            effectDefinition.duration); //TODO 如何初始化effectBase
+          Client.instance.combat.effectManager.CreateAttachEffectEntity(effect_id.ToString(), this.buffManager.unit,
+            cfgEffectData.duration); //TODO 如何初始化effectBase
         effect_list.Add(effect);
       }
     }
@@ -96,8 +96,7 @@ namespace CsCat
 
     private void AddPropertyDict()
     {
-      var new_property_dict = DoerAttrParserUtil.ConvertTableWithTypeString(this.buffDefinition.property_dict)
-        .ToDict<string, float>();
+      var new_property_dict = DoerAttrParserUtil.ConvertTableWithTypeString(this.cfgBuffData.property_dict.ToDict<string,string>()).ToDict<string,float>();
       if (!new_property_dict.IsNullOrEmpty())
       {
         var propertyComp = this.buffManager.unit.propertyComp;
@@ -109,8 +108,7 @@ namespace CsCat
 
     private void RemovePropertyDict()
     {
-      var new_property_dict = DoerAttrParserUtil.ConvertTableWithTypeString(this.buffDefinition.property_dict)
-        .ToDict<string, float>();
+      var new_property_dict = DoerAttrParserUtil.ConvertTableWithTypeString(this.cfgBuffData.property_dict.ToDict<string, string>()).ToDict<string, float>();
       if (!new_property_dict.IsNullOrEmpty())
       {
         var propertyComp = this.buffManager.unit.propertyComp;
@@ -122,7 +120,7 @@ namespace CsCat
 
     private void AddTriggerSpell()
     {
-      var trigger_spell_id = this.buffDefinition.trigger_spell_id;
+      var trigger_spell_id = this.cfgBuffData.trigger_spell_id;
       if (trigger_spell_id.IsNullOrWhiteSpace())
         return;
       var spell = Client.instance.combat.spellManager.CastSpell(
@@ -154,7 +152,7 @@ namespace CsCat
       this.RemoveEffects();
       this.RemovePropertyDict();
       this.RemoveTriggerSpell();
-      this.buffManager.RemoveState(this.buffDefinition.state);
+      this.buffManager.RemoveState(this.cfgBuffData.state);
     }
   }
 }

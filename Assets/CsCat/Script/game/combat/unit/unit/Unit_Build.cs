@@ -27,10 +27,10 @@ namespace CsCat
       this.arg_dict = arg_dict;
       this.InitMixedStates();
 
-      this.unitDefinition = DefinitionManager.instance.unitDefinition.GetData(this.unit_id);
-      this.name = this.unitDefinition.name;
-      this.type = this.unitDefinition.type;
-      this.radius = this.unitDefinition.radius;
+      this.cfgUnitData = CfgUnit.Instance.get_by_id(this.unit_id);
+      this.name = this.cfgUnitData.name;
+      this.type = this.cfgUnitData.type;
+      this.radius = this.cfgUnitData.radius;
       this.original_radius = this.radius;
 
       this.level = arg_dict.Get<int>("level");
@@ -44,14 +44,14 @@ namespace CsCat
       this.build_ok_animation_name = arg_dict.Get<string>("build_ok_animation_name");
       //是否需要保持尸体
       this.is_keep_dead_body =
-        arg_dict.GetOrGetDefault("is_keep_dead_body", () => this.unitDefinition.is_keep_dead_body);
+        arg_dict.GetOrGetDefault("is_keep_dead_body", () => this.cfgUnitData.is_keep_dead_body);
 
 
       this.faction = arg_dict.Get<string>("faction");
       this.position = arg_dict.Get<Vector3>("position");
       this.rotation = arg_dict.Get<Quaternion>("rotation");
       this.scale =
-        arg_dict.GetOrGetDefault<float>("scale", () => this.unitDefinition.scale == 0 ? 1 : this.unitDefinition.scale);
+        arg_dict.GetOrGetDefault<float>("scale", () => this.cfgUnitData.scale == 0 ? 1 : this.cfgUnitData.scale);
       this.SetScale(this.scale);
 
 
@@ -63,24 +63,24 @@ namespace CsCat
       this.spellInfo_dict.Clear();
 
       //技能相关
-      this.skill_id_list = this.unitDefinition.skill_ids.ToList();
+      this.skill_id_list = this.cfgUnitData.skill_ids.ToList<string>();
       foreach (var skill_id in this.skill_id_list)
         this.AddSkill(skill_id);
 
       //普攻相关
-      this.normal_attack_id_list = this.unitDefinition.normal_attack_ids.ToList();
+      this.normal_attack_id_list = this.cfgUnitData.normal_attack_ids.ToList<string>();
       foreach (var normal_attack_id in this.normal_attack_id_list)
         this.AddNormalAttack(normal_attack_id);
 
       //添加被动buff
-      if (!this.unitDefinition.passive_buff_ids.IsNullOrEmpty())
+      if (!this.cfgUnitData.passive_buff_ids.IsNullOrEmpty())
       {
-        foreach (var passive_buff_id in unitDefinition.passive_buff_ids)
-          this.buffManager.AddBuff(passive_buff_id, this);
+        foreach (var passive_buff_id in cfgUnitData.passive_buff_ids)
+          this.buffManager.AddBuff(passive_buff_id.ToString(), this);
       }
 
-      if (!this.unitDefinition.model_path.IsNullOrWhiteSpace())
-        this.BuildModel(this.unitDefinition.model_path);
+      if (!this.cfgUnitData.model_path.IsNullOrWhiteSpace())
+        this.BuildModel(this.cfgUnitData.model_path);
 
       this.unitMoveComp.OnBuild();
       this.animatorComp.OnBuild();

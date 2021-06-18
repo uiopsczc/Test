@@ -1,0 +1,28 @@
+{
+  "data_list": [
+    {
+      "id": "1",
+      "name": "特效1",
+      "prefab_path": "Assets/ccc.prefab",
+      "duration": 0.0,
+      "socket_name_1": "",
+      "socket_name_2": ""
+    },
+    {
+      "id": "2",
+      "name": "特效2",
+      "prefab_path": "Assets/Resources/common/effect/4/10010720.prefab",
+      "duration": 0.0,
+      "socket_name_1": "",
+      "socket_name_2": ""
+    }
+  ],
+  "index_dict": {
+    "unique": {
+      "id": {
+        "1": 0,
+        "2": 1
+      }
+    }
+  }
+}

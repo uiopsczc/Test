@@ -1,0 +1,110 @@
+--AutoGen. DO NOT EDIT!!!
+---@class CfgBuffStateData
+---@field id
+---@field name
+local _
+
+
+
+---@type CfgBuffStateData[]
+local data_list = {
+  {
+    id = [=[无敌]=],
+    name = [=[无敌]=],
+  },
+  {
+    id = [=[不受伤害]=],
+    name = [=[不受伤害]=],
+  },
+  {
+    id = [=[减速]=],
+    name = [=[减速]=],
+  },
+  {
+    id = [=[中毒]=],
+    name = [=[中毒]=],
+  },
+  {
+    id = [=[眩晕]=],
+    name = [=[眩晕]=],
+  },
+  {
+    id = [=[免控]=],
+    name = [=[免控]=],
+  },
+  {
+    id = [=[复活]=],
+    name = [=[复活]=],
+  },
+  {
+    id = [=[沉默]=],
+    name = [=[沉默]=],
+  },
+  {
+    id = [=[混乱]=],
+    name = [=[混乱]=],
+  },
+  {
+    id = [=[恐惧]=],
+    name = [=[恐惧]=],
+  },
+  {
+    id = [=[不能攻击]=],
+    name = [=[不能攻击]=],
+  },
+  {
+    id = [=[不能移动]=],
+    name = [=[不能移动]=],
+  },
+  {
+    id = [=[不能回血]=],
+    name = [=[不能回血]=],
+  },
+  {
+    id = [=[嘲讽]=],
+    name = [=[嘲讽]=],
+  },
+}
+
+local index_dict = {
+  unique = {
+    id = {
+      ["无敌"] = 1,
+      ["不受伤害"] = 2,
+      ["减速"] = 3,
+      ["中毒"] = 4,
+      ["眩晕"] = 5,
+      ["免控"] = 6,
+      ["复活"] = 7,
+      ["沉默"] = 8,
+      ["混乱"] = 9,
+      ["恐惧"] = 10,
+      ["不能攻击"] = 11,
+      ["不能移动"] = 12,
+      ["不能回血"] = 13,
+      ["嘲讽"] = 14,
+    },
+  },
+}
+
+local cfg = {}
+
+function cfg.All()
+  return data_list
+end
+
+function cfg.Get(index)
+  return data_list[index]
+end
+
+function cfg.get_by_id(id)
+  local key = tostring(id)
+  return cfg.Get(index_dict.unique.id[key])
+end
+
+function cfg.contain_key_by_id(id)
+  local key = tostring(id)
+  return index_dict.unique.id[key] ~= nil
+end
+
+return cfg

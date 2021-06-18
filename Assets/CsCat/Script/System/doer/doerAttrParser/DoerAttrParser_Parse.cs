@@ -132,19 +132,18 @@ namespace CsCat
           return ConvertValue(type_string, "");
       }
 
-      if (expression.StartsWith("definition.")) // 定义数据
+      if (expression.StartsWith("cfgData.")) // 定义数据
       {
-        expression = expression.Substring("definition.".Length);
+        expression = expression.Substring("cfgData.".Length);
         int pos0 = expression.IndexOf('.');
-        string definition_name = expression.Substring(0, pos0);
+        string cfgData_name = expression.Substring(0, pos0);
         expression = expression.Substring(pos0 + 1);
         int pos1 = expression.IndexOf('.');
         string id = expression.Substring(0, pos1);
         string attr = expression.Substring(pos1 + 1);
-        ExcelAssetBase definition = null;
-        if (definition_name.EqualsIgnoreCase("ItemDefinition"))
-          definition = Client.instance.itemFactory.GetDefinition(id);
-        return ConvertValue(definition.GetFieldValue(attr), type_string);
+        if (cfgData_name.EqualsIgnoreCase("cfgItemData"))
+          return ConvertValue(Client.instance.itemFactory.GetCfgItemData(id).GetFieldValue(attr), type_string);
+        return null;
       }
 
       if (expression.StartsWith("eval(")) // 求表达式值

@@ -11,11 +11,11 @@ namespace CsCat{
     public void Parse(string jsonStr) { this.root=JsonMapper.ToObject<CfgSummonbeastguardskillRoot>(jsonStr);}
     public List<CfgSummonbeastguardskillData> All(){ return this.root.data_list; }
     public CfgSummonbeastguardskillData Get(int index){ return this.root.data_list[index]; }
-    public CfgSummonbeastguardskillData get_by_id(int id){
+    public CfgSummonbeastguardskillData get_by_id(string id){
       string key = id.ToString();
       return this.Get(this.root.index_dict.unique.id[key]);
     }
-    public bool contain_key_by_id(int id){
+    public bool contain_key_by_id(string id){
       string key = id.ToString();
       return this.root.index_dict.unique.id.ContainsKey(key);
     }
@@ -59,29 +59,29 @@ namespace CsCat{
     public CfgSummonbeastguardskillIndexData index_dict { get; set; }
   }
   public partial class CfgSummonbeastguardskillData {
-    //id
-    public int id { get; set; }
-    //召唤兽id
+    /*id*/
+    public string id { get; set; }
+    /*召唤兽id*/
     public int summonbeast_id { get; set; }
-    //星级
+    /*星级*/
     public int star { get; set; }
-    //星级战力
+    /*星级战力*/
     public int star_fighting { get; set; }
-    //技能描述1
+    /*技能描述1*/
     public string skill_desc_lang1 { get; set; }
-    //技能描述参数列表1
+    /*技能描述参数列表1*/
     public LitJson.JsonData skill_desc_args1 { get; set; }
-    //技能描述2
+    /*技能描述2*/
     public string skill_desc_lang2 { get; set; }
-    //技能描述参数列表2
+    /*技能描述参数列表2*/
     public LitJson.JsonData skill_desc_args2 { get; set; }
-    //技能描述3
+    /*技能描述3*/
     public string skill_desc_lang3 { get; set; }
-    //技能描述参数列表3
+    /*技能描述参数列表3*/
     public LitJson.JsonData skill_desc_args3 { get; set; }
-    //技能描述4(长描述)
+    /*技能描述4(长描述)*/
     public string skill_desc_lang4 { get; set; }
-    //技能描述参数列表4
+    /*技能描述参数列表4*/
     public LitJson.JsonData skill_desc_args4 { get; set; }
   }
   public class CfgSummonbeastguardskillIndexData {

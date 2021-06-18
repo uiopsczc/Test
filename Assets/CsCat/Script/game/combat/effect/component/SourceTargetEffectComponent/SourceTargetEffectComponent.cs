@@ -22,8 +22,8 @@ namespace CsCat
 
     public void SetSocket()
     {
-      this.source_socket_name = this.effectEntity.effectDefinition.socket_name_1 ?? "missile";
-      this.target_socket_name = this.effectEntity.effectDefinition.socket_name_2 ?? "chest";
+      this.source_socket_name = this.effectEntity.cfgEffectData.socket_name_1 ?? "missile";
+      this.target_socket_name = this.effectEntity.cfgEffectData.socket_name_2 ?? "chest";
 
       source_iposition?.SetSocketName(this.source_socket_name);
       target_iposition?.SetSocketName(this.target_socket_name);

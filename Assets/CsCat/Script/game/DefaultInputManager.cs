@@ -53,11 +53,12 @@ namespace CsCat
 
       if (Input.GetKeyDown("f2"))
       {
-        t = this.AddTimer(args =>
-        {
-          LogCat.warn(Time.time);
-          return true;
-        }, 0, 1);
+        LogCat.log(CfgItem.Instance.get_by_id("2").name);
+//        t = this.AddTimer(args =>
+//        {
+//          LogCat.warn(Time.time);
+//          return true;
+//        }, 0, 1);
         //        panel = Client.instance.uiManager.CreateChildPanel(null, default(UIGMTestPanel2));
       }
 

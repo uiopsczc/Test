@@ -1,0 +1,63 @@
+--AutoGen. DO NOT EDIT!!!
+---@class CfgTestData
+---@field id
+---@field name
+---@field country
+---@field age_dict
+local _
+
+
+
+---@type CfgTestData[]
+local data_list = {
+  {
+    id = [=[3]=],
+    name = [=[chenzhiquan]=],
+    country = [=[china]=],
+    age_dict = json:decode([=[{}]=]),
+  },
+  {
+    id = [=[2]=],
+    name = [=[uiopsczc]=],
+    country = [=[usa]=],
+    age_dict = json:decode([=[{"哒哒星": "你好,我是不不不", "星哥": 3}]=]),
+  },
+  {
+    id = [=[1]=],
+    name = [=[dadaxing]=],
+    country = [=[sb]=],
+    age_dict = json:decode([=[{"星仔不不": 4}]=]),
+  },
+}
+
+local index_dict = {
+  unique = {
+    id = {
+      ["3"] = 1,
+      ["2"] = 2,
+      ["1"] = 3,
+    },
+  },
+}
+
+local cfg = {}
+
+function cfg.All()
+  return data_list
+end
+
+function cfg.Get(index)
+  return data_list[index]
+end
+
+function cfg.get_by_id(id)
+  local key = tostring(id)
+  return cfg.Get(index_dict.unique.id[key])
+end
+
+function cfg.contain_key_by_id(id)
+  local key = tostring(id)
+  return index_dict.unique.id[key] ~= nil
+end
+
+return cfg

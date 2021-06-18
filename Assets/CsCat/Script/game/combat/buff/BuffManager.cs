@@ -21,22 +21,22 @@ namespace CsCat
 
     public void AddBuff(string buff_id, Unit source_unit, float? force_duration = null, Hashtable arg_dict = null)
     {
-      BuffDefinition buffDefinition = DefinitionManager.instance.buffDefinition.GetData(buff_id);
+      var cfgBuffData = CfgBuff.Instance.get_by_id(buff_id);
       float duration =
-        force_duration.GetValueOrDefault(buffDefinition.duration == 0 ? float.MaxValue : buffDefinition.duration);
-      string type_1 = buffDefinition.type_1; // buff or debuff
+        force_duration.GetValueOrDefault(cfgBuffData.duration == 0 ? float.MaxValue : cfgBuffData.duration);
+      string type_1 = cfgBuffData.type_1; // buff or debuff
       var source_spell = arg_dict.Get<SpellBase>("source_spell");
       if ("debuff".Equals(type_1) && this.unit.IsInvincible())
         return;
-      if (this.unit.IsImmuneControl() && ("控制".Equals(buffDefinition.type_2) ||
-                                          (buffDefinition.state.IsNullOrWhiteSpace() &&
-                                           StateConst.Control_State_Dict[buffDefinition.state])))
+      if (this.unit.IsImmuneControl() && ("控制".Equals(cfgBuffData.type_2) ||
+                                          (cfgBuffData.state.IsNullOrWhiteSpace() &&
+                                           StateConst.Control_State_Dict[cfgBuffData.state])))
       {
         //显示免疫
         return;
       }
 
-      if (buffDefinition.is_unique && HasBuff(buff_id)) // definition.is_unique是指该buff只有一个生效
+      if (cfgBuffData.is_unique && HasBuff(buff_id)) // definition.is_unique是指该buff只有一个生效
         buff_list_dict[buff_id][0].CreateBuffCache(duration, source_unit, source_spell, arg_dict);
       else
       {
@@ -93,7 +93,7 @@ namespace CsCat
       int count = 0;
       foreach (var buff in this.buff_dict.Values)
       {
-        if ("debuff".Equals(buff.buffDefinition))
+        if ("debuff".Equals(buff.cfgBuffData))
           count = count + 1;
       }
 
@@ -162,7 +162,7 @@ namespace CsCat
       foreach (var buff_guid in new List<string>(buff_dict.Keys))
       {
         var buff = this.buff_dict[buff_guid];
-        if (!buff.IsDestroyed() && "控制".Equals(buff.buffDefinition.type_2))
+        if (!buff.IsDestroyed() && "控制".Equals(buff.cfgBuffData.type_2))
           this.RemoveBuff(buff_guid);
       }
     }

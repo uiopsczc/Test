@@ -1,0 +1,29 @@
+{
+  "data_list": [
+    {
+      "id": "1",
+      "name": "单位1",
+      "type": "",
+      "offset_y": 0.0,
+      "radius": 0.0,
+      "scale": 0.0,
+      "walk_step_length": 0.0,
+      "model_path": "",
+      "normal_attack_ids": [],
+      "skill_ids": [],
+      "ai_class_path_lua": "",
+      "ai_class_path_cs": "",
+      "is_keep_dead_body": false,
+      "dead_body_dealy": 0.0,
+      "death_effect_id": "",
+      "passive_buff_ids": []
+    }
+  ],
+  "index_dict": {
+    "unique": {
+      "id": {
+        "1": 0
+      }
+    }
+  }
+}

@@ -1,0 +1,26 @@
+{
+  "data_list": [
+    {
+      "id": "1",
+      "name": "任务1",
+      "class_path_lua": "",
+      "class_path_cs": "",
+      "type_1": "",
+      "type_2": "",
+      "finish_condition": "{@eval(${u.cp}>0)}",
+      "is_auto_check_finish": false,
+      "onAccept_doerEvent_id": "1",
+      "onFinish_doerEvent_id": "",
+      "onGiveUp_doerEvent_id": "",
+      "reward_dict": {},
+      "find_item_dict": {}
+    }
+  ],
+  "index_dict": {
+    "unique": {
+      "id": {
+        "1": 0
+      }
+    }
+  }
+}
