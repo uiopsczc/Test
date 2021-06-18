@@ -1,4 +1,5 @@
 import os
+import shutil
 import chardet
 from pythoncat.util.StringUtil import *
 from chardet.universaldetector import UniversalDetector
@@ -31,7 +32,7 @@ class FileUtil(object):
   def WriteFile(file_path, content,mode = 'w' , encoding ="utf-8" ): #mode w:替换 a:添加到末尾
     dir_path = os.path.dirname(file_path)
     if not StringUtil.IsNoneOrEmpty(dir_path) and not os.path.exists(dir_path): #检查文件夹是否存在,不存在则创建该目录
-      os.mkdir(dir_path)
+      os.makedirs(dir_path)
     # encoding = FileUtil.GetFileEncoding(file_path)
     file = open(file_path, mode, encoding=encoding, errors ='ignore')
     file.write(content)
@@ -49,3 +50,13 @@ class FileUtil(object):
         result.append(full_file_path)
 
     return result
+
+  @staticmethod
+  def RemoveDir(dir_path):
+    if os.path.exists(dir_path): #检查文件夹是否存在,不存在则创建该目录
+      shutil.rmtree(dir_path)  # 删除文件夹
+
+  @staticmethod
+  def RemoveFile(file_path):
+    if os.path.exists(file_path):
+      os.remove(file_path)

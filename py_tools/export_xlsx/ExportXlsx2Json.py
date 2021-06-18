@@ -13,8 +13,8 @@ class ExportXlsx2Json(object):
   def ExportSheet(sheet, export_relative_dir_path):
     export_file_path = ExportXlsxConst.Export_2_Json_Dir_Path + export_relative_dir_path + ExportXlsxUtil.GetExportSheetName(sheet) +".json"
     json_dict = {}
-    json_dict["data_list"] = ExportXlsx2Json.GetSheetDataList(sheet)
-    json_dict["index_dict"] = ExportXlsx2Json.GetSheetIndexDict(sheet,json_dict["data_list"])
+    json_dict["data_list"] = ExportXlsx2Json.ExportDataList(sheet)
+    json_dict["index_dict"] = ExportXlsx2Json.ExportIndexDict(sheet, json_dict["data_list"])
     FileUtil.WriteFile(export_file_path, json.dumps(json_dict, ensure_ascii=False, indent=2))
 
     json_file_path = export_file_path.replace("..\\..\\","").replace("\\\\","/").replace("\\","/")
@@ -29,7 +29,7 @@ class ExportXlsx2Json(object):
       FileUtil.WriteFile(ExportXlsxConst.Export_2_JsonFilePathes_File_Path, json_file_path)
 
   @staticmethod
-  def GetSheetDataList(sheet):
+  def ExportDataList(sheet):
     max_row = sheet.max_row
     fieldInfo_list = ExportXlsxUtil.GetExportSheetFiledInfoList(sheet)
     data_list = []
@@ -41,7 +41,7 @@ class ExportXlsx2Json(object):
         cell_value = cell.value
         fileInfo_type = fieldInfo["type"]
         fileInfo_name = fieldInfo["name"]
-        cell_value = ExportXlsxUtil.GetExportValueOrDefault(cell_value, fileInfo_type)
+        cell_value = ExportXlsxUtil.GetExportJsonValueOrDefault(cell_value, fileInfo_type)
         if fileInfo_type == ExportXlsxConst.Sheet_FieldInfo_Type_Array or fileInfo_type == ExportXlsxConst.Sheet_FieldInfo_Type_Json:
           data[fileInfo_name] = json.loads(cell_value)
         else:
@@ -50,7 +50,7 @@ class ExportXlsx2Json(object):
     return data_list
 
   @staticmethod
-  def GetSheetIndexDict(sheet, data_list):
+  def ExportIndexDict(sheet, data_list):
     json_index_dict = {}
     index_dict = ExportXlsxUtil.GetExportSheetIndexDict(sheet)
     for i in range(0, len(data_list)):

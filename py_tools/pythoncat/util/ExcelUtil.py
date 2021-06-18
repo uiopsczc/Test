@@ -4,7 +4,7 @@ class ExcelUtil(object):
   # https://openpyxl.readthedocs.io/en/stable/
   @staticmethod
   def ReadExcelAsLineList(file_path, start_row=1, sheet_index=0):# row_num base on 1
-    wrokbook = load_workbook(file_path, data_only=True)
+    wrokbook = load_workbook(file_path,read_only=True, data_only=True)
     sheet = wrokbook.worksheets[sheet_index]
     max_row = sheet.max_row
     max_column = sheet.max_column

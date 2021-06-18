@@ -1,51 +1,25 @@
-import sys
-import os
-sys.path.append(os.path.dirname(os.path.realpath(__file__ + "/..")))
 ############作用######################################
 ## 收集需要切换多语言字符串
 ## 将收集需要切换多语言字符串写到export_translation_file_path中
 ######################################################
+import sys
+from translation.TranslationConst import *
 from pythoncat.util.ExcelUtil import *
 from pythoncat.util.FileUtil import *
 from pythoncat.util.StringUtil import *
 
-export_translation_file_path = r"..\..\Assets\Excels\D 多语言表-TranslationDefinition.xlsx" #最终输出到问价路径(给策划翻译使用)
-# export_translation_file_path = r"F:\WorkSpace\Unity\Test\Assets\cscat\test"
-excel_translation_root_dir_path = r"..\..\Assets\Excels"
-cs_translation_root_dir_path = r"..\..\Assets"  #cs需要切换多语言字符串的根目录
-lua_translation_root_dir_path = r"..\..\Assets\Lua"  #lua需要切换多语言字符串的根目录
-cs_string_file_path = r"excel\cs_string.xlsx" #收集到的cs的多语言字符串输出到的文件路径
-lua_string_file_path = r"excel\lua_string.xlsx" #收集到的lua的多语言字符串输出到的文件路径
-ui_string_file_path = r"excel\ui_string.xlsx"  #收集到的ui的多语言字符串输出到的文件路径
-custom_string_file_path = r"excel\custom_string.xlsx"  #收集到的custom(自定义的)的多语言字符串输出到的文件路径
-excel_string_file_path = r"excel\excel_string.xlsx"  #收集到的excel的多语言字符串输出到的文件路径
+sys.path.append(os.path.dirname(os.path.realpath(__file__ + "/..")))
 
-#不用收集文件路径
-ignore_translate_file_path_dict = {
-  # "\\translation\\Translation.cs":True,
-  r"game\define\export":True,
-  r"TranslationDefinition.lua.txt":True,
-}
-
-#cs文件的收集字符串使用的pattern
-cs_match_pattern_list = [
-  ("comment0", re.compile(r"//[^\r\n]*",re.S)),
-  ("comment1", re.compile(r"/\*.*?\*/",re.S)),
-  ("str0", re.compile(r"Translation\.GetText\(\"(.*?)(\"\))(?=([^\"]*\"[^\"]*\")*[^\"]*$)")),#双引号必须成对出现，否则match并不是想要的
-]
-
-#lua文件的收集字符串使用的pattern
-lua_match_pattern_list = [
-  ("comment0", re.compile(r"--(?!\[=*\[)[^\r\n]*",re.S)),
-  ("comment1", re.compile(r"--\[\[.*?]]",re.S)),
-  ("comment2", re.compile(r"--\[=\[.*?]=]",re.S)),
-  ("str0", re.compile(r"global\.Translate\(\"(.*?)(\"\))(?=([^\"]*\"[^\"]*\")*[^\"]*$)")),#双引号必须成对出现，否则match并不是想要的
-]
+#收集需要转换的字符串
+def CollectTranslationIds():
+  CollectTranslationId(TranslationConst.Cs_Translation_Root_Dir_Path, FilterCSFile, TranslationConst.Cs_Match_Pattern_list, TranslationConst.Cs_String_File_Path)
+  CollectTranslationId(TranslationConst.Lua_Translation_Root_Dir_Path, FilterLuaFile, TranslationConst.Lua_Match_Pattern_List, TranslationConst.Lua_String_File_Path)
+  CollectExcelTranslationId(TranslationConst.Excel_Translation_Root_Dir_Path,FilterExcelFile,TranslationConst.Excel_String_File_Path)
 
 def FilterCSFile(file_path):
   if not file_path.endswith(".cs"):
     return True
-  for ignore_translate_file_path in ignore_translate_file_path_dict:
+  for ignore_translate_file_path in TranslationConst.Ignore_Translate_File_Path_Dict:
     if file_path.find(ignore_translate_file_path) != -1:
       return True
   return False
@@ -53,7 +27,7 @@ def FilterCSFile(file_path):
 def FilterLuaFile(file_path):
   if not file_path.endswith(".lua.txt"):
     return True
-  for ignore_translate_file_path in ignore_translate_file_path_dict:
+  for ignore_translate_file_path in TranslationConst.Ignore_Translate_File_Path_Dict:
     if file_path.find(ignore_translate_file_path) != -1:
       return True
   return False
@@ -62,12 +36,6 @@ def FilterExcelFile(file_path):
   if not file_path.endswith(".xlsx") or os.path.basename(file_path).startswith("~$"):
     return True
   return False
-
-#收集需要转换的字符串
-def CollectTranslationIds():
-  CollectTranslationId(cs_translation_root_dir_path, FilterCSFile, cs_match_pattern_list, cs_string_file_path)
-  CollectTranslationId(lua_translation_root_dir_path, FilterLuaFile, lua_match_pattern_list, lua_string_file_path)
-  CollectExcelTranslationId(excel_translation_root_dir_path,FilterExcelFile,excel_string_file_path)
 
 #收集文件中需要转换的字符串
 def CollectTranslationId(translation_root_dir_path, FilterFile,match_pattern_list,xx_string_file_path):
@@ -157,11 +125,11 @@ def GetTranslationIdList(content, match_pattern_list):
 #合并所有的多语言字段
 def CombineTranslationIds():
   translation_id_set = set()
-  __CombineTranslationIds(translation_id_set, cs_string_file_path)
-  __CombineTranslationIds(translation_id_set, lua_string_file_path)
-  __CombineTranslationIds(translation_id_set, ui_string_file_path)
-  __CombineTranslationIds(translation_id_set, excel_string_file_path)
-  __CombineTranslationIds(translation_id_set, custom_string_file_path)
+  __CombineTranslationIds(translation_id_set, TranslationConst.Cs_String_File_Path)
+  __CombineTranslationIds(translation_id_set, TranslationConst.Lua_String_File_Path)
+  __CombineTranslationIds(translation_id_set, TranslationConst.UI_String_File_Path)
+  __CombineTranslationIds(translation_id_set, TranslationConst.Excel_String_File_Path)
+  __CombineTranslationIds(translation_id_set, TranslationConst.Custom_String_File_Path)
   return translation_id_set
 
 def __CombineTranslationIds(translation_id_set,xx_string_file_path):
@@ -173,11 +141,11 @@ def __CombineTranslationIds(translation_id_set,xx_string_file_path):
 #将translation_ids导出到export_translation_file_path中
 def ExportTranslationIds(translation_ids):
   data_start_row = 11 # 数据开始的行号
-  ExcelUtil.ClearExcelEmptyRows(export_translation_file_path, data_start_row) #去掉多余的行
-  workbook = load_workbook(export_translation_file_path, data_only=True)#data_only,读取公式的结果，而不是公式本身
+  ExcelUtil.ClearExcelEmptyRows(TranslationConst.Export_Translation_File_Path, data_start_row) #去掉多余的行
+  workbook = load_workbook(TranslationConst.Export_Translation_File_Path, data_only=True)#data_only,读取公式的结果，而不是公式本身
   sheet = workbook.worksheets[0]
   row = sheet.max_row + 1
-  org_line_list = ExcelUtil.ReadExcelAsLineList(export_translation_file_path)
+  org_line_list = ExcelUtil.ReadExcelAsLineList(TranslationConst.Export_Translation_File_Path)
 
   translation_dict = {}
   for line in org_line_list:
@@ -190,12 +158,12 @@ def ExportTranslationIds(translation_ids):
     sheet.cell(row, 1).value = translation_id
     translation_dict[translation_id] = True
     row += 1
-  workbook.save(export_translation_file_path)
+  workbook.save(TranslationConst.Export_Translation_File_Path)
 
 def main():
   CollectTranslationIds()
   translation_id_set = CombineTranslationIds()
   ExportTranslationIds(translation_id_set)
-  os.system("explorer /select, " + export_translation_file_path)
+  os.system("explorer /select, " + TranslationConst.Export_Translation_File_Path)
   print("finish")
 main()

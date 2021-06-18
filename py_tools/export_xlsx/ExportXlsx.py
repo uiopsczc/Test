@@ -46,7 +46,7 @@ def ExportSheet(sheet,export_relative_dir_path):
   if ExportXlsxUtil.IsExportSheet(sheet):
     json_dict = ExportXlsx2Json.ExportSheet(sheet, export_relative_dir_path)
     ExportXlsx2Cs.ExportSheet(sheet,json_dict, export_relative_dir_path)
-    ExportXlsx2Lua.ExportSheet(sheet, export_relative_dir_path)
+    ExportXlsx2Lua.ExportSheet(sheet,json_dict, export_relative_dir_path)
 
 
 def main():

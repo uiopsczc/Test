@@ -28,7 +28,6 @@ namespace CsCat
       string class_name = "CsCat.Cfg"+ Path.GetFileNameWithoutExtension(assetCat.asset_path).UpperFirstLetter();
       string json_contnet = assetCat.Get<TextAsset>().text;
       TypeUtil.GetType(class_name).GetPropertyValue("Instance").InvokeMethod("Parse",false, json_contnet);
-//      LogCat.log(CfgSummonbeastguardskill.Instance.contain_key_by_id(6));
       loaded_count++;
     }
 
