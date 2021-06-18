@@ -7,12 +7,12 @@ namespace CsCat
       DoerAttrParser doerAttrParser = new DoerAttrParser(Client.instance.user);
       var result = "";
       //    result = doerAttrParser.ParseString("{#u.pos2}");
-      //    result = doerAttrParser.Parse("{eval((5+4)*6)}");//eval()²âÊÔ
-      //    result = doerAttrParser.Parse("{#definition.ItemDefinition.1.icon_path}");//definition²âÊÔ
-      //    result = doerAttrParser.Parse("{@hasSubString(abcdef,de)}");//hasSubString²âÊÔ
+      //    result = doerAttrParser.Parse("{eval((5+4)*6)}");//eval()
+      //    result = doerAttrParser.Parse("{#cfgData.CfgItemData.1.icon_path}");//
+      //    result = doerAttrParser.Parse("{@hasSubString(abcdef,de)}");//
       //   for (int i = 1; i < 100; i++)
       //   {
-      //     result = doerAttrParser.Parse("{random(4,8)}"); //random()²âÊÔ
+      //     result = doerAttrParser.Parse("{random(4,8)}"); //random()
       //     LogCat.log(result);
       //   }
       LogCat.log(result);

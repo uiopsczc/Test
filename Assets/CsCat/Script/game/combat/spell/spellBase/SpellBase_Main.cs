@@ -28,10 +28,10 @@ namespace CsCat
       if (!this.cfgSpellData.action_name.IsNullOrWhiteSpace())
       {
         //      if not self.source_unit.action_dict or
-        //      not self.source_unit.action_dict[self.spellDefinition.action_name] then
+        //      not self.source_unit.action_dict[self.cfgSpellData.action_name] then
         //      Error("action is not find", self.spell_id, self.source_unit.unit_id)
         //      end
-        //      self.action = SpellAction.New(self.source_unit.action_dict[self.spellDefinition.action_name], self.source_unit, self)
+        //      self.action = SpellAction.New(self.source_unit.action_dict[self.cfgSpellData.action_name], self.source_unit, self)
         //      self.action:Play()
       }
       else

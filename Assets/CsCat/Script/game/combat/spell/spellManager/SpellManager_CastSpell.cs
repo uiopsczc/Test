@@ -11,14 +11,14 @@ namespace CsCat
     public SpellBase CastSpell(Unit source_unit, string spell_id, Unit target_unit, Hashtable instance_arg_dict = null,
       bool is_control = false)
     {
-      var (is_can_cast, spellDefinition, spell_class) =
+      var (is_can_cast, cfgSpellData, spell_class) =
         this.CheckIsCanCast(source_unit, spell_id, target_unit, is_control);
       if (!is_can_cast)
         return null;
       //开始释放技能
-      var spell = this.AddChild(null, spell_class, source_unit, spell_id, target_unit, spellDefinition,
+      var spell = this.AddChild(null, spell_class, source_unit, spell_id, target_unit, cfgSpellData,
         instance_arg_dict) as SpellBase;
-      if ("正常".Equals(spellDefinition.cast_type))
+      if ("正常".Equals(cfgSpellData.cast_type))
       {
         //当玩家是手动操作释放技能时，技能方向就以玩家的输入为准（但如果有目标则会以目标方向释放技能，无视输入）
         //当释放的技能类型是正常的话，则需停下来施法
@@ -28,7 +28,7 @@ namespace CsCat
         var is_not_face_to_target =
           instance_arg_dict != null
             ? instance_arg_dict.Get<bool>("is_not_face_to_target")
-            : spellDefinition.is_not_face_to_target;
+            : cfgSpellData.is_not_face_to_target;
         var target_position = instance_arg_dict?.Get<Vector3>("position") ?? target_unit.GetPosition();
         if (target_unit != null && (!is_not_face_to_target || !is_control))
         {
@@ -38,13 +38,13 @@ namespace CsCat
             source_unit.FaceTo(rotation.Value);
         }
 
-        if (!spellDefinition.is_can_move_while_cast || !is_control)
+        if (!cfgSpellData.is_can_move_while_cast || !is_control)
           source_unit.MoveStop(rotation);
         source_unit.current_attack = spell;
         source_unit.UpdateMixedStates();
       }
 
-      if ("普攻".Equals(spellDefinition.type))
+      if ("普攻".Equals(cfgSpellData.type))
         source_unit.NormalAttackStart();
       spell.Start();
       return spell;

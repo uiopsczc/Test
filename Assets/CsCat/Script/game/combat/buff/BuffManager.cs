@@ -36,7 +36,7 @@ namespace CsCat
         return;
       }
 
-      if (cfgBuffData.is_unique && HasBuff(buff_id)) // definition.is_unique是指该buff只有一个生效
+      if (cfgBuffData.is_unique && HasBuff(buff_id)) // cfgBuffData.is_unique是指该buff只有一个生效
         buff_list_dict[buff_id][0].CreateBuffCache(duration, source_unit, source_spell, arg_dict);
       else
       {

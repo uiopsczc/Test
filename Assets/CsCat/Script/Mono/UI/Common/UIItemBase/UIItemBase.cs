@@ -46,7 +46,6 @@ namespace CsCat
       this.item_count = item_count;
 
       this.cfgItemData = CfgItem.Instance.get_by_id(item_id);
-      //    LogCat.logError(Client.instance.definitionManager.Quality.GetData(item_data.quality_id));
       this.cfgQualityData = cfgItemData.quality_id == null
         ? null
         : CfgQuality.Instance.get_by_id(cfgItemData.quality_id);

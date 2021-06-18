@@ -95,7 +95,6 @@ namespace CsCat
                 target_parameter_type = target_parameter_type.GetElementType();
               if (!target_parameter_type.IsGenericTypeDefinition && !target_parameter_type.IsGenericType && !target_parameter_type.IsGenericParameter && !ConvertUtil.CanConvertToType(source_parameter_type, target_parameter_type))
               {
-                LogCat.log("77777");
                 is_continue_this_round = true;
                 break;
               }

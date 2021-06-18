@@ -11,7 +11,6 @@ namespace CsCat
   public class Doer : TickObject
   {
     private DBase dbase;
-    public ExcelAssetBase definition;
     public DoerFactory factory;
 
     public override void PostInit()
@@ -72,7 +71,7 @@ namespace CsCat
     }
 
     //重新载入定义数据事件
-    public void OnReloadDefinition()
+    public void OnReloadCfg()
     {
     }
 

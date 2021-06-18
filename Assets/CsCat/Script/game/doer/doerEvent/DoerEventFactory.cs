@@ -34,8 +34,7 @@ namespace CsCat
 
     private void LoadDoerEvent(string id)
     {
-      var definition = this.GetCfgDoerEventData(id);
-      var class_path = definition.class_path_cs.IsNullOrWhiteSpace() ? default_doer_class_path : definition.class_path_cs;
+      var class_path = GetClassPath(id);
       Type type = TypeUtil.GetType(class_path);
       DoerEvent doerEvent = this.AddChildWithoutInit(null, type) as DoerEvent;
       DBase doerEventDBase = this.__NewDBase(id);

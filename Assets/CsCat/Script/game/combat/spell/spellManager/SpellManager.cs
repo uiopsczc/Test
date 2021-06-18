@@ -72,19 +72,7 @@ namespace CsCat
       if (unit.current_attack != null)
         this.BreakSpell(unit.current_attack.GetGuid());
     }
-
-    //  public void; GetSpellRange(string spell_id)
-    //  {
-    //    local spellDefinition = global.definitionManager:GetSpellDefinition(spell_id)
-    //    if not spellDefinition then
-    //    ErrorFormat("spell_id(%s) is not exist!", spell_id)
-    //    return false
-    //    end
-    //    local arg_dict = spellDefinition.arg_dict or { }
-    //    local min_range = DoerAttrParserUtil.ConvertValueWithTypeString(arg_dict.min_range)
-    //    return spellDefinition.range, min_range
-    //
-    //  }
+    
     public void OnSpellAnimationFinished(SpellBase spell)
     {
       if (spell.source_unit.current_attack == spell)
