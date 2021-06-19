@@ -6,13 +6,12 @@ function SceneFactory:Init()
   self.default_doer_class_path = "game.doer.scene.Scene"
 end
 
-function SceneFactory:GetDefinitions()
-  return global.definitionManager.sceneDefinition
+function SceneFactory:GetClassPath(id)
+  return string.IsNilOrEmpty(self:GetCfgSceneData(id).class_path_lua) and self.default_doer_class_path or self:GetCfgSceneData(id).class_path_lua
 end
 
----@return SceneDefinition
-function SceneFactory:GetDefinition(id)
-  return SceneFactory.super.GetDefinition(self,id)
+function SceneFactory:GetCfgSceneData(id)
+  return CfgScene.get_by_id(id)
 end
 
 ---@return SceneDBase

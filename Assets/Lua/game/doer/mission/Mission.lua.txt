@@ -1,15 +1,17 @@
 ---@class Mission:Doer
 local Mission = Class("Mission", Doer)
 
-
+function Mission:GetCfgMissionData()
+  return CfgMission.get_by_id(self:GetId())
+end
 ------------------------DoXXX--------------------------------
 
 --------------------------OnXXX-------------------
 function Mission:OnAccept(user)
-  local onAccept_doerEvent_id = self:GetDefinition().onAccept_doerEvent_id
+  local onAccept_doerEvent_id = self:GetCfgMissionData().onAccept_doerEvent_id
   if not string.IsNilOrWhiteSpace(onAccept_doerEvent_id) then
-    local doerEventDefinition = global.definitionManager.doerEventDefinition[onAccept_doerEvent_id]
-    if not doerEventDefinition.is_not_open then
+    local cfgDoerEventData = CfgDoerEvent.get_by_id(onAccept_doerEvent_id)
+    if not cfgDoerEventData.is_not_open then
       if not global.client.doerEventFactory:GetDoerEvent(onAccept_doerEvent_id):Execute(string.format("%s 接受任务 %s", user:GetShort(),self:GetShort()),self:GetOwner(),DoerAttrParser.New(user, self, self:GetOwner())) then
         return false
       end
@@ -19,10 +21,10 @@ function Mission:OnAccept(user)
 end
 
 function Mission:OnFinish(user)
-  local onFinish_doerEvent_id = self:GetDefinition().onFinish_doerEvent_id
+  local onFinish_doerEvent_id = self:GetCfgMissionData().onFinish_doerEvent_id
   if not string.IsNilOrWhiteSpace(onFinish_doerEvent_id) then
-    local doerEventDefinition = global.definitionManager.doerEventDefinition[onFinish_doerEvent_id]
-    if not doerEventDefinition.is_not_open then
+    local cfgDoerEventData = CfgDoerEvent.get_by_id(onFinish_doerEvent_id)
+    if not cfgDoerEventData.is_not_open then
       if not global.client.doerEventFactory:GetDoerEvent(onFinish_doerEvent_id):Execute(string.format("%s 完成任务 %s", user:GetShort(),self:GetShort()),self:GetOwner(),DoerAttrParser.New(user, self, self:GetOwner())) then
         return false
       end
@@ -32,10 +34,10 @@ function Mission:OnFinish(user)
 end
 
 function Mission:OnGiveUp(user)
-  local onGiveUp_doerEvent_id = self:GetDefinition().onGiveUp_doerEvent_id
+  local onGiveUp_doerEvent_id = self:GetCfgMissionData().onGiveUp_doerEvent_id
   if not string.IsNilOrWhiteSpace(onGiveUp_doerEvent_id) then
-    local doerEventDefinition = global.definitionManager.doerEventDefinition[onGiveUp_doerEvent_id]
-    if not doerEventDefinition.is_not_open then
+    local cfgDoerEventData = CfgDoerEvent.get_by_id(onGiveUp_doerEvent_id)
+    if not cfgDoerEventData.is_not_open then
       if not global.client.doerEventFactory:GetDoerEvent(onGiveUp_doerEvent_id):Execute(string.format("%s 放弃任务 %s", user:GetShort(),self:GetShort()),self:GetOwner(),DoerAttrParser.New(user, self, self:GetOwner())) then
         return false
       end
@@ -53,7 +55,7 @@ function Mission:IsReady()
 end
 
 function Mission:CheckFinishCondition()
-  local  finish_condition = self:GetDefinition().finish_condition
+  local  finish_condition = self:GetCfgMissionData().finish_condition
   if not string.IsNilOrWhiteSpace(finish_condition) then --未设置完成条件的办事任务不能根据派发任务处来完成，只能在设置了可完成任务的时候检测是否就绪
     ---@type DoerAttrParser
     local doerAttrParser = DoerAttrParser.New(global.client.user, self, self:GetOwner())
@@ -71,7 +73,7 @@ end
 ---@param doerAttrParser DoerAttrParser
 function Mission:GetRewards(doerAttrParser)
   local result = {}
-  local reward_dict = self:GetDefinition().reward_dict
+  local reward_dict = self:GetCfgMissionData().reward_dict
   if not table.IsNilOrEmpty(reward_dict) then
     for item_id, count_string in pairs(reward_dict) do
       local _item_id = doerAttrParser:ParseString(item_id)

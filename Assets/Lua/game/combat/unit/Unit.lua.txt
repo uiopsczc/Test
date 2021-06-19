@@ -65,10 +65,10 @@ function Unit:Build(arg_dict)
   self.arg_dict = arg_dict
   self:InitMixedStates()
 
-  self.unitDefinition = global.definitionManager.unitDefinition[self.unit_id]
-  self.name = self.unitDefinition.name
-  self.type = self.unitDefinition.type
-  self.radius = self.unitDefinition.radius
+  self.cfgUnitData = CfgUnit.get_by_id(self.unit_id)
+  self.name = self.cfgUnitData.name
+  self.type = self.cfgUnitData.type
+  self.radius = self.cfgUnitData.radius
   self.original_radius = self.radius
 
   self.level = arg_dict.level
@@ -82,12 +82,12 @@ function Unit:Build(arg_dict)
   -- 创建时播放的动画
   self.build_ok_animation_name = arg_dict.build_ok_animation_name
   -- 是否需要保持尸体
-  self.is_keep_dead_body = self.arg_dict.is_keep_dead_body or self.unitDefinition.is_keep_dead_body
+  self.is_keep_dead_body = self.arg_dict.is_keep_dead_body or self.cfgUnitData.is_keep_dead_body
 
   self.faction = arg_dict.faction
   self.position = arg_dict.position
   self.rotation = arg_dict.rotation
-  self.scale = arg_dict.scale or self.unitDefinition.scale or 1
+  self.scale = arg_dict.scale or self.cfgUnitData.scale or 1
   self:SetScale(self.scale)
 
   ---@type PropertyComp
@@ -104,25 +104,25 @@ function Unit:Build(arg_dict)
 
   -- 技能相关
   ---@type string[]
-  self.skill_id_list = self.unitDefinition.skill_ids and table.Clone(self.unitDefinition.skill_ids) or {}
+  self.skill_id_list = self.cfgUnitData.skill_ids and table.Clone(self.cfgUnitData.skill_ids) or {}
   for _, skill_id in ipairs(self.skill_id_list) do
     self:AddSkill(skill_id)
   end
 
   -- 普攻相关
   ---@type string[]
-  self.normal_attack_id_list = self.unitDefinition.normal_attack_ids and table.Clone(self.unitDefinition.normal_attack_ids) or {}
+  self.normal_attack_id_list = self.cfgUnitData.normal_attack_ids and table.Clone(self.cfgUnitData.normal_attack_ids) or {}
   for _, normal_attack_id in ipairs(self.normal_attack_id_list) do
     self:AddNormalAttack(normal_attack_id)
   end
 
   -- 添加被动buff
-  for _, passive_buff_id in ipairs(self.unitDefinition.passive_buff_ids or {}) do
+  for _, passive_buff_id in ipairs(self.cfgUnitData.passive_buff_ids or {}) do
     self.buffManager:AddBuff(passive_buff_id, self)
   end
 
-  if self.unitDefinition.model_path then
-    self:BuildModel(self.unitDefinition.model_path)
+  if self.cfgUnitData.model_path then
+    self:BuildModel(self.cfgUnitData.model_path)
   end
 
   self.unitMoveComp:OnBuild()
@@ -445,8 +445,8 @@ function Unit:OnKilled(source_unit, spell, is_play_dead_animation, is_waiting_re
     self:BeThrowed(unitBeThrowedInfo)
   end
 
-  if self.unitModelInfo_dict["main"].path ~= self.unitDefinition.model_path then
-    self:BuildModel(self.unitDefinition.model_path)
+  if self.unitModelInfo_dict["main"].path ~= self.cfgUnitData.model_path then
+    self:BuildModel(self.cfgUnitData.model_path)
   end
   self.is_dead = true
   self:UpdateMixedStates()
@@ -455,12 +455,12 @@ function Unit:OnKilled(source_unit, spell, is_play_dead_animation, is_waiting_re
   end
   if is_play_dead_animation then
     self:MoveStop()
-    local dead_body_dealy = self.unitDefinition.dead_body_dealy or 0.5
-    local death_effect_id = self.unitDefinition.death_effect_id
+    local dead_body_dealy = self.cfgUnitData.dead_body_dealy or 0.5
+    local death_effect_id = self.cfgUnitData.death_effect_id
     if death_effect_id then
-      local effectDefinition = global.definitionManager.effectDefinition[death_effect_id]
-      local ground_effect_pos = self:GetSocketPosition(effectDefinition.socket_name_1)
-      global.client.combat.effectManager:CreateGroundEffect(death_effect_id, self, ground_effect_pos, self:GetRotation():ToEulerAngles(), effectDefinition.duration)
+      local cfgEffectData = CfgEffect.get_by_id(death_effect_id)
+      local ground_effect_pos = self:GetSocketPosition(cfgEffectData.socket_name_1)
+      global.client.combat.effectManager:CreateGroundEffect(death_effect_id, self, ground_effect_pos, self:GetRotation():ToEulerAngles(), cfgEffectData.duration)
     end
     if IsNotNil(self.animation) then
       ---@type CS.UnityEngine.AnimationState
@@ -489,7 +489,7 @@ function Unit:__OnDieOver()
   if self.is_keep_dead_body then
     return
   end
-  if self.unitDefinition.death_effect_id then
+  if self.cfgUnitData.death_effect_id then
     self:SetIsMoveWithMoveAnimation(false)
     self:AddTimer(function()
       self:__OnDieBuryOver()
@@ -586,7 +586,7 @@ function Unit:UpdateMixedStates()
       not self:HasState(StateConst.CanNotMove) and
       (not self.current_attack or
           self.current_attack.is_past_break_time or
-          self.current_attack.spellDefinition.is_can_move_while_cast) and true or false
+          self.current_attack.cfgSpellData.is_can_move_while_cast) and true or false
   local new_is_can_attack = is_common_state and
       (not self:HasState(StateConst.CanNotAttack)) and
       (not self.current_attack or
@@ -642,7 +642,7 @@ function Unit:__MoveTo(move_to_target_pos, duration)
   if not self.graphicComponent.transform then
     return
   end
-  move_to_target_pos = self.unitDefinition.offset_y and (move_to_target_pos + Vector3(0, self.unitDefinition.offset_y, 0)) or move_to_target_pos
+  move_to_target_pos = self.cfgUnitData.offset_y and (move_to_target_pos + Vector3(0, self.cfgUnitData.offset_y, 0)) or move_to_target_pos
   global.client.moveManager:MoveTo(self.graphicComponent.transform, move_to_target_pos, duration)
 end
 
@@ -910,8 +910,8 @@ function Unit:InitSpellInfo(spell_id, cooldown_pct)
 end
 
 function Unit:GetSpellCooldownRate(spell_id)
-  local spellDefinition = global.definitionManager:GetSpellDefinition(spell_id)
-  if spellDefinition.type == "普攻" then
+  local cfgSpellData = CfgSpell.get_by_id(spell_id)
+  if cfgSpellData.type == "普攻" then
     return 1 / (1 + self:GetCalcPropValue("攻击速度"))
   else
     return 1 - self:GetCalcPropValue("技能冷却减少百分比")
@@ -919,8 +919,8 @@ function Unit:GetSpellCooldownRate(spell_id)
 end
 
 function Unit:GetSpellIdList(spell_id)
-  local spellDefinition = global.definitionManager:GetSpellDefinition(spell_id)
-  if spellDefinition.type == "普攻" then
+  local cfgSpellData = CfgSpell.get_by_id(spell_id)
+  if cfgSpellData.type == "普攻" then
     return self.normal_attack_id_list
   else
     return self.skill_id_list
@@ -929,15 +929,15 @@ end
 
 function Unit:SetSpellInfoCooldown(spell_id, cooldown_pct)
   cooldown_pct = cooldown_pct or 0
-  local spellDefinition = global.definitionManager:GetSpellDefinition(spell_id)
+  local cfgSpellData = CfgSpell.get_by_id(spell_id)
   local spellInfo = self.spellInfo_dict[spell_id]
   spellInfo.cooldown_rate = self:GetSpellCooldownRate(spell_id)
-  spellInfo.cooldown_remain_duration = spellDefinition.cooldown_duration * spellInfo.cooldown_rate * cooldown_pct
+  spellInfo.cooldown_remain_duration = cfgSpellData.cooldown_duration * spellInfo.cooldown_rate * cooldown_pct
 end
 
 function Unit:AddPassiveBuffOfSpell(spell_id)
-  local spellDefinition = global.definitionManager:GetSpellDefinition(spell_id)
-  local passive_buff_ids = spellDefinition.passive_buff_ids
+  local cfgSpellData = CfgSpell.get_by_id(spell_id)
+  local passive_buff_ids = cfgSpellData.passive_buff_ids
   if passive_buff_ids then
     for _, passive_buff_id in ipairs(passive_buff_ids) do
       self.buffManager:AddBuff(passive_buff_id, self)
@@ -953,8 +953,8 @@ function Unit:RemoveSpell(spell_id)
 end
 
 function Unit:RemovePassiveBuffOfSpell(spell_id)
-  local spellDefinition = global.definitionManager:GetSpellDefinition(spell_id)
-  local passive_buff_ids = spellDefinition.passive_buff_ids
+  local cfgSpellData = CfgSpell.get_by_id(spell_id)
+  local passive_buff_ids = cfgSpellData.passive_buff_ids
   if passive_buff_ids then
     self.buffManager:RemoveBuff(passive_buff_ids, self:GetGuid())
   end
@@ -987,9 +987,9 @@ end
 --  改变技能CD
 function Unit:OnSpellCooldownRateChange()
   for spell_id, spellInfo in pairs(self.spellInfo_dict) do
-    local spellDefinition = global.definitionManager:GetSpellDefinition(spell_id)
+    local cfgSpellData = CfgSpell.get_by_id(spell_id)
     local cooldown_old_rate = spellInfo.cooldown_rate
-    local cooldown_duration = spellDefinition.cooldown_duration or 0
+    local cooldown_duration = cfgSpellData.cooldown_duration or 0
     if cooldown_duration > 0 then
       local new_rate = self:GetSpellCooldownRate(spell_id)
       if spellInfo.cooldown_remain_duration <= 0 then
@@ -1029,14 +1029,14 @@ function Unit:CastSpell(spell_id, target_unit, is_control)
   return spell
 end
 
----@param new_spellDefinition SpellDefinition
-function Unit:CanBreakCurrentSpell(new_spell_id, new_spellDefinition)
+---@param new_cfgSpellData CfgSpellData
+function Unit:CanBreakCurrentSpell(new_spell_id, new_cfgSpellData)
   if not self.current_attack then
     return true
   end
-  new_spellDefinition = new_spellDefinition or global.definitionManager:GetSpellDefinition(new_spell_id)
-  if (new_spellDefinition.type == "法术" and self.current_attack.spellDefinition.type == "普攻") -- 法术可以打断普攻
-      or new_spellDefinition.cast_type == "触发" then
+  new_cfgSpellData = new_cfgSpellData or CfgSpell.get_by_id(new_spell_id)
+  if (new_cfgSpellData.type == "法术" and self.current_attack.cfgSpellData.type == "普攻") -- 法术可以打断普攻
+      or new_cfgSpellData.cast_type == "触发" then
     return true
   else
     return self.current_attack.is_past_break_time
@@ -1046,8 +1046,8 @@ end
 
 --  检查是否到时间可以放技能1、是否能打断当前技能2、技能cd是否到
 function Unit:IsTimeToCastSpell(spell_id)
-  local spellDefinition = global.definitionManager:GetSpellDefinition(spell_id)
-  if not self:CanBreakCurrentSpell(spell_id, spellDefinition) then
+  local cfgSpellData = CfgSpell.get_by_id(spell_id)
+  if not self:CanBreakCurrentSpell(spell_id, cfgSpellData) then
     return false
   end
   if not self:IsSpellCooldownOk(spell_id) then
@@ -1057,11 +1057,11 @@ function Unit:IsTimeToCastSpell(spell_id)
 end
 
 function Unit:IsInSpellRange(target, spell_id)
-  local spellDefinition = global.definitionManager:GetSpellDefinition(spell_id)
-  if not spellDefinition.range then
+  local cfgSpellData = CfgSpell.get_by_id(spell_id)
+  if not cfgSpellData.range then
     return false
   end
-  return spellDefinition.range >= self:Distance(target)
+  return cfgSpellData.range >= self:Distance(target)
 end
 
 ----------------------------------------------------------------------
@@ -1069,7 +1069,7 @@ end
 ----------------------------------------------------------------------
 function Unit:SetPosition(pos)
   if self.graphicComponent.transform then
-    self.graphicComponent.transform.position = self.unitDefinition.offset_y and (pos + Vector3(0, self.unitDefinition.offset_y, 0)) or pos
+    self.graphicComponent.transform.position = self.cfgUnitData.offset_y and (pos + Vector3(0, self.cfgUnitData.offset_y, 0)) or pos
   end
   self.position = pos
 end

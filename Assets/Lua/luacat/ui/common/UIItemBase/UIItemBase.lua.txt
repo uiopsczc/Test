@@ -29,20 +29,20 @@ function UIItemBase:Show(item_id, item_count, is_show_name)
   self.item_id = item_id
   self.item_count = item_count
 
-  self.itemDefinition = global.definitionManager.itemDefinition[item_id]
-  self.qualityDefinition = self.itemDefinition.quality_id == nil and nil or global.definitionManager.qualityDefinition[self.itemDefinition.quality_id]
+  self.cfgItemData = CfgItem.get_by_id(item_id)
+  self.cfgQualityData = self.cfgItemData.quality_id == nil and nil or CfgProperty.get_by_id(self.cfgItemData.quality_id)
 
-  if not string.IsNilOrWhiteSpace(self.itemDefinition.bg_path) then
-    self:SetImageAsync(self.content_bg_image, self.itemDefinition.bg_path,nil, false)
+  if not string.IsNilOrWhiteSpace(self.cfgItemData.bg_path) then
+    self:SetImageAsync(self.content_bg_image, self.cfgItemData.bg_path,nil, false)
   end
-  if self.qualityDefinition and not string.IsNilOrWhiteSpace(self.qualityDefinition.icon_path) then
-    self:SetImageAsync(self.content_quality_image, self.qualityDefinition.icon_path,nil, false)
+  if self.cfgQualityData and not string.IsNilOrWhiteSpace(self.cfgQualityData.icon_path) then
+    self:SetImageAsync(self.content_quality_image, self.cfgQualityData.icon_path,nil, false)
   else
     self.content_bg_gameObject:SetActive(false)
   end
-  self:SetImageAsync(self.content_icon_image, self.itemDefinition.icon_path,nil ,false)
+  self:SetImageAsync(self.content_icon_image, self.cfgItemData.icon_path,nil ,false)
   self.content_count_text.text = (self.item_count == 0 or self.item_count == 1) and "" or string.format("x%s", self.item_count)
-  self.name_text.text = self.itemDefinition.name
+  self.name_text.text = self.cfgItemData.name
 end
 
 

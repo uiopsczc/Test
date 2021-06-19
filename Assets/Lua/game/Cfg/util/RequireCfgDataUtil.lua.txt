@@ -1,1 +1,2 @@
 CfgSummonbeastguardskillDataUtil = require("game.Cfg.util.CfgSummonbeastguardskillDataUtil")
+CfgSceneDataUtil = require("game.Cfg.util.CfgSceneDataUtil")

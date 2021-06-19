@@ -13,8 +13,8 @@ function SourceTargetEffectComponent:AddOnReachCallback(callback)
 end
 
 function SourceTargetEffectComponent:SetSocket()
-  self.source_socket_name = self.effectEntity.effectDefinition.socket_name_1 or "missile"
-  self.target_socket_name = self.effectEntity.effectDefinition.socket_name_2 or "chest"
+  self.source_socket_name = self.effectEntity.cfgEffectData.socket_name_1 or "missile"
+  self.target_socket_name = self.effectEntity.cfgEffectData.socket_name_2 or "chest"
 
   if self.source_iposition then
     self.source_iposition:SetSocketName(self.source_socket_name)

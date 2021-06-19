@@ -36,8 +36,8 @@ function UnitManager:CreateUnit(arg_dict)
   unit:Build(arg_dict)
   self.unit_dict[unit.key] = unit
   self.faction_unit_dict[unit:GetFaction()][unit:GetGuid()] = unit
-  if unit.unitDefinition.ai_class_path_lua then
-    unit:RunAI(unit.unitDefinition.ai_class_path_lua)
+  if unit.cfgUnitData.ai_class_path_lua then
+    unit:RunAI(unit.cfgUnitData.ai_class_path_lua)
   end
   return unit
 end
@@ -237,7 +237,7 @@ end
 ---@param unit Unit
 ---@param origin @原点
 function UnitManager:__CheckUnit(unit, origin, range_info, faction, scope, is_only_attackable, is_can_select_hide_unit)
-  if unit.unitDefinition.type == "技能物体" then
+  if unit.cfgUnitData.type == "技能物体" then
     return
   end
   if is_only_attackable then

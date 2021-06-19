@@ -14,10 +14,6 @@ function MetatableUtil.NewReadOnlyTable(require_path,metatable)
   return data
 end
 
-function MetatableUtil.NewReadOnlyTableWithIdListDict(require_path,id_list_dict)
-  local file_name = string.FileName(require_path,".")
-  return MetatableUtil.NewReadOnlyTable(require_path,{[DefinitionManager.id_list_string] = id_list_dict[file_name]})
-end
 
 function MetatableUtil.NewNotExistUnReadableTable(require_path, metatable)
   local data = require(require_path)

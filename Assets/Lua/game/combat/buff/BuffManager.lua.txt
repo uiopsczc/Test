@@ -15,21 +15,21 @@ end
 
 ---@param source_unit Unit
 function BuffManager:AddBuff(buff_id, source_unit, force_duration, arg_dict)
-  local buffDefinition = global.definitionManager.buffDefinition[buff_id]
-  local duration = force_duration or (not buffDefinition.duration or buffDefinition.duration == 0) and math.huge or buffDefinition.duration
+  local cfgBuffData = CfgBuff.get_by_id(buff_id)
+  local duration = force_duration or (not cfgBuffData.duration or cfgBuffData.duration == 0) and math.huge or cfgBuffData.duration
   local source_spell = arg_dict.source_spell
-  local type_1 = buffDefinition.type_1 -- buff or debuff
+  local type_1 = cfgBuffData.type_1 -- buff or debuff
   if type_1 == "debuff" and self.unit:IsInvincible() then
     return
   end
-  if self.unit:IsImmuneControl() and (buffDefinition.type_2 == "控制" or (buffDefinition.state and StateConst.Control_State_Dict[buffDefinition.state])) then
+  if self.unit:IsImmuneControl() and (cfgBuffData.type_2 == "控制" or (cfgBuffData.state and StateConst.Control_State_Dict[cfgBuffData.state])) then
     --显示免疫
     return
   end
 
 
-  if buffDefinition.is_unique and self:HasBuff(buff_id) then
-    -- definition.is_unique是指该buff只有一个生效
+  if cfgBuffData.is_unique and self:HasBuff(buff_id) then
+    -- cfgBuffData.is_unique是指该buff只有一个生效
     self.buff_list_dict[buff_id][1]:CreateBuffCache(duration, source_unit, source_spell, arg_dict)
   else
     ---@type Buff
@@ -90,7 +90,7 @@ end
 function BuffManager:GetDebuffCount()
   local count = 0
   for _, buff in pairs(self.buff_dict) do
-    if buff.buffDefinition.type_1 == "debuff" then
+    if buff.cfgBuffData.type_1 == "debuff" then
       count = count + 1
     end
   end
@@ -174,7 +174,7 @@ end
 function BuffManager:RemoveControlBuff()
   for _, buff_guid in ipairs(table.Keys_Dict(self.buff_dict)) do
     local buff = self.buff_dict[buff_guid]
-    if not buff:IsDestroyed() and buff.buffDefinition.type_2 == "控制" then
+    if not buff:IsDestroyed() and buff.cfgBuffData.type_2 == "控制" then
       self:RemoveBuff(buff_guid)
     end
   end

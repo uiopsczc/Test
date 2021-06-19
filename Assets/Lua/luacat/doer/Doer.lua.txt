@@ -42,7 +42,7 @@ function Doer:OnAttrChange(key)
 end
 
 -- 重新载入定义数据事件
-function Doer:OnReloadDefinition()
+function Doer:OnReloadCfg()
 end
 
 -------------DoXXX-----------------------
@@ -93,9 +93,6 @@ function Doer:GetDBase()
   return self.dbase
 end
 
-function Doer:GetName()
-  return self:GetDefinition().name
-end
 
 function Doer:GetShort()
   return string.format("%s",self:GetRid())
@@ -152,23 +149,9 @@ function Doer:GetTmp(key,default_value)
   return value
 end
 
-function Doer:GetDefinition()
-  if self.definition then
-    return self.definition
-  end
-  if self.factory then
-    self.definition = self.factory:GetDefinition(self:GetId())
-    return self.definition
-  end
-end
 
-function Doer:GetType1()
-  return self:GetDefinition().type_1
-end
 
-function Doer:GetType2()
-  return self:GetDefinition().type_2
-end
+
 
 function Doer:GetCount()
   return self:Get("count")
@@ -201,23 +184,7 @@ function Doer:GetPos3()
   return nil
 end
 
-function Doer:CanFold()
-  return self:GetDefinition().can_fold
-end
 
-function Doer:CanNotFold()
-  return not self:CanFold()
-end
-
--- 获得物品类别
-function Doer:GetType1()
-  return self:GetDefinition().type_1
-end
-
--- 获得物品子类别
-function Doer:GetType2()
-  return self:GetDefinition().type_2
-end
 
 function Doer:GetBelong()
   return self:GetTmp("belong", "");

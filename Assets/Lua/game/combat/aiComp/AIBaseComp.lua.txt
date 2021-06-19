@@ -64,8 +64,8 @@ function AIBaseComp:TryCastSkill(spell_id, target_unit_list, is_can_attack_witho
     return false
   end
 
-  local spellDefinition = global.definitionManager:GetSpellDefinition(spell_id)
-  local attack_range = spellDefinition.range
+  local cfgSpellData = CfgSpell.get_by_id(spell_id)
+  local attack_range = cfgSpellData.range
   local target_unit = global.client.combat.spellManager:RecommendCast(self.unit, spell_id, target_unit_list, is_can_attack_without_seeing_target)[1]
 
   if not target_unit then
@@ -78,7 +78,7 @@ function AIBaseComp:TryCastSkill(spell_id, target_unit_list, is_can_attack_witho
   end
   -- ai需要有目标才放技能放技能
   --  如果技能填了不强制面向目标，则控制的时候不走去攻击范围，但ai还是会走去攻击范围
-  if (not attack_range) or (is_can_attack_without_seeing_target and spellDefinition.is_not_face_to_target) or
+  if (not attack_range) or (is_can_attack_without_seeing_target and cfgSpellData.is_not_face_to_target) or
       not self:IsNeedGotoAttackRange(target_unit, attack_range) then
     return self.unit:CastSpell(spell_id, target_unit, is_can_attack_without_seeing_target)
   end
@@ -92,8 +92,8 @@ function AIBaseComp:TryNormalAttack(target_unit_list, is_can_attack_without_seei
   if not attack_id or not self.unit:IsCanNormalAttack() then
     return
   end
-  local spellDefinition = global.definitionManager:GetSpellDefinition(attack_id)
-  local attack_range = spellDefinition.range
+  local cfgSpellData = CfgSpell.get_by_id(attack_id)
+  local attack_range = cfgSpellData.range
   local target_unit = global.client.combat.spellManager:RecommendCast(self.unit, attack_id, target_unit_list, is_can_attack_without_seeing_target)[1]
 
   if not target_unit then

@@ -6,13 +6,12 @@ function RoleFactory:Init()
   self.default_doer_class_path = "game.doer.role.Role"
 end
 
-function RoleFactory:GetDefinitions()
-  return global.definitionManager.roleDefinition
+function RoleFactory:GetClassPath(id)
+  return string.IsNilOrEmpty(self:GetCfgRoleData(id).class_path_lua) and self.default_doer_class_path or self:GetCfgRoleData(id).class_path_lua
 end
 
----@return RoleDefinition
-function RoleFactory:GetDefinition(id)
-  return RoleFactory.super.GetDefinition(self,id)
+function RoleFactory:GetCfgRoleData(id)
+  return CfgRole.get_by_id(id)
 end
 
 ---@return RoleDBase

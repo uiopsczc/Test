@@ -7,8 +7,8 @@ function EffectEntity:Init(effect_id, unit)
   EffectEntity.super.Init(self)
   self.unit = unit
   self.effect_id = effect_id
-  self.effectDefinition = global.definitionManager.effectDefinition[effect_id]
-  self.graphicComponent:SetPrefabPath(self.effectDefinition.prefab_path)
+  self.cfgEffectData = CfgEffect.get_by_id(effect_id)
+  self.graphicComponent:SetPrefabPath(self.cfgEffectData.prefab_path)
 end
 
 function EffectEntity:CreateGraphicComponent()

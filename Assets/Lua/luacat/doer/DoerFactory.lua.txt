@@ -8,12 +8,8 @@ function DoerFactory:Init()
   self.id_dict = {} -- key是id,sub_key是rid
 end
 
-
-function DoerFactory:GetDefinitions()
-end
-
-function DoerFactory:GetDefinition(id)
-  return self:GetDefinitions()[id]
+function DoerFactory:GetClassPath(id)
+  return self.default_doer_class_path
 end
 
 -- 需子类重写
@@ -24,8 +20,7 @@ end
 
 ---@return Doer
 function DoerFactory:__NewDoer(id)
-  local definition = self:GetDefinition(id)
-  local class_path = definition.class_path_lua or self.default_doer_class_path
+  local class_path = self:GetClassPath(id)
   local class_type = ClassLoadUtil.Load(class_path)
   local doer = self:AddChildWithoutInit(nil, class_type)
   return doer

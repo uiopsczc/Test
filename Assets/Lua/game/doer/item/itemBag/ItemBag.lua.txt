@@ -139,8 +139,8 @@ end
 ---@param count number
 ---@return Item[]
 function ItemBag:AddItems(id,count)
-  local definition = global.definitionManager.itemDefinition[id]
-  local can_fold = definition.can_fold
+  local cfgItemData = CfgItem.get_by_id(id)
+  local can_fold = cfgItemData.can_fold
   local item
   local result = {}
   if can_fold then

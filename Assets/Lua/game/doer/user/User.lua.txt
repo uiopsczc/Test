@@ -307,7 +307,7 @@ end
 function User:CheckAutoFinishMissions()
   for _,mission in ipairs(self:GetMissions()) do
     if mission:IsReady() then
-      if mission:GetDefinition().is_auto_check_finish then
+      if mission:GetCfgMissionData().is_auto_check_finish then
         self:FinishMission(mission,mission:GetOwner())
       end
     end

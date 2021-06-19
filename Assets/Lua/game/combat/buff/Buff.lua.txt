@@ -8,7 +8,7 @@ function Buff:Init(buffManager, buff_id)
   ---@type BuffManager
   self.buffManager = buffManager
   self.buff_id = buff_id
-  self.buffDefinition = global.definitionManager.buffDefinition[buff_id]
+  self.cfgBuffData = CfgBuff.get_by_id(buff_id)
   ---@type BuffCache[]
   self.buffCache_list = {} -- 因为有些buff可以同时存在多个，但效果只有一个生效,效果不累加
   ---@field EffectBase[]
@@ -29,7 +29,7 @@ function Buff:CreateBuffCache(duration, source_unit, source_spell, arg_dict)
     self:AddEffects()
     self:AddPropertyDict()
     self:AddTriggerSpell()
-    self.buffManager:AddState(self.buffDefinition.state)
+    self.buffManager:AddState(self.cfgBuffData.state)
   end
   return self
 end
@@ -63,13 +63,13 @@ function Buff:RemoveBuffCache(source_unit_guid, soruce_spell_guid)
 end
 
 function Buff:AddEffects()
-  local effect_ids = self.buffDefinition.effect_ids
+  local effect_ids = self.cfgBuffData.effect_ids
   if table.IsNilOrEmpty(effect_ids) then
     return
   end
   for _, effect_id in ipairs(effect_ids) do
-    local effectDefinition = global.definitionManager.effectDefinition[effect_id]
-    local effect = global.client.combat.effectManager:CreateAttachEffect(effect_id, self.buffManager.unit,effectDefinition.duration) -- TODO 如何初始化effectBase
+    local cfgEffectData = CfgEffect.get_by_id(effect_id)
+    local effect = global.client.combat.effectManager:CreateAttachEffect(effect_id, self.buffManager.unit, cfgEffectData.duration) -- TODO 如何初始化effectBase
     table.insert(self.effect_list, effect)
   end
 end
@@ -81,7 +81,7 @@ function Buff:RemoveEffects()
 end
 
 function Buff:AddPropertyDict()
-  local new_property_dict = self.buffDefinition.property_dict and DoerAttrParserUtil.ConvertTableWithTypeString(self.buffDefinition.property_dict) or {}
+  local new_property_dict = self.cfgBuffData.property_dict and DoerAttrParserUtil.ConvertTableWithTypeString(self.cfgBuffData.property_dict) or {}
   if table.Count(new_property_dict) > 0 then
     local propertyComp = self.buffManager.unit.propertyComp
     propertyComp:StartChange()
@@ -91,9 +91,9 @@ function Buff:AddPropertyDict()
 end
 
 function Buff:RemovePropertyDict()
-  local new_property_dict = self.buffDefinition.property_dict and DoerAttrParserUtil.ConvertTableWithTypeString(self.buffDefinition.property_dict) or {}
+  local new_property_dict = self.cfgBuffData.property_dict and DoerAttrParserUtil.ConvertTableWithTypeString(self.cfgBuffData.property_dict) or {}
   if table.Count(new_property_dict) > 0 then
-    local propertyComp = self.buffDefinition.unit.propertyComp
+    local propertyComp = self.cfgBuffData.unit.propertyComp
     propertyComp:StartChange()
     propertyComp:RemovePropSet("buff", self:GetGuid())
     propertyComp:EndChange()
@@ -101,7 +101,7 @@ function Buff:RemovePropertyDict()
 end
 
 function Buff:AddTriggerSpell()
-  local trigger_spell_id = self.buffDefinition.trigger_spell_id
+  local trigger_spell_id = self.cfgBuffData.trigger_spell_id
   if table.IsNilOrEmpty(trigger_spell_id) then
     return
   end
@@ -128,7 +128,7 @@ function Buff:__Destroy()
   self:RemoveEffects()
   self:RemovePropertyDict()
   self:RemoveTriggerSpell()
-  self.buffManager:RemoveState(self.buffDefinition.state)
+  self.buffManager:RemoveState(self.cfgBuffData.state)
 end
 
 return Buff

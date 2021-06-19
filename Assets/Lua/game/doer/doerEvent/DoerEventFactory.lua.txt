@@ -4,21 +4,19 @@ local DoerEventFactory = Class("DoerEventFactory",DoerFactory)
 function DoerEventFactory:Init()
   DoerEventFactory.super.Init(self)
   self.default_doer_class_path = "game.doer.doerEvent.DoerEvent"
-  local id_list = global.definitionManager.idDefinition["DoerEventDefinition"]
   ---@type table<string,DoerEvent>
   self.doerEvent_dict = {}
-  for _, id in ipairs(id_list) do
-    self:LoadDoerEvent(id)
+  for _, cfgDoerEventData in ipairs(CfgDoerEvent.All()) do
+    self:LoadDoerEvent(cfgDoerEventData.id)
   end
 end
 
-function DoerEventFactory:GetDefinitions()
-  return global.definitionManager.doerEventDefinition
+function DoerEventFactory:GetClassPath(id)
+  return string.IsNilOrEmpty(self:GetCfgDoerEventData(id).class_path_lua) and self.default_doer_class_path or self:GetCfgDoerEventData(id).class_path_lua
 end
 
----@return DoerEventDBase
-function DoerEventFactory:GetDefinition(id)
-  return DoerEventFactory.super.GetDefinition(self,id)
+function DoerEventFactory:GetCfgDoerEventData(id)
+  return CfgDoerEvent.get_by_id(id)
 end
 
 ---@return DoerEventDBase
@@ -27,8 +25,7 @@ function DoerEventFactory:__NewDBase(id_or_rid)
 end
 -------------------------------------------------------------------------------------
 function DoerEventFactory:LoadDoerEvent(id)
-  local definition = self:GetDefinition(id)
-  local class_path = definition.class_path_lua or self.default_doer_class_path
+  local class_path = self:GetClassPath(id)
   local doerEvent = self:AddChildWithoutInit(nil, require(class_path))
   local doerEventDBase = self:__NewDBase(id)
   doerEvent.factory = self

@@ -8,7 +8,7 @@ local UnitMoveComp = Class("UnitMoveComp", TickObject)
 function UnitMoveComp:Init(unit)
   UnitMoveComp.super.Init(self, unit)
   self.unit = unit
-  self.walk_step_length = unit.unitDefinition.walk_step_length or 1
+  self.walk_step_length = unit.cfgUnitData.walk_step_length or 1
   self.move_type = nil  -- move be_throwed
   self.is_move_with_move_animation = true
   self.adjust_dist_sqr = 3 * 3

@@ -25,7 +25,7 @@ namespace CsCat
 
     public CfgSceneData GetCfgSceneData()
     {
-      return GetSceneFactory().GetCfgSceneData(this.GetId());
+      return CfgScene.Instance.get_by_id(this.GetId());
     }
 
     //////////////////////DoXXX/////////////////////////////////////

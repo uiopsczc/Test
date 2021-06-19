@@ -9,6 +9,11 @@ function Scene:Init()
   self.o_sceneItems = SceneItems.New(self, "o_sceneItems")
 end
 
+
+function Scene:GetCfgSceneData()
+  return CfgScene.get_by_id(self:GetId())
+end
+
 -------------------------DoXXX---------------------------
 ---@param thing Thing
 function Scene:DoEnter(thing)
@@ -630,7 +635,7 @@ function Scene:GetSceneMapInfo()
   if self:Get("is_dynamic_map", false) then
     local src = self:Get("src", "")
     if not string.IsNilOrWhiteSpace(src) then
-      sceneMapInfo = global.definitionManager:GetSceneMapInfo(src)
+      sceneMapInfo = CfgSceneDataUtil.GetSceneMapInfo(CfgScene.get_by_id(src))
     end
   else
     sceneMapInfo = self:Get("sceneMapInfo")

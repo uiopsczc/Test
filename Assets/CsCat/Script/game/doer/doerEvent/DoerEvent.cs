@@ -11,7 +11,7 @@ namespace CsCat
 
     public CfgDoerEventData GetCfgDoerEventData()
     {
-      return GetDoerEventFactory().GetCfgDoerEventData(this.GetId());
+      return CfgDoerEvent.Instance.get_by_id(this.GetId());
     }
 
     //////////////////////////////////////////////////////////////////////////

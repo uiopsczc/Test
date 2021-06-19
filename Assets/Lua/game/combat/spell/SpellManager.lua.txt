@@ -45,14 +45,14 @@ end
 ---@param target_unit Unit
 ---@param is_control @是否控制类技能
 function SpellManager:CastSpell(source_unit, spell_id, target_unit, arg_dict, is_control)
-  local is_can_cast, spellDefinition, spell_class = self:CheckIsCanCast(source_unit, spell_id, target_unit, is_control)
+  local is_can_cast, cfgSpellData, spell_class = self:CheckIsCanCast(source_unit, spell_id, target_unit, is_control)
   if not is_can_cast then
     return false
   end
   -- 开始释放技能
   ---@type SpellBase
-  local spell = self:AddChild(nil, spell_class, source_unit, spell_id, target_unit,spellDefinition, arg_dict)
-  if spellDefinition.cast_type == "正常" then
+  local spell = self:AddChild(nil, spell_class, source_unit, spell_id, target_unit, cfgSpellData, arg_dict)
+  if cfgSpellData.cast_type == "正常" then
     -- 当玩家是手动操作释放技能时，技能方向就以玩家的输入为准（但如果有目标则会以目标方向释放技能，无视输入）
     -- 当释放的技能类型是正常的话，则需停下来施法
     if source_unit.current_attack then
@@ -60,7 +60,7 @@ function SpellManager:CastSpell(source_unit, spell_id, target_unit, arg_dict, is
     end
     local rotation = nil
     local is_not_face_to_target = arg_dict and arg_dict.is_not_face_to_target
-    is_not_face_to_target = is_not_face_to_target or spellDefinition.is_not_face_to_target
+    is_not_face_to_target = is_not_face_to_target or cfgSpellData.is_not_face_to_target
     local target_position = arg_dict and arg_dict.position or target_unit:GetPosition()
     if target_unit and (not is_not_face_to_target or not is_control) then
       local dir = target_position - source_unit:GetPosition()
@@ -69,13 +69,13 @@ function SpellManager:CastSpell(source_unit, spell_id, target_unit, arg_dict, is
         source_unit:FaceTo(rotation)
       end
     end
-    if not spellDefinition.is_can_move_while_cast or not is_control then
+    if not cfgSpellData.is_can_move_while_cast or not is_control then
       source_unit:MoveStop(rotation)
     end
     source_unit.current_attack = spell
     source_unit:UpdateMixedStates()
   end
-  if spellDefinition.type == "普攻" then
+  if cfgSpellData.type == "普攻" then
     source_unit:NormalAttackStart()
   end
   spell:Start()
@@ -84,43 +84,43 @@ end
 
 ---@param source_unit Unit
 ---@param target_unit Unit
----@return boolean, SpellDefinition
+---@return boolean, CfgSpellData
 function SpellManager:CheckIsCanCast(source_unit, spell_id, target_unit, is_control)
-  local spellDefinition = global.definitionManager:GetSpellDefinition(spell_id)
-  if not spellDefinition then
+  local cfgSpellData = CfgSpell.get_by_id(spell_id)
+  if not cfgSpellData then
     ErrorFormat("spell_id(%d) is not exist!", spell_id)
     return false
   end
-  if not source_unit or (source_unit:IsDead() and spellDefinition.cast_type ~= "触发") then
+  if not source_unit or (source_unit:IsDead() and cfgSpellData.cast_type ~= "触发") then
     return false
   end
   if not source_unit:IsSpellCooldownOk(spell_id) then
     return false
   end
-  if not source_unit:CanBreakCurrentSpell(spell_id, spellDefinition) then
+  if not source_unit:CanBreakCurrentSpell(spell_id, cfgSpellData) then
     return false
   end
 
-  local scope = spellDefinition.target_type or "enemy"
+  local scope = cfgSpellData.target_type or "enemy"
   --   如果是混乱则找任何可以攻击的人
   if source_unit:IsConfused() then
     scope = "all"
   end
   local is_only_attackable = scope ~= "friend"
-  if spellDefinition.is_need_target then
+  if cfgSpellData.is_need_target then
     if not target_unit then
       return false
     end
-    if not global.client.combat.unitManager:__CheckUnit(target_unit, source_unit, { mode = "circle", radius = spellDefinition.range }, source_unit:GetFaction(), scope, is_only_attackable) then
+    if not global.client.combat.unitManager:__CheckUnit(target_unit, source_unit, { mode = "circle", radius = cfgSpellData.range }, source_unit:GetFaction(), scope, is_only_attackable) then
       return false
     end
   end
-  local spell_class = ClassLoadUtil.Load(spellDefinition.class_path_lua)
+  local spell_class = ClassLoadUtil.Load(cfgSpellData.class_path_lua)
   if spell_class.CheckIsCanCast and
-      not spell_class.CheckIsCanCast(source_unit, spell_id, target_unit, spellDefinition,is_control) then
+      not spell_class.CheckIsCanCast(source_unit, spell_id, target_unit, cfgSpellData,is_control) then
     return false
   end
-  return true, spellDefinition, spell_class
+  return true, cfgSpellData, spell_class
 end
 
 
@@ -135,32 +135,32 @@ function SpellManager:RecommendCast(source_unit, spell_id, target_unit_list, is_
   if not target_unit_list then
     return {}
   end
-  local spellDefinition = global.definitionManager:GetSpellDefinition(spell_id)
-  local spell_class = ClassLoadUtil.Load(spellDefinition.class_path_lua)
+  local cfgSpellData = CfgSpell.get_by_id(spell_id)
+  local spell_class = ClassLoadUtil.Load(cfgSpellData.class_path_lua)
   if not spell_class then
-    Error("spell code is not exist: ", spellDefinition.class_path_lua)
+    Error("spell code is not exist: ", cfgSpellData.class_path_lua)
     return {}
   end
   if target_unit_list and IsUnit(target_unit_list) then
     local target_unit = target_unit_list
-    if self:__IsUnitMatchCondition(source_unit, target_unit, is_control, spellDefinition, spell_class) then
+    if self:__IsUnitMatchCondition(source_unit, target_unit, is_control, cfgSpellData, spell_class) then
       return { target_unit }
     end
   end
   local new_target_unit_list = {}
   for _, target in ipairs(target_unit_list) do
-    if self:__IsUnitMatchCondition(source_unit, target, is_control, spellDefinition, spell_class) then
+    if self:__IsUnitMatchCondition(source_unit, target, is_control, cfgSpellData, spell_class) then
       table.insert(new_target_unit_list, target)
     end
   end
-  return self:RecommendSpellRule(source_unit, new_target_unit_list[1], spellDefinition, source_unit:GetPosition(), new_target_unit_list)
+  return self:RecommendSpellRule(source_unit, new_target_unit_list[1], cfgSpellData, source_unit:GetPosition(), new_target_unit_list)
 end
 
----@param spellDefinition SpellDefinition
+---@param cfgSpellData CfgSpellData
 ---@param source_unit Unit
 ---@param target_unit Unit
 ---@param target_unit_list Unit[]
-function SpellManager:RecommendSpellRule(source_unit, target_unit, spellDefinition, origin_position, target_unit_list)
+function SpellManager:RecommendSpellRule(source_unit, target_unit, cfgSpellData, origin_position, target_unit_list)
   --当前敌人
   --随机x个敌人
   --生命最低的x个人敌人
@@ -174,7 +174,7 @@ function SpellManager:RecommendSpellRule(source_unit, target_unit, spellDefiniti
   if not target_unit then
     return {}
   end
-  local select_unit_arg_dict = spellDefinition.select_unit_arg_dict
+  local select_unit_arg_dict = cfgSpellData.select_unit_arg_dict
   if not select_unit_arg_dict then
     return target_unit_list or { target_unit }
   end
@@ -189,7 +189,7 @@ function SpellManager:RecommendSpellRule(source_unit, target_unit, spellDefiniti
     origin = origin_position,
     faction = source_unit:GetFaction(),
     scope = scope,
-    range_info = { mode = "circle", radius = spellDefinition.range }
+    range_info = { mode = "circle", radius = cfgSpellData.range }
   }
   target_unit_list = target_unit_list or global.client.combat.unitManager:SelectUnit(condition_dict)
 
@@ -208,24 +208,24 @@ end
 
 -- 检查单位是否符合需求
 ---@param source_unit Unit
----@param spellDefinition SpellDefinition
+---@param cfgSpellData CfgSpellData
 ---@param target_unit Unit
-function SpellManager:__IsUnitMatchCondition(source_unit, target_unit, is_control, spellDefinition, spell_class)
+function SpellManager:__IsUnitMatchCondition(source_unit, target_unit, is_control, cfgSpellData, spell_class)
   --肯定有target
   if target_unit:IsDead() then
     return false
   end
   if not source_unit:IsConfused() then
-    if spellDefinition.target_type == "enemy" and target_unit:IsInvincible() then
+    if cfgSpellData.target_type == "enemy" and target_unit:IsInvincible() then
       return false
     end
-    if spellDefinition.target_type and spellDefinition.target_type ~="all" then
-      if not global.client.combat.unitManager:CheckFaction(source_unit:GetFaction(), target_unit:GetFaction(), spellDefinition.target_type) then
+    if cfgSpellData.target_type and cfgSpellData.target_type ~="all" then
+      if not global.client.combat.unitManager:CheckFaction(source_unit:GetFaction(), target_unit:GetFaction(), cfgSpellData.target_type) then
         return false
       end
     end
   end
-  if not spell_class.IsUnitMatchCondition(source_unit, spellDefinition.id, target_unit, spellDefinition, is_control) then
+  if not spell_class.IsUnitMatchCondition(source_unit, cfgSpellData.id, target_unit, cfgSpellData, is_control) then
     return false
   end
   return true
@@ -314,7 +314,7 @@ function SpellManager:OnHit(source_unit, target_unit, spell, ...)
       self:ListenerCallback(listener, source_unit, target_unit, spell, ...)
     end
   end
-  if spell.spellDefinition.type == "普攻" then
+  if spell.cfgSpellData.type == "普攻" then
     for k, listener in ipairs(self.listener_dict.normal_attack) do
       if listener.unit == source_unit then
         self:ListenerCallback(listener, source_unit, target_unit, spell, ...)
@@ -412,14 +412,14 @@ end
 
 
 function SpellManager:GetSpellRange(spell_id)
-  local spellDefinition = global.definitionManager:GetSpellDefinition(spell_id)
-  if not spellDefinition then
+  local cfgSpellData = CfgSpell.get_by_id(spell_id)
+  if not cfgSpellData then
     ErrorFormat("spell_id(%s) is not exist!", spell_id)
     return false
   end
-  local arg_dict = spellDefinition.arg_dict or {}
+  local arg_dict = cfgSpellData.arg_dict or {}
   local min_range = DoerAttrParserUtil.ConvertValueWithTypeString(arg_dict.min_range)
-  return spellDefinition.range, min_range
+  return cfgSpellData.range, min_range
 end
 
 ---@param spell SpellBase

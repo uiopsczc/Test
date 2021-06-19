@@ -12,7 +12,7 @@ namespace CsCat
 
     public CfgMissionData GetCfgMissionData()
     {
-      return GetMissionFactory().GetCfgMissionData(this.GetId());
+      return CfgMission.Instance.get_by_id(this.GetId());
     }
 
     public override void OnInit()

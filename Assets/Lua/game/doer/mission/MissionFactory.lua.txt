@@ -6,13 +6,12 @@ function MissionFactory:Init()
   self.default_doer_class_path = "game.doer.mission.Mission"
 end
 
-function MissionFactory:GetDefinitions()
-  return global.definitionManager.missionDefinition
+function MissionFactory:GetClassPath(id)
+  return string.IsNilOrEmpty(CfgMission.get_by_id(id).class_path_lua) and self.default_doer_class_path or CfgMission.get_by_id(id).class_path_lua
 end
 
----@return DoerEventDBase
-function MissionFactory:GetDefinition(id)
-  return MissionFactory.super.GetDefinition(self,id)
+function MissionFactory:GetCfgMissionData(id)
+  return CfgMission.get_by_id(id)
 end
 
 ---@return DoerEventDBase

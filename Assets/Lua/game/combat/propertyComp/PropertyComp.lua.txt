@@ -49,8 +49,8 @@ function PropertyComp:__CalculateProp()
   local old_calc_prop_dict = clone(self.calc_prop_dict)
   self.base_prop_dict = {}
   -- 基础属性统计
-  for _,id in ipairs(global.definitionManager.propertyDefinition.id_list) do
-    self.base_prop_dict[id] = 0
+  for _,cfgPropertyData in ipairs(CfgProperty.All()) do
+    self.base_prop_dict[cfgPropertyData.id] = 0
   end
   for _, prop_set in pairs(self.prop_set_dict) do
     for key,_ in pairs(prop_set) do

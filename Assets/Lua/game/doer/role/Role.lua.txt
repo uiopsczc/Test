@@ -9,6 +9,10 @@ function Role:OnInit()
   Role.super.OnInit(self)
 end
 
+function Role:GetCfgRoleData()
+  CfgRole.get_by_id(self:GetId())
+end
+
 --------------------------OnXXX-------------------
 function Role:OnCheckAddRole(user)
   return true

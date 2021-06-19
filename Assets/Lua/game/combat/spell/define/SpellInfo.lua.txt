@@ -6,8 +6,8 @@
 local SpellInfo = Class("SpellInfo")
 
 function SpellInfo:GetCooldownPct()
-  local spellDefinition = global.definitionManager:GetSpellDefinition(self.spell_id)
-  local cooldown_duration = spellDefinition.cooldown_duration
+  local cfgSpellData = CfgSpell.get_by_id(self.spell_id)
+  local cooldown_duration = cfgSpellData.cooldown_duration
   return self.cooldown_remain_duration / (cooldown_duration * self.cooldown_rate)
 end
 

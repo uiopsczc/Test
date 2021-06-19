@@ -1,0 +1,10 @@
+---@class CfgSceneDataUtil
+local cfgData = {}
+
+---@param cfgSceneData CfgSceneData
+function cfgData.GetSceneMapInfo(cfgSceneData)
+  return nil
+end
+
+
+return cfgData

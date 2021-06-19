@@ -4,7 +4,7 @@ local AttachEffectComponent = Class("AttachEffectComponent", EffectComponent)
 ---@param attach_entity_iposition IPosition
 function AttachEffectComponent:Init(attach_entity_iposition, force_eulerAngles, sector_angle)
   AttachEffectComponent.super.Init()
-  attach_entity_iposition:SetSocketName(self.effectEntity.effectDefinition.socket_name_1)
+  attach_entity_iposition:SetSocketName(self.effectEntity.cfgEffectData.socket_name_1)
   ---@type CS.UnityEngine.Transform
   self.attach_entity_transform = attach_entity_iposition:GetTransform()
   self.force_eulerAngles = force_eulerAngles

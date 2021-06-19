@@ -6,14 +6,14 @@ function ItemFactory:Init()
   self.default_doer_class_path = "game.doer.item.Item"
 end
 
-function ItemFactory:GetDefinitions()
-  return global.definitionManager.itemDefinition
+function ItemFactory:GetClassPath(id)
+  return string.IsNilOrEmpty(self:GetCfgItemData(id).class_path_lua) and self.default_doer_class_path or self:GetCfgItemData(id).class_path_lua
 end
 
----@return ItemDefinition
-function ItemFactory:GetDefinition(id)
-  return ItemFactory.super.GetDefinition(self,id)
+function ItemFactory:GetCfgItemData(id)
+  return CfgItem.get_by_id(id)
 end
+
 
 ---@return ItemDBase
 function ItemFactory:__NewDBase(id_or_rid)

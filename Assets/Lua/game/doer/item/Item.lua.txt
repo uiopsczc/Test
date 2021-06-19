@@ -8,6 +8,10 @@ function Item:OnInit()
   self.o_embeds = Embeds.New(self,"o_embeds")
 end
 
+function Item:GetCfgItemData()
+  return CfgItem.get_by_id(self:GetId())
+end
+
 ------------------------DoXXX--------------------------------
 -- 卸载
 function Item:DoRelease()
@@ -193,5 +197,20 @@ function Item:SetIsPutOn(is_put_on)
 end
 
 
+function Item:GetType1()
+  return self:GetCfgItemData().type_1
+end
+
+function Item:GetType2()
+  return self:GetCfgItemData().type_2
+end
+
+function Item:CanFold()
+  return self:GetCfgItemData().can_fold
+end
+
+function Item:GetName()
+  return self:GetCfgItemData().name
+end
 
 return Item

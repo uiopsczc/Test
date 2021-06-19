@@ -211,19 +211,18 @@ function DoerAttrParser:Replace(expression)
     end
   end
 
-  if string.StartsWith(expression, "definition.") then --  定义数据
-    expression = string.sub(expression, string.len("definition.")+1)
+  if string.StartsWith(expression, "cfgData.") then --  定义数据
+    expression = string.sub(expression, string.len("cfgData.")+1)
     local pos0 = string.IndexOf(expression,'.')
-    local definition_name = string.sub(expression,1, pos0 - 1)
+    local cfgData_name = string.sub(expression,1, pos0 - 1)
     expression = string.sub(expression,pos0 + 1)
     local pos1 = string.IndexOf(expression,'.')
     local id = string.sub(expression,1, pos1 - 1)
     local attr = string.sub(expression,pos1 + 1)
-    local definition
-    if string.EqualsIgnoreCase(definition_name,"ItemDefinition") then
-      definition = global.client.itemFactory:GetDefinition(id)
+    if string.EqualsIgnoreCase(cfgData_name,"cfgItemData") then
+      return self:ConvertValue(global.client.itemFactory:GetCfgItemData(id)[attr], type_string)
     end
-    return self:ConvertValue(definition[attr],type_string)
+    return nil
   end
   if string.StartsWith(expression,"eval(") then --  求表达式值
     expression = string.Trim(string.sub(expression, string.len("eval(")+1))
