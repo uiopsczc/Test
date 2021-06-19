@@ -39,6 +39,13 @@ namespace CsCat{
     public float duration { get; set; }
     /*特效ids*/
     public LitJson.JsonData effect_ids { get; set; }
+    private string[] __effect_ids;
+    public string[] _effect_ids {
+      get{
+        if(__effect_ids == default(string[])) __effect_ids = effect_ids.To<string[]>();
+        return __effect_ids;
+      }
+    }
     /*状态*/
     public string state { get; set; }
     /*是否只会只有一个生效*/
@@ -47,6 +54,13 @@ namespace CsCat{
     public string trigger_spell_id { get; set; }
     /*修改属性dict*/
     public LitJson.JsonData property_dict { get; set; }
+    private Dictionary<string,string> __property_dict;
+    public Dictionary<string,string> _property_dict {
+      get{
+        if(__property_dict == default(Dictionary<string,string>)) __property_dict = property_dict.To<Dictionary<string,string>>();
+        return __property_dict;
+      }
+    }
   }
   public class CfgBuffIndexData {
     public CfgBuffIndexUniqueData unique{ get; set; }

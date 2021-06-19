@@ -49,8 +49,22 @@ namespace CsCat{
     public string onGiveUp_doerEvent_id { get; set; }
     /*奖励*/
     public LitJson.JsonData reward_dict { get; set; }
+    private Dictionary<string,string> __reward_dict;
+    public Dictionary<string,string> _reward_dict {
+      get{
+        if(__reward_dict == default(Dictionary<string,string>)) __reward_dict = reward_dict.To<Dictionary<string,string>>();
+        return __reward_dict;
+      }
+    }
     /*寻找物品*/
     public LitJson.JsonData find_item_dict { get; set; }
+    private Dictionary<string,string> __find_item_dict;
+    public Dictionary<string,string> _find_item_dict {
+      get{
+        if(__find_item_dict == default(Dictionary<string,string>)) __find_item_dict = find_item_dict.To<Dictionary<string,string>>();
+        return __find_item_dict;
+      }
+    }
   }
   public class CfgMissionIndexData {
     public CfgMissionIndexUniqueData unique{ get; set; }

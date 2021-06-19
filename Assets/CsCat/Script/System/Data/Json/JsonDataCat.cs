@@ -1,6 +1,6 @@
 namespace CsCat
 {
-  public class JsonData
+  public class JsonDataCat
   {
     #region field
 

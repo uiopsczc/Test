@@ -43,8 +43,22 @@ namespace CsCat{
     public string model_path { get; set; }
     /*普攻ids*/
     public LitJson.JsonData normal_attack_ids { get; set; }
+    private string[] __normal_attack_ids;
+    public string[] _normal_attack_ids {
+      get{
+        if(__normal_attack_ids == default(string[])) __normal_attack_ids = normal_attack_ids.To<string[]>();
+        return __normal_attack_ids;
+      }
+    }
     /*技能ids*/
     public LitJson.JsonData skill_ids { get; set; }
+    private string[] __skill_ids;
+    public string[] _skill_ids {
+      get{
+        if(__skill_ids == default(string[])) __skill_ids = skill_ids.To<string[]>();
+        return __skill_ids;
+      }
+    }
     /*ai实现类(lua)*/
     public string ai_class_path_lua { get; set; }
     /*ai实现类(cs)*/
@@ -57,6 +71,13 @@ namespace CsCat{
     public string death_effect_id { get; set; }
     /*被动buff ids*/
     public LitJson.JsonData passive_buff_ids { get; set; }
+    private string[] __passive_buff_ids;
+    public string[] _passive_buff_ids {
+      get{
+        if(__passive_buff_ids == default(string[])) __passive_buff_ids = passive_buff_ids.To<string[]>();
+        return __passive_buff_ids;
+      }
+    }
   }
   public class CfgUnitIndexData {
     public CfgUnitIndexUniqueData unique{ get; set; }

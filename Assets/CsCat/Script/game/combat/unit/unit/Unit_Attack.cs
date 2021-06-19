@@ -129,11 +129,11 @@ namespace CsCat
     public void AddPassiveBuffOfSpell(string spell_id)
     {
       var cfgSpellData = CfgSpell.Instance.get_by_id(spell_id);
-      var passive_buff_ids = cfgSpellData.passive_buff_ids;
+      var passive_buff_ids = cfgSpellData._passive_buff_ids;
       if (!passive_buff_ids.IsNullOrEmpty())
       {
         foreach (var passive_buff_id in passive_buff_ids)
-          this.buffManager.AddBuff(passive_buff_id.ToString(), this);
+          this.buffManager.AddBuff(passive_buff_id, this);
       }
     }
 
@@ -148,11 +148,11 @@ namespace CsCat
     public void RemovePassiveBuffOfSpell(string spell_id)
     {
       var cfgSpellData = CfgSpell.Instance.get_by_id(spell_id);
-      var passive_buff_ids = cfgSpellData.passive_buff_ids;
+      var passive_buff_ids = cfgSpellData._passive_buff_ids;
       if (!passive_buff_ids.IsNullOrEmpty())
       {
         foreach (var passive_buff_id in passive_buff_ids)
-          this.buffManager.RemoveBuff(passive_buff_id.ToString(), this.GetGuid());
+          this.buffManager.RemoveBuff(passive_buff_id, this.GetGuid());
       }
     }
 

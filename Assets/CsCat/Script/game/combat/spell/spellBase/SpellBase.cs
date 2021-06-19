@@ -37,7 +37,7 @@ namespace CsCat
       this.attack_dir = this.transmit_arg_dict.Get<Vector3>(attack_dir);
       this.new_spell_trigger_id = this.transmit_arg_dict.Get<string>("new_spell_trigger_id"); // 通过哪个trigger_id启动的技能
 
-      this.arg_dict = DoerAttrParserUtil.ConvertTableWithTypeString(this.cfgSpellData.arg_dict.ToDict<string,string>());
+      this.arg_dict = DoerAttrParserUtil.ConvertTableWithTypeString(this.cfgSpellData._arg_dict);
       this.is_can_move_while_cast = this.cfgSpellData.is_can_move_while_cast;
       this.is_spell_animation_finished = "触发".Equals(this.cfgSpellData.cast_type);
 

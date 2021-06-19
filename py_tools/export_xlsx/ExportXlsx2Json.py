@@ -43,7 +43,7 @@ class ExportXlsx2Json(object):
         fileInfo_type = fieldInfo["type"]
         fileInfo_name = fieldInfo["name"]
         cell_value = ExportXlsxUtil.GetExportJsonValueOrDefault(cell, fileInfo_type)
-        if fileInfo_type == ExportXlsxConst.Sheet_FieldInfo_Type_Array or fileInfo_type == ExportXlsxConst.Sheet_FieldInfo_Type_Json:
+        if fileInfo_type == ExportXlsxConst.Sheet_FieldInfo_Type_Array or fileInfo_type == ExportXlsxConst.Sheet_FieldInfo_Type_Json or fileInfo_type.endswith(ExportXlsxConst.Sheet_FieldInfo_Type_Ends_With_Array) or fileInfo_type.startswith(ExportXlsxConst.Sheet_FieldInfo_Type_Starts_With_Dict):
           data[fileInfo_name] = json.loads(cell_value)
         else:
           data[fileInfo_name] = cell_value

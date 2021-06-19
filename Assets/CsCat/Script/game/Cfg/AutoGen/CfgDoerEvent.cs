@@ -45,6 +45,13 @@ namespace CsCat{
     public string class_path_cs { get; set; }
     /*子步骤ids*/
     public LitJson.JsonData step_ids { get; set; }
+    private string[] __step_ids;
+    public string[] _step_ids {
+      get{
+        if(__step_ids == default(string[])) __step_ids = step_ids.To<string[]>();
+        return __step_ids;
+      }
+    }
   }
   public class CfgDoerEventIndexData {
     public CfgDoerEventIndexUniqueData unique{ get; set; }

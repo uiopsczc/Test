@@ -1,4 +1,5 @@
 using System.Collections;
+using LitJson;
 
 namespace CsCat
 {
@@ -9,6 +10,8 @@ namespace CsCat
     /// </summary>
     public static string ToString2(object o, bool is_fill_string_with_double_quote = false)
     {
+      if (o is LitJson.JsonData jsonData)
+        return jsonData.ToJsonWithUTF8();
       if (o is ICollection)
         return ((ICollection)o).ToString2(is_fill_string_with_double_quote);
       if (o is IToString2)

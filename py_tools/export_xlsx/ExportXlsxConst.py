@@ -36,7 +36,8 @@ class ExportXlsxConst(object):
   Sheet_FieldInfo_Type_String = "string"
   Sheet_FieldInfo_Type_Array = "array"
   Sheet_FieldInfo_Type_Json = "json"
-
+  Sheet_FieldInfo_Type_Ends_With_Array = "[]"
+  Sheet_FieldInfo_Type_Starts_With_Dict = "dict"
 
 
 

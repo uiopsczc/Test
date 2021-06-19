@@ -63,20 +63,20 @@ namespace CsCat
       this.spellInfo_dict.Clear();
 
       //技能相关
-      this.skill_id_list = this.cfgUnitData.skill_ids.ToList<string>();
+      this.skill_id_list = this.cfgUnitData._skill_ids.ToList();
       foreach (var skill_id in this.skill_id_list)
         this.AddSkill(skill_id);
 
       //普攻相关
-      this.normal_attack_id_list = this.cfgUnitData.normal_attack_ids.ToList<string>();
+      this.normal_attack_id_list = this.cfgUnitData._normal_attack_ids.ToList();
       foreach (var normal_attack_id in this.normal_attack_id_list)
         this.AddNormalAttack(normal_attack_id);
 
       //添加被动buff
-      if (!this.cfgUnitData.passive_buff_ids.IsNullOrEmpty())
+      if (!this.cfgUnitData._passive_buff_ids.IsNullOrEmpty())
       {
-        foreach (var passive_buff_id in cfgUnitData.passive_buff_ids)
-          this.buffManager.AddBuff(passive_buff_id.ToString(), this);
+        foreach (var passive_buff_id in cfgUnitData._passive_buff_ids)
+          this.buffManager.AddBuff(passive_buff_id, this);
       }
 
       if (!this.cfgUnitData.model_path.IsNullOrWhiteSpace())

@@ -59,8 +59,48 @@ class ExportXlsxUtil(object):
       return "[]"
     elif type == ExportXlsxConst.Sheet_FieldInfo_Type_Json:
       return "{}"
+    elif type.endswith(ExportXlsxConst.Sheet_FieldInfo_Type_Ends_With_Array):
+      return "[]"
+    elif type.startswith(ExportXlsxConst.Sheet_FieldInfo_Type_Starts_With_Dict):
+      return "{}"
     else:  # string等
       return ""
+
+  # 是否是 特殊的Cs Type
+  @staticmethod
+  def IsSpecialCsType(type):
+    if type.endswith(ExportXlsxConst.Sheet_FieldInfo_Type_Ends_With_Array):
+      return True
+    elif type.startswith(ExportXlsxConst.Sheet_FieldInfo_Type_Starts_With_Dict):
+      return True
+    else:
+      return False
+
+  #特殊的Cs Type
+  @staticmethod
+  def GetSpecialCsType(type):
+    if type == ExportXlsxConst.Sheet_FieldInfo_Type_Int:
+      return "int"
+    elif type == ExportXlsxConst.Sheet_FieldInfo_Type_Float:
+      return "float"
+    elif type == ExportXlsxConst.Sheet_FieldInfo_Type_Bool:
+      return "bool"
+    elif type == ExportXlsxConst.Sheet_FieldInfo_Type_Array:
+      return "LitJson.JsonData"
+    elif type == ExportXlsxConst.Sheet_FieldInfo_Type_Json:
+      return "LitJson.JsonData"
+    elif type.endswith(ExportXlsxConst.Sheet_FieldInfo_Type_Ends_With_Array):
+      sub_type = type[0:-2]
+      return "%s[]" % (ExportXlsxUtil.GetSpecialCsType(sub_type))
+    elif type.startswith(ExportXlsxConst.Sheet_FieldInfo_Type_Starts_With_Dict):
+      sub_type = type[4:]
+      pos = sub_type.index(",")
+      sub_key_type = sub_type[1:pos]
+      sub_value_type = sub_type[pos + 1:-1]
+      return "Dictionary<%s,%s>" % (
+      ExportXlsxUtil.GetSpecialCsType(sub_key_type), ExportXlsxUtil.GetSpecialCsType(sub_value_type))
+    else:  # string等
+      return "string"
 
 
 
@@ -76,21 +116,21 @@ class ExportXlsxUtil(object):
       return "LitJson.JsonData"
     elif type == ExportXlsxConst.Sheet_FieldInfo_Type_Json:
       return "LitJson.JsonData"
+    elif type.endswith(ExportXlsxConst.Sheet_FieldInfo_Type_Ends_With_Array):
+      return "LitJson.JsonData"
+    elif type.startswith(ExportXlsxConst.Sheet_FieldInfo_Type_Starts_With_Dict):
+      return "LitJson.JsonData"
     else:  # string等
       return "string"
-
-  @staticmethod
-  def GetExportJsonValueOrDefault(cell, target_type):
-    if cell.value is None:
-      return ExportXlsxUtil.GetExportJsonTypeDefaultValue(target_type)
-    if target_type==ExportXlsxConst.Sheet_FieldInfo_Type_String and (NumberUtil.IsNumber(cell.value)):
-      return "%s"%(cell.value)
-    return cell.value
 
   def GetExportLuaValueOrDefault(value, type):
     if type == ExportXlsxConst.Sheet_FieldInfo_Type_Array:
       return "json:decode([=[%s]=])"%(json.dumps(value,ensure_ascii=False))
     elif type == ExportXlsxConst.Sheet_FieldInfo_Type_Json:
+      return "json:decode([=[%s]=])"%(json.dumps(value,ensure_ascii=False))
+    elif type.endswith(ExportXlsxConst.Sheet_FieldInfo_Type_Ends_With_Array):
+      return "json:decode([=[%s]=])"%(json.dumps(value,ensure_ascii=False))
+    elif type.startswith(ExportXlsxConst.Sheet_FieldInfo_Type_Starts_With_Dict):
       return "json:decode([=[%s]=])"%(json.dumps(value,ensure_ascii=False))
     elif type == ExportXlsxConst.Sheet_FieldInfo_Type_String:
       return "[=[%s]=]"%(value)
@@ -101,6 +141,14 @@ class ExportXlsxUtil(object):
         return "false"
     else:
       return value
+
+  @staticmethod
+  def GetExportJsonValueOrDefault(cell, target_type):
+    if cell.value is None:
+      return ExportXlsxUtil.GetExportJsonTypeDefaultValue(target_type)
+    if target_type == ExportXlsxConst.Sheet_FieldInfo_Type_String and (NumberUtil.IsNumber(cell.value)):
+      return "%s" % (cell.value)
+    return cell.value
 
   @staticmethod
   def GetExportSheetIndexDict(sheet):

@@ -45,20 +45,76 @@ namespace CsCat{
     public bool is_stop_here { get; set; }
     /*设置属性*/
     public LitJson.JsonData set_attr_dict { get; set; }
+    private Dictionary<string,string> __set_attr_dict;
+    public Dictionary<string,string> _set_attr_dict {
+      get{
+        if(__set_attr_dict == default(Dictionary<string,string>)) __set_attr_dict = set_attr_dict.To<Dictionary<string,string>>();
+        return __set_attr_dict;
+      }
+    }
     /*增加属性*/
     public LitJson.JsonData add_attr_dict { get; set; }
+    private Dictionary<string,string> __add_attr_dict;
+    public Dictionary<string,string> _add_attr_dict {
+      get{
+        if(__add_attr_dict == default(Dictionary<string,string>)) __add_attr_dict = add_attr_dict.To<Dictionary<string,string>>();
+        return __add_attr_dict;
+      }
+    }
     /*增加或者删除物品*/
     public LitJson.JsonData deal_item_dict { get; set; }
+    private Dictionary<string,string> __deal_item_dict;
+    public Dictionary<string,string> _deal_item_dict {
+      get{
+        if(__deal_item_dict == default(Dictionary<string,string>)) __deal_item_dict = deal_item_dict.To<Dictionary<string,string>>();
+        return __deal_item_dict;
+      }
+    }
     /*放弃任务ids*/
     public LitJson.JsonData give_up_mission_ids { get; set; }
+    private string[] __give_up_mission_ids;
+    public string[] _give_up_mission_ids {
+      get{
+        if(__give_up_mission_ids == default(string[])) __give_up_mission_ids = give_up_mission_ids.To<string[]>();
+        return __give_up_mission_ids;
+      }
+    }
     /*接受任务ids*/
     public LitJson.JsonData accept_mission_ids { get; set; }
+    private string[] __accept_mission_ids;
+    public string[] _accept_mission_ids {
+      get{
+        if(__accept_mission_ids == default(string[])) __accept_mission_ids = accept_mission_ids.To<string[]>();
+        return __accept_mission_ids;
+      }
+    }
     /*完成任务ids*/
     public LitJson.JsonData finish_mission_ids { get; set; }
+    private string[] __finish_mission_ids;
+    public string[] _finish_mission_ids {
+      get{
+        if(__finish_mission_ids == default(string[])) __finish_mission_ids = finish_mission_ids.To<string[]>();
+        return __finish_mission_ids;
+      }
+    }
     /*增加已完成的任务ids*/
     public LitJson.JsonData add_finished_mission_ids { get; set; }
+    private string[] __add_finished_mission_ids;
+    public string[] _add_finished_mission_ids {
+      get{
+        if(__add_finished_mission_ids == default(string[])) __add_finished_mission_ids = add_finished_mission_ids.To<string[]>();
+        return __add_finished_mission_ids;
+      }
+    }
     /*删除已完成的任务ids*/
     public LitJson.JsonData remove_finished_mission_ids { get; set; }
+    private string[] __remove_finished_mission_ids;
+    public string[] _remove_finished_mission_ids {
+      get{
+        if(__remove_finished_mission_ids == default(string[])) __remove_finished_mission_ids = remove_finished_mission_ids.To<string[]>();
+        return __remove_finished_mission_ids;
+      }
+    }
   }
   public class CfgDoerEventStepIndexData {
     public CfgDoerEventStepIndexUniqueData unique{ get; set; }

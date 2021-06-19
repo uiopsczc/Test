@@ -10,7 +10,7 @@ namespace CsCat
       if (!base.OnAccept(user))
         return false;
       DoerAttrParser doerAttrParser = new DoerAttrParser(Client.instance.user, this, this.GetOwner(), null);
-      Dictionary<string, string> find_item_dict = GetCfgMissionData().find_item_dict.ToDict<string,string>();
+      Dictionary<string, string> find_item_dict = GetCfgMissionData()._find_item_dict;
       Dictionary<string, int> _find_item_dict = new Dictionary<string, int>();
       foreach (var item_id in find_item_dict.Keys)
       {

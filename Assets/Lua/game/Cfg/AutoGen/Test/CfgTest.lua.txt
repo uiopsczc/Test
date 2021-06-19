@@ -20,13 +20,13 @@ local data_list = {
     id = [=[2]=],
     name = [=[uiopsczc]=],
     country = [=[usa]=],
-    age_dict = json:decode([=[{"哒哒星": "你好,我是不不不", "星哥": 3}]=]),
+    age_dict = json:decode([=[{"星哥": [1, 2, 3]}]=]),
   },
   {
     id = [=[1]=],
     name = [=[dadaxing]=],
     country = [=[sb]=],
-    age_dict = json:decode([=[{"星仔不不": 4}]=]),
+    age_dict = json:decode([=[{"星仔不不": [4, 5, 6]}]=]),
   },
 }
 

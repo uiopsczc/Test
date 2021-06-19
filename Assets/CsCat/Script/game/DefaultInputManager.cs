@@ -53,7 +53,11 @@ namespace CsCat
 
       if (Input.GetKeyDown("f2"))
       {
-        LogCat.log(CfgItem.Instance.get_by_id("2").name);
+//        Dictionary<string, Dictionary<string, int>> dict = new Dictionary<string, Dictionary<string,int>>();
+//        var t = dict.GetType();
+//        LogCat.log(t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Dictionary<,>));
+//        var t = CfgTest.Instance.get_by_id("2").get__age_dict();
+        LogCat.log(CfgTest.Instance.get_by_id("2")._age_dict["星哥"][1]);
 //        t = this.AddTimer(args =>
 //        {
 //          LogCat.warn(Time.time);

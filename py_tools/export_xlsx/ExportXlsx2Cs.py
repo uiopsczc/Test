@@ -121,8 +121,23 @@ class ExportXlsx2Cs(object):
     indent += 1
     fieldInfo_list = ExportXlsxUtil.GetExportSheetFiledInfoList(sheet)
     for fieldInfo in fieldInfo_list:
+      fieldInfo_type = fieldInfo["type"]
+      fieldInfo_name = fieldInfo["name"]
       content += "%s/*%s*/\n" % (StringUtil.GetSpace(indent), fieldInfo["name_chinese"])
-      content += "%spublic %s %s { get; set; }\n" % (StringUtil.GetSpace(indent), ExportXlsxUtil.GetExportCsType(fieldInfo["type"]), fieldInfo["name"])
+      content += "%spublic %s %s { get; set; }\n" % (StringUtil.GetSpace(indent),ExportXlsxUtil.GetExportCsType(fieldInfo_type) ,fieldInfo_name)
+      if ExportXlsxUtil.IsSpecialCsType(fieldInfo_type):
+        fieldInfo_speical_cs_type = ExportXlsxUtil.GetSpecialCsType(fieldInfo_type)
+        content += "%sprivate %s __%s;\n"%(StringUtil.GetSpace(indent),fieldInfo_speical_cs_type, fieldInfo_name)
+        content += "%spublic %s _%s {\n"%(StringUtil.GetSpace(indent),fieldInfo_speical_cs_type, fieldInfo_name)
+        indent += 1
+        content += "%sget{\n" % (StringUtil.GetSpace(indent))
+        indent += 1
+        content += "%sif(__%s == default(%s)) __%s = %s.To<%s>();\n" % (StringUtil.GetSpace(indent), fieldInfo_name,fieldInfo_speical_cs_type,fieldInfo_name, fieldInfo_name, fieldInfo_speical_cs_type)
+        content += "%sreturn __%s;\n"%(StringUtil.GetSpace(indent), fieldInfo_name)
+        indent -= 1
+        content += "%s}\n" % (StringUtil.GetSpace(indent))
+        indent -= 1
+        content += "%s}\n" % (StringUtil.GetSpace(indent))
     indent -= 1
     content += "%s}\n" % (StringUtil.GetSpace(indent))
     return content

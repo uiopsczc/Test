@@ -6,8 +6,8 @@ namespace CsCat
 
     public TestJsonData()
     {
-      data = new JsonData();
-      data.Init(filePath);
+      DataCat = new JsonDataCat();
+      DataCat.Init(filePath);
     }
 
     #endregion
@@ -20,7 +20,7 @@ namespace CsCat
 
     #region field
 
-    public JsonData data;
+    public JsonDataCat DataCat;
 
 
     private readonly string filePath = "Data/TestJsonData";

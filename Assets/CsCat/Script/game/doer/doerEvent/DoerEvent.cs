@@ -28,7 +28,7 @@ namespace CsCat
       if (!trigger_desc.IsNullOrWhiteSpace())
         word_list.Add(doerAttrParser.ParseString(trigger_desc));
       int ok = 1; // 0-触发条件失败，1-触发成功，执行失败，2-触发成功，执行成功
-      string[] step_ids = cfgDoerEventData.step_ids.ToArray<string>();
+      string[] step_ids = cfgDoerEventData._step_ids;
       if (!step_ids.IsNullOrEmpty())
       {
         for (int i = 0; i < step_ids.Length; i++)
@@ -108,10 +108,10 @@ namespace CsCat
 
       DoerAttrSetter doerAttrSetter = new DoerAttrSetter(desc, doerAttrParser);
       //设置属性、更改属性
-      Dictionary<string, string> set_attr_dict = cfgDoerEventStepData.set_attr_dict.ToDict<string,string>();
+      Dictionary<string, string> set_attr_dict = cfgDoerEventStepData._set_attr_dict;
       foreach (var attr_name in set_attr_dict.Keys)
         doerAttrSetter.Set(attr_name, set_attr_dict[attr_name], false);
-      Dictionary<string, string> add_attr_dict = cfgDoerEventStepData.add_attr_dict.ToDict<string,string>();
+      Dictionary<string, string> add_attr_dict = cfgDoerEventStepData._add_attr_dict;
       foreach (var attr_name in add_attr_dict.Keys)
         doerAttrSetter.Set(attr_name, add_attr_dict[attr_name], true);
 
@@ -126,32 +126,32 @@ namespace CsCat
         user = Client.instance.user;
 
       //添加或者删除物品
-      Dictionary<string, string> deal_item_dict = cfgDoerEventStepData.deal_item_dict.ToDict<string,string>();
+      Dictionary<string, string> deal_item_dict = cfgDoerEventStepData._deal_item_dict;
       if (!deal_item_dict.IsNullOrEmpty())
         user.DealItems(deal_item_dict, doerAttrParser);
 
       // 接受任务
-      string[] accept_mission_ids = cfgDoerEventStepData.accept_mission_ids.ToArray<string>();
+      string[] accept_mission_ids = cfgDoerEventStepData._accept_mission_ids;
       foreach (var accept_mission_id in accept_mission_ids)
         user.AcceptMission(accept_mission_id, owner);
 
       // 完成任务
-      string[] finish_mission_ids = cfgDoerEventStepData.finish_mission_ids.ToArray<string>();
+      string[] finish_mission_ids = cfgDoerEventStepData._finish_mission_ids;
       foreach (var finish_mission_id in finish_mission_ids)
         user.FinishMission(finish_mission_id, owner);
 
       // 放弃任务
-      string[] give_up_mission_ids = cfgDoerEventStepData.give_up_mission_ids.ToArray<string>();
+      string[] give_up_mission_ids = cfgDoerEventStepData._give_up_mission_ids;
       foreach (var give_up_mission_id in give_up_mission_ids)
         user.GiveUpMission(give_up_mission_id, owner);
 
       // 添加已完成任务
-      string[] add_finished_mission_ids = cfgDoerEventStepData.add_finished_mission_ids.ToArray<string>();
+      string[] add_finished_mission_ids = cfgDoerEventStepData._add_finished_mission_ids;
       foreach (var add_finished_mission_id in add_finished_mission_ids)
         user.AddFinishedMissionId(add_finished_mission_id);
 
       // 删除已完成任务
-      string[] remove_finished_mission_ids = cfgDoerEventStepData.remove_finished_mission_ids.ToArray<string>();
+      string[] remove_finished_mission_ids = cfgDoerEventStepData._remove_finished_mission_ids;
       foreach (var remove_finished_mission_id in remove_finished_mission_ids)
         user.RemoveFinishedMissionId(remove_finished_mission_id);
 

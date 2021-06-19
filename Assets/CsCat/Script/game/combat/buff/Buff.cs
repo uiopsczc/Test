@@ -75,14 +75,14 @@ namespace CsCat
 
     private void AddEffects()
     {
-      var effect_ids = cfgBuffData.effect_ids;
+      var effect_ids = cfgBuffData._effect_ids;
       if (effect_ids.IsNullOrEmpty())
         return;
       foreach (var effect_id in effect_ids)
       {
-        var cfgEffectData = CfgEffect.Instance.get_by_id(effect_id.ToString());
+        var cfgEffectData = CfgEffect.Instance.get_by_id(effect_id);
         var effect =
-          Client.instance.combat.effectManager.CreateAttachEffectEntity(effect_id.ToString(), this.buffManager.unit,
+          Client.instance.combat.effectManager.CreateAttachEffectEntity(effect_id, this.buffManager.unit,
             cfgEffectData.duration); //TODO 如何初始化effectBase
         effect_list.Add(effect);
       }
@@ -96,7 +96,7 @@ namespace CsCat
 
     private void AddPropertyDict()
     {
-      var new_property_dict = DoerAttrParserUtil.ConvertTableWithTypeString(this.cfgBuffData.property_dict.ToDict<string,string>()).ToDict<string,float>();
+      var new_property_dict = DoerAttrParserUtil.ConvertTableWithTypeString(this.cfgBuffData._property_dict).ToDict<string,float>();
       if (!new_property_dict.IsNullOrEmpty())
       {
         var propertyComp = this.buffManager.unit.propertyComp;
@@ -108,7 +108,7 @@ namespace CsCat
 
     private void RemovePropertyDict()
     {
-      var new_property_dict = DoerAttrParserUtil.ConvertTableWithTypeString(this.cfgBuffData.property_dict.ToDict<string, string>()).ToDict<string, float>();
+      var new_property_dict = DoerAttrParserUtil.ConvertTableWithTypeString(this.cfgBuffData._property_dict).ToDict<string, float>();
       if (!new_property_dict.IsNullOrEmpty())
       {
         var propertyComp = this.buffManager.unit.propertyComp;

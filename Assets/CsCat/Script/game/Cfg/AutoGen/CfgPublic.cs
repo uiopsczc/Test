@@ -31,6 +31,13 @@ namespace CsCat{
     public string value { get; set; }
     /*值dict*/
     public LitJson.JsonData value_dict { get; set; }
+    private Dictionary<string,string> __value_dict;
+    public Dictionary<string,string> _value_dict {
+      get{
+        if(__value_dict == default(Dictionary<string,string>)) __value_dict = value_dict.To<Dictionary<string,string>>();
+        return __value_dict;
+      }
+    }
   }
   public class CfgPublicIndexData {
     public CfgPublicIndexUniqueData unique{ get; set; }

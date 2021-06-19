@@ -33,6 +33,13 @@ namespace CsCat{
     public string country { get; set; }
     /*age_dict*/
     public LitJson.JsonData age_dict { get; set; }
+    private Dictionary<string,int[]> __age_dict;
+    public Dictionary<string,int[]> _age_dict {
+      get{
+        if(__age_dict == default(Dictionary<string,int[]>)) __age_dict = age_dict.To<Dictionary<string,int[]>>();
+        return __age_dict;
+      }
+    }
   }
   public class CfgTestIndexData {
     public CfgTestIndexUniqueData unique{ get; set; }
