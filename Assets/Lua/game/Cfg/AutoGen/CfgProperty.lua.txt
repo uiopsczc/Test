@@ -19,7 +19,9 @@ local data_list = {
 local index_dict = {
   unique = {
     id = {
-      ["力量"] = 1,
+      [
+        [=[力量]=]
+      ] = 1,
     },
   },
 }

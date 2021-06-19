@@ -27,7 +27,9 @@ local data_list = {
 local index_dict = {
   unique = {
     id = {
-      ["1"] = 1,
+      [
+        [=[1]=]
+      ] = 1,
     },
   },
 }

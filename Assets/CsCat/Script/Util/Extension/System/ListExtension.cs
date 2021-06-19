@@ -75,7 +75,7 @@ namespace CsCat
       var unqiue_list = new List<T>();
       for (int i = 0; i < self.Count; i++)
       {
-        var element = unqiue_list[i];
+        var element = self[i];
         if (!unqiue_list.Contains(element))
           unqiue_list.Add(element);
       }

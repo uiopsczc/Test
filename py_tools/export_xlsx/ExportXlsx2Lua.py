@@ -79,14 +79,14 @@ class ExportXlsx2Lua(object):
           content += "%s%s = {\n"%(StringUtil.GetSpace(indent),specific_index_key)
           indent += 1
           for key in index_dict[index_group][specific_index_key].keys():
-            content += "%s[\"%s\"] = %s,\n"%(StringUtil.GetSpace(indent), key, index_dict[index_group][specific_index_key][key]+1)#lua是从1开始
+            content += "%s[\n%s[=[%s]=]\n%s] = %s,\n"%(StringUtil.GetSpace(indent),StringUtil.GetSpace(indent+1), key,StringUtil.GetSpace(indent), index_dict[index_group][specific_index_key][key]+1)#lua是从1开始
           indent -= 1
           content += "%s},\n" % (StringUtil.GetSpace(indent))
         elif index_group == ExportXlsxConst.Sheet_Multiple_Tag:
           content += "%s%s = {\n" % (StringUtil.GetSpace(indent), specific_index_key)
           indent += 1
           for key in index_dict[index_group][specific_index_key].keys():
-            content += "%s[\"%s\"] = {\n" % (StringUtil.GetSpace(indent), key)
+            content += "%s[\n%s[=[%s]=]\n%s] = {\n" % (StringUtil.GetSpace(indent),StringUtil.GetSpace(indent+1), key,StringUtil.GetSpace(indent))
             indent +=1
             for index in index_dict[index_group][specific_index_key][key]:
               content += "%s%s,\n"%(StringUtil.GetSpace(indent), index+1)#lua是从1开始

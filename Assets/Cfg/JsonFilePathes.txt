@@ -13,5 +13,6 @@ Assets/Cfg/mission.json
 Assets/Cfg/property.json
 Assets/Cfg/effect.json
 Assets/Cfg/item.json
+Assets/Cfg/translation.json
 Assets/Cfg/summonbeastguardskill.json
 Assets/Cfg/Test/test.json

@@ -7,14 +7,20 @@ from translation.TranslationConst import *
 from pythoncat.util.ExcelUtil import *
 from pythoncat.util.FileUtil import *
 from pythoncat.util.StringUtil import *
+from export_xlsx.ExportXlsxConst import *
+from export_xlsx.ExportXlsxUtil import *
 
 sys.path.append(os.path.dirname(os.path.realpath(__file__ + "/..")))
 
 #收集需要转换的字符串
 def CollectTranslationIds():
-  CollectTranslationId(TranslationConst.Cs_Translation_Root_Dir_Path, FilterCSFile, TranslationConst.Cs_Match_Pattern_list, TranslationConst.Cs_String_File_Path)
-  CollectTranslationId(TranslationConst.Lua_Translation_Root_Dir_Path, FilterLuaFile, TranslationConst.Lua_Match_Pattern_List, TranslationConst.Lua_String_File_Path)
-  CollectExcelTranslationId(TranslationConst.Excel_Translation_Root_Dir_Path,FilterExcelFile,TranslationConst.Excel_String_File_Path)
+  translation_id_set = set()
+  CollectTranslationId(TranslationConst.Cs_Translation_Root_Dir_Path, FilterCSFile, TranslationConst.Cs_Match_Pattern_List, translation_id_set)
+  CollectTranslationId(TranslationConst.Lua_Translation_Root_Dir_Path, FilterLuaFile, TranslationConst.Lua_Match_Pattern_List, translation_id_set)
+  CollectExcelTranslationId(TranslationConst.Excel_Translation_Root_Dir_Path,FilterExcelFile,translation_id_set)
+  CollectPythonExcelTranslationIds(translation_id_set, TranslationConst.UI_String_File_Path)
+  CollectPythonExcelTranslationIds(translation_id_set, TranslationConst.Custom_String_File_Path)
+  return translation_id_set
 
 def FilterCSFile(file_path):
   if not file_path.endswith(".cs"):
@@ -38,10 +44,9 @@ def FilterExcelFile(file_path):
   return False
 
 #收集文件中需要转换的字符串
-def CollectTranslationId(translation_root_dir_path, FilterFile,match_pattern_list,xx_string_file_path):
+def CollectTranslationId(translation_root_dir_path, FilterFile,match_pattern_list,translation_id_set):
   file_path_list = FileUtil.GetFilePathList(translation_root_dir_path, FilterFile)
   # print(file_path_list)
-  translation_id_set = set()
   for file_path in file_path_list:
     # if file_path.find("Assets\Lua\luacat\Client.lua.txt") ==-1:
     #   continue
@@ -54,34 +59,32 @@ def CollectTranslationId(translation_root_dir_path, FilterFile,match_pattern_lis
       translation_id = StringUtil.Escape(translation_id)
       translation_id_set.add(translation_id)
   # print(translation_id_set)
-  line_list = []
-  for translation_id in translation_id_set:
-    line_list.append([translation_id])
-  ExcelUtil.WriteExcelFromLineList(xx_string_file_path, line_list)
 
 #收集Excel文件中需要转换的字符串
-def CollectExcelTranslationId(translation_root_dir_path, FilterFile,xx_string_file_path):
+def CollectExcelTranslationId(translation_root_dir_path, FilterFile,translation_id_set):
   file_path_list = FileUtil.GetFilePathList(translation_root_dir_path, FilterFile)
   # print(file_path_list)
-  start_row = 10
+  fieldInfo_type_row = ExportXlsxConst.Sheet_FieldInfo_Type_Row
+  data_start_row = ExportXlsxConst.Sheet_Data_Start_Row
   translation_id_set = set()
   for file_path in file_path_list:
-    line_list = ExcelUtil.ReadExcelAsLineList(file_path,start_row)
-    type_list = line_list[0]
-    for column in range(0, len(type_list)): #列
-      type = type_list[column]
-      if type is None or str.lower(type) != "translation": #只收集type为translation的字段
-        continue
-      for row in range(1, len(line_list)): #行
-        field_value = line_list[row][column]
-        if StringUtil.IsNoneOrEmpty(field_value) or field_value == "none":
-          continue
-        translation_id = field_value
-        translation_id_set.add(translation_id)
-  line_list = []
-  for translation_id in translation_id_set:
-    line_list.append([translation_id])
-  ExcelUtil.WriteExcelFromLineList(xx_string_file_path, line_list)
+    wrokbook = load_workbook(file_path, read_only=True, data_only=True)
+    sheet_count = len(wrokbook.sheetnames)
+    for sheet_index in range(0, sheet_count):
+      sheet = wrokbook.worksheets[sheet_index]
+      if ExportXlsxUtil.IsExportSheet(sheet):
+        fieldInfo_type_line = ExcelUtil.ReadExcelAsLine(sheet, fieldInfo_type_row)
+        data_line_list = ExcelUtil.ReadExcelAsLineList(sheet, data_start_row)
+        for column in range(0, len(fieldInfo_type_line)):  # 列
+          type = fieldInfo_type_line[column]
+          if type is None or str.lower(type) != ExportXlsxConst.Sheet_FieldInfo_Type_Translation:  # 只收集type为translation的字段
+            continue
+          for row in range(0, len(data_line_list)):  # 行
+            field_value = data_line_list[row][column]
+            if field_value is None or StringUtil.IsNoneOrEmpty(field_value) or field_value == "none":
+              continue
+            translation_id = field_value
+            translation_id_set.add(translation_id)
 
 #用match_pattern_list收集content中的多语言字符串
 def GetTranslationIdList(content, match_pattern_list):
@@ -122,30 +125,22 @@ def GetTranslationIdList(content, match_pattern_list):
       break
   return translation_id_list
 
-#合并所有的多语言字段
-def CombineTranslationIds():
-  translation_id_set = set()
-  __CombineTranslationIds(translation_id_set, TranslationConst.Cs_String_File_Path)
-  __CombineTranslationIds(translation_id_set, TranslationConst.Lua_String_File_Path)
-  __CombineTranslationIds(translation_id_set, TranslationConst.UI_String_File_Path)
-  __CombineTranslationIds(translation_id_set, TranslationConst.Excel_String_File_Path)
-  __CombineTranslationIds(translation_id_set, TranslationConst.Custom_String_File_Path)
-  return translation_id_set
 
-def __CombineTranslationIds(translation_id_set,xx_string_file_path):
-  line_list = ExcelUtil.ReadExcelAsLineList(xx_string_file_path)
+
+def CollectPythonExcelTranslationIds(translation_id_set, xx_string_file_path):
+  line_list = ExcelUtil.ReadExcelAsLineListFromFilePath(xx_string_file_path)
   for line in line_list:
     translation_id_set.add(line[0])
 
 
 #将translation_ids导出到export_translation_file_path中
 def ExportTranslationIds(translation_ids):
-  data_start_row = 11 # 数据开始的行号
-  ExcelUtil.ClearExcelEmptyRows(TranslationConst.Export_Translation_File_Path, data_start_row) #去掉多余的行
+  data_start_row = ExportXlsxConst.Sheet_Data_Start_Row # 数据开始的行号
   workbook = load_workbook(TranslationConst.Export_Translation_File_Path, data_only=True)#data_only,读取公式的结果，而不是公式本身
   sheet = workbook.worksheets[0]
+  ExcelUtil.ClearExcelEmptyRows(sheet,data_start_row)
   row = sheet.max_row + 1
-  org_line_list = ExcelUtil.ReadExcelAsLineList(TranslationConst.Export_Translation_File_Path)
+  org_line_list = ExcelUtil.ReadExcelAsLineList(sheet, data_start_row)
 
   translation_dict = {}
   for line in org_line_list:
@@ -161,8 +156,7 @@ def ExportTranslationIds(translation_ids):
   workbook.save(TranslationConst.Export_Translation_File_Path)
 
 def main():
-  CollectTranslationIds()
-  translation_id_set = CombineTranslationIds()
+  translation_id_set = CollectTranslationIds()
   ExportTranslationIds(translation_id_set)
   os.system("explorer /select, " + TranslationConst.Export_Translation_File_Path)
   print("finish")

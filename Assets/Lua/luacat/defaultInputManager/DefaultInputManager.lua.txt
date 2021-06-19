@@ -30,6 +30,7 @@ function DefaultInputManager:__Update(deltaTime, unscaledDeltaTime)
     global.client:GoTo(StageTest, 0.2)
   end
   if Input.GetKeyDown("f8") then
+    log(global.Translate("陈智权"))
     --self.t = self:AddTimer(function()
     --  warn(11111)
     --  return true

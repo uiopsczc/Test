@@ -31,6 +31,13 @@ namespace CsCat{
     public string name { get; set; }
     /*国家*/
     public string country { get; set; }
+    private string __country;
+    public string _country {
+      get{
+        if(__country == default(string)) __country = country.To<string>();
+        return __country;
+      }
+    }
     /*age_dict*/
     public LitJson.JsonData age_dict { get; set; }
     private Dictionary<string,int[]> __age_dict;

@@ -5,6 +5,7 @@ using NPOI.SS.UserModel;
 using NPOI.XSSF.UserModel;
 using UnityEditor;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace CsCat
 {
@@ -18,8 +19,6 @@ namespace CsCat
       GameData.instance.translationData.language = language;
       GameData.instance.Save();
       ApplyToUIPrefabs();
-      AssetDatabase.ImportAsset("Assets/Excels/", ImportAssetOptions.ImportRecursive);
-      Process.Start(FilePathConst.ProjectPath + "py_tools/export_xlsx_2_lua/" + "ExportXlsx2Lua.bat");
       AssetDatabase.Refresh();
       AssetDatabase.SaveAssets();
     }
@@ -42,7 +41,7 @@ namespace CsCat
     {
       var file_path = ExportUIText();
       Process.Start(FilePathConst.ProjectPath + "py_tools/translation/" + "Translation.bat");
-      EditorUtilityCat.DisplayDialog("多语言/导出所有TanslationId 完成",file_path);
+      Debug.Log(string.Format("多语言/导出所有TanslationId 完成\n{0}", file_path));
     }
 
     public static string ExportUIText()

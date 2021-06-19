@@ -34,6 +34,7 @@ class ExportXlsxConst(object):
   Sheet_FieldInfo_Type_Float = "float"
   Sheet_FieldInfo_Type_Bool = "bool"
   Sheet_FieldInfo_Type_String = "string"
+  Sheet_FieldInfo_Type_Translation = "translation"
   Sheet_FieldInfo_Type_Array = "array"
   Sheet_FieldInfo_Type_Json = "json"
   Sheet_FieldInfo_Type_Ends_With_Array = "[]"

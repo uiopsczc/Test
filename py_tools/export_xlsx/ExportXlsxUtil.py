@@ -55,6 +55,10 @@ class ExportXlsxUtil(object):
       return 0.0
     elif type == ExportXlsxConst.Sheet_FieldInfo_Type_Bool:
       return False
+    elif type == ExportXlsxConst.Sheet_FieldInfo_Type_String:
+      return ""
+    elif type == ExportXlsxConst.Sheet_FieldInfo_Type_Translation:
+      return ""
     elif type == ExportXlsxConst.Sheet_FieldInfo_Type_Array:
       return "[]"
     elif type == ExportXlsxConst.Sheet_FieldInfo_Type_Json:
@@ -63,7 +67,7 @@ class ExportXlsxUtil(object):
       return "[]"
     elif type.startswith(ExportXlsxConst.Sheet_FieldInfo_Type_Starts_With_Dict):
       return "{}"
-    else:  # string等
+    else:
       return ""
 
   # 是否是 特殊的Cs Type
@@ -72,6 +76,8 @@ class ExportXlsxUtil(object):
     if type.endswith(ExportXlsxConst.Sheet_FieldInfo_Type_Ends_With_Array):
       return True
     elif type.startswith(ExportXlsxConst.Sheet_FieldInfo_Type_Starts_With_Dict):
+      return True
+    elif type == ExportXlsxConst.Sheet_FieldInfo_Type_Translation:
       return True
     else:
       return False
@@ -85,6 +91,10 @@ class ExportXlsxUtil(object):
       return "float"
     elif type == ExportXlsxConst.Sheet_FieldInfo_Type_Bool:
       return "bool"
+    elif type == ExportXlsxConst.Sheet_FieldInfo_Type_String:
+      return "string"
+    elif type == ExportXlsxConst.Sheet_FieldInfo_Type_Translation:
+      return "string"
     elif type == ExportXlsxConst.Sheet_FieldInfo_Type_Array:
       return "LitJson.JsonData"
     elif type == ExportXlsxConst.Sheet_FieldInfo_Type_Json:
@@ -99,7 +109,7 @@ class ExportXlsxUtil(object):
       sub_value_type = sub_type[pos + 1:-1]
       return "Dictionary<%s,%s>" % (
       ExportXlsxUtil.GetSpecialCsType(sub_key_type), ExportXlsxUtil.GetSpecialCsType(sub_value_type))
-    else:  # string等
+    else:
       return "string"
 
 
@@ -112,6 +122,10 @@ class ExportXlsxUtil(object):
       return "float"
     elif type == ExportXlsxConst.Sheet_FieldInfo_Type_Bool:
       return "bool"
+    elif type == ExportXlsxConst.Sheet_FieldInfo_Type_String:
+      return "string"
+    elif type == ExportXlsxConst.Sheet_FieldInfo_Type_Translation:
+      return "string"
     elif type == ExportXlsxConst.Sheet_FieldInfo_Type_Array:
       return "LitJson.JsonData"
     elif type == ExportXlsxConst.Sheet_FieldInfo_Type_Json:
@@ -120,7 +134,7 @@ class ExportXlsxUtil(object):
       return "LitJson.JsonData"
     elif type.startswith(ExportXlsxConst.Sheet_FieldInfo_Type_Starts_With_Dict):
       return "LitJson.JsonData"
-    else:  # string等
+    else:
       return "string"
 
   def GetExportLuaValueOrDefault(value, type):
@@ -134,6 +148,8 @@ class ExportXlsxUtil(object):
       return "json:decode([=[%s]=])"%(json.dumps(value,ensure_ascii=False))
     elif type == ExportXlsxConst.Sheet_FieldInfo_Type_String:
       return "[=[%s]=]"%(value)
+    elif type == ExportXlsxConst.Sheet_FieldInfo_Type_Translation:
+      return "[=[%s]=]"%(str(value).replace("{0}","%s").replace("{1}","%s").replace("{2}","%s").replace("{3}","%s").replace("{4}","%s").replace("{5}","%s"))
     elif type == ExportXlsxConst.Sheet_FieldInfo_Type_Bool:
       if value:
         return "true"
@@ -143,10 +159,16 @@ class ExportXlsxUtil(object):
       return value
 
   @staticmethod
+  def IsStringType(type):
+    if type == ExportXlsxConst.Sheet_FieldInfo_Type_String or type == ExportXlsxConst.Sheet_FieldInfo_Type_Translation:
+      return True
+    return False
+
+  @staticmethod
   def GetExportJsonValueOrDefault(cell, target_type):
     if cell.value is None:
       return ExportXlsxUtil.GetExportJsonTypeDefaultValue(target_type)
-    if target_type == ExportXlsxConst.Sheet_FieldInfo_Type_String and (NumberUtil.IsNumber(cell.value)):
+    if ExportXlsxUtil.IsStringType(target_type) and (NumberUtil.IsNumber(cell.value)):
       return "%s" % (cell.value)
     return cell.value
 

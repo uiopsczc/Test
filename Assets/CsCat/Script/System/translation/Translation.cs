@@ -10,7 +10,7 @@ namespace CsCat
     public static Dictionary<string, Dictionary<string, string>> translation_dict =
       new Dictionary<string, Dictionary<string, string>>();
 
-    public static string GetText(string to_translate)
+    public static string GetText(string to_translate,params object[] args)
     {
       Init();
       if (GameData.instance.translationData.language == null)
@@ -19,12 +19,12 @@ namespace CsCat
         return to_translate;
       string to_translate_escape = to_translate.Replace("\r\n", "\n").Replace("\r", "\n");
       if (!translation_dict.ContainsKey(to_translate_escape))
-        return to_translate;
+        return string.Format(to_translate,args);
       if (!translation_dict[to_translate_escape].ContainsKey(GameData.instance.translationData.language))
-        return to_translate;
+        return string.Format(to_translate, args); ;
       if (translation_dict[to_translate_escape][GameData.instance.translationData.language].IsNullOrWhiteSpace())
-        return to_translate;
-      return translation_dict[to_translate_escape][GameData.instance.translationData.language];
+        return string.Format(to_translate, args);
+      return string.Format(translation_dict[to_translate_escape][GameData.instance.translationData.language],args);
     }
 
     public static void Init()
@@ -33,21 +33,21 @@ namespace CsCat
       {
         is_inited = true;
         translation_dict.Clear();
-        TranslationDefinition translationDefinition = new TranslationDefinition();
         Dictionary<string, bool> translationAsset_fieldName_dict = new Dictionary<string, bool>();
 
-        foreach (var fieldInfo in typeof(TranslationDefinition).GetFields())
+        foreach (var fieldInfo in typeof(CfgTranslationData).GetFields())
         {
-          if (fieldInfo.DeclaringType == typeof(TranslationDefinition))
+          if (!fieldInfo.Name.Equals("id"))
             translationAsset_fieldName_dict[fieldInfo.Name] = true;
         }
 
-        foreach (string id in translationDefinition.GetIdList())
+        foreach (var cfgTranslation in CfgTranslation.Instance.All())
         {
+          var id = cfgTranslation.id;
           translation_dict[id] = new Dictionary<string, string>();
           foreach (var fieldName in translationAsset_fieldName_dict.Keys)
           {
-            translation_dict[id][fieldName] = translationDefinition.GetData(id).GetFieldValue<string>(fieldName);
+            translation_dict[id][fieldName] = cfgTranslation.GetFieldValue<string>(fieldName);
           }
         }
       }
