@@ -16,8 +16,6 @@ function Main.StartUp()
   global.Translate =  require("luacat.translation.Translation").Translate
   ---@type GameData
   global.gameData = require("luacat.gameData.GameData").New(SerializeDataConst.Save_File_Path_lua)
-  ---@type DefinitionManager
-  global.definitionManager = DefinitionManager.New()
   ---@type SingletonMaster
   global.singletonMaster = require("luacat.singleton.SingletonMaster").New()
 
