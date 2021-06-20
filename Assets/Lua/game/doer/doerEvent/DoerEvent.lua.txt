@@ -49,7 +49,7 @@ function DoerEvent:CheckDoerEventTriggerCondition(doerAttrParser)
     if not is_not_talk then
       local can_not_trigger_desc = cfgDoerEventData.can_not_trigger_desc
       if string.IsNilOrWhiteSpace(can_not_trigger_desc) then
-        global.client.uiManager:Notify(global.Translate("现在不能触发此操作"))
+        global.client.uiManager:Notify(global.Lang.GetText("现在不能触发此操作"))
       else
         global.client.uiManager:Notify(doerAttrParser:ParseString(can_not_trigger_desc))
       end
@@ -67,7 +67,7 @@ function DoerEvent:ExecuteStep(desc, doerEventStep_id, owner, doerAttrParser, wo
     --不满足触发的情况
     local can_not_trigger_desc = cfgDoerEventStepData.can_not_trigger_desc
     if string.IsNilOrWhiteSpace(can_not_trigger_desc) then
-      table.insert(word_list, global.Translate("现在不能触发此操作"))
+      table.insert(word_list, global.Lang.GetText("现在不能触发此操作"))
     else
       table.insert(word_list, doerAttrParser:ParseString(can_not_trigger_desc))
     end

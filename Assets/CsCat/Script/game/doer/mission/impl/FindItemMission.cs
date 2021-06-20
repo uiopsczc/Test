@@ -57,7 +57,7 @@ namespace CsCat
       }
 
       if (is_finished || this.CheckFinishCondition())
-        sb.Append(Translation.GetText("已完成") + "\n");
+        sb.Append(Lang.GetText("已完成") + "\n");
       string result = sb.ToString();
       return result.Substring(0, result.Length - 1); //去掉最后一个\n
     }

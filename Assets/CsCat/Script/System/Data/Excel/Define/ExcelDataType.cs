@@ -9,7 +9,7 @@ namespace CsCat
     FLOAT,
     STRING,
     VECTOR3,
-    TRANSLATION, //多语言字段
+    LANG, //多语言字段
     BOOLEAN,
     INT_ARRAY,
     FLOAT_ARRAY,

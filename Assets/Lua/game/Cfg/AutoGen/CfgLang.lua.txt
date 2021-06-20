@@ -1,0 +1,107 @@
+--AutoGen. DO NOT EDIT!!!
+---@class CfgLangData
+---@field id
+---@field english
+local _
+
+
+
+---@type CfgLangData[]
+local data_list = {
+  {
+    id = [=[陈智权]=],
+    english = [=[uiopsczc]=],
+  },
+  {
+    id = [=[现在不能触发此操作]=],
+    english = [=[]=],
+  },
+  {
+    id = [=[已完成]=],
+    english = [=[]=],
+  },
+  {
+    id = [=[1111]=],
+    english = [=[]=],
+  },
+  {
+    id = [=[china]=],
+    english = [=[]=],
+  },
+  {
+    id = [=[<color=red>欢迎，
+欢迎，热烈欢迎</color>]=],
+    english = [=[]=],
+  },
+  {
+    id = [=[dkk("dk
+dk")dkd]=],
+    english = [=[]=],
+  },
+  {
+    id = [=[sb]=],
+    english = [=[]=],
+  },
+  {
+    id = [=[usa]=],
+    english = [=[]=],
+  },
+}
+
+local index_dict = {
+  unique = {
+    id = {
+      [
+        [=[陈智权]=]
+      ] = 1,
+      [
+        [=[现在不能触发此操作]=]
+      ] = 2,
+      [
+        [=[已完成]=]
+      ] = 3,
+      [
+        [=[1111]=]
+      ] = 4,
+      [
+        [=[china]=]
+      ] = 5,
+      [
+        [=[<color=red>欢迎，
+欢迎，热烈欢迎</color>]=]
+      ] = 6,
+      [
+        [=[dkk("dk
+dk")dkd]=]
+      ] = 7,
+      [
+        [=[sb]=]
+      ] = 8,
+      [
+        [=[usa]=]
+      ] = 9,
+    },
+  },
+}
+
+local cfg = {}
+
+function cfg.All()
+  return data_list
+end
+
+function cfg.Get(index)
+  return data_list[index]
+end
+
+function cfg.get_by_id(id)
+  local key = tostring(id)
+  return cfg.Get(index_dict.unique.id[key])
+end
+
+function cfg.contain_key_by_id(id)
+  local key = tostring(id)
+  return index_dict.unique.id[key] ~= nil
+end
+
+return cfg

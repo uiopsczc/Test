@@ -98,7 +98,7 @@ namespace CsCat
 #endif
       this.moveManager = graphicComponent.gameObject.AddComponent<MoveManager>();
 
-      language = GameData.instance.translationData.language;
+      language = GameData.instance.langData.language;
       guidManager = new GuidManager(GameData.instance.guid_current);
       assetBundleUpdater = AddChild<AssetBundleUpdater>("AssetBundleUpdater");
       assetBundleManager = AddChild<AssetBundleManager>("AssetBundleManager");

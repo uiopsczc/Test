@@ -53,16 +53,17 @@ namespace CsCat
 
       if (Input.GetKeyDown("f2"))
       {
-//        Dictionary<string, Dictionary<string, int>> dict = new Dictionary<string, Dictionary<string,int>>();
-//        var t = dict.GetType();
-//        LogCat.log(t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Dictionary<,>));
-//        var t = CfgTest.Instance.get_by_id("2").get__age_dict();
-        LogCat.log(CfgTest.Instance.get_by_id("2")._age_dict["星哥"][1]);
-//        t = this.AddTimer(args =>
-//        {
-//          LogCat.warn(Time.time);
-//          return true;
-//        }, 0, 1);
+        LogCat.log(Lang.GetText("陈智权"));
+        //        Dictionary<string, Dictionary<string, int>> dict = new Dictionary<string, Dictionary<string,int>>();
+        //        var t = dict.GetType();
+        //        LogCat.log(t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Dictionary<,>));
+        //        var t = CfgTest.Instance.get_by_id("2").get__age_dict();
+        //        LogCat.log(CfgTest.Instance.get_by_id("2")._age_dict["星哥"][1]);
+        //        t = this.AddTimer(args =>
+        //        {
+        //          LogCat.warn(Time.time);
+        //          return true;
+        //        }, 0, 1);
         //        panel = Client.instance.uiManager.CreateChildPanel(null, default(UIGMTestPanel2));
       }
 

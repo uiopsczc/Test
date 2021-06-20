@@ -63,7 +63,7 @@ namespace CsCat
         {
           string can_not_trigger_desc = cfgDoerEventData.can_not_trigger_desc;
           if (can_not_trigger_desc.IsNullOrWhiteSpace())
-            Client.instance.uiManager.Notify(Translation.GetText("现在不能触发此操作"));
+            Client.instance.uiManager.Notify(Lang.GetText("现在不能触发此操作"));
           else
             Client.instance.uiManager.Notify(doerAttrParser.ParseString(can_not_trigger_desc));
         }
@@ -84,7 +84,7 @@ namespace CsCat
       {
         string can_not_trigger_desc = cfgDoerEventStepData.can_not_trigger_desc;
         if (can_not_trigger_desc.IsNullOrWhiteSpace())
-          word_list.Add(Translation.GetText("现在不能触发此操作"));
+          word_list.Add(Lang.GetText("现在不能触发此操作"));
         else
           word_list.Add(doerAttrParser.ParseString(can_not_trigger_desc));
         return 0;

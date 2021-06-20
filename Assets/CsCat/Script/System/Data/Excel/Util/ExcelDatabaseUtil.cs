@@ -33,7 +33,7 @@ namespace CsCat
     //        return typeof(int);
     //      case ExcelDataType.FLOAT:
     //        return typeof(float);
-    //      case ExcelDataType.TRANSLATION:
+    //      case ExcelDataType.Lang:
     //        return typeof(string);
     //      case ExcelDataType.VECTOR3:
     //        return typeof(Vector3);
@@ -86,9 +86,9 @@ namespace CsCat
             result = int_value;
             return result;
           }
-        case ExcelDataType.TRANSLATION:
+        case ExcelDataType.LANG:
           {
-            result = Translation.GetText(content);
+            result = Lang.GetText(content);
             return result;
           }
         case ExcelDataType.FLOAT:

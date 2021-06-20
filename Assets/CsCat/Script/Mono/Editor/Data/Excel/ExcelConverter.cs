@@ -191,7 +191,7 @@ namespace CsCat
               {
                 if (row.LastCellNum == -1)
                   continue;
-                bool has_translation = false; //多语言表处理
+                bool has_lang = false; //多语言表处理
                 var excelValueList = new ExcelRow();
                 string id = "";
                 cur_ignore_count = 0;
@@ -242,11 +242,11 @@ namespace CsCat
                   else
                   {
                     //多语言表处理
-                    if (fileName.Contains("D 多语言表-Translation.xlsx"))
+                    if (fileName.Contains("D 多语言表-Lang.xlsx"))
                     {
                       if (!sCellValue.IsNullOrWhiteSpace())
                       {
-                        has_translation = true;
+                        has_lang = true;
                       }
                     }
                   }
@@ -257,9 +257,9 @@ namespace CsCat
                 }
 
                 //多语言表处理,对没有翻译的key不用写asset中，以减少数据
-                if (fileName.Contains("D 多语言表-Translation.xlsx"))
+                if (fileName.Contains("D 多语言表-Lang.xlsx"))
                 {
-                  if (has_translation == false)
+                  if (has_lang == false)
                     to_remove_list.Add(id);
                 }
 
