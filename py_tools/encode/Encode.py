@@ -3,10 +3,10 @@
 ######################################################
 import sys
 import os
+sys.path.append(os.path.dirname(os.path.realpath(__file__ + "/..")))#一定要放到这里（py_tools文件夹），不然会import不到module的
 from pythoncat.util.FileUtil import *
 from encode.EncodeConst import *
 
-sys.path.append(os.path.dirname(os.path.realpath(__file__ + "/..")))
 
 def Convert(file_path, target_encode):
   file_content = ReadFile(file_path)
@@ -37,5 +37,6 @@ def main():
   for file_path in file_path_list:
     # print(file_path)
     Convert(file_path, EncodeConst.Change_Encode_To)
+  print("Encode finished")
 
 main()

@@ -39,14 +39,17 @@ class ExportXlsx2Json(object):
       data = {}
       for fieldInfo in fieldInfo_list:
         column = fieldInfo["column"]
-        cell = sheet.cell(row=row, column=column)
         fileInfo_type = fieldInfo["type"]
         fileInfo_name = fieldInfo["name"]
-        cell_value = ExportXlsxUtil.GetExportJsonValueOrDefault(cell, fileInfo_type)
-        if fileInfo_type == ExportXlsxConst.Sheet_FieldInfo_Type_Array or fileInfo_type == ExportXlsxConst.Sheet_FieldInfo_Type_Json or fileInfo_type.endswith(ExportXlsxConst.Sheet_FieldInfo_Type_Ends_With_Array) or fileInfo_type.startswith(ExportXlsxConst.Sheet_FieldInfo_Type_Starts_With_Dict):
-          data[fileInfo_name] = json.loads(cell_value)
-        else:
-          data[fileInfo_name] = cell_value
+        cell_value = ExportXlsxUtil.GetExportJsonValueOrDefault(sheet, row,column, fileInfo_type)
+        try:
+          if fileInfo_type == ExportXlsxConst.Sheet_FieldInfo_Type_Array or fileInfo_type == ExportXlsxConst.Sheet_FieldInfo_Type_Json or fileInfo_type.endswith(ExportXlsxConst.Sheet_FieldInfo_Type_Ends_With_Array) or fileInfo_type.startswith(ExportXlsxConst.Sheet_FieldInfo_Type_Starts_With_Dict):
+              data[fileInfo_name] = json.loads(cell_value)
+          else:
+            data[fileInfo_name] = cell_value
+        except Exception as e:
+          print("cell[%s,%s] has error" % (row, column))
+          raise e
       data_list.append(data)
     return data_list
 

@@ -48,7 +48,7 @@ class ExportXlsxUtil(object):
     return fieldInfo_dict
 
   @staticmethod
-  def GetExportJsonTypeDefaultValue(type):
+  def GetExportJsonTypeDefaultValue(cell,row, column, type):
     if type == ExportXlsxConst.Sheet_FieldInfo_Type_Int:
       return 0
     elif type == ExportXlsxConst.Sheet_FieldInfo_Type_Float:
@@ -68,7 +68,8 @@ class ExportXlsxUtil(object):
     elif type.startswith(ExportXlsxConst.Sheet_FieldInfo_Type_Starts_With_Dict):
       return "{}"
     else:
-      return ""
+      raise Exception(("error:cell[%s,%s] is not define default value for %s")%(row,column,type))
+
 
   # 是否是 特殊的Cs Type
   @staticmethod
@@ -110,7 +111,7 @@ class ExportXlsxUtil(object):
       return "Dictionary<%s,%s>" % (
       ExportXlsxUtil.GetSpecialCsType(sub_key_type), ExportXlsxUtil.GetSpecialCsType(sub_value_type))
     else:
-      return "string"
+      raise Exception("not define Special CsType for %s"%(type))
 
 
 
@@ -135,7 +136,7 @@ class ExportXlsxUtil(object):
     elif type.startswith(ExportXlsxConst.Sheet_FieldInfo_Type_Starts_With_Dict):
       return "LitJson.JsonData"
     else:
-      return "string"
+      raise Exception("not define CsType for %s"%(type))
 
   def GetExportLuaValueOrDefault(value, type):
     if type == ExportXlsxConst.Sheet_FieldInfo_Type_Array:
@@ -165,9 +166,10 @@ class ExportXlsxUtil(object):
     return False
 
   @staticmethod
-  def GetExportJsonValueOrDefault(cell, target_type):
+  def GetExportJsonValueOrDefault(sheet, row, column, target_type):
+    cell = sheet.cell(row = row, column = column)
     if cell.value is None:
-      return ExportXlsxUtil.GetExportJsonTypeDefaultValue(target_type)
+      return ExportXlsxUtil.GetExportJsonTypeDefaultValue(cell, row,column,  target_type)
     if ExportXlsxUtil.IsStringType(target_type) and (NumberUtil.IsNumber(cell.value)):
       return "%s" % (cell.value)
     return cell.value

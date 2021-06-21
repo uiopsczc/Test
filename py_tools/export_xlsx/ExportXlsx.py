@@ -1,11 +1,14 @@
 import sys
+import os
+sys.path.append(os.path.dirname(os.path.realpath(__file__ + "/..")))#一定要放到这里（值为py_tools文件夹），不然会import不到module的
 from openpyxl import load_workbook
 from export_xlsx.ExportXlsx2Cs import *
 from export_xlsx.ExportXlsx2Json import *
 from export_xlsx.ExportXlsx2Lua import *
+from export_xlsx.ExportXlsxConst import *
+from export_xlsx.ExportXlsxUtil import *
 from pythoncat.util.FileUtil import *
 
-sys.path.append(os.path.dirname(os.path.realpath(__file__ + "/..")))
 
 def FilterFilePath(file_path):
   if not file_path.endswith(".xlsx") or file_path.find("~$") != -1: #"~$"临时打开的文件过滤掉
@@ -32,6 +35,7 @@ def GetExportRelativeDirPath(file_path):
 def ExportAll():
   file_path_list = FileUtil.GetFilePathList(ExportXlsxConst.Xlsx_Dir_Path, FilterFilePath)
   for file_path in file_path_list:
+    print("正在导出%s" % (file_path.replace(ExportXlsxConst.Xlsx_Dir_Path, "")))
     export_relative_dir_path = GetExportRelativeDirPath(file_path)
     wrokbook = load_workbook(file_path, read_only=True, data_only=True)
     ExportWorkbook(wrokbook, export_relative_dir_path)
@@ -44,14 +48,15 @@ def ExportWorkbook(wrokbook,export_relative_dir_path):
 
 def ExportSheet(sheet,export_relative_dir_path):
   if ExportXlsxUtil.IsExportSheet(sheet):
+    print("  正在导出[%s]" % (export_relative_dir_path + ExportXlsxUtil.GetExportSheetName(sheet)))
     json_dict = ExportXlsx2Json.ExportSheet(sheet, export_relative_dir_path)
     ExportXlsx2Cs.ExportSheet(sheet,json_dict, export_relative_dir_path)
     ExportXlsx2Lua.ExportSheet(sheet,json_dict, export_relative_dir_path)
 
 
+
 def main():
   ResetAll()
   ExportAll()
-  # print("%s -- %s {set;get;}"%("1", 2))
-  print("finished")
+  print("ExportXlsx finished")
 main()

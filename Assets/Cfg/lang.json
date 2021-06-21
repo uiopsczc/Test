@@ -5,19 +5,7 @@
       "english": "uiopsczc"
     },
     {
-      "id": "现在不能触发此操作",
-      "english": ""
-    },
-    {
-      "id": "已完成",
-      "english": ""
-    },
-    {
-      "id": "1111",
-      "english": ""
-    },
-    {
-      "id": "china",
+      "id": "usa",
       "english": ""
     },
     {
@@ -25,15 +13,27 @@
       "english": ""
     },
     {
+      "id": "china",
+      "english": ""
+    },
+    {
+      "id": "1111",
+      "english": ""
+    },
+    {
+      "id": "现在不能触发此操作",
+      "english": ""
+    },
+    {
       "id": "dkk(\"dk\ndk\")dkd",
       "english": ""
     },
     {
-      "id": "sb",
+      "id": "已完成",
       "english": ""
     },
     {
-      "id": "usa",
+      "id": "sb",
       "english": ""
     }
   ],
@@ -41,14 +41,14 @@
     "unique": {
       "id": {
         "陈智权": 0,
-        "现在不能触发此操作": 1,
-        "已完成": 2,
-        "1111": 3,
-        "china": 4,
-        "<color=red>欢迎，\n欢迎，热烈欢迎</color>": 5,
+        "usa": 1,
+        "<color=red>欢迎，\n欢迎，热烈欢迎</color>": 2,
+        "china": 3,
+        "1111": 4,
+        "现在不能触发此操作": 5,
         "dkk(\"dk\ndk\")dkd": 6,
-        "sb": 7,
-        "usa": 8
+        "已完成": 7,
+        "sb": 8
       }
     }
   }

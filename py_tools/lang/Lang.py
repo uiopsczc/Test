@@ -3,6 +3,8 @@
 ## 将收集需要切换多语言字符串写到export_lang_file_path中
 ######################################################
 import sys
+import os
+sys.path.append(os.path.dirname(os.path.realpath(__file__ + "/..")))#一定要放到这里（值为py_tools文件夹），不然会import不到module的
 from lang.LangConst import *
 from pythoncat.util.ExcelUtil import *
 from pythoncat.util.FileUtil import *
@@ -158,5 +160,5 @@ def main():
   lang_id_set = CollectLangIds()
   ExportLangIds(lang_id_set)
   os.system("explorer /select, " + LangConst.Export_Lang_File_Path)
-  print("finish")
+  print("Lang Export finished")
 main()
