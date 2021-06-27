@@ -1,5 +1,19 @@
+---@generic T
+---@param compare_rule_func_list (fun(value1:T,value2:T):number)[]  @大小比较和c#的sort一样
+function table.CompareWhitRules(data1,data2, compare_rule_func_list)
+  for _, compare_rule in ipairs(compare_rule_func_list) do
+    local result = compare_rule(data1, data2)
+    if result ~= 0 then
+      return result
+    end
+  end
+  return 0
+end
+
+
 ----------------------------------------------------------------------
 -- 冒泡排序
+---- O(n^2)
 ----------------------------------------------------------------------
 -- 执行方法func后返回 false 时进行交换
 --  如：table.BubbleSort_Array(table, function(a, b)
@@ -11,20 +25,10 @@
 ---@param func fun(value1:T,value2:T):boolean
 function table.BubbleSort_Array(array, func)
   local count = #array
-  if func then
-    for i = 1, count - 1 do
-      for j = 1, count - i do
-        if not func(array[j], array[j + 1]) then
-          array[j], array[j + 1] = array[j + 1], array[j]
-        end
-      end
-    end
-  else
-    for i = 1, count - 1 do
-      for j = 1, count - i do
-        if array[j] > array[j + 1] then
-          array[j], array[j + 1] = array[j + 1], array[j]
-        end
+  for i = 1, count do
+    for j = 1, count - i do
+      if not func(array[j], array[j + 1]) then
+        array[j], array[j + 1] = array[j + 1], array[j]
       end
     end
   end
@@ -33,118 +37,103 @@ end
 ---@generic T
 ---@param array T[]
 ---@param compare_rule_func_list (fun(value1:T,value2:T):number)[]  @大小比较和c#的sort一样
-function table.BubbleSortWithComparRules_Array(array, compare_rule_func_list)
-  table.BubbleSort_Array(array, function(a,b)
-    for _, compare_rule in ipairs(compare_rule_func_list) do
-      local result = compare_rule(a, b)
-      if result ~= 0 then
-        return result < 0
-      end
-    end
-    return true
+function table.BubbleSortWithCompareRules_Array(array, compare_rule_func_list)
+  table.BubbleSort_Array(array, function(a, b)
+    return table.CompareWhitRules(a,b, compare_rule_func_list)<0
   end)
 end
 
 ----------------------------------------------------------------------
 -- 合并排序
+-- https://www.youtube.com/watch?v=TzeBrDU-JaY
+-- O(N*logN)
+-- 需要另外的N空间来进行排序处理，但稳定 最好的情况需要时间为N*logN,最坏的情况需要时间为N*logN
 ----------------------------------------------------------------------
-local function __MergeMethid(array, left, mid, right, func)
-  local new_array = {}
-  local l = left
-  local m = mid + 1
-  local k = 0
-  local change
-  while l <= mid and m <= right do
-    k = k + 1
-    if func then
-      change = func(array[l], array[m])
+local function __Merge(array, left, middle, right, func)
+  local new_array = {} --新的数组(用于存放排序后的元素)
+  local left_array_cur_index = left --左边的数组的当前index
+  local right_array_cur_index = middle + 1 --右边的数组的当前index
+  local new_array_cur_index = 0 -- 新的数组(用于存放排序后的元素)的当前index
+  local is_new_array_cur_index_Use_left_array_cur_index -- 新的数组(用于存放排序后的元素)的当前index是否使用左边的数组的当前index
+  while left_array_cur_index <= middle and right_array_cur_index <= right do
+    new_array_cur_index = new_array_cur_index + 1
+    is_new_array_cur_index_Use_left_array_cur_index = func(array[left_array_cur_index], array[right_array_cur_index])
+    if is_new_array_cur_index_Use_left_array_cur_index then
+      new_array[new_array_cur_index] = array[left_array_cur_index]
+      left_array_cur_index = left_array_cur_index + 1
     else
-      change = array[l] < array[m]
-    end
-    if change then
-      new_array[k] = array[l]
-      l = l + 1
-    else
-      new_array[k] = array[m]
-      m = m + 1
+      new_array[new_array_cur_index] = array[right_array_cur_index]
+      right_array_cur_index = right_array_cur_index + 1
     end
   end
-  for i = l, mid do
-    k = k + 1
-    new_array[k] = array[i]
+  -- left_array_cur_index <= mid and right_array_cur_index <= right 其中之一不成立的情况
+  -- 处理没有被完全处理的数组
+  for i = left_array_cur_index, middle do
+    new_array_cur_index = new_array_cur_index + 1
+    new_array[new_array_cur_index] = array[i]
   end
-  for i = m, right do
-    k = k + 1
-    new_array[k] = array[i]
+  for i = right_array_cur_index, right do
+    new_array_cur_index = new_array_cur_index + 1
+    new_array[new_array_cur_index] = array[i]
   end
+  -- 重新赋值给array
   for i, v in ipairs(new_array) do
+    -- lua中i从1开始
     array[left + i - 1] = v
   end
 end
 
-local function __MeragerSort(array, left, right, func)
+local function __MergeSort(array, left, right, func)
   if left >= right then
+    -- 只剩下1个元素的情况，递归结束
     return
   end
-  local mid = math.floor((left + right) / 2)
-  __MeragerSort(array, left, mid, func)
-  __MeragerSort(array, mid + 1, right, func)
-  __MergeMethid(array, left, mid, right, func)
+  local middle = math.floor((left + right) / 2)
+  __MergeSort(array, left, middle, func) -- 分离左边的数组
+  __MergeSort(array, middle + 1, right, func) -- 分离右边的数组
+  __Merge(array, left, middle, right, func)
 end
 
 --归并排序
 --func(a, b)返回true时 a在b前面
--- 如：table.MeragerSort_Array(array, function(a, b)
+-- 如：table.MergeSort_Array(array, function(a, b)
 --     return a.count <= b.count
 --     end)
 --则是将count由小到大排序，注意比较大小时不要漏掉等于号，否则相等时也进行排序，则排序不稳定
 ---@generic T
 ---@param array T[]
 ---@param func fun(value1:T,value2:T):boolean
-function table.MeragerSort_Array(array, func)
-  __MeragerSort(array, 1, #array, func)
+function table.MergeSort_Array(array, func)
+  __MergeSort(array, 1, #array, func)
 end
-
 
 ---@generic T
 ---@param array T[]
 ---@param compare_rule_func_list (fun(value1:T,value2:T):number)[]  @大小比较和c#的sort一样
-function table.MeragerSortWithComparRules_Array(array, compare_rule_func_list)
-  table.MeragerSort_Array(array, function(a,b)
-    for _, compare_rule in ipairs(compare_rule_func_list) do
-      local result = compare_rule(a, b)
-      if result ~= 0 then
-        return result < 0
-      end
-    end
-    return true
+function table.MergeSortWithCompareRules_Array(array, compare_rule_func_list)
+  table.MergeSort_Array(array, function(a, b)
+    return table.CompareWhitRules(a,b, compare_rule_func_list)<0
   end)
 end
 
 ----------------------------------------------------------------------
 -- 快速排序
+-- https://www.youtube.com/watch?v=COk73cpQbFQ
+-- O(N*logN)
+-- 不需要另外的空间进行排序处理，但不稳定 最好的情况需要时间为N*logN,最坏的情况需要时间为N^2
 ----------------------------------------------------------------------
----https://baike.baidu.com/item/%E5%BF%AB%E9%80%9F%E6%8E%92%E5%BA%8F%E7%AE%97%E6%B3%95/369842?fr=aladdin#4_11
 ---c#部分修改而来
-local function __QuickSort_Array(array, func, low, high)
-  local key = array[low]
-  while low < high do
-    -- 从后向前搜索比key小的值
-    while func(key, array[high]) and high > low do
-      high = high - 1
+local function Partition(array, func, low, high)
+  local privot_value = array[high] --基点的值，比基点小的放在
+  local partition_index = low
+  for i = partition_index, high-1, 1 do
+    if not func(array[i],privot_value) then
+      array[i], array[partition_index] = array[partition_index], array[i]
+      partition_index = partition_index + 1
     end
-    -- 比key小的放左边
-    array[low] = array[high]
-    -- 从前向后搜索比key大的值，比key大的放右边
-    while func(array[low], key) and high > low do
-      low = low + 1
-    end
-    -- 比key大的放右边
-    array[high] = array[low]
   end
-  -- 左边都比key小，右边都比key大。 将key放在游标当前位置。 此时low等于high
-  array[low] = key
-  return high
+  array[partition_index], array[high] = array[high], array[partition_index]
+  return partition_index
 end
 
 --func(a, b)返回true时 a在b前面
@@ -161,27 +150,20 @@ function table.QuickSort_Array(array, func, low, high)
   if low >= high then
     return
   end
-  --完成一次单元排序
-  local index = __QuickSort_Array(array,func, low, high)
-  -- 对左边单元进行排序
-  table.QuickSort_Array(array, func, low, index - 1)
-  -- 对右边单元进行排序
-  table.QuickSort_Array(array, func, index + 1, high)
+  --在partition_index左边的都比index的value小，右边的都比index的value大
+  local partition_index = Partition(array, func, low, high)
+  -- 对左边数组进行排序
+  table.QuickSort_Array(array, func, low, partition_index - 1)
+  -- 对右边数组进行排序
+  table.QuickSort_Array(array, func, partition_index + 1, high)
 end
-
 
 ---@generic T
 ---@param array T[]
 ---@param compare_rule_func_list (fun(value1:T,value2:T):number)[]  @大小比较和c#的sort一样
-function table.QuickSortWithComparRules_Array(array, compare_rule_func_list)
-  table.QuickSort_Array(array, function(a,b)
-    for _, compare_rule in ipairs(compare_rule_func_list) do
-      local result = compare_rule(a, b)
-      if result ~= 0 then
-        return result < 0
-      end
-    end
-    return true
+function table.QuickSortWithCompareRules_Array(array, compare_rule_func_list)
+  table.QuickSort_Array(array, function(a, b)
+    return table.CompareWhitRules(a,b, compare_rule_func_list)<0
   end)
 end
 

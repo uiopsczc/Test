@@ -15,7 +15,7 @@ namespace CsCat
     private static int path_session_id = 0;
 
     private List<Cell> cell_list;
-    private BinaryHeap<Cell> open_list;
+    private HeapCat<Cell> open_list;
     private List<Cell> closed_list;
 
     #endregion
@@ -25,8 +25,7 @@ namespace CsCat
     public NavMesh2d(List<Cell> cell_list)
     {
       this.cell_list = cell_list;
-      open_list = new BinaryHeap<Cell>();
-      open_list.Capacity = cell_list.Count;
+      open_list = new HeapCat<Cell>(cell_list.Count,Cell.Compare);
       closed_list = new List<Cell>();
     }
 
@@ -101,15 +100,15 @@ namespace CsCat
       end_cell.is_open = false;
       end_cell.parent = null;
       end_cell.session_id = path_session_id;
-      open_list.Add(end_cell);
+      open_list.Push(end_cell);
 
       bool is_found_path = false; //是否找到路径
       Cell curr_node; //当前节点
       Cell adjacent_tmp = null; //当前节点的邻接三角型
-      while (open_list.Count > 0)
+      while (open_list.Size > 0)
       {
         // 1. 把当前节点从开放列表删除, 加入到封闭列表
-        curr_node = open_list.Remove();
+        curr_node = open_list.Pop();
         closed_list.Add(curr_node);
 
         //路径是在同一个三角形内
@@ -164,7 +163,7 @@ namespace CsCat
               adjacent_tmp.ComputeF();
 
               //放入开放列表并排序
-              open_list.Add(adjacent_tmp);
+              open_list.Push(adjacent_tmp);
 
 
             }
@@ -194,7 +193,7 @@ namespace CsCat
 
                   //重新设置在heap中的位置
                   open_list.Remove(adjacent_tmp);
-                  open_list.Add(adjacent_tmp);
+                  open_list.Push(adjacent_tmp);
                 }
               }
               else //已在closeList中

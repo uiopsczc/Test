@@ -15,6 +15,7 @@ namespace CsCat
         return new List<T>();
       return self;
     }
+    
 
     public static int FindIndex<T>(this IList<T> self, Func<T, bool> match)
     {
@@ -34,11 +35,11 @@ namespace CsCat
     }
 
     /// <summary>
-    ///   将list[a]和list[b]交换
+    ///   将list[index1]和list[index2]交换
     /// </summary>
-    public static void Swap<T>(this IList<T> self, int a, int b)
+    public static void Swap<T>(this IList<T> self, int index1, int index2)
     {
-      ListUtil.Swap(self, a, self, b);
+      ListUtil.Swap(self, index1, self, index2);
     }
 
     //超过index或者少于0的循环index表获得
@@ -407,6 +408,29 @@ namespace CsCat
     public static void BubbleSortWithCompareRules(this IList self, params Comparison<object>[] compare_rules)
     {
       SortUtil.BubbleSortWithCompareRules(self, compare_rules);
+    }
+
+
+    //如：list.MergeSort((a, b)=>return a.count <= b.count)
+    //则是将count由小到大排序，注意比较大小时不要漏掉等于号，否则相等时也进行排序，则排序不稳定
+    public static void MergeSort<T>(this IList<T> self, Func<T, T, bool> compare_func)
+    {
+      SortUtil.MergeSort(self, compare_func);
+    }
+
+    public static void MergeSort(this IList self, Func<object, object, bool> compare_func)
+    {
+      SortUtil.MergeSort(self, compare_func);
+    }
+
+    public static void MergeSortWithCompareRules<T>(this IList<T> self, params Comparison<T>[] compare_rules)
+    {
+      SortUtil.MergeSortWithCompareRules(self, compare_rules);
+    }
+
+    public static void MergeSortWithCompareRules(this IList self, params Comparison<object>[] compare_rules)
+    {
+      SortUtil.MergeSortWithCompareRules(self, compare_rules);
     }
 
     //如：list.QuickSort((a, b)=>return a.count <= b.count)

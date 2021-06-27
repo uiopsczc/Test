@@ -132,8 +132,9 @@ namespace CsCat
 
     public void Test()
     {
+      TestProtoTest.Test();
     }
-
+    
 
     public void TestUser()
     {

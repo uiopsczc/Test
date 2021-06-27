@@ -4,7 +4,7 @@ using System;
 
 namespace CsCat
 {
-  public class Cell : Triangle, IComparable<Cell>
+  public class Cell : Triangle
   {
     #region field
 
@@ -161,11 +161,11 @@ namespace CsCat
 
 
 
-    public int CompareTo(Cell other)
+    public static int Compare(Cell data1,Cell data2)
     {
-      if (f < other.f)
+      if (data1.f < data2.f)
         return -1;
-      else if (f > other.f)
+      else if (data1.f > data2.f)
         return 1;
       else
         return 0;

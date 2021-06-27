@@ -11,12 +11,9 @@ namespace CsCat
     /// </summary>
     public static void Swap<T>(IList<T> list1, int a, IList<T> list2, int b)
     {
-      if (!list1[a].Equals(list2[b]))
-      {
-        var c = list1[a];
-        list1[a] = list2[b];
-        list2[b] = c;
-      }
+      var c = list1[a];
+      list1[a] = list2[b];
+      list2[b] = c;
     }
 
     //////////////////////////////////////////////////////////////////////
@@ -85,8 +82,6 @@ namespace CsCat
             old_list = (old_list as Array).RemoveAt_Array(k);
           else
             old_list.RemoveAt(k);
-
-
         }
         else if (v.ToString().StartsWith("__{}__"))
         {

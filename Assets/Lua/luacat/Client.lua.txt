@@ -65,6 +65,8 @@ function Client:Start()
   self:Test()
 end
 
+
+
 function Client:TestUser()
   --require("game.doer.item.test.ItemTest").Test()
 end

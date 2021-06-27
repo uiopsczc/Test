@@ -1,0 +1,5 @@
+syntax = "proto3";
+package com.test;
+message TestSubProto {
+   string account = 1;
+}

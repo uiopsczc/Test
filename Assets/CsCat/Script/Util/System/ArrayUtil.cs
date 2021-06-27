@@ -1,4 +1,5 @@
 using System;
+using NPOI.SS.Formula.Functions;
 
 namespace CsCat
 {
@@ -90,6 +91,7 @@ namespace CsCat
     {
       return RemoveAt(source_array, index).ToArray<T>();
     }
+    
 
 
 

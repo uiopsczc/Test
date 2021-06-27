@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public class AStarNode : IComparable<AStarNode>
+  public class AStarNode
   {
     public Vector2Int pos;
     public AStarNode parent;
@@ -27,9 +27,9 @@ namespace CsCat
       return other.pos.Equals(this.pos);
     }
 
-    public int CompareTo(AStarNode other)
+    public static int Compare(AStarNode data1,AStarNode data2)
     {
-      if (f - other.f >= 0)
+      if (data1.f - data2.f >= 0)
         return 1;
       else
         return -1;

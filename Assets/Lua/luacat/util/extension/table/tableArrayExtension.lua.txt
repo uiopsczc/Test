@@ -1,4 +1,16 @@
+---@param t table
+---@param index1 number
+---@param index2 number
+function table.Swap_Array(t, index1, index2)
+  local tmp = t[index1]
+  t[index1] = t[index2]
+  t[index2] = tmp
+end
+
+
 -- 寻找t中value对应的key
+---@param t table
+---@param value
 function table.FindKeyByValue_Array(t, value)
   for k, v in ipairs(t) do
     if v == value then

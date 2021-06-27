@@ -9,7 +9,7 @@ namespace CsCat
   public class AStar
   {
     protected AStarType astarType;
-    protected BinaryHeap<AStarNode> open_heap = new BinaryHeap<AStarNode>(); // 开放列表
+    protected HeapCat<AStarNode> open_heap;// 开放列表
     protected Dictionary<Vector2Int, AStarNode> closed_dict; // 关闭列表
 
     protected int left;
@@ -35,7 +35,7 @@ namespace CsCat
       this.top = Math.Max(bottom, top);
 
       int size = (right - left) * (top - bottom);
-      open_heap.Capacity = size;
+      open_heap = new HeapCat<AStarNode>(size, AStarNode.Compare);
       closed_dict = new Dictionary<Vector2Int, AStarNode>(size);
     }
 
@@ -93,7 +93,7 @@ namespace CsCat
 
     protected void AddNodeToOpenHeap(AStarNode node)
     {
-      open_heap.Add(node);
+      open_heap.Push(node);
     }
 
     protected float GetG(Vector2Int p1, Vector2Int p2)
@@ -229,12 +229,12 @@ namespace CsCat
       AStarNode startNode = new AStarNode(start_pos.x, start_pos.y);
       startNode.h = GetH(start_pos, goal_pos);
       startNode.f = startNode.h + startNode.g;
-      open_heap.Add(startNode);
+      open_heap.Push(startNode);
 
-      while (open_heap.Count > 0)
+      while (open_heap.Size > 0)
       {
         // 寻找开启列表中F值最低的格子。我们称它为当前格
-        AStarNode check_node = (AStarNode)open_heap.Remove();
+        AStarNode check_node = open_heap.Pop();
 
         // 把目标格添加进了开启列表，这时候路径被找到
         if (check_node.pos.Equals(goal_pos))
