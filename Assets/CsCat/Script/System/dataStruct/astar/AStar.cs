@@ -260,6 +260,7 @@ namespace CsCat
                 neighbor_node.g = neighbor_g;
                 neighbor_node.h = GetH(neighbor_node.pos, goal_pos);
                 neighbor_node.f = neighbor_node.g + neighbor_node.h;
+                //更新neighbor_node的值
                 closed_dict.Remove(neighbor_node.pos);
                 AddNodeToOpenHeap(neighbor_node);
               }
@@ -272,6 +273,7 @@ namespace CsCat
                 neighbor_node.g = neighbor_g;
                 neighbor_node.h = GetH(neighbor_node.pos, goal_pos);
                 neighbor_node.f = neighbor_node.g + neighbor_node.h;
+                //更新neighbor_node的值
                 open_heap.Remove(neighbor_node);
                 AddNodeToOpenHeap(neighbor_node);
               }
