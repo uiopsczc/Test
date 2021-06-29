@@ -12,6 +12,7 @@ namespace CsCat
     public float f; //当前消耗值 + 预估还需的消耗值
 
 
+
     public AStarNode(int x, int y)
     {
       this.pos = new Vector2Int(x, y);
