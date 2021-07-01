@@ -7,6 +7,7 @@ namespace CsCat
   /// <summary>
   ///   最小堆（最小值在最上面）或者最大堆(最大值在最上面) 
   ///   https://www.youtube.com/watch?v=t0Cq6tVNRBA&t=107s
+  ///   deletable heap: http://www.mathcs.emory.edu/~cheung/Courses/171/Syllabus/9-BinTree/heap-delete.html
   /// </summary>
   public class HeapCat<T>
   {
@@ -14,27 +15,42 @@ namespace CsCat
     private int capacity;
     private T[] datas;
     private int size;
+    private bool is_need_get_index;
+    private Dictionary<T, int> index_dict = new Dictionary<T, int>();
 
     public int Size =>this.size;
 
+    public  T this[int index]
+    {
+      get => this.datas[index];
+      set
+      {
+        this.datas[index] = value;
+        if (is_need_get_index)
+          this.index_dict[value] = index;
+      }
+    }
+    
+
     //默认comparison返回-1，则排在上面，即默认是按c#的最小排在前面
-    public HeapCat(int? capacity,params Comparison<T>[] compare_rules)
+    public HeapCat(int? capacity,bool is_need_get_index,params Comparison<T>[] compare_rules)
     {
       this.compare_rules = compare_rules;
       this.capacity = capacity.GetValueOrDefault(HeapCatConst.Default_Capacity);
+      this.is_need_get_index = is_need_get_index;
       datas = new T[this.capacity];
     }
-
-    public bool Contains(T data)
-    {
-      return GetIndex(data) >= 0;
-    }
+    
+    
 
     public int GetIndex(T data)
     {
-      return Array.BinarySearch(datas, 0, size, data);
+      if(index_dict.ContainsKey(data))
+        return index_dict[data];
+      return -1;
     }
 
+    //需要is_need_get_index为true才能生效
     public bool Remove(T data)
     {
       var to_remove_index = GetIndex(data);
@@ -43,28 +59,35 @@ namespace CsCat
       return RemoveAt(to_remove_index);
     }
 
-    public bool RemoveAt(int to_remove_index)
+    private bool RemoveAt(int to_remove_index)
     {
       if (to_remove_index < 0 || to_remove_index >= size)
         return false;
-      Array.Copy(datas, to_remove_index + 1, datas, to_remove_index, size - to_remove_index);
-      datas[size] = default;
+      this[to_remove_index] = datas[size - 1];
+      datas[size - 1] = default;
+      if (is_need_get_index)
+        index_dict.Remove(datas[size - 1]);
       size--;
+      if (HasParent(to_remove_index)&& CompareWithRules(datas[to_remove_index],GetParentData(to_remove_index))<0)
+        HeapifyUp(to_remove_index);
+      else
+        HeapifyDown(to_remove_index);
       return true;
     }
 
     public void Clear()
     {
       Array.Clear(datas,0, size);
+      index_dict.Clear();
       size = 0;
     }
 
     public void Push(T data)
     {
-      size = size + 1;
+      size++;
       EnsureEnoughCapacity(size);
-      datas[size - 1] = data;
-      HeapifyUp();
+      this[size - 1] = data;
+      HeapifyUp(size - 1);
     }
 
     public T Pop()
@@ -72,16 +95,18 @@ namespace CsCat
       if (size == 0)
         throw new Exception("heapCat size is 0,can not pop!!!");
       T result = datas[0];
-      datas[0] = datas[size - 1];
-      datas[size - 1] = default(T);
-      size = size - 1;
-      HeapifyDown();
+      this[0] = datas[size - 1];
+      datas[size - 1] = default;
+      if (is_need_get_index)
+        index_dict.Remove(datas[size - 1]);
+      size--;
+      HeapifyDown(0);
       return result;
     }
 
-    void HeapifyUp()
+    void HeapifyUp(int start_index)
     {
-      int cur_index = size - 1;
+      int cur_index = start_index;
       while (HasParent(cur_index) && CompareWithRules(GetData(cur_index), GetParentData(cur_index)) < 0)
       {
         Swap(cur_index, GetParentIndex(cur_index));
@@ -95,9 +120,9 @@ namespace CsCat
     }
 
 
-    void HeapifyDown()
+    void HeapifyDown(int start_index)
     {
-      int cur_index = 0;
+      int cur_index = start_index;
       while (HasLeftChild(cur_index))//没有左子节点，必定就没有右子节点，所以判断是否有左子节点就可以了
       {
         int to_swap_child_index;
@@ -118,8 +143,8 @@ namespace CsCat
     private void Swap(int index1, int index2)
     {
       T tmp = datas[index1];
-      datas[index1] = datas[index2];
-      datas[index2] = tmp;
+      this[index1] = datas[index2];
+      this[index2] = tmp;
     }
 
     //确保有足够的容量

@@ -1,0 +1,19 @@
+---@class CompareUtil
+CompareUtil = {}
+
+---@generic T
+---@param compare_rule_func_list (fun(value1:T,value2:T):number)[]  @大小比较和c#的sort一样
+function CompareUtil.CompareWhitRules(data1,data2, compare_rule_func_list)
+  for _, compare_rule in ipairs(compare_rule_func_list) do
+    local result = compare_rule(data1, data2)
+    if result ~= 0 then
+      return result
+    end
+  end
+  return 0
+end
+
+
+
+
+

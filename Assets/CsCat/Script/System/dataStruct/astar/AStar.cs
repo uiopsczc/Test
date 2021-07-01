@@ -10,14 +10,14 @@ namespace CsCat
   {
     protected AStarType astarType;
     protected HeapCat<AStarNode> open_heap;// 开放列表
-    protected Dictionary<Vector2Int, AStarNode> closed_dict; // 关闭列表
+    protected Dictionary<Vector2Int, AStarNode> handled_dict= new Dictionary<Vector2Int, AStarNode>(); // 在关闭或者开放列表中
 
     protected int left;
     protected int right;
     protected int top;
     protected int bottom;
 
-    public AStar(AStarType astarType = default(AStarType))
+    public AStar(AStarType astarType = default)
     {
       SetAStarType(astarType);
     }
@@ -35,14 +35,15 @@ namespace CsCat
       this.top = Math.Max(bottom, top);
 
       int size = (right - left) * (top - bottom);
-      open_heap = new HeapCat<AStarNode>(size, AStarNode.Compare);
-      closed_dict = new Dictionary<Vector2Int, AStarNode>(size);
+      open_heap = new HeapCat<AStarNode>(size,true, AStarNode.Compare);
     }
 
     private void Reset()
     {
+      foreach (var node in handled_dict)
+        node.Despawn();
       open_heap.Clear();
-      closed_dict.Clear();
+      handled_dict.Clear();
     }
 
     protected List<Vector2Int> Solve(AStarNode node)
@@ -54,7 +55,6 @@ namespace CsCat
         result.Add(node.parent.pos);
         node = node.parent;
       }
-
       result.Reverse();
       return result;
     }
@@ -91,10 +91,20 @@ namespace CsCat
 
     }
 
-    protected void AddNodeToOpenHeap(AStarNode node)
+    protected void AddNodeToOpenList(AStarNode node)
     {
+      node.astarInListType = AStarNodeInListType.Open_List;
       open_heap.Push(node);
+      handled_dict[node.pos] = node;
     }
+    
+
+    protected void AddNodeToCloseList(AStarNode node)
+    {
+      node.astarInListType = AStarNodeInListType.Close_List;
+      handled_dict[node.pos] = node;
+    }
+    
 
     protected float GetG(Vector2Int p1, Vector2Int p2)
     {
@@ -154,7 +164,8 @@ namespace CsCat
       if (dx == 1 && dy == -1 && IsSkiped(DirectionConst.GetDirectionInfo(dx, dy), new_x, new_y))
         return;
 
-      neighbor_list.Add(new AStarNode(new_x, new_y));
+      var neighbor_node = PoolCatManagerUtil.Spawn<AStarNode>(null, astarNode => astarNode.Init(new_x, new_y));
+      neighbor_list.Add(neighbor_node);
     }
 
     protected bool IsSkiped(DirectionInfo directionInfo, int x, int y)
@@ -226,10 +237,11 @@ namespace CsCat
     {
       Reset();
       // 为起点赋初值
-      AStarNode startNode = new AStarNode(start_pos.x, start_pos.y);
+      AStarNode startNode =
+        PoolCatManagerUtil.Spawn<AStarNode>(null, astarNode => astarNode.Init(start_pos.x, start_pos.y));
       startNode.h = GetH(start_pos, goal_pos);
       startNode.f = startNode.h + startNode.g;
-      open_heap.Push(startNode);
+      AddNodeToOpenList(startNode);
 
       while (open_heap.Size > 0)
       {
@@ -238,59 +250,54 @@ namespace CsCat
 
         // 把目标格添加进了开启列表，这时候路径被找到
         if (check_node.pos.Equals(goal_pos))
-        {
-          closed_dict[check_node.pos] = check_node;
           return Solve(check_node);
-        }
-        else
-        {
-          // 获得当前附近的节点集合
-          List<AStarNode> neighbor_list = GetNeighborList(check_node.pos);
-          for (int i = 0; i < neighbor_list.Count; i++)
-          {
-            // 计算邻居节点的耗费值
-            AStarNode neighbor_node = (AStarNode)neighbor_list[i];
 
-            float neighbor_g = check_node.g + GetG(check_node.pos, neighbor_node.pos);
-            if (closed_dict.ContainsKey(neighbor_node.pos))
+        // 获得当前附近的节点集合
+        List<AStarNode> neighbor_list = GetNeighborList(check_node.pos);
+        foreach (var neighbor_node in neighbor_list)
+        {
+          float neighbor_g = check_node.g + GetG(check_node.pos, neighbor_node.pos);
+          if (handled_dict.ContainsKey(neighbor_node.pos))
+          {
+            var old_neighbor_node = handled_dict[neighbor_node.pos];
+            if (neighbor_g < old_neighbor_node.g)
             {
-              if (neighbor_g < neighbor_node.g)
+              switch (handled_dict[neighbor_node.pos].astarInListType)
               {
-                neighbor_node.parent = check_node;
-                neighbor_node.g = neighbor_g;
-                neighbor_node.h = GetH(neighbor_node.pos, goal_pos);
-                neighbor_node.f = neighbor_node.g + neighbor_node.h;
-                //更新neighbor_node的值
-                closed_dict.Remove(neighbor_node.pos);
-                AddNodeToOpenHeap(neighbor_node);
+                case AStarNodeInListType.Close_List:
+                  neighbor_node.parent = check_node;
+                  neighbor_node.g = neighbor_g;
+                  neighbor_node.h = GetH(neighbor_node.pos, goal_pos);
+                  neighbor_node.f = neighbor_node.g + neighbor_node.h;
+                  //更新neighbor_node的值
+                  AddNodeToOpenList(neighbor_node);
+                  old_neighbor_node.Despawn();
+                  break;
+                case AStarNodeInListType.Open_List:
+                  neighbor_node.parent = check_node;
+                  neighbor_node.g = neighbor_g;
+                  neighbor_node.h = GetH(neighbor_node.pos, goal_pos);
+                  neighbor_node.f = neighbor_node.g + neighbor_node.h;
+                  //更新neighbor_node的值
+                  open_heap.Remove(old_neighbor_node);
+                  AddNodeToOpenList(neighbor_node);
+                  old_neighbor_node.Despawn();
+                  break;
               }
-            }
-            else if (open_heap.Contains(neighbor_node))
-            {
-              if (neighbor_g < neighbor_node.g)
-              {
-                neighbor_node.parent = check_node;
-                neighbor_node.g = neighbor_g;
-                neighbor_node.h = GetH(neighbor_node.pos, goal_pos);
-                neighbor_node.f = neighbor_node.g + neighbor_node.h;
-                //更新neighbor_node的值
-                open_heap.Remove(neighbor_node);
-                AddNodeToOpenHeap(neighbor_node);
-              }
-            }
-            else
-            {
-              neighbor_node.parent = check_node;
-              neighbor_node.g = neighbor_g;
-              neighbor_node.h = GetH(neighbor_node.pos, goal_pos);
-              neighbor_node.f = neighbor_node.g + neighbor_node.h;
-              AddNodeToOpenHeap(neighbor_node); // 排序插入
             }
           }
-
-          // 把当前格切换到关闭列表
-          closed_dict[check_node.pos] = check_node;
+          else
+          {
+            neighbor_node.parent = check_node;
+            neighbor_node.g = neighbor_g;
+            neighbor_node.h = GetH(neighbor_node.pos, goal_pos);
+            neighbor_node.f = neighbor_node.g + neighbor_node.h;
+            AddNodeToOpenList(neighbor_node); // 排序插入
+          }
         }
+
+        // 把当前格切换到关闭列表
+        AddNodeToCloseList(check_node);
       }
 
       return null;

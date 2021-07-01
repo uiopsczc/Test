@@ -3,39 +3,41 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public class AStarNode
+  public class AStarNode : IDespawn
   {
     public Vector2Int pos;
     public AStarNode parent;
     public float g; //当前消耗值
     public float h; //预估还需的消耗值
     public float f; //当前消耗值 + 预估还需的消耗值
+    public AStarNodeInListType astarInListType;
 
 
-
-    public AStarNode(int x, int y)
+    public void Init(int x, int y)
     {
       this.pos = new Vector2Int(x, y);
     }
 
-
-
-    public override bool Equals(object obj)
+    public void OnDespawn()
     {
-      if (!(obj is AStarNode))
-        return false;
-      AStarNode other = obj as AStarNode;
-      return other.pos.Equals(this.pos);
+      pos = default;
+      parent = null;
+      g = 0;
+      h = 0;
+      f = 0;
+      astarInListType = default;
     }
 
-    public static int Compare(AStarNode data1,AStarNode data2)
+    public override int GetHashCode()
     {
-      if (data1.f - data2.f >= 0)
-        return 1;
-      else
-        return -1;
+      return pos.GetHashCode();
     }
+    
 
+    public static int Compare(AStarNode data1, AStarNode data2)
+    {
+      float value = data1.f - data2.f;
+      return value == 0 ? 0 : value < 0 ? -1 : 1;
+    }
   }
 }
-

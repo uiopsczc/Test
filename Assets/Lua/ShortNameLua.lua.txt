@@ -1,6 +1,7 @@
 ------------------------------luacat--------------------------------------------------
 require("luacat.class.Class")
 require("luacat.util.NilUtil")
+require("luacat.util.CompareUtil")
 require ("luacat.util.extension.table.tableExtension")
 require ("luacat.util.extension.table.tableArrayExtension")
 require ("luacat.util.extension.table.tableArraySortExtension")

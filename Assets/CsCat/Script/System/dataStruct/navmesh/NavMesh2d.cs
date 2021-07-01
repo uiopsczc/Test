@@ -25,7 +25,7 @@ namespace CsCat
     public NavMesh2d(List<Cell> cell_list)
     {
       this.cell_list = cell_list;
-      open_list = new HeapCat<Cell>(cell_list.Count,Cell.Compare);
+      open_list = new HeapCat<Cell>(cell_list.Count,true, Cell.Compare);
       closed_list = new List<Cell>();
     }
 

@@ -1,16 +1,3 @@
----@generic T
----@param compare_rule_func_list (fun(value1:T,value2:T):number)[]  @大小比较和c#的sort一样
-function table.CompareWhitRules(data1,data2, compare_rule_func_list)
-  for _, compare_rule in ipairs(compare_rule_func_list) do
-    local result = compare_rule(data1, data2)
-    if result ~= 0 then
-      return result
-    end
-  end
-  return 0
-end
-
-
 ----------------------------------------------------------------------
 -- 冒泡排序
 ---- O(n^2)
@@ -39,7 +26,7 @@ end
 ---@param compare_rule_func_list (fun(value1:T,value2:T):number)[]  @大小比较和c#的sort一样
 function table.BubbleSortWithCompareRules_Array(array, compare_rule_func_list)
   table.BubbleSort_Array(array, function(a, b)
-    return table.CompareWhitRules(a,b, compare_rule_func_list)<0
+    return CompareUtil.CompareWhitRules(a,b, compare_rule_func_list)<0
   end)
 end
 
@@ -112,7 +99,7 @@ end
 ---@param compare_rule_func_list (fun(value1:T,value2:T):number)[]  @大小比较和c#的sort一样
 function table.MergeSortWithCompareRules_Array(array, compare_rule_func_list)
   table.MergeSort_Array(array, function(a, b)
-    return table.CompareWhitRules(a,b, compare_rule_func_list)<0
+    return CompareUtil.CompareWhitRules(a,b, compare_rule_func_list)<0
   end)
 end
 
@@ -163,7 +150,7 @@ end
 ---@param compare_rule_func_list (fun(value1:T,value2:T):number)[]  @大小比较和c#的sort一样
 function table.QuickSortWithCompareRules_Array(array, compare_rule_func_list)
   table.QuickSort_Array(array, function(a, b)
-    return table.CompareWhitRules(a,b, compare_rule_func_list)<0
+    return CompareUtil.CompareWhitRules(a,b, compare_rule_func_list)<0
   end)
 end
 
