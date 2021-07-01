@@ -541,7 +541,23 @@ namespace CsCat
 
     public static void SortWithCompareRules<T>(this List<T> self, params Comparison<T>[] compare_rules)
     {
-      CompareUtil.SortListWithCompareRules(self, compare_rules);
+      SortUtil.MergeSortWithCompareRules(self, compare_rules);
+    }
+
+    public static int BinarySearchCat<T>(this IList<T> self, T target_value,
+      IndexOccurType indexOccurType = IndexOccurType.Any_Index,params Comparison<T>[] compare_rules)
+    {
+      return SortedListSerachUtil.BinarySearchCat(self, target_value, indexOccurType, compare_rules);
+    }
+
+    public static ListSorttedType GetListSortedType<T>(this IList<T> self, Comparison<T>[] compare_rules)
+    {
+      T first_value = self[0];
+      T last_value = self[self.Count-1];
+      if (CompareUtil.CompareWithRules(first_value, last_value, compare_rules) <= 0)
+        return ListSorttedType.Increace;
+      else
+        return ListSorttedType.Decrease;
     }
 
     #region 各种To ToXXX

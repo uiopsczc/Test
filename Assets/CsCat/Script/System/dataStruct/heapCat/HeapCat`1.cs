@@ -91,7 +91,7 @@ namespace CsCat
 
     private int CompareWithRules(T data1, T data2)
     {
-      return SortUtil.CompareWithRules(data1, data2, this.compare_rules);
+      return CompareUtil.CompareWithRules(data1, data2, this.compare_rules);
     }
 
 

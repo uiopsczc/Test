@@ -361,9 +361,9 @@ namespace CsCat
       }
     }
 
-    public static T[] SortWithCompareRules<T>(this T[] self, params Comparison<T>[] compare_rules)
+    public static void SortWithCompareRules<T>(this T[] self, params Comparison<T>[] compare_rules)
     {
-      return CompareUtil.SortArrayWithCompareRules(self, compare_rules);
+      SortUtil.QuickSortWithCompareRules(self, compare_rules);
     }
   }
 }

@@ -8,7 +8,19 @@ namespace CsCat
 
     void Start()
     {
-////      LogCat.warn("888888", 1 << 2);
+      List<char> list = new List<char>();
+      list.Add('a');
+      list.Add('b');
+      list.Add('e');
+      list.Add('e');
+      list.Add('e');
+      list.Add('f');
+
+//      list.Reverse();
+
+      int index = list.BinarySearchCat('e',IndexOccurType.Last_Index,  (a, b) => a - b);
+      LogCat.log(list);
+      LogCat.log(index);
     }
 
   }
