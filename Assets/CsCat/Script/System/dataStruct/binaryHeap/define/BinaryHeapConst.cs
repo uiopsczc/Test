@@ -1,6 +1,6 @@
 namespace CsCat
 {
-  public class HeapCatConst
+  public class BinaryHeapConst
   {
     public const int Default_Capacity = 4;
   }

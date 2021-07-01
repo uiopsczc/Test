@@ -9,7 +9,7 @@ namespace CsCat
   public class AStar
   {
     protected AStarType astarType;
-    protected HeapCat<AStarNode> open_heap;// 开放列表
+    protected BinaryHeap<AStarNode> open_heap;// 开放列表
     protected Dictionary<Vector2Int, AStarNode> handled_dict= new Dictionary<Vector2Int, AStarNode>(); // 在关闭或者开放列表中
 
     protected int left;
@@ -35,7 +35,7 @@ namespace CsCat
       this.top = Math.Max(bottom, top);
 
       int size = (right - left) * (top - bottom);
-      open_heap = new HeapCat<AStarNode>(size,true, AStarNode.Compare);
+      open_heap = new BinaryHeap<AStarNode>(size,true, AStarNode.Compare);
     }
 
     private void Reset()

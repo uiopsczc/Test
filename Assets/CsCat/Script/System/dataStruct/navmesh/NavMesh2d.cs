@@ -15,7 +15,7 @@ namespace CsCat
     private static int path_session_id = 0;
 
     private List<Cell> cell_list;
-    private HeapCat<Cell> open_list;
+    private BinaryHeap<Cell> open_list;
     private List<Cell> closed_list;
 
     #endregion
@@ -25,7 +25,7 @@ namespace CsCat
     public NavMesh2d(List<Cell> cell_list)
     {
       this.cell_list = cell_list;
-      open_list = new HeapCat<Cell>(cell_list.Count,true, Cell.Compare);
+      open_list = new BinaryHeap<Cell>(cell_list.Count,true, Cell.Compare);
       closed_list = new List<Cell>();
     }
 

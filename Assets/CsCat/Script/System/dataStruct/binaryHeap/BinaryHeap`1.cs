@@ -9,40 +9,46 @@ namespace CsCat
   ///   https://www.youtube.com/watch?v=t0Cq6tVNRBA&t=107s
   ///   deletable heap: http://www.mathcs.emory.edu/~cheung/Courses/171/Syllabus/9-BinTree/heap-delete.html
   /// </summary>
-  public class HeapCat<T>
+  public class BinaryHeap<T>
   {
     private Comparison<T>[] compare_rules;
     private int capacity;
     private T[] datas;
     private int size;
-    private bool is_need_get_index;
+    private bool is_can_remove_specific_data;
     private Dictionary<T, int> index_dict = new Dictionary<T, int>();
 
     public int Size =>this.size;
-
-    public  T this[int index]
+    protected T this[int index]
     {
-      get => this.datas[index];
       set
       {
         this.datas[index] = value;
-        if (is_need_get_index)
+        if (is_can_remove_specific_data)
           this.index_dict[value] = index;
       }
     }
     
 
     //默认comparison返回-1，则排在上面，即默认是按c#的最小排在前面
-    public HeapCat(int? capacity,bool is_need_get_index,params Comparison<T>[] compare_rules)
+    //是否能删除特定位置的数据
+    public BinaryHeap(int? capacity,bool is_can_remove_specific_data,params Comparison<T>[] compare_rules)
     {
       this.compare_rules = compare_rules;
-      this.capacity = capacity.GetValueOrDefault(HeapCatConst.Default_Capacity);
-      this.is_need_get_index = is_need_get_index;
+      this.capacity = capacity.GetValueOrDefault(BinaryHeapConst.Default_Capacity);
+      this.is_can_remove_specific_data = is_can_remove_specific_data;
       datas = new T[this.capacity];
     }
-    
-    
 
+    public void Clear()
+    {
+      Array.Clear(datas, 0, size);
+      index_dict.Clear();
+      size = 0;
+    }
+
+
+    //需要is_need_get_index为true才能生效
     public int GetIndex(T data)
     {
       if(index_dict.ContainsKey(data))
@@ -65,7 +71,7 @@ namespace CsCat
         return false;
       this[to_remove_index] = datas[size - 1];
       datas[size - 1] = default;
-      if (is_need_get_index)
+      if (is_can_remove_specific_data)
         index_dict.Remove(datas[size - 1]);
       size--;
       if (HasParent(to_remove_index)&& CompareWithRules(datas[to_remove_index],GetParentData(to_remove_index))<0)
@@ -75,11 +81,9 @@ namespace CsCat
       return true;
     }
 
-    public void Clear()
+    private int CompareWithRules(T data1, T data2)
     {
-      Array.Clear(datas,0, size);
-      index_dict.Clear();
-      size = 0;
+      return CompareUtil.CompareWithRules(data1, data2, this.compare_rules);
     }
 
     public void Push(T data)
@@ -97,7 +101,7 @@ namespace CsCat
       T result = datas[0];
       this[0] = datas[size - 1];
       datas[size - 1] = default;
-      if (is_need_get_index)
+      if (is_can_remove_specific_data)
         index_dict.Remove(datas[size - 1]);
       size--;
       HeapifyDown(0);
@@ -113,12 +117,7 @@ namespace CsCat
         cur_index = GetParentIndex(cur_index);
       }
     }
-
-    private int CompareWithRules(T data1, T data2)
-    {
-      return CompareUtil.CompareWithRules(data1, data2, this.compare_rules);
-    }
-
+    
 
     void HeapifyDown(int start_index)
     {
