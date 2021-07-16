@@ -17,7 +17,7 @@ namespace CsCat
 
     public PhysicsManager physicsManager;
     public CommandManager commandManager = new CommandManager();
-    public DefaultInputManager defaultInputManager;
+    public GameHotKeyManager gameHotKeyManager;
 
     public FrameCallbackMananger frameCallbackMananger = new FrameCallbackMananger();
     public GuidManager guidManager;
@@ -105,7 +105,7 @@ namespace CsCat
       cfgManager = AddChild<CfgManager>("CfgManager");
       audioManager = AddChild<AudioManager>("AudioManager");
       physicsManager = AddChild<PhysicsManager>("physicsManager");
-      defaultInputManager = AddChild<DefaultInputManager>("DefaultInputManager");
+      gameHotKeyManager = AddChild<GameHotKeyManager>("DefaultInputManager");
       uiManager = AddChildWithoutInit<UIManager>("UIManager");
       uiManager.Init();
       uiManager.PostInit();

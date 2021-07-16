@@ -1,16 +1,16 @@
----@class DefaultInputManager:TickObject
-local DefaultInputManager = Class("DefaultInputManager",TickObject)
+---@class GameShortcutKeyManager:TickObject
+local GameShortcutKeyManager = Class("DefaultInputManager",TickObject)
 
-function DefaultInputManager:Init()
-  DefaultInputManager.super.Init(self)
+function GameShortcutKeyManager:Init()
+  GameShortcutKeyManager.super.Init(self)
   --global.client.buffManager = global.client:AddChild(nil, BuffManager)
   --local hfsm = require("luacat.dataStruct.hfsm.test.CoroutineHFSM.TestCoroutineHFSM").New(self)
   --self.hfsmComponent = self:AddComponent(nil,HFSMComponent,  hfsm)
   --self.hfsmComponent.hfsm:Start()
 end
 
-function DefaultInputManager:__Update(deltaTime, unscaledDeltaTime)
-  DefaultInputManager.super.__Update(self, deltaTime, unscaledDeltaTime)
+function GameShortcutKeyManager:__Update(deltaTime, unscaledDeltaTime)
+  GameShortcutKeyManager.super.__Update(self, deltaTime, unscaledDeltaTime)
   if Input.GetKeyDown("f1") then
   end
   if Input.GetKeyDown("f2") then
@@ -135,9 +135,10 @@ function DefaultInputManager:__Update(deltaTime, unscaledDeltaTime)
     --Profiler:Start()
   end
   if Input.GetKeyDown("f12") then
-    for _,value in ilist(self.list) do
-    log(value)
-    end
+    log("zzzzzzzzzzzzzzzzzzzzzzzzz")
+    --for _,value in ilist(self.list) do
+    --log(value)
+    --end
     --Profiler:Stop()
     --PoolCatManagerUtil.DespawnGameObject(self.d)
     --self.hfsmComponent.hfsm:Test5()
@@ -155,4 +156,4 @@ end
 
 
 
-return DefaultInputManager
+return GameShortcutKeyManager

@@ -30,7 +30,7 @@ end
 function Client:Start()
   Client.super.Start(self)
 
-  self.defaultInputManager = self:AddChild("DefaultInputManager", require("luacat.defaultInputManager.DefaultInputManager"))
+  self.gameHotKeyManager = self:AddChild("GameHotKeyManager", require("luacat.gameHotKeyManager.GameHotKeyManager"))
   ---@type AudioManager
   self.audioManager = self:AddChild("AudioManager", require("luacat.audio.AudioManager"))
   ---@type UIManager
@@ -199,8 +199,8 @@ function Client:OnApplicationQuit()
 end
 
 function Client:OnGUI()
-  if self.defaultInputManager and self.defaultInputManager.GUIAction then
-    self.defaultInputManager.GUIAction()
+  if self.gameHotKeyManager and self.gameHotKeyManager.GUIAction then
+    self.gameHotKeyManager.GUIAction()
   end
 end
 

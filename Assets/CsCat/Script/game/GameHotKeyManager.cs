@@ -1,13 +1,10 @@
 using System;
 using System.Collections.Generic;
-using System.Reflection;
-using DG.Tweening;
-using UnityEditor;
 using UnityEngine;
 
 namespace CsCat
 {
-  public class DefaultInputManager : TickObject
+  public class GameHotKeyManager : TickObject
   {
     public Action gui_callback;
 
@@ -48,7 +45,8 @@ namespace CsCat
     {
       if (Input.GetKeyDown("f1"))
       {
-        Client.instance.Goto<StageTest>(0.5f);
+        LogCat.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
+//        Client.instance.Goto<StageTest>(0.5f);
       }
 
       if (Input.GetKeyDown("f2"))
