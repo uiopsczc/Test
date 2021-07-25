@@ -63,9 +63,20 @@ namespace CsCat
     /// <param name="self"></param>
     /// <param name="types"></param>
     /// <returns></returns>
-    public static bool IsContainComponents(this GameObject self, params Type[] types)
+    public static bool IsHasComponents(this GameObject self, params Type[] types)
     {
-      return GameObjectUtil.IsContainComponents(self, types);
+      return GameObjectUtil.IsHasComponents(self, types);
+    }
+
+
+    public static bool IsHasComponent(this GameObject self, Type type)
+    {
+      return self.GetComponent(type) != null;
+    }
+
+    public static bool IsHasComponent<T>(this GameObject self) where T:Component
+    {
+      return IsHasComponent(self, typeof(T));
     }
 
     /// <summary>

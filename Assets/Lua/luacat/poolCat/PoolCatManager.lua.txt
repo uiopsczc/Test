@@ -1,7 +1,4 @@
 local PoolCat = require("luacat.poolCat.PoolCat")
-local UnityObjectPoolCat = require("luacat.poolCat.UnityObjectPoolCat")
-local GameObjectPoolCat = require("luacat.poolCat.GameObjectPoolCat")
-local CustomPoolCat = require("luacat.poolCat.CustomPoolCat")
 
 ---@class PoolCatManager:Class
 ---@param pool_dict table<string,PoolCat>

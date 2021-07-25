@@ -17,5 +17,7 @@ StringUtilCat = CS.CsCat.StringUtilCat
 
 -- UnityEngine
 GameObject = CS.UnityEngine.GameObject
+Transform = CS.UnityEngine.Transform
+RectTransform = CS.UnityEngine.RectTransform
 Input = CS.UnityEngine.Input
 AudioSource = CS.UnityEngine.AudioSource

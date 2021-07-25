@@ -50,8 +50,5 @@ namespace CsCat
       target.localRotation = source.localRotation;
       target.localScale = source.localScale;
     }
-
-
-
   }
 }

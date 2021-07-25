@@ -1,0 +1,38 @@
+---@class NormalGameObjectPoolCat:GameObjectPoolCat
+local NormalGameObjectPoolCat = Class("NormalGameObjectPoolCat",GameObjectPoolCat)
+
+---@param pool_name string
+---@param prefab CS.UnityEngine.Object
+---@param category string
+function NormalGameObjectPoolCat:Init(pool_name, prefab, category)
+  NormalGameObjectPoolCat.super.Init(self, pool_name, prefab,category)
+end
+
+---@param prefab CS.UnityEngine.Object
+---@param category string
+function NormalGameObjectPoolCat:InitParent(prefab, category)
+  NormalGameObjectPoolCat.super.InitParent(self, prefab, category)
+  local root_gameObject = CS.CsCat.GameObjectUtil.GetOrNewGameObject("Pools",nil)
+  ---@type CS.UnityEngine.Transform
+  self.root_transform = root_gameObject.transform
+  self.category_transform = self.root_transform:GetOrNewGameObject(category).transform
+end
+
+function NormalGameObjectPoolCat:Despawn(obj)
+  ---@type CS.UnityEngine.GameObject
+  local clone = obj
+  --local component_list = table.ConvertCSArray2LuaTable(clone:GetComponents(typeof(CS.UnityEngine.Component)))
+  --for _, clone_component in ipairs(component_list) do
+  --  if IsISpawnable(clone_component) then
+  --    clone_component:OnDespawn()
+  --  end
+  --end
+  clone:SetActive(false)
+  clone.transform:SetParent(self.category_transform)
+  clone.transform:CopyFrom(self.prefab.transform)
+  CacheUtil.RemoveCache(clone)
+  NormalGameObjectPoolCat.super.Despawn(self, obj)
+end
+
+
+return NormalGameObjectPoolCat

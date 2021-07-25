@@ -66,7 +66,7 @@ namespace CsCat
     /// <param name="gameObject"></param>
     /// <param name="types"></param>
     /// <returns></returns>
-    public static bool IsContainComponents(GameObject gameObject, params Type[] types)
+    public static bool IsHasComponents(GameObject gameObject, params Type[] types)
     {
       foreach (var type in types)
         if (!gameObject.GetComponent(type))

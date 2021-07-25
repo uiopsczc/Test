@@ -95,11 +95,16 @@ end
 -- GameObjectPoolCat相关
 ----------------------------------------------------------------------
 ---@param pool_name string
----@param prefab CS.UnityEngine.Object
+---@param prefab CS.UnityEngine.GameObject
 ---@param category string
 ---@return GameObjectPoolCat
 function PoolCatManagerUtil.AddGameObjectPool(pool_name, prefab,category)
-  local pool = GameObjectPoolCat.New(pool_name, prefab,category)
+  local pool
+  if not prefab:IsHasComponent(typeof(RectTransform)) then
+    pool = NormalGameObjectPoolCat.New(pool_name, prefab,category)
+  else
+    pool = UIGameObjectPoolCat.New(pool_name, prefab,category)
+  end
   PoolCatManagerUtil.AddPool(pool_name, pool)
   return pool
 end
@@ -113,7 +118,10 @@ end
 ---@param pool_name string
 ---@return GameObjectPoolCat
 function PoolCatManagerUtil.GetOrAddGameObjectPool(pool_name, prefab,category)
-  return PoolCatManagerUtil.GetOrAddPool(GameObjectPoolCat, pool_name, prefab,category)
+  if not PoolCatManagerUtil.IsContainsPool(pool_name) then
+    PoolCatManagerUtil.AddGameObjectPool(pool_name, prefab,category)
+  end
+  return PoolCatManagerUtil.GetPool(pool_name)
 end
 
 
