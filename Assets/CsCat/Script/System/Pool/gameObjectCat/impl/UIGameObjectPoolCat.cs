@@ -4,17 +4,10 @@ namespace CsCat
 {
   public class UIGameObjectPoolCat : GameObjectPoolCat
   {
-    private RectTransform _prefab_rectTransform;
+    private Cache cache = new Cache();
 
-    private RectTransform prefab_rectTransform
-    {
-      get
-      {
-        if (_prefab_rectTransform == null)
-          _prefab_rectTransform = (prefab as GameObject).GetComponent<RectTransform>();
-        return _prefab_rectTransform;
-      }
-    }
+	  private RectTransform prefab_rectTransform => this.cache.GetOrAddDefault("prefab_rectTransform",
+		  ()=>GetPrefab<GameObject>().GetComponent<RectTransform>());
 
     public UIGameObjectPoolCat(string pool_name, GameObject prefab, string category = null) : base(pool_name, prefab,
       category)
