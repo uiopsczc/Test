@@ -61,8 +61,7 @@ namespace CsCat
             if (list == null)
             {
               list = BorderFindPath(astarMapPath, point_b, point_a, can_pass_obstacle_types, can_pass_terrain_types);
-              if (list != null)
-                list.Reverse();
+              list?.Reverse();
             }
           }
           else

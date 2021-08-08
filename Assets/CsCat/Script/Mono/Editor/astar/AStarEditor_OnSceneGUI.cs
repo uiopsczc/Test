@@ -40,6 +40,7 @@ namespace CsCat
         selected_terrainType.value);
       DrawInfo();
       DrawMainToolbar();
+      DrawTips();
       HandleEvent();
 
       SceneView.RepaintAll();
@@ -54,29 +55,29 @@ namespace CsCat
       float distance;
       if (plane.Raycast(ray, out distance))
       {
-        Rect cell_rect = new Rect(0, 0, target.cell_size.x, target.cell_size.y);
+        Rect cell_rect = new Rect(0, 0, target.astarData.cell_size.x, target.astarData.cell_size.y);
         cell_rect.position = target.transform.InverseTransformPoint(ray.GetPoint(distance));
 
         Vector2 cell_pos = cell_rect.position;
         if (cell_pos.x < 0)
-          cell_pos.x -= target.cell_size.x; //因为负数是从-1开始的，正数是从0开始的
+          cell_pos.x -= target.astarData.cell_size.x; //因为负数是从-1开始的，正数是从0开始的
         if (cell_pos.y < 0)
-          cell_pos.y -= target.cell_size.y; //因为负数是从-1开始的，正数是从0开始的
-        cell_pos.x -= cell_pos.x % target.cell_size.x; //取整
-        cell_pos.y -= cell_pos.y % target.cell_size.y; //取整
+          cell_pos.y -= target.astarData.cell_size.y; //因为负数是从-1开始的，正数是从0开始的
+        cell_pos.x -= cell_pos.x % target.astarData.cell_size.x; //取整
+        cell_pos.y -= cell_pos.y % target.astarData.cell_size.y; //取整
         cell_rect.position = cell_pos;
-        local_brush_position = (Vector2)target.transform.InverseTransformPoint(ray.GetPoint(distance));
+        local_brush_position = target.transform.InverseTransformPoint(ray.GetPoint(distance));
       }
     }
 
     void DrawBounds()
     {
-      for (int grid_y = target.min_grid_y; grid_y <= target.max_grid_y; grid_y++)
+      for (int grid_y = target.astarData.min_grid_y; grid_y <= target.astarData.max_grid_y; grid_y++)
       {
-        for (int grid_x = target.min_grid_x; grid_x <= target.max_grid_x; grid_x++)
+        for (int grid_x = target.astarData.min_grid_x; grid_x <= target.astarData.max_grid_x; grid_x++)
         {
-          Rect cell_rect = new Rect(0, 0, target.cell_size.x, target.cell_size.y);
-          cell_rect.position = target.GetPosition(grid_x, grid_y);
+          Rect cell_rect = new Rect(0, 0, target.astarData.cell_size.x, target.astarData.cell_size.y);
+          cell_rect.position = target.astarData.GetPosition(grid_x, grid_y);
           DrawUtil.HandlesDrawSolidRectangleWithOutline(cell_rect, default(Color), Color.white, target.transform);
         }
       }
@@ -84,20 +85,18 @@ namespace CsCat
 
     void DrawDataDict()
     {
-      for (int grid_y = target.min_grid_y; grid_y <= target.max_grid_y; grid_y++)
+      for (int grid_y = target.astarData.min_grid_y; grid_y <= target.astarData.max_grid_y; grid_y++)
       {
-        for (int grid_x = target.min_grid_x; grid_x <= target.max_grid_x; grid_x++)
+        for (int grid_x = target.astarData.min_grid_x; grid_x <= target.astarData.max_grid_x; grid_x++)
         {
-          int value = target.GetDataValue(grid_x, grid_y);
-          if (value == AStarMonoBehaviourConst.Default_Data_Value)
-            continue;
+          int value = target.astarData.GetDataValue(grid_x, grid_y);
           int obstacleType = AStarUtil.GetObstacleType(value);
           int terrainType = AStarUtil.GetTerrainType(value);
           //draw obstacleType
-          if (this.is_see_obstacleType)
+          if (this.is_see_obstacleType && obstacleType == AStarConst.Default_Obstacle_Type_Value)
             AStarEditorUtil.DrawdObstacleTypeRect(target, grid_x, grid_y, obstacleType);
           // draw terrainType
-          if (this.is_see_terrainType)
+          if (this.is_see_terrainType && obstacleType == AStarConst.Default_Terrain_Type_Value)
             AStarEditorUtil.DrawdTerrainTypeRect(target, grid_x, grid_y, terrainType);
         }
       }
@@ -111,8 +110,8 @@ namespace CsCat
       int pre_mouse_grid_y = mouse_grid_y;
       if (e.isMouse)
       {
-        mouse_grid_x = target.GetGridX(local_brush_position);
-        mouse_grid_y = target.GetGridY(local_brush_position);
+        mouse_grid_x = target.astarData.GetPointXWithOffset(local_brush_position);
+        mouse_grid_y = target.astarData.GetPointYWithOffset(local_brush_position);
       }
 
       is_mouse_grid_changed = pre_mouse_grid_x != mouse_grid_x || pre_mouse_grid_y != mouse_grid_y;
@@ -169,6 +168,24 @@ namespace CsCat
         obstacleType_guiContent_list.ToArray(), new GUIStyle("Popup"), GUILayout.Width(80));
     }
 
+    void DrawTips()
+    {
+      GUIContent infoGUIContent = "按住Ctrl进行绘制".ToGUIContent();
+      Rect infoRect = new Rect(new Vector2(230, 6), GUIStyleConst.Toolbar_Box_Style.CalcSize(infoGUIContent));
+      using (new HandlesBeginGUIScope())
+      {
+        using (new GUILayoutBeginAreaScope(infoRect))
+        {
+          DrawUtil.HandlesDrawSolidRectangleWithOutline(new Rect(Vector2.zero, infoRect.size),
+            new Color(1, 1, 0, 1f), Color.black);
+          using (new GUIColorScope(Color.black))
+          {
+            GUILayout.Label(infoGUIContent, GUIStyleConst.Toolbar_Box_Style);
+          }
+        }
+      }
+    }
+
     void DrawTerrainTypeTool()
     {
       List<GUIContent> terrainType_guiContent_list = new List<GUIContent>();
@@ -189,11 +206,11 @@ namespace CsCat
 
     void HandleEvent()
     {
-      if (!e.alt && (e.type == EventType.MouseDown || e.type == EventType.MouseDrag) && e.button == 0) //press
+      if (e.control && (e.type == EventType.MouseDown || e.type == EventType.MouseDrag) && e.button == 0) //press
       {
-        if (!target.IsInRange(mouse_grid_x, mouse_grid_y) && !target.is_enable_edit_outside_bounds)
+        if (!target.astarData.IsInRange(mouse_grid_x, mouse_grid_y) && !target.astarData.is_enable_edit_outside_bounds)
           return;
-        int org_value = target.GetDataValue(mouse_grid_x, mouse_grid_y);
+        int org_value = target.astarData.GetDataValue(mouse_grid_x, mouse_grid_y);
         int obstacleType = AStarUtil.GetObstacleType(org_value);
         int terrainType = AStarUtil.GetTerrainType(org_value);
         if (is_see_obstacleType)

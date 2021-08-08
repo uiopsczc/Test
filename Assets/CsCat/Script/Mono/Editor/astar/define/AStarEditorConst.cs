@@ -8,11 +8,11 @@ namespace CsCat
   {
     public static List<AStarObstacleType> AStarObstacleType_List = new List<AStarObstacleType>()
     {
-      new AStarObstacleType("正常道路", 1, default(Color)),
-      new AStarObstacleType("遮挡", 2, new Color(0, 0, 1, 0.5f)),
-      new AStarObstacleType("低障碍", 3, new Color(1, 1, 0, 0.5f)),
-      new AStarObstacleType("高障碍", 4, new Color(0, 1, 1, 0.5f)),
-      new AStarObstacleType("Invalid", 7, new Color(0, 0, 0, 0.5f)),
+      new AStarObstacleType("正常道路", 0, default(Color)),
+      new AStarObstacleType("遮挡", 1, new Color(0, 0, 1, 0.5f)),
+      new AStarObstacleType("低障碍", 2, new Color(1, 1, 0, 0.5f)),
+      new AStarObstacleType("高障碍", 3, new Color(0, 1, 1, 0.5f)),
+      new AStarObstacleType("Invalid", 4, new Color(0, 0, 0, 0.5f)),
     };
 
     private static Dictionary<int, AStarObstacleType> _AStarObstacleType_Dict;

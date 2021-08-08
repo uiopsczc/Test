@@ -4,6 +4,7 @@ using UnityEngine;
 
 namespace CsCat
 {
+  //里面的point都是没有grid_offset的，以0开始
   //坐标是x增加是向右，y增加是向上（与unity的坐标系一致），数组用ToLeftBottomBaseArrays转换
   public class AStarMapPath
   {
@@ -33,7 +34,7 @@ namespace CsCat
       int[][] grids = null;
       grids = grids
         .InitArrays(max_grid_y - min_grid_y + 1, max_grid_x - min_grid_x + 1,
-          AStarMonoBehaviourConst.Default_Data_Value).ToLeftBottomBaseArrays();
+          AStarConst.Default_Data_Value).ToLeftBottomBaseArrays();
       grid_offset_x = min_grid_x; //用于astarBehaviour的非0的偏移
       grid_offset_y = min_grid_y; //用于astarBehaviour的非0的偏移
 
@@ -54,14 +55,36 @@ namespace CsCat
       this.project_grids = grids.InitArrays(Height(), Width());
     }
 
+    public Vector2Int GetPointWithoutOffset(Vector2Int point_with_offset)
+    {
+      return new Vector2Int(GetPointXWithoutOffset(point_with_offset.x), GetPointYWithoutOffset(point_with_offset.y));
+    }
+
+    public int GetPointXWithoutOffset(int x_with_offset)
+    {
+      return x_with_offset - grid_offset_x;
+    }
+
+    public int GetPointYWithoutOffset(int y_with_offset)
+    {
+      return y_with_offset - grid_offset_y;
+    }
+
+    public Vector2Int GetOffset(int y_with_offset)
+    {
+      return new Vector2Int(grid_offset_x, grid_offset_y);
+    }
+
+    
+
     public int Width()
     {
-      return grids == null ? 0 : grids[0].Length;
+      return grids?[0].Length ?? 0;
     }
 
     public int Height()
     {
-      return grids == null ? 0 : grids.Length;
+      return grids?.Length ?? 0;
     }
 
     public int[][] GetFinalGrids()

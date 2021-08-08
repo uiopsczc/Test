@@ -5,11 +5,7 @@ namespace CsCat
   [CustomEditor(typeof(AStarMonoBehaviour))]
   public partial class AStarEditor : Editor
   {
-    private AStarMonoBehaviour target
-    {
-      get { return base.target as AStarMonoBehaviour; }
-    }
-
+    private AStarMonoBehaviour target => base.target as AStarMonoBehaviour;
     private Tool org_editor_tool_selected;
     private AStarBrush brush = new AStarBrush();
 

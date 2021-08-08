@@ -2,9 +2,8 @@ namespace CsCat
 {
   public class AStarConst
   {
-    public static float Lineal_Cost = 1; //直线单元耗费值
-    public static float Diagonal_Cost = 1.4f; //对角线单元耗费值
-
-
+    public static int Default_Terrain_Type_Value = 0;
+    public static int Default_Obstacle_Type_Value = 0;
+    public static int Default_Data_Value = AStarUtil.ToGridType(0, Default_Terrain_Type_Value, Default_Obstacle_Type_Value);
   }
 }

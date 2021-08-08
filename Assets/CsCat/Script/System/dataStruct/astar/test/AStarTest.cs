@@ -30,7 +30,7 @@ namespace CsCat
 
     public static Action Test_Find()
     {
-      AStarImpl astar = new AStarImpl(new AStarMapPath(grids), default(AStarType),
+      AStarImpl astar = new AStarImpl(new AStarMapPath(grids), default(AStarHType),
         AStarMapPathConst.Critter_Can_Pass_Obstacle_Types,
         AStarMapPathConst.User_Can_Pass_Terrain_Types);
       List<Vector2Int> list = astar.Find(1, 1, 3, 4);

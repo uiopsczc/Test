@@ -200,7 +200,7 @@ namespace CsCat
 
     private bool HasRightChild(int index)
     {
-      return GetLeftChildIndex(index) < size;
+      return GetRightChildIndex(index) < size;
     }
 
     private bool HasParent(int index)

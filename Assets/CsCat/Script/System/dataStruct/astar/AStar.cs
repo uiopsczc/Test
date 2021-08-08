@@ -8,24 +8,16 @@ namespace CsCat
   //坐标是x增加是向右，y增加是向上（与unity的坐标系一致），数组用ToLeftBottomBaseArrays转换
   public class AStar
   {
-    protected AStarType astarType;
     protected BinaryHeap<AStarNode> open_heap;// 开放列表
     protected Dictionary<Vector2Int, AStarNode> handled_dict= new Dictionary<Vector2Int, AStarNode>(); // 在关闭或者开放列表中
+    protected List<AStarNode> neighbor_list = new List<AStarNode>();
+    protected List<Vector2Int> neighbor_offset_list = new List<Vector2Int>();
 
     protected int left;
     protected int right;
     protected int top;
     protected int bottom;
-
-    public AStar(AStarType astarType = default)
-    {
-      SetAStarType(astarType);
-    }
-
-    public void SetAStarType(AStarType astarType)
-    {
-      this.astarType = astarType;
-    }
+    
 
     public virtual void SetRange(int left, int bottom, int right, int top)
     {
@@ -59,36 +51,25 @@ namespace CsCat
       return result;
     }
 
-    protected List<AStarNode> GetNeighborList(Vector2Int base_point)
+    protected void SetNeighborList(Vector2Int base_point)
     {
-      List<AStarNode> neighbor_list = new List<AStarNode>(8);
+      this.neighbor_list.Clear();
+      neighbor_offset_list.Clear();
+      SetNeighborOffsetList();
+      foreach (var neighbor_offset in neighbor_offset_list)
+        AddNeighbor(this.neighbor_list, base_point, neighbor_offset.x, neighbor_offset.y);
+    }
 
-      // 增加左上角邻居节点
-      AddNeighbor(neighbor_list, base_point, -1, 1);
-
-      // 增加左侧邻居节点
-      AddNeighbor(neighbor_list, base_point, -1, 0);
-
-      // 增加左下角的邻居节点
-      AddNeighbor(neighbor_list, base_point, -1, -1);
-
-      // 增加上方邻居节点
-      AddNeighbor(neighbor_list, base_point, 0, 1);
-
-      // 增加下方邻居节点
-      AddNeighbor(neighbor_list, base_point, 0, -1);
-
-      // 增加右上角邻居节点
-      AddNeighbor(neighbor_list, base_point, 1, 1);
-
-      // 增加右侧邻居节点
-      AddNeighbor(neighbor_list, base_point, 1, 0);
-
-      // 增加右下角邻居节点
-      AddNeighbor(neighbor_list, base_point, 1, -1);
-
-      return neighbor_list;
-
+    protected virtual void SetNeighborOffsetList()
+    {
+      neighbor_offset_list.Add(new Vector2Int(0, 1)); //上方邻居节点
+      neighbor_offset_list.Add(new Vector2Int(1, 1)); //右上角邻居节点
+      neighbor_offset_list.Add(new Vector2Int(1, 0)); //右侧邻居节点
+      neighbor_offset_list.Add(new Vector2Int(1, -1)); //右下角邻居节点
+      neighbor_offset_list.Add(new Vector2Int(0, -1)); //下方邻居节点
+      neighbor_offset_list.Add(new Vector2Int(-1, -1)); //左下角的邻居节点
+      neighbor_offset_list.Add(new Vector2Int(-1, 0)); //左侧邻居节点
+      neighbor_offset_list.Add(new Vector2Int(-1, 1)); //左上角邻居节点
     }
 
     protected void AddNodeToOpenList(AStarNode node)
@@ -106,32 +87,14 @@ namespace CsCat
     }
     
 
-    protected float GetG(Vector2Int p1, Vector2Int p2)
+    protected virtual float GetG(Vector2Int p1, Vector2Int p2)
     {
-      int dx = Math.Abs(p1.x - p2.x);
-      int dy = Math.Abs(p1.y - p2.y);
-
-      if (astarType == AStarType.Best)
-      {
-        if (dx == 1 && dy == 1)
-          return (dx + dy) * AStarConst.Diagonal_Cost + AStarConst.Lineal_Cost;
-        else
-          return (dx + dy) * AStarConst.Lineal_Cost + AStarConst.Lineal_Cost;
-      }
-      else // AStarType.Fast
-      {
-        if (dx == 1 && dy == 1)
-          return AStarConst.Diagonal_Cost;
-        else
-          return AStarConst.Lineal_Cost;
-      }
+      return 0;
     }
 
-    protected float GetH(Vector2Int p, Vector2Int goal)
+    protected virtual float GetH(Vector2Int p, Vector2Int goal)
     {
-      int dx = Math.Abs(p.x - goal.x);
-      int dy = Math.Abs(p.y - goal.y);
-      return (dx + dy) * AStarConst.Lineal_Cost;
+      return 0;
     }
 
     protected void AddNeighbor(List<AStarNode> neighbor_list, Vector2Int base_point, int dx, int dy)
@@ -233,13 +196,13 @@ namespace CsCat
       return Find(new Vector2Int(start_x, start_y), new Vector2Int(goal_x, goal_y));
     }
 
-    public List<Vector2Int> Find(Vector2Int start_pos, Vector2Int goal_pos)
+    public List<Vector2Int> Find(Vector2Int start_point, Vector2Int goal_point)
     {
       Reset();
       // 为起点赋初值
       AStarNode startNode =
-        PoolCatManagerUtil.Spawn<AStarNode>(null, astarNode => astarNode.Init(start_pos.x, start_pos.y));
-      startNode.h = GetH(start_pos, goal_pos);
+        PoolCatManagerUtil.Spawn<AStarNode>(null, astarNode => astarNode.Init(start_point.x, start_point.y));
+      startNode.h = GetH(start_point, goal_point);
       startNode.f = startNode.h + startNode.g;
       AddNodeToOpenList(startNode);
 
@@ -249,11 +212,11 @@ namespace CsCat
         AStarNode check_node = open_heap.Pop();
 
         // 把目标格添加进了开启列表，这时候路径被找到
-        if (check_node.pos.Equals(goal_pos))
+        if (check_node.pos.Equals(goal_point))
           return Solve(check_node);
 
         // 获得当前附近的节点集合
-        List<AStarNode> neighbor_list = GetNeighborList(check_node.pos);
+       SetNeighborList(check_node.pos);
         foreach (var neighbor_node in neighbor_list)
         {
           float neighbor_g = check_node.g + GetG(check_node.pos, neighbor_node.pos);
@@ -267,7 +230,7 @@ namespace CsCat
                 case AStarNodeInListType.Close_List:
                   neighbor_node.parent = check_node;
                   neighbor_node.g = neighbor_g;
-                  neighbor_node.h = GetH(neighbor_node.pos, goal_pos);
+                  neighbor_node.h = GetH(neighbor_node.pos, goal_point);
                   neighbor_node.f = neighbor_node.g + neighbor_node.h;
                   //更新neighbor_node的值
                   AddNodeToOpenList(neighbor_node);
@@ -276,7 +239,7 @@ namespace CsCat
                 case AStarNodeInListType.Open_List:
                   neighbor_node.parent = check_node;
                   neighbor_node.g = neighbor_g;
-                  neighbor_node.h = GetH(neighbor_node.pos, goal_pos);
+                  neighbor_node.h = GetH(neighbor_node.pos, goal_point);
                   neighbor_node.f = neighbor_node.g + neighbor_node.h;
                   //更新neighbor_node的值
                   open_heap.Remove(old_neighbor_node);
@@ -290,7 +253,7 @@ namespace CsCat
           {
             neighbor_node.parent = check_node;
             neighbor_node.g = neighbor_g;
-            neighbor_node.h = GetH(neighbor_node.pos, goal_pos);
+            neighbor_node.h = GetH(neighbor_node.pos, goal_point);
             neighbor_node.f = neighbor_node.g + neighbor_node.h;
             AddNodeToOpenList(neighbor_node); // 排序插入
           }

@@ -5,7 +5,6 @@ namespace CsCat
 {
   public class CsCatTest : MonoBehaviour
   {
-
     void Start()
     {
       List<char> list = new List<char>();
@@ -18,14 +17,9 @@ namespace CsCat
 
 //      list.Reverse();
 
-      int index = list.BinarySearchCat('e',IndexOccurType.Last_Index,  (a, b) => a - b);
+      int index = list.BinarySearchCat('e', IndexOccurType.Last_Index, (a, b) => a - b);
       LogCat.log(list);
       LogCat.log(index);
     }
-
   }
 }
-
-
-
-
