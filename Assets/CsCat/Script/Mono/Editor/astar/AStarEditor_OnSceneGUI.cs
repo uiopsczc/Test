@@ -18,12 +18,12 @@ namespace CsCat
 
     private AStarObstacleType selected_obstacleType
     {
-      get { return AStarEditorConst.AStarObstacleType_List[selected_obstacleType_index]; }
+      get { return AStarConst.AStarObstacleType_List[selected_obstacleType_index]; }
     }
 
     private AStarTerrainType selected_terrainType
     {
-      get { return AStarEditorConst.AStarTerrainType_List[selected_terrainType_index]; }
+      get { return AStarConst.AStarTerrainType_List[selected_terrainType_index]; }
     }
 
 
@@ -155,7 +155,7 @@ namespace CsCat
     void DrawObstacleTypeTool()
     {
       List<GUIContent> obstacleType_guiContent_list = new List<GUIContent>();
-      foreach (var astarObstacleType in AStarEditorConst.AStarObstacleType_List)
+      foreach (var astarObstacleType in AStarConst.AStarObstacleType_List)
       {
         GUIContent guiContent = new GUIContent();
         guiContent.text = astarObstacleType.name;
@@ -189,7 +189,7 @@ namespace CsCat
     void DrawTerrainTypeTool()
     {
       List<GUIContent> terrainType_guiContent_list = new List<GUIContent>();
-      foreach (var astarTerrainType in AStarEditorConst.AStarTerrainType_List)
+      foreach (var astarTerrainType in AStarConst.AStarTerrainType_List)
       {
         GUIContent guiContent = new GUIContent();
         guiContent.text = string.Format("{0}:{1}", astarTerrainType.value, astarTerrainType.name);

@@ -72,10 +72,12 @@ namespace CsCat
     {
       int dx = Math.Abs(p1.x - p2.x);
       int dy = Math.Abs(p1.y - p2.y);
+      var terrainType = AStarUtil.GetTerrainType(astarMapPath.GetFinalGrids()[p2.x][p2.y]);
+      float cost = AStarConst.AStarTerrainType_Dict[terrainType].cost;
       if (dx == 0 || dy == 0) //非斜线方向
-        return astarMapPath.GetFinalGrids()[p2.x][p2.y];
+        return cost;
       else //斜线方向
-        return astarMapPath.GetFinalGrids()[p2.x][p2.y] * 1.414f;
+        return cost * 1.414f;
     }
 
 

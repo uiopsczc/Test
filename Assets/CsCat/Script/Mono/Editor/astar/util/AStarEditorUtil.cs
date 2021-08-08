@@ -8,7 +8,7 @@ namespace CsCat
     public static void DrawdObstacleTypeRect(AStarMonoBehaviour astarMonoBehaviour, int grid_x, int grid_y,
       int obstacleType)
     {
-      Color obstacleTypeColor = AStarEditorConst.AStarObstacleType_Dict[obstacleType].color;
+      Color obstacleTypeColor = AStarConst.AStarObstacleType_Dict[obstacleType].color;
       Rect cell_rect = new Rect(0, 0, astarMonoBehaviour.astarData.cell_size.x, astarMonoBehaviour.astarData.cell_size.y);
       cell_rect.position = astarMonoBehaviour.astarData.GetPosition(grid_x, grid_y);
       DrawUtil.HandlesDrawSolidRectangleWithOutline(cell_rect, obstacleTypeColor, Color.green,
