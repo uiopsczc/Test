@@ -17,6 +17,7 @@ namespace CsCat
     public GameEntity owner;
 
     public override TimerManager timerManager => GetOwner<GameEntity>().timerManager;
+    
 
     public HFSM()
     {

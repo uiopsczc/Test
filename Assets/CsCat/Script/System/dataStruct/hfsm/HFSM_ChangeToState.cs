@@ -6,6 +6,7 @@ namespace CsCat
 {
   public partial class HFSM
   {
+
     public virtual void ChangeToState(string key, bool is_force = false, params object[] args)
     {
       HFSMState to_state = this.GetRootHFSM().GetSubState(key, true);

@@ -10,11 +10,11 @@ namespace CsCat
 
     
 
-    public readonly object source;
+    public readonly IEventSource source;
 
     private Cache cache = new Cache();
 
-    public EventDispatchers(object source)
+    public EventDispatchers(IEventSource source)
     {
       this.source = source;
     }

@@ -15,10 +15,10 @@ namespace CsCat
       return AnimatorUtil.GetAnimationClip(self, name);
     }
 
-    public static EventName GetEventName(this Animator self)
-    {
-      return typeof(StateMachineBehaviourEvents).Name.ToEventName(self);
-    }
+//    public static EventName GetEventName(this Animator self)
+//    {
+//      return typeof(StateMachineBehaviourEvents).Name.ToEventName(self);
+//    }
 
     public static T GetBehaviour<T>(this Animator self, string name) where T : StateMachineBehaviour
     {

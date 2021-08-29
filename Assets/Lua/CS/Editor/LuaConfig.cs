@@ -24,7 +24,7 @@ public static class LuaConfig
     typeof(GameObjectPoolCat),
     typeof(AssetBundleManager),
     typeof(AssetCat),
-    typeof(AutoAssetDestory),
+    typeof(AutoAssetDestroy),
     typeof(ActSequenceMono),
     typeof(ActSequence),
     typeof(Act),

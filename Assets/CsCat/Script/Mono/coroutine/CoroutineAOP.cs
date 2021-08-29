@@ -11,7 +11,7 @@ namespace CsCat
 
     float duration;
     float delay;
-    bool is_destory_while_end;
+    bool is_destroy_while_end;
 
     #endregion
 
@@ -42,16 +42,16 @@ namespace CsCat
     /// <param name="start_callback">开始时执行</param>
     /// <param name="update_callback">每帧执行</param>
     /// <param name="end_callback">结束时执行</param>
-    /// <param name="is_destory_while_end">结束时是否移除对象</param>
+    /// <param name="is_destroy_while_end">结束时是否移除对象</param>
     public void StartIE(float duration, float delay = 0, Action start_callback = null,
-      Action update_callback = null, Action end_callback = null, bool is_destory_while_end = true)
+      Action update_callback = null, Action end_callback = null, bool is_destroy_while_end = true)
     {
       this.start_callback = start_callback;
       this.update_callback = update_callback;
       this.end_callback = end_callback;
       this.duration = duration;
       this.delay = delay;
-      this.is_destory_while_end = is_destory_while_end;
+      this.is_destroy_while_end = is_destroy_while_end;
       this.StopAndStartCacheIEnumerator("ProcessIE", ProcessIE());
     }
 
@@ -73,7 +73,7 @@ namespace CsCat
       start_callback?.Invoke();
       yield return ExecuteUpdate();
       end_callback?.Invoke();
-      if (is_destory_while_end)
+      if (is_destroy_while_end)
         this.Destroy();
 
       yield return 0;

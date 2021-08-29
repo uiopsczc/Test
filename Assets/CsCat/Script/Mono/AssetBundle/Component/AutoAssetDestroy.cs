@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public class AutoAssetDestory : MonoBehaviour
+  public class AutoAssetDestroy : MonoBehaviour
   {
     private AssetCat assetCat;
 
@@ -14,8 +14,8 @@ namespace CsCat
     public static void Add(GameObject go, AssetCat assetCat)
     {
       assetCat.AddRefCount();
-      var autoAssetDestory = go.AddComponent<AutoAssetDestory>();
-      autoAssetDestory.assetCat = assetCat;
+      var autoAssetDestroy = go.AddComponent<AutoAssetDestroy>();
+      autoAssetDestroy.assetCat = assetCat;
     }
 
     private void OnDestroy()
@@ -23,7 +23,7 @@ namespace CsCat
       if (assetCat != null)
         assetCat.SubRefCount(1, true);
       else
-        LogCat.LogErrorFormat("{0} destory but ont find assetCat", name);
+        LogCat.LogErrorFormat("{0} destroy but ont find assetCat", name);
     }
   }
 }

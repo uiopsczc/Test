@@ -45,7 +45,6 @@ namespace CsCat
     /// <returns></returns>
     protected virtual object __Spawn()
     {
-//      LogCat.warn(pool_name);
       return spawn_func != null ? spawn_func() : Activator.CreateInstance(spawn_type);
     }
 

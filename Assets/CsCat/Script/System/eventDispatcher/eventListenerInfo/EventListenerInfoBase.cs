@@ -22,6 +22,19 @@ namespace CsCat
       this._handler = _handler;
     }
 
+    public override bool Equals(object obj)
+    {
+      var other = obj as EventListenerInfoBase;
+      if (other == null)
+        return false;
+      return ObjectUtil.Equals(eventName, other.eventName) && ObjectUtil.Equals(_handler, other._handler);
+    }
+
+    public override int GetHashCode()
+    {
+      return ObjectUtil.GetHashCode(_eventName, _handler);
+    }
+
     public virtual void OnDespawn()
     {
       this._eventName.Despawn();

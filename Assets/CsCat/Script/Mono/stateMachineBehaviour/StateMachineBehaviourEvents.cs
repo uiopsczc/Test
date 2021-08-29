@@ -22,9 +22,9 @@ namespace CsCat
               stateInfo.normalizedTime >= eventInfo.normalized_time)
           {
             eventInfo.is_triggered = true;
-            Client.instance.eventDispatchers.Broadcast<StateMachineBehaviourEventName, List<ValueParse>>(
-              animator.GetEventName(),
-              eventInfo.eventName, eventInfo.arg_list);
+//            Client.instance.eventDispatchers.Broadcast<StateMachineBehaviourEventName, List<ValueParse>>(
+//              animator.GetEventName(),
+//              eventInfo.eventName, eventInfo.arg_list);
           }
     }
 
@@ -35,9 +35,9 @@ namespace CsCat
           if (eventInfo.is_trigger_on_exit)
           {
             eventInfo.is_triggered = true;
-            Client.instance.eventDispatchers.Broadcast<StateMachineBehaviourEventName, List<ValueParse>>(
-              animator.GetEventName(),
-              eventInfo.eventName, eventInfo.arg_list);
+//            Client.instance.eventDispatchers.Broadcast<StateMachineBehaviourEventName, List<ValueParse>>(
+//              animator.GetEventName(),
+//              eventInfo.eventName, eventInfo.arg_list);
           }
     }
   }

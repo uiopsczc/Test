@@ -7,7 +7,7 @@ namespace CsCat
   {
     public UnityEvent myEvent;
 
-    public void DestoryOnFinish()
+    public void DestroyOnFinish()
     {
       gameObject.Destroy();
     }

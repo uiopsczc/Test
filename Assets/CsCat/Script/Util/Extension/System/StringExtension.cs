@@ -195,7 +195,7 @@ namespace CsCat
       return self.Replace("/", ".");
     }
 
-    public static EventName ToEventName(this string self, object source = null)
+    public static EventName ToEventName(this string self, IEventSource source = null)
     {
       return EventNameUtil.Spawn( self, source);
     }

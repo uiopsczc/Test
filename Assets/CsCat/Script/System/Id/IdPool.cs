@@ -15,7 +15,8 @@ namespace CsCat
 
     protected override object __Spawn()
     {
-      return current_number++;
+      current_number++;
+      return current_number;
     }
 
     public ulong Get()

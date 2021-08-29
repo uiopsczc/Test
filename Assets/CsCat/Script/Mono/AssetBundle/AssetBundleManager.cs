@@ -29,7 +29,7 @@ namespace CsCat
     private const int Max_AssetBundle_Create_Num = 20;
 
     private readonly List<AssetCat>
-      assetCat_of_no_ref_list = new List<AssetCat>(); //这里使用延迟删除处理，和GameObject.Destory类似,检查因为没有ref而需要删除的asset（如果有ref则不会删除）
+      assetCat_of_no_ref_list = new List<AssetCat>(); //这里使用延迟删除处理，和GameObject.Destroy类似,检查因为没有ref而需要删除的asset（如果有ref则不会删除）
 
     // 逻辑层正在等待的asset加载异步句柄
     public readonly List<AssetAsyncLoader> assetAsyncloader_prosessing_list = new List<AssetAsyncLoader>();

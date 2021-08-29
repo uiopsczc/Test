@@ -22,19 +22,6 @@ namespace CsCat
       return this;
     }
 
-    public override bool Equals(object obj)
-    {
-      if (!(obj is EventListenerInfo<P0, P1, P2, P3>))
-        return false;
-      var other = (EventListenerInfo<P0, P1, P2, P3>)obj;
-      return ObjectUtil.Equals(this.eventName, other.eventName) && ObjectUtil.Equals(this.handler, other.handler);
-    }
-
-    public override int GetHashCode()
-    {
-      return ObjectUtil.GetHashCode(eventName, handler);
-    }
-
     public EventListenerInfo<P0, P1, P2,P3> Clone()
     {
       return PoolCatManagerUtil.Spawn<EventListenerInfo<P0, P1, P2, P3>>().Init(eventName.Clone(), handler);

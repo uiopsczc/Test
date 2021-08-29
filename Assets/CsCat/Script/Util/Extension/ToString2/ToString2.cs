@@ -16,9 +16,9 @@ namespace CsCat
         return ((ICollection)o).ToString2(is_fill_string_with_double_quote);
       if (o is IToString2)
         return ((IToString2)o).ToString2(is_fill_string_with_double_quote);
-      var resulut = o.ToString();
-      if (o is string && is_fill_string_with_double_quote) resulut = resulut.QuoteWithDouble();
-      return resulut;
+      var result = o.ToString();
+      if (o is string && is_fill_string_with_double_quote) result = result.QuoteWithDouble();
+      return result;
     }
   }
 }

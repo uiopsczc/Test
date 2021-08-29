@@ -67,7 +67,8 @@ namespace CsCat
 
       if (Input.GetKeyDown("f3"))
       {
-        this.RemoveTimer(t);
+        LogCat.warn(3333);
+//        this.RemoveTimer(t);
 //        panel.SetToBottom();
         //        LogCat.log(dict);
       }
