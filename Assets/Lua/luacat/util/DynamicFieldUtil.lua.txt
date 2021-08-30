@@ -1,0 +1,22 @@
+-- https://www.lua.org/pil/14.1.html
+function GetField (field_string, base_table)
+  local target_table = base_table or _G    -- start with the table of globals
+  for sub_field in string.gfind(field_string, "[%w_]+") do
+    target_table = target_table[sub_field]
+  end
+  return target_table
+end
+
+function SetField (field_string, value, base_table)
+  local target_table = base_table or _G    -- start with the table of globals
+  for sub_field, last_char in string.gfind(field_string, "([%w_]+)(.?)") do
+    if last_char == "." then
+      -- not last field?
+      target_table[sub_field] = target_table[sub_field] or {}   -- create table if absent
+      target_table = target_table[sub_field]            -- get the table
+    else
+      -- last field
+      target_table[sub_field] = value            -- do the assignment
+    end
+  end
+end

@@ -1,5 +1,6 @@
 ------------------------------luacat--------------------------------------------------
 require("luacat.class.Class")
+require("luacat.util.DynamicFieldUtil")
 require("luacat.util.NilUtil")
 require("luacat.util.CompareUtil")
 require ("luacat.util.extension.table.tableExtension")
