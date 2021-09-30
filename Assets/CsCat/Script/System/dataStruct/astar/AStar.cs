@@ -248,6 +248,12 @@ namespace CsCat
                   break;
               }
             }
+            else
+            {
+							//舍弃的进行回收
+	            neighbor_node.Despawn();
+
+						}
           }
           else
           {

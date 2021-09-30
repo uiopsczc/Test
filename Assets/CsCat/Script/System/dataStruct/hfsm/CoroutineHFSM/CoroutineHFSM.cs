@@ -56,17 +56,17 @@ namespace CsCat
       CoroutineHFSM nearest_same_parent_hfsm = to_state.GetNearestSameParentHFSM(from_state) as CoroutineHFSM;
       if (from_state != null)
       {
-        this.Broadcast(CoroutineHFSMEventNameConst.Pre_State_Exit.ToEventName(root_hfsm), from_state);
+        this.Broadcast(root_hfsm.eventDispatchers, CoroutineHFSMEventNameConst.Pre_State_Exit, from_state);
         yield return from_state.IEExitLoopTo(nearest_same_parent_hfsm);
-        this.Broadcast(CoroutineHFSMEventNameConst.Post_State_Exit.ToEventName(root_hfsm), from_state);
+        this.Broadcast(root_hfsm.eventDispatchers, CoroutineHFSMEventNameConst.Post_State_Exit, from_state);
       }
 
-      this.Broadcast(CoroutineHFSMEventNameConst.Pre_State_Enter.ToEventName(root_hfsm), to_state);
+      this.Broadcast(root_hfsm.eventDispatchers,CoroutineHFSMEventNameConst.Pre_State_Enter, to_state);
       yield return nearest_same_parent_hfsm.IEEnterLoopTo(to_state, args);
-      this.Broadcast(CoroutineHFSMEventNameConst.Post_State_Enter.ToEventName(root_hfsm), to_state);
+      this.Broadcast(root_hfsm.eventDispatchers,CoroutineHFSMEventNameConst.Post_State_Enter, to_state);
 
       previous_state = from_state;
-      this.Broadcast(CoroutineHFSMEventNameConst.State_Change_Finish.ToEventName(root_hfsm), from_state, to_state);
+      this.Broadcast(root_hfsm.eventDispatchers, CoroutineHFSMEventNameConst.State_Change_Finish, from_state, to_state);
     }
 
 

@@ -6,9 +6,9 @@ namespace CsCat
 {
   public class PausableCoroutinePlugin
   {
-    private MonoBehaviour mono;
+    public MonoBehaviour mono;
     private IdPool idPool = new IdPool();
-    private Dictionary<string, PausableCoroutine> coroutine_dict = new Dictionary<string, PausableCoroutine>();
+    private Dictionary<string, PausableCoroutine> dict = new Dictionary<string, PausableCoroutine>();
 
     public PausableCoroutinePlugin(MonoBehaviour mono)
     {
@@ -20,7 +20,7 @@ namespace CsCat
       CleanFinishedCoroutines();
       key = key ?? idPool.Get().ToString();
       var coroutine = mono.StopAndStartCachePausableCoroutine(key.ToGuid(this), ie);
-      this.coroutine_dict[key] = coroutine;
+      this.dict[key] = coroutine;
       return key;
     }
 
@@ -31,9 +31,9 @@ namespace CsCat
     public void StopCoroutine(string key)
     {
       CleanFinishedCoroutines();
-      if (!this.coroutine_dict.ContainsKey(key))
+      if (!this.dict.ContainsKey(key))
         return;
-      this.coroutine_dict.Remove(key);
+      this.dict.Remove(key);
       idPool.Despawn(key);
       mono.StopCachePausableCoroutine(key.ToGuid(this));
 
@@ -41,27 +41,27 @@ namespace CsCat
 
     public void StopAllCoroutines()
     {
-      foreach (var key in coroutine_dict.Keys)
+      foreach (var key in dict.Keys)
       {
         mono.StopCachePausableCoroutine(key.ToGuid(this));
       }
 
-      coroutine_dict.Clear();
+      dict.Clear();
       idPool.DespawnAll();
     }
 
     public void SetIsPaused(bool is_paused)
     {
       CleanFinishedCoroutines();
-      foreach (var key in coroutine_dict.Keys)
+      foreach (var key in dict.Keys)
       {
-        this.coroutine_dict[key].SetIsPaused(is_paused);
+        this.dict[key].SetIsPaused(is_paused);
       }
     }
 
     void CleanFinishedCoroutines()
     {
-      coroutine_dict.RemoveByFunc<string, PausableCoroutine>((key, coroutine) =>
+      dict.RemoveByFunc<string, PausableCoroutine>((key, coroutine) =>
       {
         if (coroutine.is_finished)
         {

@@ -8,13 +8,10 @@ namespace CsCat
 {
   public partial class GameComponent
   {
-    protected PausableCoroutinePlugin pausableCoroutinePlugin
-    {
-      get { return cache.GetOrAddDefault(() => { return new PausableCoroutinePlugin(Main.instance); }); }
-    }
+    protected PausableCoroutinePlugin pausableCoroutinePlugin => cache.GetOrAddDefault(() => new PausableCoroutinePlugin(GetGameEntity().GetComponent<PausableCoroutinePluginComponent>().pausableCoroutinePlugin.mono));
 
 
-    public string StartPausableCoroutine(IEnumerator ie, string key = null)
+	  public string StartPausableCoroutine(IEnumerator ie, string key = null)
     {
       return pausableCoroutinePlugin.StartCoroutine(ie, key);
     }
@@ -30,7 +27,8 @@ namespace CsCat
 
     public void StopAllPausableCoroutines()
     {
-      pausableCoroutinePlugin.StopAllCoroutines();
+	    if (cache.ContainsKey<PausableCoroutinePlugin>())
+				pausableCoroutinePlugin.StopAllCoroutines();
     }
 
     public void SetIsPaused_PausableCoroutines(bool is_paused)

@@ -46,7 +46,7 @@ namespace CsCat
 
     protected virtual void InitGameObjectChildren()
     {
-      this.GetEntity<GameEntity>().InitGameObjectChildren();
+	    GetGameEntity().InitGameObjectChildren();
     }
 
 

@@ -1,151 +1,103 @@
 using System;
-using System.Collections.Generic;
 
 namespace CsCat
 {
-  public class EventDispatcher<P0> : IEventDispatcher
-  {
+	public class EventDispatcher<P0> : IDespawn, IEventDispatcher
+	{
+		private ValueListDictionary<string, KeyValuePairCat<Action<P0>, bool>> listenerDict =
+			new ValueListDictionary<string, KeyValuePairCat<Action<P0>, bool>>();
 
-    public ValueListDictionary<EventName, KeyValuePairCat<Action<P0>, bool>> listener_dict =
-      new ValueListDictionary<EventName, KeyValuePairCat<Action<P0>, bool>>();
+		public Action<P0> AddListener(string eventName, Action<P0> handler)
+		{
+			var handlerInfo = PoolCatManagerUtil.Spawn<KeyValuePairCat<Action<P0>, bool>>().Init(handler, true);
+			listenerDict.Add(eventName, handlerInfo);
+			return handler;
+		}
 
+		public void IRemoveListener(string eventName, object handler)
+		{
+			if (!listenerDict.ContainsKey(eventName))
+				return;
+			foreach (var handlerInfo in listenerDict[eventName])
+			{
+				if (handlerInfo.key != handler)
+					continue;
+				if (!handlerInfo.value) continue;
+				handlerInfo.value = false;
+				return;
+			}
+		}
 
-    public EventListenerInfo<P0> AddListener(string eventName, Action<P0> handler)
-    {
-      var _eventName = eventName.ToEventName();
-      var result = AddListener(_eventName, handler);
-      _eventName.Despawn();
-      return result;
-    }
+		public bool RemoveListener(string eventName, Action<P0> handler)
+		{
+			if (!listenerDict.ContainsKey(eventName))
+				return false;
+			foreach (var handlerInfo in listenerDict[eventName])
+			{
+				if (handlerInfo.key != handler) continue;
+				if (!handlerInfo.value) continue;
+				handlerInfo.value = false;
+				return true;
+			}
 
-    public EventListenerInfo<P0> AddListener(EventName eventName, Action<P0> handler)
-    {
-      var handler_info = PoolCatManagerUtil.Spawn<KeyValuePairCat<Action<P0>, bool>>().Init(handler, true);
-      listener_dict.Add(eventName.Clone(), handler_info);
-      return PoolCatManagerUtil.Spawn<EventListenerInfo<P0>>().Init(eventName.Clone(), handler);
-    }
+			return false;
+		}
 
+		public void RemoveAllListeners()
+		{
+			foreach (var handlerInfoList in listenerDict.Values)
+			{
+				foreach (var handlerInfo in handlerInfoList)
+					handlerInfo.value = false;
+			}
+			CheckRemoved();
+			CheckEmpty();
+		}
 
-    public bool RemoveListener(string eventName, Action<P0> handler)
-    {
-      var _eventName = eventName.ToEventName();
-      var result = RemoveListener(_eventName, handler);
-      _eventName.Despawn();
-      return result;
-    }
+		public void Broadcast(string eventName, P0 p0)
+		{
+			if (!this.listenerDict.ContainsKey(eventName))
+				return;
+			int count = listenerDict[eventName].Count;
+			for (int i = 0; i < count; i++)
+			{
+				var handlerInfo = listenerDict[eventName][i];
+				if (handlerInfo.value == false)
+					continue;
+				handlerInfo.key(p0);
+			}
 
-    public bool RemoveListener(EventListenerInfo<P0> eventListenerInfo)
-    {
-      return RemoveListener(eventListenerInfo.eventName, eventListenerInfo.handler);
-    }
+			CheckRemoved();
+			CheckEmpty();
+		}
 
-    public bool RemoveListener(EventName eventName, Action<P0> handler)
-    {
-      if (!listener_dict.ContainsKey(eventName))
-        return false;
-      foreach (var handler_info in listener_dict[eventName])
-      {
-        if (handler_info.value && handler_info.key.Equals(handler))
-        {
-          handler_info.value = false;
-          return true;
-        }
-      }
-      return false;
+		private void CheckRemoved()
+		{
+			foreach (var handlerInfoList in listenerDict.Values)
+			{
+				for (int i = handlerInfoList.Count - 1; i >= 0; i--)
+				{
+					var handlerInfo = handlerInfoList[i];
+					if (handlerInfo.value) continue;
+					handlerInfoList.RemoveAt(i);
+					handlerInfo.Despawn();
+				}
+			}
+		}
 
-    }
+		private void CheckEmpty()
+		{
+			foreach (var eventName in listenerDict.Keys)
+			{
+				if (listenerDict[eventName].Count == 0)
+					listenerDict.Remove(eventName);
+			}
+		}
 
-    public bool RemoveListener(Action<P0> handler)
-    {
-      foreach (var eventName in this.listener_dict.Keys)
-      {
-        foreach (var handler_info in listener_dict[eventName])
-        {
-          if (handler_info.value && handler_info.key.Equals(handler))
-          {
-            handler_info.value = false;
-            return true;
-          }
-        }
-      }
-
-      return false;
-    }
-
-    public void RemoveAllListeners()
-    {
-      foreach (var eventName in listener_dict.Keys)
-      {
-        var value = listener_dict[eventName];
-        value.Despawn();
-        eventName.OnDespawn();
-      }
-      listener_dict.Clear();
-    }
-
-
-    public void Broadcast(string eventName, P0 p0)
-    {
-      Broadcast(eventName.ToEventName(), p0);
-    }
-
-    public void Broadcast(EventName eventName, P0 p0)
-    {
-      if (listener_dict.ContainsKey(eventName))
-      {
-        var handler_info_list = PoolCatManagerUtil.Spawn<List<KeyValuePairCat<Action<P0>, bool>>>();
-        handler_info_list.AddRange(listener_dict[eventName]);
-        foreach (var handler_info in handler_info_list)
-          try
-          {
-            if (handler_info.value)
-              handler_info.key(p0);
-          }
-          catch (Exception ex)
-          {
-            LogCat.LogError(ex);
-          }
-        handler_info_list.Clear();
-        handler_info_list.Despawn();
-      }
-
-      // check remove
-      CheckRemoved();
-      CheckEmpty();
-    }
-
-    void CheckRemoved()
-    {
-      foreach (var handler_info_list in listener_dict.Values)
-      {
-        for (int i = handler_info_list.Count - 1; i >= 0; i--)
-        {
-          var handler_info = handler_info_list[i];
-          if (handler_info.value == false)
-          {
-            handler_info_list.RemoveAt(i);
-            handler_info.Despawn();
-          }
-        }
-      }
-    }
-
-    void CheckEmpty()
-    {
-      var to_remove_eventName_list = PoolCatManagerUtil.Spawn<List<EventName>>(PoolNameConst.EventName_List);
-      foreach (var eventName in listener_dict.Keys)
-      {
-        if (listener_dict[eventName].Count == 0)
-          to_remove_eventName_list.Add(eventName);
-      }
-
-      foreach (var to_remove_eventName in to_remove_eventName_list)
-      {
-        listener_dict.Remove(to_remove_eventName);
-        to_remove_eventName.Despawn();
-      }
-      to_remove_eventName_list.Clear();
-      to_remove_eventName_list.Despawn();
-    }
-  }
+		public void OnDespawn()
+		{
+			RemoveAllListeners();
+		
+		}
+	}
 }

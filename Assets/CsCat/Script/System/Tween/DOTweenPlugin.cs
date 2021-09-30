@@ -5,7 +5,7 @@ namespace CsCat
 {
   public class DOTweenPlugin
   {
-    private Dictionary<string, Tween> dict = new Dictionary<string, Tween>();
+    Dictionary<string,Tween> dict = new Dictionary<string, Tween>();
     private IdPool idPool = new IdPool();
 
     public Sequence AddDOTweenSequence(string key)
@@ -15,7 +15,7 @@ namespace CsCat
         RemoveDOTween(key);
       key = key ?? idPool.Get().ToString();
       var sequence = DOTween.Sequence();
-      dict[key] = sequence;
+	    dict[key] = sequence;
       return sequence;
     }
 
@@ -25,7 +25,7 @@ namespace CsCat
       if (key != null && dict.ContainsKey(key))
         RemoveDOTween(key);
       key = key ?? idPool.Get().ToString();
-      dict[key] = tween;
+	    dict[key] = tween;
       return tween;
     }
 
@@ -36,9 +36,9 @@ namespace CsCat
       {
         Tween tween = dict[key];
         if (tween.IsActive())
-          dict[key].Kill();
+	        dict[key].Kill();
         idPool.Despawn(key);
-        dict.Remove(key);
+	      dict.Remove(key);
       }
     }
 
@@ -59,7 +59,7 @@ namespace CsCat
 
     private void CleanNotActiveDOTweens()
     {
-      dict.RemoveByFunc((_key, _tween) =>
+	    dict.RemoveByFunc((_key, _tween) =>
       {
         if (!_tween.IsActive())
         {
@@ -91,7 +91,7 @@ namespace CsCat
           tween.Kill();
       }
 
-      dict.Clear();
+	    dict.Clear();
       idPool.DespawnAll();
     }
 

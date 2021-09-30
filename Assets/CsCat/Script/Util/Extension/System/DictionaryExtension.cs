@@ -1,6 +1,7 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Windows.Forms.VisualStyles;
 
 namespace CsCat
 {
@@ -123,7 +124,20 @@ namespace CsCat
       }
     }
 
-    public static void Remove2(this IDictionary self, object key)
+	  public static void RemoveByValue<K, V>(this IDictionary<K, V> self, V value)
+	  {
+		  self.RemoveByFunc((_key, _value) => ObjectUtil.Equals(value, _value));
+	  }
+
+	  public static void RemoveAllAndClear<K, V>(this IDictionary<K, V> self, Action<K,V> onRemvoeAction)
+	  {
+		  foreach (var key in self.Keys)
+			  onRemvoeAction(key, self[key]);
+		  self.Clear();
+	  }
+
+
+		public static void Remove2(this IDictionary self, object key)
     {
       Remove2<object>(self, key);
     }

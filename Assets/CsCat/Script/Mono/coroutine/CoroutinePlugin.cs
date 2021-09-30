@@ -6,9 +6,9 @@ namespace CsCat
 {
   public class CoroutinePlugin
   {
-    private MonoBehaviour mono;
+    public MonoBehaviour mono;
     private IdPool idPool = new IdPool();
-    private Dictionary<string, IEnumerator> coroutine_dict = new Dictionary<string, IEnumerator>();
+    private Dictionary<string, IEnumerator> dict = new Dictionary<string, IEnumerator>();
 
     public CoroutinePlugin(MonoBehaviour mono)
     {
@@ -19,7 +19,7 @@ namespace CsCat
     public string StartCoroutine(IEnumerator ie, string key = null)
     {
       key = key ?? idPool.Get().ToString();
-      this.coroutine_dict[key] = ie;
+      this.dict[key] = ie;
       mono.StopAndStartCacheIEnumerator(key.ToGuid(this), ie);
       return key;
     }
@@ -30,9 +30,9 @@ namespace CsCat
     /// <param name="key"></param>
     public void StopCoroutine(string key)
     {
-      if (!this.coroutine_dict.ContainsKey(key))
+      if (!this.dict.ContainsKey(key))
         return;
-      this.coroutine_dict.Remove(key);
+      this.dict.Remove(key);
       idPool.Despawn(key);
       mono.StopCacheIEnumerator(key.ToGuid(this));
 
@@ -40,12 +40,12 @@ namespace CsCat
 
     public void StopAllCoroutines()
     {
-      foreach (var key in coroutine_dict.Keys)
+      foreach (var key in dict.Keys)
       {
         mono.StopCacheIEnumerator(key.ToGuid(this));
       }
 
-      coroutine_dict.Clear();
+      dict.Clear();
       idPool.DespawnAll();
     }
 

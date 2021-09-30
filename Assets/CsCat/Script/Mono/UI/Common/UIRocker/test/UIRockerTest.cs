@@ -22,8 +22,8 @@ namespace CsCat
         GameObject.Find("UITestPanel").transform,
         UIRockerTest.rockerInput);
 
-      Client.instance.AddListener<float, float>(UIRockerTest.rockerInput.event_name_move_pct, UIRockerTest.MovePct);
-      Client.instance.AddListener(UIRockerTest.rockerInput.event_name_move_stop, UIRockerTest.MoveStop);
+      Client.instance.AddListener<float, float>(null, UIRockerTest.rockerInput.event_name_move_pct, UIRockerTest.MovePct);
+      Client.instance.AddListener(null, UIRockerTest.rockerInput.event_name_move_stop, UIRockerTest.MoveStop);
     }
 
     public static void MovePct(float pct_x, float pct_y)

@@ -24,7 +24,7 @@ namespace CsCat
     public override void Init()
     {
       base.Init();
-      AddListener<ResourceWebRequester>(AssetBundleEventNameConst.On_ResourceWebRequester_Done,
+      AddListener<ResourceWebRequester>(null,AssetBundleEventNameConst.On_ResourceWebRequester_Done,
         OnResourceWebRequesterDone);
     }
 

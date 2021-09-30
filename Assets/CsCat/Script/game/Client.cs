@@ -22,7 +22,7 @@ namespace CsCat
     public FrameCallbackMananger frameCallbackMananger = new FrameCallbackMananger();
     public GuidManager guidManager;
     public RandomManager randomManager = new RandomManager();
-    public RedDotManager redDotManager;
+//    public RedDotManager redDotManager;
     public CfgManager cfgManager;
 
 
@@ -38,7 +38,7 @@ namespace CsCat
     public SceneFactory sceneFactory;
 
 
-    public RedDotLogic redDotLogic;
+//    public RedDotLogic redDotLogic;
 
     public User user;
     public Role main_role;
@@ -50,39 +50,13 @@ namespace CsCat
     public IdPool idPool = new IdPool();
 
     //通用模块
-    public override TimerManager timerManager
-    {
-      get
-      {
-        if (!cache.dict.TryGetValue(typeof(TimerManager), out var result))
-        {
-          result = new TimerManager();
-          cache.dict[typeof(TimerManager)] = result;
-        }
-        return (TimerManager)result;
+    public override TimerManager timerManager => cache.GetOrAddDefault(() => new TimerManager());
 
-//        return cache.GetOrAddDefault(() => { return new TimerManager(); });
-      }
-    }
-
-    public UIManager uiManager;
+	  public UIManager uiManager;
     public static Client instance => SingletonFactory.instance.Get<Client>();
 
-    public EventDispatchers eventDispatchers
-    {
-      get
-      {
-        if (!cache.dict.TryGetValue(typeof(EventDispatchers), out var result))
-        {
-          result = new EventDispatchers(this);
-          cache.dict[typeof(EventDispatchers)] = result;
-        }
-        return (EventDispatchers)result;
-//        return cache.GetOrAddDefault(() => { return new EventDispatchers(this); });
-      }
-    }
 
-    public string language;
+	  public string language;
 
     public void Init(GameObject gameObject)
     {
@@ -111,7 +85,7 @@ namespace CsCat
       uiManager.PostInit();
       uiManager.SetIsEnabled(true, false);
 
-      redDotManager = AddChild<RedDotManager>("RedDotManager");
+//      redDotManager = AddChild<RedDotManager>("RedDotManager");
 
 
 

@@ -16,7 +16,7 @@ namespace CsCat
         GameObject.Find("Main Camera").GetComponent<Camera>(), true);
       ui_cameraBase = this.AddChild<CameraBase>("ui_camera",
         GameObject.Find(UIConst.UICamera_Path).GetComponent<Camera>(), true);
-      this.AddListener<StageBase>(StageEventNameConst.On_Stage_Loaded, OnStageLoaded);
+      this.AddListener<StageBase>(null,StageEventNameConst.On_Stage_Loaded, OnStageLoaded);
     }
 
     public void OnStageLoaded(StageBase stage)

@@ -7,7 +7,7 @@ namespace CsCat
     {
       base.Init();
       resLoadComponentPlugin = new ResLoadComponentPlugin(resLoadComponent);
-      this.AddListener(ECSEventNameConst.OnAllAssetsLoadDone.ToEventName(this.entity), OnAllAssetsLoadDone);
+      this.AddListener(GetGameEntity().eventDispatchers,ECSEventNameConst.OnAllAssetsLoadDone, OnAllAssetsLoadDone);
     }
 
     protected override void __Reset()

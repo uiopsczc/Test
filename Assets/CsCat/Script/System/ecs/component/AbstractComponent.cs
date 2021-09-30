@@ -2,19 +2,16 @@ using System;
 
 namespace CsCat
 {
-  public partial class AbstractComponent : IDespawn,IEventSource
+  public partial class AbstractComponent : IDespawn
   {
     public string key;
     public AbstractEntity entity;
     public bool is_key_using_parent_idPool;
     protected Cache cache = new Cache();
 
-    private EventSourceImpl eventSourceImpl => cache.GetOrAddDefault(() => PoolCatManagerUtil.Spawn<EventSourceImpl>( null, spawn => spawn.Init(this)));
-    public ulong GetEventSourceId() => eventSourceImpl.GetEventSourceId();
 
     public AbstractComponent()
     {
-      GetEventSourceId();
     }
 
     public virtual void Init()
@@ -31,13 +28,16 @@ namespace CsCat
       return this.cache.GetOrAddDefault("entity_" + typeof(T), () => (T)this.entity);
     }
 
-    void __OnDespawn_()
+	  public GameEntity GetGameEntity()
+	  {
+		  return GetEntity<GameEntity>();
+	  }
+
+		void __OnDespawn_()
     {
       key = null;
       entity = null;
       is_key_using_parent_idPool = false;
-      var eventSourceImpl = this.cache.Get<EventSourceImpl>(typeof(EventSourceImpl).ToString());
-      eventSourceImpl?.Despawn();
       cache.Clear();
     }
   }

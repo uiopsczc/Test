@@ -26,28 +26,28 @@ namespace CsCat
       this.listener_dict["on_hp_change"] = new List<SpellListenerInfo>(); //目标血量改变时 OnHpChange
       this.listener_dict["on_missile_reach"] = new List<SpellListenerInfo>(); //当子弹到达
 
-      this.AddListener<Unit, Unit, SpellBase>(SpellEventNameConst.On_Spell_Start,
+      this.AddListener<Unit, Unit, SpellBase>(null, SpellEventNameConst.On_Spell_Start,
         (source_unit, target_unit, spell) => this.OnSpellStart(source_unit, target_unit, spell));
-      this.AddListener<Unit, Unit, SpellBase>(SpellEventNameConst.On_Spell_Cast,
+      this.AddListener<Unit, Unit, SpellBase>(null, SpellEventNameConst.On_Spell_Cast,
         (source_unit, target_unit, spell) => this.OnSpellCast(source_unit, target_unit, spell));
-      this.AddListener<Unit, EffectEntity, SpellBase>(SpellEventNameConst.On_Missile_Reach,
+      this.AddListener<Unit, EffectEntity, SpellBase>(null, SpellEventNameConst.On_Missile_Reach,
         (source_unit, missileEffect, spell) => this.OnMissileReach(source_unit, missileEffect, spell));
-      this.AddListener<Unit, Unit, int, int>(UnitEventNameConst.On_Unit_Hp_Change,
+      this.AddListener<Unit, Unit, int, int>(null,UnitEventNameConst.On_Unit_Hp_Change,
         (source_unit, target_unit, old_hp_value, new_hp_value) =>
           this.OnHpChange(source_unit, target_unit, old_hp_value, new_hp_value));
-      this.AddListener<Unit, Unit, SpellBase, int>(UnitEventNameConst.On_Unit_Hurt,
+      this.AddListener<Unit, Unit, SpellBase, int>(null, UnitEventNameConst.On_Unit_Hurt,
         (source_unit, target_unit, spell, damage_value) => this.OnHurt(source_unit, target_unit, spell, damage_value));
-      this.AddListener<Unit, Unit, SpellBase, int>(UnitEventNameConst.Before_Unit_Dead,
+      this.AddListener<Unit, Unit, SpellBase, int>(null, UnitEventNameConst.Before_Unit_Dead,
         (source_unit, target_unit, spell, damage_value) =>
           this.BeforeDead(source_unit, target_unit, spell, damage_value));
-      this.AddListener<Unit, Unit, SpellBase>(UnitEventNameConst.On_Unit_Kill_Target,
+      this.AddListener<Unit, Unit, SpellBase>(null, UnitEventNameConst.On_Unit_Kill_Target,
         (source_unit, target_unit, spell) => this.OnKillTarget(source_unit, target_unit, spell));
-      this.AddListener<Unit, Unit, SpellBase, int>(UnitEventNameConst.On_Unit_Hit,
+      this.AddListener<Unit, Unit, SpellBase, int>(null, UnitEventNameConst.On_Unit_Hit,
         (source_unit, target_unit, spell, damage_value) => this.OnHit(source_unit, target_unit, spell, damage_value));
-      this.AddListener<Unit, Unit, SpellBase, int>(UnitEventNameConst.Before_Unit_Hit,
+      this.AddListener<Unit, Unit, SpellBase, int>(null, UnitEventNameConst.Before_Unit_Hit,
         (source_unit, target_unit, spell, damage_value) =>
           this.BeforeHit(source_unit, target_unit, spell, damage_value));
-      this.AddListener<Unit>(UnitEventNameConst.On_Unit_Destroy, this.OnUnitDestroy);
+      this.AddListener<Unit>(null, UnitEventNameConst.On_Unit_Destroy, this.OnUnitDestroy);
     }
 
     public SpellBase GetSpell(string guid)

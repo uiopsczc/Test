@@ -16,9 +16,9 @@ namespace CsCat
       this.assetCat = assetCat;
       this.assetBundleLoader = assetBundleLoader;
 
-      AddListener<AssetBundleAsyncLoader>(AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Fail,
+      AddListener<AssetBundleAsyncLoader>(null,AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Fail,
         OnAssetBundleAsyncLoaderFail);
-      AddListener<AssetBundleAsyncLoader>(AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Success,
+      AddListener<AssetBundleAsyncLoader>(null,AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Success,
         OnAssetBundleAsyncLoaderSuccess);
     }
 
@@ -52,7 +52,7 @@ namespace CsCat
       if (assetBundleLoader != assetBundleAsyncLoader)
         return;
       resultInfo.is_success = true;
-      RemoveListener<AssetBundleAsyncLoader>(AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Success,
+      RemoveListener<AssetBundleAsyncLoader>(null,AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Success,
         OnAssetBundleAsyncLoaderSuccess);
     }
 
@@ -61,7 +61,7 @@ namespace CsCat
       if (assetBundleLoader != assetBundleAsyncLoader)
         return;
       resultInfo.is_fail = true;
-      RemoveListener<AssetBundleAsyncLoader>(AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Fail,
+      RemoveListener<AssetBundleAsyncLoader>(null, AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Fail,
         OnAssetBundleAsyncLoaderFail);
     }
 
@@ -74,19 +74,19 @@ namespace CsCat
       var assets = assetBundle.LoadAssetWithSubAssets(assetCat.asset_path);
       assetCat.SetAssets(assets);
 
-      Broadcast(AssetBundleEventNameConst.On_AssetAsyncLoader_Success, this);
+      Broadcast(null,AssetBundleEventNameConst.On_AssetAsyncLoader_Success, this);
     }
 
     protected override void OnFail()
     {
       base.OnFail();
-      Broadcast(AssetBundleEventNameConst.On_AssetAsyncLoader_Fail, this);
+      Broadcast(null,AssetBundleEventNameConst.On_AssetAsyncLoader_Fail, this);
     }
 
     protected override void OnDone()
     {
       base.OnDone();
-      Broadcast(AssetBundleEventNameConst.On_AssetAsyncLoader_Done, this);
+      Broadcast(null,AssetBundleEventNameConst.On_AssetAsyncLoader_Done, this);
     }
 
     //需要手动释放

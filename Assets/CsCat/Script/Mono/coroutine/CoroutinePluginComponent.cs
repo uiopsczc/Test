@@ -6,7 +6,7 @@ namespace CsCat
 {
   public class CoroutinePluginComponent : AbstractComponent
   {
-    private CoroutinePlugin coroutinePlugin;
+    public CoroutinePlugin coroutinePlugin;
     public void Init(CoroutinePlugin coroutinePlugin)
     {
       base.Init();

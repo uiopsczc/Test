@@ -28,17 +28,17 @@ namespace CsCat
       HFSM nearest_same_parent_hfsm = to_state.GetNearestSameParentHFSM(from_state);
       if (from_state != null)
       {
-        this.Broadcast(HFSMEventNameConst.Pre_State_Exit.ToEventName(root_hfsm), from_state);
+        this.Broadcast(root_hfsm.eventDispatchers,HFSMEventNameConst.Pre_State_Exit, from_state);
         from_state.ExitLoopTo(nearest_same_parent_hfsm);
-        this.Broadcast(HFSMEventNameConst.Post_State_Exit.ToEventName(root_hfsm), from_state);
+        this.Broadcast(root_hfsm.eventDispatchers, HFSMEventNameConst.Post_State_Exit, from_state);
       }
 
-      this.Broadcast(HFSMEventNameConst.Pre_State_Enter.ToEventName(root_hfsm), to_state);
+      this.Broadcast(root_hfsm.eventDispatchers, HFSMEventNameConst.Pre_State_Enter, to_state);
       nearest_same_parent_hfsm.EnterLoopTo(to_state, args);
-      this.Broadcast(HFSMEventNameConst.Post_State_Enter.ToEventName(root_hfsm), to_state);
+      this.Broadcast(root_hfsm.eventDispatchers, HFSMEventNameConst.Post_State_Enter, to_state);
 
       previous_state = from_state;
-      this.Broadcast(HFSMEventNameConst.State_Change_Finish.ToEventName(root_hfsm), from_state, to_state);
+      this.Broadcast(root_hfsm.eventDispatchers, HFSMEventNameConst.State_Change_Finish, from_state, to_state);
     }
 
     public virtual void ChangeToHFSM(string key, bool is_force = false, params object[] args)

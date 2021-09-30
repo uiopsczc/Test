@@ -26,7 +26,7 @@ namespace CsCat
         uiLayer_dict[uiLayerConfig.name] = layer;
       }
 
-      this.AddListener<EUILayerName, bool>(UIEventNameConst.SetIsHideUILayer, SetIsHideUILayer);
+      this.AddListener<EUILayerName, bool>(null,UIEventNameConst.SetIsHideUILayer, SetIsHideUILayer);
     }
 
     //供lua端调用，不要删除

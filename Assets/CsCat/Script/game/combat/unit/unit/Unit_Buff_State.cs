@@ -68,7 +68,7 @@ namespace CsCat
       if (this.is_can_move != new_is_can_move)
       {
         this.is_can_move = new_is_can_move;
-        this.Broadcast(UnitEventNameConst.On_Unit_Is_Can_Move_Change, this, !this.is_can_move, this.is_can_move);
+        this.Broadcast(null, UnitEventNameConst.On_Unit_Is_Can_Move_Change, this, !this.is_can_move, this.is_can_move);
         if (!this.is_can_move)
           this.MoveStop();
       }
@@ -76,13 +76,13 @@ namespace CsCat
       if (this.is_can_attack != new_is_can_attack)
       {
         this.is_can_attack = new_is_can_attack;
-        this.Broadcast(UnitEventNameConst.On_Unit_Is_Can_Attack_Change, this, !this.is_can_attack, this.is_can_attack);
+        this.Broadcast(null, UnitEventNameConst.On_Unit_Is_Can_Attack_Change, this, !this.is_can_attack, this.is_can_attack);
       }
 
       if (this.is_can_cast_skill != new_is_can_cast_skill)
       {
         this.is_can_cast_skill = new_is_can_cast_skill;
-        this.Broadcast(UnitEventNameConst.On_Unit_Is_Can_Cast_Skill_Change, this, !this.is_can_cast_skill, this.is_can_cast_skill);
+        this.Broadcast(null, UnitEventNameConst.On_Unit_Is_Can_Cast_Skill_Change, this, !this.is_can_cast_skill, this.is_can_cast_skill);
         if (!this.is_can_cast_skill &&
             (this.current_attack != null && this.skill_id_list.Contains(this.current_attack.spell_id)))
           Client.instance.combat.spellManager.BreakSpell(this.current_attack.GetGuid());
@@ -91,7 +91,7 @@ namespace CsCat
       if (this.is_can_normal_attack != new_is_can_normal_attack)
       {
         this.is_can_normal_attack = new_is_can_normal_attack;
-        this.Broadcast(UnitEventNameConst.On_Unit_Is_Can_Normal_Attack_Change, this, !this.is_can_normal_attack, this.is_can_normal_attack);
+        this.Broadcast(null, UnitEventNameConst.On_Unit_Is_Can_Normal_Attack_Change, this, !this.is_can_normal_attack, this.is_can_normal_attack);
         if (!this.is_can_normal_attack && (this.current_attack != null &&
                                            this.normal_attack_id_list.Contains(this.current_attack.spell_id)))
           Client.instance.combat.spellManager.BreakSpell(this.current_attack.GetGuid());
@@ -100,7 +100,7 @@ namespace CsCat
       if (this.is_can_control != new_is_can_control)
       {
         this.is_can_control = new_is_can_control;
-        this.Broadcast(UnitEventNameConst.On_Unit_Is_Can_Control_Change, this, !this.is_can_control, this.is_can_control);
+        this.Broadcast(null, UnitEventNameConst.On_Unit_Is_Can_Control_Change, this, !this.is_can_control, this.is_can_control);
       }
     }
   }

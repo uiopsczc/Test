@@ -49,8 +49,8 @@ namespace CsCat
     protected override void AddGameEvents()
     {
       base.AddGameEvents();
-      this.AddListener<int, object>(UIEventNameConst.ShowUIBlackMask, ShowUIBlackMask);
-      this.AddListener(UIEventNameConst.HideUIBlackMask, HideUIBlackMask);
+      this.AddListener<int, object>(null, UIEventNameConst.ShowUIBlackMask, ShowUIBlackMask);
+      this.AddListener(null, UIEventNameConst.HideUIBlackMask, HideUIBlackMask);
     }
 
     void ShowUIBlackMask(int target_panel_sorttingOrder, object target_panel)

@@ -6,7 +6,7 @@ namespace CsCat
 {
   public class PausableCoroutinePluginComponent : AbstractComponent
   {
-    private PausableCoroutinePlugin pausableCoroutinePlugin;
+    public PausableCoroutinePlugin pausableCoroutinePlugin;
     public void Init(PausableCoroutinePlugin pausableCoroutinePlugin)
     {
       base.Init();

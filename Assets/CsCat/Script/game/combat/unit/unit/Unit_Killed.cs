@@ -5,7 +5,7 @@ namespace CsCat
     public void OnKilled(Unit source_unit, SpellBase spell, bool is_play_dead_animation = false,
       bool is_waiting_rebirth = false, bool is_keep_dead_body = false)
     {
-      this.Broadcast<Unit, Unit, SpellBase>(UnitEventNameConst.On_Unit_Kill_Target, source_unit, this, spell);
+      this.Broadcast<Unit, Unit, SpellBase>(null, UnitEventNameConst.On_Unit_Kill_Target, source_unit, this, spell);
       if ("be_throwed".Equals(this.unitMoveComp.move_type) || this.unitMoveComp.is_get_caught)
       {
         this.unitMoveComp.move_type = null;

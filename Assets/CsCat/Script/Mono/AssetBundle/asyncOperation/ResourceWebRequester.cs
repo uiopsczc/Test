@@ -100,14 +100,14 @@ namespace CsCat
         assetBundleCat.assetBundle = assetBundle;
       }
 
-      Broadcast(AssetBundleEventNameConst.On_ResourceWebRequester_Success, this);
+      Broadcast(null, AssetBundleEventNameConst.On_ResourceWebRequester_Success, this);
     }
 
     protected override void OnFail()
     {
       base.OnFail();
       LogCat.warn("服务器连接失败[未启动?]", www.url, www.error);
-      Broadcast(AssetBundleEventNameConst.On_ResourceWebRequester_Fail, this);
+      Broadcast(null, AssetBundleEventNameConst.On_ResourceWebRequester_Fail, this);
     }
 
 
@@ -117,7 +117,7 @@ namespace CsCat
       //完成时不再需要resourceWebRequester
       if (assetBundleCat != null)
         assetBundleCat.resourceWebRequester = null;
-      Broadcast(AssetBundleEventNameConst.On_ResourceWebRequester_Done, this);
+      Broadcast(null, AssetBundleEventNameConst.On_ResourceWebRequester_Done, this);
     }
 
     protected override void __Destroy()

@@ -73,13 +73,13 @@ namespace CsCat
 
     public void MovePct(float pct_x, float pct_y)
     {
-      this.Broadcast(this.event_name_move_pct, pct_x, pct_y);
+      this.Broadcast(null,this.event_name_move_pct, pct_x, pct_y);
     }
 
     public void MoveStop()
     {
       this.move_cooldown_remain_duration = 0;
-      this.Broadcast(this.event_name_move_stop);
+      this.Broadcast(null, this.event_name_move_stop);
     }
 
     public void __UpdateMove(float deltaTime, float unscaledDeltaTime)

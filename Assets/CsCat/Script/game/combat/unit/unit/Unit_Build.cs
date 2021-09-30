@@ -192,7 +192,7 @@ namespace CsCat
 
       this.unitMoveComp.OnBuildOk();
       this.animatorComp.OnBuildOk(graphicComponent.gameObject);
-      this.Broadcast(UnitEventNameConst.On_Unit_Build_Ok, this);
+      this.Broadcast(null, UnitEventNameConst.On_Unit_Build_Ok, this);
     }
 
     private void InitAnimation()

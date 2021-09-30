@@ -18,7 +18,6 @@ namespace CsCat
       //      hfsmComponent.hfsm.Start();
     }
 
-    private Dictionary<EventName, string> dict = new Dictionary<EventName, string>();
 
     protected override void __Update(float deltaTime = 0, float unscaledDeltaTime = 0)
     {

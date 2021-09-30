@@ -194,11 +194,7 @@ namespace CsCat
     {
       return self.Replace("/", ".");
     }
-
-    public static EventName ToEventName(this string self, IEventSource source = null)
-    {
-      return EventNameUtil.Spawn( self, source);
-    }
+		
 
     public static bool ContainTags(this string self, params string[] check_tags)
     {

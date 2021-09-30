@@ -1,5 +1,7 @@
+local TestA = require("luacat.TestA")
 ---@class GameShortcutKeyManager:TickObject
 local GameShortcutKeyManager = Class("DefaultInputManager",TickObject)
+
 
 function GameShortcutKeyManager:Init()
   GameShortcutKeyManager.super.Init(self)
@@ -14,6 +16,10 @@ function GameShortcutKeyManager:__Update(deltaTime, unscaledDeltaTime)
   if Input.GetKeyDown("f1") then
   end
   if Input.GetKeyDown("f2") then
+    if not self.c then
+      self.c = TestA:New()
+    end
+    self.c:Hello()
   end
   if Input.GetKeyDown("f3") then
   end

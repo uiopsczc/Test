@@ -37,12 +37,15 @@ namespace CsCat
 
     public bool ContainsKey(object key)
     {
-      if (this.dict.ContainsKey(key))
-        return true;
-      return false;
+	    return this.dict.ContainsKey(key);
     }
 
-    public bool ContainsValue(object value)
+	  public bool ContainsKey<T>()
+	  {
+		  return this.dict.ContainsKey(typeof(T).ToString());
+	  }
+
+		public bool ContainsValue(object value)
     {
       if (this.dict.ContainsValue(value))
         return true;

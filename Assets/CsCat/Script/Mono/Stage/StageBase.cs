@@ -68,7 +68,7 @@ namespace CsCat
       HideLoading();
 
 
-      this.Broadcast(StageEventNameConst.On_Stage_Loaded, this);
+      this.Broadcast(null, StageEventNameConst.On_Stage_Loaded, this);
       Show();
 
     }

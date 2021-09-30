@@ -8,13 +8,10 @@ namespace CsCat
 {
   public partial class GameComponent
   {
-    protected CoroutinePlugin coroutinePlugin
-    {
-      get { return cache.GetOrAddDefault(() => { return new CoroutinePlugin(Main.instance); }); }
-    }
+    protected CoroutinePlugin coroutinePlugin => cache.GetOrAddDefault(() => new CoroutinePlugin(GetGameEntity().GetComponent<CoroutinePluginComponent>().coroutinePlugin.mono));
 
 
-    public string StartCoroutine(IEnumerator ie, string key = null)
+	  public string StartCoroutine(IEnumerator ie, string key = null)
     {
       return coroutinePlugin.StartCoroutine(ie, key);
     }
@@ -30,7 +27,8 @@ namespace CsCat
 
     public void StopAllCoroutines()
     {
-      coroutinePlugin.StopAllCoroutines();
+			if(cache.ContainsKey<CoroutinePlugin>())
+				coroutinePlugin.StopAllCoroutines();
     }
 
   }

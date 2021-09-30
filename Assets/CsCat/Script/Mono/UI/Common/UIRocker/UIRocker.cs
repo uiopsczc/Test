@@ -37,7 +37,7 @@ namespace CsCat
       this.graphicComponent.SetParentTransform(parent_transform);
       this.uiRockerInput = uiRockerInput;
 
-      this.AddListener<float, float>(GlobalEventNameConst.Update, Update);
+      this.AddListener<float, float>(null, GlobalEventNameConst.Update, Update);
     }
 
     public override void OnAllAssetsLoadDone()

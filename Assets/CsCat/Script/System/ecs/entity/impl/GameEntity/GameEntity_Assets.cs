@@ -40,7 +40,7 @@ namespace CsCat
 
     public virtual void OnAllAssetsLoadDone()
     {
-      this.Broadcast(ECSEventNameConst.OnAllAssetsLoadDone.ToEventName(this));
+      this.Broadcast(this.eventDispatchers, ECSEventNameConst.OnAllAssetsLoadDone);
       is_all_assets_load_done = true;
       all_assets_load_done_callback?.Invoke();
       all_assets_load_done_callback = null;

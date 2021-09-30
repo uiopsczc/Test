@@ -118,10 +118,10 @@ namespace CsCat
         if (state_name.Equals(StateConst.Expose))
           this.unit.UpdateHideState();
         if (state_name.Equals(StateConst.Silent))
-          this.Broadcast(UnitEventNameConst.On_Unit_Is_Silent_Change, this.unit, !this.HasState(StateConst.Silent),
+          this.Broadcast(null, UnitEventNameConst.On_Unit_Is_Silent_Change, this.unit, !this.HasState(StateConst.Silent),
             this.HasState(StateConst.Silent));
         if (state_name.Equals(StateConst.Confused))
-          this.Broadcast(UnitEventNameConst.On_Unit_Is_Confused_Change, this.unit, !this.HasState(StateConst.Confused),
+          this.Broadcast(null, UnitEventNameConst.On_Unit_Is_Confused_Change, this.unit, !this.HasState(StateConst.Confused),
             this.HasState(StateConst.Confused));
         this.unit.UpdateMixedStates();
       }
@@ -147,10 +147,10 @@ namespace CsCat
         if (state_name.Equals(StateConst.Expose))
           this.unit.UpdateHideState();
         if (state_name.Equals(StateConst.Silent))
-          this.Broadcast(UnitEventNameConst.On_Unit_Is_Silent_Change, this.unit, !this.HasState(StateConst.Silent),
+          this.Broadcast(null,UnitEventNameConst.On_Unit_Is_Silent_Change, this.unit, !this.HasState(StateConst.Silent),
             this.HasState(StateConst.Silent));
         if (state_name.Equals(StateConst.Confused))
-          this.Broadcast(UnitEventNameConst.On_Unit_Is_Confused_Change, this.unit, !this.HasState(StateConst.Confused),
+          this.Broadcast(null, UnitEventNameConst.On_Unit_Is_Confused_Change, this.unit, !this.HasState(StateConst.Confused),
             this.HasState(StateConst.Confused));
         this.unit.UpdateMixedStates();
       }

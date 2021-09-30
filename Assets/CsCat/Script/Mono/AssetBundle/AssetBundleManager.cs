@@ -73,17 +73,17 @@ namespace CsCat
     {
       base.Init();
 
-      AddListener<ResourceWebRequester>(AssetBundleEventNameConst.On_ResourceWebRequester_Done,
+      AddListener<ResourceWebRequester>(null,AssetBundleEventNameConst.On_ResourceWebRequester_Done,
         OnResourceWebRequesterDone);
 
-      AddListener<AssetBundleAsyncLoader>(AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Fail,
+      AddListener<AssetBundleAsyncLoader>(null,AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Fail,
         OnAssetBundleAsyncLoaderFail);
-      AddListener<AssetBundleAsyncLoader>(AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Done,
+      AddListener<AssetBundleAsyncLoader>(null,AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Done,
         OnAssetBundleAsyncLoaderDone);
 
-      AddListener<AssetAsyncLoader>(AssetBundleEventNameConst.On_AssetAsyncLoader_Fail,
+      AddListener<AssetAsyncLoader>(null,AssetBundleEventNameConst.On_AssetAsyncLoader_Fail,
         OnAssetAsyncLoaderFail);
-      AddListener<AssetAsyncLoader>(AssetBundleEventNameConst.On_AssetAsyncLoader_Done,
+      AddListener<AssetAsyncLoader>(null,AssetBundleEventNameConst.On_AssetAsyncLoader_Done,
         OnAssetAsyncLoaderDone);
     }
 

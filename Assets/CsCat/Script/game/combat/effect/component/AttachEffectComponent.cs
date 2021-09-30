@@ -18,7 +18,7 @@ namespace CsCat
       this.force_eulerAngles = force_eulerAngles;
       this.sector_angle = sector_angle;
 
-      this.AddListener(ECSEventNameConst.OnAllAssetsLoadDone.ToEventName(this.entity), OnAllAssetsLoadDone);
+      this.AddListener(this.GetGameEntity().eventDispatchers,ECSEventNameConst.OnAllAssetsLoadDone, OnAllAssetsLoadDone);
 
     }
 

@@ -12,7 +12,7 @@ namespace CsCat
       RemoveAllDOTweens();
       RemoveAllTimers();
 
-      RemoveAllListeners();
+	    RemoveAllListeners();
     }
 
     protected override void __Destroy()

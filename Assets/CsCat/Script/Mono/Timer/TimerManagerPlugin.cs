@@ -7,7 +7,7 @@ namespace CsCat
   public class TimerManagerPlugin
   {
     public TimerManager timerManager;
-    public Dictionary<Timer, bool> timer_dict = new Dictionary<Timer, bool>();
+	  public Dictionary<Timer, bool> dict = new Dictionary<Timer, bool>();
 
     public TimerManagerPlugin(TimerManager timerManager)
     {
@@ -38,30 +38,30 @@ namespace CsCat
     public Timer AddTimer(Timer timer)
     {
       timerManager.AddTimer(timer);
-      timer_dict[timer] = true;
+	    dict[timer] = true;
       return timer;
     }
 
     public Timer RemoveTimer(Timer timer)
     {
-      if (!timer_dict.ContainsKey(timer))
+      if (!dict.ContainsKey(timer))
         return null;
       timerManager.RemoveTimer(timer);
-      timer_dict.Remove(timer);
+	    dict.Remove(timer);
       return timer;
     }
 
     public void RemoveAllTimers()
     {
-      foreach (var timer in this.timer_dict.Keys)
-        timerManager.RemoveTimer(timer);
-      timer_dict.Clear();
-    }
+			foreach (var timer in dict.Keys)
+				timerManager.RemoveTimer(timer);
+	    dict.Clear();
+		}
 
     public void SetIsPaused(bool is_paused)
     {
-      foreach (var timer in this.timer_dict.Keys)
-        timer.SetIsPaused(is_paused);
+	    foreach (var timer in dict.Keys)
+		    timer.SetIsPaused(is_paused);
     }
 
 

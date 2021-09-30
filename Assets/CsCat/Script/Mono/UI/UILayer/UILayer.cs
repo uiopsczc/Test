@@ -56,9 +56,9 @@ namespace CsCat
 
 
       if (uiLayerConfig.uiLayerRule.IsHideBackgroundUILayer())
-        this.Broadcast(UIEventNameConst.SetIsHideUILayer, EUILayerName.BackgroundUILayer, panel_list.Count > 0);
+        this.Broadcast(null, UIEventNameConst.SetIsHideUILayer, EUILayerName.BackgroundUILayer, panel_list.Count > 0);
       if(uiLayerConfig.uiLayerRule.IsHideFrontUILayer())
-        this.Broadcast(UIEventNameConst.SetIsHideUILayer, EUILayerName.FrontUILayer, panel_list.Count > 0);
+        this.Broadcast(null, UIEventNameConst.SetIsHideUILayer, EUILayerName.FrontUILayer, panel_list.Count > 0);
       if(uiLayerConfig.uiLayerRule.IsAddBlackMaskBehide())
         HandleLayerAddBlackMaskBehide();
     }
@@ -140,9 +140,9 @@ namespace CsCat
       }
 
       if (target_panel == null)
-        this.Broadcast(UIEventNameConst.HideUIBlackMask);
+        this.Broadcast(null, UIEventNameConst.HideUIBlackMask);
       else
-        this.Broadcast(UIEventNameConst.ShowUIBlackMask, target_panel_sorttingOrder, target_panel);
+        this.Broadcast(null, UIEventNameConst.ShowUIBlackMask, target_panel_sorttingOrder, target_panel);
     }
 
 

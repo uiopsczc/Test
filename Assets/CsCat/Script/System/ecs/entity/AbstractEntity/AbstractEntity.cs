@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CsCat
 {
-  public partial class AbstractEntity : IDespawn,IEventSource
+  public partial class AbstractEntity : IDespawn
   {
     public string key;
     protected bool is_has_destroyed_child; //是否【子孙】child中有要从child_key_list和children_dict中删除关联关系
@@ -19,8 +19,6 @@ namespace CsCat
       //是否不立刻将component从component_list和component_dict中删除关联关系
       => false;
 
-    private EventSourceImpl eventSourceImpl => cache.GetOrAddDefault(()=> PoolCatManagerUtil.Spawn<EventSourceImpl>( null, spawn => spawn.Init(this)));
-    public ulong GetEventSourceId() => eventSourceImpl.GetEventSourceId();
     public AbstractEntity()
     {
     }
@@ -53,8 +51,6 @@ namespace CsCat
       is_has_destroyed_child = false;
       is_has_destroyed_child_component = false;
       is_has_destroyed_component = false;
-      var eventSourceImpl = this.cache.Get<EventSourceImpl>(typeof(EventSourceImpl).ToString());
-      eventSourceImpl?.Despawn();
       cache.Clear();
     }
   }

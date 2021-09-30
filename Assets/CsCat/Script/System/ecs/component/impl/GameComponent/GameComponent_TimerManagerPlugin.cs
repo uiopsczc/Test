@@ -4,16 +4,9 @@ namespace CsCat
 {
   public partial class GameComponent
   {
-    public virtual TimerManager timerManager
-    {
-      get { return cache.GetOrAddDefault(() => { return this.GetEntity<GameEntity>().timerManager; }); }
-    }
+	  protected TimerManagerPlugin timerManagerPlugin => cache.GetOrAddDefault(() => new TimerManagerPlugin(GetGameEntity().GetComponent<TimerManagerPluginComponent>().timerManagerPlugin.timerManager));
 
-    protected TimerManagerPlugin timerManagerPlugin
-    {
-      get { return cache.GetOrAddDefault(() => { return new TimerManagerPlugin(timerManager); }); }
-    }
-    /// <summary>
+	  /// <summary>
     /// duration needRunCount 里面随便一个触碰底线都会结束
     /// </summary>
     /// <param name="func">返回false表示不继续执行，结束</param>
@@ -44,6 +37,7 @@ namespace CsCat
 
     public void RemoveAllTimers()
     {
+			if(this.cache.ContainsKey<TimerManagerPlugin>())
       timerManagerPlugin.RemoveAllTimers();
     }
 

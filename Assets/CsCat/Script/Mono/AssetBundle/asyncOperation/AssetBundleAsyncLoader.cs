@@ -46,9 +46,9 @@ namespace CsCat
         return;
       }
 
-      AddListener<ResourceWebRequester>(AssetBundleEventNameConst.On_ResourceWebRequester_Fail,
+      AddListener<ResourceWebRequester>(null,AssetBundleEventNameConst.On_ResourceWebRequester_Fail,
         OnResourceWebRequesterFail);
-      AddListener<ResourceWebRequester>(AssetBundleEventNameConst.On_ResourceWebRequester_Success,
+      AddListener<ResourceWebRequester>(null,AssetBundleEventNameConst.On_ResourceWebRequester_Success,
         OnResourceWebRequesterSuccess);
     }
 
@@ -121,7 +121,7 @@ namespace CsCat
       if (!waiting_assetBundleCat_dict.ContainsValue(resourceWebRequester.assetBundleCat) ||
           resourceWebRequester.is_not_cache) return;
       resultInfo.is_fail = true;
-      RemoveListener<ResourceWebRequester>(AssetBundleEventNameConst.On_ResourceWebRequester_Fail,
+      RemoveListener<ResourceWebRequester>(null,AssetBundleEventNameConst.On_ResourceWebRequester_Fail,
         OnResourceWebRequesterFail);
     }
 
@@ -129,18 +129,18 @@ namespace CsCat
     protected override void OnSuccess()
     {
       base.OnSuccess();
-      Broadcast(AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Success, this);
+      Broadcast(null,AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Success, this);
     }
     protected override void OnFail()
     {
       base.OnFail();
-      Broadcast(AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Fail, this);
+      Broadcast(null,AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Fail, this);
     }
 
     protected override void OnDone()
     {
       base.OnDone();
-      Broadcast(AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Done, this);
+      Broadcast(null,AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Done, this);
       this.Destroy();
       PoolCatManagerUtil.Despawn(this);
     }

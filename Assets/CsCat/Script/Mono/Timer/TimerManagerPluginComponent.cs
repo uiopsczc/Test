@@ -6,7 +6,7 @@ namespace CsCat
 {
   public class TimerManagerPluginComponent : AbstractComponent
   {
-    private TimerManagerPlugin timerManagerPlugin;
+    public TimerManagerPlugin timerManagerPlugin;
     public void Init(TimerManagerPlugin timerManagerPlugin)
     {
       base.Init();

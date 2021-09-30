@@ -16,8 +16,8 @@ namespace CsCat
       this.InitFactionUnitDict();
       this.InitFactionStateInfoDict();
 
-      this.AddListener<string, string>(UnitEventNameConst.On_Unit_Guid_Change, this.OnUnitGuidChange);
-      this.AddListener<string, string, string>(UnitEventNameConst.On_Unit_Faction_Change, this.OnUnitFactionChange);
+      this.AddListener<string, string>(null, UnitEventNameConst.On_Unit_Guid_Change, this.OnUnitGuidChange);
+      this.AddListener<string, string, string>(null, UnitEventNameConst.On_Unit_Faction_Change, this.OnUnitFactionChange);
     }
 
     protected override void __Update(float deltaTime = 0, float unscaledDeltaTime = 0)
@@ -50,7 +50,7 @@ namespace CsCat
       var new_guid = arg_dict.Get<string>("guid");
       var old_guid = unit.GetGuid();
       if (!new_guid.IsNullOrWhiteSpace() && !old_guid.IsNullOrWhiteSpace())
-        this.Broadcast(UnitEventNameConst.On_Unit_Guid_Change, old_guid, new_guid);
+        this.Broadcast(null, UnitEventNameConst.On_Unit_Guid_Change, old_guid, new_guid);
       if (!new_guid.IsNullOrWhiteSpace())
         arg_dict.Remove(new_guid);
       unit.UpdateUnit(arg_dict);

@@ -21,7 +21,7 @@ namespace CsCat
     public override void Init()
     {
       base.Init();
-      this.AddListener<float, float>(GlobalEventNameConst.Update, Update);
+      this.AddListener<float, float>(null, GlobalEventNameConst.Update, Update);
     }
 
     private RandomManager randomManager => _randomManager ?? Client.instance.randomManager;

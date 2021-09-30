@@ -19,7 +19,7 @@ namespace CsCat
     private void OnFactionChange(string old_value, string new_value)
     {
       if (!new_value.Equals(old_value))
-        this.Broadcast(UnitEventNameConst.On_Unit_Faction_Change, this.GetGuid(), old_value, new_value);
+        this.Broadcast(null, UnitEventNameConst.On_Unit_Faction_Change, this.GetGuid(), old_value, new_value);
     }
   }
 }

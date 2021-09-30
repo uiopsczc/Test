@@ -5,7 +5,7 @@ namespace CsCat
     public override void Init()
     {
       base.Init();
-      this.AddListener("hello".ToEventName(this.GetRootHFSM()), () => LogCat.warn(this.key));
+      this.AddListener(this.GetRootHFSM().eventDispatchers, "hello", () => LogCat.warn(this.key));
     }
 
     public override void Enter(object[] args)
