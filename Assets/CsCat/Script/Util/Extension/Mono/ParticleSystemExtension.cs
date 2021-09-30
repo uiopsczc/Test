@@ -13,5 +13,31 @@ namespace CsCat
     {
       PauseUtil.SetPuase(self, cause);
     }
-  }
+
+	  public static float GetDuration(this ParticleSystem self, bool is_recursive = true)
+	  {
+		  float maxDuration = 0f;
+		  float duration = 0;
+			if (is_recursive)
+		  {
+			  ParticleSystem[] particleSystems = self.GetComponentsInChildren<ParticleSystem>();
+			  foreach (var particleSystem in particleSystems)
+			  {
+				  duration = particleSystem.GetDuration(false);
+				  if (duration == -1f)
+					  return -1f;
+				  if (maxDuration < duration)
+					  maxDuration = duration;
+			  }
+
+			  return duration;
+		  }
+
+		  var main = self.main;
+		  if (main.loop)
+			  return -1;
+		  duration = main.duration + main.startLifetimeMultiplier + main.startDelayMultiplier;
+		  return duration;
+	  }
+	}
 }

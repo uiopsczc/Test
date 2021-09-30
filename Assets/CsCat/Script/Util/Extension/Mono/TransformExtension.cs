@@ -617,47 +617,52 @@ namespace CsCat
       return TransformUtil.GetRelativePath(self, parent_transform);
     }
 
-    #region DOTween
+	  public static float GetParticleSystemDuration(this Transform self, bool is_recursive = true)
+	  {
+		  return self.gameObject.GetParticleSystemDuration(is_recursive);
+	  }
 
-    #region act
+		#region DOTween
 
-    //    public static Tween DOLocalMoveXOfAct(this Transform self, float endValue, float duration, ActSequence parent)
-    //    {
-    //        return self.DOLocalMoveX(endValue, duration).SetDOTweenId(parent).OnComplete(() => { parent.Next(); });
-    //    }
-    //    public static Tween DOLocalMoveYOfAct(this Transform self, float endValue, float duration, ActSequence parent)
-    //    {
-    //        return self.DOLocalMoveY(endValue, duration).SetDOTweenId(parent).OnComplete(() => { parent.Next(); });
-    //    }
-    //    public static Tween DOLocalMoveZOfAct(this Transform self,float endValue, float duration, ActSequence parent)
-    //    {
-    //        return self.DOLocalMoveZ(endValue,duration).SetDOTweenId(parent).OnComplete(() => { parent.actCur.Exit(); });
-    //    }
-    //    public static Tween DOLocalMoveOfAct(this Transform self, Vector3 endValue, float duration, ActSequence parent)
-    //    {
-    //        return self.DOLocalMove(endValue, duration).SetDOTweenId(parent).OnComplete(() => { parent.actCur.Exit(); });
-    //    }
-    //
-    //    public static Tween DOMoveXOfAct(this Transform self, float endValue, float duration, ActSequence parent)
-    //    {
-    //        return self.DOMoveX(endValue, duration).SetDOTweenId(parent).OnComplete(() => { parent.actCur.Exit(); });
-    //    }
-    //    public static Tween DOMoveYOfAct(this Transform self, float endValue, float duration, ActSequence parent)
-    //    {
-    //        return self.DOMoveY(endValue, duration).SetDOTweenId(parent).OnComplete(() => { parent.actCur.Exit(); });
-    //    }
-    //    public static Tween DOMoveZOfAct(this Transform self, float endValue, float duration, ActSequence parent)
-    //    {
-    //        return self.DOMoveZ(endValue, duration).SetDOTweenId(parent).OnComplete(() => { parent.actCur.Exit(); });
-    //    }
-    //    public static Tween DOMoveOfAct(this Transform self, Vector3 endValue, float duration, ActSequence parent)
-    //    {
-    //        return self.DOMove(endValue, duration).SetDOTweenId(parent).OnComplete(() => { parent.actCur.Exit(); });
-    //    }
+		#region act
 
-    #endregion
+		//    public static Tween DOLocalMoveXOfAct(this Transform self, float endValue, float duration, ActSequence parent)
+		//    {
+		//        return self.DOLocalMoveX(endValue, duration).SetDOTweenId(parent).OnComplete(() => { parent.Next(); });
+		//    }
+		//    public static Tween DOLocalMoveYOfAct(this Transform self, float endValue, float duration, ActSequence parent)
+		//    {
+		//        return self.DOLocalMoveY(endValue, duration).SetDOTweenId(parent).OnComplete(() => { parent.Next(); });
+		//    }
+		//    public static Tween DOLocalMoveZOfAct(this Transform self,float endValue, float duration, ActSequence parent)
+		//    {
+		//        return self.DOLocalMoveZ(endValue,duration).SetDOTweenId(parent).OnComplete(() => { parent.actCur.Exit(); });
+		//    }
+		//    public static Tween DOLocalMoveOfAct(this Transform self, Vector3 endValue, float duration, ActSequence parent)
+		//    {
+		//        return self.DOLocalMove(endValue, duration).SetDOTweenId(parent).OnComplete(() => { parent.actCur.Exit(); });
+		//    }
+		//
+		//    public static Tween DOMoveXOfAct(this Transform self, float endValue, float duration, ActSequence parent)
+		//    {
+		//        return self.DOMoveX(endValue, duration).SetDOTweenId(parent).OnComplete(() => { parent.actCur.Exit(); });
+		//    }
+		//    public static Tween DOMoveYOfAct(this Transform self, float endValue, float duration, ActSequence parent)
+		//    {
+		//        return self.DOMoveY(endValue, duration).SetDOTweenId(parent).OnComplete(() => { parent.actCur.Exit(); });
+		//    }
+		//    public static Tween DOMoveZOfAct(this Transform self, float endValue, float duration, ActSequence parent)
+		//    {
+		//        return self.DOMoveZ(endValue, duration).SetDOTweenId(parent).OnComplete(() => { parent.actCur.Exit(); });
+		//    }
+		//    public static Tween DOMoveOfAct(this Transform self, Vector3 endValue, float duration, ActSequence parent)
+		//    {
+		//        return self.DOMove(endValue, duration).SetDOTweenId(parent).OnComplete(() => { parent.actCur.Exit(); });
+		//    }
 
-    public static Tween DOWait(this Transform self, float duration)
+		#endregion
+
+		public static Tween DOWait(this Transform self, float duration)
     {
       return self.DOBlendableLocalMoveBy(Vector3.zero, duration).SetDOTweenId();
     }

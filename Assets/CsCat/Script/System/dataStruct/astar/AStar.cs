@@ -62,14 +62,14 @@ namespace CsCat
 
     protected virtual void SetNeighborOffsetList()
     {
-      neighbor_offset_list.Add(new Vector2Int(0, 1)); //上方邻居节点
-      neighbor_offset_list.Add(new Vector2Int(1, 1)); //右上角邻居节点
-      neighbor_offset_list.Add(new Vector2Int(1, 0)); //右侧邻居节点
-      neighbor_offset_list.Add(new Vector2Int(1, -1)); //右下角邻居节点
-      neighbor_offset_list.Add(new Vector2Int(0, -1)); //下方邻居节点
-      neighbor_offset_list.Add(new Vector2Int(-1, -1)); //左下角的邻居节点
-      neighbor_offset_list.Add(new Vector2Int(-1, 0)); //左侧邻居节点
-      neighbor_offset_list.Add(new Vector2Int(-1, 1)); //左上角邻居节点
+      neighbor_offset_list.Add(Vector2IntConst.Top); //上方邻居节点
+      neighbor_offset_list.Add(Vector2IntConst.RightTop); //右上角邻居节点
+      neighbor_offset_list.Add(Vector2IntConst.Right); //右侧邻居节点
+      neighbor_offset_list.Add(Vector2IntConst.RightBottom); //右下角邻居节点
+      neighbor_offset_list.Add(Vector2IntConst.Bottom); //下方邻居节点
+      neighbor_offset_list.Add(Vector2IntConst.LeftBottom); //左下角的邻居节点
+      neighbor_offset_list.Add(Vector2IntConst.Left); //左侧邻居节点
+      neighbor_offset_list.Add(Vector2IntConst.LeftTop); //左上角邻居节点
     }
 
     protected void AddNodeToOpenList(AStarNode node)
@@ -135,7 +135,7 @@ namespace CsCat
     {
       int x1 = 0, y1 = 0, x2 = 0, y2 = 0;
       // 如果当前位置为左上角，则判断其下方和右侧是否为不可穿过的障碍
-      if (directionInfo.Equals(DirectionConst.GetDirectionInfo("left_top")))
+      if (directionInfo.Equals(DirectionConst.LeftTopDirectionInfo))
       {
         x1 = x;
         y1 = y - 1;
@@ -144,7 +144,7 @@ namespace CsCat
       }
 
       // 如果当前位置为右上角，则判断其下方和左侧是否为不可穿过的障碍
-      if (directionInfo.Equals(DirectionConst.GetDirectionInfo("right_top")))
+      if (directionInfo.Equals(DirectionConst.RightTopDirectionInfo))
       {
         x1 = x;
         y1 = y - 1;
@@ -153,7 +153,7 @@ namespace CsCat
       }
 
       // 如果当前位置为左下角，则判断其上方和右侧是否为不可穿过的障碍
-      if (directionInfo.Equals(DirectionConst.GetDirectionInfo("left_bottom")))
+      if (directionInfo.Equals(DirectionConst.LeftBottomDirectionInfo))
       {
         x1 = x;
         y1 = y + 1;
@@ -162,7 +162,7 @@ namespace CsCat
       }
 
       // 如果当前位置为右下角，则判断其上方和左侧是否为不可穿过的障碍
-      if (directionInfo.Equals(DirectionConst.GetDirectionInfo("right_bottom")))
+      if (directionInfo.Equals(DirectionConst.RightBottomDirectionInfo))
       {
         x1 = x;
         y1 = y + 1;

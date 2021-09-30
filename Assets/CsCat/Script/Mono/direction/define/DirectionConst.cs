@@ -5,19 +5,39 @@ namespace CsCat
 {
   public static class DirectionConst
   {
-    private static Dictionary<string, DirectionInfo> direction_dict = new Dictionary<string, DirectionInfo>()
+	  public const string LeftTop = "LeftTop";
+	  public const string Top = "Top";
+	  public const string RightTop = "RightTop";
+	  public const string Left = "Left";
+	  public const string Center = "Center";
+	  public const string Right = "Right";
+	  public const string LeftBottom = "LeftBottom";
+	  public const string Bottom = "Bottom";
+	  public const string RightBottom = "RightBottom";
+
+	  public static DirectionInfo LeftTopDirectionInfo => GetDirectionInfo(LeftTop);
+	  public static DirectionInfo TopDirectionInfo => GetDirectionInfo(Top);
+	  public static DirectionInfo RightTopDirectionInfo => GetDirectionInfo(RightTop);
+	  public static DirectionInfo LeftDirectionInfo => GetDirectionInfo(Left);
+	  public static DirectionInfo CenterDirectionInfo => GetDirectionInfo(Center);
+	  public static DirectionInfo RightDirectionInfo => GetDirectionInfo(Right);
+	  public static DirectionInfo LeftBottomDirectionInfo => GetDirectionInfo(LeftBottom);
+	  public static DirectionInfo BottomDirectionInfo => GetDirectionInfo(Bottom);
+	  public static DirectionInfo RightBottomDirectionInfo => GetDirectionInfo(RightBottom);
+
+		private static Dictionary<string, DirectionInfo> direction_dict = new Dictionary<string, DirectionInfo>()
     {
-      {"left_bottom", new DirectionInfo(-1, -1, "left_bottom")},
-      {"bottom", new DirectionInfo(0, -1, "bottom")},
-      {"right_bottom", new DirectionInfo(1, -1, "right_bottom")},
+      {LeftBottom, new DirectionInfo(-1, -1, LeftBottom)},
+      {Bottom, new DirectionInfo(0, -1, Bottom)},
+      {RightBottom, new DirectionInfo(1, -1, RightBottom)},
 
-      {"left", new DirectionInfo(-1, 0, "left")},
-      {"center", new DirectionInfo(0, 0, "center")},
-      {"right", new DirectionInfo(1, 0, "right")},
+      {Left, new DirectionInfo(-1, 0, Left)},
+      {Center, new DirectionInfo(0, 0, Center)},
+      {Right, new DirectionInfo(1, 0, Right)},
 
-      {"left_top", new DirectionInfo(-1, 1, "left_top")},
-      {"top", new DirectionInfo(0, 1, "top")},
-      {"right_top", new DirectionInfo(1, 1, "right_top")},
+      {LeftTop, new DirectionInfo(-1, 1, LeftTop)},
+      {Top, new DirectionInfo(0, 1, Top)},
+      {RightTop, new DirectionInfo(1, 1, RightTop)},
     };
 
     private static Dictionary<Vector2Int, DirectionInfo> _direction_dict2;

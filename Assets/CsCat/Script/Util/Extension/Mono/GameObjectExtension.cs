@@ -253,13 +253,34 @@ namespace CsCat
     {
       return TransformUtil.GetRelativePath(self.transform, parent_gameObject == null ? null : parent_gameObject.transform);
     }
-    
 
-    #region 反射
+		public static float GetParticleSystemDuration(this GameObject self, bool is_recursive = true)
+		{
+			if (!is_recursive)
+			{
+				var particleSystem = self.GetComponent<ParticleSystem>();
+				if (particleSystem == null)
+					return 0;
+				return particleSystem.GetDuration(false);
+			}
 
-    #region FiledValue
+			float maxDuration = 0;
+			foreach (var particleSystem in self.GetComponentsInChildren<ParticleSystem>())
+			{
+				var duration = particleSystem.GetDuration(false);
+				if (duration == -1)
+					return duration;
+				if (maxDuration < duration)
+					maxDuration = duration;
+			}
+			return maxDuration;
+		}
 
-    public static T GetFieldValue<T>(this GameObject self, string field_name, T defalutValue,
+		#region 反射
+
+		#region FiledValue
+
+		public static T GetFieldValue<T>(this GameObject self, string field_name, T defalutValue,
       params Type[] exclude_component_types)
     {
       return GameObjectUtil.GetFieldValue<T>(self, field_name, defalutValue, exclude_component_types);

@@ -13,5 +13,6 @@ namespace CsCat
     public static Vector2 Default_Min = Min;
 
     public static Vector2 Default = Default_Max;
-  }
+
+	}
 }

@@ -105,10 +105,10 @@ namespace CsCat
       switch (astarHType)
       {
         case AStarHType.Manhattan_Distance:
-          neighbor_offset_list.Add(new Vector2Int(0, 1)); //上方邻居节点
-          neighbor_offset_list.Add(new Vector2Int(1, 0)); //右侧邻居节点
-          neighbor_offset_list.Add(new Vector2Int(0, -1)); //下方邻居节点
-          neighbor_offset_list.Add(new Vector2Int(-1, 0)); //左侧邻居节点
+          neighbor_offset_list.Add(Vector2IntConst.Top); //上方邻居节点
+          neighbor_offset_list.Add(Vector2IntConst.Right); //右侧邻居节点
+          neighbor_offset_list.Add(Vector2IntConst.Bottom); //下方邻居节点
+          neighbor_offset_list.Add(Vector2IntConst.Left); //左侧邻居节点
           break;
         default:
           base.SetNeighborOffsetList();
