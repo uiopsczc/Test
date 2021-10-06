@@ -7,156 +7,156 @@ using Type = System.Type;
 
 namespace CsCat
 {
-  public partial class ReflectionUtil
-  {
-    public static Dictionary<Type, Dictionary<string, Dictionary<object, object>>> cache_dict =
-      new Dictionary<Type, Dictionary<string, Dictionary<object, object>>>();
-
-    private const string methodInfo_string = "methodInfo";
-    private const string default_methodInfo_sub_key = "methodInfo_sub_key";
-    private const string filedInfo_string = "fieldInfo";
-    private const string propertyInfo_string = "propertyInfo";
-    private const string split_string = "_";
-
-    //////////////////////////////////////////////////////////////////////
-    // MethodInfoCache
-    //////////////////////////////////////////////////////////////////////
-    public static bool IsContainsMethodInfoCache(Type type, string method_name, params Type[] paramer_types)
+    public partial class ReflectionUtil
     {
-      if (!cache_dict.ContainsKey(type))
-        return false;
-      string main_key = methodInfo_string + split_string + method_name;
-      if (!cache_dict[type].ContainsKey(main_key))
-        return false;
-      var sub_key = new Args(paramer_types);
-      return cache_dict[type][main_key].ContainsKey(sub_key);
-    }
+        private static Dictionary<Type, Dictionary<string, Dictionary<object, object>>> _cacheDict =
+            new Dictionary<Type, Dictionary<string, Dictionary<object, object>>>();
 
-    public static void SetMethodInfoCache(Type type, string method_name, Type[] paramer_types, MethodInfo methodInfo)
-    {
-      if (!cache_dict.ContainsKey(type))
-        cache_dict[type] = new Dictionary<string, Dictionary<object, object>>();
-      string main_key = methodInfo_string + split_string + method_name;
-      if (!cache_dict[type].ContainsKey(main_key))
-        cache_dict[type][main_key] = new Dictionary<object, object>();
-      var sub_key = new Args(paramer_types);
-      cache_dict[type][main_key][sub_key] = methodInfo;
-    }
+        private const string _methodInfoString = "methodInfo";
+        private const string _defaultMethodInfoSubKey = "methodInfo_sub_key";
+        private const string _filedInfoString = "fieldInfo";
+        private const string _propertyInfoString = "propertyInfo";
+        private const string _splitString = StringConst.StringUnderline;
 
-    public static MethodInfo GetMethodInfoCache(Type type, string method_name, params Type[] paramer_types)
-    {
-      if (!cache_dict.ContainsKey(type))
-        return null;
-      string main_key = methodInfo_string + split_string + method_name;
-      if (!cache_dict[type].ContainsKey(main_key))
-        return null;
-      var sub_key = new Args(paramer_types);
-      return cache_dict[type][main_key][sub_key] as MethodInfo;
-    }
+        //////////////////////////////////////////////////////////////////////
+        // MethodInfoCache
+        //////////////////////////////////////////////////////////////////////
+        public static bool IsContainsMethodInfoCache(Type type, string methodName, params Type[] paramer_types)
+        {
+            if (!_cacheDict.ContainsKey(type))
+                return false;
+            string mainKey = _methodInfoString + _splitString + methodName;
+            if (!_cacheDict[type].ContainsKey(mainKey))
+                return false;
+            var subKey = new Args(paramer_types);
+            return _cacheDict[type][mainKey].ContainsKey(subKey);
+        }
 
-    public static bool IsContainsMethodInfoCache2(Type type, string method_name)
-    {
-      if (!cache_dict.ContainsKey(type))
-        return false;
-      string main_key = methodInfo_string + split_string + method_name;
-      if (!cache_dict[type].ContainsKey(main_key))
-        return false;
-      var sub_key = default_methodInfo_sub_key;
-      return cache_dict[type][main_key].ContainsKey(sub_key);
-    }
+        public static void SetMethodInfoCache(Type type, string methodName, Type[] paramerTypes, MethodInfo methodInfo)
+        {
+            if (!_cacheDict.ContainsKey(type))
+                _cacheDict[type] = new Dictionary<string, Dictionary<object, object>>();
+            string mainKey = _methodInfoString + _splitString + methodName;
+            if (!_cacheDict[type].ContainsKey(mainKey))
+                _cacheDict[type][mainKey] = new Dictionary<object, object>();
+            var subKey = new Args(paramerTypes);
+            _cacheDict[type][mainKey][subKey] = methodInfo;
+        }
 
-    public static void SetMethodInfoCache2(Type type, string method_name, MethodInfo methodInfo)
-    {
-      if (!cache_dict.ContainsKey(type))
-        cache_dict[type] = new Dictionary<string, Dictionary<object, object>>();
-      string main_key = methodInfo_string + split_string + method_name;
-      if (!cache_dict[type].ContainsKey(main_key))
-        cache_dict[type][main_key] = new Dictionary<object, object>();
-      var sub_key = default_methodInfo_sub_key;
-      cache_dict[type][main_key][sub_key] = methodInfo;
-    }
+        public static MethodInfo GetMethodInfoCache(Type type, string methodName, params Type[] paramerTypes)
+        {
+            if (!_cacheDict.ContainsKey(type))
+                return null;
+            string mainKey = _methodInfoString + _splitString + methodName;
+            if (!_cacheDict[type].ContainsKey(mainKey))
+                return null;
+            var subKey = new Args(paramerTypes);
+            return _cacheDict[type][mainKey][subKey] as MethodInfo;
+        }
 
-    public static MethodInfo GetMethodInfoCache2(Type type, string method_name)
-    {
-      if (!cache_dict.ContainsKey(type))
-        return null;
-      string main_key = methodInfo_string + split_string + method_name;
-      if (!cache_dict[type].ContainsKey(main_key))
-        return null;
-      var sub_key = default_methodInfo_sub_key;
-      return cache_dict[type][main_key][sub_key] as MethodInfo;
-    }
+        public static bool IsContainsMethodInfoCache2(Type type, string methodName)
+        {
+            if (!_cacheDict.ContainsKey(type))
+                return false;
+            string mainKey = _methodInfoString + _splitString + methodName;
+            if (!_cacheDict[type].ContainsKey(mainKey))
+                return false;
+            var subKey = _defaultMethodInfoSubKey;
+            return _cacheDict[type][mainKey].ContainsKey(subKey);
+        }
 
-    //////////////////////////////////////////////////////////////////////
-    // FieldInfoCache
-    //////////////////////////////////////////////////////////////////////
-    public static bool IsContainsFieldInfoCache(Type type, string field_name)
-    {
-      if (!cache_dict.ContainsKey(type))
-        return false;
-      string main_key = filedInfo_string + split_string + field_name;
-      if (!cache_dict[type].ContainsKey(main_key))
-        return false;
-      var sub_key = "";
-      return cache_dict[type][main_key].ContainsKey(sub_key);
-    }
+        public static void SetMethodInfoCache2(Type type, string methodName, MethodInfo methodInfo)
+        {
+            if (!_cacheDict.ContainsKey(type))
+                _cacheDict[type] = new Dictionary<string, Dictionary<object, object>>();
+            string mainKey = _methodInfoString + _splitString + methodName;
+            if (!_cacheDict[type].ContainsKey(mainKey))
+                _cacheDict[type][mainKey] = new Dictionary<object, object>();
+            var subKey = _defaultMethodInfoSubKey;
+            _cacheDict[type][mainKey][subKey] = methodInfo;
+        }
 
-    public static void SetFieldInfoCache(Type type, string field_name, FieldInfo fieldInfo)
-    {
-      if (!cache_dict.ContainsKey(type))
-        cache_dict[type] = new Dictionary<string, Dictionary<object, object>>();
-      string main_key = filedInfo_string + split_string + field_name;
-      if (!cache_dict[type].ContainsKey(main_key))
-        cache_dict[type][main_key] = new Dictionary<object, object>();
-      var sub_key = "";
-      cache_dict[type][main_key][sub_key] = fieldInfo;
-    }
+        public static MethodInfo GetMethodInfoCache2(Type type, string methodName)
+        {
+            if (!_cacheDict.ContainsKey(type))
+                return null;
+            string mainKey = _methodInfoString + _splitString + methodName;
+            if (!_cacheDict[type].ContainsKey(mainKey))
+                return null;
+            var subKey = _defaultMethodInfoSubKey;
+            return _cacheDict[type][mainKey][subKey] as MethodInfo;
+        }
 
-    public static FieldInfo GetFieldInfoCache(Type type, string field_name)
-    {
-      if (!cache_dict.ContainsKey(type))
-        return null;
-      string main_key = filedInfo_string + split_string + field_name;
-      if (!cache_dict[type].ContainsKey(main_key))
-        return null;
-      var sub_key = "";
-      return cache_dict[type][main_key][sub_key] as FieldInfo;
-    }
+        //////////////////////////////////////////////////////////////////////
+        // FieldInfoCache
+        //////////////////////////////////////////////////////////////////////
+        public static bool IsContainsFieldInfoCache(Type type, string fieldName)
+        {
+            if (!_cacheDict.ContainsKey(type))
+                return false;
+            string mainKey = _filedInfoString + _splitString + fieldName;
+            if (!_cacheDict[type].ContainsKey(mainKey))
+                return false;
+            var subKey = "";
+            return _cacheDict[type][mainKey].ContainsKey(subKey);
+        }
 
-    //////////////////////////////////////////////////////////////////////
-    // PropertyInfoCache
-    //////////////////////////////////////////////////////////////////////
-    public static bool IsContainsPropertyInfoCache(Type type, string property_name)
-    {
-      if (!cache_dict.ContainsKey(type))
-        return false;
-      string main_key = propertyInfo_string + split_string + property_name;
-      if (!cache_dict[type].ContainsKey(main_key))
-        return false;
-      var sub_key = "";
-      return cache_dict[type][main_key].ContainsKey(sub_key);
-    }
+        public static void SetFieldInfoCache(Type type, string fieldName, FieldInfo fieldInfo)
+        {
+            if (!_cacheDict.ContainsKey(type))
+                _cacheDict[type] = new Dictionary<string, Dictionary<object, object>>();
+            string mainKey = _filedInfoString + _splitString + fieldName;
+            if (!_cacheDict[type].ContainsKey(mainKey))
+                _cacheDict[type][mainKey] = new Dictionary<object, object>();
+            var subKey = StringConst.StringEmpty;
+            _cacheDict[type][mainKey][subKey] = fieldInfo;
+        }
 
-    public static void SetPropertyInfoCache(Type type, string property_name, PropertyInfo propertyInfo)
-    {
-      if (!cache_dict.ContainsKey(type))
-        cache_dict[type] = new Dictionary<string, Dictionary<object, object>>();
-      string main_key = propertyInfo_string + split_string + property_name;
-      if (!cache_dict[type].ContainsKey(main_key))
-        cache_dict[type][main_key] = new Dictionary<object, object>();
-      var sub_key = "";
-      cache_dict[type][main_key][sub_key] = propertyInfo;
-    }
+        public static FieldInfo GetFieldInfoCache(Type type, string fieldName)
+        {
+            if (!_cacheDict.ContainsKey(type))
+                return null;
+            string mainKey = _filedInfoString + _splitString + fieldName;
+            if (!_cacheDict[type].ContainsKey(mainKey))
+                return null;
+            var subKey = StringConst.StringEmpty;
+            return _cacheDict[type][mainKey][subKey] as FieldInfo;
+        }
 
-    public static PropertyInfo GetPropertyInfoCache(Type type, string property_name)
-    {
-      if (!cache_dict.ContainsKey(type))
-        return null;
-      string main_key = propertyInfo_string + split_string + property_name;
-      if (!cache_dict[type].ContainsKey(main_key))
-        return null;
-      var sub_key = "";
-      return cache_dict[type][main_key][sub_key] as PropertyInfo;
+        //////////////////////////////////////////////////////////////////////
+        // PropertyInfoCache
+        //////////////////////////////////////////////////////////////////////
+        public static bool IsContainsPropertyInfoCache(Type type, string propertyName)
+        {
+            if (!_cacheDict.ContainsKey(type))
+                return false;
+            string mainKey = _propertyInfoString + _splitString + propertyName;
+            if (!_cacheDict[type].ContainsKey(mainKey))
+                return false;
+            var subKey = StringConst.StringEmpty;
+            return _cacheDict[type][mainKey].ContainsKey(subKey);
+        }
+
+        public static void SetPropertyInfoCache(Type type, string propertyName, PropertyInfo propertyInfo)
+        {
+            if (!_cacheDict.ContainsKey(type))
+                _cacheDict[type] = new Dictionary<string, Dictionary<object, object>>();
+            string mainKey = _propertyInfoString + _splitString + propertyName;
+            if (!_cacheDict[type].ContainsKey(mainKey))
+                _cacheDict[type][mainKey] = new Dictionary<object, object>();
+            var subKey = StringConst.StringEmpty;
+            _cacheDict[type][mainKey][subKey] = propertyInfo;
+        }
+
+        public static PropertyInfo GetPropertyInfoCache(Type type, string propertyName)
+        {
+            if (!_cacheDict.ContainsKey(type))
+                return null;
+            string mainKey = _propertyInfoString + _splitString + propertyName;
+            if (!_cacheDict[type].ContainsKey(mainKey))
+                return null;
+            var subKey = StringConst.StringEmpty;
+            return _cacheDict[type][mainKey][subKey] as PropertyInfo;
+        }
     }
-  }
 }

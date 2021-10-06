@@ -1,20 +1,16 @@
 namespace CsCat
 {
-  public class StringUtilCat
-  {
-    public static string[] SplitIgnore(string self, string split = ",", string ignore_left = "\\\"",
-      string ignore_right = null)
+    public class StringUtilCat
     {
-      return self.SplitIgnore(split, ignore_left, ignore_right);
-    }
+        public static string[] SplitIgnore(string self, string split = StringConst.StringComma, string ignoreLeft = StringConst.StringRegexDoubleQuotes,
+            string ignoreRight = null)
+        {
+            return self.SplitIgnore(split, ignoreLeft, ignoreRight);
+        }
 
-    public static bool IsNumber(string self)
-    {
-      return self.IsNumber();
+        public static bool IsNumber(string self)
+        {
+            return self.IsNumber();
+        }
     }
-
-  }
 }
-
-
-

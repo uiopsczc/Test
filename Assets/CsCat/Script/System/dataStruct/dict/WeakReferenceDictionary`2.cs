@@ -94,8 +94,8 @@ namespace CsCat
       if (this.dict.ContainsKey(key))
       {
         var valueResult = this.dict[key].GetValueResult<V>();
-        value = valueResult.value;
-        return valueResult.is_has_value;
+        value = valueResult.GetValue();
+        return valueResult.GetIsHasValue();
       }
 
       value = default(V);

@@ -1,63 +1,65 @@
-
 namespace CsCat
 {
-  public class Template
-  {
-    //////////////////////////////////////////////////////////////////////
-    // TODO
-    //////////////////////////////////////////////////////////////////////
+    public class Template
+    {
+        //////////////////////////////////////////////////////////////////////
+        // TODO
+        //////////////////////////////////////////////////////////////////////
 
-    #region field
+        //////////////////////////////////////////////////////////////////////
+        // Get
+        //////////////////////////////////////////////////////////////////////
 
-    #endregion
+        
+        //////////////////////////////////////////////////////////////////////
+        // Set
+        //////////////////////////////////////////////////////////////////////
+        #region field
 
-    #region property
+        #endregion
 
-    #endregion
+        #region property
 
-    #region delegate
+        #endregion
 
-    #endregion
+        #region delegate
 
-    #region ctor
+        #endregion
 
-    #endregion
+        #region ctor
 
-    #region static method
+        #endregion
 
-    #endregion
+        #region static method
 
-    #region abstract method
+        #endregion
 
-    #endregion
+        #region abstract method
 
-    #region virtual method
+        #endregion
 
-    #endregion
+        #region virtual method
 
-    #region override method
+        #endregion
 
-    #endregion
+        #region override method
 
-    #region public method
+        #endregion
 
-    #endregion
+        #region public method
 
-    #region internal method
+        #endregion
 
-    #endregion
+        #region internal method
 
-    #region protected method
+        #endregion
 
-    #endregion
+        #region protected method
 
-    #region private method
+        #endregion
 
-    #endregion
+        #region private method
 
-
-  }
+        #endregion
+    }
 }
-
-
-

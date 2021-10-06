@@ -1,27 +1,25 @@
 using System;
+
 namespace CsCat
 {
-  public class CommonUtil
-  {
-
-    public static object ConvertType(string value, Type type)
+    public class CommonUtil
     {
-      //LogCat.LogWarning(type);
-      if (type == typeof(Boolean))
-        return bool.Parse(value.ToLower());
-      else if (type == typeof(Int32))
-        return int.Parse(value);
-      else if (type == typeof(Int16))
-        return short.Parse(value);
-      else if (type == typeof(Single))
-        return float.Parse(value);
-      else if (type == typeof(Double))
-        return double.Parse(value);
-      else if (type == typeof(Char))
-        return char.Parse(value);
-      else
-        return value;
+        public static object ConvertType(string value, Type type)
+        {
+            //LogCat.LogWarning(type);
+            if (type == typeof(bool))
+                return bool.Parse(value.ToLower());
+            if (type == typeof(int))
+                return int.Parse(value);
+            if (type == typeof(short))
+                return short.Parse(value);
+            if (type == typeof(float))
+                return float.Parse(value);
+            if (type == typeof(double))
+                return double.Parse(value);
+            if (type == typeof(char))
+                return char.Parse(value);
+            return value;
+        }
     }
-
-  }
 }

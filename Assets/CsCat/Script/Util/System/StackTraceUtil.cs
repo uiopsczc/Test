@@ -10,12 +10,10 @@ namespace CsCat
     {
       StackTrace stackTrace = new StackTrace();
 
-      int offset_index = 1; //当前是第一层
-      int target_index = offset_index + index;
+      int offsetIndex = 1; //当前是第一层
+      int targetIndex = offsetIndex + index;
       //UnityEngine.LogCat.LogWarning(targetIndex + " "+stackTrace.GetFrame(targetIndex).GetMethod().Name+" "+ stackTrace.GetFrame(targetIndex).GetMethod().DeclaringType);
-      if (stackTrace.GetFrame(target_index) == null)
-        return null;
-      return stackTrace.GetFrame(target_index).GetMethod();
+      return stackTrace.GetFrame(targetIndex)?.GetMethod();
     }
   }
 }

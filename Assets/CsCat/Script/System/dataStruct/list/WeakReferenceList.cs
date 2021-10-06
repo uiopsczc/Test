@@ -28,7 +28,7 @@ namespace CsCat
       get
       {
         var valueResult = list[index].GetValueResult<V>();
-        return valueResult.value;
+        return valueResult.GetValue();
       }
       set { this.Set(index, value); }
     }
@@ -53,7 +53,7 @@ namespace CsCat
       return this.list.Any(a =>
       {
         var valueResult = a.GetValueResult<V>();
-        if (valueResult.is_has_value && ObjectUtil.Equals(value, valueResult.value))
+        if (valueResult.GetIsHasValue() && ObjectUtil.Equals(value, valueResult.GetValue()))
           return true;
         else
           return false;

@@ -14,7 +14,7 @@ namespace CsCat
     public static AssetPathRefManager instance => SingletonFactory.instance.Get<AssetPathRefManager>();
 
 
-    void SingleInit()
+    public void SingleInit()
     {
       if (!Application.isEditor) return;
       if (EditorModeConst.Is_Editor_Mode)

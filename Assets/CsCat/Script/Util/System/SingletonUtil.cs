@@ -2,74 +2,61 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public class SingletonUtil
-  {
-    /// <summary>
-    /// Mono类的单例调用这里
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="_instance"></param>
-    /// <returns></returns>
-    public static T GetInstnaceMono<T>(T _instance) where T : MonoBehaviour, ISingleton
+    public class SingletonUtil
     {
-
-      if (_instance == null)
-      {
-        //检查场景有效的物体中是否有名为(Singleton)xxx【xxx为T的类名】
-        string targetName = string.Format("(Singleton){0}", typeof(T).GetLastName().ToString());
-        GameObject instance_gameObject = GameObject.Find(targetName);
-        if (instance_gameObject != null)
+        /// <summary>
+        /// Mono类的单例调用这里
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="instance"></param>
+        /// <returns></returns>
+        public static T GetInstnaceMono<T>(T instance) where T : MonoBehaviour, ISingleton
         {
-          _instance = instance_gameObject.GetComponent<T>();
-          _instance.InvokeMethod(SingletonConst.SingleInit_Method_Name);
-          return _instance;
-        }
-
-        if (GameObject.Find("(Singleton)SingletonMaster"))
-        {
-          //检测失效物体中是否有名为(Singleton)xxx【xxx为T的类名】
-          foreach (GameObject inActive_gameObject in SingletonFactory.instance.GetMono<SingletonMaster>()
-            .inActive_gameObjects)
-          {
-            if (inActive_gameObject.name.Equals(targetName))
+            if (instance != null) return instance;
+            //检查场景有效的物体中是否有名为(Singleton)xxx【xxx为T的类名】
+            string targetName = string.Format(SingletonConst.StringSingleFormat, typeof(T).GetLastName());
+            GameObject instanceGameObject = GameObject.Find(targetName);
+            if (instanceGameObject != null)
             {
-              _instance = inActive_gameObject.GetComponent<T>();
-              _instance.InvokeMethod(SingletonConst.SingleInit_Method_Name);
-              return _instance;
+                instance = instanceGameObject.GetComponent<T>();
+                instance.SingleInit();
+                return instance;
             }
 
-          }
+            if (GameObject.Find(SingletonConst.StringSingletonMaster))
+            {
+                //检测失效物体中是否有名为(Singleton)xxx【xxx为T的类名】
+                foreach (GameObject inActiveGameObject in SingletonFactory.instance.GetMono<SingletonMaster>()
+                    .inActiveGameObjects)
+                {
+                    if (!inActiveGameObject.name.Equals(targetName)) continue;
+                    instance = inActiveGameObject.GetComponent<T>();
+                    instance.SingleInit();
+                    return instance;
+                }
+            }
+
+            //如果都没有，新建一个
+            instanceGameObject = new GameObject();
+            instanceGameObject.name = targetName;
+            instance = instanceGameObject.AddComponent<T>();
+            instance.SingleInit();
+            return instance;
         }
 
-        //如果都没有，新建一个
-        instance_gameObject = new GameObject();
-        instance_gameObject.name = targetName;
-        _instance = instance_gameObject.AddComponent<T>();
-        _instance.InvokeMethod(SingletonConst.SingleInit_Method_Name);
-        return _instance;
+        /// <summary>
+        /// 非Mono类的单例调用这里
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="instance"></param>
+        /// <returns></returns>
+        public static T GetInstnace<T>(T instance) where T : ISingleton, new()
+        {
+            if (instance != null) return instance;
+            instance = new T();
+            instance.SingleInit();
 
-      }
-
-      return _instance;
+            return instance;
+        }
     }
-
-    /// <summary>
-    /// 非Mono类的单例调用这里
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <param name="_instance"></param>
-    /// <returns></returns>
-    public static T GetInstnace<T>(T _instance) where T : ISingleton, new()
-    {
-      if (_instance == null)
-      {
-        _instance = new T();
-        _instance.InvokeMethod(SingletonConst.SingleInit_Method_Name);
-      }
-
-      return _instance;
-    }
-  }
-
 }
-

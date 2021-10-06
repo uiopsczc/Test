@@ -1,30 +1,24 @@
 namespace CsCat
 {
-  public class TestJsonData : ISingleton
-  {
-    #region ctor
-
-    public TestJsonData()
+    public class TestJsonData : ISingleton
     {
-      DataCat = new JsonDataCat();
-      DataCat.Init(filePath);
+        public void SingleInit()
+        {
+        }
+
+        public TestJsonData()
+        {
+            DataCat = new JsonDataCat();
+            DataCat.Init(filePath);
+        }
+
+
+        public static TestJsonData Instance => SingletonFactory.instance.Get<TestJsonData>();
+
+
+        public JsonDataCat DataCat;
+
+
+        private readonly string filePath = "Data/TestJsonData";
     }
-
-    #endregion
-
-    #region property
-
-    public static TestJsonData Instance => SingletonFactory.instance.Get<TestJsonData>();
-
-    #endregion
-
-    #region field
-
-    public JsonDataCat DataCat;
-
-
-    private readonly string filePath = "Data/TestJsonData";
-
-    #endregion
-  }
 }

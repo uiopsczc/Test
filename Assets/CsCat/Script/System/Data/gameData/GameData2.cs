@@ -14,7 +14,7 @@ namespace CsCat
     private string file_path = SerializeDataConst.Save_File_Path_cs2;
     public Hashtable data;
 
-    void SingleInit()
+    public void SingleInit()
     {
       var fileInfo = new FileInfo(file_path);
       if (!fileInfo.Exists)

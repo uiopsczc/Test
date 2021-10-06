@@ -1,17 +1,10 @@
-
-
 namespace CsCat
 {
-  public class AutoValueUtil
-  {
-    public static AutoSetValue<T> SetValue<T>(ref T pre_value, T post_value)
+    public class AutoValueUtil
     {
-      return AutoSetValue.SetValue(ref pre_value, post_value);
+        public static AutoSetValue<T> SetValue<T>(ref T preValue, T postValue)
+        {
+            return AutoSetValue.SetValue(ref preValue, postValue);
+        }
     }
-
-
-
-
-  }
-
 }

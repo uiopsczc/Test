@@ -3,15 +3,19 @@ using UnityEngine.Audio;
 
 namespace CsCat
 {
-  public class SingletonMaster : MonoBehaviour, ISingleton
-  {
-    public AudioMixer audioMixer;
-    public GameObject[] inActive_gameObjects;
-    public static SingletonMaster instance => SingletonFactory.instance.GetMono<SingletonMaster>();
-
-    private void Awake()
+    public class SingletonMaster : MonoBehaviour, ISingleton
     {
-      DontDestroyOnLoad(gameObject);
+        public AudioMixer audioMixer;
+        public GameObject[] inActiveGameObjects;
+        public static SingletonMaster instance => SingletonFactory.instance.GetMono<SingletonMaster>();
+
+        public void SingleInit()
+        {
+        }
+
+        private void Awake()
+        {
+            DontDestroyOnLoad(gameObject);
+        }
     }
-  }
 }

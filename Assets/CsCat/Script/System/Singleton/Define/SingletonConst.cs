@@ -1,7 +1,8 @@
 namespace CsCat
 {
-  public class SingletonConst
-  {
-    public const string SingleInit_Method_Name = "SingleInit";
-  }
+    public class SingletonConst
+    {
+        public const string StringSingleFormat = "(Singleton){0}";
+        public const string StringSingletonMaster = "(Singleton)SingletonMaster";
+    }
 }

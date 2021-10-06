@@ -6,6 +6,6 @@ namespace CsCat
 
   public interface ISingleton
   {
-    //void SingleInit();
+    void SingleInit();
   }
 }

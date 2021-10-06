@@ -2,11 +2,11 @@ using System;
 
 namespace CsCat
 {
-  public class UintUtil
-  {
-    public static bool IsContains(uint value, uint be_contained_value)
+    public class UintUtil
     {
-      return (value & be_contained_value) == be_contained_value;
+        public static bool IsContains(uint value, uint beContainedValue)
+        {
+            return (value & beContainedValue) == beContainedValue;
+        }
     }
-  }
 }

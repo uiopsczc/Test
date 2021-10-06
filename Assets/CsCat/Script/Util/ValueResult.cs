@@ -1,14 +1,17 @@
 namespace CsCat
 {
-  public class ValueResult<V>
-  {
-    public bool is_has_value;
-    public V value;
-
-    public ValueResult(bool is_has_value, V value)
+    public class ValueResult<V>
     {
-      this.is_has_value = is_has_value;
-      this.value = value;
+        private bool _isHasValue;
+        private V _value;
+
+        public bool GetIsHasValue() => _isHasValue;
+        public V GetValue() => _value;
+
+        public ValueResult(bool isHasValue, V value)
+        {
+            this._isHasValue = isHasValue;
+            this._value = value;
+        }
     }
-  }
 }

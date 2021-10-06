@@ -9,7 +9,6 @@ namespace CsCat
   /// </summary>
   public class SingletonFactory : ISingleton
   {
-    #region field
 
     /// <summary>
     /// 非mono类的单例集合
@@ -25,9 +24,6 @@ namespace CsCat
 
     private static SingletonFactory _instance;
 
-    #endregion
-
-    #region property
 
     public static SingletonFactory instance
     {
@@ -42,16 +38,18 @@ namespace CsCat
       }
     }
 
-    #endregion
 
-    #region public method
+      public void SingleInit()
+      {
+      }
 
-    /// <summary>
-    /// 获取非mono类的单例集合
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <returns></returns>
-    public T Get<T>() where T : ISingleton, new()
+
+        /// <summary>
+        /// 获取非mono类的单例集合
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public T Get<T>() where T : ISingleton, new()
     {
       object result = null;
       Type type = typeof(T);
@@ -75,8 +73,8 @@ namespace CsCat
       return mono_dict[type].GetComponent(typeof(T)) as T;
     }
 
-    #endregion
 
 
+      
   }
 }
