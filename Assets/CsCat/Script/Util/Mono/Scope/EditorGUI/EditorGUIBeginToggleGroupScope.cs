@@ -1,21 +1,23 @@
 using System;
 #if UNITY_EDITOR
 using UnityEditor;
+
 namespace CsCat
 {
-  public class EditorGUIBeginToggleGroupScope : IDisposable
-  {
-    public EditorGUIBeginToggleGroupScope(bool is_toggle, string name = "")
+    public class EditorGUIBeginToggleGroupScope : IDisposable
     {
-      toggle = EditorGUILayout.BeginToggleGroup(name, is_toggle);
-    }
+        public bool toggle { get; set; }
 
-    public bool toggle { get; set; }
+        public EditorGUIBeginToggleGroupScope(bool isToggle, string name = StringConst.String_Empty)
+        {
+            toggle = EditorGUILayout.BeginToggleGroup(name, isToggle);
+        }
 
-    public void Dispose()
-    {
-      EditorGUILayout.EndToggleGroup();
+
+        public void Dispose()
+        {
+            EditorGUILayout.EndToggleGroup();
+        }
     }
-  }
 }
 #endif

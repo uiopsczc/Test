@@ -11,7 +11,7 @@ namespace CsCat
     /// <param name="cause"></param>
     public static void SetPuase(this ParticleSystem self, object cause)
     {
-      PauseUtil.SetPuase(self, cause);
+      PauseUtil.SetPause(self, cause);
     }
 
 	  public static float GetDuration(this ParticleSystem self, bool is_recursive = true)

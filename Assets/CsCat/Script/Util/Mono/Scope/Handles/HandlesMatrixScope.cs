@@ -1,4 +1,3 @@
-
 #if UNITY_EDITOR
 using System;
 using UnityEditor;
@@ -6,20 +5,21 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public class HandlesMatrixScope : IDisposable
-  {
-    public HandlesMatrixScope(Matrix4x4 matrix_new)
+    public class HandlesMatrixScope : IDisposable
     {
-      martix_pre = Handles.matrix;
-      Handles.matrix = matrix_new;
-    }
+        private Matrix4x4 _preMatrix { get; }
 
-    private Matrix4x4 martix_pre { get; }
+        public HandlesMatrixScope(Matrix4x4 newMatrix)
+        {
+            _preMatrix = Handles.matrix;
+            Handles.matrix = newMatrix;
+        }
 
-    public void Dispose()
-    {
-      Handles.matrix = martix_pre;
+
+        public void Dispose()
+        {
+            Handles.matrix = _preMatrix;
+        }
     }
-  }
 }
 #endif

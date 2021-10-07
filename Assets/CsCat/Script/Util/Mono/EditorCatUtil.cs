@@ -1,7 +1,6 @@
 namespace CsCat
 {
-  public class EditorCatUtil
-  {
-
-  }
+    public class EditorCatUtil
+    {
+    }
 }

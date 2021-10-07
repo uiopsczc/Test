@@ -4,18 +4,16 @@ namespace CsCat
 {
   public class SceneUtil
   {
-    public static bool IsScene(string scene_name)
+    public static bool IsScene(string sceneName)
     {
-      if (SceneManager.GetActiveScene().name == scene_name)
-        return true;
-      return false;
+        return SceneManager.GetActiveScene().name.Equals(sceneName);
     }
 
     public static void SetActiveSceneByPath(string path)
     {
-      var scene_by_path = SceneManager.GetSceneByPath(path);
-      if (scene_by_path.isLoaded)
-        SceneManager.SetActiveScene(scene_by_path);
+      var sceneByPath = SceneManager.GetSceneByPath(path);
+      if (sceneByPath.isLoaded)
+        SceneManager.SetActiveScene(sceneByPath);
     }
   }
 }

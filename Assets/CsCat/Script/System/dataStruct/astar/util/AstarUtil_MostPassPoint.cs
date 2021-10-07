@@ -19,10 +19,10 @@ namespace CsCat
         if (!CanPass(astarMapPath, p.x, p.y, can_pass_obstacle_types, can_pass_terrain_types, can_out))
           break;
 
-        DirectionInfo directionInfo = DirectionConst.GetDirectionInfo(p.x - lp.x, p.y - lp.y);
+        DirectionInfo directionInfo = DirectionInfoUtil.GetDirectionInfo(p.x - lp.x, p.y - lp.y);
         //      directionInfo = DirectionConst.GetDirectionInfo(0, 0); // 不再判断临边障碍 2012-10-29
         //      LogCat.log(directionInfo.name);
-        if (directionInfo == DirectionConst.LeftTopDirectionInfo) // 左上角
+        if (directionInfo == DirectionInfoConst.LeftTopDirectionInfo) // 左上角
         {
 
           if (!CanPass(astarMapPath, p.x + 1, p.y, can_pass_obstacle_types, can_pass_terrain_types, can_out))
@@ -30,21 +30,21 @@ namespace CsCat
           if (!CanPass(astarMapPath, p.x, p.y - 1, can_pass_obstacle_types, can_pass_terrain_types, can_out))
             break;
         }
-        else if (directionInfo == DirectionConst.RightTopDirectionInfo) // 右上角
+        else if (directionInfo == DirectionInfoConst.RightTopDirectionInfo) // 右上角
         {
           if (!CanPass(astarMapPath, p.x - 1, p.y, can_pass_obstacle_types, can_pass_terrain_types, can_out))
             break;
           if (!CanPass(astarMapPath, p.x, p.y - 1, can_pass_obstacle_types, can_pass_terrain_types, can_out))
             break;
         }
-        else if (directionInfo == DirectionConst.RightBottomDirectionInfo) // 右下角
+        else if (directionInfo == DirectionInfoConst.RightBottomDirectionInfo) // 右下角
         {
           if (!CanPass(astarMapPath, p.x - 1, p.y, can_pass_obstacle_types, can_pass_terrain_types, can_out))
             break;
           if (!CanPass(astarMapPath, p.x, p.y + 1, can_pass_obstacle_types, can_pass_terrain_types, can_out))
             break;
         }
-        else if (directionInfo == DirectionConst.LeftBottomDirectionInfo) // 左下角
+        else if (directionInfo == DirectionInfoConst.LeftBottomDirectionInfo) // 左下角
         {
           if (!CanPass(astarMapPath, p.x + 1, p.y, can_pass_obstacle_types, can_pass_terrain_types, can_out))
             break;

@@ -9,7 +9,7 @@ namespace CsCat
     /// </summary>
     /// <param name="animator"></param>
     /// <param name="cause"></param>
-    public static void SetPuase(Animator animator, object cause)
+    public static void SetPause(Animator animator, object cause)
     {
       new PorpertyToRestore(cause, animator, "speed").AddToList();
       animator.speed = 0;
@@ -21,21 +21,17 @@ namespace CsCat
     /// </summary>
     /// <param name="gameObject"></param>
     /// <param name="cause"></param>
-    public static void SetPuase(GameObject gameObject, object cause)
+    public static void SetPause(GameObject gameObject, object cause)
     {
       if (gameObject.activeInHierarchy == false)
         return;
 
-      foreach (Animator animator in gameObject.GetComponentsInChildren<Animator>())
-      {
-        if (animator.enabled == true)
-          animator.SetPuase(cause);
-      }
+        foreach (var animator in gameObject.GetComponentsInChildren<Animator>())
+            if (animator.enabled)
+                animator.SetPuase(cause);
 
-      foreach (ParticleSystem ps in gameObject.GetComponentsInChildren<ParticleSystem>())
-      {
-        ps.SetPuase(cause);
-      }
+        foreach (var particleSystem in gameObject.GetComponentsInChildren<ParticleSystem>())
+            particleSystem.SetPuase(cause);
     }
 
     /// <summary>
@@ -43,7 +39,7 @@ namespace CsCat
     /// </summary>
     /// <param name="particleSystem"></param>
     /// <param name="cause"></param>
-    public static void SetPuase(ParticleSystem particleSystem, object cause)
+    public static void SetPause(ParticleSystem particleSystem, object cause)
     {
       new MemberToRestoreProxy(cause, particleSystem, "Play", true);
       particleSystem.Pause();

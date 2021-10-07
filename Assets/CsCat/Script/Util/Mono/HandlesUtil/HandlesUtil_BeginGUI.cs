@@ -1,12 +1,12 @@
 #if UNITY_EDITOR
 namespace CsCat
 {
-  public partial class HandlesUtil
-  {
-    public static HandlesBeginGUIScope BeginGUI()
+    public partial class HandlesUtil
     {
-      return new HandlesBeginGUIScope();
+        public static HandlesBeginGUIScope BeginGUI()
+        {
+            return new HandlesBeginGUIScope();
+        }
     }
-  }
 }
 #endif

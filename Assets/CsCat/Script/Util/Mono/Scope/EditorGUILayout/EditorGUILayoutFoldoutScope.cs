@@ -1,58 +1,59 @@
-
 #if UNITY_EDITOR
 using UnityEngine;
 using UnityEditor;
+
 namespace CsCat
 {
-  public class EditorGUILayoutFoldoutScope
-  {
-    public static bool Foldout(ref bool is_foldout, GUIContent content, bool is_toggle_on_label_click, GUIStyle style)
+    public class EditorGUILayoutFoldoutScope
     {
-      is_foldout = EditorGUILayout.Foldout(is_foldout, content, is_toggle_on_label_click, style);
-      return is_foldout;
-    }
+        public static bool Foldout(ref bool isFoldout, GUIContent content, bool isToggleOnLabelClick,
+            GUIStyle style)
+        {
+            isFoldout = EditorGUILayout.Foldout(isFoldout, content, isToggleOnLabelClick, style);
+            return isFoldout;
+        }
 
-    public static bool Foldout(ref bool is_foldout, GUIContent content, bool is_toggle_on_label_click)
-    {
-      is_foldout = EditorGUILayout.Foldout(is_foldout, content, is_toggle_on_label_click, EditorStyles.foldout);
-      return is_foldout;
-    }
+        public static bool Foldout(ref bool isFoldout, GUIContent content, bool isToggleOnLabelClick)
+        {
+            isFoldout = EditorGUILayout.Foldout(isFoldout, content, isToggleOnLabelClick, EditorStyles.foldout);
+            return isFoldout;
+        }
 
-    public static bool Foldout(ref bool is_foldout, GUIContent content, GUIStyle style)
-    {
-      is_foldout = EditorGUILayout.Foldout(is_foldout, content, false, style);
-      return is_foldout;
-    }
+        public static bool Foldout(ref bool isFoldout, GUIContent content, GUIStyle style)
+        {
+            isFoldout = EditorGUILayout.Foldout(isFoldout, content, false, style);
+            return isFoldout;
+        }
 
-    public static bool Foldout(ref bool is_foldout, GUIContent content)
-    {
-      is_foldout = EditorGUILayout.Foldout(is_foldout, content, false, EditorStyles.foldout);
-      return is_foldout;
-    }
+        public static bool Foldout(ref bool isFoldout, GUIContent content)
+        {
+            isFoldout = EditorGUILayout.Foldout(isFoldout, content, false, EditorStyles.foldout);
+            return isFoldout;
+        }
 
-    public static bool Foldout(ref bool is_foldout, string content, bool is_toggle_on_label_click, GUIStyle style)
-    {
-      is_foldout = EditorGUILayout.Foldout(is_foldout, content, is_toggle_on_label_click, style);
-      return is_foldout;
-    }
+        public static bool Foldout(ref bool isFoldout, string content, bool isToggleOnLabelClick, GUIStyle style)
+        {
+            isFoldout = EditorGUILayout.Foldout(isFoldout, content, isToggleOnLabelClick, style);
+            return isFoldout;
+        }
 
-    public static bool Foldout(ref bool is_foldout, string content, bool is_toggle_on_label_click)
-    {
-      is_foldout = EditorGUILayout.Foldout(is_foldout, content, is_toggle_on_label_click, EditorStyles.foldout);
-      return is_foldout;
-    }
+        public static bool Foldout(ref bool isFoldout, string content, bool isToggleOnLabelClick)
+        {
+            isFoldout = EditorGUILayout.Foldout(isFoldout, content, isToggleOnLabelClick, EditorStyles.foldout);
+            return isFoldout;
+        }
 
-    public static bool Foldout(ref bool is_foldout, string content, GUIStyle style)
-    {
-      is_foldout = EditorGUILayout.Foldout(is_foldout, content, false, style);
-      return is_foldout;
-    }
+        public static bool Foldout(ref bool isFoldout, string content, GUIStyle style)
+        {
+            isFoldout = EditorGUILayout.Foldout(isFoldout, content, false, style);
+            return isFoldout;
+        }
 
-    public static bool Foldout(ref bool is_foldout, string content)
-    {
-      is_foldout = EditorGUILayout.Foldout(is_foldout, content, false, EditorStyles.foldout);
-      return is_foldout;
+        public static bool Foldout(ref bool isFoldout, string content)
+        {
+            isFoldout = EditorGUILayout.Foldout(isFoldout, content, false, EditorStyles.foldout);
+            return isFoldout;
+        }
     }
-  }
 }
 #endif

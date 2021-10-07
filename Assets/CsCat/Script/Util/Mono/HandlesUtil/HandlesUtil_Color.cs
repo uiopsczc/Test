@@ -3,12 +3,12 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public partial class HandlesUtil
-  {
-    public static HandlesColorScope Color(Color color_new)
+    public partial class HandlesUtil
     {
-      return new HandlesColorScope(color_new);
+        public static HandlesColorScope Color(Color newColor)
+        {
+            return new HandlesColorScope(newColor);
+        }
     }
-  }
 }
 #endif

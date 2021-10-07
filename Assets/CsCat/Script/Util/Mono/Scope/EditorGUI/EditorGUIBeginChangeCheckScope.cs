@@ -1,42 +1,39 @@
-
 #if UNITY_EDITOR
 using System;
 using UnityEditor;
 
 namespace CsCat
 {
-  public class EditorGUIBeginChangeCheckScope : IDisposable
-  {
-    private bool is_EndChangeCheck = false;
-    private bool is_changed;
-
-
-    public EditorGUIBeginChangeCheckScope()
+    public class EditorGUIBeginChangeCheckScope : IDisposable
     {
-      EditorGUI.BeginChangeCheck();
-    }
+        private bool isEndChangeCheck = false;
+        private bool isChanged;
 
-    public bool IsChanged
-    {
-      get
-      {
-        if (!is_EndChangeCheck)
+
+        public EditorGUIBeginChangeCheckScope()
         {
-          is_changed = EditorGUI.EndChangeCheck();
-          is_EndChangeCheck = true;
+            EditorGUI.BeginChangeCheck();
         }
 
-        return is_changed;
-      }
-    }
+        public bool IsChanged
+        {
+            get
+            {
+                if (isEndChangeCheck) return isChanged;
+                isChanged = EditorGUI.EndChangeCheck();
+                isEndChangeCheck = true;
 
-    public void Dispose()
-    {
-      if (is_EndChangeCheck)
-        return;
-      is_changed = EditorGUI.EndChangeCheck();
-      is_EndChangeCheck = true;
+                return isChanged;
+            }
+        }
+
+        public void Dispose()
+        {
+            if (isEndChangeCheck)
+                return;
+            isChanged = EditorGUI.EndChangeCheck();
+            isEndChangeCheck = true;
+        }
     }
-  }
 }
 #endif

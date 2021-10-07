@@ -1,5 +1,8 @@
+using System;
+
 namespace CsCat
 {
+  [Flags]
   public enum TransformMode
   {
     localPosition = 1 << 0,

@@ -1,22 +1,23 @@
 using System;
 #if UNITY_EDITOR
 using UnityEditor;
+
 namespace CsCat
 {
-  public class EditorGUILabelWidthScope : IDisposable
-  {
-    private readonly float label_width_pre;
-
-    public EditorGUILabelWidthScope(float w)
+    public class EditorGUILabelWidthScope : IDisposable
     {
-      label_width_pre = EditorGUIUtility.labelWidth;
-      EditorGUIUtility.labelWidth = w;
-    }
+        private readonly float _preLabelWidth;
 
-    public void Dispose()
-    {
-      EditorGUIUtility.labelWidth = label_width_pre;
+        public EditorGUILabelWidthScope(float lableWidth)
+        {
+            _preLabelWidth = EditorGUIUtility.labelWidth;
+            EditorGUIUtility.labelWidth = lableWidth;
+        }
+
+        public void Dispose()
+        {
+            EditorGUIUtility.labelWidth = _preLabelWidth;
+        }
     }
-  }
 }
 #endif

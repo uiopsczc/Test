@@ -5,17 +5,17 @@ namespace CsCat
 {
   public class EditorGUIIndentLevelScope : IDisposable
   {
-    private readonly int add = 1;
+    private readonly int _add;
 
     public EditorGUIIndentLevelScope(int add = 1)
     {
-      this.add = add;
+      this._add = add;
       EditorGUI.indentLevel += add;
     }
 
     public void Dispose()
     {
-      EditorGUI.indentLevel -= add;
+      EditorGUI.indentLevel -= _add;
     }
   }
 }

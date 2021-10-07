@@ -112,19 +112,19 @@ namespace CsCat
 
       // 当前点(p.x,p.y)与该检测邻居点(new_x,new_y)如果是斜线的话， 垂直于当前点(p.x,p.y)与该检测邻居点(new_x,new_y)对角线的两个点中其中一个是阻挡的,则该检测邻居点忽略，不考虑
       // 判断左上角邻居节点
-      if (dx == -1 && dy == 1 && IsSkiped(DirectionConst.GetDirectionInfo(dx, dy), new_x, new_y))
+      if (dx == -1 && dy == 1 && IsSkiped(DirectionInfoUtil.GetDirectionInfo(dx, dy), new_x, new_y))
         return;
 
       // 判断左下角邻居节点
-      if (dx == -1 && dy == -1 && IsSkiped(DirectionConst.GetDirectionInfo(dx, dy), new_x, new_y))
+      if (dx == -1 && dy == -1 && IsSkiped(DirectionInfoUtil.GetDirectionInfo(dx, dy), new_x, new_y))
         return;
 
       // 判断右上角邻居节点
-      if (dx == 1 && dy == 1 && IsSkiped(DirectionConst.GetDirectionInfo(dx, dy), new_x, new_y))
+      if (dx == 1 && dy == 1 && IsSkiped(DirectionInfoUtil.GetDirectionInfo(dx, dy), new_x, new_y))
         return;
 
       // 判断右下角邻居节点
-      if (dx == 1 && dy == -1 && IsSkiped(DirectionConst.GetDirectionInfo(dx, dy), new_x, new_y))
+      if (dx == 1 && dy == -1 && IsSkiped(DirectionInfoUtil.GetDirectionInfo(dx, dy), new_x, new_y))
         return;
 
       var neighbor_node = PoolCatManagerUtil.Spawn<AStarNode>(null, astarNode => astarNode.Init(new_x, new_y));
@@ -135,7 +135,7 @@ namespace CsCat
     {
       int x1 = 0, y1 = 0, x2 = 0, y2 = 0;
       // 如果当前位置为左上角，则判断其下方和右侧是否为不可穿过的障碍
-      if (directionInfo.Equals(DirectionConst.LeftTopDirectionInfo))
+      if (directionInfo.Equals(DirectionInfoConst.LeftTopDirectionInfo))
       {
         x1 = x;
         y1 = y - 1;
@@ -144,7 +144,7 @@ namespace CsCat
       }
 
       // 如果当前位置为右上角，则判断其下方和左侧是否为不可穿过的障碍
-      if (directionInfo.Equals(DirectionConst.RightTopDirectionInfo))
+      if (directionInfo.Equals(DirectionInfoConst.RightTopDirectionInfo))
       {
         x1 = x;
         y1 = y - 1;
@@ -153,7 +153,7 @@ namespace CsCat
       }
 
       // 如果当前位置为左下角，则判断其上方和右侧是否为不可穿过的障碍
-      if (directionInfo.Equals(DirectionConst.LeftBottomDirectionInfo))
+      if (directionInfo.Equals(DirectionInfoConst.LeftBottomDirectionInfo))
       {
         x1 = x;
         y1 = y + 1;
@@ -162,7 +162,7 @@ namespace CsCat
       }
 
       // 如果当前位置为右下角，则判断其上方和左侧是否为不可穿过的障碍
-      if (directionInfo.Equals(DirectionConst.RightBottomDirectionInfo))
+      if (directionInfo.Equals(DirectionInfoConst.RightBottomDirectionInfo))
       {
         x1 = x;
         y1 = y + 1;

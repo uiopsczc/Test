@@ -1,24 +1,25 @@
-
 #if UNITY_EDITOR
 using System;
 using UnityEditor;
 using UnityEngine;
+
 namespace CsCat
 {
-  public class HandlesColorScope : IDisposable
-  {
-    public HandlesColorScope(Color color_new)
+    public class HandlesColorScope : IDisposable
     {
-      color_pre = Handles.color;
-      Handles.color = color_new;
-    }
+        [SerializeField] private Color preColor { get; }
 
-    [SerializeField] private Color color_pre { get; }
+        public HandlesColorScope(Color newColor)
+        {
+            preColor = Handles.color;
+            Handles.color = newColor;
+        }
 
-    public void Dispose()
-    {
-      Handles.color = color_pre;
+
+        public void Dispose()
+        {
+            Handles.color = preColor;
+        }
     }
-  }
 }
 #endif

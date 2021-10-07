@@ -40,7 +40,7 @@ namespace CsCat
     /// <param name="cause"></param>
     public static void SetPuase(this Animator self, object cause)
     {
-      PauseUtil.SetPuase(self, cause);
+      PauseUtil.SetPause(self, cause);
     }
 
     public static float SetTriggerExt(this Animator self, string trigger_name)

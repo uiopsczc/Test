@@ -117,7 +117,7 @@ namespace CsCat
     /// <param name="cause"></param>
     public static void SetPuase(this GameObject self, object cause)
     {
-      PauseUtil.SetPuase(self, cause);
+      PauseUtil.SetPause(self, cause);
     }
 
     public static RectTransform RectTransform(this GameObject self)
@@ -299,14 +299,14 @@ namespace CsCat
     public static T GetProperyValue<T>(this GameObject self, string property_name, T defalutValue, object[] index = null,
       params Type[] exclude_component_types)
     {
-      return GameObjectUtil.GetProperyValue(self, property_name, defalutValue, index, exclude_component_types);
+      return GameObjectUtil.GetPropertyValue(self, property_name, defalutValue, index, exclude_component_types);
 
     }
 
     public static void SetProperyValue(this GameObject self, string property_name, object value, object[] index = null,
       params Type[] exclude_component_types)
     {
-      GameObjectUtil.SetProperyValue(self, property_name, value, index, exclude_component_types);
+      GameObjectUtil.SetPropertyValue(self, property_name, value, index, exclude_component_types);
     }
 
     #endregion

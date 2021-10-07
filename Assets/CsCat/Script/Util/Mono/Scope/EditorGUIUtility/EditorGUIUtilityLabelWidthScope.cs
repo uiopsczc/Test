@@ -4,20 +4,20 @@ using UnityEditor;
 
 namespace CsCat
 {
-  public class EditorGUIUtilityLabelWidthScope : IDisposable
-  {
-    private float org_lableWidth;
-
-    public EditorGUIUtilityLabelWidthScope(float new_lableWidth)
+    public class EditorGUIUtilityLabelWidthScope : IDisposable
     {
-      org_lableWidth = EditorGUIUtility.labelWidth;
-      EditorGUIUtility.labelWidth = new_lableWidth;
-    }
+        private float orgLableWidth;
 
-    public void Dispose()
-    {
-      EditorGUIUtility.labelWidth = org_lableWidth;
+        public EditorGUIUtilityLabelWidthScope(float newLableWidth)
+        {
+            orgLableWidth = EditorGUIUtility.labelWidth;
+            EditorGUIUtility.labelWidth = newLableWidth;
+        }
+
+        public void Dispose()
+        {
+            EditorGUIUtility.labelWidth = orgLableWidth;
+        }
     }
-  }
 }
 #endif

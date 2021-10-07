@@ -5,47 +5,47 @@ namespace CsCat
 {
     public class ColorUtil
     {
-        public static void SetColorR(System.Object obj, float v, string member_name = "color")
+        public static void SetColorR(System.Object obj, float v, string memberName = StringConst.String_Color)
         {
-            SetColor(obj, member_name, ColorMode.R, v);
+            SetColor(obj, memberName, ColorMode.R, v);
         }
 
-        public static void SetColorG(System.Object obj, float v, string member_name = "color")
+        public static void SetColorG(System.Object obj, float v, string memberName = StringConst.String_Color)
         {
-            SetColor(obj, member_name, ColorMode.G, v);
+            SetColor(obj, memberName, ColorMode.G, v);
         }
 
-        public static void SetColorB(System.Object obj, float v, string member_name = "color")
+        public static void SetColorB(System.Object obj, float v, string memberName = StringConst.String_Color)
         {
-            SetColor(obj, member_name, ColorMode.B, v);
+            SetColor(obj, memberName, ColorMode.B, v);
         }
 
-        public static void SetColorA(System.Object obj, float v, string member_name = "color")
+        public static void SetColorA(System.Object obj, float v, string memberName = StringConst.String_Color)
         {
-            SetColor(obj, member_name, ColorMode.A, v);
+            SetColor(obj, memberName, ColorMode.A, v);
         }
 
         public static void SetColor(System.Object obj, ColorMode rgbaMode, params float[] rgba)
         {
-            SetColor(obj, "color", rgbaMode, rgba);
+            SetColor(obj, StringConst.String_Color, rgbaMode, rgba);
         }
 
-        public static void SetColor(System.Object obj, string member_name, ColorMode rgbaMode, params float[] rgba)
+        public static void SetColor(System.Object obj, string memberName, ColorMode rgbaMode, params float[] rgba)
         {
-            FieldInfo fieldInfo = obj.GetType().GetFieldInfo(member_name, BindingFlagsConst.All);
+            FieldInfo fieldInfo = obj.GetType().GetFieldInfo(memberName, BindingFlagsConst.All);
             if (fieldInfo != null)
             {
-                Color orgColor = (Color) fieldInfo.GetValue(obj);
-                Color newColor = Set(orgColor, rgbaMode, rgba);
+                Color oldColor = (Color) fieldInfo.GetValue(obj);
+                Color newColor = Set(oldColor, rgbaMode, rgba);
                 fieldInfo.SetValue(obj, newColor);
                 return;
             }
 
-            PropertyInfo propertyInfo = obj.GetType().GetPropertyInfo(member_name, BindingFlagsConst.All);
+            PropertyInfo propertyInfo = obj.GetType().GetPropertyInfo(memberName, BindingFlagsConst.All);
             if (propertyInfo != null)
             {
-                Color orgColor = (Color) propertyInfo.GetValue(obj, null);
-                Color newColor = Set(orgColor, rgbaMode, rgba);
+                Color oldColor = (Color) propertyInfo.GetValue(obj, null);
+                Color newColor = Set(oldColor, rgbaMode, rgba);
                 propertyInfo.SetValue(obj, newColor, null);
                 return;
             }
@@ -65,29 +65,27 @@ namespace CsCat
             float b = color.b;
             float a = color.a;
             int i = 0;
-            EnumUtil.GetValues<ColorMode>().ToList<ColorMode>().ForEach(
+            EnumUtil.GetValues<ColorMode>().ToList().ForEach(
                 (e) =>
                 {
-                    if (rgbaMode.Contains(e) && i < rgba.Length)
+                    if (!rgbaMode.Contains(e) || i >= rgba.Length) return;
+                    switch (e)
                     {
-                        switch (e)
-                        {
-                            case ColorMode.R:
-                                r = rgba[i];
-                                break;
-                            case ColorMode.G:
-                                g = rgba[i];
-                                break;
-                            case ColorMode.B:
-                                b = rgba[i];
-                                break;
-                            case ColorMode.A:
-                                a = rgba[i];
-                                break;
-                        }
-
-                        i++;
+                        case ColorMode.R:
+                            r = rgba[i];
+                            break;
+                        case ColorMode.G:
+                            g = rgba[i];
+                            break;
+                        case ColorMode.B:
+                            b = rgba[i];
+                            break;
+                        case ColorMode.A:
+                            a = rgba[i];
+                            break;
                     }
+
+                    i++;
                 }
             );
             return new Color(r, g, b, a);

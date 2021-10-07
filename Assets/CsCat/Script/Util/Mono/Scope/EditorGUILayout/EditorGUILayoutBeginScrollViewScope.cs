@@ -1,50 +1,51 @@
-
 #if UNITY_EDITOR
 using System;
 using UnityEditor;
 using UnityEngine;
+
 namespace CsCat
 {
-  public class EditorGUILayoutBeginScrollViewScope : IDisposable
-  {
-    public EditorGUILayoutBeginScrollViewScope(ref Vector2 scroll_position, params GUILayoutOption[] options)
+    public class EditorGUILayoutBeginScrollViewScope : IDisposable
     {
-      scroll_position = EditorGUILayout.BeginScrollView(scroll_position, options);
-    }
+        public EditorGUILayoutBeginScrollViewScope(ref Vector2 scrollPosition, params GUILayoutOption[] options)
+        {
+            scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, options);
+        }
 
-    public EditorGUILayoutBeginScrollViewScope(ref Vector2 scroll_position, GUIStyle style,
-      params GUILayoutOption[] options)
-    {
-      scroll_position = EditorGUILayout.BeginScrollView(scroll_position, style, options);
-    }
+        public EditorGUILayoutBeginScrollViewScope(ref Vector2 scrollPosition, GUIStyle style,
+            params GUILayoutOption[] options)
+        {
+            scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, style, options);
+        }
 
-    public EditorGUILayoutBeginScrollViewScope(ref Vector2 scroll_position, bool is_always_show_horizontal,
-      bool is_always_show_vertical, params GUILayoutOption[] options)
-    {
-      scroll_position =
-        EditorGUILayout.BeginScrollView(scroll_position, is_always_show_horizontal, is_always_show_vertical, options);
-    }
+        public EditorGUILayoutBeginScrollViewScope(ref Vector2 scrollPosition, bool isAlwaysShowHorizontal,
+            bool isAlwaysShowVertical, params GUILayoutOption[] options)
+        {
+            scrollPosition =
+                EditorGUILayout.BeginScrollView(scrollPosition, isAlwaysShowHorizontal, isAlwaysShowVertical,
+                    options);
+        }
 
-    public EditorGUILayoutBeginScrollViewScope(ref Vector2 scroll_position, GUIStyle horizontalScrollbar,
-      GUIStyle verticalScrollbar, params GUILayoutOption[] options)
-    {
-      scroll_position =
-        EditorGUILayout.BeginScrollView(scroll_position, horizontalScrollbar, verticalScrollbar, options);
-    }
+        public EditorGUILayoutBeginScrollViewScope(ref Vector2 scrollPosition, GUIStyle horizontalScrollbar,
+            GUIStyle verticalScrollbar, params GUILayoutOption[] options)
+        {
+            scrollPosition =
+                EditorGUILayout.BeginScrollView(scrollPosition, horizontalScrollbar, verticalScrollbar, options);
+        }
 
-    public EditorGUILayoutBeginScrollViewScope(ref Vector2 scroll_position, bool is_always_show_horizontal,
-      bool is_always_show_vertical, GUIStyle horizontalScrollbar, GUIStyle verticalScrollbar, GUIStyle background,
-      params GUILayoutOption[] options)
-    {
-      scroll_position = EditorGUILayout.BeginScrollView(scroll_position, is_always_show_horizontal,
-        is_always_show_vertical,
-        horizontalScrollbar, verticalScrollbar, background, options);
-    }
+        public EditorGUILayoutBeginScrollViewScope(ref Vector2 scrollPosition, bool isAlwaysShowHorizontal,
+            bool isAlwaysShowVertical, GUIStyle horizontalScrollbar, GUIStyle verticalScrollbar, GUIStyle background,
+            params GUILayoutOption[] options)
+        {
+            scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition, isAlwaysShowHorizontal,
+                isAlwaysShowVertical,
+                horizontalScrollbar, verticalScrollbar, background, options);
+        }
 
-    public void Dispose()
-    {
-      EditorGUILayout.EndScrollView();
+        public void Dispose()
+        {
+            EditorGUILayout.EndScrollView();
+        }
     }
-  }
 }
 #endif

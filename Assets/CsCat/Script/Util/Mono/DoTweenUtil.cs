@@ -3,39 +3,37 @@ using System.Collections.Generic;
 
 namespace CsCat
 {
-  public class DOTweenUtil
-  {
-
-    public static DOTweenId GetDOTweenId(object source = null, string prefix = StringConst.String_DOTweenId_Use_GameTime)
+    public class DOTweenUtil
     {
-      return new DOTweenId(source, prefix);
-    }
-
-    public static List<Tween> GetDOTweens(object source = null, string prefix = StringConst.String_DOTweenId_Use_GameTime)
-    {
-      List<Tween> tweens = new List<Tween>();
-      if (DOTween.PlayingTweens() != null)
-        foreach (Tween t in DOTween.PlayingTweens())
+        public static DOTweenId GetDOTweenId(object source = null,
+            string prefix = StringConst.String_DOTweenId_Use_GameTime)
         {
-          if (source == null)
-          {
-            if (t.id is DOTweenId && ((DOTweenId)t.id).prefix == prefix)
-              tweens.Add(t);
-
-          }
-          else
-          {
-            if (t.id is DOTweenId && t.id.Equals(new DOTweenId(source, prefix)))
-              tweens.Add(t);
-          }
-
-          if (t.id is string && (string)t.id == prefix)
-            tweens.Add(t);
-
-
+            return new DOTweenId(source, prefix);
         }
 
-      return tweens;
+        public static List<Tween> GetDOTweens(object source = null,
+            string prefix = StringConst.String_DOTweenId_Use_GameTime)
+        {
+            List<Tween> tweenList = new List<Tween>();
+            if (DOTween.PlayingTweens() == null) return tweenList;
+            foreach (var tween in DOTween.PlayingTweens())
+            {
+                if (source == null)
+                {
+                    if (tween.id is DOTweenId id && id.prefix == prefix)
+                        tweenList.Add(tween);
+                }
+                else
+                {
+                    if (tween.id is DOTweenId && tween.id.Equals(new DOTweenId(source, prefix)))
+                        tweenList.Add(tween);
+                }
+
+                if (tween.id is string s && s.Equals(prefix))
+                    tweenList.Add(tween);
+            }
+
+            return tweenList;
+        }
     }
-  }
 }
