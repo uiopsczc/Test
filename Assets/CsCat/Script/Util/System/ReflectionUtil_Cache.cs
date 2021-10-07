@@ -1,8 +1,5 @@
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
-using Google.Protobuf.WellKnownTypes;
 using Type = System.Type;
 
 namespace CsCat
@@ -16,19 +13,19 @@ namespace CsCat
         private const string _defaultMethodInfoSubKey = "methodInfo_sub_key";
         private const string _filedInfoString = "fieldInfo";
         private const string _propertyInfoString = "propertyInfo";
-        private const string _splitString = StringConst.StringUnderline;
+        private const string _splitString = StringConst.String_Underline;
 
         //////////////////////////////////////////////////////////////////////
         // MethodInfoCache
         //////////////////////////////////////////////////////////////////////
-        public static bool IsContainsMethodInfoCache(Type type, string methodName, params Type[] paramer_types)
+        public static bool IsContainsMethodInfoCache(Type type, string methodName, params Type[] paramerTypes)
         {
             if (!_cacheDict.ContainsKey(type))
                 return false;
             string mainKey = _methodInfoString + _splitString + methodName;
             if (!_cacheDict[type].ContainsKey(mainKey))
                 return false;
-            var subKey = new Args(paramer_types);
+            var subKey = new Args(paramerTypes);
             return _cacheDict[type][mainKey].ContainsKey(subKey);
         }
 
@@ -97,7 +94,7 @@ namespace CsCat
             string mainKey = _filedInfoString + _splitString + fieldName;
             if (!_cacheDict[type].ContainsKey(mainKey))
                 return false;
-            var subKey = "";
+            var subKey = StringConst.String_Empty;
             return _cacheDict[type][mainKey].ContainsKey(subKey);
         }
 
@@ -108,7 +105,7 @@ namespace CsCat
             string mainKey = _filedInfoString + _splitString + fieldName;
             if (!_cacheDict[type].ContainsKey(mainKey))
                 _cacheDict[type][mainKey] = new Dictionary<object, object>();
-            var subKey = StringConst.StringEmpty;
+            var subKey = StringConst.String_Empty;
             _cacheDict[type][mainKey][subKey] = fieldInfo;
         }
 
@@ -119,7 +116,7 @@ namespace CsCat
             string mainKey = _filedInfoString + _splitString + fieldName;
             if (!_cacheDict[type].ContainsKey(mainKey))
                 return null;
-            var subKey = StringConst.StringEmpty;
+            var subKey = StringConst.String_Empty;
             return _cacheDict[type][mainKey][subKey] as FieldInfo;
         }
 
@@ -133,7 +130,7 @@ namespace CsCat
             string mainKey = _propertyInfoString + _splitString + propertyName;
             if (!_cacheDict[type].ContainsKey(mainKey))
                 return false;
-            var subKey = StringConst.StringEmpty;
+            var subKey = StringConst.String_Empty;
             return _cacheDict[type][mainKey].ContainsKey(subKey);
         }
 
@@ -144,7 +141,7 @@ namespace CsCat
             string mainKey = _propertyInfoString + _splitString + propertyName;
             if (!_cacheDict[type].ContainsKey(mainKey))
                 _cacheDict[type][mainKey] = new Dictionary<object, object>();
-            var subKey = StringConst.StringEmpty;
+            var subKey = StringConst.String_Empty;
             _cacheDict[type][mainKey][subKey] = propertyInfo;
         }
 
@@ -155,7 +152,7 @@ namespace CsCat
             string mainKey = _propertyInfoString + _splitString + propertyName;
             if (!_cacheDict[type].ContainsKey(mainKey))
                 return null;
-            var subKey = StringConst.StringEmpty;
+            var subKey = StringConst.String_Empty;
             return _cacheDict[type][mainKey][subKey] as PropertyInfo;
         }
     }

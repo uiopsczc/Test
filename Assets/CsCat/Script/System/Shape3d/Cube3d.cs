@@ -142,14 +142,14 @@ namespace CsCat
 
     public static Cube3d operator +(Cube3d cube, Vector3 vector)
     {
-      Cube3d clone = CloneUtil.Clone_Deep(cube);
+      Cube3d clone = CloneUtil.CloneDeep(cube);
       clone.AddWorldOffset(vector);
       return clone;
     }
 
     public static Cube3d operator -(Cube3d cube, Vector3 vector)
     {
-      Cube3d clone = CloneUtil.Clone_Deep(cube);
+      Cube3d clone = CloneUtil.CloneDeep(cube);
       clone.AddWorldOffset(-vector);
       return clone;
     }

@@ -2,11 +2,9 @@ namespace CsCat
 {
   public class BitUtil
   {
-    public static bool Contains(int contianer, int value)
+    public static bool Contains(int container, int value)
     {
-      if ((contianer & value) == value)
-        return true;
-      return false;
+        return (container & value) == value;
     }
   }
 }

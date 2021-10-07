@@ -1075,7 +1075,7 @@ namespace CsCat
 
     public static T Clone_Deep<T>(this T self)
     {
-      return CloneUtil.Clone_Deep(self);
+      return CloneUtil.CloneDeep(self);
     }
 
     public static T Clone<T>(this T self)

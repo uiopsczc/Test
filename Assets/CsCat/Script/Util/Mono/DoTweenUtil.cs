@@ -6,12 +6,12 @@ namespace CsCat
   public class DOTweenUtil
   {
 
-    public static DOTweenId GetDOTweenId(object source = null, string prefix = ConstUtil.DOTweenId_Use_GameTime)
+    public static DOTweenId GetDOTweenId(object source = null, string prefix = StringConst.String_DOTweenId_Use_GameTime)
     {
       return new DOTweenId(source, prefix);
     }
 
-    public static List<Tween> GetDOTweens(object source = null, string prefix = ConstUtil.DOTweenId_Use_GameTime)
+    public static List<Tween> GetDOTweens(object source = null, string prefix = StringConst.String_DOTweenId_Use_GameTime)
     {
       List<Tween> tweens = new List<Tween>();
       if (DOTween.PlayingTweens() != null)

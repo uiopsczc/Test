@@ -57,14 +57,14 @@ namespace CsCat
 
     public static Circle3d operator +(Circle3d circle, Vector3 vector)
     {
-      Circle3d clone = CloneUtil.Clone_Deep(circle);
+      Circle3d clone = CloneUtil.CloneDeep(circle);
       clone.AddWorldOffset(vector);
       return clone;
     }
 
     public static Circle3d operator -(Circle3d circle, Vector3 vector)
     {
-      Circle3d clone = CloneUtil.Clone_Deep(circle);
+      Circle3d clone = CloneUtil.CloneDeep(circle);
       clone.AddWorldOffset(-vector);
       return clone;
     }

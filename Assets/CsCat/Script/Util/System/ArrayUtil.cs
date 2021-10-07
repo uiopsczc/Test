@@ -1,99 +1,101 @@
 using System;
-using NPOI.SS.Formula.Functions;
 
 namespace CsCat
 {
-  public class ArrayUtil
-  {
-    public static Array AddFirst(Array source_array, params object[] to_adds)
+    public class ArrayUtil
     {
-      var element_type = source_array != null ? source_array.GetType().GetElementType() : to_adds.GetType().GetElementType();
-      var source_array_length = source_array == null ? 0 : source_array.Length;
-      var array = Array.CreateInstance(element_type, source_array_length + 1);
-      if (source_array != null && source_array.Length > 0)
-        Array.Copy(source_array, 0, array, to_adds.Length, source_array_length);
-      Array.Copy(to_adds, 0, array, 0, to_adds.Length);
-      return array;
-    }
-    public static T[] AddFirst<T>(Array source_array, params object[] to_adds)
-    {
-      return AddFirst(source_array, to_adds).ToArray<T>();
-    }
-    public static Array AddLast(Array source_array, params object[] to_adds)
-    {
-      var element_type = source_array != null ? source_array.GetType().GetElementType() : to_adds.GetType().GetElementType();
-      var source_array_length = source_array == null ? 0 : source_array.Length;
-      var array = Array.CreateInstance(element_type, source_array_length + 1);
-      if (source_array != null && source_array.Length > 0)
-        Array.Copy(source_array, array, source_array_length);
-      Array.Copy(to_adds, 0, array, source_array_length, to_adds.Length);
-      return array;
-    }
-    public static T[] AddLast<T>(Array source_array, params object[] to_adds)
-    {
-      return AddLast(source_array, to_adds).ToArray<T>();
-    }
-
-    public static Array Remove(Array source_array, object o)
-    {
-      var element_type = source_array != null ? source_array.GetType().GetElementType() : o.GetType();
-      var source_array_length = source_array == null ? 0 : source_array.Length;
-      if (source_array_length == null || source_array_length == 0)
-        return source_array;
-      int to_remove_index = -1;
-      for (int i = 0; i < source_array_length; i++)
-      {
-        if (source_array.GetValue(i).Equals(o))
+        public static Array AddFirst(Array sourceArray, params object[] toAdds)
         {
-          to_remove_index = i;
-          break;
+            var elementType = sourceArray != null
+                ? sourceArray.GetType().GetElementType()
+                : toAdds.GetType().GetElementType();
+            var sourceArrayLength = sourceArray?.Length ?? 0;
+            var array = Array.CreateInstance(elementType, sourceArrayLength + 1);
+            if (sourceArray != null && sourceArray.Length > 0)
+                Array.Copy(sourceArray, 0, array, toAdds.Length, sourceArrayLength);
+            Array.Copy(toAdds, 0, array, 0, toAdds.Length);
+            return array;
         }
-      }
 
-      if (to_remove_index == -1)
-        return source_array;
+        public static T[] AddFirst<T>(Array sourceArray, params object[] toAdds)
+        {
+            return AddFirst(sourceArray, toAdds).ToArray<T>();
+        }
+
+        public static Array AddLast(Array sourceArray, params object[] toAdds)
+        {
+            var elementType = sourceArray != null
+                ? sourceArray.GetType().GetElementType()
+                : toAdds.GetType().GetElementType();
+            var sourceArrayLength = sourceArray?.Length ?? 0;
+            var array = Array.CreateInstance(elementType, sourceArrayLength + 1);
+            if (sourceArray != null && sourceArray.Length > 0)
+                Array.Copy(sourceArray, array, sourceArrayLength);
+            Array.Copy(toAdds, 0, array, sourceArrayLength, toAdds.Length);
+            return array;
+        }
+
+        public static T[] AddLast<T>(Array sourceArray, params object[] toAdds)
+        {
+            return AddLast(sourceArray, toAdds).ToArray<T>();
+        }
+
+        public static Array Remove(Array sourceArray, object o)
+        {
+            var elementType = sourceArray != null ? sourceArray.GetType().GetElementType() : o.GetType();
+            var sourceArrayLength = sourceArray?.Length ?? 0;
+            if (sourceArrayLength == 0)
+                return sourceArray;
+            int toRemoveIndex = -1;
+            for (int i = 0; i < sourceArrayLength; i++)
+            {
+                if (!ObjectUtil.Equals(sourceArray.GetValue(i), o)) continue;
+                toRemoveIndex = i;
+                break;
+            }
+
+            if (toRemoveIndex == -1)
+                return sourceArray;
 
 
-      var array = Array.CreateInstance(element_type, source_array_length - 1);
-      if (to_remove_index != 0)
-        Array.Copy(source_array, 0, array, 0, to_remove_index);
-      if (to_remove_index != source_array_length - 1)
-        Array.Copy(source_array, to_remove_index + 1, array, to_remove_index, source_array_length - to_remove_index - 1);
-      return array;
+            var array = Array.CreateInstance(elementType, sourceArrayLength - 1);
+            if (toRemoveIndex != 0)
+                Array.Copy(sourceArray, 0, array, 0, toRemoveIndex);
+            if (toRemoveIndex != sourceArrayLength - 1)
+                Array.Copy(sourceArray, toRemoveIndex + 1, array, toRemoveIndex, sourceArrayLength - toRemoveIndex - 1);
+            return array;
+        }
+
+        public static T[] Remove<T>(Array sourceArray, object o)
+        {
+            return Remove(sourceArray, o).ToArray<T>();
+        }
+
+        public static Array RemoveAt(Array sourceArray, int index)
+        {
+            var elementType = sourceArray.GetType().GetElementType();
+            var sourceArrayLength = sourceArray.Length;
+            if (sourceArrayLength == 0)
+                return sourceArray;
+            int toRemoveIndex = index;
+            if (toRemoveIndex < 0 || toRemoveIndex >= sourceArrayLength)
+            {
+                LogCat.LogError("index out of boundary");
+                return sourceArray;
+            }
+
+            var array = Array.CreateInstance(elementType, sourceArrayLength - 1);
+            if (toRemoveIndex != 0)
+                Array.Copy(sourceArray, 0, array, 0, toRemoveIndex);
+            if (toRemoveIndex != sourceArrayLength - 1)
+                Array.Copy(sourceArray, toRemoveIndex + 1, array, toRemoveIndex,
+                    sourceArrayLength - toRemoveIndex - 1);
+            return array;
+        }
+
+        public static T[] RemoveAt<T>(Array sourceArray, int index)
+        {
+            return RemoveAt(sourceArray, index).ToArray<T>();
+        }
     }
-
-    public static T[] Remove<T>(Array source_array, object o)
-    {
-      return Remove(source_array, o).ToArray<T>();
-    }
-
-    public static Array RemoveAt(Array source_array, int index)
-    {
-      var element_type = source_array.GetType().GetElementType();
-      var source_array_length = source_array == null ? 0 : source_array.Length;
-      if (source_array_length == null || source_array_length == 0)
-        return source_array;
-      int to_remove_index = index;
-      if (to_remove_index < 0 || to_remove_index >= source_array_length)
-      {
-        LogCat.LogError("index out of boundary");
-        return source_array;
-      }
-      var array = Array.CreateInstance(element_type, source_array_length - 1);
-      if (to_remove_index != 0)
-        Array.Copy(source_array, 0, array, 0, to_remove_index);
-      if (to_remove_index != source_array_length - 1)
-        Array.Copy(source_array, to_remove_index + 1, array, to_remove_index, source_array_length - to_remove_index - 1);
-      return array;
-    }
-
-    public static T[] RemoveAt<T>(Array source_array, int index)
-    {
-      return RemoveAt(source_array, index).ToArray<T>();
-    }
-    
-
-
-
-  }
 }

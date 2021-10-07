@@ -2,8 +2,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using System.Linq;
-using UnityEngine;
 
 namespace CsCat
 {
@@ -194,7 +192,7 @@ namespace CsCat
                 finalMethodInfoParameter.GetCustomAttributes(typeof(ParamArrayAttribute), false).Length > 0;
 
             if (!isFinalParams && parameters.Length > methodInfoParameters.Length)
-                throw new Exception("args not match");
+                throw new ExceptionArgsNotMatch();
 
             for (int i = 0; i < methodInfoParameters.Length; i++)
             {

@@ -31,14 +31,14 @@ namespace CsCat
 
     public static Circle operator +(Circle circle, Vector2 vector)
     {
-      Circle clone = CloneUtil.Clone_Deep(circle);
+      Circle clone = CloneUtil.CloneDeep(circle);
       clone.AddWorldOffset(vector);
       return clone;
     }
 
     public static Circle operator -(Circle circle, Vector2 vector)
     {
-      Circle clone = CloneUtil.Clone_Deep(circle);
+      Circle clone = CloneUtil.CloneDeep(circle);
       clone.AddWorldOffset(-vector);
       return clone;
     }

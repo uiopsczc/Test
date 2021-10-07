@@ -85,14 +85,14 @@ namespace CsCat
 
     public static Polygon operator +(Polygon polygon, Vector2 vector)
     {
-      Polygon clone = CloneUtil.Clone_Deep(polygon);
+      Polygon clone = CloneUtil.CloneDeep(polygon);
       clone.AddWorldOffset(vector);
       return clone;
     }
 
     public static Polygon operator -(Polygon polygon, Vector2 vector)
     {
-      Polygon clone = CloneUtil.Clone_Deep(polygon);
+      Polygon clone = CloneUtil.CloneDeep(polygon);
       clone.AddWorldOffset(-vector);
       return clone;
     }

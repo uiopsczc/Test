@@ -4,11 +4,9 @@ namespace CsCat
 {
   public static class NullUtil
   {
-    public const string Null_Default_String = "__null__";
-
     public static string GetDefaultString()
     {
-      return Null_Default_String;
+      return StringConst.String_Null_In_Table;
     }
   }
 }

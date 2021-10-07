@@ -14,7 +14,7 @@ namespace CsCat
             if (moduleBuilder == null)
                 moduleBuilder = ModuleBuilderUtil.GetModuleBuilder();
             if (typeName == null)
-                typeName = Guid.NewGuid().ToString().Replace(StringConst.StringMinus, StringConst.StringEmpty);
+                typeName = Guid.NewGuid().ToString().Replace(StringConst.String_Minus, StringConst.String_Empty);
             return moduleBuilder.DefineType(typeName, typeAttributes, parentType, interfaceTypes);
         }
     }

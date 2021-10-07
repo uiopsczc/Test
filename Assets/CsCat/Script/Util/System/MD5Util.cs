@@ -1,22 +1,24 @@
 using System.Security.Cryptography;
-using System.Text;
 
 namespace CsCat
 {
-  public class MD5Util
-  {
-    /// <summary>
-    ///   MD5加密
-    /// </summary>
-    /// <param name="s"></param>
-    /// <returns></returns>
-    public static string Encrypt(string s)
+    public class MD5Util
     {
-      var md5_hash = MD5.Create();
-      var data = md5_hash.ComputeHash(s.GetBytes());
-      var stringBuilder = new StringBuilder();
-      for (var i = 0; i < data.Length; i++) stringBuilder.Append(data[i].ToString("x2"));
-      return stringBuilder.ToString();
+        /// <summary>
+        ///   MD5加密
+        /// </summary>
+        /// <param name="s"></param>
+        /// <returns></returns>
+        public static string Encrypt(string s)
+        {
+            var md5Hash = MD5.Create();
+            var datas = md5Hash.ComputeHash(s.GetBytes());
+            using (var scope = new StringBuilderScope())
+            {
+                foreach (var data in datas)
+                    scope.stringBuilder.Append(data.ToString(StringConst.String_x2));
+                return scope.stringBuilder.ToString();
+            }
+        }
     }
-  }
 }

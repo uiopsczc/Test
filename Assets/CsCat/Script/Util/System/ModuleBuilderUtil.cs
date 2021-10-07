@@ -5,19 +5,17 @@ namespace CsCat
 {
   public partial class ModuleBuilderUtil
   {
-    private static Dictionary<AssemblyBuilder, ModuleBuilder> moduleBuilder_dict =
+    private static Dictionary<AssemblyBuilder, ModuleBuilder> _moduleBuilderDict =
       new Dictionary<AssemblyBuilder, ModuleBuilder>();
 
     public static ModuleBuilder GetModuleBuilder(AssemblyBuilder assemblyBuilder = null)
     {
       if (assemblyBuilder == null)
         assemblyBuilder = AssemblyBuilderUtil.GetAssemblyBuilder();
-      if (!moduleBuilder_dict.ContainsKey(assemblyBuilder))
-      {
-        moduleBuilder_dict[assemblyBuilder] = assemblyBuilder.DefineDynamicModule(assemblyBuilder.GetName().Name);
-      }
+        if (!_moduleBuilderDict.ContainsKey(assemblyBuilder))
+            _moduleBuilderDict[assemblyBuilder] = assemblyBuilder.DefineDynamicModule(assemblyBuilder.GetName().Name);
 
-      return moduleBuilder_dict[assemblyBuilder];
+        return _moduleBuilderDict[assemblyBuilder];
     }
 
 

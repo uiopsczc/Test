@@ -108,14 +108,14 @@ namespace CsCat
 
     public static Rectangle operator +(Rectangle rectangle, Vector2 vector)
     {
-      Rectangle clone = CloneUtil.Clone_Deep(rectangle);
+      Rectangle clone = CloneUtil.CloneDeep(rectangle);
       clone.AddWorldOffset(vector);
       return clone;
     }
 
     public static Rectangle operator -(Rectangle rectangle, Vector2 vector)
     {
-      Rectangle clone = CloneUtil.Clone_Deep(rectangle);
+      Rectangle clone = CloneUtil.CloneDeep(rectangle);
       clone.AddWorldOffset(-vector);
       return clone;
     }

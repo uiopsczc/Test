@@ -33,14 +33,14 @@ namespace CsCat
 
     public static Line3d operator +(Line3d line, Vector3 vector)
     {
-      Line3d clone = CloneUtil.Clone_Deep(line);
+      Line3d clone = CloneUtil.CloneDeep(line);
       clone.AddWorldOffset(vector);
       return clone;
     }
 
     public static Line3d operator -(Line3d line, Vector3 vector)
     {
-      Line3d clone = CloneUtil.Clone_Deep(line);
+      Line3d clone = CloneUtil.CloneDeep(line);
       clone.AddWorldOffset(-vector);
       return clone;
     }

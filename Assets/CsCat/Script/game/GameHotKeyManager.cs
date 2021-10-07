@@ -50,7 +50,7 @@ namespace CsCat
 
       if (Input.GetKeyDown("f2"))
       {
-        LogCat.log(Lang.GetText("陈智权"));
+//        LogCat.log(Lang.GetText("陈智权"));
         //        Dictionary<string, Dictionary<string, int>> dict = new Dictionary<string, Dictionary<string,int>>();
         //        var t = dict.GetType();
         //        LogCat.log(t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Dictionary<,>));
@@ -66,11 +66,11 @@ namespace CsCat
 
       if (Input.GetKeyDown("f3"))
       {
-        LogCat.warn(3333);
-//        this.RemoveTimer(t);
-//        panel.SetToBottom();
-        //        LogCat.log(dict);
-      }
+                //        LogCat.warn(3333);
+                //        this.RemoveTimer(t);
+                //        panel.SetToBottom();
+                //        LogCat.log(dict);
+            }
 
       if (Input.GetKeyDown("f4"))
       {

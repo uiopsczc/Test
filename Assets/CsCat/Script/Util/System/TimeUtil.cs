@@ -37,24 +37,23 @@ namespace CsCat
         {
             using (var scope = new StringBuilderScope())
             {
-                string result = "";
                 long HH = seconds / 3600;
                 isZeroIngroe = isZeroIngroe && HH == 0;
                 if (!isZeroIngroe)
-                    scope.stringBuilder.Append(HH.ToString().FillHead(hCount, CharConst.Char0) + StringConst.StringColon);
+                    scope.stringBuilder.Append(HH.ToString().FillHead(hCount, CharConst.Char_0) + StringConst.String_Colon);
 
                 long mm = (seconds % 3600) / 60;
                 isZeroIngroe = isZeroIngroe && mm == 0;
                 if (isZeroIngroe)
-                    scope.stringBuilder.Append(mm.ToString().FillHead(2, CharConst.Char0) + StringConst.StringColon);
+                    scope.stringBuilder.Append(mm.ToString().FillHead(2, CharConst.Char_0) + StringConst.String_Colon);
 
 
                 long ss = seconds % 60;
                 isZeroIngroe = isZeroIngroe && ss == 0;
                 if (isZeroIngroe)
-                    scope.stringBuilder.Append(ss.ToString().FillHead(2, CharConst.Char0));
+                    scope.stringBuilder.Append(ss.ToString().FillHead(2, CharConst.Char_0));
 
-                return result;
+                return scope.stringBuilder.ToString();
             }
         }
 

@@ -20,14 +20,14 @@ namespace CsCat
 
     public static Sphere3d operator +(Sphere3d sphere, Vector3 vector)
     {
-      Sphere3d clone = CloneUtil.Clone_Deep(sphere);
+      Sphere3d clone = CloneUtil.CloneDeep(sphere);
       clone.AddWorldOffset(vector);
       return clone;
     }
 
     public static Sphere3d operator -(Sphere3d sphere, Vector3 vector)
     {
-      Sphere3d clone = CloneUtil.Clone_Deep(sphere);
+      Sphere3d clone = CloneUtil.CloneDeep(sphere);
       clone.AddWorldOffset(-vector);
       return clone;
     }

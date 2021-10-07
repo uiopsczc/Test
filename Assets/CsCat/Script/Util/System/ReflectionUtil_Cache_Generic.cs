@@ -66,108 +66,108 @@ namespace CsCat
             return _cacheDict[type][mainKey].ContainsKey(subKey);
         }
 
-        public static void SetGenericMethodInfoCache2(Type type, string method_name, Type[] generic_types,
+        public static void SetGenericMethodInfoCache2(Type type, string methodName, Type[] genericTypes,
             MethodInfo methodInfo)
         {
             if (!_cacheDict.ContainsKey(type))
                 _cacheDict[type] = new Dictionary<string, Dictionary<object, object>>();
-            string main_key = _methodInfoString + _splitString + method_name + _splitString +
-                              GetGenericTypesString(generic_types);
-            if (!_cacheDict[type].ContainsKey(main_key))
-                _cacheDict[type][main_key] = new Dictionary<object, object>();
-            var sub_key = _defaultMethodInfoSubKey;
-            _cacheDict[type][main_key][sub_key] = methodInfo;
+            string mainKey = _methodInfoString + _splitString + methodName + _splitString +
+                              GetGenericTypesString(genericTypes);
+            if (!_cacheDict[type].ContainsKey(mainKey))
+                _cacheDict[type][mainKey] = new Dictionary<object, object>();
+            var subKey = _defaultMethodInfoSubKey;
+            _cacheDict[type][mainKey][subKey] = methodInfo;
         }
 
-        public static MethodInfo GetGenericMethodInfoCache2(Type type, string method_name, Type[] generic_types)
+        public static MethodInfo GetGenericMethodInfoCache2(Type type, string methodName, Type[] genericTypes)
         {
             if (!_cacheDict.ContainsKey(type))
                 return null;
-            string main_key = _methodInfoString + _splitString + method_name + _splitString +
-                              GetGenericTypesString(generic_types);
-            if (!_cacheDict[type].ContainsKey(main_key))
+            string mainKey = _methodInfoString + _splitString + methodName + _splitString +
+                              GetGenericTypesString(genericTypes);
+            if (!_cacheDict[type].ContainsKey(mainKey))
                 return null;
-            var sub_key = _defaultMethodInfoSubKey;
-            return _cacheDict[type][main_key][sub_key] as MethodInfo;
+            var subKey = _defaultMethodInfoSubKey;
+            return _cacheDict[type][mainKey][subKey] as MethodInfo;
         }
 
         //////////////////////////////////////////////////////////////////////
         // FieldInfoCache
         //////////////////////////////////////////////////////////////////////
-        public static bool IsContainsGenericFieldInfoCache(Type type, string field_name, Type[] generic_types)
+        public static bool IsContainsGenericFieldInfoCache(Type type, string fieldName, Type[] genericTypes)
         {
             if (!_cacheDict.ContainsKey(type))
                 return false;
-            string main_key = _filedInfoString + _splitString + field_name + _splitString +
-                              GetGenericTypesString(generic_types);
-            if (!_cacheDict[type].ContainsKey(main_key))
+            string mainKey = _filedInfoString + _splitString + fieldName + _splitString +
+                              GetGenericTypesString(genericTypes);
+            if (!_cacheDict[type].ContainsKey(mainKey))
                 return false;
-            var sub_key = "";
-            return _cacheDict[type][main_key].ContainsKey(sub_key);
+            var subKey = StringConst.String_Empty;
+            return _cacheDict[type][mainKey].ContainsKey(subKey);
         }
 
-        public static void SetFieldInfoCache(Type type, string fieldName, Type[] generic_types, FieldInfo fieldInfo)
+        public static void SetFieldInfoCache(Type type, string fieldName, Type[] genericTypes, FieldInfo fieldInfo)
         {
             if (!_cacheDict.ContainsKey(type))
                 _cacheDict[type] = new Dictionary<string, Dictionary<object, object>>();
-            string main_key = _filedInfoString + _splitString + fieldName + _splitString +
-                              GetGenericTypesString(generic_types);
-            if (!_cacheDict[type].ContainsKey(main_key))
-                _cacheDict[type][main_key] = new Dictionary<object, object>();
-            var sub_key = "";
-            _cacheDict[type][main_key][sub_key] = fieldInfo;
+            string mainKey = _filedInfoString + _splitString + fieldName + _splitString +
+                              GetGenericTypesString(genericTypes);
+            if (!_cacheDict[type].ContainsKey(mainKey))
+                _cacheDict[type][mainKey] = new Dictionary<object, object>();
+            var subKey = StringConst.String_Empty;
+            _cacheDict[type][mainKey][subKey] = fieldInfo;
         }
 
-        public static FieldInfo GetFieldInfoCache(Type type, string fieldName, Type[] generic_types)
+        public static FieldInfo GetFieldInfoCache(Type type, string fieldName, Type[] genericTypes)
         {
             if (!_cacheDict.ContainsKey(type))
                 return null;
-            string main_key = _filedInfoString + _splitString + fieldName + _splitString +
-                              GetGenericTypesString(generic_types);
-            if (!_cacheDict[type].ContainsKey(main_key))
+            string mainKey = _filedInfoString + _splitString + fieldName + _splitString +
+                              GetGenericTypesString(genericTypes);
+            if (!_cacheDict[type].ContainsKey(mainKey))
                 return null;
-            var sub_key = "";
-            return _cacheDict[type][main_key][sub_key] as FieldInfo;
+            var subKey = StringConst.String_Empty;
+            return _cacheDict[type][mainKey][subKey] as FieldInfo;
         }
 
         //////////////////////////////////////////////////////////////////////
         // PropertyInfoCache
         //////////////////////////////////////////////////////////////////////
-        public static bool IsContainsPropertyInfoCache(Type type, string propertyName, Type[] generic_types)
+        public static bool IsContainsPropertyInfoCache(Type type, string propertyName, Type[] genericTypes)
         {
             if (!_cacheDict.ContainsKey(type))
                 return false;
-            string main_key = _propertyInfoString + _splitString + propertyName + _splitString +
-                              GetGenericTypesString(generic_types);
-            if (!_cacheDict[type].ContainsKey(main_key))
+            string mainKey = _propertyInfoString + _splitString + propertyName + _splitString +
+                              GetGenericTypesString(genericTypes);
+            if (!_cacheDict[type].ContainsKey(mainKey))
                 return false;
-            var sub_key = "";
-            return _cacheDict[type][main_key].ContainsKey(sub_key);
+            var subKey = StringConst.String_Empty;
+            return _cacheDict[type][mainKey].ContainsKey(subKey);
         }
 
-        public static void SetPropertyInfoCache(Type type, string propertyName, Type[] generic_types,
+        public static void SetPropertyInfoCache(Type type, string propertyName, Type[] genericTypes,
             PropertyInfo propertyInfo)
         {
             if (!_cacheDict.ContainsKey(type))
                 _cacheDict[type] = new Dictionary<string, Dictionary<object, object>>();
-            string main_key = _propertyInfoString + _splitString + propertyName + _splitString +
-                              GetGenericTypesString(generic_types);
-            if (!_cacheDict[type].ContainsKey(main_key))
-                _cacheDict[type][main_key] = new Dictionary<object, object>();
-            var sub_key = "";
-            _cacheDict[type][main_key][sub_key] = propertyInfo;
+            string mainKey = _propertyInfoString + _splitString + propertyName + _splitString +
+                              GetGenericTypesString(genericTypes);
+            if (!_cacheDict[type].ContainsKey(mainKey))
+                _cacheDict[type][mainKey] = new Dictionary<object, object>();
+            var subKey = StringConst.String_Empty;
+            _cacheDict[type][mainKey][subKey] = propertyInfo;
         }
 
-        public static PropertyInfo GetPropertyInfoCache(Type type, string propertyName, Type[] generic_types)
+        public static PropertyInfo GetPropertyInfoCache(Type type, string propertyName, Type[] genericTypes)
         {
             if (!_cacheDict.ContainsKey(type))
                 return null;
-            string main_key = _propertyInfoString + _splitString + propertyName + _splitString +
-                              GetGenericTypesString(generic_types);
-            if (!_cacheDict[type].ContainsKey(main_key))
+            string mainKey = _propertyInfoString + _splitString + propertyName + _splitString +
+                              GetGenericTypesString(genericTypes);
+            if (!_cacheDict[type].ContainsKey(mainKey))
                 return null;
-            var sub_key = "";
-            return _cacheDict[type][main_key][sub_key] as PropertyInfo;
+            var subKey = StringConst.String_Empty;
+            return _cacheDict[type][mainKey][subKey] as PropertyInfo;
         }
     }
 }

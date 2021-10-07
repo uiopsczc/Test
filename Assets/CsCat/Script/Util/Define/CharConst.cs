@@ -2,27 +2,28 @@ namespace CsCat
 {
     public static class CharConst
     {
-        public const char CharPlus = '+';
-        public const char CharMutiply = 'x';
-        public const char CharSpace = ' ';
-        public const char CharMinus = '-';
-        public const char CharUnderline = '_';
-        public const char CharDiv = '/';
-        public const char CharEnter = '\n';
-        public const char CharColon = ':';
-        public const char CharComma = ',';
-        public const char CharDoubleQuotes = '\"';
-        public const char CharQuotes = '\'';
+        public const char Char_Plus = '+';
+        public const char Char_Mutiply = 'x';
+        public const char Char_Space = ' ';
+        public const char Char_Minus = '-';
+        public const char Char_Underline = '_';
+        public const char Char_Div = '/';
+        public const char Char_Slash = '/';
+        public const char Char_Enter = '\n';
+        public const char Char_Colon = ':';
+        public const char Char_Comma = ',';
+        public const char Char_DoubleQuotes = '\"';
+        public const char Char_Quotes = '\'';
 
-        public const char Char0 = '0';
-        public const char Char1 = '1';
-        public const char Char2 = '2';
-        public const char Char3 = '3';
-        public const char Char4 = '4';
-        public const char Char5 = '5';
-        public const char Char6 = '6';
-        public const char Char7 = '7';
-        public const char Char8 = '8';
-        public const char Char9 = '9';
+        public const char Char_0 = '0';
+        public const char Char_1 = '1';
+        public const char Char_2 = '2';
+        public const char Char_3 = '3';
+        public const char Char_4 = '4';
+        public const char Char_5 = '5';
+        public const char Char_6 = '6';
+        public const char Char_7 = '7';
+        public const char Char_8 = '8';
+        public const char Char_9 = '9';
     }
 }

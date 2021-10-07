@@ -40,14 +40,14 @@ namespace CsCat
 
     public static Line operator +(Line line, Vector2 vector)
     {
-      Line clone = CloneUtil.Clone_Deep(line);
+      Line clone = CloneUtil.CloneDeep(line);
       clone.AddWorldOffset(vector);
       return clone;
     }
 
     public static Line operator -(Line line, Vector2 vector)
     {
-      Line clone = CloneUtil.Clone_Deep(line);
+      Line clone = CloneUtil.CloneDeep(line);
       clone.AddWorldOffset(-vector);
       return clone;
     }

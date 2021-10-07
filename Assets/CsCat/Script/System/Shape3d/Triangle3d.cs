@@ -54,14 +54,14 @@ namespace CsCat
 
     public static Triangle3d operator +(Triangle3d triangle, Vector3 vector)
     {
-      Triangle3d clone = CloneUtil.Clone_Deep(triangle);
+      Triangle3d clone = CloneUtil.CloneDeep(triangle);
       clone.AddWorldOffset(vector);
       return clone;
     }
 
     public static Triangle3d operator -(Triangle3d triangle, Vector3 vector)
     {
-      Triangle3d clone = CloneUtil.Clone_Deep(triangle);
+      Triangle3d clone = CloneUtil.CloneDeep(triangle);
       clone.AddWorldOffset(-vector);
       return clone;
     }

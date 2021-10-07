@@ -4,8 +4,6 @@ namespace CsCat
 {
     public class ConstUtil
     {
-        public const string DOTweenId_Use_GameTime = "DoTweenIdUseGameTime";
-
         public static string GetRootPath()
         {
             switch (Application.platform)

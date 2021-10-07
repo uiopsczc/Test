@@ -28,14 +28,14 @@ namespace CsCat
 
     public static Polygon3d operator +(Polygon3d polygon, Vector3 vector)
     {
-      Polygon3d clone = CloneUtil.Clone_Deep(polygon);
+      Polygon3d clone = CloneUtil.CloneDeep(polygon);
       clone.AddWorldOffset(vector);
       return clone;
     }
 
     public static Polygon3d operator -(Polygon3d polygon, Vector3 vector)
     {
-      Polygon3d clone = CloneUtil.Clone_Deep(polygon);
+      Polygon3d clone = CloneUtil.CloneDeep(polygon);
       clone.AddWorldOffset(-vector);
       return clone;
     }

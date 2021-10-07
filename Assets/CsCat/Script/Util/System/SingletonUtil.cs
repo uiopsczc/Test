@@ -37,8 +37,7 @@ namespace CsCat
             }
 
             //如果都没有，新建一个
-            instanceGameObject = new GameObject();
-            instanceGameObject.name = targetName;
+            instanceGameObject = new GameObject(targetName);
             instance = instanceGameObject.AddComponent<T>();
             instance.SingleInit();
             return instance;

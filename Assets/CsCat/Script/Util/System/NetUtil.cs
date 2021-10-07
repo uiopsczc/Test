@@ -1,30 +1,28 @@
-
-
 using System.Net;
 using UnityEngine;
 
 namespace CsCat
 {
-  public class NetUtil
-  {
-    public static string GetLocalIP()
+    public class NetUtil
     {
-      ///获取本地的IP地址
-      string ip_address_string = string.Empty;
-      foreach (IPAddress ip_address in Dns.GetHostEntry(Dns.GetHostName()).AddressList)
-      {
-        if (ip_address.AddressFamily.ToString().Equals("InterNetwork"))
+        private const string InterNetwork_String = "InterNetwork";
+
+        public static string GetLocalIP()
         {
-          ip_address_string = ip_address.ToString();
+            //获取本地的IP地址
+            string ipAddressString = StringConst.String_Empty;
+            foreach (IPAddress ipAddress in Dns.GetHostEntry(Dns.GetHostName()).AddressList)
+            {
+                if (InterNetwork_String.Equals(ipAddress.AddressFamily.ToString()))
+                    ipAddressString = ipAddress.ToString();
+            }
+
+            return ipAddressString;
         }
-      }
 
-      return ip_address_string;
+        public static bool IsWifi()
+        {
+            return Application.internetReachability == NetworkReachability.ReachableViaLocalAreaNetwork;
+        }
     }
-
-    public static bool IsWifi()
-    {
-      return Application.internetReachability == NetworkReachability.ReachableViaLocalAreaNetwork;
-    }
-  }
 }

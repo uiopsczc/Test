@@ -7,8 +7,6 @@ namespace CsCat
 {
     public class XMLUtil
     {
-        #region static method
-
         public static string GetNodeValue(XmlNode node, string defaultValue)
         {
             if (node == null)
@@ -208,13 +206,11 @@ namespace CsCat
         {
             foreach (DictionaryEntry dictionaryEntry in hashtable)
             {
-                string name = dictionaryEntry.Key.ToStringOrToDefault(StringConst.StringEmpty);
-                string value = dictionaryEntry.Value.ToStringOrToDefault(StringConst.StringEmpty);
+                string name = dictionaryEntry.Key.ToStringOrToDefault(StringConst.String_Empty);
+                string value = dictionaryEntry.Value.ToStringOrToDefault(StringConst.String_Empty);
                 if (name.Length > 0)
                     AddChildNode(node, name, value);
             }
         }
-
-        #endregion
     }
 }
