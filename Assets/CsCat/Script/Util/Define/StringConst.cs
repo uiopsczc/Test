@@ -15,7 +15,9 @@ namespace CsCat
         public const string String_Comma = ",";
         public const string String_DoubleQuotes = "\"";
         public const string String_Quotes = "\'";
-        
+        public const string String_LeftParenthese = "(";
+        public const string String_RightParenthese = ")";
+
 
         public const string String_RegexDoubleQuotes = "\\\"";
 
@@ -69,6 +71,11 @@ namespace CsCat
         public const string String_Hour_CN = "–° ±";
         public const string String_Minute_CN = "∑÷";
         public const string String_Second_CN = "√Î";
+        public const string String_x = "x";
+        public const string String_y = "y";
+        public const string String_z = "z";
+        public const string String_x_y = "x,y";
+        public const string String_x_y_0 = "x,y,0";
 
     }
 }

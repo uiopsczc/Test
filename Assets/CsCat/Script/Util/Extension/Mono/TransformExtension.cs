@@ -527,7 +527,7 @@ namespace CsCat
 
     public static Vector3 GetLossyScaleOfPrarent(this Transform transform)
     {
-      return TransformUtil.GetLossyScaleOfPrarent(transform);
+      return TransformUtil.GetLossyScaleOfParent(transform);
     }
 
     public static void SetLossyScale(this Transform transform, Vector3 value)
