@@ -2,11 +2,11 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public class GizmosUtil
-  {
-    public static GizmosColorScope Color(Color color_new)
+    public class GizmosUtil
     {
-      return new GizmosColorScope(color_new);
+        public static GizmosColorScope Color(Color newColor)
+        {
+            return new GizmosColorScope(newColor);
+        }
     }
-  }
 }

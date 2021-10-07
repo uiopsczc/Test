@@ -2,11 +2,11 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public partial class GUIUtil
-  {
-    public static GUIZoomGroupScope ZoomGroup(Rect gui_rect, float zoom_scale)
+    public partial class GUIUtil
     {
-      return new GUIZoomGroupScope(gui_rect, zoom_scale);
+        public static GUIZoomGroupScope ZoomGroup(Rect guiRect, float zoomScale)
+        {
+            return new GUIZoomGroupScope(guiRect, zoomScale);
+        }
     }
-  }
 }

@@ -1,10 +1,10 @@
 namespace CsCat
 {
-  public partial class GUIUtil
-  {
-    public static GUIDepthScope Depth(int depth_new)
+    public partial class GUIUtil
     {
-      return new GUIDepthScope(depth_new);
+        public static GUIDepthScope Depth(int newDepth)
+        {
+            return new GUIDepthScope(newDepth);
+        }
     }
-  }
 }

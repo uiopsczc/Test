@@ -66,6 +66,7 @@ namespace CsCat
         public const string String_remove = "remove";
         public const string String_Asset_Extension = ".asset";
         public const string String_Color = "color";
+        public const string String_Button = "Button";
 
         public const string String_date = "date";
         public const string String_time = "time";
@@ -83,6 +84,17 @@ namespace CsCat
         public const string String_z = "z";
         public const string String_x_y = "x,y";
         public const string String_x_y_0 = "x,y,0";
+        public const string String_0_x_y = "0,x,y";
+        public const string String_x_0_y = "x,0,y";
+        public const string String_0_y_z = "0,y,z";
+        public const string String_y_0_z = "y,0,z";
+        public const string String_y_z_0 = "y,z,0";
+        public const string String_0_x_z = "0,x,z";
+        public const string String_x_0_z = "x,0,z";
+        public const string String_x_z_0 = "x,z,0";
+
+
+
 
         public const string String_LeftTop = "LeftTop";
         public const string String_Top = "Top";
@@ -98,8 +110,10 @@ namespace CsCat
         public const string String_Text_Bold_Format = "<b>{0}</b>";
         public const string String_Text_Italic_Format = "<i>{0}</i>";
         public const string String_Text_FontSize_Format = "<size=#{0}>{1}</size>";
-        
-            
-        
+
+
+        public const string String_Date_Regex =
+            "(([0-9]{3}[1-9]|[0-9]{2}[1-9][0-9]{1}|[0-9]{1}[1-9][0-9]{2}|[1-9][0-9]{3})-(((0[13578]|1[02])-(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)-(0[1-9]|[12][0-9]|30))|(02-(0[1-9]|[1][0-9]|2[0-8]))))|((([0-9]{2})(0[48]|[2468][048]|[13579][26])|((0[48]|[2468][048]|[3579][26])00))-02-29)";
+
     }
 }

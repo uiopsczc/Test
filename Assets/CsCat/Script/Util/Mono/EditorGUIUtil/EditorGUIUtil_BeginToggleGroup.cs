@@ -1,12 +1,13 @@
 #if UNITY_EDITOR
 namespace CsCat
 {
-  public partial class EditorGUIUtil
-  {
-    public static EditorGUIBeginToggleGroupScope BeginToggleGroup(bool is_toggle, string name = "")
+    public partial class EditorGUIUtil
     {
-      return new EditorGUIBeginToggleGroupScope(is_toggle, name);
+        public static EditorGUIBeginToggleGroupScope BeginToggleGroup(bool isToggle,
+            string name = StringConst.String_Empty)
+        {
+            return new EditorGUIBeginToggleGroupScope(isToggle, name);
+        }
     }
-  }
 }
 #endif

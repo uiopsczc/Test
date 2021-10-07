@@ -2,47 +2,52 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public partial class GUILayoutUtil
-  {
-    public static GUILayoutBeginScrollViewScope BeginScrollView(ref Vector2 scroll_position)
+    public partial class GUILayoutUtil
     {
-      return new GUILayoutBeginScrollViewScope(ref scroll_position);
-    }
+        public static GUILayoutBeginScrollViewScope BeginScrollView(ref Vector2 scrollPosition)
+        {
+            return new GUILayoutBeginScrollViewScope(ref scrollPosition);
+        }
 
-    public static GUILayoutBeginScrollViewScope BeginScrollView(ref Vector2 scroll_position,
-      params GUILayoutOption[] options)
-    {
-      return new GUILayoutBeginScrollViewScope(ref scroll_position, options);
-    }
+        public static GUILayoutBeginScrollViewScope BeginScrollView(ref Vector2 scrollPosition,
+            params GUILayoutOption[] options)
+        {
+            return new GUILayoutBeginScrollViewScope(ref scrollPosition, options);
+        }
 
-    public static GUILayoutBeginScrollViewScope BeginScrollView(ref Vector2 scroll_position, GUIStyle style)
-    {
-      return new GUILayoutBeginScrollViewScope(ref scroll_position, style);
-    }
+        public static GUILayoutBeginScrollViewScope BeginScrollView(ref Vector2 scrollPosition, GUIStyle style)
+        {
+            return new GUILayoutBeginScrollViewScope(ref scrollPosition, style);
+        }
 
-    public static GUILayoutBeginScrollViewScope BeginScrollView(ref Vector2 scroll_position, GUIStyle style,
-      params GUILayoutOption[] options)
-    {
-      return new GUILayoutBeginScrollViewScope(ref scroll_position, style, options);
-    }
+        public static GUILayoutBeginScrollViewScope BeginScrollView(ref Vector2 scrollPosition, GUIStyle style,
+            params GUILayoutOption[] options)
+        {
+            return new GUILayoutBeginScrollViewScope(ref scrollPosition, style, options);
+        }
 
-    public static GUILayoutBeginScrollViewScope BeginScrollView(ref Vector2 scroll_position, GUIStyle horizontal_scrollBar,
-      GUIStyle vertical_scrollBar)
-    {
-      return new GUILayoutBeginScrollViewScope(ref scroll_position, horizontal_scrollBar, vertical_scrollBar);
-    }
+        public static GUILayoutBeginScrollViewScope BeginScrollView(ref Vector2 scrollPosition,
+            GUIStyle horizontalScrollBar,
+            GUIStyle verticalScrollBar)
+        {
+            return new GUILayoutBeginScrollViewScope(ref scrollPosition, horizontalScrollBar, verticalScrollBar);
+        }
 
-    public static GUILayoutBeginScrollViewScope BeginScrollView(ref Vector2 scroll_position, GUIStyle horizontal_scrollBar,
-      GUIStyle vertical_scrollBar, params GUILayoutOption[] options)
-    {
-      return new GUILayoutBeginScrollViewScope(ref scroll_position, horizontal_scrollBar, vertical_scrollBar, options);
-    }
+        public static GUILayoutBeginScrollViewScope BeginScrollView(ref Vector2 scrollPosition,
+            GUIStyle horizontalScrollBar,
+            GUIStyle verticalScrollBar, params GUILayoutOption[] options)
+        {
+            return new GUILayoutBeginScrollViewScope(ref scrollPosition, horizontalScrollBar, verticalScrollBar,
+                options);
+        }
 
-    public static GUILayoutBeginScrollViewScope BeginScrollView(ref Vector2 scroll_position, bool is_always_show_horizontal,
-      bool is_always_show_vertical, params GUILayoutOption[] options)
-    {
-      return new GUILayoutBeginScrollViewScope(ref scroll_position, is_always_show_horizontal, is_always_show_vertical,
-        options);
+        public static GUILayoutBeginScrollViewScope BeginScrollView(ref Vector2 scrollPosition,
+            bool isAlwaysShowHorizontal,
+            bool isAlwaysShowVertical, params GUILayoutOption[] options)
+        {
+            return new GUILayoutBeginScrollViewScope(ref scrollPosition, isAlwaysShowHorizontal,
+                isAlwaysShowVertical,
+                options);
+        }
     }
-  }
 }

@@ -1,10 +1,10 @@
 namespace CsCat
 {
-  public partial class GLUtil
-  {
-    public static GLBeginScope Begin(int mode)
+    public partial class GLUtil
     {
-      return new GLBeginScope(mode);
+        public static GLBeginScope Begin(int mode)
+        {
+            return new GLBeginScope(mode);
+        }
     }
-  }
 }

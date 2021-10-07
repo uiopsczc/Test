@@ -1,10 +1,10 @@
 namespace CsCat
 {
-  public partial class GUIUtil
-  {
-    public static GUIEnabledScope Enabled(bool is_enabled_new)
+    public partial class GUIUtil
     {
-      return new GUIEnabledScope(is_enabled_new);
+        public static GUIEnabledScope Enabled(bool newIsEnabled)
+        {
+            return new GUIEnabledScope(newIsEnabled);
+        }
     }
-  }
 }

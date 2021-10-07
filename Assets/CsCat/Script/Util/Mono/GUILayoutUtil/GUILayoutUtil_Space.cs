@@ -2,22 +2,22 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public partial class GUILayoutUtil
-  {
-    private static void SpaceCount(int count, float pixels = 20)
+    public partial class GUILayoutUtil
     {
-      for (var i = 0; i < count; i++) GUILayout.Space(pixels);
-    }
-
-    public static void Space(int count = 1, bool is_horizonal = false, float pixels = 20)
-    {
-      if (is_horizonal)
-        using (BeginHorizontal())
+        private static void SpaceCount(int count, float pixels = 20)
         {
-          SpaceCount(count, pixels);
+            for (var i = 0; i < count; i++) GUILayout.Space(pixels);
         }
-      else
-        SpaceCount(count, pixels);
+
+        public static void Space(int count = 1, bool isHorizonal = false, float pixels = 20)
+        {
+            if (isHorizonal)
+                using (BeginHorizontal())
+                {
+                    SpaceCount(count, pixels);
+                }
+            else
+                SpaceCount(count, pixels);
+        }
     }
-  }
 }

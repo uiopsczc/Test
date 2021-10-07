@@ -2,11 +2,11 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public partial class GUIUtil
-  {
-    public static GUIBackgroundColorScope BackgroundColor(Color color_new)
+    public partial class GUIUtil
     {
-      return new GUIBackgroundColorScope(color_new);
+        public static GUIBackgroundColorScope BackgroundColor(Color newColor)
+        {
+            return new GUIBackgroundColorScope(newColor);
+        }
     }
-  }
 }

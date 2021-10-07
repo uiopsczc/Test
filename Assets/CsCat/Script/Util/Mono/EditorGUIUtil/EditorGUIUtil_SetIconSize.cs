@@ -3,12 +3,12 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public partial class EditorGUIUtil
-  {
-    public EditorGUISetIconSizeScope SetIconSize(Vector2 size_new)
+    public partial class EditorGUIUtil
     {
-      return new EditorGUISetIconSizeScope(size_new);
+        public EditorGUISetIconSizeScope SetIconSize(Vector2 newSize)
+        {
+            return new EditorGUISetIconSizeScope(newSize);
+        }
     }
-  }
 }
 #endif

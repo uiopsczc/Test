@@ -119,7 +119,7 @@ namespace CsCat
     /// <returns></returns>
     public string RandomString(int len, bool is_unique)
     {
-      return new string(RandomList(ConstExtensions.GetDigitsAndCharsAll().ToList(), len, is_unique).ToArray());
+      return new string(RandomList(CharUtil.GetDigitsAndCharsAll().ToList(), len, is_unique).ToArray());
     }
 
     /// <summary>

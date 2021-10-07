@@ -922,7 +922,7 @@ namespace CsCat
       value = value.Trim();
       if (string.IsNullOrEmpty(value))
         return 0L;
-      var const_chars = ConstExtensions.GetDigitsAndCharsBig();
+      var const_chars = CharUtil.GetDigitsAndCharsBig();
       var digits = new string(const_chars, 0, from_base);
       long result = 0;
       value = value.ToUpper(); // 2

@@ -5,231 +5,211 @@ using System.Xml;
 
 namespace CsCat
 {
-  public static class XmlNodeExtension
-  {
-    public static string GetNodeValue(this XmlNode self, string dv = null)
+    public static class XmlNodeExtension
     {
-      if (self == null)
-        return dv;
-      string v = null;
-      if (self.NodeType == XmlNodeType.Text || self.NodeType == XmlNodeType.CDATA)
-      {
-        v = self.Value;
-      }
-      else
-      {
-        var child = self.FirstChild;
-        while (child != null)
+        public static string GetNodeValue(this XmlNode self, string defaultValue = null)
         {
-          if (child.NodeType == XmlNodeType.Text)
-          {
-            v = child.Value;
-            break;
-          }
+            if (self == null)
+                return defaultValue;
+            string value = null;
+            if (self.NodeType == XmlNodeType.Text || self.NodeType == XmlNodeType.CDATA)
+                value = self.Value;
+            else
+            {
+                var child = self.FirstChild;
+                while (child != null)
+                {
+                    if (child.NodeType == XmlNodeType.Text)
+                    {
+                        value = child.Value;
+                        break;
+                    }
 
-          child = self.NextSibling;
-        }
-      }
+                    child = self.NextSibling;
+                }
+            }
 
-      if (v != null)
-        return v;
-      return dv;
-    }
-
-    public static string GetNodeCDataValue(this XmlNode self, string dv = null)
-    {
-      if (self == null)
-        return dv;
-      string v = null;
-      if (self.NodeType == XmlNodeType.CDATA)
-      {
-        v = self.Value;
-      }
-      else
-      {
-        var child = self.FirstChild;
-        while (child != null)
-        {
-          if (child.NodeType == XmlNodeType.CDATA)
-          {
-            v = child.Value;
-            break;
-          }
-
-          child = self.NextSibling;
-        }
-      }
-
-      if (v != null)
-        return v;
-      return dv;
-    }
-
-
-    public static bool SetNodeCDataValue(this XmlNode self, string value)
-    {
-      if (self == null)
-        return false;
-      if (self.NodeType == XmlNodeType.CDATA)
-      {
-        self.Value = value;
-        return true;
-      }
-
-      var child = self.FirstChild;
-      while (child != null)
-      {
-        if (child.NodeType == XmlNodeType.CDATA)
-        {
-          child.Value = value;
-          return true;
+            return value ?? defaultValue;
         }
 
-        child = self.NextSibling;
-      }
-
-      if (self.NodeType == XmlNodeType.Element)
-      {
-        child = self.OwnerDocument.CreateCDataSection(value);
-        self.AppendChild(child);
-        return true;
-      }
-
-      return false;
-    }
-
-    public static XmlAttribute GetNodeAttr(this XmlNode self, string attribute_name)
-    {
-      if (self == null)
-        return null;
-      if (self.NodeType == XmlNodeType.Element)
-        return ((XmlElement)self).GetAttributeNode(attribute_name);
-      return null;
-    }
-
-    public static string GetNodeAttrValue(this XmlNode self, string name, string dv = null)
-    {
-      string str = null;
-      var attr = self.GetNodeAttr(name);
-      if (attr != null)
-        str = attr.Value;
-      if (str != null)
-        return str;
-      return dv;
-    }
-
-    public static Dictionary<string, string> GetNodeAttrs(this XmlNode self)
-    {
-      var property_dict = new Dictionary<string, string>();
-      var attrs = self.Attributes;
-
-      if (attrs != null)
-        for (var i = 0; i < attrs.Count; i++)
+        public static string GetNodeCDataValue(this XmlNode self, string defaultValue = null)
         {
-          var attr = (XmlAttribute)attrs.Item(i);
-          property_dict[Convert.ToString(attr.Name)] = Convert.ToString(attr.Value);
+            if (self == null)
+                return defaultValue;
+            string value = null;
+            if (self.NodeType == XmlNodeType.CDATA)
+                value = self.Value;
+            else
+            {
+                var child = self.FirstChild;
+                while (child != null)
+                {
+                    if (child.NodeType == XmlNodeType.CDATA)
+                    {
+                        value = child.Value;
+                        break;
+                    }
+
+                    child = self.NextSibling;
+                }
+            }
+
+            return value ?? defaultValue;
         }
 
-      return property_dict;
-    }
 
-    public static bool SetNodeAttrValue(this XmlNode self, string name, string value)
-    {
-      if (self == null)
-        return false;
-      if (self.NodeType == XmlNodeType.Element)
-      {
-        ((XmlElement)self).SetAttribute(name, value);
-        return true;
-      }
-
-      return false;
-    }
-
-    public static XmlNode GetChildNode(this XmlNode self, string name)
-    {
-      if (self == null)
-        return null;
-      var child_nodes = self.ChildNodes;
-      for (var i = 0; i < child_nodes.Count; i++)
-      {
-        var child = child_nodes.Item(i);
-        if (name == child.Name)
-          return child;
-      }
-
-      return null;
-    }
-
-    public static XmlNode GetChildNode(this XmlNode self, int pos)
-    {
-      if (self == null)
-        return null;
-      var child_nodes = self.ChildNodes;
-      if (pos >= 0 && pos < child_nodes.Count)
-        return child_nodes.Item(pos);
-      return null;
-    }
-
-    public static XmlNode AddChildNode(this XmlNode self, string name, string value)
-    {
-      if (self == null)
-        return null;
-      XmlElement element;
-      if (self.NodeType == XmlNodeType.Document)
-        element = ((XmlDocument)self).CreateElement(name);
-      else if (self.NodeType == XmlNodeType.Element)
-        element = self.OwnerDocument.CreateElement(name);
-      else
-        return null;
-      if (value != null)
-        element.SetNodeValue(value);
-      self.AppendChild(element);
-      return element;
-    }
-
-    public static bool SetNodeValue(this XmlNode self, string value)
-    {
-      if (self == null)
-        return false;
-      if (self.NodeType == XmlNodeType.Text || self.NodeType == XmlNodeType.CDATA)
-      {
-        self.Value = value;
-        return true;
-      }
-
-      var child = self.FirstChild;
-      while (child != null)
-      {
-        if (child.NodeType == XmlNodeType.Text)
+        public static bool SetNodeCDataValue(this XmlNode self, string value)
         {
-          child.Value = value;
-          return true;
+            if (self == null)
+                return false;
+            if (self.NodeType == XmlNodeType.CDATA)
+            {
+                self.Value = value;
+                return true;
+            }
+
+            var child = self.FirstChild;
+            while (child != null)
+            {
+                if (child.NodeType == XmlNodeType.CDATA)
+                {
+                    child.Value = value;
+                    return true;
+                }
+
+                child = self.NextSibling;
+            }
+
+            if (self.NodeType != XmlNodeType.Element) return false;
+            child = self.OwnerDocument.CreateCDataSection(value);
+            self.AppendChild(child);
+            return true;
         }
 
-        child = self.NextSibling;
-      }
+        public static XmlAttribute GetNodeAttr(this XmlNode self, string attributeName)
+        {
+            return self?.NodeType == XmlNodeType.Element ? ((XmlElement) self).GetAttributeNode(attributeName) : null;
+        }
 
-      if (self.NodeType == XmlNodeType.Element)
-      {
-        child = self.OwnerDocument.CreateTextNode("");
-        child.Value = value;
-        self.AppendChild(child);
-        return true;
-      }
+        public static string GetNodeAttrValue(this XmlNode self, string name, string defaultValue = null)
+        {
+            string str = null;
+            var attr = self.GetNodeAttr(name);
+            if (attr != null)
+                str = attr.Value;
+            return str ?? defaultValue;
+        }
 
-      return false;
+        public static Dictionary<string, string> GetNodeAttrs(this XmlNode self)
+        {
+            var propertyDict = new Dictionary<string, string>();
+            var attrs = self.Attributes;
+
+            if (attrs == null) return propertyDict;
+            for (var i = 0; i < attrs.Count; i++)
+            {
+                var attr = (XmlAttribute) attrs.Item(i);
+                propertyDict[Convert.ToString(attr.Name)] = Convert.ToString(attr.Value);
+            }
+
+            return propertyDict;
+        }
+
+        public static bool SetNodeAttrValue(this XmlNode self, string name, string value)
+        {
+            if (self == null)
+                return false;
+            if (self.NodeType != XmlNodeType.Element) return false;
+            ((XmlElement) self).SetAttribute(name, value);
+            return true;
+        }
+
+        public static XmlNode GetChildNode(this XmlNode self, string name)
+        {
+            if (self == null)
+                return null;
+            var childNodes = self.ChildNodes;
+            for (var i = 0; i < childNodes.Count; i++)
+            {
+                var child = childNodes.Item(i);
+                if (name.Equals(child.Name))
+                    return child;
+            }
+
+            return null;
+        }
+
+        public static XmlNode GetChildNode(this XmlNode self, int pos)
+        {
+            if (self == null)
+                return null;
+            var childNodes = self.ChildNodes;
+            if (pos >= 0 && pos < childNodes.Count)
+                return childNodes.Item(pos);
+            return null;
+        }
+
+        public static XmlNode AddChildNode(this XmlNode self, string name, string value)
+        {
+            if (self == null)
+                return null;
+            XmlElement element;
+            switch (self.NodeType)
+            {
+                case XmlNodeType.Document:
+                    element = ((XmlDocument) self).CreateElement(name);
+                    break;
+                case XmlNodeType.Element:
+                    element = self.OwnerDocument.CreateElement(name);
+                    break;
+                default:
+                    return null;
+            }
+
+            if (value != null)
+                element.SetNodeValue(value);
+            self.AppendChild(element);
+            return element;
+        }
+
+        public static bool SetNodeValue(this XmlNode self, string value)
+        {
+            if (self == null)
+                return false;
+            if (self.NodeType == XmlNodeType.Text || self.NodeType == XmlNodeType.CDATA)
+            {
+                self.Value = value;
+                return true;
+            }
+
+            var child = self.FirstChild;
+            while (child != null)
+            {
+                if (child.NodeType == XmlNodeType.Text)
+                {
+                    child.Value = value;
+                    return true;
+                }
+
+                child = self.NextSibling;
+            }
+
+            if (self.NodeType != XmlNodeType.Element) return false;
+            child = self.OwnerDocument.CreateTextNode(StringConst.String_Empty);
+            child.Value = value;
+            self.AppendChild(child);
+            return true;
+        }
+
+        public static void AddChildNode(this XmlNode self, Hashtable hashtable)
+        {
+            foreach (DictionaryEntry dictionaryEntry in hashtable)
+            {
+                var name = dictionaryEntry.Key.ToStringOrToDefault(StringConst.String_Empty);
+                var value = dictionaryEntry.Value.ToStringOrToDefault(StringConst.String_Empty);
+                if (name.Length > 0)
+                    AddChildNode(self, name, value);
+            }
+        }
     }
-
-    public static void AddChildNode(this XmlNode self, Hashtable ht)
-    {
-      foreach (DictionaryEntry de in ht)
-      {
-        var name = de.Key.ToStringOrToDefault("");
-        var value = de.Value.ToStringOrToDefault("");
-        if (name.Length > 0)
-          AddChildNode(self, name, value);
-      }
-    }
-  }
 }

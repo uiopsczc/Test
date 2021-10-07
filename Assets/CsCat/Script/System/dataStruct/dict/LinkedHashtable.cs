@@ -85,7 +85,7 @@ namespace CsCat
       key_list.Add(key);
     }
 
-    public string ToString2(bool is_fill_string_with_double_quote = false)
+    public string ToString2(bool isFillStringWithDoubleQuote = false)
     {
       bool first = true;
       StringBuilder sb = new StringBuilder();
@@ -96,10 +96,10 @@ namespace CsCat
           first = false;
         else
           sb.Append(",");
-        sb.Append(key.ToString2(is_fill_string_with_double_quote));
+        sb.Append(key.ToString2(isFillStringWithDoubleQuote));
         sb.Append(":");
         object value = base[key];
-        sb.Append(value.ToString2(is_fill_string_with_double_quote));
+        sb.Append(value.ToString2(isFillStringWithDoubleQuote));
       }
 
       sb.Append("}");

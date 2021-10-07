@@ -6,11 +6,15 @@ namespace CsCat
   {
     public static object ToLinkedHashtable2(object o)
     {
-      if (o is ICollection)
-        return ((ICollection)o).ToLinkedHashtable2();
-      if (o is IToLinkedHashtable2)
-        return ((IToLinkedHashtable2)o).ToLinkedHashtable2();
-      return o;
+      switch (o)
+      {
+          case ICollection collection:
+              return collection.ToLinkedHashtable2();
+          case IToLinkedHashtable2 hashtable2:
+              return hashtable2.ToLinkedHashtable2();
+          default:
+              return o;
+      }
     }
   }
 }

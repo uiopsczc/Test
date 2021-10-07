@@ -1,12 +1,12 @@
 #if UNITY_EDITOR
 namespace CsCat
 {
-  public partial class GUILayoutUtil
-  {
-    public GUILayoutContentScope Content()
+    public partial class GUILayoutUtil
     {
-      return new GUILayoutContentScope();
+        public GUILayoutContentScope Content()
+        {
+            return new GUILayoutContentScope();
+        }
     }
-  }
 }
 #endif

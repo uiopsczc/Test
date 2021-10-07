@@ -3,49 +3,51 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public partial class EditorGUIUtil
-  {
-    public static bool Foldout(Rect position, ref bool is_foldout, GUIContent content, bool is_toggle_on_label_click,
-      GUIStyle style)
+    public partial class EditorGUIUtil
     {
-      return EditorGUIFoldoutScope.Foldout(position, ref is_foldout, content, is_toggle_on_label_click, style);
-    }
+        public static bool Foldout(Rect position, ref bool isFoldout, GUIContent content,
+            bool isToggleOnLabelClick,
+            GUIStyle style)
+        {
+            return EditorGUIFoldoutScope.Foldout(position, ref isFoldout, content, isToggleOnLabelClick, style);
+        }
 
-    public static bool Foldout(Rect position, ref bool is_foldout, GUIContent content, bool is_toggle_on_label_click)
-    {
-      return EditorGUIFoldoutScope.Foldout(position, ref is_foldout, content, is_toggle_on_label_click);
-    }
+        public static bool Foldout(Rect position, ref bool isFoldout, GUIContent content,
+            bool isToggleOnLabelClick)
+        {
+            return EditorGUIFoldoutScope.Foldout(position, ref isFoldout, content, isToggleOnLabelClick);
+        }
 
-    public static bool Foldout(Rect position, ref bool is_foldout, GUIContent content, GUIStyle style)
-    {
-      return EditorGUIFoldoutScope.Foldout(position, ref is_foldout, content, style);
-    }
+        public static bool Foldout(Rect position, ref bool isFoldout, GUIContent content, GUIStyle style)
+        {
+            return EditorGUIFoldoutScope.Foldout(position, ref isFoldout, content, style);
+        }
 
-    public static bool Foldout(Rect position, ref bool is_foldout, GUIContent content)
-    {
-      return EditorGUIFoldoutScope.Foldout(position, ref is_foldout, content);
-    }
+        public static bool Foldout(Rect position, ref bool isFoldout, GUIContent content)
+        {
+            return EditorGUIFoldoutScope.Foldout(position, ref isFoldout, content);
+        }
 
-    public static bool Foldout(Rect position, ref bool is_foldout, string content, bool is_toggle_on_label_click,
-      GUIStyle style)
-    {
-      return EditorGUIFoldoutScope.Foldout(position, ref is_foldout, content, is_toggle_on_label_click, style);
-    }
+        public static bool Foldout(Rect position, ref bool isFoldout, string content, bool isToggleOnLabelClick,
+            GUIStyle style)
+        {
+            return EditorGUIFoldoutScope.Foldout(position, ref isFoldout, content, isToggleOnLabelClick, style);
+        }
 
-    public static bool Foldout(Rect position, ref bool is_foldout, string content, bool is_toggle_on_label_click)
-    {
-      return EditorGUIFoldoutScope.Foldout(position, ref is_foldout, content, is_toggle_on_label_click);
-    }
+        public static bool Foldout(Rect position, ref bool isFoldout, string content, bool isToggleOnLabelClick)
+        {
+            return EditorGUIFoldoutScope.Foldout(position, ref isFoldout, content, isToggleOnLabelClick);
+        }
 
-    public static bool Foldout(Rect position, ref bool is_foldout, string content, GUIStyle style)
-    {
-      return EditorGUIFoldoutScope.Foldout(position, ref is_foldout, content, style);
-    }
+        public static bool Foldout(Rect position, ref bool isFoldout, string content, GUIStyle style)
+        {
+            return EditorGUIFoldoutScope.Foldout(position, ref isFoldout, content, style);
+        }
 
-    public static bool Foldout(Rect position, ref bool is_foldout, string content)
-    {
-      return EditorGUIFoldoutScope.Foldout(position, ref is_foldout, content);
+        public static bool Foldout(Rect position, ref bool isFoldout, string content)
+        {
+            return EditorGUIFoldoutScope.Foldout(position, ref isFoldout, content);
+        }
     }
-  }
 }
 #endif

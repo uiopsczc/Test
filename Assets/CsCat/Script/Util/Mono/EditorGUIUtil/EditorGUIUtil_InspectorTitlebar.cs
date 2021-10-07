@@ -3,17 +3,20 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public partial class EditorGUIUtil
-  {
-    public static bool InspectorTitlebar(Rect position, ref bool is_foldout, Object target_obj, bool is_expandable)
+    public partial class EditorGUIUtil
     {
-      return EditorGUIInspectorTitlebarScope.InspectorTitlebar(position, ref is_foldout, target_obj, is_expandable);
-    }
+        public static bool InspectorTitlebar(Rect position, ref bool isFoldout, Object targetObj, bool isExpandable)
+        {
+            return EditorGUIInspectorTitlebarScope.InspectorTitlebar(position, ref isFoldout, targetObj,
+                isExpandable);
+        }
 
-    public static bool InspectorTitlebar(Rect position, ref bool is_foldout, Object[] target_objs, bool is_expandable)
-    {
-      return EditorGUIInspectorTitlebarScope.InspectorTitlebar(position, ref is_foldout, target_objs, is_expandable);
+        public static bool InspectorTitlebar(Rect position, ref bool isFoldout, Object[] targetObjs,
+            bool isExpandable)
+        {
+            return EditorGUIInspectorTitlebarScope.InspectorTitlebar(position, ref isFoldout, targetObjs,
+                isExpandable);
+        }
     }
-  }
 }
 #endif

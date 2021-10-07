@@ -47,11 +47,11 @@ namespace CsCat
           for (int i = 0; i < lines.Length; i++)
           {
             var line = lines[i];
-            string matched_line_content = MetaConst.font_regex.Match(line).Value;
+            string matched_line_content = MetaConst.Font_Regex.Match(line).Value;
             if (!matched_line_content.IsNullOrEmpty())
             {
-              string old_filedId = MetaConst.fileID_regex.Match(matched_line_content).Value;
-              string old_guid = MetaConst.guid_regex.Match(matched_line_content).Value;
+              string old_filedId = MetaConst.FileID_Regex.Match(matched_line_content).Value;
+              string old_guid = MetaConst.Guid_Regex.Match(matched_line_content).Value;
 
               if (font_to_replace_dict.ContainsKey(old_filedId) &&
                   old_guid.Equals(font_to_replace_dict[old_filedId]["old_guid"]))

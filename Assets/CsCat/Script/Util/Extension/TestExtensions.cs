@@ -1,6 +1,6 @@
 namespace CsCat
 {
-  public static class TestExtensions
-  {
-  }
+    public static class TestExtensions
+    {
+    }
 }

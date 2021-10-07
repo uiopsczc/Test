@@ -3,105 +3,109 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public partial class GUIUtil
-  {
-    public static void Box(Rect rect, string content, Color? background_color = null, bool is_outline = false,
-      float border_size = 1)
+    public partial class GUIUtil
     {
-      using (new GUIBackgroundColorScope(background_color == null ? GUI.backgroundColor : background_color.Value))
-      {
-        GUI.Box(rect, content);
-      }
-
-      _Box_Border(rect, is_outline, border_size);
-    }
-
-    public static void Box(Rect rect, Texture image, Color? background_color = null, bool is_outline = false,
-      float border_size = 1)
-    {
-      using (new GUIBackgroundColorScope(background_color == null ? GUI.backgroundColor : background_color.Value))
-      {
-        GUI.Box(rect, image);
-      }
-
-      _Box_Border(rect, is_outline, border_size);
-    }
-
-    public static void Box(Rect rect, GUIContent content, Color? background_color = null, bool is_outline = false,
-      float border_size = 1)
-    {
-      using (new GUIBackgroundColorScope(background_color == null ? GUI.backgroundColor : background_color.Value))
-      {
-        GUI.Box(rect, content);
-      }
-
-      _Box_Border(rect, is_outline, border_size);
-    }
-
-    public static void Box(Rect rect, string content, GUIStyle style, Color? background_color = null,
-      bool is_outline = false, float border_size = 1)
-    {
-      using (new GUIBackgroundColorScope(background_color == null ? GUI.backgroundColor : background_color.Value))
-      {
-        GUI.Box(rect, content, style);
-      }
-
-      _Box_Border(rect, is_outline, border_size);
-    }
-
-    public static void Box(Rect rect, Texture image, GUIStyle style, Color? background_color = null,
-      bool is_outline = false, float border_size = 1)
-    {
-      using (new GUIBackgroundColorScope(background_color == null ? GUI.backgroundColor : background_color.Value))
-      {
-        GUI.Box(rect, image, style);
-      }
-
-      _Box_Border(rect, is_outline, border_size);
-    }
-
-    public static void Box(Rect rect, GUIContent content, GUIStyle style, Color? background_color = null,
-      bool is_outline = false, float border_size = 1)
-    {
-      using (new GUIBackgroundColorScope(background_color == null ? GUI.backgroundColor : background_color.Value))
-      {
-        GUI.Box(rect, content, style);
-      }
-
-      _Box_Border(rect, is_outline, border_size);
-    }
-
-    private static void _Box_Border(Rect rect, bool is_outline = false, float border_size = 1)
-    {
-      float x = rect.x;
-      float y = rect.y;
-      float width = rect.width;
-      float height = rect.height;
-      using (new GUIColorScope(UnityEngine.Color.black))
-      {
-        if (is_outline)
+        public static void Box(Rect rect, string content, Color? backgroundColor = null, bool isOutline = false,
+            float borderSize = 1)
         {
-          //上边
-          GUI.Box(new Rect(x - border_size, y - border_size, width + 2 * border_size, border_size), "");
-          //下边
-          GUI.Box(new Rect(x - border_size, y + height, width + 2 * border_size, border_size), "");
-          //左边
-          GUI.Box(new Rect(x - border_size, y - border_size, border_size, height + 2 * border_size), "");
-          //右边
-          GUI.Box(new Rect(x + width, y - border_size, border_size, height + 2 * border_size), "");
+            using (new GUIBackgroundColorScope(backgroundColor ?? GUI.backgroundColor))
+            {
+                GUI.Box(rect, content);
+            }
+
+            _Box_Border(rect, isOutline, borderSize);
         }
-        else
+
+        public static void Box(Rect rect, Texture image, Color? backgroundColor = null, bool isOutline = false,
+            float borderSize = 1)
         {
-          //上边
-          GUI.Box(new Rect(x, y, width, border_size), "");
-          //下边
-          GUI.Box(new Rect(x, y + height - border_size, width, border_size), "");
-          //左边
-          GUI.Box(new Rect(x, y, border_size, height), "");
-          //右边
-          GUI.Box(new Rect(x + width - border_size, y, border_size, height), "");
+            using (new GUIBackgroundColorScope(backgroundColor ?? GUI.backgroundColor))
+            {
+                GUI.Box(rect, image);
+            }
+
+            _Box_Border(rect, isOutline, borderSize);
         }
-      }
+
+        public static void Box(Rect rect, GUIContent content, Color? backgroundColor = null, bool isOutline = false,
+            float borderSize = 1)
+        {
+            using (new GUIBackgroundColorScope(backgroundColor ?? GUI.backgroundColor))
+            {
+                GUI.Box(rect, content);
+            }
+
+            _Box_Border(rect, isOutline, borderSize);
+        }
+
+        public static void Box(Rect rect, string content, GUIStyle style, Color? backgroundColor = null,
+            bool isOutline = false, float borderSize = 1)
+        {
+            using (new GUIBackgroundColorScope(backgroundColor ?? GUI.backgroundColor))
+            {
+                GUI.Box(rect, content, style);
+            }
+
+            _Box_Border(rect, isOutline, borderSize);
+        }
+
+        public static void Box(Rect rect, Texture image, GUIStyle style, Color? backgroundColor = null,
+            bool isOutline = false, float borderSize = 1)
+        {
+            using (new GUIBackgroundColorScope(backgroundColor ?? GUI.backgroundColor))
+            {
+                GUI.Box(rect, image, style);
+            }
+
+            _Box_Border(rect, isOutline, borderSize);
+        }
+
+        public static void Box(Rect rect, GUIContent content, GUIStyle style, Color? backgroundColor = null,
+            bool isOutline = false, float borderSize = 1)
+        {
+            using (new GUIBackgroundColorScope(backgroundColor ?? GUI.backgroundColor))
+            {
+                GUI.Box(rect, content, style);
+            }
+
+            _Box_Border(rect, isOutline, borderSize);
+        }
+
+        private static void _Box_Border(Rect rect, bool isOutline = false, float borderSize = 1)
+        {
+            float x = rect.x;
+            float y = rect.y;
+            float width = rect.width;
+            float height = rect.height;
+            using (new GUIColorScope(UnityEngine.Color.black))
+            {
+                if (isOutline)
+                {
+                    //上边
+                    GUI.Box(new Rect(x - borderSize, y - borderSize, width + 2 * borderSize, borderSize),
+                        StringConst.String_Empty);
+                    //下边
+                    GUI.Box(new Rect(x - borderSize, y + height, width + 2 * borderSize, borderSize),
+                        StringConst.String_Empty);
+                    //左边
+                    GUI.Box(new Rect(x - borderSize, y - borderSize, borderSize, height + 2 * borderSize),
+                        StringConst.String_Empty);
+                    //右边
+                    GUI.Box(new Rect(x + width, y - borderSize, borderSize, height + 2 * borderSize),
+                        StringConst.String_Empty);
+                }
+                else
+                {
+                    //上边
+                    GUI.Box(new Rect(x, y, width, borderSize), StringConst.String_Empty);
+                    //下边
+                    GUI.Box(new Rect(x, y + height - borderSize, width, borderSize), StringConst.String_Empty);
+                    //左边
+                    GUI.Box(new Rect(x, y, borderSize, height), StringConst.String_Empty);
+                    //右边
+                    GUI.Box(new Rect(x + width - borderSize, y, borderSize, height), StringConst.String_Empty);
+                }
+            }
+        }
     }
-  }
 }

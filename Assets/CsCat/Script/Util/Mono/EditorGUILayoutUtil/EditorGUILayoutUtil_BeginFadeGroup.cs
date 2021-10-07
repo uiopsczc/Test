@@ -1,12 +1,12 @@
 #if UNITY_EDITOR
 namespace CsCat
 {
-  public partial class EditorGUILayoutUtil
-  {
-    public static EditorGUILayoutBeginFadeGroupScope BeginFadeGroup(float value, bool withIndent = false)
+    public partial class EditorGUILayoutUtil
     {
-      return new EditorGUILayoutBeginFadeGroupScope(value, withIndent);
+        public static EditorGUILayoutBeginFadeGroupScope BeginFadeGroup(float value, bool isWithIndent = false)
+        {
+            return new EditorGUILayoutBeginFadeGroupScope(value, isWithIndent);
+        }
     }
-  }
 }
 #endif

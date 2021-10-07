@@ -39,7 +39,7 @@ namespace CsCat
       return ObjectUtil.GetHashCode(key, value);
     }
 
-    public string ToString2(bool is_fill_string_with_double_quote = false)
+    public string ToString2(bool isFillStringWithDoubleQuote = false)
     {
       return string.Format("[{0},{1}]", key, value);
     }

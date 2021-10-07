@@ -45,11 +45,11 @@ namespace CsCat
           for (int i = 0; i < lines.Length; i++)
           {
             var line = lines[i];
-            string matched_line_content = MetaConst.sprite_regex.Match(line).Value;
+            string matched_line_content = MetaConst.Sprite_Regex.Match(line).Value;
             if (!matched_line_content.IsNullOrEmpty())
             {
-              string old_filedId = MetaConst.fileID_regex.Match(matched_line_content).Value;
-              string old_guid = MetaConst.guid_regex.Match(matched_line_content).Value;
+              string old_filedId = MetaConst.FileID_Regex.Match(matched_line_content).Value;
+              string old_guid = MetaConst.Guid_Regex.Match(matched_line_content).Value;
 
               if (sprite_to_replace_dict.ContainsKey(old_filedId) &&
                   old_guid.Equals(sprite_to_replace_dict[old_filedId]["old_guid"]))

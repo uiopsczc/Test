@@ -2,11 +2,11 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public partial class GUIUtil
-  {
-    public static GUILabelAlignScope LabelAlign(TextAnchor a)
+    public partial class GUIUtil
     {
-      return new GUILabelAlignScope(a);
+        public static GUILabelAlignScope LabelAlign(TextAnchor textAnchor)
+        {
+            return new GUILabelAlignScope(textAnchor);
+        }
     }
-  }
 }

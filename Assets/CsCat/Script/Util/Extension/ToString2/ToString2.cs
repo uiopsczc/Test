@@ -8,16 +8,20 @@ namespace CsCat
     /// <summary>
     ///   用于Object的ToString2，有ToString2的类必须在这里添加对应的处理
     /// </summary>
-    public static string ToString2(object o, bool is_fill_string_with_double_quote = false)
+    public static string ToString2(object o, bool isFillStringWithDoubleQuote = false)
     {
-      if (o is LitJson.JsonData jsonData)
-        return jsonData.ToJsonWithUTF8();
-      if (o is ICollection)
-        return ((ICollection)o).ToString2(is_fill_string_with_double_quote);
-      if (o is IToString2)
-        return ((IToString2)o).ToString2(is_fill_string_with_double_quote);
-      var result = o.ToString();
-      if (o is string && is_fill_string_with_double_quote) result = result.QuoteWithDouble();
+      switch (o)
+      {
+          case JsonData jsonData:
+              return jsonData.ToJsonWithUTF8();
+          case ICollection collection:
+              return collection.ToString2(isFillStringWithDoubleQuote);
+          case IToString2 string2:
+              return string2.ToString2(isFillStringWithDoubleQuote);
+      }
+
+        var result = o.ToString();
+      if (o is string && isFillStringWithDoubleQuote) result = result.QuoteWithDouble();
       return result;
     }
   }

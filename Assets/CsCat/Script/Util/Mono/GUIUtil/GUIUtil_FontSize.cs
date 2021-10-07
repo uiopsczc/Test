@@ -2,11 +2,11 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public partial class GUIUtil
-  {
-    public static GUIFontSizeScope FontSize(float size, params GUIStyle[] ps)
+    public partial class GUIUtil
     {
-      return new GUIFontSizeScope(size, ps);
+        public static GUIFontSizeScope FontSize(float size, params GUIStyle[] styles)
+        {
+            return new GUIFontSizeScope(size, styles);
+        }
     }
-  }
 }

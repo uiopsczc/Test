@@ -56,7 +56,7 @@ namespace CsCat
       var long_positive = Math.Abs(value);
       var radix = to_base;
       var out_digits = new char[63];
-      var const_chars = ConstExtensions.GetDigitsAndCharsBig();
+      var const_chars = CharUtil.GetDigitsAndCharsBig();
 
       for (digit_index = 0; digit_index <= 64; digit_index++)
       {
