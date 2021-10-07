@@ -1,31 +1,24 @@
 using System;
-using System.Diagnostics;
 
 namespace CsCat
 {
-  public class AOPScope : IDisposable
-  {
-    private Action pre_callback;
-    private Action post_callback;
-    #region ctor
-
-
-    public AOPScope(Action pre_callback, Action post_callback)
+    public class AOPScope : IDisposable
     {
-      this.pre_callback = pre_callback;
-      this.post_callback = post_callback;
-      pre_callback?.Invoke();
+        private Action _preCallback;
+        private Action _postCallback;
+
+
+        public AOPScope(Action preCallback, Action postCallback)
+        {
+            this._preCallback = preCallback;
+            this._postCallback = postCallback;
+            preCallback?.Invoke();
+        }
+
+
+        public void Dispose()
+        {
+            _postCallback?.Invoke();
+        }
     }
-
-    #endregion
-
-    #region public method
-
-    public void Dispose()
-    {
-      post_callback?.Invoke();
-    }
-
-    #endregion
-  }
 }

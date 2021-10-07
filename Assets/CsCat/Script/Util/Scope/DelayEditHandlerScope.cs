@@ -3,65 +3,60 @@ using System.Diagnostics;
 
 namespace CsCat
 {
-  public class DelayEditHandlerScope : IDisposable
-  {
-    private DelayEditHandler delayEditHandler;
-    #region ctor
-
-    public DelayEditHandlerScope(object edit_target)
+    public class DelayEditHandlerScope : IDisposable
     {
-      delayEditHandler = new DelayEditHandler(edit_target);
+        private DelayEditHandler _delayEditHandler;
+
+        public DelayEditHandlerScope(object editTarget)
+        {
+            _delayEditHandler = new DelayEditHandler(editTarget);
+        }
+
+        public object this[object key]
+        {
+            set => _delayEditHandler[key] = value;
+        }
+
+        public void ToAdd(params object[] args)
+        {
+            _delayEditHandler.ToAdd(args);
+        }
+
+        public void ToRemove(params object[] args)
+        {
+            _delayEditHandler.ToRemove(args);
+        }
+
+        public void ToRemoveAt(int toRemoveIndex)
+        {
+            _delayEditHandler.ToRemoveAt(toRemoveIndex);
+        }
+
+        public void ToRemoveAt_Stack(int toRemoveIndex)
+        {
+            _delayEditHandler.ToRemoveAt_Stack(toRemoveIndex);
+        }
+
+        //后入先出
+        public void ToCallback_Stack(Action toCallback)
+        {
+            _delayEditHandler.ToCallback_Stack(toCallback);
+        }
+
+        public void ToSet(object key, object value)
+        {
+            _delayEditHandler.ToSet(key, value);
+        }
+
+        public void ToCallback(Action toCallback)
+        {
+            _delayEditHandler.ToCallback(toCallback);
+        }
+
+
+        public void Dispose()
+        {
+            _delayEditHandler.Handle();
+        }
     }
-    #endregion
-
-    public object this[object key]
-    {
-      set { delayEditHandler[key] = value; }
-    }
-
-    public void ToAdd(params object[] args)
-    {
-      delayEditHandler.ToAdd(args);
-    }
-
-    public void ToRemove(params object[] args)
-    {
-      delayEditHandler.ToRemove(args);
-    }
-
-    public void ToRemoveAt(int to_remove_index)
-    {
-      delayEditHandler.ToRemoveAt(to_remove_index);
-    }
-
-    public void ToRemoveAt_Stack(int to_remove_index)
-    {
-      delayEditHandler.ToRemoveAt_Stack(to_remove_index);
-    }
-
-    //后入先出
-    public void ToCallback_Stack(Action to_callback)
-    {
-      delayEditHandler.ToCallback_Stack(to_callback);
-    }
-
-    public void ToSet(object key, object value)
-    {
-      delayEditHandler.ToSet(key, value);
-    }
-
-    public void ToCallback(Action to_callback)
-    {
-      delayEditHandler.ToCallback(to_callback);
-    }
-
-    #region public method
-
-    public void Dispose()
-    {
-      delayEditHandler.Handle();
-    }
-
-    #endregion
-  }
 }

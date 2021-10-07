@@ -3,26 +3,26 @@ using UnityEngine;
 
 namespace CsCat
 {
-  /// <summary>
-  ///   GUI.color   包括TextColor&BackgroundColor
-  /// </summary>
-  public class GUIColorScope : IDisposable
-  {
-    [SerializeField] private Color color_Pre { get; }
-
-    public GUIColorScope(Color new_color) : this()
+    /// <summary>
+    ///   GUI.color   包括TextColor&BackgroundColor
+    /// </summary>
+    public class GUIColorScope : IDisposable
     {
-      GUI.color = new_color;
-    }
+        [SerializeField] private Color _preColor { get; }
 
-    public GUIColorScope()
-    {
-      color_Pre = GUI.color;
-    }
+        public GUIColorScope(Color newColor) : this()
+        {
+            GUI.color = newColor;
+        }
 
-    public void Dispose()
-    {
-      GUI.color = color_Pre;
+        public GUIColorScope()
+        {
+            _preColor = GUI.color;
+        }
+
+        public void Dispose()
+        {
+            GUI.color = _preColor;
+        }
     }
-  }
 }

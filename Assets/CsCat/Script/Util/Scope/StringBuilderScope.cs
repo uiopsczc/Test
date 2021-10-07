@@ -8,16 +8,12 @@ namespace CsCat
     {
         public StringBuilder stringBuilder;
 
-        #region ctor
 
         public StringBuilderScope()
         {
             stringBuilder = PoolCatManagerUtil.Spawn<StringBuilder>();
         }
 
-        #endregion
-
-        #region public method
 
         public void Dispose()
         {
@@ -25,7 +21,5 @@ namespace CsCat
             PoolCatManagerUtil.Despawn(stringBuilder);
             stringBuilder = null;
         }
-
-        #endregion
     }
 }

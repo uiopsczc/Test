@@ -3,19 +3,20 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public class GUIBackgroundColorScope : IDisposable
-  {
-    public GUIBackgroundColorScope(Color new_color)
+    public class GUIBackgroundColorScope : IDisposable
     {
-      color_pre = GUI.backgroundColor;
-      GUI.backgroundColor = new_color;
-    }
+        [SerializeField] private Color preColor { get; }
 
-    [SerializeField] private Color color_pre { get; }
+        public GUIBackgroundColorScope(Color newColor)
+        {
+            preColor = GUI.backgroundColor;
+            GUI.backgroundColor = newColor;
+        }
 
-    public void Dispose()
-    {
-      GUI.backgroundColor = color_pre;
+
+        public void Dispose()
+        {
+            GUI.backgroundColor = preColor;
+        }
     }
-  }
 }

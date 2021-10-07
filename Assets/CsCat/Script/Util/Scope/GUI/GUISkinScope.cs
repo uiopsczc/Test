@@ -3,22 +3,22 @@ using UnityEngine;
 
 namespace CsCat
 {
-  /// <summary>
-  ///   GUI全局的skin
-  /// </summary>
-  public class GUISkinScope : IDisposable
-  {
-    private readonly GUISkin skin_pre;
-
-    public GUISkinScope(GUISkin skin)
+    /// <summary>
+    ///   GUI全局的skin
+    /// </summary>
+    public class GUISkinScope : IDisposable
     {
-      skin_pre = GUI.skin;
-      GUI.skin = skin;
-    }
+        private readonly GUISkin _preSkin;
 
-    public void Dispose()
-    {
-      GUI.skin = skin_pre;
+        public GUISkinScope(GUISkin skin)
+        {
+            _preSkin = GUI.skin;
+            GUI.skin = skin;
+        }
+
+        public void Dispose()
+        {
+            GUI.skin = _preSkin;
+        }
     }
-  }
 }

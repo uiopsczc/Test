@@ -2,17 +2,17 @@ using System;
 
 namespace CsCat
 {
-  public class AutoSetValue<T>
-  {
-    public T post_value;
-
-    public T pre_value;
-
-    public AutoSetValue<T> IfChanged(Action<T, T> action)
+    public class AutoSetValue<T>
     {
-      if (!pre_value.Equals(post_value))
-        action(pre_value, post_value);
-      return this;
+        public T postValue;
+
+        public T preValue;
+
+        public AutoSetValue<T> IfChanged(Action<T, T> action)
+        {
+            if (!ObjectUtil.Equals(preValue, postValue))
+                action(preValue, postValue);
+            return this;
+        }
     }
-  }
 }

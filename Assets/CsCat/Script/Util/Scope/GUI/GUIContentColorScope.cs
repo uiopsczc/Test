@@ -3,22 +3,23 @@ using UnityEngine;
 
 namespace CsCat
 {
-  /// <summary>
-  ///   GUI.contentColor   只是text的color
-  /// </summary>
-  public class GUIContentColorScope : IDisposable
-  {
-    public GUIContentColorScope(Color new_color)
+    /// <summary>
+    ///   GUI.contentColor   只是text的color
+    /// </summary>
+    public class GUIContentColorScope : IDisposable
     {
-      color_pre = GUI.contentColor;
-      GUI.contentColor = new_color;
-    }
+        [SerializeField] private Color _preColor { get; }
 
-    [SerializeField] private Color color_pre { get; }
+        public GUIContentColorScope(Color newColor)
+        {
+            _preColor = GUI.contentColor;
+            GUI.contentColor = newColor;
+        }
 
-    public void Dispose()
-    {
-      GUI.contentColor = color_pre;
+
+        public void Dispose()
+        {
+            GUI.contentColor = _preColor;
+        }
     }
-  }
 }

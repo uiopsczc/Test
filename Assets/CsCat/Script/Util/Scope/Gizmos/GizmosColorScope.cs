@@ -3,19 +3,20 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public class GizmosColorScope : IDisposable
-  {
-    public GizmosColorScope(Color new_color)
+    public class GizmosColorScope : IDisposable
     {
-      color_pre = GUI.color;
-      Gizmos.color = new_color;
-    }
+        [SerializeField] private Color _preColor { get; }
 
-    [SerializeField] private Color color_pre { get; }
+        public GizmosColorScope(Color newColor)
+        {
+            _preColor = GUI.color;
+            Gizmos.color = newColor;
+        }
 
-    public void Dispose()
-    {
-      Gizmos.color = color_pre;
+
+        public void Dispose()
+        {
+            Gizmos.color = _preColor;
+        }
     }
-  }
 }

@@ -3,32 +3,25 @@ using System.Diagnostics;
 
 namespace CsCat
 {
-  public class StopwatchScope : IDisposable
-  {
-    private readonly Stopwatch stopwatch;
-    private string name;
-    #region ctor
-
-    public StopwatchScope(string name = "")
+    public class StopwatchScope : IDisposable
     {
-      this.name = name;
-      stopwatch = new Stopwatch();
-      stopwatch.Start();
-      LogCat.LogFormat("{0} 开始统计耗时", this.name);
+        private readonly Stopwatch _stopwatch;
+        private string _name;
 
+        public StopwatchScope(string name = StringConst.String_Empty)
+        {
+            this._name = name;
+            _stopwatch = new Stopwatch();
+            _stopwatch.Start();
+            LogCat.LogFormat("{0} 开始统计耗时", this._name);
+        }
+
+
+        public void Dispose()
+        {
+            _stopwatch.Stop();
+            var timeSpan = _stopwatch.Elapsed;
+            LogCat.LogFormat("{0} 统计耗时结束,总共耗时{1}秒", this._name, timeSpan.TotalMilliseconds / 1000);
+        }
     }
-
-    #endregion
-
-    #region public method
-
-    public void Dispose()
-    {
-      stopwatch.Stop();
-      var timeSpan = stopwatch.Elapsed;
-      LogCat.LogFormat("{0} 统计耗时结束,总共耗时{1}秒", this.name, timeSpan.TotalMilliseconds / 1000);
-    }
-
-    #endregion
-  }
 }

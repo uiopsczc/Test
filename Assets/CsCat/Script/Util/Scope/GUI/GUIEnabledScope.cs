@@ -3,22 +3,23 @@ using UnityEngine;
 
 namespace CsCat
 {
-  /// <summary>
-  ///   GUI.enabled  如果false的话，之后的东西都会变灰，不能使用，直到为true
-  /// </summary>
-  public class GUIEnabledScope : IDisposable
-  {
-    public GUIEnabledScope(bool is_new_enabled)
+    /// <summary>
+    ///   GUI.enabled  如果false的话，之后的东西都会变灰，不能使用，直到为true
+    /// </summary>
+    public class GUIEnabledScope : IDisposable
     {
-      enabled_pre = GUI.enabled;
-      GUI.enabled = is_new_enabled;
-    }
+        [SerializeField] private bool _preIsEnabled { get; }
 
-    [SerializeField] private bool enabled_pre { get; }
+        public GUIEnabledScope(bool isNewEnabled)
+        {
+            _preIsEnabled = GUI.enabled;
+            GUI.enabled = isNewEnabled;
+        }
 
-    public void Dispose()
-    {
-      GUI.enabled = enabled_pre;
+
+        public void Dispose()
+        {
+            GUI.enabled = _preIsEnabled;
+        }
     }
-  }
 }
