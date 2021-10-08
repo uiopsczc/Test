@@ -2,8 +2,8 @@ namespace CsCat
 {
     public class ValueResult<V>
     {
-        private bool _isHasValue;
-        private V _value;
+        private readonly bool _isHasValue;
+        private readonly V _value;
 
         public bool GetIsHasValue() => _isHasValue;
         public V GetValue() => _value;

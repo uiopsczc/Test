@@ -6,7 +6,7 @@ namespace CsCat
 {
     public partial class ReflectionUtil
     {
-        private static Dictionary<Type, Dictionary<string, Dictionary<object, object>>> _cacheDict =
+        private static readonly Dictionary<Type, Dictionary<string, Dictionary<object, object>>> _cacheDict =
             new Dictionary<Type, Dictionary<string, Dictionary<object, object>>>();
 
         private const string _methodInfoString = "methodInfo";
@@ -18,36 +18,36 @@ namespace CsCat
         //////////////////////////////////////////////////////////////////////
         // MethodInfoCache
         //////////////////////////////////////////////////////////////////////
-        public static bool IsContainsMethodInfoCache(Type type, string methodName, params Type[] paramerTypes)
+        public static bool IsContainsMethodInfoCache(Type type, string methodName, params Type[] parameterTypes)
         {
             if (!_cacheDict.ContainsKey(type))
                 return false;
             string mainKey = _methodInfoString + _splitString + methodName;
             if (!_cacheDict[type].ContainsKey(mainKey))
                 return false;
-            var subKey = new Args(paramerTypes);
+            var subKey = new Args(parameterTypes);
             return _cacheDict[type][mainKey].ContainsKey(subKey);
         }
 
-        public static void SetMethodInfoCache(Type type, string methodName, Type[] paramerTypes, MethodInfo methodInfo)
+        public static void SetMethodInfoCache(Type type, string methodName, Type[] parameterTypes, MethodInfo methodInfo)
         {
             if (!_cacheDict.ContainsKey(type))
                 _cacheDict[type] = new Dictionary<string, Dictionary<object, object>>();
             string mainKey = _methodInfoString + _splitString + methodName;
             if (!_cacheDict[type].ContainsKey(mainKey))
                 _cacheDict[type][mainKey] = new Dictionary<object, object>();
-            var subKey = new Args(paramerTypes);
+            var subKey = new Args(parameterTypes);
             _cacheDict[type][mainKey][subKey] = methodInfo;
         }
 
-        public static MethodInfo GetMethodInfoCache(Type type, string methodName, params Type[] paramerTypes)
+        public static MethodInfo GetMethodInfoCache(Type type, string methodName, params Type[] parameterTypes)
         {
             if (!_cacheDict.ContainsKey(type))
                 return null;
             string mainKey = _methodInfoString + _splitString + methodName;
             if (!_cacheDict[type].ContainsKey(mainKey))
                 return null;
-            var subKey = new Args(paramerTypes);
+            var subKey = new Args(parameterTypes);
             return _cacheDict[type][mainKey][subKey] as MethodInfo;
         }
 

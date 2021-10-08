@@ -55,7 +55,7 @@ namespace CsCat
             }
 
             if (node.NodeType != XmlNodeType.Element) return false;
-            child = node.OwnerDocument.CreateTextNode("");
+            child = node.OwnerDocument.CreateTextNode(StringConst.String_Empty);
             child.Value = value;
             node.AppendChild(child);
             return true;

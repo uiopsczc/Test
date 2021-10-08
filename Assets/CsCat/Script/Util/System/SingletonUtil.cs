@@ -49,7 +49,7 @@ namespace CsCat
         /// <typeparam name="T"></typeparam>
         /// <param name="instance"></param>
         /// <returns></returns>
-        public static T GetInstnace<T>(T instance) where T : ISingleton, new()
+        public static T GetInstance<T>(T instance) where T : ISingleton, new()
         {
             if (instance != null) return instance;
             instance = new T();

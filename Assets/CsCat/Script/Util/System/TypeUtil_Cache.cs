@@ -5,7 +5,7 @@ namespace CsCat
 {
     public partial class TypeUtil
     {
-        private static Dictionary<string, Type> _cacheDict = new Dictionary<string, Type>();
+        private static readonly Dictionary<string, Type> _cacheDict = new Dictionary<string, Type>();
         public static Dictionary<string, Type> GetCacheDict() => _cacheDict;
     }
 }

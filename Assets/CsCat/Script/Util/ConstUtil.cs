@@ -15,7 +15,7 @@ namespace CsCat
                 case RuntimePlatform.OSXEditor:
                     ///*如果是电脑的编辑模式，先放在项目外面*/
                     return Application.dataPath.Replace("Assets", "");
-                    //return Application.dataPath + "/Resources/";
+                //return Application.dataPath + "/Resources/";
                 default:
                     return Application.dataPath + "/";
             }

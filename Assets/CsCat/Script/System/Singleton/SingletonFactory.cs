@@ -54,7 +54,7 @@ namespace CsCat
       object result = null;
       Type type = typeof(T);
       if (!dict.ContainsKey(type))
-        dict[type] = SingletonUtil.GetInstnace((T)result);
+        dict[type] = SingletonUtil.GetInstance((T)result);
       return (T)dict[type];
     }
 

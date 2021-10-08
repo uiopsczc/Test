@@ -7,7 +7,7 @@ namespace CsCat
     /// </summary>
     public class ObjectInfos
     {
-        private List<object> _list = new List<object>();
+        private readonly List<object> _list = new List<object>();
 
         //////////////////////////////////////////////////////////////////////
         // Get

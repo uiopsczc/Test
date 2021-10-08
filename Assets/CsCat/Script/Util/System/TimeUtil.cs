@@ -31,26 +31,26 @@ namespace CsCat
         /// </summary>
         /// <param name="seconds"></param>
         /// <param name="hCount">小时那位需要至少保留多少位，即1的时候显不显示为01</param>
-        /// <param name="isZeroIngroe">是否小时或分钟或秒为0的时候忽视该位，高位有的话还是会保留地位的，即使低位为0</param>
+        /// <param name="isZeroIgnore">是否小时或分钟或秒为0的时候忽视该位，高位有的话还是会保留地位的，即使低位为0</param>
         /// <returns></returns>
-        public static string SecondToStringHHmmss(long seconds, int hCount = 2, bool isZeroIngroe = false)
+        public static string SecondToStringHHmmss(long seconds, int hCount = 2, bool isZeroIgnore = false)
         {
             using (var scope = new StringBuilderScope())
             {
                 long HH = seconds / 3600;
-                isZeroIngroe = isZeroIngroe && HH == 0;
-                if (!isZeroIngroe)
+                isZeroIgnore = isZeroIgnore && HH == 0;
+                if (!isZeroIgnore)
                     scope.stringBuilder.Append(HH.ToString().FillHead(hCount, CharConst.Char_0) + StringConst.String_Colon);
 
                 long mm = (seconds % 3600) / 60;
-                isZeroIngroe = isZeroIngroe && mm == 0;
-                if (isZeroIngroe)
+                isZeroIgnore = isZeroIgnore && mm == 0;
+                if (isZeroIgnore)
                     scope.stringBuilder.Append(mm.ToString().FillHead(2, CharConst.Char_0) + StringConst.String_Colon);
 
 
                 long ss = seconds % 60;
-                isZeroIngroe = isZeroIngroe && ss == 0;
-                if (isZeroIngroe)
+                isZeroIgnore = isZeroIgnore && ss == 0;
+                if (isZeroIgnore)
                     scope.stringBuilder.Append(ss.ToString().FillHead(2, CharConst.Char_0));
 
                 return scope.stringBuilder.ToString();
