@@ -21,7 +21,7 @@ namespace CsCat
       }
 
         var result = o.ToString();
-      if (o is string && isFillStringWithDoubleQuote) result = result.QuoteWithDouble();
+      if (o is string && isFillStringWithDoubleQuote) result = result.WarpWithDoubleQuotes();
       return result;
     }
   }

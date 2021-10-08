@@ -17,7 +17,7 @@ namespace CsCat
         {
             string prefabName = transform.name;
             int removeIndex = -1;
-            if ((removeIndex = prefabName.IndexOf(StringConst.String_LeftParenthese)) >= 0)
+            if ((removeIndex = prefabName.IndexOf(StringConst.String_LeftRoundBrackets)) >= 0)
                 prefabName = prefabName.Remove(removeIndex);
 
             if ((removeIndex = prefabName.IndexOf(StringConst.String_Space)) >= 0)

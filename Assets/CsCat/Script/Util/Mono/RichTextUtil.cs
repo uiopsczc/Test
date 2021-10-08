@@ -6,22 +6,22 @@ namespace CsCat
     {
         public static string SetColor(string s, Color color)
         {
-            return string.Format(StringConst.String_Text_Color_Format, ColorUtility.ToHtmlStringRGB(color), s);
+            return string.Format(StringConst.String_Format_Text_Color, ColorUtility.ToHtmlStringRGB(color), s);
         }
 
         public static string SetIsBold(string s)
         {
-            return string.Format(StringConst.String_Text_Bold_Format, s);
+            return string.Format(StringConst.String_Format_Text_Bold, s);
         }
 
         public static string SetIsItalic(string s)
         {
-            return string.Format(StringConst.String_Text_Italic_Format, s);
+            return string.Format(StringConst.String_Format_Text_Italic, s);
         }
 
         public static string SetFontSize(string s, int fontSize)
         {
-            return string.Format(StringConst.String_Text_FontSize_Format, fontSize, s);
+            return string.Format(StringConst.String_Format_Text_FontSize, fontSize, s);
         }
     }
 }

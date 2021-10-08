@@ -2,16 +2,17 @@ using System;
 using UnityEngine;
 #if UNITY_EDITOR
 using UnityEditor;
+
 #endif
 namespace CsCat
 {
-  public static partial class TypeExtension_Unity
-  {
-#if UNITY_EDITOR
-    public static Texture2D GetMiniTypeThumbnail(this Type self)
+    public static partial class TypeExtension_Unity
     {
-      return AssetPreview.GetMiniTypeThumbnail(self);
-    }
+#if UNITY_EDITOR
+        public static Texture2D GetMiniTypeThumbnail(this Type self)
+        {
+            return AssetPreview.GetMiniTypeThumbnail(self);
+        }
 #endif
-  }
+    }
 }

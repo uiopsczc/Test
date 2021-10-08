@@ -5,29 +5,29 @@ namespace CsCat
 {
     public class ColorUtil
     {
-        public static void SetColorR(System.Object obj, float v, string memberName = StringConst.String_Color)
+        public static void SetColorR(System.Object obj, float v, string memberName = StringConst.String_color)
         {
             SetColor(obj, memberName, ColorMode.R, v);
         }
 
-        public static void SetColorG(System.Object obj, float v, string memberName = StringConst.String_Color)
+        public static void SetColorG(System.Object obj, float v, string memberName = StringConst.String_color)
         {
             SetColor(obj, memberName, ColorMode.G, v);
         }
 
-        public static void SetColorB(System.Object obj, float v, string memberName = StringConst.String_Color)
+        public static void SetColorB(System.Object obj, float v, string memberName = StringConst.String_color)
         {
             SetColor(obj, memberName, ColorMode.B, v);
         }
 
-        public static void SetColorA(System.Object obj, float v, string memberName = StringConst.String_Color)
+        public static void SetColorA(System.Object obj, float v, string memberName = StringConst.String_color)
         {
             SetColor(obj, memberName, ColorMode.A, v);
         }
 
         public static void SetColor(System.Object obj, ColorMode rgbaMode, params float[] rgba)
         {
-            SetColor(obj, StringConst.String_Color, rgbaMode, rgba);
+            SetColor(obj, StringConst.String_color, rgbaMode, rgba);
         }
 
         public static void SetColor(System.Object obj, string memberName, ColorMode rgbaMode, params float[] rgba)

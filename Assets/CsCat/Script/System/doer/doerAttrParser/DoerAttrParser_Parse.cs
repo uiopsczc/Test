@@ -149,7 +149,7 @@ namespace CsCat
       if (expression.StartsWith("eval(")) // 求表达式值
       {
         expression = expression.Substring("eval(".Length).Trim();
-        int pos = expression.QuoteEndIndex("(", ")");
+        int pos = expression.WrapEndIndex("(", ")");
         if (pos != -1)
         {
           string exp = expression.Substring(0, pos).Trim();
@@ -183,7 +183,7 @@ namespace CsCat
       if (expression.StartsWith("random(")) // 随机数
       {
         expression = expression.Substring("random(".Length);
-        int pos0 = expression.QuoteEndIndex("(", ")");
+        int pos0 = expression.WrapEndIndex("(", ")");
         string random_expression = expression.Substring(0, pos0).Trim();
         string end = pos0 == expression.Length - 1 ? "" : expression.Substring(pos0 + 1).Trim();
         int pos1 = random_expression.IndexOf(",");

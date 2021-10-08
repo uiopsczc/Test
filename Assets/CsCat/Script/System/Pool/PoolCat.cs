@@ -79,6 +79,7 @@ namespace CsCat
             }
 
             despawned_object_stack.Push(obj);
+
             spawned_object_list.Remove(obj);
             if (obj is IDespawn spawnable)
                 spawnable.OnDespawn();

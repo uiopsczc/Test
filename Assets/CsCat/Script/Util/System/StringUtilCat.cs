@@ -3,7 +3,7 @@ namespace CsCat
     public class StringUtilCat
     {
         public static string[] SplitIgnore(string self, string split = StringConst.String_Comma,
-            string ignoreLeft = StringConst.String_RegexDoubleQuotes,
+            string ignoreLeft = StringConst.String_Regex_DoubleQuotes,
             string ignoreRight = null)
         {
             return self.SplitIgnore(split, ignoreLeft, ignoreRight);
@@ -41,23 +41,23 @@ namespace CsCat
                 case 1:
                     return args.ToString();
                 case 2:
-                    return string.Format(StringConst.String_LinkComma_2, args);
+                    return string.Format(StringConst.String_Format_LinkComma_2, args);
                 case 3:
-                    return string.Format(StringConst.String_LinkComma_3, args);
+                    return string.Format(StringConst.String_Format_LinkComma_3, args);
                 case 4:
-                    return string.Format(StringConst.String_LinkComma_4, args);
+                    return string.Format(StringConst.String_Format_LinkComma_4, args);
                 case 5:
-                    return string.Format(StringConst.String_LinkComma_5, args);
+                    return string.Format(StringConst.String_Format_LinkComma_5, args);
                 case 6:
-                    return string.Format(StringConst.String_LinkComma_6, args);
+                    return string.Format(StringConst.String_Format_LinkComma_6, args);
                 case 7:
-                    return string.Format(StringConst.String_LinkComma_7, args);
+                    return string.Format(StringConst.String_Format_LinkComma_7, args);
                 case 8:
-                    return string.Format(StringConst.String_LinkComma_8, args);
+                    return string.Format(StringConst.String_Format_LinkComma_8, args);
                 case 9:
-                    return string.Format(StringConst.String_LinkComma_9, args);
+                    return string.Format(StringConst.String_Format_LinkComma_9, args);
                 case 10:
-                    return string.Format(StringConst.String_LinkComma_10, args);
+                    return string.Format(StringConst.String_Format_LinkComma_10, args);
                 default:
                     throw new ExceptionArgsTooLong();
             }
@@ -73,23 +73,23 @@ namespace CsCat
                 case 1:
                     return args.ToString();
                 case 2:
-                    return string.Format(StringConst.String_LinkUnderLine_2, args);
+                    return string.Format(StringConst.String_Format_LinkUnderLine_2, args);
                 case 3:
-                    return string.Format(StringConst.String_LinkUnderLine_3, args);
+                    return string.Format(StringConst.String_Format_LinkUnderLine_3, args);
                 case 4:
-                    return string.Format(StringConst.String_LinkUnderLine_4, args);
+                    return string.Format(StringConst.String_Format_LinkUnderLine_4, args);
                 case 5:
-                    return string.Format(StringConst.String_LinkUnderLine_5, args);
+                    return string.Format(StringConst.String_Format_LinkUnderLine_5, args);
                 case 6:
-                    return string.Format(StringConst.String_LinkUnderLine_6, args);
+                    return string.Format(StringConst.String_Format_LinkUnderLine_6, args);
                 case 7:
-                    return string.Format(StringConst.String_LinkUnderLine_7, args);
+                    return string.Format(StringConst.String_Format_LinkUnderLine_7, args);
                 case 8:
-                    return string.Format(StringConst.String_LinkUnderLine_8, args);
+                    return string.Format(StringConst.String_Format_LinkUnderLine_8, args);
                 case 9:
-                    return string.Format(StringConst.String_LinkUnderLine_9, args);
+                    return string.Format(StringConst.String_Format_LinkUnderLine_9, args);
                 case 10:
-                    return string.Format(StringConst.String_LinkUnderLine_10, args);
+                    return string.Format(StringConst.String_Format_LinkUnderLine_10, args);
                 default:
                     throw new ExceptionArgsTooLong();
             }

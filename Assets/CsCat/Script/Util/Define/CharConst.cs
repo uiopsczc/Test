@@ -9,11 +9,25 @@ namespace CsCat
         public const char Char_Underline = '_';
         public const char Char_Div = '/';
         public const char Char_Slash = '/';
-        public const char Char_Enter = '\n';
+        public const char Char_SlashN = '\n';
+        public const char Char_SlashR = '\r';
         public const char Char_Colon = ':';
         public const char Char_Comma = ',';
+        public const char Char_Dot = '.';
         public const char Char_DoubleQuotes = '\"';
         public const char Char_Quotes = '\'';
+        public const char Char_LeftRoundBrackets = '(';
+        public const char Char_RightRoundBrackets = ')';
+        public const char Char_LeftSquareBrackets = '[';
+        public const char Char_RightSquareBrackets = ']';
+        public const char Char_LeftCurlyBrackets = '{';
+        public const char Char_RightCurlyBrackets = '}';
+        public const char Char_LeftAngleBrackets = '<';
+        public const char Char_RightAngleBrackets = '>';
+        public const char Char_Vertical = '|';
+        public const char Char_Tilde = '~';
+        public const char Char_Tab = '\t';
+        public const char Char_NumberSign = '#';
 
         public const char Char_0 = '0';
         public const char Char_1 = '1';

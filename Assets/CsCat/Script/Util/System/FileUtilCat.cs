@@ -61,7 +61,7 @@ namespace CsCat
 
         public static string LocalURL(this string path)
         {
-            return string.Format(StringConst.String_File_Url_Format, path);
+            return string.Format(StringConst.String_Format_File_Url, path);
         }
     }
 }
