@@ -1,15 +1,10 @@
 namespace CsCat
 {
-  public static class ObjectExtension_xlua
-  {
-    public static bool IsNil(this object self)
+    public static class ObjectExtension_xlua
     {
-      return self == null;
+        public static bool IsNil(this object self)
+        {
+            return self == null;
+        }
     }
-
-
-
-
-
-  }
 }

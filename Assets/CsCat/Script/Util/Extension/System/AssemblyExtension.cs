@@ -1,40 +1,40 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 
 namespace CsCat
 {
-  public static class AssemblyExtension
-  {
-    /// <summary>
-    /// 获得NameSpace下的所有类,例如：Assembly.GetExecutingAssembly().GetClassesOfNameSpace("cat.io");
-    /// </summary>
-    public static Type[] GetTypesOfNameSpace(this Assembly assembly, string target_namespace)
+    public static class AssemblyExtension
     {
-      Type[] types = assembly.GetTypes().Where(t => t.Namespace == target_namespace).ToArray();
-      return types;
-    }
-
-
-
-
-
-    public static MemberInfo[] GetCustomAttributeMemberInfos<T>(this Assembly assembly)
-    {
-      List<MemberInfo> result = new List<MemberInfo>();
-      foreach (var type in assembly.GetTypes())
-      {
-        foreach (MemberInfo memberInfo in type.GetMembers(BindingFlagsConst.All))
+        /// <summary>
+        /// 获得NameSpace下的所有类,例如：Assembly.GetExecutingAssembly().GetClassesOfNameSpace("cat.io");
+        /// </summary>
+        public static Type[] GetTypesOfNameSpace(this Assembly assembly, string targetNamespace)
         {
-          if (memberInfo.GetCustomAttribute<T>() != null)
-            result.AddUnique(memberInfo);
+            List<Type> typeList = new List<Type>();
+            foreach (var type in assembly.GetTypes())
+            {
+                if (targetNamespace.Equals(type.Namespace))
+                    typeList.Add(type);
+            }
+
+            return typeList.ToArray();
         }
-      }
 
-      return result.ToArray();
+
+        public static MemberInfo[] GetCustomAttributeMemberInfos<T>(this Assembly assembly)
+        {
+            List<MemberInfo> result = new List<MemberInfo>();
+            foreach (var type in assembly.GetTypes())
+            {
+                foreach (var memberInfo in type.GetMembers(BindingFlagsConst.All))
+                {
+                    if (memberInfo.GetCustomAttribute<T>() == null) continue;
+                    result.AddUnique(memberInfo);
+                }
+            }
+
+            return result.ToArray();
+        }
     }
-
-
-  }
 }

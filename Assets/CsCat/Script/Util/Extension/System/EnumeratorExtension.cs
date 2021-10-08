@@ -1,43 +1,46 @@
 using System.Collections;
+using System.Collections.Generic;
 
 namespace CsCat
 {
-  public static class EnumeratorExtension
-  {
-
-    /// <summary>
-    /// 去到指定index
-    /// </summary>
-    /// <param name="self"></param>
-    /// <param name="index"></param>
-    /// <returns></returns>
-    public static IEnumerator GoToIndex(this IEnumerator self, int index)
+    public static class EnumeratorExtension
     {
-      self.Reset();
-      int cur_index = 0;
-      while (cur_index <= index)
-      {
-        self.MoveNext();
-        cur_index++;
-      }
+        /// <summary>
+        /// 去到指定index
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
+        public static IEnumerator GoToIndex(this IEnumerator self, int index)
+        {
+            self.Reset();
+            int curIndex = 0;
+            while (curIndex <= index)
+            {
+                self.MoveNext();
+                curIndex++;
+            }
 
-      return self;
+            return self;
+        }
+
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="self"></param>
+        /// <param name="curIndex">从-1开始</param>
+        /// <returns></returns>
+        public static bool MoveNext(this IEnumerator self, ref int curIndex)
+        {
+            curIndex++;
+            var result = self.MoveNext();
+            return result;
+        }
+
+        public static EnumeratorScope<T> Scope<T>(this IEnumerator<T> self)
+        {
+            return new EnumeratorScope<T>(self);
+        }
     }
-
-
-    /// <summary>
-    /// 
-    /// </summary>
-    /// <param name="self"></param>
-    /// <param name="cur_index">从-1开始</param>
-    /// <returns></returns>
-    public static bool MoveNext(this IEnumerator self, ref int cur_index)
-    {
-      cur_index++;
-      bool result = self.MoveNext();
-      return result;
-    }
-
-
-  }
 }

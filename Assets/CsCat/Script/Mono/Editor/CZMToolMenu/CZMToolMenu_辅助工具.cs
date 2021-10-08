@@ -39,7 +39,7 @@ namespace CsCat
         if (obj.IsAsset())
           str = obj.GetAssetPath();
         else
-          str = obj.AS<GameObject>().transform.GetFullPath();
+          str = obj.As<GameObject>().transform.GetFullPath();
         EditorGUIUtility.systemCopyBuffer = str;
       }
     }

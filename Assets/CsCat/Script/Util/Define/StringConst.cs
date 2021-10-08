@@ -45,6 +45,16 @@ namespace CsCat
         public const string String_8 = "8";
         public const string String_9 = "9";
 
+        public const string String_A = "A";
+        public const string String_X = "X";
+        public const string String_Z = "Z";
+
+        public const string String_a = "a";
+        public const string String_x = "x";
+        public const string String_y = "y";
+        public const string String_z = "z";
+
+
         public const string String_Format_LinkUnderLine_2 = "{0}_{1}";
         public const string String_Format_LinkUnderLine_3 = "{0}_{1}_{2}";
         public const string String_Format_LinkUnderLine_4 = "{0}_{1}_{2}_{3}";
@@ -76,12 +86,19 @@ namespace CsCat
         public const string String_Nil_In_Table = "__nil__";
         public const string String_x2 = "x2";
         public const string String_0x = "0x";
+        public const string String_Format_NumberWithComma = "{0:N0}";
+        public const string String_Format_Pct = "{0}%";
         public const string String_New_In_Table = "__{}__";
         public const string String_remove = "remove";
         public const string String_Asset_Extension = ".asset";
         public const string String_color = "color";
         public const string String_Button = "Button";
+        public const string String_true = "true";
+        public const string String_false = "false";
+        public const string String_ToArray = "ToArray";
+        public const string String_ToDict = "ToDict";
         
+
 
         public const string String_date = "date";
         public const string String_time = "time";
@@ -94,9 +111,7 @@ namespace CsCat
         public const string String_Minute_CN = "·Ö";
         public const string String_Second_CN = "Ãë";
 
-        public const string String_x = "x";
-        public const string String_y = "y";
-        public const string String_z = "z";
+        
         public const string String_x_y = "x,y";
         public const string String_x_y_0 = "x,y,0";
         public const string String_0_x_y = "0,x,y";

@@ -40,6 +40,14 @@ namespace CsCat
         public const char Char_8 = '8';
         public const char Char_9 = '9';
 
+        public const char Char_A = 'A';
+        public const char Char_X = 'X';
+        public const char Char_Z = 'Z';
+
+        public const char Char_a = 'a';
+        public const char Char_x = 'x';
+        public const char Char_y = 'y';
+        public const char Char_z = 'z';
 
         public static readonly char[] Digits =
         {

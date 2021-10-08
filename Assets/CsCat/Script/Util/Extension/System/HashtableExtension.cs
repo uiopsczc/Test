@@ -3,17 +3,14 @@ using System.Collections.Generic;
 
 namespace CsCat
 {
-  public static class HashtableExtension
-  {
-
-    public static Dictionary<K, V> ToDict<K, V>(this Hashtable self)
+    public static class HashtableExtension
     {
-      Dictionary<K, V> dict = new Dictionary<K, V>();
-      foreach (var key in self.Keys)
-        dict[key.To<K>()] = self[key].To<V>();
-      return dict;
+        public static Dictionary<K, V> ToDict<K, V>(this Hashtable self)
+        {
+            Dictionary<K, V> dict = new Dictionary<K, V>();
+            foreach (var key in self.Keys)
+                dict[key.To<K>()] = self[key].To<V>();
+            return dict;
+        }
     }
-
-
-  }
 }

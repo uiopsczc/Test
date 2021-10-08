@@ -58,7 +58,7 @@ namespace CsCat
       if (is_append)
         this.on_pre_start_callback += on_pre_start_callback;
       else
-        this.on_pre_start_callback.InsertHead(on_pre_start_callback);
+        this.on_pre_start_callback.InsertFirst(on_pre_start_callback);
       return this;
     }
 
@@ -67,7 +67,7 @@ namespace CsCat
       if (is_append)
         this.on_start_callback += on_start_callback;
       else
-        this.on_start_callback.InsertHead(on_start_callback);
+        this.on_start_callback.InsertFirst(on_start_callback);
       return this;
     }
 
@@ -76,7 +76,7 @@ namespace CsCat
       if (is_append)
         this.on_update_callback += on_update_callback;
       else
-        this.on_update_callback.InsertHead(on_update_callback);
+        this.on_update_callback.InsertFirst(on_update_callback);
       return this;
     }
 
@@ -85,7 +85,7 @@ namespace CsCat
       if (is_append)
         this.on_pre_exit_callback += on_pre_exit_callback;
       else
-        this.on_pre_exit_callback.InsertHead(on_pre_exit_callback);
+        this.on_pre_exit_callback.InsertFirst(on_pre_exit_callback);
       return this;
     }
 
@@ -94,7 +94,7 @@ namespace CsCat
       if (is_append)
         this.on_exit_callback += on_exit_callback;
       else
-        this.on_exit_callback.InsertHead(on_exit_callback);
+        this.on_exit_callback.InsertFirst(on_exit_callback);
       return this;
     }
 
