@@ -10,7 +10,7 @@ namespace CsCat
 
     public static string GetNameById(int sorting_layer_id)
     {
-      int index = GetUniqueIDs().FindIndex(e => e == sorting_layer_id);
+      int index = GetUniqueIDs().IndexOf(sorting_layer_id);
       if (index >= 0)
       {
         return GetNames()[index];
@@ -21,7 +21,7 @@ namespace CsCat
 
     public static int GetIdByName(string sorting_layer_name)
     {
-      int index = GetNames().FindIndex(e => e.Equals(sorting_layer_name));
+      int index = GetNames().IndexOf(sorting_layer_name);
       if (index >= 0)
       {
         return GetUniqueIDs()[index];

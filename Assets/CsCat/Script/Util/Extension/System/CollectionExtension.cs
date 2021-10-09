@@ -135,13 +135,13 @@ namespace CsCat
                 switch (self)
                 {
                     case Array _:
-                        scope.stringBuilder.Append(StringConst.String_RightRoundBrackets);
+                        scope.stringBuilder.Append(StringConst.String_LeftRoundBrackets);
                         break;
                     case IList _:
-                        scope.stringBuilder.Append(StringConst.String_RightSquareBrackets);
+                        scope.stringBuilder.Append(StringConst.String_LeftSquareBrackets);
                         break;
                     case IDictionary _:
-                        scope.stringBuilder.Append(StringConst.String_RightCurlyBrackets);
+                        scope.stringBuilder.Append(StringConst.String_LeftCurlyBrackets);
                         break;
                 }
 

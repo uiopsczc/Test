@@ -6,22 +6,22 @@ namespace CsCat
     {
         public static char[] GetCharsAll()
         {
-            return CharConst.Chars_Big.Combine(CharConst.Chars_Small);
+            return CharConst.Chars_Big.AddRange(CharConst.Chars_Small);
         }
 
         public static char[] GetDigitsAndCharsBig()
         {
-            return CharConst.Digits.Combine(CharConst.Chars_Big);
+            return CharConst.Digits.AddRange(CharConst.Chars_Big);
         }
 
         public static char[] GetDigitsAndCharsSmall()
         {
-            return CharConst.Digits.Combine(CharConst.Chars_Small);
+            return CharConst.Digits.AddRange(CharConst.Chars_Small);
         }
 
         public static char[] GetDigitsAndCharsAll()
         {
-            return CharConst.Digits.Combine(GetCharsAll());
+            return CharConst.Digits.AddRange(CharConst.CharsAll);
         }
     }
 }

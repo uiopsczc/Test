@@ -1,3 +1,5 @@
+using System.Runtime.CompilerServices;
+
 namespace CsCat
 {
     public static class CharConst
@@ -67,5 +69,14 @@ namespace CsCat
             'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w',
             'x', 'y', 'z'
         };
+
+        private static char[] _CharsAll;
+        public static char[] CharsAll => _CharsAll ?? (_CharsAll = CharUtil.GetCharsAll());
+        private static char[] _DigitsAndCharsBig;
+        public static char[] DigitsAndCharsBig => _DigitsAndCharsBig ?? (_DigitsAndCharsBig = CharUtil.GetDigitsAndCharsBig());
+        private static char[] _DigitsAndCharsSmall;
+        public static char[] DigitsAndCharsSmall => _DigitsAndCharsSmall ?? (_DigitsAndCharsSmall = CharUtil.GetDigitsAndCharsSmall());
+        private static char[] _DigitsAndCharsAll;
+        public static char[] DigitsAndCharsAll => _DigitsAndCharsAll ?? (_DigitsAndCharsAll = CharUtil.GetDigitsAndCharsAll());
     }
 }

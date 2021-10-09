@@ -244,9 +244,9 @@ namespace CsCat
       QuickSort(list, func, partition_index + 1, right_index);
     }
 
-    public static void QuickSortWithCompareRules<T>(IList<T> list, params Comparison<T>[] compare_rules)
+    public static void QuickSortWithCompareRules<T>(IList<T> list, params Comparison<T>[] compareRules)
     {
-      QuickSort(list, (a, b) => CompareUtil.CompareWithRules(a, b, compare_rules) < 0);
+      QuickSort(list, (a, b) => CompareUtil.CompareWithRules(a, b, compareRules) < 0);
     }
 
     private static int Partition<T>(IList<T> list, Func<T, T, bool> func, int left_index, int right_index)

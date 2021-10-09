@@ -45,7 +45,7 @@ namespace CsCat
 
         public string KK()
         {
-            using (var scope = new StringBuilderScope())
+            using (var scope = PoolCatManagerUtil.SpawnScope<StringBuilderScope>(s => s.Init(5)))
             {
                 scope.stringBuilder.Append("4566");
                 return scope.stringBuilder.ToString();
@@ -62,9 +62,17 @@ namespace CsCat
 
             if (Input.GetKeyDown("f2"))
             {
-                LogCat.warn(KK());
-
-//        LogCat.log(Lang.GetText("陈智权"));
+                //                LogCat.warn(KK());
+                string[] ss = {"a", "b", "a", "d"};
+                string[] ss2 = { "e", "g", "f"};
+                string[] _;
+                List<string> list = ss.ToList();
+                list.Unique();
+                LogCat.warn(list);
+//                (_,ss) = ss.RemoveRangeAt2(3,1);
+//                LogCat.warn(_);
+//                LogCat.warn(ss);
+                //        LogCat.log(Lang.GetText("陈智权"));
                 //        Dictionary<string, Dictionary<string, int>> dict = new Dictionary<string, Dictionary<string,int>>();
                 //        var t = dict.GetType();
                 //        LogCat.log(t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Dictionary<,>));
@@ -80,8 +88,8 @@ namespace CsCat
 
             if (Input.GetKeyDown("f3"))
             {
-                LogCat.warn(PoolCatManagerUtil.GetPool<StringBuilder>().GetSpawnedCount());
-                LogCat.warn(PoolCatManagerUtil.GetPool<StringBuilder>().GetDespawnedCount());
+                LogCat.warn(PoolCatManagerUtil.GetPool<StringBuilderScope>().GetSpawnedCount());
+                LogCat.warn(PoolCatManagerUtil.GetPool<StringBuilderScope>().GetDespawnedCount());
                 //        LogCat.warn(3333);
                 //        this.RemoveTimer(t);
                 //        panel.SetToBottom();

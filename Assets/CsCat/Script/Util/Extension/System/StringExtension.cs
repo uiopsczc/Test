@@ -907,7 +907,7 @@ namespace CsCat
             value = value.Trim();
             if (string.IsNullOrEmpty(value))
                 return 0L;
-            var constChars = CharUtil.GetDigitsAndCharsBig();
+            var constChars = CharConst.DigitsAndCharsBig;
             var digits = new string(constChars, 0, fromBase);
             long result = 0;
             value = value.ToUpper(); // 2

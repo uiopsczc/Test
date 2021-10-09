@@ -65,7 +65,7 @@ namespace CsCat
     {
       if (on_spawn_callback == null)
         return PoolCatManager.instance.Spawn<T>(pool_name);
-      return PoolCatManager.instance.Spawn<T>(pool_name,obj => on_spawn_callback((T)obj));
+      return PoolCatManager.instance.Spawn<T>(pool_name,obj => on_spawn_callback(obj));
     }
 
 

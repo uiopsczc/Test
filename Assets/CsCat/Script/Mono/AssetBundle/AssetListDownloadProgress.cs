@@ -14,7 +14,7 @@ namespace CsCat
 
     public AssetListDownloadProgress(List<string> asset_path_list)
     {
-      this.asset_path_list = asset_path_list.Unique();
+      asset_path_list.Unique();
       List<string> assetBundle_name_list = new List<string>();
       foreach (var asset_path in asset_path_list)
       {
@@ -28,7 +28,7 @@ namespace CsCat
         }
       }
 
-      assetBundle_name_list = assetBundle_name_list.Unique();
+      assetBundle_name_list.Unique();
       foreach (var assetBundle_name in assetBundle_name_list)
       {
         assetBundle_downloaded_bytes_dict[assetBundle_name] = 0;

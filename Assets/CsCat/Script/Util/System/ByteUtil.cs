@@ -283,7 +283,7 @@ namespace CsCat
 
         public static string ToString(byte[] data, int offset, int len, Encoding encoding = null)
         {
-            var bb = data.CopyTo(offset, len);
+            var bb = data.Clone(offset, len);
             return EncodingUtil.GetString(bb, offset, len, encoding);
         }
     }

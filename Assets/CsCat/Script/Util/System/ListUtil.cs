@@ -9,11 +9,11 @@ namespace CsCat
         /// <summary>
         ///   将list1[a]和list2[b]交换
         /// </summary>
-        public static void Swap<T>(IList<T> list1, int a, IList<T> list2, int b)
+        public static void Swap<T>(List<T> list1, int index1, List<T> list2, int index2)
         {
-            var c = list1[a];
-            list1[a] = list2[b];
-            list2[b] = c;
+            var c = list1[index1];
+            list1[index1] = list2[index2];
+            list2[index2] = c;
         }
 
         //////////////////////////////////////////////////////////////////////

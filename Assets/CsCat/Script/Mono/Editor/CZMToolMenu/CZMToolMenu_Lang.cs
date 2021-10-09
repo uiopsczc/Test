@@ -78,7 +78,7 @@ namespace CsCat
         }
       }
 
-      all_string_list = all_string_list.Unique(); //去重
+      all_string_list.Unique(); //去重
       StdioUtil.RemoveFiles(file_path);
       WriteToExcel(file_path, all_string_list);
       LogCat.log("UI上的Text已经输出到", file_path);

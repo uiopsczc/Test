@@ -8,26 +8,11 @@ using UnityEditorInternal;
 
 namespace CsCat
 {
-    public static class ListExtension
+    public static class ListTExtension
     {
         public static List<T> EmptyIfNull<T>(this List<T> self)
         {
-            if (self == null)
-                return new List<T>();
-            return self;
-        }
-
-
-        public static int FindIndex<T>(this IList<T> self, Func<T, bool> match)
-        {
-            using (var scope = self.GetEnumerator().Scope())
-            {
-                var curIndex = -1;
-                while (scope.iterator.MoveNext(ref curIndex))
-                    if (match(scope.iterator.Current))
-                        return curIndex;
-                return curIndex;
-            }
+            return self ?? new List<T>();
         }
 
         public static void RemoveEmpty<T>(this List<T> self)
@@ -40,13 +25,13 @@ namespace CsCat
         /// <summary>
         ///   将list[index1]和list[index2]交换
         /// </summary>
-        public static void Swap<T>(this IList<T> self, int index1, int index2)
+        public static void Swap<T>(this List<T> self, int index1, int index2)
         {
             ListUtil.Swap(self, index1, self, index2);
         }
 
         //超过index或者少于0的循环index表获得
-        public static T GetLooped<T>(this IList<T> self, int index)
+        public static T GetByLoopIndex<T>(this List<T> self, int index)
         {
             while (index < 0) index += self.Count;
             if (index >= self.Count) index %= self.Count;
@@ -54,14 +39,14 @@ namespace CsCat
         }
 
         //超过index或者少于0的循环index表设置
-        public static void SetLooped<T>(this IList<T> self, int index, T value)
+        public static void SetByLoopIndex<T>(this List<T> self, int index, T value)
         {
             while (index < 0) index += self.Count;
             if (index >= self.Count) index %= self.Count;
             self[index] = value;
         }
 
-        public static bool ContainsIndex(this IList self, int index)
+        public static bool ContainsIndex<T>(this List<T> self, int index)
         {
             return index < self.Count && index >= 0;
         }
@@ -72,34 +57,34 @@ namespace CsCat
         /// <typeparam name="T"></typeparam>
         /// <param name="self"></param>
         /// <returns></returns>
-        public static List<T> Unique<T>(this List<T> self)
+        public static void Unique<T>(this List<T> self)
         {
-            var uniqueList = new List<T>();
-            foreach (var element in self)
+            var hashSet = new HashSet<T>();
+            for (int i = 0; i < self.Count; i++)
             {
-                if (!uniqueList.Contains(element))
-                    uniqueList.Add(element);
+                if (!hashSet.Add(self[i]))
+                {
+                    self.RemoveAt(i);
+                    i--;
+                }
             }
-
-            return uniqueList;
         }
 
 
-        public static List<T> Combine<T>(this IList<T> self, IList<T> another, bool isUnique = false)
+        public static List<T> Combine<T>(this List<T> self, List<T> another)
         {
             var result = new List<T>(self);
             result.AddRange(another);
-            if (isUnique)
-                result = result.Unique();
+            result.Unique();
             return result;
         }
 
-        public static void Push<T>(this IList<T> self, T t)
+        public static void Push<T>(this List<T> self, T t)
         {
             self.Add(t);
         }
 
-        public static T Peek<T>(this IList<T> self)
+        public static T Peek<T>(this List<T> self)
         {
             return self.Last();
         }
@@ -119,7 +104,7 @@ namespace CsCat
         /// <typeparam name="T"></typeparam>
         /// <param name="self"></param>
         /// <returns></returns>
-        public static T First<T>(this IList<T> self)
+        public static T First<T>(this List<T> self)
         {
             return self[0];
         }
@@ -131,7 +116,7 @@ namespace CsCat
         /// <typeparam name="T"></typeparam>
         /// <param name="self"></param>
         /// <returns></returns>
-        public static T Last<T>(this IList<T> self)
+        public static T Last<T>(this List<T> self)
         {
             return self[self.Count - 1];
         }
@@ -140,7 +125,7 @@ namespace CsCat
         ///   在list中找sublist的开始位置
         /// </summary>
         /// <returns>-1表示没找到</returns>
-        public static int IndexOfSub<T>(this IList<T> self, IList<T> subList)
+        public static int IndexOfSub<T>(this List<T> self, List<T> subList)
         {
             var resultFromIndex = -1; //sublist在list中的开始位置
             for (var i = 0; i < self.Count; i++)
@@ -168,7 +153,7 @@ namespace CsCat
         /// <summary>
         ///   在list中只保留sublist中的元素
         /// </summary>
-        public static bool RetainElementsOfSub<T>(this IList<T> self, IList<T> subList)
+        public static bool RetainElementsOfSub<T>(this List<T> self, List<T> subList)
         {
             var isModify = false;
             for (var i = self.Count - 1; i >= 0; i--)
@@ -182,13 +167,14 @@ namespace CsCat
         }
 
         /// <summary>
-        ///   包含fromIndx，但不包含toIndx，到toIndex前一位
+        ///   包含fromIndx
         /// </summary>
-        public static List<T> Sub<T>(this IList<T> self, int fromIndex, int toIndex)
+        public static List<T> Sub<T>(this List<T> self, int fromIndex, int length)
         {
             var list = new List<T>();
-            for (var i = fromIndex; i <= toIndex; i++)
-                list.Add(self[i]);
+            length = Math.Min(length, self.Count - fromIndex + 1);
+            for (int i = 0; i < length; i++)
+                list.Add(self[fromIndex + i]);
             return list;
         }
 
@@ -196,9 +182,10 @@ namespace CsCat
         /// <summary>
         ///   包含fromIndx到末尾
         /// </summary>
-        public static List<T> Sub<T>(this IList<T> self, int fromIndex)
+        public static List<T> Sub<T>(this List<T> self, int fromIndex)
         {
-            return self.Sub(fromIndex, self.Count - 1);
+            var length = self.Count - fromIndex + 1;
+            return self.Sub(fromIndex, length);
         }
 
         #endregion
@@ -208,21 +195,24 @@ namespace CsCat
         /// <summary>
         ///   当set来使用，保持只有一个
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="c"></param>
         public static List<T> Add<T>(this List<T> self, T element, bool isUnique = false)
         {
-            if (isUnique && CheckIsDuplicate(self, element))
+            if (isUnique && self.Contains(element))
                 return self;
             self.Add(element);
             return self;
         }
 
-        public static List<T> AddRange<T>(this List<T> self, IEnumerable<T> collection, bool isUnique = false)
+        public static List<T> AddRange<T>(this List<T> self, List<T> list, bool isUnique = false)
         {
-            foreach (var element in collection)
+            if (!isUnique)
             {
-                if (isUnique && self.Contains(element))
+                self.AddRange(list);
+                return self;
+            }
+            foreach (var element in list)
+            {
+                if (self.Contains(element))
                     continue;
                 self.Add(element);
             }
@@ -230,16 +220,26 @@ namespace CsCat
             return self;
         }
 
-        private static bool CheckIsDuplicate<T>(this IList<T> self, T element)
+        public static List<T> AddRange<T>(this List<T> self, T[] array, bool isUnique = false)
         {
-            return self.Contains(element);
+            if (!isUnique)
+            {
+                self.AddRange(array);
+                return self;
+            }
+            foreach (var element in array)
+            {
+                if (self.Contains(element))
+                    continue;
+                self.Add(element);
+            }
+            return self;
         }
 
-
-        public static System.Collections.Generic.List<T> AddFirst<T>(this List<T> self, T o,
+        public static List<T> AddFirst<T>(this List<T> self, T o,
             bool isUnique = false)
         {
-            if (isUnique && CheckIsDuplicate(self, o))
+            if (isUnique && self.Contains(o))
                 return self;
             self.Insert(0, o);
             return self;
@@ -248,7 +248,7 @@ namespace CsCat
         public static List<T> AddLast<T>(this List<T> self, T o,
             bool isUnique = false)
         {
-            if (isUnique && CheckIsDuplicate(self, o))
+            if (isUnique && self.Contains(o))
                 return self;
             self.Insert(self.Count, o);
             return self;
@@ -261,7 +261,7 @@ namespace CsCat
         }
 
 
-        public static T RemoveFirst<T>(this IList<T> self)
+        public static T RemoveFirst<T>(this List<T> self)
         {
             var t = self[0];
             self.RemoveAt(0);
@@ -293,7 +293,7 @@ namespace CsCat
         /// <param name="self"></param>
         /// <param name="o"></param>
         /// <returns></returns>
-        public static bool Remove2<T>(this IList<T> self, T o)
+        public static bool Remove2<T>(this List<T> self, T o)
         {
             if (!self.Contains(o))
                 return false;
@@ -302,19 +302,9 @@ namespace CsCat
         }
 
         /// <summary>
-        ///   删除list中的所有元素
-        /// </summary>
-        /// <param name="self"></param>
-        /// <returns></returns>
-        public static void RemoveAll<T>(this IList<T> self)
-        {
-            self.RemoveRange2(0, self.Count);
-        }
-
-        /// <summary>
         ///   删除list中的subList（subList必须要全部在list中）
         /// </summary>
-        public static bool RemoveSub<T>(this IList<T> self, IList<T> subList)
+        public static bool RemoveSub<T>(this List<T> self, List<T> subList)
         {
             var fromIndex = self.IndexOfSub(subList);
             if (fromIndex == -1)
@@ -333,7 +323,7 @@ namespace CsCat
         /// <summary>
         ///   跟RemoveRange一样，但返回删除的元素List
         /// </summary>
-        public static List<T> RemoveRange2<T>(this IList<T> self, int index, int length)
+        public static List<T> RemoveRange2<T>(this List<T> self, int index, int length)
         {
             var result = new List<T>();
             var lastIndex = index + length - 1 <= self.Count - 1 ? index + length - 1 : self.Count - 1;
@@ -488,7 +478,7 @@ namespace CsCat
             return ListUtil.IsDiff(oldList, newList);
         }
 
-        public static void CopyTo<T>(this IList<T> self, IList<T> destList, params object[] constructArgs)
+        public static void CopyTo<T>(this List<T> self, List<T> destList, params object[] constructArgs)
             where T : ICopyable
         {
             destList.Clear();
@@ -500,7 +490,7 @@ namespace CsCat
             }
         }
 
-        public static void CopyFrom<T>(this IList<T> self, IList<T> sourceList, params object[] constructArgs)
+        public static void CopyFrom<T>(this List<T> self, List<T> sourceList, params object[] constructArgs)
             where T : ICopyable
         {
             self.Clear();
@@ -512,7 +502,7 @@ namespace CsCat
             }
         }
 
-        public static ArrayList DoSaveList<T>(this IList<T> self, Action<T, Hashtable> doSaveCallback)
+        public static ArrayList DoSaveList<T>(this List<T> self, Action<T, Hashtable> doSaveCallback)
         {
             ArrayList result = new ArrayList();
             foreach (var element in self)
@@ -525,7 +515,7 @@ namespace CsCat
             return result;
         }
 
-        public static void DoRestoreList<T>(this IList<T> self, ArrayList arrayList,
+        public static void DoRestoreList<T>(this List<T> self, ArrayList arrayList,
             Func<Hashtable, T> doRestoreCallback)
         {
             foreach (var element in arrayList)
@@ -541,10 +531,10 @@ namespace CsCat
             SortUtil.MergeSortWithCompareRules(self, compareRules);
         }
 
-        public static int BinarySearchCat<T>(this IList<T> self, T target_value,
+        public static int BinarySearchCat<T>(this IList<T> self, T targetValue,
             IndexOccurType indexOccurType = IndexOccurType.Any_Index, params Comparison<T>[] compareRules)
         {
-            return SortedListSerachUtil.BinarySearchCat(self, target_value, indexOccurType, compareRules);
+            return SortedListSerachUtil.BinarySearchCat(self, targetValue, indexOccurType, compareRules);
         }
 
         public static ListSorttedType GetListSortedType<T>(this IList<T> self, Comparison<T>[] compareRules)
@@ -555,35 +545,5 @@ namespace CsCat
                 ? ListSorttedType.Increace
                 : ListSorttedType.Decrease;
         }
-
-        #region 各种To ToXXX
-
-        /// <summary>
-        ///   变为对应的ArrayList
-        /// </summary>
-        /// <param name="self"></param>
-        /// <returns></returns>
-        public static ArrayList ToArrayList(this IList self)
-        {
-            var list = new ArrayList();
-            foreach (var o in self)
-                list.Add(o);
-            return list;
-        }
-
-        public static T[] ToArray<T>(this ICollection<T> self)
-        {
-            var result = new T[self.Count];
-            self.CopyTo(result, 0);
-            return result;
-        }
-#if UNITY_EDITOR
-        public static void ToReorderableList(this IList toReorderList, ref ReorderableList reorderableList)
-        {
-            ReorderableListUtil.ToReorderableList(toReorderList, ref reorderableList);
-        }
-#endif
-
-        #endregion
     }
 }

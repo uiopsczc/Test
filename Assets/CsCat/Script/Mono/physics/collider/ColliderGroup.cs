@@ -60,7 +60,7 @@ namespace CsCat
 
     public void RemoveAllColliders()
     {
-      collider_list.RemoveAll();
+        collider_list.Clear();
       collider_list_dict.Clear();
     }
 
