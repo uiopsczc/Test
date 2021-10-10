@@ -39,7 +39,7 @@ namespace CsCat
             IEnumerator toStartEnumerator)
         {
             Dictionary<string, IEnumerator> enumeratorDict = monoBehaviour.GetCacheIEnumeratorDict();
-            IEnumerator saveEnumerator = enumeratorDict.GetOrAddDefault<IEnumerator>(enumeratorName);
+            IEnumerator saveEnumerator = enumeratorDict.GetOrAddDefault2<IEnumerator>(enumeratorName);
             enumeratorDict[enumeratorName] =
                 monoBehaviour.StopAndStartIEnumerator(ref saveEnumerator, toStartEnumerator);
         }
@@ -114,7 +114,7 @@ namespace CsCat
             IEnumerator toStartEnumerator)
         {
             Dictionary<string, PausableCoroutine> pausableCoroutineDict = monoBehaviour.GetCachePausableCoroutineDict();
-            PausableCoroutine saveEnumerator = pausableCoroutineDict.GetOrAddDefault<PausableCoroutine>(enumeratorName);
+            PausableCoroutine saveEnumerator = pausableCoroutineDict.GetOrAddDefault2<PausableCoroutine>(enumeratorName);
             pausableCoroutineDict[enumeratorName] =
                 monoBehaviour.StopAndStartPausableCoroutine(ref saveEnumerator, toStartEnumerator);
             return pausableCoroutineDict[enumeratorName];
@@ -170,7 +170,7 @@ namespace CsCat
             Func<T> whenNotContainKeyFunc)
         {
             MonoBehaviourCache monoBehaviourCache = monoBehaviour.GetMonoBehaviourCache();
-            return monoBehaviourCache.dict.GetOrAddDefault(dictName, () => whenNotContainKeyFunc());
+            return monoBehaviourCache.dict.GetOrAddDefault2(dictName, () => whenNotContainKeyFunc());
         }
 
         /// <summary>

@@ -184,7 +184,7 @@ namespace CsCat
             else
                 lua_function_string = splits[splits.Length - 1];
 
-            string table_key = list.Join(".");
+            string table_key = list.Concat( ".");
             LuaTable luatable;
             if (table_key.IsNullOrWhiteSpace())
                 luatable = luaEnv.Global;

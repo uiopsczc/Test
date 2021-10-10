@@ -50,15 +50,15 @@ namespace CsCat
     {
       restore_key = restore_key ?? "roles";
       this.ClearRoles();
-      var dict_roles = dict.Remove2<ArrayList>(restore_key);
-      var dict_roles_tmp = dict_tmp?.Remove2<Hashtable>(restore_key);
+      var dict_roles = dict.Remove3<ArrayList>(restore_key);
+      var dict_roles_tmp = dict_tmp?.Remove3<Hashtable>(restore_key);
       if (!dict_roles.IsNullOrEmpty())
       {
         var roles = this.GetRoles_ToEdit();
         foreach (var _dict_role in dict_roles)
         {
           var dict_role = _dict_role as Hashtable;
-          var rid = dict_role.Remove2<string>("rid");
+          var rid = dict_role.Remove3<string>("rid");
           Role role = Client.instance.roleFactory.NewDoer(rid) as Role;
           role.SetEnv(this.parent_doer);
           Hashtable dict_role_tmp = null;

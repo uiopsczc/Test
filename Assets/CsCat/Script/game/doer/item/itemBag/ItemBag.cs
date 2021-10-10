@@ -39,7 +39,7 @@ namespace CsCat
         }
         else
         {
-          var dict_item_list = dict_items.GetOrAddDefault(id, () => new ArrayList());
+          var dict_item_list = dict_items.GetOrAddDefault2(id, () => new ArrayList());
           var dict_item = new Hashtable();
           var dict_item_tmp = new Hashtable();
           item.PrepareSave(dict_item, dict_item_tmp);
@@ -61,8 +61,8 @@ namespace CsCat
     {
       restore_key = restore_key ?? "item_bag";
       this.ClearItems();
-      var dict_items = dict.Remove2<Hashtable>(restore_key);
-      var dict_items_tmp = dict_tmp?.Remove2<Hashtable>(restore_key);
+      var dict_items = dict.Remove3<Hashtable>(restore_key);
+      var dict_items_tmp = dict_tmp?.Remove3<Hashtable>(restore_key);
       if (!dict_items.IsNullOrEmpty())
       {
         Item item;
@@ -85,7 +85,7 @@ namespace CsCat
             foreach (var _dict_item in dict_item_list)
             {
               var dict_item = _dict_item as Hashtable;
-              var rid = dict_item.Remove2<string>("rid");
+              var rid = dict_item.Remove3<string>("rid");
               item = Client.instance.itemFactory.NewDoer(id) as Item;
               item.SetEnv(this.parent_doer);
               Hashtable dict_item_tmp = null;

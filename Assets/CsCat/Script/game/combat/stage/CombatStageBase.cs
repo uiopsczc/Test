@@ -26,7 +26,7 @@ namespace CsCat
       if (this.combat != null)
         this.RemoveChild(this.combat.key);
       var combat_class =
-        TypeUtil.GetType(arg_dict.GetOrGetDefault<string>("combat_class_path", () => typeof(CombatBase).ToString()));
+        TypeUtil.GetType(arg_dict.GetOrGetDefault2<string>("combat_class_path", () => typeof(CombatBase).ToString()));
       this.combat = this.AddChild(null, combat_class, arg_dict) as CombatBase;
       Client.instance.combat = this.combat;
       this.combat.Start();

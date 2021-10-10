@@ -16,11 +16,7 @@ namespace CsCat
             Array.Copy(toAdds, 0, array, 0, toAdds.Length);
             return array;
         }
-
-        public static T[] AddFirst<T>(Array sourceArray, params object[] toAdds)
-        {
-            return AddFirst(sourceArray, toAdds).ToArray<T>();
-        }
+        
 
         public static Array AddLast(Array sourceArray, params object[] toAdds)
         {
@@ -34,11 +30,7 @@ namespace CsCat
             Array.Copy(toAdds, 0, array, sourceArrayLength, toAdds.Length);
             return array;
         }
-
-        public static T[] AddLast<T>(Array sourceArray, params object[] toAdds)
-        {
-            return AddLast(sourceArray, toAdds).ToArray<T>();
-        }
+        
 
         public static Array Remove(Array sourceArray, object o)
         {
@@ -65,11 +57,7 @@ namespace CsCat
                 Array.Copy(sourceArray, toRemoveIndex + 1, array, toRemoveIndex, sourceArrayLength - toRemoveIndex - 1);
             return array;
         }
-
-        public static T[] Remove<T>(Array sourceArray, object o)
-        {
-            return Remove(sourceArray, o).ToArray<T>();
-        }
+        
 
         public static Array RemoveAt(Array sourceArray, int index)
         {
@@ -92,10 +80,6 @@ namespace CsCat
                     sourceArrayLength - toRemoveIndex - 1);
             return array;
         }
-
-        public static T[] RemoveAt<T>(Array sourceArray, int index)
-        {
-            return RemoveAt(sourceArray, index).ToArray<T>();
-        }
+        
     }
 }

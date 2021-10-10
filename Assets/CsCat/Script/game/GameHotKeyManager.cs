@@ -62,13 +62,15 @@ namespace CsCat
 
             if (Input.GetKeyDown("f2"))
             {
-                //                LogCat.warn(KK());
-                string[] ss = {"a", "b", "a", "d"};
-                string[] ss2 = { "e", "g", "f"};
+                
+                //                string[] ss = {"a", "b", "a", "d"};
+                //                string[] ss2 = { "e", "g", "f"};
                 string[] _;
-                List<string> list = ss.ToList();
-                list.Unique();
-                LogCat.warn(list);
+//                List<string> list = ss.ToList();
+//                int[] ss = new int[]{1,3,4,2,7,5,6};
+//                var list = ss.ToList();
+//                list.QuickSortWithCompareRules((a,b)=> a - b);
+//                LogCat.warn(list);
 //                (_,ss) = ss.RemoveRangeAt2(3,1);
 //                LogCat.warn(_);
 //                LogCat.warn(ss);

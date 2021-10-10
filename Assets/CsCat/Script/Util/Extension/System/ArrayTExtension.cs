@@ -41,18 +41,20 @@ namespace CsCat
                     remainCount++;
                 }
             }
+
             T[] result = new T[remainCount];
             for (int i = 0; i < remainCount; i++)
             {
                 var remainIndex = remainIndexes[i];
                 result[i] = self[remainIndex];
             }
+
             return result;
         }
 
         public static void Swap<T>(this T[] self, int index1, int index2)
         {
-           ArrayTUtil.Swap(self, index1, self, index2);
+            ArrayTUtil.Swap(self, index1, self, index2);
         }
 
         //超过index或者少于0的循环index表获得
@@ -142,6 +144,7 @@ namespace CsCat
                 Array.Copy(arr, 0, result, curIndex, arr.Length);
                 curIndex += arr.Length;
             }
+
             result = result.Unique();
             return result;
         }
@@ -156,7 +159,7 @@ namespace CsCat
             return self.Last();
         }
 
-        public static (T element,T[] array) Pop<T>(this T[] self)
+        public static (T element, T[] array) Pop<T>(this T[] self)
         {
             return self.RemoveLast2();
         }
@@ -213,14 +216,15 @@ namespace CsCat
                     remainIndexes[remainCount] = i;
                     remainCount++;
                 }
+
             T[] result = new T[remainCount];
             for (int i = 0; i < remainCount; i++)
             {
                 var remainIndex = remainIndexes[i];
                 result[i] = self[remainIndex];
             }
-            return result;
 
+            return result;
         }
 
         /// <summary>
@@ -327,9 +331,10 @@ namespace CsCat
             if (isUnique && self.Contains(element))
             {
                 result = new T[self.Length];
-                Array.Copy(self,result, self.Length);
+                Array.Copy(self, result, self.Length);
                 return result;
             }
+
             result = self.AddCapacity(1, false);
             result[0] = element;
             return result;
@@ -344,6 +349,7 @@ namespace CsCat
                 Array.Copy(self, result, self.Length);
                 return result;
             }
+
             result = self.AddCapacity(1);
             result[result.Length - 1] = element;
             return result;
@@ -410,9 +416,10 @@ namespace CsCat
             if (fromIndex == -1)
             {
                 result = new T[self.Length];
-                Array.Copy(self,result,self.Length);
+                Array.Copy(self, result, self.Length);
                 return result;
             }
+
             result = self.RemoveRange(fromIndex, subArray.Length);
             return result;
         }
@@ -562,11 +569,6 @@ namespace CsCat
             return newObjects;
         }
 
-        
-
-        
-
-        
 
         public static T[] Insert<T>(this T[] self, int insertIndex, T element)
         {
@@ -610,9 +612,6 @@ namespace CsCat
             return result;
         }
 
-        
-
-       
 
         public static T[] RandomArray<T>(this T[] self, int outCount, bool isUnique,
             RandomManager randomManager = null,
@@ -626,10 +625,6 @@ namespace CsCat
             return self.RandomArray(1, false, randomManager, weights)[0];
         }
 
-
-        
-
-        
 
         //将self初始化为[height][width]的数组
         public static T[][] InitArrays<T>(this T[][] self, int height, int width, T defaultValue = default)
@@ -657,37 +652,6 @@ namespace CsCat
             for (int j = 0; j < resultHeight; j++)
                 result[j][resultWidth - 1 - i] = self[i][j];
             return result;
-        }
-
-
-        public static Array Resize_Array(this Array self, int length)
-        {
-            Type elementType = self.GetType().GetElementType();
-            Array newArray = Array.CreateInstance(elementType, length);
-            Array.Copy(self, 0, newArray, 0, Math.Min(self.Length, length));
-            return newArray;
-        }
-
-        public static Array Insert_Array(this Array self, int index, object value)
-        {
-            int newArrayLength = index < self.Length ? self.Length + 1 : index + 1;
-
-            Type elementType = self.GetType().GetElementType();
-            Array newArray = Array.CreateInstance(elementType, newArrayLength);
-            Array.Copy(self, 0, newArray, 0, Math.Min(newArrayLength, self.Length));
-            newArray.SetValue(value, index);
-            if (index < self.Length)
-                Array.Copy(self, index, newArray, index + 1, self.Length - index);
-            return newArray;
-        }
-
-        public static Array RemoveAt_Array(this Array self, int index)
-        {
-            Type elementType = self.GetType().GetElementType();
-            Array newArray = Array.CreateInstance(elementType, self.Length - 1);
-            Array.Copy(self, 0, newArray, 0, index);
-            Array.Copy(self, index + 1, newArray, index, self.Length - index - 1);
-            return newArray;
         }
 
         public static void SortWithCompareRules<T>(this T[] self, params Comparison<T>[] compareRules)

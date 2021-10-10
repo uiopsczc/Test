@@ -47,7 +47,7 @@ namespace CsCat
                         break;
                     }
                     case IDictionary _ when oldList.ContainsIndex(newK) && oldList[newK] is IDictionary:
-                        diff[newK] = DictionaryUtil.GetDiff(oldList[newK] as IDictionary, newV as IDictionary);
+                        diff[newK] = IDictionaryUtil.GetDiff(oldList[newK] as IDictionary, newV as IDictionary);
                         break;
                     default:
                     {
@@ -64,7 +64,7 @@ namespace CsCat
                     diff[i] = StringConst.String_Nil_In_Table;
             }
 
-            diff.key_list.QuickSort((a, b) => a.To<int>() >= b.To<int>());
+            diff.Sort((a, b) => a.To<int>() >= b.To<int>());
             if (diff.Count == 0)
                 diff = null;
             return diff;
@@ -108,7 +108,7 @@ namespace CsCat
                 else if (oldList.ContainsIndex(k) && oldList[k] is IList && v is LinkedHashtable hashtable)
                     ApplyDiff(oldList[k] as IList, hashtable);
                 else if (oldList.ContainsIndex(k) && oldList[k] is IDictionary && v is LinkedHashtable linkedHashtable)
-                    DictionaryUtil.ApplyDiff(oldList[k] as IDictionary, linkedHashtable);
+                    IDictionaryUtil.ApplyDiff(oldList[k] as IDictionary, linkedHashtable);
                 else
                 {
                     if (k < oldListCount)
@@ -149,7 +149,7 @@ namespace CsCat
                             diff[newK] = GetDiff(oldList[newK] as IList, list);
                             break;
                         case IDictionary _ when newV is IDictionary dictionary:
-                            diff[newK] = DictionaryUtil.GetNotExist(oldList[newK] as IDictionary, dictionary);
+                            diff[newK] = IDictionaryUtil.GetNotExist(oldList[newK] as IDictionary, dictionary);
                             break;
                     }
 
@@ -157,7 +157,7 @@ namespace CsCat
                 }
             }
 
-            diff.key_list.QuickSort((a, b) => a.To<int>() >= b.To<int>());
+            diff.Sort((a, b) => a.To<int>() >= b.To<int>());
             return diff;
         }
 
@@ -179,7 +179,7 @@ namespace CsCat
                         break;
                     case IDictionary _ when !(oldList[newKey] is IDictionary):
                     case IDictionary _
-                        when DictionaryUtil.IsDiff(oldList[newKey] as IDictionary, newValue as IDictionary):
+                        when IDictionaryUtil.IsDiff(oldList[newKey] as IDictionary, newValue as IDictionary):
                         return true;
                     case IDictionary _:
                         break;

@@ -41,7 +41,7 @@ namespace CsCat
     {
       restore_key = restore_key ?? "embed_ids";
       this.ClearEmbeds();
-      var dict_embed_ids = dict.Remove2<ArrayList>(restore_key);
+      var dict_embed_ids = dict.Remove3<ArrayList>(restore_key);
       if (!dict_embed_ids.IsNullOrEmpty())
       {
         var embeds = this.GetEmbeds_ToEdit();

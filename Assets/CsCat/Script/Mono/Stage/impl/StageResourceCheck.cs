@@ -53,7 +53,7 @@ namespace CsCat
             foreach (var key in Client.instance.assetBundleUpdater.need_download_dict.Keys)
             {
               if (Client.instance.assetBundleUpdater.need_download_dict[key]
-                .GetOrGetDefault("is_finished", () => false))
+                .GetOrGetDefault2("is_finished", () => false))
                 cur_loaded_count++;
             }
 

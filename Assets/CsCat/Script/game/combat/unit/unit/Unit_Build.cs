@@ -44,14 +44,14 @@ namespace CsCat
       this.build_ok_animation_name = arg_dict.Get<string>("build_ok_animation_name");
       //是否需要保持尸体
       this.is_keep_dead_body =
-        arg_dict.GetOrGetDefault("is_keep_dead_body", () => this.cfgUnitData.is_keep_dead_body);
+        arg_dict.GetOrGetDefault2("is_keep_dead_body", () => this.cfgUnitData.is_keep_dead_body);
 
 
       this.faction = arg_dict.Get<string>("faction");
       this.position = arg_dict.Get<Vector3>("position");
       this.rotation = arg_dict.Get<Quaternion>("rotation");
       this.scale =
-        arg_dict.GetOrGetDefault<float>("scale", () => this.cfgUnitData.scale == 0 ? 1 : this.cfgUnitData.scale);
+        arg_dict.GetOrGetDefault2<float>("scale", () => this.cfgUnitData.scale == 0 ? 1 : this.cfgUnitData.scale);
       this.SetScale(this.scale);
 
 
@@ -89,7 +89,7 @@ namespace CsCat
       if (arg_dict.ContainsKey("hp_pct"))
         this.SetHp((int)(this.GetMaxHp() * arg_dict.Get<float>("hp_pct")), true);
       else
-        this.SetHp(arg_dict.GetOrGetDefault("hp", () => this.GetMaxHp()), true);
+        this.SetHp(arg_dict.GetOrGetDefault2("hp", () => this.GetMaxHp()), true);
 
       this.UpdateMixedStates();
 

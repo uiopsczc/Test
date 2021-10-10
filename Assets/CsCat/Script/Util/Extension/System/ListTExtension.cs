@@ -210,6 +210,7 @@ namespace CsCat
                 self.AddRange(list);
                 return self;
             }
+
             foreach (var element in list)
             {
                 if (self.Contains(element))
@@ -227,12 +228,14 @@ namespace CsCat
                 self.AddRange(array);
                 return self;
             }
+
             foreach (var element in array)
             {
                 if (self.Contains(element))
                     continue;
                 self.Add(element);
             }
+
             return self;
         }
 
@@ -374,110 +377,6 @@ namespace CsCat
         #endregion
 
 
-        //如：list.BubbleSort((a, b)=>return a.count <= b.count)
-        //则是将count由小到大排序，注意比较大小时不要漏掉等于号，否则相等时也进行排序，则排序不稳定
-        public static void BubbleSort<T>(this IList<T> self, Func<T, T, bool> compareFunc)
-        {
-            SortUtil.BubbleSort(self, compareFunc);
-        }
-
-        public static void BubbleSort(this IList self, Func<object, object, bool> compareFunc)
-        {
-            SortUtil.BubbleSort(self, compareFunc);
-        }
-
-        public static void BubbleSortWithCompareRules<T>(this IList<T> self, params Comparison<T>[] compareRules)
-        {
-            SortUtil.BubbleSortWithCompareRules(self, compareRules);
-        }
-
-        public static void BubbleSortWithCompareRules(this IList self, params Comparison<object>[] compareRules)
-        {
-            SortUtil.BubbleSortWithCompareRules(self, compareRules);
-        }
-
-
-        //如：list.MergeSort((a, b)=>return a.count <= b.count)
-        //则是将count由小到大排序，注意比较大小时不要漏掉等于号，否则相等时也进行排序，则排序不稳定
-        public static void MergeSort<T>(this IList<T> self, Func<T, T, bool> compareFunc)
-        {
-            SortUtil.MergeSort(self, compareFunc);
-        }
-
-        public static void MergeSort(this IList self, Func<object, object, bool> compareFunc)
-        {
-            SortUtil.MergeSort(self, compareFunc);
-        }
-
-        public static void MergeSortWithCompareRules<T>(this IList<T> self, params Comparison<T>[] compareRules)
-        {
-            SortUtil.MergeSortWithCompareRules(self, compareRules);
-        }
-
-        public static void MergeSortWithCompareRules(this IList self, params Comparison<object>[] compareRules)
-        {
-            SortUtil.MergeSortWithCompareRules(self, compareRules);
-        }
-
-        //如：list.QuickSort((a, b)=>return a.count <= b.count)
-        //则是将count由小到大排序，注意比较大小时不要漏掉等于号，否则相等时也进行排序，则排序不稳定
-        public static void QuickSort<T>(this IList<T> self, Func<T, T, bool> compareFunc)
-        {
-            SortUtil.QuickSort(self, compareFunc);
-        }
-
-        public static void QuickSort(this IList self, Func<object, object, bool> compareFunc)
-        {
-            SortUtil.QuickSort(self, compareFunc);
-        }
-
-        public static void QuickSortWithCompareRules<T>(this IList<T> self, params Comparison<T>[] compareRules)
-        {
-            SortUtil.QuickSortWithCompareRules(self, compareRules);
-        }
-
-        public static void QuickSortWithCompareRules(this IList self, params Comparison<object>[] compareRules)
-        {
-            SortUtil.QuickSortWithCompareRules(self, compareRules);
-        }
-
-        //////////////////////////////////////////////////////////////////////
-        // Diff相关
-        //////////////////////////////////////////////////////////////////////
-        // 必须和ApplyDiff使用
-        // 以new为基准，获取new相对于old不一样的部分
-        // local diff = table.GetDiff(old, new)
-        //  table.ApplyDiff(old, diff)
-        // 这样old的就变成和new一模一样的数据
-        public static LinkedHashtable GetDiff(this IList oldList, IList newList)
-        {
-            return ListUtil.GetDiff(oldList, newList);
-        }
-
-        // table.ApplyDiff(old, diff)
-        // 将diff中的东西应用到old中
-        // 重要：当为Array的时候，需要重新赋值；List的时候，可以不需要重新赋值
-        public static IList ApplyDiff(this IList oldList, LinkedHashtable diffDict)
-        {
-            return ListUtil.ApplyDiff(oldList, diffDict);
-        }
-
-        // 必须和ApplyDiff使用
-        // 以new为基准，获取new中有，但old中没有的
-        // local diff = table.GetNotExist(old, new)
-        // table.ApplyDiff(old, diff)
-        // 这样old就有new中的字段
-        public static LinkedHashtable GetNotExist(this IList oldList, IList newList)
-        {
-            return ListUtil.GetNotExist(oldList, newList);
-        }
-
-        //两个table是否不一样
-        public static bool IsDiff(this IList oldList, IList newList)
-        {
-            return ListUtil.IsDiff(oldList, newList);
-        }
-
         public static void CopyTo<T>(this List<T> self, List<T> destList, params object[] constructArgs)
             where T : ICopyable
         {
@@ -529,21 +428,6 @@ namespace CsCat
         public static void SortWithCompareRules<T>(this List<T> self, params Comparison<T>[] compareRules)
         {
             SortUtil.MergeSortWithCompareRules(self, compareRules);
-        }
-
-        public static int BinarySearchCat<T>(this IList<T> self, T targetValue,
-            IndexOccurType indexOccurType = IndexOccurType.Any_Index, params Comparison<T>[] compareRules)
-        {
-            return SortedListSerachUtil.BinarySearchCat(self, targetValue, indexOccurType, compareRules);
-        }
-
-        public static ListSorttedType GetListSortedType<T>(this IList<T> self, Comparison<T>[] compareRules)
-        {
-            T firstValue = self[0];
-            T lastValue = self[self.Count - 1];
-            return CompareUtil.CompareWithRules(firstValue, lastValue, compareRules) <= 0
-                ? ListSorttedType.Increace
-                : ListSorttedType.Decrease;
         }
     }
 }

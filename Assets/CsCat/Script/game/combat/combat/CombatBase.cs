@@ -30,7 +30,7 @@ namespace CsCat
       base.Init();
       this.arg_dict = arg_dict;
 
-      randomManager.SetSeed(this.arg_dict.GetOrGetDefault<int>("random_seed", () => (int)DateTime.Now.Ticks));
+      randomManager.SetSeed(this.arg_dict.GetOrGetDefault2<int>("random_seed", () => (int)DateTime.Now.Ticks));
       effectManager = AddChild<EffectManager>("EffectManager");
       cameraManager = AddChild<CameraManager>("CameraManager");
       unitManager = AddChild<UnitManager>("UnitManager");
@@ -47,7 +47,7 @@ namespace CsCat
       this.fixed_update_remain_duration = CombatConst.Fixed_Update_Duration;
       this.is_started = true;
       var gameLevel_class =
-        TypeUtil.GetType(arg_dict.GetOrGetDefault<string>("gameLevel_class_path",
+        TypeUtil.GetType(arg_dict.GetOrGetDefault2<string>("gameLevel_class_path",
           () => typeof(GameLevelBase).ToString()));
       this.gameLevel = this.AddChild(null, gameLevel_class) as GameLevelBase;
       this.gameLevel.Start();

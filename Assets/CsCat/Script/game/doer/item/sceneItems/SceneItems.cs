@@ -50,8 +50,8 @@ namespace CsCat
     {
       restore_key = restore_key ?? "scene_items";
       this.ClearItems();
-      var dict_items = dict.Remove2<Hashtable>(restore_key);
-      var dict_items_tmp = dict_tmp?.Remove2<Hashtable>(restore_key);
+      var dict_items = dict.Remove3<Hashtable>(restore_key);
+      var dict_items_tmp = dict_tmp?.Remove3<Hashtable>(restore_key);
       if (!dict_items.IsNullOrEmpty())
       {
         foreach (string rid in dict_items.Keys)

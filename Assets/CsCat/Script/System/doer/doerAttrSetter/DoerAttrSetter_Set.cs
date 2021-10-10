@@ -90,7 +90,7 @@ namespace CsCat
             if (object_value.Equals("nil"))
               m.Remove(key);
             else if (is_add)
-              m[key] = m.GetOrAddDefault(key, () => "") + object_value.To<string>();
+              m[key] = m.GetOrAddDefault2(key, () => "") + object_value.To<string>();
             else
               m[key] = object_value;
           }

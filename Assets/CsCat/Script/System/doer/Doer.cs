@@ -379,12 +379,12 @@ namespace CsCat
     /////////////////////////////GetOrAddXXXX/////////////////////////////
     public T GetOrAddTmp<T>(string key, Func<T> add_func)
     {
-      return this.dbase.db_tmp.GetOrAddDefault(key, add_func);
+      return this.dbase.db_tmp.GetOrAddDefault2(key, add_func);
     }
 
     public T GetOrAdd<T>(string key, Func<T> add_func)
     {
-      return this.dbase.db.GetOrAddDefault(key, add_func);
+      return this.dbase.db.GetOrAddDefault2(key, add_func);
     }
   }
 }

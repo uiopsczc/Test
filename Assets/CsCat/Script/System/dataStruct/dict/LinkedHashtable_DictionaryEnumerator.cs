@@ -2,82 +2,75 @@ using System.Collections;
 
 namespace CsCat
 {
-  public partial class LinkedHashtable
-  {
-    class DictionaryEnumerator : IDictionaryEnumerator
+    public partial class LinkedHashtable
     {
-      #region field
-
-      ArrayList key_list;
-      ArrayList value_list;
-      int position = -1;
-
-      #endregion
-
-      #region property
-
-      DictionaryEntry IDictionaryEnumerator.Entry
-      {
-        get
+        class DictionaryEnumerator : IDictionaryEnumerator
         {
-          object key = key_list[position];
-          object value = value_list[position];
-          return new DictionaryEntry(key, value);
+
+            ArrayList keyList;
+            ArrayList valueList;
+            int position = -1;
+            private DictionaryEntry current;
+            private DictionaryEntry entry;
+
+
+            DictionaryEntry IDictionaryEnumerator.Entry
+            {
+                get
+                {
+                    object key = keyList[position];
+                    object value = valueList[position];
+                    entry.Key = key;
+                    entry.Value = value;
+                    return entry;
+                }
+            }
+
+            object IDictionaryEnumerator.Key => keyList[position];
+
+            object IDictionaryEnumerator.Value => valueList[position];
+
+            object IEnumerator.Current
+            {
+                get
+                {
+                    object key = keyList[position];
+                    object value = valueList[position];
+                    current.Key = key;
+                    current.Value = value;
+                    return current;
+                }
+            }
+
+
+            public DictionaryEnumerator(ArrayList keyList, ArrayList valueList)
+            {
+                Init(keyList, valueList);
+            }
+
+            public void Init(ArrayList keyList, ArrayList valueList)
+            {
+                this.keyList = keyList;
+                this.valueList = valueList;
+            }
+
+            public void Reset()
+            {
+                position = -1;
+            }
+
+
+            bool IEnumerator.MoveNext()
+            {
+                position++;
+                return position < keyList.Count;
+            }
+
+            void IEnumerator.Reset()
+            {
+                Reset();
+            }
+
         }
-      }
-
-      object IDictionaryEnumerator.Key
-      {
-        get { return key_list[position]; }
-      }
-
-      object IDictionaryEnumerator.Value
-      {
-        get { return value_list[position]; }
-      }
-
-      object IEnumerator.Current
-      {
-        get
-        {
-          object key = key_list[position];
-          object value = value_list[position];
-          return new DictionaryEntry(key, value);
-        }
-      }
-
-      #endregion
-
-      #region ctor
-
-      public DictionaryEnumerator(ArrayList key_list, ArrayList value_list)
-      {
-        this.key_list = key_list;
-        this.value_list = value_list;
-      }
-
-      #endregion
-
-      #region private method
-
-      bool IEnumerator.MoveNext()
-      {
-        position++;
-        return position < key_list.Count;
-      }
-
-      void IEnumerator.Reset()
-      {
-        position = -1;
-      }
-
-      #endregion
-
     }
-
-
-
-
-  }
 }
-

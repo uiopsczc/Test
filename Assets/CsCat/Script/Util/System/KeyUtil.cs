@@ -4,12 +4,12 @@ namespace CsCat
     {
         public static string GetCombinedKey(string separator, params object[] keys)
         {
-            return keys.Join(separator);
+            return keys.Concat( separator);
         }
 
         public static string GetCombinedKey(char separator, params object[] keys)
         {
-            return keys.Join(separator.ToString());
+            return keys.Concat(separator.ToString());
         }
     }
 }

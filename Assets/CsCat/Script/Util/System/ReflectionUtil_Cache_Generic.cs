@@ -8,7 +8,7 @@ namespace CsCat
     {
         static string _GetGenericTypesString(Type[] genericTypes)
         {
-            return genericTypes.Join(_splitString);
+            return genericTypes.Concat(_splitString);
         }
 
         //////////////////////////////////////////////////////////////////////

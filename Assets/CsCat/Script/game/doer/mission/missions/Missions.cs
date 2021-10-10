@@ -51,14 +51,14 @@ namespace CsCat
     {
       restore_key = restore_key ?? "missions";
       this.ClearMissions();
-      var list_missions = dict.Remove2<ArrayList>(restore_key);
-      var dict_missions_tmp = dict.Remove2<Hashtable>(restore_key);
+      var list_missions = dict.Remove3<ArrayList>(restore_key);
+      var dict_missions_tmp = dict.Remove3<Hashtable>(restore_key);
       if (!list_missions.IsNullOrEmpty())
       {
         var missions = this.GetMissions_ToEdit();
         foreach (Hashtable dict_mission in list_missions)
         {
-          string rid = dict_mission.Remove2<string>("rid");
+          string rid = dict_mission.Remove3<string>("rid");
           var mission = Client.instance.missionFactory.NewDoer(rid) as Mission;
           mission.SetEnv(this.parent_doer);
           Hashtable dict_mission_tmp = null;

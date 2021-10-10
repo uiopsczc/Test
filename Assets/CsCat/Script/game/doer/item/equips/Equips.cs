@@ -55,8 +55,8 @@ namespace CsCat
     {
       restore_key = restore_key ?? "equips";
       this.ClearEquips();
-      var dict_equips = dict.Remove2<ArrayList>(restore_key);
-      var dict_equips_tmp = dict_tmp?.Remove2<Hashtable>(restore_key);
+      var dict_equips = dict.Remove3<ArrayList>(restore_key);
+      var dict_equips_tmp = dict_tmp?.Remove3<Hashtable>(restore_key);
       var equips = this.GetEquips_ToEdit();
       if (!dict_equips.IsNullOrEmpty())
       {
@@ -71,7 +71,7 @@ namespace CsCat
           else //不可折叠的情况
           {
             var dict_equip = value as Hashtable;
-            var rid = dict_equip.Remove2<string>("rid");
+            var rid = dict_equip.Remove3<string>("rid");
             item = Client.instance.itemFactory.NewDoer(rid) as Item;
             item.SetEnv(this.parent_doer);
             Hashtable dict_equip_tmp = null;

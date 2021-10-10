@@ -158,7 +158,7 @@ namespace CsCat
 
       var select_unit_arg_dict = DoerAttrParserUtil.ConvertTableWithTypeString(cfgSpellData._select_unit_arg_dict);
       var select_unit_faction = select_unit_arg_dict.Get<string>("select_unit_faction");
-      var select_unit_count = select_unit_arg_dict.GetOrGetDefault<int>("select_unit_count", () => 1000);
+      var select_unit_count = select_unit_arg_dict.GetOrGetDefault2<int>("select_unit_count", () => 1000);
       var scope = SpellConst.Select_Unit_Faction_Dict[select_unit_faction];
 
       var range_info = new Hashtable();

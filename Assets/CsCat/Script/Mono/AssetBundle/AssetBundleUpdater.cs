@@ -131,7 +131,7 @@ namespace CsCat
 
       long current_downloaded_bytes = 0;
       foreach (var download in need_download_dict.Values)
-        current_downloaded_bytes += download.GetOrGetDefault<long>("downloded_bytes", () => (long)0);
+        current_downloaded_bytes += download.GetOrGetDefault2<long>("downloded_bytes", () => (long)0);
       Client.instance.uiManager.uiLoadingPanel.SetDesc(string.Format("{0}/{1}",
         NumberUnitUtil.GetString(current_downloaded_bytes, 2, 1000),
         NumberUnitUtil.GetString(total_need_download_bytes, 1, 1000)));

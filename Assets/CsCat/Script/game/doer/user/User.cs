@@ -51,7 +51,7 @@ namespace CsCat
       //还原任务
       this.o_missions.DoRestore(dict, dict_tmp);
 
-      string main_role_rid = dict.Remove2<string>("main_role_rid");
+      string main_role_rid = dict.Remove3<string>("main_role_rid");
       this.main_role = this.GetRole(main_role_rid);
 
       base.DoRestore(dict, dict_tmp);

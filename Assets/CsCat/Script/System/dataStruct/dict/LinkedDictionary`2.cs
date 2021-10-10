@@ -1,94 +1,96 @@
+using System;
 using System.Collections.Generic;
 using System.Collections;
+using System.Windows.Forms;
 
 namespace CsCat
 {
-  public class LinkedDictionary<TKey, TValue> : Dictionary<TKey, TValue>, IGetLinkedHashtable
-  {
-    #region field
-
-    LinkedHashtable table = new LinkedHashtable();
-
-    #endregion
-
-    #region property
-
-    public new TValue this[TKey key]
+    public partial class LinkedDictionary<K, V> : Dictionary<K, V>, IGetLinkedHashtable
     {
-      get { return base[key]; }
-      set
-      {
-        table[key] = value;
-        base[key] = value;
-      }
-    }
+        private List<K> _keyList = new List<K>();
+        private List<V> _valueList = new List<V>();
+        private DictionaryEnumerator<K, V> __enumerator;
+        LinkedHashtable table = new LinkedHashtable();
 
-    public new List<TKey> Keys
-    {
-      get { return (table.Keys).ToList<TKey>(); }
-    }
+        private DictionaryEnumerator<K, V> _enumerator =>
+            __enumerator ?? (__enumerator = new DictionaryEnumerator<K, V>(_keyList, _valueList));
 
-    public new List<TValue> Values
-    {
-      get { return ((ArrayList)table.Values).ToList<TValue>(); }
-    }
+        public new List<K> Keys => this._keyList;
+        public new List<V> Values => this._valueList;
 
-    public List<KeyValuePair<TKey, TValue>> KeyValues
-    {
-      get
-      {
-        List<KeyValuePair<TKey, TValue>> list = new List<KeyValuePair<TKey, TValue>>();
-        foreach (TKey key in Keys)
+        public new V this[K key]
         {
-          list.Add(new KeyValuePair<TKey, TValue>(key, (TValue)table[key]));
+            get => base[key];
+            set => Put(key, value);
         }
 
-        return list;
-      }
+
+        #region override method
+
+        public new void Add(K key, V value)
+        {
+            _keyList.Add(key);
+            _valueList.Add(value);
+            base.Add(key, value);
+        }
+
+        public new void Clear()
+        {
+            _keyList.Clear();
+            _valueList.Clear();
+            base.Clear();
+        }
+
+        public new void Remove(K key)
+        {
+            int index = _keyList.IndexOf(key);
+            if (index == -1) return;
+            _keyList.RemoveAt(index);
+            _valueList.RemoveAt(index);
+            base.Remove(key);
+        }
+
+        public DictionaryEnumerator<K,V> GetEnumerator()
+        {
+            _enumerator.Reset();
+            return _enumerator;
+        }
+
+        #endregion
+
+
+        public void Put(K key, V value)
+        {
+            int index = _keyList.IndexOf(key);
+            //删除原来的
+            if (index != -1)
+            {
+                _keyList.RemoveAt(index);
+                _valueList.RemoveAt(index);
+            }
+
+            _keyList.Add(key);
+            _valueList.Add(value);
+            //然后放到最后
+            base[key] = value;
+        }
+
+        public void Sort(Func<K, K, bool> compareFunc)
+        {
+            _keyList.QuickSort(compareFunc);
+            _valueList.Clear();
+            foreach (var key in _keyList)
+                _valueList.Add(this[key]);
+        }
+
+
+        public LinkedHashtable GetLinkedHashtable()
+        {
+            table.Clear();
+            foreach (var key in Keys)
+                table[key] = this[key];
+            return table;
+        }
     }
-
-    #endregion
-
-    #region public method
-
-    public new void Add(TKey key, TValue value)
-    {
-      this[key] = value;
-    }
-
-    public new void Clear()
-    {
-      base.Clear();
-      table.Clear();
-    }
-
-    public new bool Remove(TKey key)
-    {
-      bool result = base.Remove(key);
-      if (result)
-      {
-        table.Remove(key);
-      }
-
-      return result;
-    }
-
-
-    public new IDictionaryEnumerator GetEnumerator()
-    {
-      return table.GetEnumerator();
-    }
-
-    public LinkedHashtable GetLinkedHashtable()
-    {
-      return table;
-
-    }
-
-    #endregion
-
-
-
-  }
+    
 }
-

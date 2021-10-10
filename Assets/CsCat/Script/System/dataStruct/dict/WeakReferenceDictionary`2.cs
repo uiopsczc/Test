@@ -3,122 +3,93 @@ using System;
 
 namespace CsCat
 {
-  /// <summary>
-  /// WeakReferenceDictionary
-  /// </summary>
-  /// <typeparam name="K"></typeparam>
-  /// <typeparam name="V"></typeparam>
-  public class WeakReferenceDictionary<K, V>
-  {
-    #region field
-
-    private Dictionary<K, WeakReference> dict = new Dictionary<K, WeakReference>();
-
-    #endregion
-
-    #region property
-
-    public ICollection<K> Keys
+    /// <summary>
+    /// WeakReferenceDictionary
+    /// </summary>
+    /// <typeparam name="K"></typeparam>
+    /// <typeparam name="V"></typeparam>
+    public class WeakReferenceDictionary<K, V>
     {
-      get { return this.dict.Keys; }
-    }
+        private Dictionary<K, WeakReference> dict = new Dictionary<K, WeakReference>();
+        private List<K> toRemoveList = new List<K>();
+        public List<V> valueList = new List<V>();
 
-    public ICollection<WeakReference> ReferenceValues
-    {
-      get { return this.dict.Values; }
-    }
 
-    public List<V> Values
-    {
-      get
-      {
-        List<V> list = new List<V>();
-        foreach (K current in this.dict.Keys)
+        public ICollection<K> Keys => this.dict.Keys;
+
+        public ICollection<WeakReference> ReferenceValues => this.dict.Values;
+
+        public List<V> Values
         {
-          V v;
-          if (TryGetValue(current, out v))
-            list.Add(v);
+            get
+            {
+                valueList.Clear();
+                foreach (K current in this.dict.Keys)
+                    if (TryGetValue(current, out var v))
+                        valueList.Add(v);
+                return valueList;
+            }
         }
 
-        return list;
-      }
-    }
-
-    public V this[K key]
-    {
-      get
-      {
-        V v;
-        if (TryGetValue(key, out v))
+        public V this[K key]
         {
-          return v;
+            get => TryGetValue(key, out var v) ? v : default;
+            set => this.Add(key, value);
         }
 
-        return default(V);
-      }
-      set { this.Add(key, value); }
+
+        public void Add(K key, V value)
+        {
+            if (!this.dict.ContainsKey(key))
+            {
+                this.dict.Add(key, new WeakReference(value));
+                return;
+            }
+
+            this.dict[key] = new WeakReference(value);
+        }
+
+        public void Clear()
+        {
+            this.dict.Clear();
+        }
+
+        public bool ContainsKey(K key)
+        {
+            return this.dict.ContainsKey(key);
+        }
+
+        public bool Remove(K key)
+        {
+            return this.dict.Remove(key);
+        }
+
+        public bool TryGetValue(K key, out V value)
+        {
+            if (this.dict.ContainsKey(key))
+            {
+                var valueResult = this.dict[key].GetValueResult<V>();
+                value = valueResult.GetValue();
+                return valueResult.GetIsHasValue();
+            }
+
+            value = default;
+            return false;
+        }
+
+        public void GC()
+        {
+            toRemoveList.Clear();
+            foreach (var e in dict.Keys)
+            {
+                if (!dict[e].IsAlive)
+                    toRemoveList.Add(e);
+            }
+
+            if (toRemoveList.Count <= 0) return;
+            foreach (var e in toRemoveList)
+                dict.Remove(e);
+            System.GC.Collect();
+        }
     }
-
-    #endregion
-
-    #region public method
-
-    public void Add(K key, V value)
-    {
-      if (!this.dict.ContainsKey(key))
-      {
-        this.dict.Add(key, new WeakReference(value));
-        return;
-      }
-
-      this.dict[key] = new WeakReference(value);
-    }
-
-    public void Clear()
-    {
-      this.dict.Clear();
-    }
-
-    public bool ContainsKey(K key)
-    {
-      return this.dict.ContainsKey(key);
-    }
-
-    public bool Remove(K key)
-    {
-      return this.dict.Remove(key);
-    }
-
-    public bool TryGetValue(K key, out V value)
-    {
-      if (this.dict.ContainsKey(key))
-      {
-        var valueResult = this.dict[key].GetValueResult<V>();
-        value = valueResult.GetValue();
-        return valueResult.GetIsHasValue();
-      }
-
-      value = default(V);
-      return false;
-    }
-
-    public void GC()
-    {
-      List<K> to_remove_list = new List<K>();
-      foreach (var e in dict.Keys)
-      {
-        if (!dict[e].IsAlive)
-          to_remove_list.Add(e);
-      }
-
-      if (to_remove_list.Count > 0)
-      {
-        foreach (var e in to_remove_list)
-          dict.Remove(e);
-        System.GC.Collect();
-      }
-    }
-
-    #endregion
-  }
 }

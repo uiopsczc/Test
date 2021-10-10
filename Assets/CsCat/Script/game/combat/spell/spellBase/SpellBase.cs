@@ -32,8 +32,8 @@ namespace CsCat
       this.instance_arg_dict = instance_arg_dict;
 
       this.origin_position =
-        this.instance_arg_dict.GetOrGetDefault<Vector3>("origin_position", () => this.source_unit.GetPosition());
-      this.transmit_arg_dict = this.instance_arg_dict.GetOrGetDefault("transmit_arg_dict", () => new Hashtable());
+        this.instance_arg_dict.GetOrGetDefault2<Vector3>("origin_position", () => this.source_unit.GetPosition());
+      this.transmit_arg_dict = this.instance_arg_dict.GetOrGetDefault2("transmit_arg_dict", () => new Hashtable());
       this.attack_dir = this.transmit_arg_dict.Get<Vector3>(attack_dir);
       this.new_spell_trigger_id = this.transmit_arg_dict.Get<string>("new_spell_trigger_id"); // 通过哪个trigger_id启动的技能
 

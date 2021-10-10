@@ -74,7 +74,7 @@ namespace CsCat
     public static ArrayList GetSubDoers_ToEdit(Doer parent_doer, string sub_doer_key, string id) //进行直接修改
     {
       var dict = GetSubDoerDict_ToEdit(parent_doer, sub_doer_key);
-      var list = dict.GetOrAddDefault(id, () => new ArrayList());
+      var list = dict.GetOrAddDefault2(id, () => new ArrayList());
       return list;
     }
 

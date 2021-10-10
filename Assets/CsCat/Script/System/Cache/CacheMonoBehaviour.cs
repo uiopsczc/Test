@@ -20,7 +20,7 @@ namespace CsCat
     {
       if (key == null)
         key = obj.GetType().FullName;
-      Dictionary<string, object> sub_dict = dict.GetOrAddDefault(key, () => new Dictionary<string, object>());
+      Dictionary<string, object> sub_dict = dict.GetOrAddDefault2(key, () => new Dictionary<string, object>());
       sub_dict[sub_key] = obj;
     }
 
@@ -49,7 +49,7 @@ namespace CsCat
     public T GetOrAdd<T>(string key, string sub_key, Func<T> defaultFunc)
     {
       Dictionary<string, object> sub_dict = GetOrAdd(key, () => new Dictionary<string, object>());
-      return sub_dict.GetOrAddDefault(sub_key, defaultFunc);
+      return sub_dict.GetOrAddDefault2(sub_key, defaultFunc);
     }
 
   }

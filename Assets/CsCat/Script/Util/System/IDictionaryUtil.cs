@@ -3,7 +3,7 @@ using System.Collections;
 
 namespace CsCat
 {
-    public static class DictionaryUtil
+    public static class IDictionaryUtil
     {
         //////////////////////////////////////////////////////////////////////
         // Diff相关

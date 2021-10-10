@@ -68,7 +68,7 @@ namespace CsCat
       if (this.unit != null)
       {
         var new_clac_prop_dict = this.calc_prop_dict;
-        var clac_prop_dict_diff = DictionaryExtension.GetDiff(old_calc_prop_dict, this.calc_prop_dict);
+        var clac_prop_dict_diff = IDictionaryExtension.GetDiff(old_calc_prop_dict, this.calc_prop_dict);
         this.unit.OnPropertyChanged(old_calc_prop_dict, new_clac_prop_dict, clac_prop_dict_diff);
       }
     }
