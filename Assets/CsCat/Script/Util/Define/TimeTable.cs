@@ -2,7 +2,7 @@ using System.Text;
 
 namespace CsCat
 {
-    public class TimeTable
+    public struct TimeTable
     {
         public int day;
         public int hour;

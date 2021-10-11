@@ -114,7 +114,7 @@ local function Partition(array, func, low, high)
   local privot_value = array[high] --基点的值，比基点小的放在
   local partition_index = low
   for i = partition_index, high-1, 1 do
-    if not func(array[i],privot_value) then
+    if func(array[i],privot_value) then
       array[i], array[partition_index] = array[partition_index], array[i]
       partition_index = partition_index + 1
     end

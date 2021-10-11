@@ -67,9 +67,10 @@ namespace CsCat
                 //                string[] ss2 = { "e", "g", "f"};
                 string[] _;
 //                List<string> list = ss.ToList();
-//                int[] ss = new int[]{1,3,4,2,7,5,6};
-//                var list = ss.ToList();
-//                list.QuickSortWithCompareRules((a,b)=> a - b);
+                int[] ss = {1,3,4,2,7,5,9,0,8,6};
+                var list = ss.ToList();
+                list.QuickSortWithCompareRules((a,b)=> a - b);
+				LogCat.warn(list);
 //                LogCat.warn(list);
 //                (_,ss) = ss.RemoveRangeAt2(3,1);
 //                LogCat.warn(_);
