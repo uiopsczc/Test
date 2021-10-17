@@ -4,8 +4,7 @@ using UnityEngine.Tilemaps;
 
 namespace CsCat
 {
-  public static partial class TilemapRendererExtension
-  {
-
-  }
+    public static partial class TilemapRendererExtension
+    {
+    }
 }

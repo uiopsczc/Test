@@ -788,7 +788,7 @@ namespace CsCat
         public static string ObjectToString(this object self)
         {
             if (self == null)
-                return StringConst.String_Null;
+                return StringConst.String_null;
             if (self.IsString())
                 return (string) self;
             if (self.IsDateTime())

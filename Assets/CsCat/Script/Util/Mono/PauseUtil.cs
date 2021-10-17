@@ -28,10 +28,10 @@ namespace CsCat
 
         foreach (var animator in gameObject.GetComponentsInChildren<Animator>())
             if (animator.enabled)
-                animator.SetPuase(cause);
+                animator.SetPause(cause);
 
         foreach (var particleSystem in gameObject.GetComponentsInChildren<ParticleSystem>())
-            particleSystem.SetPuase(cause);
+            particleSystem.SetPause(cause);
     }
 
     /// <summary>

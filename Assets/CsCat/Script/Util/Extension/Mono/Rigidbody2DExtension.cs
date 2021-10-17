@@ -5,8 +5,7 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public static partial class Rigidbody2DExtension
-  {
-
-  }
+    public static partial class Rigidbody2DExtension
+    {
+    }
 }

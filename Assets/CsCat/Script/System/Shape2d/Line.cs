@@ -122,7 +122,7 @@ namespace CsCat
       dir1.Normalize();
       Vector2 dir2 = point - this.point_B;
       dir2.Normalize();
-      if (SignedDistance(point).EqualsEPSILON(0) && Vector2.Dot(dir1, dir2) < 0)
+      if (SignedDistance(point).EqualsEpsilon(0) && Vector2.Dot(dir1, dir2) < 0)
         return true;
       else
         return false;
@@ -211,7 +211,7 @@ namespace CsCat
         float s1 = MathUtil.Area(P1, P2, Q1);
         float s2 = MathUtil.Area(P1, P2, Q2);
 
-        if (s1.EqualsEPSILON(0) && s2.EqualsEPSILON(0)) //重叠
+        if (s1.EqualsEpsilon(0) && s2.EqualsEpsilon(0)) //重叠
         {
           //判断端点相同的情况
           if (line2.point_A.EqualsEPSILON(this.point_A))

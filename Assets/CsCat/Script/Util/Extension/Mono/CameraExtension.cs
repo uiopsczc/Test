@@ -2,14 +2,12 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public static class CameraExtension
-  {
-    public static bool IsPosInViewPort(this Camera self, Vector3 world_position)
+    public static class CameraExtension
     {
-      Vector3 viewport_position = self.WorldToViewportPoint(world_position);
-      if (viewport_position.z > 0 && viewport_position.x.IsInRange(0, 1) && viewport_position.y.IsInRange(0, 1))
-        return true;
-      return false;
+        public static bool IsPosInViewPort(this Camera self, Vector3 worldPosition)
+        {
+            Vector3 viewportPosition = self.WorldToViewportPoint(worldPosition);
+            return viewportPosition.z > 0 && viewportPosition.x.IsInRange(0, 1) && viewportPosition.y.IsInRange(0, 1);
+        }
     }
-  }
 }

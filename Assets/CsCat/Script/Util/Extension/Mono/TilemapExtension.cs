@@ -4,17 +4,16 @@ using UnityEngine.Tilemaps;
 
 namespace CsCat
 {
-  public static partial class TilemapExtension
-  {
-
-    private static void SetTile(Tilemap tilemap, Vector3Int cell_pos, TileBase tileBase, Hashtable tile_detail_dict)
+    public static partial class TilemapExtension
     {
-      tilemap.SetTile(cell_pos, tileBase);
-      TileFlags tileFlags = tile_detail_dict.Get<int>("tileFlags").ToEnum<TileFlags>();
-      tilemap.SetTileFlags(cell_pos, tileFlags);
+        private static void SetTile(Tilemap tilemap, Vector3Int cellPos, TileBase tileBase, Hashtable tileDetailDict)
+        {
+            tilemap.SetTile(cellPos, tileBase);
+            TileFlags tileFlags = tileDetailDict.Get<int>(StringConst.String_tileFlags).ToEnum<TileFlags>();
+            tilemap.SetTileFlags(cellPos, tileFlags);
 
-      tilemap.SetTransformMatrix(cell_pos,
-        tile_detail_dict.Get<string>("transformMatrix").ToMatrix4x4OrDefault(null, Matrix4x4.identity));
+            tilemap.SetTransformMatrix(cellPos,
+                tileDetailDict.Get<string>(StringConst.String_transformMatrix).ToMatrix4x4OrDefault(null, Matrix4x4.identity));
+        }
     }
-  }
 }

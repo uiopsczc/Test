@@ -361,17 +361,28 @@ namespace CsCat
         #endregion
 
         #region Random 随机
-
-        public static List<T> RandomList<T>(this List<T> self, int outCount, bool isUnique,
-            RandomManager randomManager = null, params float[] weights)
+        public static T Random<T>(this List<T> self)
         {
-            randomManager = randomManager ?? Client.instance.randomManager;
-            return randomManager.RandomList(self, outCount, isUnique, weights.ToList());
+            return RandomUtil.Random(self);
         }
 
-        public static T Random<T>(this List<T> self, RandomManager randomManager = null, params float[] weights)
+        /// <summary>
+        /// 随机list里面的元素count次
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="count">个数</param>
+        /// <param name="isUnique">是否唯一</param>
+        /// <param name="weights">权重数组</param>
+        /// <returns></returns>
+        public static List<T> RandomList<T>(this List<T> self, int count, bool isUnique, IList<float> weights = null)
         {
-            return self.RandomList(1, false, randomManager, weights)[0];
+            return RandomUtil.RandomList(self, count, isUnique, weights);
+        }
+
+        public static T[] RandomArray<T>(this List<T> self, int count, bool isUnique, IList<float> weights = null)
+        {
+            return RandomUtil.RandomArray(self, count, isUnique, weights);
         }
 
         #endregion
@@ -425,9 +436,6 @@ namespace CsCat
             }
         }
 
-        public static void SortWithCompareRules<T>(this List<T> self, params Comparison<T>[] compareRules)
-        {
-            SortUtil.MergeSortWithCompareRules(self, compareRules);
-        }
+        
     }
 }

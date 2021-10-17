@@ -6,6 +6,16 @@ namespace CsCat
 {
     public static class ArrayTExtension
     {
+        public static T[] GetArrayByIndexList<T>(this T[] self, List<int> indexList)
+        {
+            return ArrayTUtil.GetArrayByIndexList(self, indexList);
+        }
+
+        public static T[] GetArrayByIndexes<T>(this T[] self, int[] indexes, int? indexesLength)
+        {
+            return ArrayTUtil.GetArrayByIndexes(self, indexes, indexesLength);
+        }
+
         /// <summary>
         /// 将数组转化为List
         /// </summary>
@@ -35,21 +45,14 @@ namespace CsCat
             int remainCount = 0;
             for (int i = 0; i < self.Length; i++)
             {
-                if (self[i] != null)
+                if (self[i] == null)
                 {
                     remainIndexes[remainCount] = i;
                     remainCount++;
                 }
             }
 
-            T[] result = new T[remainCount];
-            for (int i = 0; i < remainCount; i++)
-            {
-                var remainIndex = remainIndexes[i];
-                result[i] = self[remainIndex];
-            }
-
-            return result;
+            return self.GetArrayByIndexes(remainIndexes, remainCount);
         }
 
         public static void Swap<T>(this T[] self, int index1, int index2)
@@ -103,14 +106,7 @@ namespace CsCat
                 }
             }
 
-            T[] result = new T[addCount];
-            for (int i = 0; i < addCount; i++)
-            {
-                var addIndex = addIndexes[i];
-                result[i] = self[addIndex];
-            }
-
-            return result;
+            return self.GetArrayByIndexes(addIndexes, addCount);
         }
 
         public static T[] Combine<T>(this T[] self, T[] another)
@@ -217,14 +213,7 @@ namespace CsCat
                     remainCount++;
                 }
 
-            T[] result = new T[remainCount];
-            for (int i = 0; i < remainCount; i++)
-            {
-                var remainIndex = remainIndexes[i];
-                result[i] = self[remainIndex];
-            }
-
-            return result;
+            return self.GetArrayByIndexes(remainIndexes, remainCount);
         }
 
         /// <summary>
@@ -275,19 +264,11 @@ namespace CsCat
                     addCount++;
                 }
 
-                result = self.AddCapacity(addCount);
-                for (int i = 0; i < addCount; i++)
-                {
-                    var toAddIndex = toAddIndexes[i];
-                    result[selfLength + i] = toAddArray[toAddIndex];
-                }
-
-                return result;
+                return ArrayTUtil.AddRangeByIndexes(self, toAddArray, toAddIndexes, addCount);
             }
 
             result = self.AddCapacity(toAddArray.Length);
-            for (int i = 0; i < toAddArray.Length; i++)
-                result[selfLength + i] = toAddArray[i];
+            Array.Copy(toAddArray, 0, result, selfLength, toAddArray.Length);
             return result;
         }
 
@@ -308,13 +289,7 @@ namespace CsCat
                     addCount++;
                 }
 
-                result = self.AddCapacity(addCount);
-                for (int i = 0; i < addCount; i++)
-                {
-                    var toAddIndex = toAddIndexes[i];
-                    result[selfLength + i] = toAddList[toAddIndex];
-                }
-
+                result = ArrayTUtil.AddRangeByIndexList(self, toAddList, toAddIndexes, addCount);
                 return result;
             }
 
@@ -484,14 +459,7 @@ namespace CsCat
                 }
             }
 
-            T[] result = new T[remainCount];
-            for (int i = 0; i < remainCount; i++)
-            {
-                var remainIndex = remainIndexes[i];
-                result[i] = self[remainIndex];
-            }
-
-            return result;
+            return self.GetArrayByIndexes(remainIndexes, remainCount);
         }
 
 
@@ -537,9 +505,7 @@ namespace CsCat
         {
             var length = Math.Min(len, self.Length - startIndex);
             var target = new T[length];
-            for (int i = 0; i < length; i++)
-                target[i] = self[startIndex + i];
-
+            Array.Copy(self, startIndex,target,0,length);
             return target;
         }
 
@@ -562,9 +528,9 @@ namespace CsCat
             int selfLength = self.Length;
             int newLength = selfLength + add;
             T[] newObjects = new T[newLength];
-            if (isAppend)
+            if (isAppend) //在后面扩充
                 Array.Copy(self, newObjects, selfLength);
-            else
+            else //在前面扩充
                 Array.Copy(self, 0, newObjects, add, selfLength);
             return newObjects;
         }
@@ -613,17 +579,31 @@ namespace CsCat
         }
 
 
-        public static T[] RandomArray<T>(this T[] self, int outCount, bool isUnique,
-            RandomManager randomManager = null,
-            params float[] weights)
+        #region Random 随机
+        public static T Random<T>(this T[] self)
         {
-            return self.ToList().RandomList(outCount, isUnique, randomManager, weights).ToArray();
+            return RandomUtil.Random(self);
         }
 
-        public static T Random<T>(this T[] self, RandomManager randomManager = null, params float[] weights)
+        /// <summary>
+        /// 随机list里面的元素count次
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="list"></param>
+        /// <param name="count">个数</param>
+        /// <param name="isUnique">是否唯一</param>
+        /// <param name="weights">权重数组</param>
+        /// <returns></returns>
+        public static List<T> RandomList<T>(this T[] self, int count, bool isUnique, IList<float> weights = null)
         {
-            return self.RandomArray(1, false, randomManager, weights)[0];
+            return RandomUtil.RandomList(self, count, isUnique, weights);
         }
+
+        public static T[] RandomArray<T>(this T[] self, int count, bool isUnique, IList<float> weights = null)
+        {
+            return RandomUtil.RandomArray(self, count, isUnique, weights);
+        }
+        #endregion
 
 
         //将self初始化为[height][width]的数组
@@ -654,7 +634,7 @@ namespace CsCat
             return result;
         }
 
-        public static void SortWithCompareRules<T>(this T[] self, params Comparison<T>[] compareRules)
+        public static void SortWithCompareRules<T>(this T[] self, IList<Comparison<T>> compareRules)
         {
             SortUtil.MergeSortWithCompareRules(self, compareRules);
         }

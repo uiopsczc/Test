@@ -80,8 +80,8 @@ namespace CsCat
         public const string String_Format_File_Url = String_File_Url_Prefix +"{0}";
         public const string String_http = "http";
         public const string String_ftp = "ftp";
-        public const string String_Null = "null";
-        public const string String_Nil = "nil";
+        public const string String_null = "null";
+        public const string String_nil = "nil";
         public const string String_Null_In_Table = "__null__";
         public const string String_Nil_In_Table = "__nil__";
         public const string String_x2 = "x2";
@@ -97,7 +97,10 @@ namespace CsCat
         public const string String_false = "false";
         public const string String_ToArray = "ToArray";
         public const string String_ToDict = "ToDict";
-        
+        public const string String_name = "name";
+        public const string String_socket = "socket";
+        public const string String_animClip = "animClip";
+        public const string String_clone = "clone";
 
 
         public const string String_date = "date";
@@ -124,6 +127,49 @@ namespace CsCat
         public const string String_x_z_0 = "x,z,0";
 
 
+        public const string String_localPosition = "localPosition";
+        public const string String_localEulerAngles = "localEulerAngles";
+        public const string String_localScale = "localScale";
+        public const string String_position = "position";
+        public const string String_eulerAngles = "eulerAngles";
+        public const string String_scale = "scale";
+        public const string String_mode = "mode";
+        public const string String_detectChunkCullingBounds = "detectChunkCullingBounds";
+        public const string String_sortOrder = "sortOrder";
+        public const string String_sortingOrder = "sortingOrder";
+        public const string String_maskInteraction = "maskInteraction";
+        public const string String_animationFrameRate = "animationFrameRate";
+        public const string String_tileAnchor = "tileAnchor";
+        public const string String_orientation = "orientation";
+        public const string String_origin = "origin";
+        public const string String_tileFlags = "tileFlags";
+        public const string String_transformMatrix = "transformMatrix";
+        public const string String_size = "size";
+        public const string String_tileBase_ref_id = "tileBase_ref_id";
+        public const string String_tile_hashtable = "tile_hashtable";
+        public const string String_maximumTileChangeCount = "maximumTileChangeCount";
+        public const string String_extrusionFactor = "extrusionFactor";
+        public const string String_isTrigger = "isTrigger";
+        public const string String_usedByEffector = "usedByEffector";
+        public const string String_usedByComposite = "usedByComposite";
+        public const string String_offset = "offset";
+        public const string String_bodyType = "bodyType";
+        public const string String_simulated = "simulated";
+        public const string String_useFullKinematicContacts = "useFullKinematicContacts";
+        public const string String_collisionDetectionMode = "collisionDetectionMode";
+        public const string String_sleepMode = "sleepMode";
+        public const string String_interpolation = "interpolation";
+        public const string String_constraints = "constraints";
+        public const string String_cellSize = "cellSize";
+        public const string String_cellGap = "cellGap";
+        public const string String_cellLayout = "cellLayout";
+        public const string String_cellSwizzle = "cellSwizzle";
+        public const string String_geometryType = "geometryType";
+        public const string String_generationType = "generationType";
+        public const string String_vertexDistance = "vertexDistance";
+        public const string String_offsetDistance = "offsetDistance";
+        public const string String_edgeRadius = "edgeRadius";
+        public const string String_center = "center";
 
 
         public const string String_LeftTop = "LeftTop";
@@ -144,6 +190,8 @@ namespace CsCat
         public const string String_Format_Text_FontSize = "<size={0}>{1}</size>";
         public const string String_Regex_Text_FontSize_WarpEnd = "</size>";
         public const string String_Regex_Text_FontSize_WarpStart = "<size.*?>";
+
+        public const string String_Format_RoundBrackets = "({0})";
 
 
         public const string String_Regex_Date =

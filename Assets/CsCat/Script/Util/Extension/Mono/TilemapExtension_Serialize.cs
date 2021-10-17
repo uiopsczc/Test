@@ -7,84 +7,86 @@ using UnityEngine.Tilemaps;
 
 namespace CsCat
 {
-  public static partial class TilemapExtension
-  {
-#if UNITY_EDITOR
-    public static Hashtable GetSerializeHashtable(this Tilemap self, Hashtable ref_id_hashtable = null)
+    public static partial class TilemapExtension
     {
-      Hashtable hashtable = new Hashtable();
-      hashtable["animationFrameRate"] = self.animationFrameRate;
-      hashtable["color"] = self.color.ToHtmlStringRGBAOrDefault();
-      hashtable["tileAnchor"] = self.tileAnchor.ToStringOrDefault(null, new Vector3(0.5f, 0.5f, 0));
-      hashtable["orientation"] = (int)self.orientation;
-
-      Hashtable tile_hashtable = new Hashtable();
-      Vector3Int size = self.size;
-      Vector3Int origin = self.origin;
-      hashtable["size"] = size.ToStringOrDefault();
-      hashtable["origin"] = origin.ToStringOrDefault();
-      int check_count = size.x * size.y * size.z;
-      for (int i = 0; i < check_count; i++)
-      {
-        int offset_z = i / (size.x * size.y);
-        int offset_y = (i - offset_z * (size.x * size.y)) / size.x;
-        int offset_x = i - offset_z * (size.x * size.y) - offset_y * size.x;
-
-        Vector3Int current = origin + new Vector3Int(offset_x, offset_y, offset_z);
-        if (self.HasTile(current))
+#if UNITY_EDITOR
+        public static Hashtable GetSerializeHashtable(this Tilemap self, Hashtable ref_id_hashtable = null)
         {
-          Hashtable tile_detail_hashtable = new Hashtable();
+            Hashtable hashtable = new Hashtable
+            {
+                [StringConst.String_animationFrameRate] = self.animationFrameRate,
+                [StringConst.String_color] = self.color.ToHtmlStringRGBAOrDefault(),
+                [StringConst.String_tileAnchor] = self.tileAnchor.ToStringOrDefault(null, new Vector3(0.5f, 0.5f, 0)),
+                [StringConst.String_orientation] = (int) self.orientation
+            };
 
-          TileBase tileBase = self.GetTile(current);
-          string assetPath = tileBase.GetAssetPath();
-          string guid = AssetDatabase.AssetPathToGUID(assetPath);
-          long ref_id = AssetPathRefManager.instance.GetRefIdByGuid(guid);
-          tile_detail_hashtable["tileBase_ref_id"] = ref_id;
-          if (ref_id_hashtable != null)
-            ref_id_hashtable[ref_id] = true;
+            Hashtable tileHashtable = new Hashtable();
+            Vector3Int size = self.size;
+            Vector3Int origin = self.origin;
+            hashtable[StringConst.String_size] = size.ToStringOrDefault();
+            hashtable[StringConst.String_origin] = origin.ToStringOrDefault();
+            int checkCount = size.x * size.y * size.z;
+            for (int i = 0; i < checkCount; i++)
+            {
+                int offsetZ = i / (size.x * size.y);
+                int offsetY = (i - offsetZ * (size.x * size.y)) / size.x;
+                int offsetX = i - offsetZ * (size.x * size.y) - offsetY * size.x;
 
-          TileFlags tileFlags = self.GetTileFlags(current);
-          tile_detail_hashtable["tileFlags"] = (int)tileFlags;
+                Vector3Int current = origin + new Vector3Int(offsetX, offsetY, offsetZ);
+                if (self.HasTile(current))
+                {
+                    Hashtable tile_detail_hashtable = new Hashtable();
 
-          tile_detail_hashtable["transformMatrix"] =
-            self.GetTransformMatrix(current).ToStringOrDefault(null, Matrix4x4.identity);
+                    TileBase tileBase = self.GetTile(current);
+                    string assetPath = tileBase.GetAssetPath();
+                    string guid = AssetDatabase.AssetPathToGUID(assetPath);
+                    long refId = AssetPathRefManager.instance.GetRefIdByGuid(guid);
+                    tile_detail_hashtable[StringConst.String_tileBase_ref_id] = refId;
+                    if (ref_id_hashtable != null)
+                        ref_id_hashtable[refId] = true;
 
-          tile_hashtable[current.ToString()] = tile_detail_hashtable;
+                    TileFlags tileFlags = self.GetTileFlags(current);
+                    tile_detail_hashtable[StringConst.String_tileFlags] = (int) tileFlags;
+
+                    tile_detail_hashtable[StringConst.String_transformMatrix] =
+                        self.GetTransformMatrix(current).ToStringOrDefault(null, Matrix4x4.identity);
+
+                    tileHashtable[current.ToString()] = tile_detail_hashtable;
+                }
+            }
+
+            hashtable[StringConst.String_tile_hashtable] = tileHashtable;
+            hashtable.Trim();
+            return hashtable;
         }
-      }
-
-      hashtable["tile_hashtable"] = tile_hashtable;
-      hashtable.Trim();
-      return hashtable;
-    }
 #endif
 
-    public static void LoadSerializeHashtable(this Tilemap self, Hashtable hashtable, ResLoad resLoad)
-    {
-      self.animationFrameRate = hashtable.Get<float>("animationFrameRate");
-      self.color = hashtable.Get<string>("color").ToColorOrDefault();
-      self.tileAnchor = hashtable.Get<string>("tileAnchor").ToVector3OrDefault(null, new Vector3(0.5f, 0.5f, 0));
-      self.orientation = hashtable.Get<int>("orientation").ToEnum<Tilemap.Orientation>();
-
-      Vector3Int size = hashtable.Get<string>("size").ToVector3IntOrDefault();
-      Vector3Int origin = hashtable.Get<string>("origin").ToVector3IntOrDefault();
-      self.size = size;
-      self.origin = origin;
-      Hashtable tile_hashtable = hashtable.Get<Hashtable>("tile_hashtable");
-
-
-      foreach (string cell_poistion_string in tile_hashtable.Keys)
-      {
-        Vector3Int cell_pos = cell_poistion_string.ToVector3().ToVector3Int();
-        Hashtable tile_detail_hashtable = tile_hashtable.Get<Hashtable>(cell_poistion_string);
-        long tileBase_ref_id = tile_detail_hashtable.Get<long>("tileBase_ref_id");
-        string assetPath = tileBase_ref_id.GetAssetPathByRefId();
-        resLoad.GetOrLoadAsset(assetPath, assetCat =>
+        public static void LoadSerializeHashtable(this Tilemap self, Hashtable hashtable, ResLoad resLoad)
         {
-          TileBase tileBase = assetCat.Get<TileBase>();
-          SetTile(self, cell_pos, tileBase, tile_detail_hashtable);
-        }, null, null, self);
-      }
+            self.animationFrameRate = hashtable.Get<float>(StringConst.String_animationFrameRate);
+            self.color = hashtable.Get<string>(StringConst.String_color).ToColorOrDefault();
+            self.tileAnchor = hashtable.Get<string>(StringConst.String_tileAnchor).ToVector3OrDefault(null, new Vector3(0.5f, 0.5f, 0));
+            self.orientation = hashtable.Get<int>(StringConst.String_orientation).ToEnum<Tilemap.Orientation>();
+
+            Vector3Int size = hashtable.Get<string>(StringConst.String_size).ToVector3IntOrDefault();
+            Vector3Int origin = hashtable.Get<string>(StringConst.String_origin).ToVector3IntOrDefault();
+            self.size = size;
+            self.origin = origin;
+            Hashtable tileHashtable = hashtable.Get<Hashtable>(StringConst.String_tile_hashtable);
+
+
+            foreach (string cellPositionString in tileHashtable.Keys)
+            {
+                Vector3Int cellPos = cellPositionString.ToVector3().ToVector3Int();
+                Hashtable tileDetailHashtable = tileHashtable.Get<Hashtable>(cellPositionString);
+                long tileBaseRefId = tileDetailHashtable.Get<long>(StringConst.String_tileBase_ref_id);
+                string assetPath = tileBaseRefId.GetAssetPathByRefId();
+                resLoad.GetOrLoadAsset(assetPath, assetCat =>
+                {
+                    TileBase tileBase = assetCat.Get<TileBase>();
+                    SetTile(self, cellPos, tileBase, tileDetailHashtable);
+                }, null, null, self);
+            }
+        }
     }
-  }
 }

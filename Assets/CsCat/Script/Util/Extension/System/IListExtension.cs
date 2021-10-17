@@ -33,7 +33,7 @@ namespace CsCat
             SortUtil.BubbleSort(self, compareFunc);
         }
 
-        public static void BubbleSortWithCompareRules(this IList self, params Comparison<object>[] compareRules)
+        public static void BubbleSortWithCompareRules(this IList self,  IList<Comparison<object>> compareRules)
         {
             SortUtil.BubbleSortWithCompareRules(self, compareRules);
         }
@@ -43,12 +43,12 @@ namespace CsCat
             SortUtil.MergeSort(self, compareFunc);
         }
 
-        public static void MergeSortWithCompareRules(this IList self, params Comparison<object>[] compareRules)
+        public static void MergeSortWithCompareRules(this IList self, IList<Comparison<object>> compareRules)
         {
             SortUtil.MergeSortWithCompareRules(self, compareRules);
         }
 
-        public static void QuickSortWithCompareRules(this IList self, params Comparison<object>[] compareRules)
+        public static void QuickSortWithCompareRules(this IList self, IList<Comparison<object>> compareRules)
         {
             SortUtil.QuickSortWithCompareRules(self, compareRules);
         }

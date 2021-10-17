@@ -1,8 +1,6 @@
 namespace CsCat
 {
-  public static class SerializedPropertyExtension
-  {
-
-
-  }
+    public static class SerializedPropertyExtension
+    {
+    }
 }

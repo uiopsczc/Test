@@ -33,6 +33,11 @@ namespace CsCat
             return self.Concat(0, self.Count - 1, separator);
         }
 
+        public static void SortWithCompareRules<T>(this List<T> self, params Comparison<T>[] compareRules)
+        {
+            SortUtil.MergeSortWithCompareRules(self, compareRules);
+        }
+
 
         public static void BubbleSortWithCompareRules<T>(this IList<T> self, params Comparison<T>[] compareRules)
         {

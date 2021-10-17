@@ -77,9 +77,9 @@ namespace CsCat
             StdioUtil.RemoveFiles(self);
         }
 
-        public static string Random(this string self, int count, bool isUnique, RandomManager randomManager = null)
+        public static string Random(this string self, int count, bool isUnique)
         {
-            return new string(self.ToCharArray().RandomArray(count, isUnique, randomManager));
+            return new string(self.ToCharArray().RandomArray(count, isUnique));
         }
 
         public static int GetSubStringCount(this string self, string subString)

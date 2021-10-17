@@ -5,8 +5,7 @@ using UnityEngine.Tilemaps;
 
 namespace CsCat
 {
-  public static partial class TilemapCollider2DExtension
-  {
-
-  }
+    public static partial class TilemapCollider2DExtension
+    {
+    }
 }

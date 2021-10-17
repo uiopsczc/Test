@@ -5,33 +5,35 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public static partial class CompositeCollider2DExtension
-  {
-    public static Hashtable GetSerializeHashtable(this CompositeCollider2D self)
+    public static partial class CompositeCollider2DExtension
     {
-      Hashtable hashtable = new Hashtable();
-      hashtable["isTrigger"] = self.isTrigger;
-      hashtable["usedByEffector"] = self.usedByEffector;
-      hashtable["offset"] = self.offset.ToStringOrDefault();
-      hashtable["geometryType"] = (int)self.geometryType;
-      hashtable["generationType"] = (int)self.generationType;
-      hashtable["vertexDistance"] = self.vertexDistance;
-      hashtable["offsetDistance"] = self.offsetDistance;
-      hashtable["edgeRadius"] = self.edgeRadius;
-      hashtable.Trim();
-      return hashtable;
-    }
+        public static Hashtable GetSerializeHashtable(this CompositeCollider2D self)
+        {
+            Hashtable hashtable = new Hashtable();
+            hashtable[StringConst.String_isTrigger] = self.isTrigger;
+            hashtable[StringConst.String_usedByEffector] = self.usedByEffector;
+            hashtable[StringConst.String_offset] = self.offset.ToStringOrDefault();
+            hashtable[StringConst.String_geometryType] = (int) self.geometryType;
+            hashtable[StringConst.String_generationType] = (int) self.generationType;
+            hashtable[StringConst.String_vertexDistance] = self.vertexDistance;
+            hashtable[StringConst.String_offsetDistance] = self.offsetDistance;
+            hashtable[StringConst.String_edgeRadius] = self.edgeRadius;
+            hashtable.Trim();
+            return hashtable;
+        }
 
-    public static void LoadSerializeHashtable(this CompositeCollider2D self, Hashtable hashtable)
-    {
-      self.isTrigger = hashtable.Get<bool>("isTrigger");
-      self.usedByEffector = hashtable.Get<bool>("usedByEffector");
-      self.offset = hashtable.Get<string>("offset").ToVector2OrDefault();
-      self.geometryType = hashtable.Get<int>("geometryType").ToEnum<CompositeCollider2D.GeometryType>();
-      self.generationType = hashtable.Get<int>("generationType").ToEnum<CompositeCollider2D.GenerationType>();
-      self.vertexDistance = hashtable.Get<float>("vertexDistance");
-      self.offsetDistance = hashtable.Get<float>("offsetDistance");
-      self.edgeRadius = hashtable.Get<float>("edgeRadius");
+        public static void LoadSerializeHashtable(this CompositeCollider2D self, Hashtable hashtable)
+        {
+            self.isTrigger = hashtable.Get<bool>(StringConst.String_isTrigger);
+            self.usedByEffector = hashtable.Get<bool>(StringConst.String_usedByEffector);
+            self.offset = hashtable.Get<string>(StringConst.String_offset).ToVector2OrDefault();
+            self.geometryType = hashtable.Get<int>(StringConst.String_geometryType)
+                .ToEnum<CompositeCollider2D.GeometryType>();
+            self.generationType = hashtable.Get<int>(StringConst.String_generationType)
+                .ToEnum<CompositeCollider2D.GenerationType>();
+            self.vertexDistance = hashtable.Get<float>(StringConst.String_vertexDistance);
+            self.offsetDistance = hashtable.Get<float>(StringConst.String_offsetDistance);
+            self.edgeRadius = hashtable.Get<float>(StringConst.String_edgeRadius);
+        }
     }
-  }
 }

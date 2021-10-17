@@ -5,7 +5,7 @@ namespace CsCat
 {
   public static class CompareUtil
   {
-    public static int CompareWithRules<T>(T data1, T data2,params Comparison<T>[] compareRules)
+    public static int CompareWithRules<T>(T data1, T data2, IList<Comparison<T>> compareRules)
     {
       foreach (var compareRule in compareRules)
       {

@@ -15,6 +15,7 @@ namespace CsCat
             list.Add('e');
             list.Add('f');
 
+            
 //      list.Reverse();
 
             int index = list.BinarySearchCat('e', IndexOccurType.Last_Index, (a, b) => a - b);

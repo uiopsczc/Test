@@ -21,8 +21,8 @@ namespace CsCat
             Type result = Type.GetType(typeString);
             if (dllName == null) //查找所有assembly中的类
             {
-                Assembly[] Assemblies = AppDomain.CurrentDomain.GetAssemblies();
-                foreach (var assembly in Assemblies)
+                Assembly[] assemblies = AppDomain.CurrentDomain.GetAssemblies();
+                foreach (var assembly in assemblies)
                 {
                     result = assembly.GetType(classPath);
                     if (result == null) continue;

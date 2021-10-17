@@ -94,5 +94,11 @@ namespace CsCat
                     throw new ExceptionArgsTooLong();
             }
         }
+
+        public static string RoundBrackets(string arg)
+        {
+            return string.Format(StringConst.String_Format_RoundBrackets, arg);
+        }
+        
     }
 }

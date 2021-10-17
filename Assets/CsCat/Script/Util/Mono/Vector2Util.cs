@@ -49,7 +49,7 @@ namespace CsCat
         /// <returns></returns>
         public static bool EqualsEPSILON(Vector2 v1, Vector2 v2, float epsilon = FloatConst.Epsilon)
         {
-            return (v1.x.EqualsEPSILON(v2.x, epsilon)) && (v1.y.EqualsEPSILON(v2.y, epsilon));
+            return (v1.x.EqualsEpsilon(v2.x, epsilon)) && (v1.y.EqualsEpsilon(v2.y, epsilon));
         }
 
         //将v Round四舍五入snap_size的倍数的值

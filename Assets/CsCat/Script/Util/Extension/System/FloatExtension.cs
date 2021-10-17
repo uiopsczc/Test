@@ -13,7 +13,7 @@ namespace CsCat
         /// <param name="float2"></param>
         /// <param name="epsilon"></param>
         /// <returns></returns>
-        public static bool EqualsEPSILON(this float self, float float2, float epsilon = FloatConst.Epsilon)
+        public static bool EqualsEpsilon(this float self, float float2, float epsilon = FloatConst.Epsilon)
         {
             return Math.Abs(self - float2) < epsilon;
         }
