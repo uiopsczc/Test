@@ -250,6 +250,36 @@ function table.Dump(self, depth)
   end})
 end
 
+-- .... 位置
+function table.SetValue(self, value, ...)
+  local poses = {...}
+  local curTable = self
+  for i = 1, #poses do
+    local pos = poses[i]
+    if i == #poses then
+      curTable[pos] = value
+      break
+    end
+    if curTable[pos] == nil then
+      curTable[pos] = {}
+    end
+    curTable = curTable[pos]
+  end
+end
+
+-- .... 位置
+function table.GetValue(self, ...)
+  local poses = {...}
+  local curTable = self
+  for i = 1, #poses do
+    local pos = poses[i]
+    if i == #poses then
+      return curTable[pos]
+    end
+    curTable = curTable[pos]
+  end
+end
+
 -------------------------------------------------------------
 -- table.ApplyDiff(old,diff)
 -- 将diff中的东西应用到old中
