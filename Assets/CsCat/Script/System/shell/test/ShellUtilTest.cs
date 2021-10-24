@@ -2,11 +2,11 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public class ShellUtilTest
-  {
-    public static async void Test()
+    public class ShellUtilTest
     {
-      await ShellUtil.ProcessCommand("mkdir shellTest", Application.dataPath);
+        public static async void Test()
+        {
+            await ShellUtil.ProcessCommand("mkdir shellTest", Application.dataPath);
+        }
     }
-  }
 }

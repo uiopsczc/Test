@@ -4,9 +4,9 @@ namespace CsCat
 {
   public partial class GameComponent : AbstractComponent
   {
-    protected override void __Reset()
+    protected override void _Reset()
     {
-      base.__Reset();
+      base._Reset();
       StopAllCoroutines();
       StopAllPausableCoroutines();
       RemoveAllDOTweens();
@@ -15,9 +15,9 @@ namespace CsCat
 	    RemoveAllListeners();
     }
 
-    protected override void __Destroy()
+    protected override void _Destroy()
     {
-      base.__Destroy();
+      base._Destroy();
       StopAllCoroutines();
       StopAllPausableCoroutines();
       RemoveAllDOTweens();

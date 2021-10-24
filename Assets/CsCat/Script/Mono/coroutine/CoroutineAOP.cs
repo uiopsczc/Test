@@ -84,7 +84,7 @@ namespace CsCat
       float delay_remain_duration = delay;
       while (delay_remain_duration > 0)
       {
-        if (Pause.instance.is_paused)
+        if (Pause.instance.isPaused)
         {
           yield return null;
           continue;
@@ -101,7 +101,7 @@ namespace CsCat
       float exe_remain_duration = duration;
       while (exe_remain_duration > 0)
       {
-        if (Pause.instance.is_paused)
+        if (Pause.instance.isPaused)
         {
           yield return null;
           continue;

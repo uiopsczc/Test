@@ -21,7 +21,7 @@ namespace CsCat
         var assetAsyncloader = Client.instance.assetBundleManager.assetAsyncloader_prosessing_list.Find(
           _assetAsyncloader =>
             _assetAsyncloader.assetCat.asset_path.Equals(asset_path));
-        if (assetAsyncloader != null && !assetAsyncloader.resultInfo.is_done)
+        if (assetAsyncloader != null && !assetAsyncloader.resultInfo.isDone)
         {
           if (!assetAsyncloader.GetAssetBundlePathList().IsNullOrEmpty())
             assetBundle_name_list.AddRange(assetAsyncloader.GetAssetBundlePathList());

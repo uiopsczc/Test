@@ -8,151 +8,154 @@ using CsCat;
 
 namespace CsCat
 {
-  public class ShellUtil
-  {
-    private static List<Action> _queue = new List<Action>();
-    private List<string> _enviroument_var_list = new List<string>();
-
-    private static string shellApp
+    public class ShellUtil
     {
-      get
-      {
+        private static List<Action> _queue = new List<Action>();
+        private List<string> _enviroumentVarList = new List<string>();
+
+        private static string shellApp
+        {
+            get
+            {
 #if UNITY_EDITOR_WIN
-        string app = "cmd.exe";
+                string app = "cmd.exe";
 #elif UNITY_EDITOR_OSX
 			string app = "bash";
 #endif
-        return app;
-      }
-    }
-
-    static ShellUtil()
-    {
-      EditorApplication.update += OnUpdate;
-    }
-
-    private static void OnUpdate()
-    {
-      foreach (var action in _queue)
-      {
-        try
-        {
-          action?.Invoke();
+                return app;
+            }
         }
-        catch (Exception e)
+
+        static ShellUtil()
         {
-          LogCat.LogError(e);
+            EditorApplication.update += OnUpdate;
         }
-      }
 
-      _queue.Clear();
-    }
-
-
-    public static ShellRequest ProcessCommand(string cmd, string workDirectory = "",
-      List<string> environmentVars = null)
-    {
-      ShellRequest shellReqest = new ShellRequest();
-      ThreadPool.QueueUserWorkItem(delegate(object state)
-      {
-        Process process = null;
-        try
+        private static void OnUpdate()
         {
-          ProcessStartInfo processStartInfo = new ProcessStartInfo(shellApp);
+            foreach (var action in _queue)
+            {
+                try
+                {
+                    action?.Invoke();
+                }
+                catch (Exception e)
+                {
+                    LogCat.LogError(e);
+                }
+            }
+
+            _queue.Clear();
+        }
+
+
+        public static ShellRequest ProcessCommand(string cmd, string workDirectory = StringConst.String_Empty,
+            List<string> environmentVars = null)
+        {
+            ShellRequest shellRequest = new ShellRequest();
+            ThreadPool.QueueUserWorkItem(delegate
+            {
+                Process process = null;
+                try
+                {
+                    ProcessStartInfo processStartInfo = new ProcessStartInfo(shellApp);
 
 #if UNITY_EDITOR_OSX
 				string splitChar = ":";
 				start.Arguments = "-c";
 #elif UNITY_EDITOR_WIN
-          string splitChar = ";";
-          processStartInfo.Arguments = "/c";
+                    string splitChar = ";";
+                    processStartInfo.Arguments = "/c";
 #endif
 
-          if (environmentVars != null)
-          {
-            foreach (string var in environmentVars)
-            {
-              processStartInfo.EnvironmentVariables["PATH"] += (splitChar + var);
-            }
-          }
+                    if (environmentVars != null)
+                    {
+                        foreach (string var in environmentVars)
+                            processStartInfo.EnvironmentVariables["PATH"] += (splitChar + var);
+                    }
 
-          processStartInfo.Arguments += (" \"" + cmd + " \"");
-          processStartInfo.CreateNoWindow = true;
-          processStartInfo.ErrorDialog = true;
-          processStartInfo.UseShellExecute = false;
-          processStartInfo.WorkingDirectory = workDirectory;
+                    processStartInfo.Arguments += (" \"" + cmd + " \"");
+                    processStartInfo.CreateNoWindow = true;
+                    processStartInfo.ErrorDialog = true;
+                    processStartInfo.UseShellExecute = false;
+                    processStartInfo.WorkingDirectory = workDirectory;
 
-          if (processStartInfo.UseShellExecute)
-          {
-            processStartInfo.RedirectStandardOutput = false;
-            processStartInfo.RedirectStandardError = false;
-            processStartInfo.RedirectStandardInput = false;
-          }
-          else
-          {
-            processStartInfo.RedirectStandardOutput = true;
-            processStartInfo.RedirectStandardError = true;
-            processStartInfo.RedirectStandardInput = true;
-            processStartInfo.StandardOutputEncoding = Encoding.UTF8;
-            processStartInfo.StandardErrorEncoding = Encoding.UTF8;
-          }
-          process = Process.Start(processStartInfo);
-          process.ErrorDataReceived += delegate(object sender, DataReceivedEventArgs e) { LogCat.LogError(EncodingUtil.GBK2UTF8(e.Data)); };
-          process.OutputDataReceived += delegate(object sender, DataReceivedEventArgs e) { LogCat.LogError(EncodingUtil.GBK2UTF8(e.Data)); };
-          process.Exited += delegate(object sender, EventArgs e) { LogCat.LogError(e.ToString()); };
+                    if (processStartInfo.UseShellExecute)
+                    {
+                        processStartInfo.RedirectStandardOutput = false;
+                        processStartInfo.RedirectStandardError = false;
+                        processStartInfo.RedirectStandardInput = false;
+                    }
+                    else
+                    {
+                        processStartInfo.RedirectStandardOutput = true;
+                        processStartInfo.RedirectStandardError = true;
+                        processStartInfo.RedirectStandardInput = true;
+                        processStartInfo.StandardOutputEncoding = Encoding.UTF8;
+                        processStartInfo.StandardErrorEncoding = Encoding.UTF8;
+                    }
 
-          bool is_has_error = false;
-          do
-          {
-            string line = process.StandardOutput.ReadLine();
-            if (line == null)
-              break;
+                    process = Process.Start(processStartInfo);
+                    process.ErrorDataReceived += delegate(object sender, DataReceivedEventArgs e)
+                    {
+                        LogCat.LogError(EncodingUtil.GBK2UTF8(e.Data));
+                    };
+                    process.OutputDataReceived += delegate(object sender, DataReceivedEventArgs e)
+                    {
+                        LogCat.LogError(EncodingUtil.GBK2UTF8(e.Data));
+                    };
+                    process.Exited += delegate(object sender, EventArgs e) { LogCat.LogError(e.ToString()); };
 
-            line = line.Replace("\\", "/");
-            _queue.Add(delegate() { shellReqest.Log(0, line); });
-          } while (true);
+                    bool is_has_error = false;
+                    do
+                    {
+                        string line = process.StandardOutput.ReadLine();
+                        if (line == null)
+                            break;
 
-          while (true)
-          {
-            string error = process.StandardError.ReadLine();
-            if (string.IsNullOrEmpty(error))
-              break;
+                        line = line.Replace("\\", "/");
+                        _queue.Add(delegate() { shellRequest.Log(0, line); });
+                    } while (true);
 
-            is_has_error = true;
-            _queue.Add(delegate() { shellReqest.Log(LogCatType.Error, error); });
-          }
+                    while (true)
+                    {
+                        string error = process.StandardError.ReadLine();
+                        if (string.IsNullOrEmpty(error))
+                            break;
 
-          process.Close();
-          if (is_has_error)
-            _queue.Add(delegate() { shellReqest.Error(); });
-          else
-            _queue.Add(delegate() { shellReqest.NotifyDone(); });
+                        is_has_error = true;
+                        _queue.Add(delegate() { shellRequest.Log(LogCatType.Error, error); });
+                    }
+
+                    process.Close();
+                    if (is_has_error)
+                        _queue.Add(delegate() { shellRequest.Error(); });
+                    else
+                        _queue.Add(delegate() { shellRequest.NotifyDone(); });
+                }
+                catch (Exception e)
+                {
+                    LogCat.LogError(e);
+                    process?.Close();
+                }
+            });
+            return shellRequest;
         }
-        catch (Exception e)
+
+
+        public void AddEnvironmentVars(params string[] vars)
         {
-          LogCat.LogError(e);
-          process?.Close();
+            foreach (var var in vars)
+            {
+                if (var.IsNullOrWhiteSpace())
+                    continue;
+                _enviroumentVarList.Add(var);
+            }
         }
-      });
-      return shellReqest;
+
+        public ShellRequest ProcessCMD(string cmd, string work_direcotry)
+        {
+            return ShellUtil.ProcessCommand(cmd, work_direcotry, _enviroumentVarList);
+        }
     }
-
-
-
-
-    public void AddEnvironmentVars(params string[] vars)
-    {
-      foreach (var var in vars)
-      {
-        if (var.IsNullOrWhiteSpace())
-          continue;
-        _enviroument_var_list.Add(var);
-      }
-    }
-
-    public ShellRequest ProcessCMD(string cmd, string work_direcotry)
-    {
-      return ShellUtil.ProcessCommand(cmd, work_direcotry, _enviroument_var_list);
-    }
-  }
 }

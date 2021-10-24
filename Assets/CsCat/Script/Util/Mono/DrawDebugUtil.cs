@@ -67,12 +67,12 @@ namespace CsCat
         {
             foreach (Triangle triangle in triangleList)
             {
-                foreach (Line side in triangle.line_list)
+                foreach (Line side in triangle.lineList)
                 {
                     Vector2 normal = side.GetNormal();
                     Vector2 p = side.center;
                     p = p - normal * 0.4f; //0.4：离法线方向*0.4的地方写index数字
-                    DrawDebugUtil.DrawNumber(triangle.line_list.IndexOf(side).ToString(), new Vector3(p.x, h, p.y),
+                    DrawDebugUtil.DrawNumber(triangle.lineList.IndexOf(side).ToString(), new Vector3(p.x, h, p.y),
                         color,
                         numberSize);
                 }

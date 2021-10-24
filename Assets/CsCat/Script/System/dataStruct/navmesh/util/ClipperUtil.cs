@@ -87,7 +87,7 @@ namespace CsCat
       pSubject = subject;
 
       //包围盒不相交
-      if (pSubject.box_rectangle.IsIntersect(pClip.box_rectangle) == false)
+      if (pSubject.boxRectangle.IsIntersect(pClip.boxRectangle) == false)
         return null;
 
       //所有顶点和交点
@@ -108,7 +108,7 @@ namespace CsCat
       //0个交点
       //要判断是否主多边形包含副多边形，如果包含，则返回副多边形
       var AContainB = true;
-      foreach (var line in pClip.line_list)
+      foreach (var line in pClip.lineList)
         if (!pSubject.Contains(line))
           AContainB = false;
       if (AContainB)
@@ -119,7 +119,7 @@ namespace CsCat
 
       //要判断是否副多边形包含主多边形，如果包含，则返回主多边形
       var BContainA = true;
-      foreach (var line in pSubject.line_list)
+      foreach (var line in pSubject.lineList)
         if (!pClip.Contains(line))
           BContainA = false;
       if (BContainA)
@@ -226,10 +226,10 @@ namespace CsCat
 
           Vector2? intersectPoint;
           var lineRelation = lSubject.Intersection(lClip, out intersectPoint);
-          if (lineRelation == Line.LineClassification.SEGMENTS_INTERSECT) //相交
+          if (lineRelation == Line.LineClassification.SegmentsIntersect) //相交
           {
-            if (lClip.ClassifyPoint(lSubject.point_A) == PointClassification.ON_SEGMENT &&
-                GetNodeIndex(lnClip, lSubject.point_A) == -1)
+            if (lClip.ClassifyPoint(lSubject.pointA) == PointClassification.OnSegment &&
+                GetNodeIndex(lnClip, lSubject.pointA) == -1)
               if (!IsOutter(lSubject, pClip))
               {
                 insCnt++;
@@ -237,13 +237,13 @@ namespace CsCat
                 nSubjectInter.is_intersect_point = true;
 
 
-                var nClipInter = new PolygonNode(lSubject.point_A, true, false);
+                var nClipInter = new PolygonNode(lSubject.pointA, true, false);
                 lnClip.Add(nClipInter);
 
                 nClipInter.other = nSubjectInter;
                 nSubjectInter.other = nClipInter;
 
-                nClipCur = lnClip[GetNodeIndex(lnClip, lClip.point_A)];
+                nClipCur = lnClip[GetNodeIndex(lnClip, lClip.pointA)];
                 nClipInter.next = nClipCur.next;
                 nClipCur.next = nClipInter;
 
@@ -252,15 +252,15 @@ namespace CsCat
                 nClipInter.is_out_point = false;
               }
 
-            if (lClip.ClassifyPoint(lSubject.point_B) == PointClassification.ON_SEGMENT &&
-                GetNodeIndex(lnClip, lSubject.point_B) == -1)
+            if (lClip.ClassifyPoint(lSubject.pointB) == PointClassification.OnSegment &&
+                GetNodeIndex(lnClip, lSubject.pointB) == -1)
               if (!IsOutter(lSubject, pClip))
               {
                 insCnt++;
-                var nSubjectInter = lnSubject[GetNodeIndex(lnSubject, lSubject.point_B)];
+                var nSubjectInter = lnSubject[GetNodeIndex(lnSubject, lSubject.pointB)];
                 nSubjectInter.is_intersect_point = true;
 
-                var nClipInter = new PolygonNode(lSubject.point_B, true, false);
+                var nClipInter = new PolygonNode(lSubject.pointB, true, false);
                 lnClip.Add(nClipInter);
 
                 nSubjectInter.other = nClipInter;
@@ -296,7 +296,7 @@ namespace CsCat
 
 
               //出点
-              if (lSubject.ClassifyPoint(lClip.point_B) == PointClassification.RIGHT_SIDE)
+              if (lSubject.ClassifyPoint(lClip.pointB) == PointClassification.RightSide)
               {
                 nSubjectInter.is_out_point = true;
                 nClipInter.is_out_point = true;
@@ -328,12 +328,12 @@ namespace CsCat
     //是否与重叠
     private static bool IsOverLap_Cut(Line line1, Polygon polygon2)
     {
-      var line2s = polygon2.line_list;
+      var line2s = polygon2.lineList;
       foreach (var line2 in line2s)
       {
         Vector2? intersectPoint;
         var lineRelation = line2.Intersection(line1, out intersectPoint);
-        if (lineRelation == Line.LineClassification.COLLINEAR)
+        if (lineRelation == Line.LineClassification.Collinear)
           return true;
       }
 
@@ -352,7 +352,7 @@ namespace CsCat
       pSubject = subject;
 
       //包围盒不相交
-      if (pSubject.box_rectangle.IsIntersect(pClip.box_rectangle) == false)
+      if (pSubject.boxRectangle.IsIntersect(pClip.boxRectangle) == false)
         return null;
 
       //所有顶点和交点
@@ -455,12 +455,12 @@ namespace CsCat
 
           Vector2? intersectPoint;
           var lineRelation = lSubject.Intersection(lClip, out intersectPoint);
-          if (lineRelation == Line.LineClassification.SEGMENTS_INTERSECT) //相交
+          if (lineRelation == Line.LineClassification.SegmentsIntersect) //相交
           {
-            var a_on_lClip = lClip.ClassifyPoint(lSubject.point_A) == PointClassification.ON_SEGMENT;
-            var a_index_of_lnClip = GetNodeIndex(lnClip, lSubject.point_A);
-            var b_on_lClip = lClip.ClassifyPoint(lSubject.point_B) == PointClassification.ON_SEGMENT;
-            var b_index_of_lnClip = GetNodeIndex(lnClip, lSubject.point_B);
+            var a_on_lClip = lClip.ClassifyPoint(lSubject.pointA) == PointClassification.OnSegment;
+            var a_index_of_lnClip = GetNodeIndex(lnClip, lSubject.pointA);
+            var b_on_lClip = lClip.ClassifyPoint(lSubject.pointB) == PointClassification.OnSegment;
+            var b_index_of_lnClip = GetNodeIndex(lnClip, lSubject.pointB);
 
             //主多边形边上的顶点A是在副多边形上
             if (a_on_lClip && (a_index_of_lnClip == -1 ||
@@ -470,9 +470,9 @@ namespace CsCat
               PolygonNode nSubjectInter = null;
               PolygonNode nClipInter = null;
 
-              if (GetNodeIndex(lnSubject, lSubject.point_A) == -1)
+              if (GetNodeIndex(lnSubject, lSubject.pointA) == -1)
               {
-                nSubjectInter = new PolygonNode(lSubject.point_A, true, true);
+                nSubjectInter = new PolygonNode(lSubject.pointA, true, true);
                 nSubjectInter.is_checked = true;
                 lnSubject.Add(nSubjectInter);
                 nSubjectInter.next = nSubjectCur.next;
@@ -481,14 +481,14 @@ namespace CsCat
               }
               else
               {
-                nSubjectInter = lnSubject[GetNodeIndex(lnSubject, lSubject.point_A)];
+                nSubjectInter = lnSubject[GetNodeIndex(lnSubject, lSubject.pointA)];
                 nSubjectInter.is_intersect_point = true;
                 nSubjectInter.is_checked = true;
               }
 
-              if (GetNodeIndex(lnClip, lSubject.point_A) == -1)
+              if (GetNodeIndex(lnClip, lSubject.pointA) == -1)
               {
-                nClipInter = new PolygonNode(lSubject.point_A, true, false);
+                nClipInter = new PolygonNode(lSubject.pointA, true, false);
                 nClipInter.is_checked = true;
                 lnClip.Add(nClipInter);
                 nClipInter.next = nClipCur.next;
@@ -496,7 +496,7 @@ namespace CsCat
               }
               else
               {
-                nClipInter = lnClip[GetNodeIndex(lnClip, lSubject.point_A)];
+                nClipInter = lnClip[GetNodeIndex(lnClip, lSubject.pointA)];
                 nClipInter.is_checked = true;
                 nClipInter.is_intersect_point = true;
               }
@@ -526,9 +526,9 @@ namespace CsCat
               PolygonNode nSubjectInter = null;
               PolygonNode nClipInter = null;
 
-              if (GetNodeIndex(lnSubject, lSubject.point_B) == -1)
+              if (GetNodeIndex(lnSubject, lSubject.pointB) == -1)
               {
-                nSubjectInter = new PolygonNode(lSubject.point_B, true, true);
+                nSubjectInter = new PolygonNode(lSubject.pointB, true, true);
                 nSubjectInter.is_checked = true;
                 lnSubject.Add(nSubjectInter);
                 nSubjectInter.next = nSubjectCur.next;
@@ -537,14 +537,14 @@ namespace CsCat
               }
               else
               {
-                nSubjectInter = lnSubject[GetNodeIndex(lnSubject, lSubject.point_B)];
+                nSubjectInter = lnSubject[GetNodeIndex(lnSubject, lSubject.pointB)];
                 nSubjectInter.is_intersect_point = true;
                 nSubjectInter.is_checked = true;
               }
 
-              if (GetNodeIndex(lnClip, lSubject.point_B) == -1)
+              if (GetNodeIndex(lnClip, lSubject.pointB) == -1)
               {
-                nClipInter = new PolygonNode(lSubject.point_B, true, false);
+                nClipInter = new PolygonNode(lSubject.pointB, true, false);
                 nClipInter.is_checked = true;
                 lnClip.Add(nClipInter);
                 nClipInter.next = nClipCur.next;
@@ -552,7 +552,7 @@ namespace CsCat
               }
               else
               {
-                nClipInter = lnClip[GetNodeIndex(lnClip, lSubject.point_B)];
+                nClipInter = lnClip[GetNodeIndex(lnClip, lSubject.pointB)];
                 nClipInter.is_checked = true;
                 nClipInter.is_intersect_point = true;
               }
@@ -596,7 +596,7 @@ namespace CsCat
 
 
               //出点
-              if (lSubject.ClassifyPoint(lClip.point_B) == PointClassification.LEFT_SIDE)
+              if (lSubject.ClassifyPoint(lClip.pointB) == PointClassification.LeftSide)
               {
                 nSubjectInter.is_out_point = true;
                 nClipInter.is_out_point = true;
@@ -640,7 +640,7 @@ namespace CsCat
               }
           }
            * */
-      var line2s = polygon2.line_list;
+      var line2s = polygon2.lineList;
       foreach (var line2 in line2s)
         if (line2.Contains(line1))
           return true;
@@ -658,8 +658,8 @@ namespace CsCat
     private static Vector2 GetLeftBottomVertex()
     {
       var vs = new List<Vector2>();
-      vs.AddRange(pSubject.vertexe_list);
-      vs.AddRange(pClip.vertexe_list);
+      vs.AddRange(pSubject.vertexList);
+      vs.AddRange(pClip.vertexList);
       var leftBottom = vs[0];
       foreach (var v in vs)
         if (v.x < leftBottom.x)
@@ -683,21 +683,21 @@ namespace CsCat
     private static bool IsOutter(Line line, Polygon polygon2)
     {
       var intersectPoints = new List<Vector2>();
-      foreach (var line2 in polygon2.line_list)
+      foreach (var line2 in polygon2.lineList)
       {
         Vector2? intersectPoint;
         var lineRelation = line2.Intersection(line, out intersectPoint);
-        if (lineRelation == Line.LineClassification.COLLINEAR)
+        if (lineRelation == Line.LineClassification.Collinear)
           return false;
-        if (lineRelation == Line.LineClassification.SEGMENTS_INTERSECT)
+        if (lineRelation == Line.LineClassification.SegmentsIntersect)
           if (!intersectPoints.Contains(intersectPoint.Value))
             intersectPoints.Add(intersectPoint.Value);
       }
 
-      if (!intersectPoints.Contains(line.point_B))
-        intersectPoints.Add(line.point_B);
-      if (!intersectPoints.Contains(line.point_A))
-        intersectPoints.Insert(0, line.point_A);
+      if (!intersectPoints.Contains(line.pointB))
+        intersectPoints.Add(line.pointB);
+      if (!intersectPoints.Contains(line.pointA))
+        intersectPoints.Insert(0, line.pointA);
       for (var i = 1; i < intersectPoints.Count; i++)
       {
         var v1 = intersectPoints[i - 1];

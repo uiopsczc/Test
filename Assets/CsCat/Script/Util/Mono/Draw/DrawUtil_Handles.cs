@@ -78,7 +78,7 @@ namespace CsCat
 
             using (new HandlesColorScope(color))
             {
-                var cube = new Cube3d(bounds.center, bounds.size);
+                var cube = new Cube3D(bounds.center, bounds.size);
                 cube.GetDrawLineList().ForEach(kv => { HandlesLine(kv.Key, kv.Value, color); });
             }
         }
@@ -143,7 +143,7 @@ namespace CsCat
 
             using (new HandlesColorScope(color))
             {
-                var circle = new Circle3d(position, radius, mutiplyMatrix);
+                var circle = new Circle3D(position, radius, mutiplyMatrix);
 
                 circle.GetDrawLineList().ForEach(kv => { HandlesLine(kv.Key, kv.Value, color); });
             }
@@ -288,7 +288,7 @@ namespace CsCat
 
             using (new HandlesColorScope(color))
             {
-                var cube = new Cube3d(Vector3.zero, Vector3.one);
+                var cube = new Cube3D(Vector3.zero, Vector3.one);
                 cube.MultiplyMatrix(Matrix4x4.TRS(offset, Quaternion.identity, size));
                 cube.PreMultiplyMatrix(transform.localToWorldMatrix);
                 cube.GetDrawLineList().ForEach(kv => { HandlesLine(kv.Key, kv.Value, color); });
@@ -319,7 +319,7 @@ namespace CsCat
 
             using (new HandlesColorScope(color))
             {
-                var cube = new Cube3d(Vector3.zero, Vector3.one);
+                var cube = new Cube3D(Vector3.zero, Vector3.one);
                 cube.MultiplyMatrix(Matrix4x4.TRS(offset, Quaternion.identity, size));
                 cube.PreMultiplyMatrix(matrix);
                 cube.GetDrawLineList().ForEach(kv => { HandlesLine(kv.Key, kv.Value, color); });
@@ -336,7 +336,7 @@ namespace CsCat
 
             using (new HandlesColorScope(color))
             {
-                var cube = new Cube3d((min + max) / 2, (max - min).Abs());
+                var cube = new Cube3D((min + max) / 2, (max - min).Abs());
                 cube.GetDrawLineList().ForEach(kv => { HandlesLine(kv.Key, kv.Value, color); });
             }
         }
@@ -399,7 +399,7 @@ namespace CsCat
 
             using (new HandlesColorScope(color))
             {
-                var sphere = new Sphere3d(position, radius);
+                var sphere = new Sphere3D(position, radius);
                 sphere.GetDrawLineList().ForEach(kv => { HandlesLine(kv.Key, kv.Value, color); });
             }
         }
@@ -460,7 +460,7 @@ namespace CsCat
 
             using (new HandlesColorScope(color))
             {
-                var polygon = new Polygon3d(points);
+                var polygon = new Polygon3D(points);
                 polygon.MultiplyMatrix(mutiplyMatrix);
 
                 polygon.GetDrawLineList().ForEach(kv => { HandlesLine(kv.Key, kv.Value, color); });
@@ -532,7 +532,7 @@ namespace CsCat
         {
             using (new HandlesColorScope(color))
             {
-                var rectangle = new Rectangle3d(center, size, mutiplyMatrix);
+                var rectangle = new Rectangle3D(center, size, mutiplyMatrix);
                 rectangle.GetDrawLineList().ForEach(kv => { HandlesLine(kv.Key, kv.Value, color, isDotted); });
             }
         }
@@ -548,8 +548,8 @@ namespace CsCat
         public static void HandlesCenterRect(Vector3 center, Vector2 size, Matrix4x4 mutiplyMatrix, Color faceColor,
             Color outline_color)
         {
-            var rectangle = new Rectangle3d(center, size, mutiplyMatrix);
-            Handles.DrawSolidRectangleWithOutline(rectangle.vertexe_list.ToArray(), faceColor, outline_color);
+            var rectangle = new Rectangle3D(center, size, mutiplyMatrix);
+            Handles.DrawSolidRectangleWithOutline(rectangle.vertexeList.ToArray(), faceColor, outline_color);
         }
 
         /// <summary>

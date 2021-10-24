@@ -1,103 +1,94 @@
-
 using System.Collections.Generic;
+using System.Linq;
 using DG.Tweening;
+
 namespace CsCat
 {
-  public class DOTweenPlugin
-  {
-    Dictionary<string,Tween> dict = new Dictionary<string, Tween>();
-    private IdPool idPool = new IdPool();
-
-    public Sequence AddDOTweenSequence(string key)
+    public class DOTweenPlugin
     {
-      CleanNotActiveDOTweens();
-      if (key != null && dict.ContainsKey(key))
-        RemoveDOTween(key);
-      key = key ?? idPool.Get().ToString();
-      var sequence = DOTween.Sequence();
-	    dict[key] = sequence;
-      return sequence;
-    }
+        Dictionary<string, Tween> _dict = new Dictionary<string, Tween>();
+        private IdPool _idPool = new IdPool();
 
-    public Tween AddDOTween(string key, Tween tween)
-    {
-      CleanNotActiveDOTweens();
-      if (key != null && dict.ContainsKey(key))
-        RemoveDOTween(key);
-      key = key ?? idPool.Get().ToString();
-	    dict[key] = tween;
-      return tween;
-    }
-
-    public void RemoveDOTween(string key)
-    {
-      CleanNotActiveDOTweens();
-      if (dict.ContainsKey(key))
-      {
-        Tween tween = dict[key];
-        if (tween.IsActive())
-	        dict[key].Kill();
-        idPool.Despawn(key);
-	      dict.Remove(key);
-      }
-    }
-
-    public void RemoveDOTween(Tween tween)
-    {
-      string key = null;
-      foreach (var dictKey in dict.Keys)
-      {
-        if (dict[dictKey] == tween)
+        public Sequence AddDOTweenSequence(string key)
         {
-          key = dictKey;
-          break;
+            if (key != null && _dict.ContainsKey(key))
+                RemoveDOTween(key);
+            key = key ?? _idPool.Get().ToString();
+            var sequence = DOTween.Sequence();
+            _dict[key] = sequence;
+            sequence.OnKill(() => RemoveDOTween(key));
+            return sequence;
         }
-      }
-      if (key != null)
-        RemoveDOTween(key);
-    }
 
-    private void CleanNotActiveDOTweens()
-    {
-	    dict.RemoveByFunc((_key, _tween) =>
-      {
-        if (!_tween.IsActive())
+        public Tween AddDOTween(string key, Tween tween)
         {
-          idPool.Despawn(_key);
-          return true;
+            if (key != null && _dict.ContainsKey(key))
+                RemoveDOTween(key);
+            key = key ?? _idPool.Get().ToString();
+            _dict[key] = tween;
+            tween.OnKill(() => RemoveDOTween(key));
+            return tween;
         }
-        return false;
-      });
-    }
 
-    public void SetIsPaused(bool is_paused)
-    {
-      foreach (var tween in dict.Values)
-      {
-        if (!tween.IsActive())
-          continue;
-        if (is_paused)
-          tween.Pause();
-        else
-          tween.Play();
-      }
-    }
+        public void RemoveDOTween(string key)
+        {
+            if (_dict.ContainsKey(key))
+            {
+                Tween tween = _dict[key];
+                if (tween.IsActive())
+                    _dict[key].Kill();
+                _idPool.Despawn(key);
+                _dict.Remove(key);
+            }
+        }
 
-    public void RemoveAllDOTweens()
-    {
-      foreach (var tween in dict.Values)
-      {
-        if (tween.IsActive())
-          tween.Kill();
-      }
+        public void RemoveDOTween(Tween tween)
+        {
+            string key = null;
+            foreach (var dictKey in _dict.Keys)
+            {
+                if (_dict[dictKey] != tween) continue;
+                key = dictKey;
+                break;
+            }
 
-	    dict.Clear();
-      idPool.DespawnAll();
-    }
+            if (key != null)
+                RemoveDOTween(key);
+        }
 
-    public void Destroy()
-    {
-      this.RemoveAllDOTweens();
+        public void SetIsPaused(bool isPaused)
+        {
+            foreach (var tween in _dict.Values)
+            {
+                if (!tween.IsActive())
+                    continue;
+                if (isPaused)
+                    tween.Pause();
+                else
+                    tween.Play();
+            }
+        }
+
+        public void RemoveDOTweens()
+        {
+            List<string> keyList = new List<string>(_dict.Keys);
+            for (int i = 0; i < keyList.Count; i++)
+            {
+                var key = keyList[i];
+                _dict[key].Kill();
+            }
+        }
+
+        public void Reset()
+        {
+            this.RemoveDOTweens();
+        }
+
+        public void Destroy()
+        {
+            Reset();
+            _dict = null;
+            _idPool = null;
+        }
     }
-  }
 }

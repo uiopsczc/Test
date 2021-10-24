@@ -48,21 +48,21 @@ namespace CsCat
       this.timerManagerPlugin.RemoveAllTimers();
     }
 
-    protected override void __SetIsPaused(bool is_paused)
+    protected override void _SetIsPaused(bool isPaused)
     {
-      base.__SetIsPaused(is_paused);
-      this.timerManagerPlugin.SetIsPaused(is_paused);
+      base._SetIsPaused(isPaused);
+      this.timerManagerPlugin.SetIsPaused(isPaused);
     }
 
-    protected override void __Reset()
+    protected override void _Reset()
     {
-      base.__Reset();
+      base._Reset();
       RemoveAllTimers();
     }
 
-    protected override void __Destroy()
+    protected override void _Destroy()
     {
-      base.__Destroy();
+      base._Destroy();
       RemoveAllTimers();
     }
 

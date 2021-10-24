@@ -77,7 +77,7 @@ namespace CsCat
 
         public const string String_DOTweenId_Use_GameTime = "DoTweenIdUseGameTime";
         public const string String_File_Url_Prefix = "file://";
-        public const string String_Format_File_Url = String_File_Url_Prefix +"{0}";
+        public const string String_Format_File_Url = String_File_Url_Prefix + "{0}";
         public const string String_http = "http";
         public const string String_ftp = "ftp";
         public const string String_null = "null";
@@ -90,7 +90,13 @@ namespace CsCat
         public const string String_Format_Pct = "{0}%";
         public const string String_New_In_Table = "__{}__";
         public const string String_remove = "remove";
+        public const string String_Assets = "Assets";
         public const string String_Asset_Extension = ".asset";
+        public const string String_Resources = "Resources";
+        public const string String_Sprites = "Sprites";
+        public const string String_Manifest = "Manifest";
+        public const string String_Exes = "Exes";
+        public const string String_ExternalScripts = "ExternalScripts";
         public const string String_color = "color";
         public const string String_Button = "Button";
         public const string String_true = "true";
@@ -114,7 +120,7 @@ namespace CsCat
         public const string String_Minute_CN = "分";
         public const string String_Second_CN = "秒";
 
-        
+
         public const string String_x_y = "x,y";
         public const string String_x_y_0 = "x,y,0";
         public const string String_0_x_y = "0,x,y";
@@ -195,11 +201,9 @@ namespace CsCat
 
 
         public const string String_Regex_Date =
-            "(([0-9]{3}[1-9]|[0-9]{2}[1-9][0-9]{1}|[0-9]{1}[1-9][0-9]{2}|[1-9][0-9]{3})-(((0[13578]|1[02])-(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)-(0[1-9]|[12][0-9]|30))|(02-(0[1-9]|[1][0-9]|2[0-8]))))|((([0-9]{2})(0[48]|[2468][048]|[13579][26])|((0[48]|[2468][048]|[3579][26])00))-02-29)";//日期正则表达式
+            "(([0-9]{3}[1-9]|[0-9]{2}[1-9][0-9]{1}|[0-9]{1}[1-9][0-9]{2}|[1-9][0-9]{3})-(((0[13578]|1[02])-(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)-(0[1-9]|[12][0-9]|30))|(02-(0[1-9]|[1][0-9]|2[0-8]))))|((([0-9]{2})(0[48]|[2468][048]|[13579][26])|((0[48]|[2468][048]|[3579][26])00))-02-29)"; //日期正则表达式
 
-        public const string String_Regex_Integer = "^[+-]?\\d+$";//整数正则表达式
-        public const string String_Regex_Float = "^[+-]?((\\d+)|(\\d+\\.\\d*)|(\\d*\\.\\d+))([eE]\\d+)?$";//浮点数正则表达式
-
-
+        public const string String_Regex_Integer = "^[+-]?\\d+$"; //整数正则表达式
+        public const string String_Regex_Float = "^[+-]?((\\d+)|(\\d+\\.\\d*)|(\\d*\\.\\d+))([eE]\\d+)?$"; //浮点数正则表达式
     }
 }

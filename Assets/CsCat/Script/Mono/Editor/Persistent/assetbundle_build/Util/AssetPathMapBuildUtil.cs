@@ -18,7 +18,7 @@ namespace CsCat
         string[] asset_paths = AssetDatabase.GetAssetPathsFromAssetBundle(assetBundle_name);
         foreach (string asset_path in asset_paths)
         {
-          string content = string.Format("{0}{1}{2}", assetBundle_name, DictConst.Common_Pattren, asset_path);
+          string content = string.Format("{0}{1}{2}", assetBundle_name, StringConst.String_Comma, asset_path);
           contentList.Add(content);
         }
       }

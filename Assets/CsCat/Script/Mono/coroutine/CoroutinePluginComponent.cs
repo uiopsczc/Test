@@ -33,15 +33,15 @@ namespace CsCat
       coroutinePlugin.StopAllCoroutines();
     }
 
-    protected override void __Reset()
+    protected override void _Reset()
     {
-      base.__Reset();
+      base._Reset();
       StopAllCoroutines();
     }
 
-    protected override void __Destroy()
+    protected override void _Destroy()
     {
-      base.__Destroy();
+      base._Destroy();
       StopAllCoroutines();
     }
   }

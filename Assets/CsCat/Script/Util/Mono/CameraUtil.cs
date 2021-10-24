@@ -14,31 +14,31 @@ namespace CsCat
             return new Vector2(widthHalf * 2, heightHalf * 2);
         }
 
-        public static Rectangle3d GetRectOfLocalByDistance(Camera camera, float distance, Vector2 offPercent)
+        public static Rectangle3D GetRectOfLocalByDistance(Camera camera, float distance, Vector2 offPercent)
         {
             Vector2 rectSize = GetRectSizeByDistance(camera, distance);
             rectSize *= (Vector2.one - offPercent);
             Vector3 center = Vector3.forward * distance;
 
-            Rectangle3d rect = new Rectangle3d(center, rectSize, Matrix4x4Const.xz_to_xy_matrix);
+            Rectangle3D rect = new Rectangle3D(center, rectSize, Matrix4x4Const.XZ_To_XY_Matrix);
             return rect;
         }
 
-        public static Rectangle3d GetRectOfLocalByDistance(Camera camera, float distance)
+        public static Rectangle3D GetRectOfLocalByDistance(Camera camera, float distance)
         {
             return GetRectOfLocalByDistance(camera, distance, Vector2.zero);
         }
 
 
-        public static Rectangle3d GetRectOfWorldByDistance(Camera camera, float distance)
+        public static Rectangle3D GetRectOfWorldByDistance(Camera camera, float distance)
         {
             return GetRectOfWorldByDistance(camera, distance, Vector2.zero);
         }
 
-        public static Rectangle3d GetRectOfWorldByDistance(Camera camera, float distance, Vector2 offPercent)
+        public static Rectangle3D GetRectOfWorldByDistance(Camera camera, float distance, Vector2 offPercent)
         {
             //有严格的顺序，这个worldRect，先转为世界坐标系，然后再平移center，最后翻转
-            Rectangle3d rect = GetRectOfLocalByDistance(camera, distance, offPercent);
+            Rectangle3D rect = GetRectOfLocalByDistance(camera, distance, offPercent);
             rect.PreMultiplyMatrix(camera.transform.localToWorldMatrix);
             return rect;
         }

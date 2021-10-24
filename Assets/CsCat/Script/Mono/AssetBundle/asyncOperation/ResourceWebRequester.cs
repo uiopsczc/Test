@@ -42,7 +42,7 @@ namespace CsCat
 
     protected override float GetProgress()
     {
-      if (resultInfo.is_done)
+      if (resultInfo.isDone)
         return 1.0f;
 
       return www?.progress ?? 0f;
@@ -76,14 +76,14 @@ namespace CsCat
 
     public override void Update()
     {
-      if (resultInfo.is_done || www == null)
+      if (resultInfo.isDone || www == null)
         return;
       if (!string.IsNullOrEmpty(www.error))
-        resultInfo.is_fail = true;
+        resultInfo.isFail = true;
       else
       {
         if (www.isDone)
-          resultInfo.is_success = true;
+          resultInfo.isSuccess = true;
       }
     }
 

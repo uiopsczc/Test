@@ -42,7 +42,7 @@ namespace CsCat
     /// </summary>
     /// <param name="self"></param>
     /// <param name="message"></param>
-    public void CallHello_AOP_Handle_Pre(AOPExample self, string message, Shape2d shape)
+    public void CallHello_AOP_Handle_Pre(AOPExample self, string message, Shape2D shape)
     {
       LogCat.LogError("AOP:" + shape.ToString());
     }

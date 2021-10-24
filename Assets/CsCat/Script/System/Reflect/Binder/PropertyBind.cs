@@ -3,81 +3,74 @@ using System.Reflection;
 
 namespace CsCat
 {
-  /// <summary>
-  /// 当绑定的srcPropOwner的srcPropName属性的值改变的时候，
-  /// dstPropOwner的dstPropName属性的值也设置为跟srcPropOwner的srcPropName属性一样的值
-  /// </summary>
-  public class PropertyBind : BaseBind
-  {
-    #region field
-
     /// <summary>
-    /// dstPropOwner
-    /// </summary>
-    private object dst_prop_owner;
-
-    /// <summary>
-    /// dstFieldInfo
-    /// </summary>
-    private FieldInfo dst_fieldInfo;
-
-    /// <summary>
-    /// dstPropInfo
-    /// </summary>
-    private PropertyInfo dst_propInfo;
-
-    #endregion
-
-    #region virtual method
-
-    /// <summary>
-    /// 当srcPropOwner的srcPropName属性的值改变的时候，
+    /// 当绑定的srcPropOwner的srcPropName属性的值改变的时候，
     /// dstPropOwner的dstPropName属性的值也设置为跟srcPropOwner的srcPropName属性一样的值
     /// </summary>
-    /// <param name="src_property_name"></param>
-    /// <param name="old_value"></param>
-    /// <param name="new_value"></param>
-    internal override void OnValueChanged(string src_property_name, object old_value, object new_value)
+    public class PropertyBind : BaseBind
     {
-      if (this.dst_fieldInfo != null)
-      {
-        this.dst_fieldInfo.SetValue(this.dst_prop_owner, new_value);
-        return;
-      }
+        #region field
 
-      if (this.dst_propInfo != null)
-      {
-        this.dst_propInfo.SetValue(this.dst_prop_owner, new_value, null);
-      }
+        /// <summary>
+        /// dstPropOwner
+        /// </summary>
+        private object dstPropOwner;
+
+        /// <summary>
+        /// dstFieldInfo
+        /// </summary>
+        private FieldInfo dstFieldInfo;
+
+        /// <summary>
+        /// dstPropInfo
+        /// </summary>
+        private PropertyInfo dstPropInfo;
+
+        #endregion
+
+        #region virtual method
+
+        /// <summary>
+        /// 当srcPropOwner的srcPropName属性的值改变的时候，
+        /// dstPropOwner的dstPropName属性的值也设置为跟srcPropOwner的srcPropName属性一样的值
+        /// </summary>
+        /// <param name="propertyName"></param>
+        /// <param name="oldValue"></param>
+        /// <param name="newValue"></param>
+        internal override void OnValueChanged(string propertyName, object oldValue, object newValue)
+        {
+            if (this.dstFieldInfo != null)
+            {
+                this.dstFieldInfo.SetValue(this.dstPropOwner, newValue);
+                return;
+            }
+
+            if (this.dstPropInfo != null)
+                this.dstPropInfo.SetValue(this.dstPropOwner, newValue, null);
+        }
+
+        /// <summary>
+        /// 当srcPropOwner的srcPropName属性的值改变的时候，
+        /// dstPropOwner的dstPropName属性的值也设置为跟srcPropOwner的srcPropName属性一样的值
+        /// </summary>
+        /// <param name="srcPropOwner"></param>
+        /// <param name="srcPropName"></param>
+        /// <param name="dstPropOwner"></param>
+        /// <param name="dstPropName"></param>
+        /// <returns></returns>
+        public virtual BaseBind Bind(object srcPropOwner, string srcPropName, object dstPropOwner,
+            string dstPropName)
+        {
+            this.dstPropOwner = dstPropOwner;
+            Type dstType = this.dstPropOwner.GetType();
+            this.dstFieldInfo = dstType.GetFieldInfo(dstPropName);
+            if (this.dstFieldInfo == null)
+                this.dstPropInfo = dstType.GetPropertyInfo(dstPropName);
+
+            base.propBinder.Bind(srcPropOwner, srcPropName, OnValueChanged);
+            return this;
+        }
+
+        #endregion
     }
-
-    /// <summary>
-    /// 当srcPropOwner的srcPropName属性的值改变的时候，
-    /// dstPropOwner的dstPropName属性的值也设置为跟srcPropOwner的srcPropName属性一样的值
-    /// </summary>
-    /// <param name="src_prop_owner"></param>
-    /// <param name="src_prop_name"></param>
-    /// <param name="dst_prop_owner"></param>
-    /// <param name="dst_prop_name"></param>
-    /// <returns></returns>
-    public virtual BaseBind Bind(object src_prop_owner, string src_prop_name, object dst_prop_owner,
-      string dst_prop_name)
-    {
-      this.dst_prop_owner = dst_prop_owner;
-      Type dst_type = this.dst_prop_owner.GetType();
-      this.dst_fieldInfo = dst_type.GetFieldInfo(dst_prop_name);
-      if (this.dst_fieldInfo == null)
-      {
-        this.dst_propInfo = dst_type.GetPropertyInfo(dst_prop_name);
-      }
-
-      base.propBinder.Bind(src_prop_owner, src_prop_name, OnValueChanged);
-      return this;
-    }
-
-    #endregion
-
-  }
-
-
 }

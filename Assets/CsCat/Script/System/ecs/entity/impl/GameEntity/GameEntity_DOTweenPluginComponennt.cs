@@ -30,7 +30,7 @@ namespace CsCat
 
     public void RemoveAllDOTweens()
     {
-      this.dotweenPluginComponent.RemoveAllDOTweens();
+      this.dotweenPluginComponent.RemoveDOTweens();
     }
 
 

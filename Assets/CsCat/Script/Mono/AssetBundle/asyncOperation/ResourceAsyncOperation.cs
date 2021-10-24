@@ -31,7 +31,7 @@ namespace CsCat
 
     public bool MoveNext()
     {
-      return !resultInfo.is_done;
+      return !resultInfo.isDone;
     }
 
     public abstract void Update();

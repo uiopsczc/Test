@@ -2,23 +2,17 @@ using System.Collections.Generic;
 
 namespace CsCat
 {
-  public class PolygonUtil
-  {
-    public static void Systemize(List<Polygon> polygon_list)
+    public class PolygonUtil
     {
-      for (int i = polygon_list.Count - 1; i >= 0; i--)
-      {
-        if (polygon_list[i].vertexe_list.Count < 3) //删除少于3个顶点的多边形
-          polygon_list.RemoveAt(i);
-        else
-          polygon_list[i].Systemize();
-      }
+        public static void Systemize(List<Polygon> polygonList)
+        {
+            for (int i = polygonList.Count - 1; i >= 0; i--)
+            {
+                if (polygonList[i].vertexList.Count < 3) //删除少于3个顶点的多边形
+                    polygonList.RemoveAt(i);
+                else
+                    polygonList[i].Systemize();
+            }
+        }
     }
-  }
-
-
-
-
-
 }
-

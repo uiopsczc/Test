@@ -43,13 +43,13 @@ namespace CsCat
 
       //编辑器模式下的或者是resouce模式下的,没有找到则创建一个AssetCat
       if (Application.isEditor && EditorModeConst.Is_Editor_Mode
-          || asset_path.Contains(FilePathConst.Resources_Flag)
+          || asset_path.Contains(FilePathConst.ResourcesFlag)
       )
       {
         Object[] assets = null;
-        if (asset_path.Contains(FilePathConst.Resources_Flag))
+        if (asset_path.Contains(FilePathConst.ResourcesFlag))
         {
-          var resource_path = asset_path.Substring(asset_path.IndexEndOf(FilePathConst.Resources_Flag) + 1)
+          var resource_path = asset_path.Substring(asset_path.IndexEndOf(FilePathConst.ResourcesFlag) + 1)
             .GetMainAssetPath().WithoutSuffix();
           assets = Resources.LoadAll(resource_path);
         }
@@ -100,7 +100,7 @@ namespace CsCat
     {
       //编辑器模式下的或者是resouce模式下的
       if (Application.isEditor && EditorModeConst.Is_Editor_Mode
-          || asset_path.Contains(FilePathConst.Resources_Flag)
+          || asset_path.Contains(FilePathConst.ResourcesFlag)
       )
       {
         var assetCat = __GetOrAddAssetCat(asset_path);
@@ -161,7 +161,7 @@ namespace CsCat
     {
       AssetCat assetCat;
       if (Application.isEditor && EditorModeConst.Is_Editor_Mode
-          || asset_path.Contains(FilePathConst.Resources_Flag)
+          || asset_path.Contains(FilePathConst.ResourcesFlag)
       )
       {
         assetCat = __GetOrAddAssetCat(asset_path);
@@ -283,7 +283,7 @@ namespace CsCat
         return;
       assetCat_dict.RemoveByFunc((key, value) => value == assetCat);
       if (Application.isEditor && EditorModeConst.Is_Editor_Mode
-          || assetCat.asset_path.Contains(FilePathConst.Resources_Flag)
+          || assetCat.asset_path.Contains(FilePathConst.ResourcesFlag)
       )
         return;
       var assetBundleCat = assetCat.assetBundleCat;

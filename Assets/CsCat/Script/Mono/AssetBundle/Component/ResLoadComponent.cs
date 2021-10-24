@@ -47,15 +47,15 @@ namespace CsCat
       this.resLoad.CancelLoadAllCallbacks(assetCat);
     }
 
-    protected override void __Reset()
+    protected override void _Reset()
     {
-      base.__Reset();
+      base._Reset();
       this.resLoad.Reset();
     }
 
-    protected override void __Destroy()
+    protected override void _Destroy()
     {
-      base.__Destroy();
+      base._Destroy();
       this.resLoad.Destroy();
     }
 

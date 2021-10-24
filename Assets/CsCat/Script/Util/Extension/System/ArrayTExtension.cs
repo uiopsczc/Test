@@ -29,8 +29,8 @@ namespace CsCat
             if (self.Length == 0)
                 return new List<T>();
             var list = new List<T>(self.Length);
-            foreach (var element in self)
-                list.Add(element);
+            for (int i = 0; i < self.Length; i++)
+                list.Add(self[i]);
             return list;
         }
 
@@ -470,8 +470,8 @@ namespace CsCat
 
         public static void Foreach<T>(this T[] self, Action<T> action)
         {
-            foreach (var element in self)
-                action(element);
+            for (int i = 0; i < self.Length; i++)
+                action(self[i]);
         }
 
         public static T[] Clone<T>(this T[] self)
@@ -505,7 +505,7 @@ namespace CsCat
         {
             var length = Math.Min(len, self.Length - startIndex);
             var target = new T[length];
-            Array.Copy(self, startIndex,target,0,length);
+            Array.Copy(self, startIndex, target, 0, length);
             return target;
         }
 
@@ -580,6 +580,7 @@ namespace CsCat
 
 
         #region Random 随机
+
         public static T Random<T>(this T[] self)
         {
             return RandomUtil.Random(self);
@@ -603,6 +604,7 @@ namespace CsCat
         {
             return RandomUtil.RandomArray(self, count, isUnique, weights);
         }
+
         #endregion
 
 

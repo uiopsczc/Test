@@ -11,18 +11,15 @@ namespace CsCat
         /// <summary>
         /// 所有的需要还原的属性列表
         /// </summary>
-        List<IRestore> restore_list = new List<IRestore>();
+        List<IRestore> _restoreList = new List<IRestore>();
 
         /// <summary>
         /// 里面的元素用于还原后从restoreList中删除
         /// </summary>
-        List<IRestore> to_remove_list = new List<IRestore>();
+        List<IRestore> _toRemoveList = new List<IRestore>();
 
 
-        public static RestoreManager instance
-        {
-            get { return SingletonFactory.instance.Get<RestoreManager>(); }
-        }
+        public static RestoreManager instance => SingletonFactory.instance.Get<RestoreManager>();
 
 
         public void SingleInit()
@@ -36,9 +33,9 @@ namespace CsCat
         /// <param name="restore"></param>
         public void Add(IRestore restore)
         {
-            if (restore_list.Contains(restore))
+            if (_restoreList.Contains(restore))
                 return;
-            restore_list.Add(restore);
+            _restoreList.Add(restore);
         }
 
         /// <summary>
@@ -47,17 +44,23 @@ namespace CsCat
         /// <param name="source"></param>
         public void Restore(object source)
         {
-            to_remove_list.Clear();
-            restore_list.ForEach((element) =>
+            _toRemoveList.Clear();
+            for (int i = 0; i < _restoreList.Count; i++)
             {
+                var element = _restoreList[i];
                 if (element.Equals(source))
                 {
                     element.Restore();
-                    to_remove_list.Add(element);
+                    _toRemoveList.Add(element);
                 }
-            });
-            to_remove_list.ForEach((element) => { restore_list.Remove(element); });
-            to_remove_list.Clear();
+            }
+
+            for (int i = 0; i < _toRemoveList.Count; i++)
+            {
+                var element = _toRemoveList[i];
+                _restoreList.Remove(element);
+            }
+            _toRemoveList.Clear();
         }
     }
 }

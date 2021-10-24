@@ -6,7 +6,7 @@ namespace CsCat
   {
     public Object prefab;
 
-    public UnityObjectPoolCat(string pool_name, Object prefab, string category = null) : base(pool_name,
+    public UnityObjectPoolCat(string poolName, Object prefab, string category = null) : base(poolName,
       prefab.GetType())
     {
       this.prefab = prefab;
@@ -24,17 +24,17 @@ namespace CsCat
     {
     }
 
-    protected override object __Spawn()
+    protected override object _Spawn()
     {
       Object clone = Object.Instantiate(prefab);
       clone.name = prefab.name;
       return clone;
     }
 
-    protected override void __Trim(object despawned_object)
+    protected override void _Trim(object despawnedObject)
     {
-      base.__Trim(despawned_object);
-      (despawned_object as Object).Destroy();
+      base._Trim(despawnedObject);
+      (despawnedObject as Object).Destroy();
     }
 
     public override void Destroy()

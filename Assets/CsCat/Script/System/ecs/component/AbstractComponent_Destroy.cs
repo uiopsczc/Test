@@ -19,13 +19,13 @@ namespace CsCat
         return;
       SetIsEnabled(false);
       SetIsPaused(false);
-      __Destroy();
+      _Destroy();
       __is_destroyed = true;
       __PostDestroy();
       cache.Clear();
     }
 
-    protected virtual void __Destroy()
+    protected virtual void _Destroy()
     {
     }
 

@@ -4,58 +4,58 @@ using UnityEngine;
 
 namespace CsCat
 {
-  //为Puase设计
-  public class WaitDuration
-  {
-    #region delegate
-
-    /// <summary>
-    ///   更新
-    /// </summary>
-    public Action<WaitDuration> onUpdate;
-
-    #endregion
-
-    #region field
-
-    /// <summary>
-    ///   用于计算时间差的开始时间，可以改变其值
-    /// </summary>
-    public float start_time_to_calc;
-
-
-    /// <summary>
-    ///   时长
-    /// </summary>
-    private readonly float duration;
-
-    /// <summary>
-    ///   不可以改变的值，构造函数中指定
-    /// </summary>
-    private float start_time;
-
-    #endregion
-
-    #region public method
-
-    public WaitDuration(float duration, Action<WaitDuration> onUpdate)
+    //为Pause设计
+    public class WaitDuration
     {
-      this.duration = duration;
-      this.onUpdate = onUpdate;
+        #region delegate
+
+        /// <summary>
+        ///   更新
+        /// </summary>
+        public Action<WaitDuration> onUpdate;
+
+        #endregion
+
+        #region field
+
+        /// <summary>
+        ///   用于计算时间差的开始时间，可以改变其值
+        /// </summary>
+        public float startTimeToCalc;
+
+
+        /// <summary>
+        ///   时长
+        /// </summary>
+        private readonly float _duration;
+
+        /// <summary>
+        ///   不可以改变的值，构造函数中指定
+        /// </summary>
+        private float _startTime;
+
+        #endregion
+
+        #region public method
+
+        public WaitDuration(float duration, Action<WaitDuration> onUpdate)
+        {
+            this._duration = duration;
+            this.onUpdate = onUpdate;
+        }
+
+
+        public IEnumerator Start()
+        {
+            _startTime = Time.realtimeSinceStartup;
+            startTimeToCalc = _startTime;
+            while (Time.realtimeSinceStartup - startTimeToCalc < _duration)
+            {
+                onUpdate?.Invoke(this);
+                yield return null;
+            }
+        }
+
+        #endregion
     }
-
-
-    public IEnumerator Start()
-    {
-      start_time = Time.realtimeSinceStartup;
-      start_time_to_calc = start_time;
-      while (Time.realtimeSinceStartup - start_time_to_calc < duration)
-      {
-        onUpdate?.Invoke(this);
-        yield return null;
-      }
-    }
-
-    #endregion
-  }
 }

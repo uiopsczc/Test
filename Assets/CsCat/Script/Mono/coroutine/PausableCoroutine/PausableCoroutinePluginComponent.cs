@@ -32,21 +32,21 @@ namespace CsCat
       pausableCoroutinePlugin.StopAllCoroutines();
     }
 
-    protected override void __SetIsPaused(bool is_paused)
+    protected override void _SetIsPaused(bool isPaused)
     {
-      base.__SetIsPaused(is_paused);
-      pausableCoroutinePlugin.SetIsPaused(is_paused);
+      base._SetIsPaused(isPaused);
+      pausableCoroutinePlugin.SetIsPaused(isPaused);
     }
 
-    protected override void __Reset()
+    protected override void _Reset()
     {
-      base.__Reset();
+      base._Reset();
       StopAllCoroutines();
     }
 
-    protected override void __Destroy()
+    protected override void _Destroy()
     {
-      base.__Destroy();
+      base._Destroy();
       StopAllCoroutines();
     }
   }

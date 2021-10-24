@@ -23,8 +23,8 @@ namespace CsCat
         public static ArrayList ToArrayList(this IList self)
         {
             var list = new ArrayList();
-            foreach (var o in self)
-                list.Add(o);
+            for (int i = 0; i < self.Count; i++)
+                list.Add(self[i]);
             return list;
         }
 
@@ -33,7 +33,7 @@ namespace CsCat
             SortUtil.BubbleSort(self, compareFunc);
         }
 
-        public static void BubbleSortWithCompareRules(this IList self,  IList<Comparison<object>> compareRules)
+        public static void BubbleSortWithCompareRules(this IList self, IList<Comparison<object>> compareRules)
         {
             SortUtil.BubbleSortWithCompareRules(self, compareRules);
         }

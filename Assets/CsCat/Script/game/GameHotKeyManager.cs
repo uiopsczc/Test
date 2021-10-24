@@ -56,54 +56,18 @@ namespace CsCat
         {
             if (Input.GetKeyDown("f1"))
             {
-                LogCat.log("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-//        Client.instance.Goto<StageTest>(0.5f);
             }
 
             if (Input.GetKeyDown("f2"))
             {
-                
-                //                string[] ss = {"a", "b", "a", "d"};
-                //                string[] ss2 = { "e", "g", "f"};
-                string[] _;
-//                List<string> list = ss.ToList();
-                int[] ss = {1,3,4,2,7,5,9,0,8,6};
-                var list = ss.ToList();
-                list.QuickSortWithCompareRules((a,b)=> a - b);
-				LogCat.warn(list);
-//                LogCat.warn(list);
-//                (_,ss) = ss.RemoveRangeAt2(3,1);
-//                LogCat.warn(_);
-//                LogCat.warn(ss);
-                //        LogCat.log(Lang.GetText("陈智权"));
-                //        Dictionary<string, Dictionary<string, int>> dict = new Dictionary<string, Dictionary<string,int>>();
-                //        var t = dict.GetType();
-                //        LogCat.log(t.IsGenericType && t.GetGenericTypeDefinition() == typeof(Dictionary<,>));
-                //        var t = CfgTest.Instance.get_by_id("2").get__age_dict();
-                //        LogCat.log(CfgTest.Instance.get_by_id("2")._age_dict["星哥"][1]);
-                //        t = this.AddTimer(args =>
-                //        {
-                //          LogCat.warn(Time.time);
-                //          return true;
-                //        }, 0, 1);
-                //        panel = Client.instance.uiManager.CreateChildPanel(null, default(UIGMTestPanel2));
             }
 
             if (Input.GetKeyDown("f3"))
             {
-                LogCat.warn(PoolCatManagerUtil.GetPool<StringBuilderScope>().GetSpawnedCount());
-                LogCat.warn(PoolCatManagerUtil.GetPool<StringBuilderScope>().GetDespawnedCount());
-                //        LogCat.warn(3333);
-                //        this.RemoveTimer(t);
-                //        panel.SetToBottom();
-                //        LogCat.log(dict);
             }
 
             if (Input.GetKeyDown("f4"))
             {
-                panel.SetToTop();
-                //        PoolCatManagerUtil.GetPool<GameObject>().Trim();
-                //        UIBloodTest.Test4();
             }
 
             if (Input.GetKeyDown("f5"))

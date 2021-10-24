@@ -17,9 +17,9 @@ namespace CsCat
     public override void InitParent(Object prefab, string category)
     {
       base.InitParent(prefab, category);
-      root_transfrom = GameObjectUtil.GetOrNewGameObject("UIPools", null).transform;
-      root_transfrom.gameObject.AddComponent<Canvas>();
-      category_transform = root_transfrom.GetOrNewGameObject(category).transform;
+      rootTransform = GameObjectUtil.GetOrNewGameObject("UIPools", null).transform;
+      rootTransform.gameObject.AddComponent<Canvas>();
+      categoryTransform = rootTransform.GetOrNewGameObject(category).transform;
     }
 
     public override void Despawn(object obj)
@@ -31,7 +31,7 @@ namespace CsCat
           ispanwable.OnDespawn();
       }
       clone.SetActive(false);
-      clone.transform.SetParent(category_transform);
+      clone.transform.SetParent(categoryTransform);
       clone.GetComponent<RectTransform>().CopyFrom(prefab_rectTransform);
       base.Despawn(obj);
     }

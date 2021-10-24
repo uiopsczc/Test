@@ -11,7 +11,7 @@ namespace CsCat
     /// <param name="cause"></param>
     public static void SetPause(Animator animator, object cause)
     {
-      new PorpertyToRestore(cause, animator, "speed").AddToList();
+      new PropertyToRestore(cause, animator, "speed").AddToList();
       animator.speed = 0;
     }
 

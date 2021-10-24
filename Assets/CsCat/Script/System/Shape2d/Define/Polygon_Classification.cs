@@ -1,13 +1,13 @@
 namespace CsCat
 {
-  public partial class Polygon
-  {
-    public enum Classification
+    public partial class Polygon
     {
-      CONTAIN, //包含
-      CONTAINED, //被包含
-      INTERSECT, //相交
-      ISOLATE //不相交,也不相互包含,没有交集，相互独立
+        public enum Classification
+        {
+            Contain, //包含
+            Contained, //被包含
+            Intersect, //相交
+            Isolate //不相交,也不相互包含,没有交集，相互独立
+        }
     }
-  }
 }

@@ -9,7 +9,5 @@ namespace CsCat
   //https://blog.csdn.net/septwolves2015/article/details/52992844
   public partial class EaseCat
   {
-    protected const float Two_PI = (float)Math.PI * 2;
-    protected const float Half_PI = (float)Math.PI / 2;
   }
 }

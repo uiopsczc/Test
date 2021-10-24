@@ -4,14 +4,14 @@ namespace CsCat
 {
   public partial class GameComponent
   {
-    protected override void __SetIsPaused(bool is_paused)
+    protected override void _SetIsPaused(bool isPaused)
     {
-      base.__SetIsPaused(is_paused);
-      SetIsPaused_Timers(is_paused);
-      SetIsPaused_DOTweens(is_paused);
+      base._SetIsPaused(isPaused);
+      SetIsPaused_Timers(isPaused);
+      SetIsPaused_DOTweens(isPaused);
       //Corotinues无法Pause
       //SetPause_Coroutines(is_pause);
-      SetIsPaused_PausableCoroutines(is_paused);
+      SetIsPaused_PausableCoroutines(isPaused);
     }
   }
 }

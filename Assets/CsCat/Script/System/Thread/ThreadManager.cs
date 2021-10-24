@@ -6,8 +6,6 @@ namespace CsCat
     public class ThreadManager : ISingleton
     {
         public static ThreadManager instance => SingletonFactory.instance.Get<ThreadManager>();
-
-
         public List<Thread> list = new List<Thread>();
         public Dictionary<string, Thread> dict = new Dictionary<string, Thread>();
 
@@ -18,8 +16,8 @@ namespace CsCat
 
         public void Abort()
         {
-            foreach (var t in list)
-                t.Abort();
+            for (int i = 0; i < list.Count; i++)
+                list[i].Abort();
             list.Clear();
             foreach (var t in dict.Values)
                 t.Abort();
@@ -40,14 +38,14 @@ namespace CsCat
                     t.Start(args);
         }
 
-        public void Add(ParameterizedThreadStart thread_callback)
+        public void Add(ParameterizedThreadStart threadCallback)
         {
-            list.Add(new Thread(thread_callback));
+            list.Add(new Thread(threadCallback));
         }
 
-        public void Add(ThreadStart thread_callback)
+        public void Add(ThreadStart threadCallback)
         {
-            list.Add(new Thread(thread_callback));
+            list.Add(new Thread(threadCallback));
         }
     }
 }

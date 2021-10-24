@@ -73,15 +73,15 @@ namespace CsCat
 			eventDispatchersPluginDict.Broadcast(eventDispatchers, eventName, p0, p1, p2, p3);
 		}
 
-		protected override void __Reset()
+		protected override void _Reset()
 		{
-			base.__Reset();
+			base._Reset();
 			eventDispatchersPluginDict.RemoveAllListeners();
 		}
 
-		protected override void __Destroy()
+		protected override void _Destroy()
 		{
-			base.__Destroy();
+			base._Destroy();
 			eventDispatchersPluginDict.RemoveAllListeners();
 		}
 	}

@@ -25,7 +25,7 @@ namespace CsCat
 
     protected override float GetProgress()
     {
-      return resultInfo.is_done ? 1.0f : assetBundleLoader.progress;
+      return resultInfo.isDone ? 1.0f : assetBundleLoader.progress;
     }
 
     public override long GetNeedDownloadBytes()
@@ -51,7 +51,7 @@ namespace CsCat
     {
       if (assetBundleLoader != assetBundleAsyncLoader)
         return;
-      resultInfo.is_success = true;
+      resultInfo.isSuccess = true;
       RemoveListener<AssetBundleAsyncLoader>(null,AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Success,
         OnAssetBundleAsyncLoaderSuccess);
     }
@@ -60,7 +60,7 @@ namespace CsCat
     {
       if (assetBundleLoader != assetBundleAsyncLoader)
         return;
-      resultInfo.is_fail = true;
+      resultInfo.isFail = true;
       RemoveListener<AssetBundleAsyncLoader>(null, AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Fail,
         OnAssetBundleAsyncLoaderFail);
     }

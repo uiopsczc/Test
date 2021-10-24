@@ -1,11 +1,11 @@
 namespace CsCat
 {
-  public partial class Shape2d
-  {
-    public enum Type
+    public partial class Shape2D
     {
-      多边形,
-      圆形
+        public enum Type
+        {
+            多边形,
+            圆形
+        }
     }
-  }
 }

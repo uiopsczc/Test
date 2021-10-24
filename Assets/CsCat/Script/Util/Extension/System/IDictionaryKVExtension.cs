@@ -54,15 +54,30 @@ namespace CsCat
                 self.Remove(toRemoveKey);
         }
 
-        public static void RemoveByValue<K, V>(this IDictionary<K, V> self, V value)
+        public static void RemoveByValue<K, V>(this IDictionary<K, V> self, V value, bool isAll = false)
         {
-            List<K> toRemoveKeyList = new List<K>();
+            bool isHasRemoveKey = false;
+            if (isAll == false)
+            {
+                K toRemoveKey = default;
+                foreach (var key in self.Keys)
+                {
+                    if (!ObjectUtil.Equals(self[key], value)) continue;
+                    isHasRemoveKey = true;
+                    toRemoveKey = key;
+                    break;
+                }
+
+                if (isHasRemoveKey)
+                    self.Remove(toRemoveKey);
+                return;
+            }
+            List<K> toRemoveKeyList = new List<K>(self.Count);
             foreach (var key in self.Keys)
             {
                 if (ObjectUtil.Equals(self[key], value))
                     toRemoveKeyList.Add(key);
             }
-
             foreach (var toRemoveKey in toRemoveKeyList)
                 self.Remove(toRemoveKey);
         }

@@ -33,13 +33,13 @@ namespace CsCat
             return self.Concat(0, self.Count - 1, separator);
         }
 
-        public static void SortWithCompareRules<T>(this List<T> self, params Comparison<T>[] compareRules)
+        public static void SortWithCompareRules<T>(this List<T> self, IList<Comparison<T>> compareRules)
         {
             SortUtil.MergeSortWithCompareRules(self, compareRules);
         }
 
 
-        public static void BubbleSortWithCompareRules<T>(this IList<T> self, params Comparison<T>[] compareRules)
+        public static void BubbleSortWithCompareRules<T>(this IList<T> self, IList<Comparison<T>> compareRules)
         {
             SortUtil.BubbleSortWithCompareRules(self, compareRules);
         }
@@ -53,7 +53,7 @@ namespace CsCat
         }
 
 
-        public static void MergeSortWithCompareRules<T>(this IList<T> self, params Comparison<T>[] compareRules)
+        public static void MergeSortWithCompareRules<T>(this IList<T> self, IList<Comparison<T>> compareRules)
         {
             SortUtil.MergeSortWithCompareRules(self, compareRules);
         }
@@ -67,24 +67,24 @@ namespace CsCat
         }
 
 
-        public static void QuickSortWithCompareRules<T>(this IList<T> self, params Comparison<T>[] compareRules)
+        public static void QuickSortWithCompareRules<T>(this IList<T> self, IList<Comparison<T>> compareRules)
         {
             SortUtil.QuickSortWithCompareRules(self, compareRules);
         }
 
         public static int BinarySearchCat<T>(this IList<T> self, T targetValue,
-            IndexOccurType indexOccurType = IndexOccurType.Any_Index, params Comparison<T>[] compareRules)
+            IndexOccurType indexOccurType = IndexOccurType.Any_Index, IList<Comparison<T>> compareRules = null)
         {
-            return SortedListSerachUtil.BinarySearchCat(self, targetValue, indexOccurType, compareRules);
+            return SortedListSearchUtil.BinarySearchCat(self, targetValue, indexOccurType, compareRules);
         }
 
-        public static ListSorttedType GetListSortedType<T>(this IList<T> self, Comparison<T>[] compareRules)
+        public static ListSortedType GetListSortedType<T>(this IList<T> self, IList<Comparison<T>> compareRules)
         {
             T firstValue = self[0];
             T lastValue = self[self.Count - 1];
             return CompareUtil.CompareWithRules(firstValue, lastValue, compareRules) <= 0
-                ? ListSorttedType.Increace
-                : ListSorttedType.Decrease;
+                ? ListSortedType.Increase
+                : ListSortedType.Decrease;
         }
     }
 }

@@ -1,8 +1,8 @@
 namespace CsCat
 {
-  public enum PoolEnum
-  {
-    Normal,
-    UI,
-  }
+    public enum PoolEnum
+    {
+        Normal,
+        UI,
+    }
 }

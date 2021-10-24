@@ -5,75 +5,75 @@ namespace CsCat
 {
     public partial class PoolCatManager : ISingleton
     {
-        private readonly Dictionary<string, PoolCat> pool_dict = new Dictionary<string, PoolCat>();
+        private readonly Dictionary<string, PoolCat> poolDict = new Dictionary<string, PoolCat>();
         public static PoolCatManager instance => SingletonFactory.instance.Get<PoolCatManager>();
 
         public void SingleInit()
         {
         }
 
-        public PoolCat AddPool(string pool_name, PoolCat pool)
+        public PoolCat AddPool(string poolName, PoolCat pool)
         {
-            pool_dict[pool_name] = pool;
+            poolDict[poolName] = pool;
             return pool;
         }
 
-        public void RemovePool(string pool_name)
+        public void RemovePool(string poolName)
         {
-            if (pool_dict.ContainsKey(pool_name))
+            if (poolDict.ContainsKey(poolName))
             {
-                pool_dict[pool_name].Destroy();
-                pool_dict.Remove(pool_name);
+                poolDict[poolName].Destroy();
+                poolDict.Remove(poolName);
             }
         }
 
-        public PoolCat GetPool(string pool_name)
+        public PoolCat GetPool(string poolName)
         {
-            return pool_dict[pool_name];
+            return poolDict[poolName];
         }
 
-        public bool TryGetPool(string pool_name, out PoolCat pool)
+        public bool TryGetPool(string poolName, out PoolCat pool)
         {
-            return this.pool_dict.TryGetValue(pool_name, out pool);
+            return this.poolDict.TryGetValue(poolName, out pool);
         }
 
         public PoolCat GetPool<T>()
         {
-            return pool_dict[typeof(T).FullName];
+            return poolDict[typeof(T).FullName];
         }
 
-        public bool IsContainsPool(string pool_name)
+        public bool IsContainsPool(string poolName)
         {
-            return pool_dict.ContainsKey(pool_name);
+            return poolDict.ContainsKey(poolName);
         }
 
-        public PoolCat GetOrAddPool(Type pool_type, params object[] pool_construct_args)
+        public PoolCat GetOrAddPool(Type poolType, params object[] poolConstructArgs)
         {
-            string pool_name = pool_construct_args[0] as string;
-            if (!IsContainsPool(pool_name))
-                AddPool(pool_name, pool_type.CreateInstance(pool_construct_args) as PoolCat);
-            return GetPool(pool_name);
+            string poolName = poolConstructArgs[0] as string;
+            if (!IsContainsPool(poolName))
+                AddPool(poolName, poolType.CreateInstance(poolConstructArgs) as PoolCat);
+            return GetPool(poolName);
         }
 
-        public T GetOrAddPool<T>(params object[] pool_construct_args) where T : PoolCat
+        public T GetOrAddPool<T>(params object[] poolConstructArgs) where T : PoolCat
         {
-            return (T) GetOrAddPool(typeof(T), pool_construct_args);
+            return (T) GetOrAddPool(typeof(T), poolConstructArgs);
         }
 
 
-        public void Despawn(object despawn_object, string pool_name = null)
+        public void Despawn(object despawnObject, string poolName = null)
         {
-            pool_name = pool_name ?? despawn_object.GetType().FullName;
-            if (!pool_dict.ContainsKey(pool_name))
+            poolName = poolName ?? despawnObject.GetType().FullName;
+            if (!poolDict.ContainsKey(poolName))
                 return;
-            pool_dict[pool_name].Despawn(despawn_object);
+            poolDict[poolName].Despawn(despawnObject);
         }
 
-        public void DespawnAll(string pool_name)
+        public void DespawnAll(string poolName)
         {
-            if (!pool_dict.ContainsKey(pool_name))
+            if (!poolDict.ContainsKey(poolName))
                 return;
-            pool_dict[pool_name].DespawnAll();
+            poolDict[poolName].DespawnAll();
         }
 
         public void Trim()
@@ -91,51 +91,51 @@ namespace CsCat
             //        pool_dict.Remove(to_remove_key);
 
 
-            foreach (var key in pool_dict.Keys)
+            foreach (var key in poolDict.Keys)
             {
-                var pool = pool_dict[key];
+                var pool = poolDict[key];
                 pool.Trim();
             }
         }
 
-        public object Spawn(Type spawn_type, string pool_name = null, Action<object> on_spawn_callback = null)
+        public object Spawn(Type spawnType, string poolName = null, Action<object> onSpawnCallback = null)
         {
-            pool_name = pool_name ?? spawn_type.FullName;
-            if (!pool_dict.TryGetValue(pool_name, out var pool))
+            poolName = poolName ?? spawnType.FullName;
+            if (!poolDict.TryGetValue(poolName, out var pool))
             {
-                pool = new PoolCat(pool_name, spawn_type);
-                pool_dict[pool_name] = pool;
+                pool = new PoolCat(poolName, spawnType);
+                poolDict[poolName] = pool;
             }
 
-            var spawn = pool.Spawn(on_spawn_callback);
+            var spawn = pool.Spawn(onSpawnCallback);
             return spawn;
         }
 
-        public T Spawn<T>(string pool_name = null, Action<T> on_spawn_callback = null)
+        public T Spawn<T>(string poolName = null, Action<T> onSpawnCallback = null)
         {
-            if (on_spawn_callback == null)
-                return (T) Spawn(typeof(T), pool_name);
-            return (T) Spawn(typeof(T), pool_name, obj => on_spawn_callback((T) obj));
+            if (onSpawnCallback == null)
+                return (T) Spawn(typeof(T), poolName);
+            return (T) Spawn(typeof(T), poolName, obj => onSpawnCallback((T) obj));
         }
 
 
-        public object Spawn(Func<object> spawn_func, string pool_name, Action<object> on_spawn_callback = null)
+        public object Spawn(Func<object> spawnFunc, string poolName, Action<object> onSpawnCallback = null)
         {
-            if (!pool_dict.TryGetValue(pool_name, out var pool))
+            if (!poolDict.TryGetValue(poolName, out var pool))
             {
-                pool = new PoolCat(pool_name, spawn_func);
-                pool_dict[pool_name] = pool;
+                pool = new PoolCat(poolName, spawnFunc);
+                poolDict[poolName] = pool;
             }
 
-            var spawn = pool.Spawn(on_spawn_callback);
+            var spawn = pool.Spawn(onSpawnCallback);
             return spawn;
         }
 
-        public T Spawn<T>(Func<object> spawn_func, string pool_name = null, Action<T> on_spawn_callback = null)
+        public T Spawn<T>(Func<object> spawnFunc, string poolName = null, Action<T> onSpawnCallback = null)
         {
-            if (on_spawn_callback == null)
-                return (T) Spawn(spawn_func, pool_name ?? typeof(T).FullName);
-            return (T) Spawn(spawn_func, pool_name ?? typeof(T).FullName, obj => on_spawn_callback((T) obj));
+            if (onSpawnCallback == null)
+                return (T) Spawn(spawnFunc, poolName ?? typeof(T).FullName);
+            return (T) Spawn(spawnFunc, poolName ?? typeof(T).FullName, obj => onSpawnCallback((T) obj));
         }
     }
 }

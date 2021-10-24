@@ -60,7 +60,7 @@ namespace CsCat
       for (int j = 0; j < triangle_list.Count; j++)
       {
         Triangle triangle = triangle_list[j];
-        Cell cell = new Cell(triangle.point_A, triangle.point_B, triangle.point_C);
+        Cell cell = new Cell(triangle.pointA, triangle.pointB, triangle.pointC);
         cell.index = j;
         cell_list.Add(cell);
       }
@@ -116,13 +116,13 @@ namespace CsCat
 
         if (p3 == null)
           continue;
-        Line line13 = new Line(edge.point_A, p3.Value);
-        Line line32 = new Line(p3.Value, edge.point_B);
+        Line line13 = new Line(edge.pointA, p3.Value);
+        Line line32 = new Line(p3.Value, edge.pointB);
 
 
 
         //Delaunay三角形放入输出数组
-        Triangle triangle = new Triangle(edge.point_A, edge.point_B, p3.Value);
+        Triangle triangle = new Triangle(edge.pointA, edge.pointB, p3.Value);
         this.triangle_list.Add(triangle);
 
         //Step4.    如果新生成的边 p1p3 不是约束边，若已经在堆栈中，
@@ -163,7 +163,7 @@ namespace CsCat
       if (polygon.Contains(line2))
       {
         Vector2 dir2 = line2.GetDirection();
-        foreach (Line line1 in polygon.line_list)
+        foreach (Line line1 in polygon.lineList)
         {
           Vector2 dir1 = line1.GetDirection();
           if (dir2.EqualsEPSILON(dir1) || dir2.EqualsEPSILON(-dir1))
@@ -187,11 +187,11 @@ namespace CsCat
       this.edge_list = new List<Line>();
       foreach (Polygon polygon in polygon_list)
       {
-        PutVertex(this.vertex_list, polygon.vertexe_list);
-        PutEdge(this.edge_list, polygon.vertexe_list);
+        PutVertex(this.vertex_list, polygon.vertexList);
+        PutEdge(this.edge_list, polygon.vertexList);
       }
 
-      out_edge_vec_nmu = polygon_list[0].vertexe_list.Count;
+      out_edge_vec_nmu = polygon_list[0].vertexList.Count;
 
       this.line_list = new List<Line>();
       this.triangle_list = new List<Triangle>();
@@ -247,10 +247,10 @@ namespace CsCat
         loop_index++;
         foreach (Vector2 vertex in this.vertex_list)
         {
-          if (vertex.Equals(init_edge.point_A) || vertex.Equals(init_edge.point_B))
+          if (vertex.Equals(init_edge.pointA) || vertex.Equals(init_edge.pointB))
             continue;
-          if (init_edge.ClassifyPoint(vertex) == PointClassification.ON_LINE ||
-              init_edge.ClassifyPoint(vertex) == PointClassification.ON_SEGMENT)
+          if (init_edge.ClassifyPoint(vertex) == PointClassification.OnLine ||
+              init_edge.ClassifyPoint(vertex) == PointClassification.OnSegment)
           {
             is_loop_sign = true;
             init_edge = this.edge_list[loop_index];
@@ -308,8 +308,8 @@ namespace CsCat
     /// <returns></returns>
     private Vector2? FindDT(Line line)
     {
-      Vector2 p1 = line.point_A;
-      Vector2 p2 = line.point_B;
+      Vector2 p1 = line.pointA;
+      Vector2 p2 = line.pointB;
 
       //搜索所有可见点             TODO 按y方向搜索距线段终点最近的点
       List<Vector2> all_point_list = new List<Vector2>(); //搜索所有可见点,按逆时针加入符合条件的点（一定要逆时针，否则会出bug）
@@ -334,8 +334,8 @@ namespace CsCat
       ///最小值放在最前面的list
       all_point_list.Sort(delegate (Vector2 v1, Vector2 v2)
         {
-          float d1 = Vector2.Dot(line.GetDirection(), ((v1 - line.point_A).normalized));
-          float d2 = Vector2.Dot(line.GetDirection(), ((v2 - line.point_A).normalized));
+          float d1 = Vector2.Dot(line.GetDirection(), ((v1 - line.pointA).normalized));
+          float d2 = Vector2.Dot(line.GetDirection(), ((v2 - line.pointA).normalized));
           if (d1 > d2)
             return -1;
           else if (d1 == d2)
@@ -400,14 +400,14 @@ namespace CsCat
     /// <returns></returns>
     private bool IsVisiblePointOfLine(Vector2 vec, Line line)
     {
-      if (vec.Equals(line.point_A) || vec.Equals(line.point_B))
+      if (vec.Equals(line.pointA) || vec.Equals(line.pointB))
         return false;
 
       //（1） p3 在边 p1p2 的右侧 (多边形顶点顺序为顺时针)；
-      if (line.ClassifyPoint(vec) == PointClassification.RIGHT_SIDE)
+      if (line.ClassifyPoint(vec) == PointClassification.RightSide)
       {
-        if (IsVisibleIn2Point(line.point_A, vec)) //（2） p3 与 p1 可见，即 p1p3 不与任何一个约束边相交；
-          if (IsVisibleIn2Point(line.point_B, vec)) //（3） p3 与 p2 可见
+        if (IsVisibleIn2Point(line.pointA, vec)) //（2） p3 与 p1 可见，即 p1p3 不与任何一个约束边相交；
+          if (IsVisibleIn2Point(line.pointB, vec)) //（3） p3 与 p2 可见
             return true;
       }
 
@@ -440,11 +440,11 @@ namespace CsCat
         //两线段的关系
         Line.LineClassification line_relation = line_papb.Intersection(line_tmp, out intersect_point);
 
-        if (line_relation == Line.LineClassification.SEGMENTS_INTERSECT) //相交
+        if (line_relation == Line.LineClassification.SegmentsIntersect) //相交
         {
           //排除端点相交的情况
-          if (intersect_point.Value.EqualsEPSILON(line_papb.point_A) ||
-              intersect_point.Value.EqualsEPSILON(line_papb.point_B))
+          if (intersect_point.Value.EqualsEPSILON(line_papb.pointA) ||
+              intersect_point.Value.EqualsEPSILON(line_papb.pointB))
             continue; //两条线段不是真正相交，继续检查下一条约束边
           else
             return true; //两条线段是真正相交

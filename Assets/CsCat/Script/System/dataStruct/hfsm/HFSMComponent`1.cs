@@ -11,9 +11,9 @@ namespace CsCat
       this.hfsm = hfsm;
     }
 
-    protected override void __SetIsPaused(bool is_paused)
+    protected override void _SetIsPaused(bool isPaused)
     {
-      base.__SetIsPaused(is_paused);
+      base._SetIsPaused(isPaused);
       this.hfsm.SetIsPaused(true, true);
     }
 
@@ -23,15 +23,15 @@ namespace CsCat
       this.hfsm.SetIsEnabled(true, true);
     }
 
-    protected override void __Reset()
+    protected override void _Reset()
     {
-      base.__Reset();
+      base._Reset();
       this.hfsm.Reset(true);
     }
 
-    protected override void __Destroy()
+    protected override void _Destroy()
     {
-      base.__Destroy();
+      base._Destroy();
       this.hfsm.Destroy();
     }
 

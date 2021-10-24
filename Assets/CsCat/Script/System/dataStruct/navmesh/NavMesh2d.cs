@@ -154,11 +154,11 @@ namespace CsCat
               if (curr_node == end_cell)
                 p1 = end_pos;
               else
-                p1 = curr_node.line_list[curr_node.arrival_wall].center;
-              adjacent_tmp.g = curr_node.g + adjacent_tmp.ComputeGIncrease(p1, curr_node.line_list[i].center);
+                p1 = curr_node.lineList[curr_node.arrival_wall].center;
+              adjacent_tmp.g = curr_node.g + adjacent_tmp.ComputeGIncrease(p1, curr_node.lineList[i].center);
 
               //计算H值
-              adjacent_tmp.ComputeH(adjacent_tmp.line_list[adjacent_tmp.arrival_wall].center, start_pos);
+              adjacent_tmp.ComputeH(adjacent_tmp.lineList[adjacent_tmp.arrival_wall].center, start_pos);
               //计算F值
               adjacent_tmp.ComputeF();
 
@@ -180,8 +180,8 @@ namespace CsCat
                 if (curr_node == end_cell)
                   p1 = end_pos;
                 else
-                  p1 = curr_node.line_list[curr_node.arrival_wall].center;
-                float increase_g = adjacent_tmp.ComputeGIncrease(p1, curr_node.line_list[i].center);
+                  p1 = curr_node.lineList[curr_node.arrival_wall].center;
+                float increase_g = adjacent_tmp.ComputeGIncrease(p1, curr_node.lineList[i].center);
 
                 if (curr_node.g + increase_g < adjacent_tmp.g)
                 {
@@ -304,9 +304,9 @@ namespace CsCat
       Cell cell = wayPoint.cell;
       Cell last_cell = cell;
       int start_index = cell_path.IndexOf(cell); //开始路点所在的网格索引
-      Line outside = cell.line_list[cell.arrival_wall]; //路径线在网格中的穿出边
-      Vector2 last_point_A = outside.point_A;
-      Vector2 last_point_B = outside.point_B;
+      Line outside = cell.lineList[cell.arrival_wall]; //路径线在网格中的穿出边
+      Vector2 last_point_A = outside.pointA;
+      Vector2 last_point_B = outside.pointB;
       Line last_line_A = new Line(start_point, last_point_A);
       Line last_line_B = new Line(start_point, last_point_B);
       Vector2 test_point_A, test_point_B; //要测试的点
@@ -319,7 +319,7 @@ namespace CsCat
       for (int i = start_index + 1; i < cell_path.Count; i++)
       {
         cell = cell_path[i];
-        outside = cell.line_list[cell.arrival_wall];
+        outside = cell.lineList[cell.arrival_wall];
         if (i == cell_path.Count - 1)
         {
           test_point_A = end;
@@ -327,50 +327,50 @@ namespace CsCat
         }
         else
         {
-          test_point_A = outside.point_A;
-          test_point_B = outside.point_B;
+          test_point_A = outside.pointA;
+          test_point_B = outside.pointB;
         }
 
         if (!last_point_A.Equals(test_point_A))
         {
-          if (last_line_B.ClassifyPoint(test_point_A) == PointClassification.RIGHT_SIDE)
+          if (last_line_B.ClassifyPoint(test_point_A) == PointClassification.RightSide)
           {
             //路点
             return new WayPoint(last_point_cell_B, last_point_B);
           }
           else
           {
-            if (last_line_A.ClassifyPoint(test_point_A) != PointClassification.LEFT_SIDE)
+            if (last_line_A.ClassifyPoint(test_point_A) != PointClassification.LeftSide)
             {
               last_point_A = test_point_A;
               last_point_cell_A = cell;
               //重设直线
               //						lastLineA.PointB = lastPtA;
               //						lastLineB.PointB = lastPtB;
-              last_line_A = new Line(last_line_A.point_A, last_point_A);
-              last_line_B = new Line(last_line_B.point_A, last_point_B);
+              last_line_A = new Line(last_line_A.pointA, last_point_A);
+              last_line_B = new Line(last_line_B.pointA, last_point_B);
             }
           }
         }
 
         if (!last_point_B.Equals(test_point_B))
         {
-          if (last_line_A.ClassifyPoint(test_point_B) == PointClassification.LEFT_SIDE)
+          if (last_line_A.ClassifyPoint(test_point_B) == PointClassification.LeftSide)
           {
             //路径点
             return new WayPoint(last_point_cell_A, last_point_A);
           }
           else
           {
-            if (last_line_B.ClassifyPoint(test_point_B) != PointClassification.RIGHT_SIDE)
+            if (last_line_B.ClassifyPoint(test_point_B) != PointClassification.RightSide)
             {
               last_point_B = test_point_B;
               last_point_cell_B = cell;
               //重设直线
               //						lastLineA.PointB = lastPtA;
               //						lastLineB.PointB = lastPtB;
-              last_line_A = new Line(last_line_A.point_A, last_point_A);
-              last_line_B = new Line(last_line_B.point_A, last_point_B);
+              last_line_A = new Line(last_line_A.pointA, last_point_A);
+              last_line_B = new Line(last_line_B.pointA, last_point_B);
             }
           }
         }

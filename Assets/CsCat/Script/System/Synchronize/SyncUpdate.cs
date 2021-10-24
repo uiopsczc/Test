@@ -3,41 +3,38 @@ using System.Collections.Generic;
 
 namespace CsCat
 {
-  public class SyncUpdate
-  {
-
-    #region field
-
-    private readonly List<Action> runnable_list = new List<Action>();
-    private readonly object lock_obj = new object();
-
-    #endregion
-
-    #region public method
-
-    public void Run(Action runnable)
+    public class SyncUpdate
     {
-      if (runnable == null) return;
-      lock (lock_obj)
-      {
-        runnable_list.Add(runnable);
-      }
-    }
+        #region field
 
-    public void Update()
-    {
-      lock (lock_obj)
-      {
-        var count = runnable_list.Count;
-        if (count > 0)
+        private readonly List<Action> _runnableList = new List<Action>();
+        private readonly object _lockObj = new object();
+
+        #endregion
+
+        #region public method
+
+        public void Run(Action runnable)
         {
-          for (var i = 0; i < count; i++)
-            runnable_list[i]();
-          runnable_list.Clear();
+            if (runnable == null) return;
+            lock (_lockObj)
+                _runnableList.Add(runnable);
         }
-      }
-    }
 
-    #endregion
-  }
+        public void Update()
+        {
+            lock (_lockObj)
+            {
+                var count = _runnableList.Count;
+                if (count > 0)
+                {
+                    for (var i = 0; i < count; i++)
+                        _runnableList[i]();
+                    _runnableList.Clear();
+                }
+            }
+        }
+
+        #endregion
+    }
 }

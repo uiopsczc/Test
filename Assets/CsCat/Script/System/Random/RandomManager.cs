@@ -30,8 +30,7 @@ namespace CsCat
             var result = _randomObj.NextDouble();
             if (result >= 0.99999f)
                 return 1;
-            else
-                return result;
+            return result;
         }
 
         public double RandomDouble(double min, double max)
@@ -162,6 +161,7 @@ namespace CsCat
                 int randomIndex = randomIndexes[i];
                 result[i] = list[randomIndex];
             }
+
             return result;
         }
 
@@ -179,7 +179,6 @@ namespace CsCat
             {
                 if (weights == null)
                 {
-
                     for (int i = 0; i < count; i++)
                         result[i] = RandomInt(0, count + 1);
                     return result;
@@ -192,11 +191,11 @@ namespace CsCat
 
             if (weights == null)
             {
-
                 weights = new float[count];
                 for (int i = 0; i < count; i++)
                     weights[i] = 1;
             }
+
             Dictionary<int, bool> exceptIndexDict = new Dictionary<int, bool>(count);
             for (int i = 0; i < count; i++)
             {
@@ -215,7 +214,6 @@ namespace CsCat
             {
                 if (weights == null)
                 {
-
                     for (int i = 0; i < count; i++)
                         result.Add(RandomInt(0, count + 1));
                     return result;
@@ -232,6 +230,7 @@ namespace CsCat
                 for (int i = 0; i < count; i++)
                     weights[i] = 1;
             }
+
             Dictionary<int, bool> exceptIndexDict = new Dictionary<int, bool>(count);
             for (int i = 0; i < count; i++)
             {
@@ -253,10 +252,11 @@ namespace CsCat
             float total = 0;
             for (int i = 0; i < weights.Count; i++)
             {
-                if(exceptIndexDict != null && exceptIndexDict.ContainsKey(i))
+                if (exceptIndexDict != null && exceptIndexDict.ContainsKey(i))
                     continue;
                 total += weights[i];
             }
+
             float randomValue = total * RandomFloat();
             float compare = 0;
             for (int i = 0; i < weights.Count; i++)

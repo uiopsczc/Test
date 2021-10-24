@@ -90,15 +90,15 @@ namespace CsCat
     /// <param name="cellB"></param>
     public void CheckAndLink(Cell cellB)
     {
-      if (GetLink(Side_AB) == -1 && cellB.RequestLink(point_A, point_B, this))
+      if (GetLink(Side_AB) == -1 && cellB.RequestLink(pointA, pointB, this))
       {
         SetLink(Side_AB, cellB);
       }
-      else if (GetLink(Side_BC) == -1 && cellB.RequestLink(point_B, point_C, this))
+      else if (GetLink(Side_BC) == -1 && cellB.RequestLink(pointB, pointC, this))
       {
         SetLink(Side_BC, cellB);
       }
-      else if (GetLink(Side_CA) == -1 && cellB.RequestLink(point_C, point_A, this))
+      else if (GetLink(Side_CA) == -1 && cellB.RequestLink(pointC, pointA, this))
       {
         SetLink(Side_CA, cellB);
       }
@@ -190,9 +190,9 @@ namespace CsCat
           wallMidPoints[1] = this.PointB/2+this.PointC/2;
           wallMidPoints[2] = this.PointC/2+this.PointA/2;
            * */
-      wall_middle_point_list.Add(this.point_A / 2 + this.point_B / 2);
-      wall_middle_point_list.Add(this.point_B / 2 + this.point_C / 2);
-      wall_middle_point_list.Add(this.point_C / 2 + this.point_A / 2);
+      wall_middle_point_list.Add(this.pointA / 2 + this.pointB / 2);
+      wall_middle_point_list.Add(this.pointB / 2 + this.pointC / 2);
+      wall_middle_point_list.Add(this.pointC / 2 + this.pointA / 2);
 
       // 计算每两条边的中点距离
       /*
@@ -208,40 +208,40 @@ namespace CsCat
     //获得两个点的相邻三角型
     private bool RequestLink(Vector2 pA, Vector2 pB, Cell caller)
     {
-      if (this.point_A.Equals(pA))
+      if (this.pointA.Equals(pA))
       {
-        if (this.point_B.Equals(pB))
+        if (this.pointB.Equals(pB))
         {
           link_list[Side_AB] = caller.index;
           return true;
         }
-        else if (this.point_C.Equals(pB))
+        else if (this.pointC.Equals(pB))
         {
           link_list[Side_CA] = caller.index;
           return true;
         }
       }
-      else if (this.point_B.Equals(pA))
+      else if (this.pointB.Equals(pA))
       {
-        if (this.point_A.Equals(pB))
+        if (this.pointA.Equals(pB))
         {
           link_list[Side_AB] = caller.index;
           return true;
         }
-        else if (this.point_C.Equals(pB))
+        else if (this.pointC.Equals(pB))
         {
           link_list[Side_BC] = caller.index;
           return true;
         }
       }
-      else if (this.point_C.Equals(pA))
+      else if (this.pointC.Equals(pA))
       {
-        if (this.point_A.Equals(pB))
+        if (this.pointA.Equals(pB))
         {
           link_list[Side_CA] = caller.index;
           return (true);
         }
-        else if (this.point_B.Equals(pB))
+        else if (this.pointB.Equals(pB))
         {
           link_list[Side_BC] = caller.index;
           return (true);

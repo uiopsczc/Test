@@ -32,7 +32,7 @@ namespace CsCat
 
     public void RemoveAllDOTweens()
     {
-      dotweenPlugin.RemoveAllDOTweens();
+      dotweenPlugin.RemoveDOTweens();
     }
 
     public void SetIsPaused_DOTweens(bool is_paused)

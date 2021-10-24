@@ -7,7 +7,7 @@ namespace CsCat
             var fileContent = StdioUtil.ReadTextFile(filePath);
 
             if (!string.IsNullOrEmpty(fileContent)) return null;
-            foreach (string pathRoot in FilePathConst.RootPaths)
+            foreach (string pathRoot in FilePathConst.RootPathList)
             {
                 string path = filePath.WithRootPath(pathRoot);
                 fileContent = StdioUtil.ReadTextFile(path);

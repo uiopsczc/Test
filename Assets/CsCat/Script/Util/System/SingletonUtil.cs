@@ -10,7 +10,7 @@ namespace CsCat
         /// <typeparam name="T"></typeparam>
         /// <param name="instance"></param>
         /// <returns></returns>
-        public static T GetInstnaceMono<T>(T instance) where T : MonoBehaviour, ISingleton
+        public static T GetInstanceMono<T>(T instance) where T : MonoBehaviour, ISingleton
         {
             if (instance != null) return instance;
             //检查场景有效的物体中是否有名为(Singleton)xxx【xxx为T的类名】

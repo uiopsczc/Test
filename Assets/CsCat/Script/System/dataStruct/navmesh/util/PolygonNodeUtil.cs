@@ -15,9 +15,9 @@ namespace CsCat
     {
       var nodes = new List<PolygonNode>();
       PolygonNode node;
-      for (var i = 0; i < polygon.vertexe_list.Count; i++)
+      for (var i = 0; i < polygon.vertexList.Count; i++)
       {
-        node = new PolygonNode(polygon.vertexe_list[i], is_intersect_point, is_subject);
+        node = new PolygonNode(polygon.vertexList[i], is_intersect_point, is_subject);
         if (i > 0) nodes[i - 1].next = node;
         nodes.Add(node);
       }

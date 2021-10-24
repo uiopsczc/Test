@@ -3,13 +3,11 @@ using Object = UnityEngine.Object;
 
 namespace CsCat
 {
-  public static class PoolCatGameObjectTest
-  {
-    public static GameObject Spawn(GameObject prefab)
+    public static class PoolCatGameObjectTest
     {
-      return PoolCatManagerUtil.GetOrAddGameObjectPool("AAA", prefab, "CC").SpawnGameObject();
+        public static GameObject Spawn(GameObject prefab)
+        {
+            return PoolCatManagerUtil.GetOrAddGameObjectPool("AAA", prefab, "CC").SpawnGameObject();
+        }
     }
-
-  }
-
 }

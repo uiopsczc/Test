@@ -1,12 +1,12 @@
 namespace CsCat
 {
-  public partial class Line
-  {
-    public enum LineClassification
+    public partial class Line
     {
-      COLLINEAR, //重叠
-      SEGMENTS_INTERSECT, //相交
-      SEGMENTS_NOT_INTERSECT //不相交
+        public enum LineClassification
+        {
+            Collinear, //重叠
+            SegmentsIntersect, //相交
+            SegmentsNotIntersect //不相交
+        }
     }
-  }
 }

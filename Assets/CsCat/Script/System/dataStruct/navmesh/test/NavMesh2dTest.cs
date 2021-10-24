@@ -49,8 +49,8 @@ namespace CsCat
     {
       var ret = new List<Line>();
       foreach (var innerPolygon in innerPolygons)
-        foreach (var innnerLine in innerPolygon.line_list)
-          foreach (var outerLine in outerPolygon.line_list)
+        foreach (var innnerLine in innerPolygon.lineList)
+          foreach (var outerLine in outerPolygon.lineList)
             if (outerLine.Contains(innnerLine))
             {
               ret.Add(innnerLine);
@@ -69,10 +69,10 @@ namespace CsCat
         {
           if (line1.Equals(line2))
             continue;
-          if (line1.point_A == line2.point_A || line1.point_A == line2.point_B)
-            ret.Add(line1.point_A);
-          if (line1.point_B == line2.point_A || line1.point_B == line2.point_B)
-            ret.Add(line1.point_B);
+          if (line1.pointA == line2.pointA || line1.pointA == line2.pointB)
+            ret.Add(line1.pointA);
+          if (line1.pointB == line2.pointA || line1.pointB == line2.pointB)
+            ret.Add(line1.pointB);
         }
 
       return ret;

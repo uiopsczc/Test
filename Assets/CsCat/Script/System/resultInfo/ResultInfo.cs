@@ -2,110 +2,112 @@ using System;
 
 namespace CsCat
 {
-  public class ResultInfo : IDespawn
-  {
-    private bool _is_success;
-    private bool _is_fail;
-    private bool _is_done;
-
-    public Action on_success_callback;
-    public Action on_fail_callback;
-    public Action on_done_callback;
-
-    public ResultInfo()
+    public class ResultInfo : IDespawn
     {
-    }
+        private bool _isSuccess;
+        private bool _isFail;
+        private bool _isDone;
 
-    public ResultInfo(Action on_success_callback = null, Action on_fail_callback = null, Action on_done_callback = null)
-    {
-      Init(on_success_callback, on_fail_callback, on_done_callback);
-    }
+        public Action onSuccessCallback;
+        public Action onFailCallback;
+        public Action onDoneCallback;
 
-    public void Init(Action on_success_callback = null, Action on_fail_callback = null, Action on_done_callback = null)
-    {
-      this.on_success_callback = on_success_callback;
-      this.on_fail_callback = on_fail_callback;
-      this.on_done_callback = on_done_callback;
-    }
-
-    public bool is_success
-    {
-      get => _is_success;
-      set
-      {
-        if (_is_success == value)
-          return;
-        _is_success = value;
-        if (value)
+        public ResultInfo()
         {
-          OnSuccess();
-          is_done = true;
         }
-      }
-    }
 
-    public bool is_fail
-    {
-      get => _is_fail;
-      set
-      {
-        if (_is_fail == value)
-          return;
-        _is_fail = value;
-        if (value)
+        public ResultInfo(Action onSuccessCallback = null, Action onFailCallback = null,
+            Action onDoneCallback = null)
         {
-          OnFail();
-          is_done = true;
+            Init(onSuccessCallback, onFailCallback, onDoneCallback);
         }
-      }
+
+        public void Init(Action onSuccessCallback = null, Action onFailCallback = null,
+            Action onDoneCallback = null)
+        {
+            this.onSuccessCallback = onSuccessCallback;
+            this.onFailCallback = onFailCallback;
+            this.onDoneCallback = onDoneCallback;
+        }
+
+        public bool isSuccess
+        {
+            get => _isSuccess;
+            set
+            {
+                if (_isSuccess == value)
+                    return;
+                _isSuccess = value;
+                if (value)
+                {
+                    OnSuccess();
+                    isDone = true;
+                }
+            }
+        }
+
+        public bool isFail
+        {
+            get => _isFail;
+            set
+            {
+                if (_isFail == value)
+                    return;
+                _isFail = value;
+                if (value)
+                {
+                    OnFail();
+                    isDone = true;
+                }
+            }
+        }
+
+
+        public bool isDone
+        {
+            get => _isDone;
+            set
+            {
+                if (_isDone == value)
+                    return;
+                _isDone = value;
+                if (value)
+                    OnDone();
+            }
+        }
+
+        void OnSuccess()
+        {
+            this.onSuccessCallback?.Invoke();
+        }
+
+
+        void OnFail()
+        {
+            this.onFailCallback?.Invoke();
+        }
+
+
+        void OnDone()
+        {
+            this.onDoneCallback?.Invoke();
+        }
+
+        public void Reset()
+        {
+            this._isSuccess = false;
+            this._isFail = false;
+            this._isDone = false;
+
+            onSuccessCallback = null;
+            onFailCallback = null;
+            onDoneCallback = null;
+        }
+
+
+        public void OnDespawn()
+        {
+            Reset();
+        }
     }
-
-
-    public bool is_done
-    {
-      get => _is_done;
-      set
-      {
-        if (_is_done == value)
-          return;
-        _is_done = value;
-        if (value)
-          OnDone();
-      }
-    }
-
-    void OnSuccess()
-    {
-      this.on_success_callback?.Invoke();
-    }
-
-
-    void OnFail()
-    {
-      this.on_fail_callback?.Invoke();
-    }
-
-
-    void OnDone()
-    {
-      this.on_done_callback?.Invoke();
-    }
-
-    public void Reset()
-    {
-      this._is_success = false;
-      this._is_fail = false;
-      this._is_done = false;
-
-      on_success_callback = null;
-      on_fail_callback = null;
-      on_done_callback = null;
-    }
-
-
-    public void OnDespawn()
-    {
-      Reset();
-    }
-  }
 }

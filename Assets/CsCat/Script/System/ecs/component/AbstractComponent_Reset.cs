@@ -9,10 +9,10 @@ namespace CsCat
 
     public void Reset()
     {
-      __Reset();
+      _Reset();
       __PostReset();
     }
-    protected virtual void __Reset()
+    protected virtual void _Reset()
     {
     }
     protected virtual void __PostReset()

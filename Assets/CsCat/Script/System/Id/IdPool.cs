@@ -13,7 +13,7 @@ namespace CsCat
     {
     }
 
-    protected override object __Spawn()
+    protected override object _Spawn()
     {
       current_number++;
       return current_number;

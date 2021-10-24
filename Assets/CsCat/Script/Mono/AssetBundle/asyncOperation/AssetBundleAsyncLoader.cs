@@ -42,7 +42,7 @@ namespace CsCat
 
       if (total_waiting_assetBundleCat_count == 0)
       {
-        resultInfo.is_success = true;
+        resultInfo.isSuccess = true;
         return;
       }
 
@@ -55,7 +55,7 @@ namespace CsCat
 
     protected override float GetProgress()
     {
-      if (resultInfo.is_done)
+      if (resultInfo.isDone)
         return 1.0f;
 
       var progress_value = (float)GetDownloadedBytes() / GetNeedDownloadBytes();
@@ -78,7 +78,7 @@ namespace CsCat
 
     public override long GetDownloadedBytes()
     {
-      if (resultInfo.is_done)
+      if (resultInfo.isDone)
         return GetNeedDownloadBytes();
       long downloaded_bytes = 0;
       foreach (var assetBundle_name in assetBundle_downloaded_bytes_dict.Keys)
@@ -105,22 +105,22 @@ namespace CsCat
 
     private void OnResourceWebRequesterSuccess(ResourceWebRequester resourceWebRequester)
     {
-      if (resultInfo.is_done)
+      if (resultInfo.isDone)
         return;
       if (!waiting_assetBundleCat_dict.ContainsValue(resourceWebRequester.assetBundleCat) ||
           resourceWebRequester.is_not_cache) return;
       waiting_assetBundleCat_dict.Remove(resourceWebRequester.assetBundleCat.assetBundle_name);
       if (waiting_assetBundleCat_dict.Count == 0)
-        resultInfo.is_success = true;
+        resultInfo.isSuccess = true;
     }
 
     private void OnResourceWebRequesterFail(ResourceWebRequester resourceWebRequester)
     {
-      if (resultInfo.is_done)
+      if (resultInfo.isDone)
         return;
       if (!waiting_assetBundleCat_dict.ContainsValue(resourceWebRequester.assetBundleCat) ||
           resourceWebRequester.is_not_cache) return;
-      resultInfo.is_fail = true;
+      resultInfo.isFail = true;
       RemoveListener<ResourceWebRequester>(null,AssetBundleEventNameConst.On_ResourceWebRequester_Fail,
         OnResourceWebRequesterFail);
     }

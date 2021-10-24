@@ -21,7 +21,7 @@ namespace CsCat
       {
         _assetBundle = value;
         if (assetBundle != null)
-          resultInfo.is_success = true;
+          resultInfo.isSuccess = true;
       }
       private get { return _assetBundle; }
     }
@@ -49,17 +49,17 @@ namespace CsCat
 
     public bool IsLoadSuccess()
     {
-      return resultInfo.is_success;
+      return resultInfo.isSuccess;
     }
 
     public bool IsLoadFail()
     {
-      return resultInfo.is_fail;
+      return resultInfo.isFail;
     }
 
     public bool IsLoadDone()
     {
-      return resultInfo.is_done;
+      return resultInfo.isDone;
     }
 
     public string[] GetAllDependencePaths()

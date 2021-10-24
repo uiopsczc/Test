@@ -3,37 +3,35 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public class GameObjectPoolCat : UnityObjectPoolCat
-  {
-    protected Transform root_transfrom;
-    protected Transform category_transform;
-
-    public GameObjectPoolCat(string pool_name, GameObject prefab, string category = null) : base(pool_name, prefab,
-      category)
+    public class GameObjectPoolCat : UnityObjectPoolCat
     {
-    }
+        protected Transform rootTransform;
+        protected Transform categoryTransform;
 
-    public GameObject GetPrefab()
-    {
-      return this.GetPrefab<GameObject>();
-    }
+        public GameObjectPoolCat(string poolName, GameObject prefab, string category = null) : base(poolName, prefab,
+            category)
+        {
+        }
 
-    public override object Spawn(Action<object> on_spawn_callback = null)
-    {
-      GameObject clone_gameObject = base.Spawn(on_spawn_callback) as GameObject;
-      clone_gameObject.SetCache(PoolCatConst.Pool_Name, this);
-      clone_gameObject.SetActive(true);
-      clone_gameObject.transform.CopyFrom(GetPrefab().transform);
-      return clone_gameObject;
-    }
+        public GameObject GetPrefab()
+        {
+            return this.GetPrefab<GameObject>();
+        }
 
-    public GameObject SpawnGameObject(Action<GameObject> on_spawn_callback = null)
-    {
-      if (on_spawn_callback == null)
-        return Spawn() as GameObject;
-      else
-        return Spawn(obj => on_spawn_callback((GameObject) obj)) as GameObject;
+        public override object Spawn(Action<object> onSpawnCallback = null)
+        {
+            GameObject cloneGameObject = base.Spawn(onSpawnCallback) as GameObject;
+            cloneGameObject.SetCache(PoolCatConst.Pool_Name, this);
+            cloneGameObject.SetActive(true);
+            cloneGameObject.transform.CopyFrom(GetPrefab().transform);
+            return cloneGameObject;
+        }
+
+        public GameObject SpawnGameObject(Action<GameObject> onSpawnCallback = null)
+        {
+            if (onSpawnCallback == null)
+                return Spawn() as GameObject;
+            return Spawn(obj => onSpawnCallback((GameObject) obj)) as GameObject;
+        }
     }
-    
-  }
 }

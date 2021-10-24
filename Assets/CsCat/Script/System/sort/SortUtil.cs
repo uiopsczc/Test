@@ -116,7 +116,7 @@ namespace CsCat
         //////////////////////////////////////////////////////////////////////////////
         public static void MergeSort(IList list, Func<object, object, bool> func)
         {
-            __MergeSort(list, 0, list.Count - 1, func);
+            _MergeSort(list, 0, list.Count - 1, func);
         }
 
         public static void MergeSortWithCompareRules(IList list, IList<Comparison<object>> compareRules)
@@ -124,13 +124,13 @@ namespace CsCat
             MergeSort(list, (a, b) => CompareUtil.CompareWithRules(a, b, compareRules) < 0);
         }
 
-        private static void __MergeSort(IList list, int leftIndex, int rightIndex, Func<object, object, bool> func)
+        private static void _MergeSort(IList list, int leftIndex, int rightIndex, Func<object, object, bool> func)
         {
             if (leftIndex >= rightIndex)
                 return;
             int middle = (leftIndex + rightIndex) / 2;
-            __MergeSort(list, leftIndex, middle, func);
-            __MergeSort(list, middle + 1, rightIndex, func);
+            _MergeSort(list, leftIndex, middle, func);
+            _MergeSort(list, middle + 1, rightIndex, func);
             __Merge(list, leftIndex, middle, rightIndex, func);
         }
 

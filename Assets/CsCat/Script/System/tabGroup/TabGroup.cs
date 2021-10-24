@@ -3,40 +3,41 @@ using System.Collections.Generic;
 
 namespace CsCat
 {
-  public class TabGroup
-  {
-    private List<Tab> tab_list = new List<Tab>();
-    public int cur_selected_index = -1;//默认全部不选中
-    private int pre_selected_index = -1;
-    public TabGroup()
+    public class TabGroup
     {
-    }
+        private List<Tab> _tabList = new List<Tab>();
+        public int curSelectedIndex = -1; //默认全部不选中
+        private int _preSelectedIndex = -1;
 
-    public void AddTab(Tab tab)
-    {
-      tab_list.Add(tab);
-    }
+        public TabGroup()
+        {
+        }
 
-    public Tab GetTab(int index)
-    {
-      return tab_list[index];
-    }
+        public void AddTab(Tab tab)
+        {
+            _tabList.Add(tab);
+        }
 
-    public void ClearTabs()
-    {
-      tab_list.Clear();
-    }
+        public Tab GetTab(int index)
+        {
+            return _tabList[index];
+        }
 
-    public void TriggerTab(int index)
-    {
-      if (index == cur_selected_index)
-        return;
-      if (pre_selected_index != -1)
-        tab_list[pre_selected_index].UnSelect();
-      pre_selected_index = cur_selected_index;
+        public void ClearTabs()
+        {
+            _tabList.Clear();
+        }
 
-      cur_selected_index = index;
-      tab_list[cur_selected_index].Select();
+        public void TriggerTab(int index)
+        {
+            if (index == curSelectedIndex)
+                return;
+            if (_preSelectedIndex != -1)
+                _tabList[_preSelectedIndex].UnSelect();
+            _preSelectedIndex = curSelectedIndex;
+
+            curSelectedIndex = index;
+            _tabList[curSelectedIndex].Select();
+        }
     }
-  }
 }

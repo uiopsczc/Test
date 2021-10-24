@@ -10,16 +10,16 @@ namespace CsCat
       this.AddListener(GetGameEntity().eventDispatchers,ECSEventNameConst.OnAllAssetsLoadDone, OnAllAssetsLoadDone);
     }
 
-    protected override void __Reset()
+    protected override void _Reset()
     {
-      base.__Reset();
+      base._Reset();
       resLoadComponentPlugin.Destroy();
       DestroyGameObject();
     }
 
-    protected override void __Destroy()
+    protected override void _Destroy()
     {
-      base.__Destroy();
+      base._Destroy();
       resLoadComponentPlugin.Destroy();
       DestroyGameObject();
 

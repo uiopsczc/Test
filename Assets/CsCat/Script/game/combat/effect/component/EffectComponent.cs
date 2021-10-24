@@ -5,9 +5,9 @@ namespace CsCat
     public EffectEntity effectEntity => this.GetEntity<EffectEntity>();
 
 
-    protected override void __Destroy()
+    protected override void _Destroy()
     {
-      base.__Destroy();
+      base._Destroy();
     }
   }
 }

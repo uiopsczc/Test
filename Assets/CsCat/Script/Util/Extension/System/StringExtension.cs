@@ -157,8 +157,8 @@ namespace CsCat
         {
             return self.IsNetURL()
                 ? self
-                : self.IndexOf(FilePathConst.File_Prefix, StringComparison.CurrentCultureIgnoreCase) == -1
-                    ? self.WithRootPath(FilePathConst.File_Prefix)
+                : self.IndexOf(StringConst.String_File_Url_Prefix, StringComparison.CurrentCultureIgnoreCase) == -1
+                    ? self.WithRootPath(StringConst.String_File_Url_Prefix)
                     : self;
         }
 

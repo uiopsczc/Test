@@ -8,30 +8,30 @@ namespace CsCat
         /// <summary>
         /// 存放object的数组
         /// </summary>
-        protected Stack<object> despawned_object_stack = new Stack<object>();
+        protected Stack<object> despawnedObjectStack = new Stack<object>();
 
-        protected List<object> spawned_object_list = new List<object>();
-        private Type spawn_type;
-        public string pool_name;
-        private Func<object> spawn_func;
+        protected List<object> spawnedObjectList = new List<object>();
+        private Type spawnType;
+        public string poolName;
+        private Func<object> spawnFunc;
 
 
-        public PoolCat(string pool_name, Type spawn_type)
+        public PoolCat(string poolName, Type spawnType)
         {
-            this.pool_name = pool_name;
-            this.spawn_type = spawn_type;
+            this.poolName = poolName;
+            this.spawnType = spawnType;
         }
 
-        public PoolCat(string pool_name, Func<object> spawn_func)
+        public PoolCat(string poolName, Func<object> spawnFunc)
         {
-            this.pool_name = pool_name;
-            this.spawn_func = spawn_func;
+            this.poolName = poolName;
+            this.spawnFunc = spawnFunc;
         }
 
-        public void InitPool(int init_count = 1, Action<object> on_spawn_callback = null)
+        public void InitPool(int initCount = 1, Action<object> onSpawnCallback = null)
         {
-            for (int i = 0; i < init_count; i++)
-                Despawn(Spawn(on_spawn_callback));
+            for (int i = 0; i < initCount; i++)
+                Despawn(Spawn(onSpawnCallback));
         }
 
 
@@ -42,9 +42,9 @@ namespace CsCat
         /// </summary>
         /// <param name="args"></param>
         /// <returns></returns>
-        protected virtual object __Spawn()
+        protected virtual object _Spawn()
         {
-            return spawn_func != null ? spawn_func() : Activator.CreateInstance(spawn_type);
+            return spawnFunc != null ? spawnFunc() : Activator.CreateInstance(spawnType);
         }
 
         #endregion
@@ -57,9 +57,9 @@ namespace CsCat
         public virtual object Spawn(Action<object> on_spawn_callback = null)
         {
             object spawn = null;
-            spawn = despawned_object_stack.Count > 0 ? despawned_object_stack.Pop() : __Spawn();
+            spawn = despawnedObjectStack.Count > 0 ? despawnedObjectStack.Pop() : _Spawn();
             on_spawn_callback?.Invoke(spawn);
-            spawned_object_list.Add(spawn);
+            spawnedObjectList.Add(spawn);
             return spawn;
         }
 
@@ -72,39 +72,38 @@ namespace CsCat
         {
             if (obj == null)
                 return;
-            if (!spawned_object_list.Contains(obj))
+            if (!spawnedObjectList.Contains(obj))
             {
 //        LogCat.error(string.Format("pool: {0} not contained::{1}",pool_name, obj));
                 return;
             }
 
-            despawned_object_stack.Push(obj);
+            despawnedObjectStack.Push(obj);
 
-            spawned_object_list.Remove(obj);
-            if (obj is IDespawn spawnable)
-                spawnable.OnDespawn();
+            spawnedObjectList.Remove(obj);
+            (obj as IDespawn)?.OnDespawn();
         }
 
         public virtual void Trim()
         {
-            foreach (var despawned_object in despawned_object_stack)
-                __Trim(despawned_object);
-            despawned_object_stack.Clear();
+            foreach (var despawnedObject in despawnedObjectStack)
+                _Trim(despawnedObject);
+            despawnedObjectStack.Clear();
         }
 
-        protected virtual void __Trim(object despawned_object)
+        protected virtual void _Trim(object despawnedObject)
         {
         }
 
         public void DespawnAll()
         {
-            for (int i = spawned_object_list.Count - 1; i >= 0; i--)
-                Despawn(spawned_object_list[i]);
+            for (int i = spawnedObjectList.Count - 1; i >= 0; i--)
+                Despawn(spawnedObjectList[i]);
         }
 
         public bool IsEmpty()
         {
-            if (this.spawned_object_list.Count == 0 && despawned_object_stack.Count == 0)
+            if (this.spawnedObjectList.Count == 0 && despawnedObjectStack.Count == 0)
                 return true;
             return false;
         }
@@ -112,12 +111,12 @@ namespace CsCat
 
         public int GetSpawnedCount()
         {
-            return this.spawned_object_list.Count;
+            return this.spawnedObjectList.Count;
         }
 
         public int GetDespawnedCount()
         {
-            return this.despawned_object_stack.Count;
+            return this.despawnedObjectStack.Count;
         }
 
         public virtual void Destroy()
@@ -125,12 +124,12 @@ namespace CsCat
             DespawnAll();
             Trim();
 
-            spawn_type = null;
-            pool_name = null;
-            spawn_func = null;
+            spawnType = null;
+            poolName = null;
+            spawnFunc = null;
 
-            despawned_object_stack.Clear();
-            spawned_object_list.Clear();
+            despawnedObjectStack.Clear();
+            spawnedObjectList.Clear();
         }
     }
 }

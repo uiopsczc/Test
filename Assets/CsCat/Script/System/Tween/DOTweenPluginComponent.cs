@@ -1,59 +1,60 @@
-
 using System.Collections.Generic;
 using DG.Tweening;
+
 namespace CsCat
 {
-  public class DOTweenPluginComponent : AbstractComponent
-  {
-    private DOTweenPlugin dotweenPlugin;
-    public void Init(DOTweenPlugin dotweenPlugin)
+    public class DOTweenPluginComponent : AbstractComponent
     {
-      base.Init();
-      this.dotweenPlugin = dotweenPlugin;
+        private DOTweenPlugin _dotweenPlugin;
 
-    }
-    public Sequence AddDOTweenSequence(string key)
-    {
-      return dotweenPlugin.AddDOTweenSequence(key);
-    }
+        public void Init(DOTweenPlugin dotweenPlugin)
+        {
+            base.Init();
+            this._dotweenPlugin = dotweenPlugin;
+        }
 
-    public Tween AddDOTween(string key, Tween tween)
-    {
-      return dotweenPlugin.AddDOTween(key, tween);
-    }
+        public Sequence AddDOTweenSequence(string key)
+        {
+            return _dotweenPlugin.AddDOTweenSequence(key);
+        }
 
-    public void RemoveDOTween(string key)
-    {
-      dotweenPlugin.RemoveDOTween(key);
-    }
+        public Tween AddDOTween(string key, Tween tween)
+        {
+            return _dotweenPlugin.AddDOTween(key, tween);
+        }
 
-    public void RemoveDOTween(Tween tween)
-    {
-      dotweenPlugin.RemoveDOTween(tween);
-    }
+        public void RemoveDOTween(string key)
+        {
+            _dotweenPlugin.RemoveDOTween(key);
+        }
+
+        public void RemoveDOTween(Tween tween)
+        {
+            _dotweenPlugin.RemoveDOTween(tween);
+        }
 
 
-    protected override void __SetIsPaused(bool is_paused)
-    {
-      base.__SetIsPaused(is_paused);
-      dotweenPlugin.SetIsPaused(is_paused);
-    }
+        protected override void _SetIsPaused(bool isPaused)
+        {
+            base._SetIsPaused(isPaused);
+            _dotweenPlugin.SetIsPaused(isPaused);
+        }
 
-    public void RemoveAllDOTweens()
-    {
-      this.dotweenPlugin.RemoveAllDOTweens();
-    }
+        public void RemoveDOTweens()
+        {
+            this._dotweenPlugin.RemoveDOTweens();
+        }
 
-    protected override void __Reset()
-    {
-      base.__Reset();
-      RemoveAllDOTweens();
-    }
+        protected override void _Reset()
+        {
+            base._Reset();
+            RemoveDOTweens();
+        }
 
-    protected override void __Destroy()
-    {
-      base.__Destroy();
-      RemoveAllDOTweens();
+        protected override void _Destroy()
+        {
+            base._Destroy();
+            RemoveDOTweens();
+        }
     }
-  }
 }

@@ -1,7 +1,6 @@
 namespace CsCat
 {
-  public class DateTimeConst
-  {
-
-  }
+    public class DateTimeConst
+    {
+    }
 }

@@ -5,7 +5,7 @@ namespace CsCat
     public EditorAssetAsyncLoader(AssetCat assetCat)
     {
       this.assetCat = assetCat;
-      resultInfo.is_success = true;
+      resultInfo.isSuccess = true;
     }
 
     public override void Update()

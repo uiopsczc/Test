@@ -13,10 +13,10 @@ namespace CsCat
       if (_is_paused == is_paused)
         return;
       _is_paused = is_paused;
-      __SetIsPaused(is_paused);
+      _SetIsPaused(is_paused);
     }
 
-    protected virtual void __SetIsPaused(bool is_paused)
+    protected virtual void _SetIsPaused(bool isPaused)
     {
 
     }

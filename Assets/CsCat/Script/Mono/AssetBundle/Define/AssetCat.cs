@@ -197,17 +197,17 @@ namespace CsCat
 
     public bool IsLoadSuccess()
     {
-      return this.resultInfo.is_success;
+      return this.resultInfo.isSuccess;
     }
 
     public bool IsLoadFail()
     {
-      return this.resultInfo.is_fail;
+      return this.resultInfo.isFail;
     }
 
     public bool IsLoadDone()
     {
-      return this.resultInfo.is_done;
+      return this.resultInfo.isDone;
     }
 
 
@@ -266,7 +266,7 @@ namespace CsCat
       // 说明：在Editor模拟时，Shader要重新指定
       HandleAssetShader();
 #endif
-      this.resultInfo.is_success = true;
+      this.resultInfo.isSuccess = true;
     }
 #if UNITY_EDITOR
     private void HandleAssetShader()
