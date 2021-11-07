@@ -108,7 +108,9 @@ namespace CsCat
         public const string String_socket = "socket";
         public const string String_animClip = "animClip";
         public const string String_clone = "clone";
-
+        public const string String_type = "type";
+        public const string String_parseFunc = "parseFunc";
+        public const string String_Plane = "Plane";
 
         public const string String_date = "date";
         public const string String_time = "time";

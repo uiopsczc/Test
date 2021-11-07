@@ -5,12 +5,8 @@ namespace CsCat
 {
     public class NavMesh2dInputHandler : ISingleton
     {
-
-        public bool enable = true;
-        public List<Vector3> point_list = new List<Vector3>();
-
-
-
+        public bool isEnable = true;
+        public List<Vector3> pointList = new List<Vector3>();
         public static NavMesh2dInputHandler instance => SingletonFactory.instance.Get<NavMesh2dInputHandler>();
 
 
@@ -22,40 +18,36 @@ namespace CsCat
         public void Update()
         {
             if (Input.GetMouseButtonDown(0))
-            {
                 OnClick();
-            }
         }
 
 
         void OnClick()
         {
-            RaycastHit hit;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-            bool intersect = Physics.Raycast(ray, out hit);
+            bool intersect = Physics.Raycast(ray, out var hit);
             if (intersect)
             {
-                GameObject hit_target = hit.collider.gameObject;
+                GameObject hitTarget = hit.collider.gameObject;
 
                 //点钟场景
-                if (hit_target.layer == LayerMask.NameToLayer("Plane"))
+                if (hitTarget.layer == LayerMask.NameToLayer(StringConst.String_Plane))
                 {
-                    if (point_list.Count == 2)
+                    if (pointList.Count == 2)
                     {
-                        point_list.Clear();
-                        point_list.Add(hit.point);
-                        GameObject.Instantiate(NavMesh2dTest.t, hit.point, Quaternion.identity);
+                        pointList.Clear();
+                        pointList.Add(hit.point);
+                        Object.Instantiate(NavMesh2dTest.t, hit.point, Quaternion.identity);
                     }
                     else
                     {
-                        point_list.Add(hit.point);
-                        GameObject.Instantiate(NavMesh2dTest.t, hit.point, Quaternion.identity);
+                        pointList.Add(hit.point);
+                        Object.Instantiate(NavMesh2dTest.t, hit.point, Quaternion.identity);
                     }
 
                     return;
                 }
             }
         }
-
     }
 }

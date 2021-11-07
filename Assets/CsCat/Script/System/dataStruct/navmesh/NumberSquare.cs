@@ -3,152 +3,136 @@ using System.Collections.Generic;
 
 namespace CsCat
 {
-  //专门用于写数字
-  public class NumberSquare
-  {
-    #region field
-
-    public Vector3 middle_middle;
-    public float radius;
-    public Vector3 left_top;
-    public Vector3 middle_top;
-    public Vector3 right_top;
-    public Vector3 left_middle;
-    public Vector3 right_middle;
-    public Vector3 left_bottom;
-    public Vector3 middle_bottom;
-    public Vector3 right_bottom;
-
-
-
-    private float factor = 0.8f;
-
-    #endregion
-
-    #region ctor
-
-    public NumberSquare(Vector3 middle_middle, float radius = 0.5f)
+    //专门用于写数字
+    public class NumberSquare
     {
-      this.middle_middle = middle_middle;
-      this.radius = radius;
+        public Vector3 middleMiddle;
+        public float radius;
+        public Vector3 leftTop;
+        public Vector3 middleTop;
+        public Vector3 rightTop;
+        public Vector3 leftMiddle;
+        public Vector3 rightMiddle;
+        public Vector3 leftBottom;
+        public Vector3 middleBottom;
+        public Vector3 rightBottom;
+        private float factor = 0.8f;
 
-      this.left_top = middle_middle + factor * radius * new Vector3(-1, 0, 1);
-      this.middle_top = middle_middle + factor * radius * new Vector3(0, 0, 1);
-      this.right_top = middle_middle + factor * radius * new Vector3(1, 0, 1);
 
-      this.left_middle = middle_middle + factor * radius * new Vector3(-1, 0, 0);
-      this.right_middle = middle_middle + factor * radius * new Vector3(1, 0, 0);
+        public NumberSquare(Vector3 middleMiddle, float radius = 0.5f)
+        {
+            this.middleMiddle = middleMiddle;
+            this.radius = radius;
 
-      this.left_bottom = middle_middle + factor * radius * new Vector3(-1, 0, -1);
-      this.middle_bottom = middle_middle + factor * radius * new Vector3(0, 0, -1);
-      this.right_bottom = middle_middle + factor * radius * new Vector3(1, 0, -1);
+            this.leftTop = middleMiddle + factor * radius * new Vector3(-1, 0, 1);
+            this.middleTop = middleMiddle + factor * radius * new Vector3(0, 0, 1);
+            this.rightTop = middleMiddle + factor * radius * new Vector3(1, 0, 1);
+
+            this.leftMiddle = middleMiddle + factor * radius * new Vector3(-1, 0, 0);
+            this.rightMiddle = middleMiddle + factor * radius * new Vector3(1, 0, 0);
+
+            this.leftBottom = middleMiddle + factor * radius * new Vector3(-1, 0, -1);
+            this.middleBottom = middleMiddle + factor * radius * new Vector3(0, 0, -1);
+            this.rightBottom = middleMiddle + factor * radius * new Vector3(1, 0, -1);
+        }
+
+
+        public List<Vector3> GetPointList(char c)
+        {
+            List<Vector3> pointList = new List<Vector3>();
+            switch (c)
+            {
+                case '0':
+                    pointList.Add(leftTop);
+                    pointList.Add(rightTop);
+                    pointList.Add(rightBottom);
+                    pointList.Add(leftBottom);
+                    pointList.Add(leftTop);
+                    break;
+                case '1':
+                    pointList.Add(middleTop);
+                    pointList.Add(middleBottom);
+                    break;
+                case '2':
+                    pointList.Add(leftTop);
+                    pointList.Add(rightTop);
+                    pointList.Add(rightMiddle);
+                    pointList.Add(leftMiddle);
+                    pointList.Add(leftBottom);
+                    pointList.Add(rightBottom);
+                    break;
+                case '3':
+                    pointList.Add(leftTop);
+                    pointList.Add(rightTop);
+                    pointList.Add(rightMiddle);
+                    pointList.Add(leftMiddle);
+                    pointList.Add(rightMiddle);
+                    pointList.Add(rightBottom);
+                    pointList.Add(leftBottom);
+                    break;
+                case '4':
+                    pointList.Add(middleTop);
+                    pointList.Add(leftMiddle);
+                    pointList.Add(middleMiddle);
+                    pointList.Add(middleTop);
+                    pointList.Add(middleBottom);
+                    pointList.Add(middleMiddle);
+                    pointList.Add(rightMiddle);
+                    break;
+                case '5':
+                    pointList.Add(rightTop);
+                    pointList.Add(leftTop);
+                    pointList.Add(leftMiddle);
+                    pointList.Add(rightMiddle);
+                    pointList.Add(rightBottom);
+                    pointList.Add(leftBottom);
+                    break;
+                case '6':
+                    pointList.Add(rightTop);
+                    pointList.Add(leftTop);
+                    pointList.Add(leftMiddle);
+                    pointList.Add(rightMiddle);
+                    pointList.Add(rightBottom);
+                    pointList.Add(leftBottom);
+                    pointList.Add(leftMiddle);
+                    break;
+                case '7':
+                    pointList.Add(leftTop);
+                    pointList.Add(rightTop);
+                    pointList.Add(middleBottom);
+                    break;
+                case '8':
+                    pointList.Add(leftTop);
+                    pointList.Add(rightTop);
+                    pointList.Add(rightMiddle);
+                    pointList.Add(leftMiddle);
+                    pointList.Add(leftTop);
+                    pointList.Add(leftBottom);
+                    pointList.Add(rightBottom);
+                    pointList.Add(rightMiddle);
+                    break;
+                case '9':
+                    pointList.Add(rightMiddle);
+                    pointList.Add(leftMiddle);
+                    pointList.Add(leftTop);
+                    pointList.Add(rightTop);
+                    pointList.Add(rightBottom);
+                    pointList.Add(leftBottom);
+                    break;
+                case '.':
+                    pointList.Add(middleBottom + factor * radius * 0.1f * new Vector3(-1, 0, 0));
+                    pointList.Add(middleBottom + factor * radius * 0.1f * new Vector3(1, 0, 0));
+                    pointList.Add(middleBottom);
+                    pointList.Add(middleBottom + factor * radius * 0.1f * new Vector3(0, 0, 1));
+                    pointList.Add(middleBottom + factor * radius * 0.1f * new Vector3(0, 0, -1));
+                    break;
+                case '-':
+                    pointList.Add(leftMiddle + factor * radius * 0.1f * new Vector3(1, 0, 0));
+                    pointList.Add(rightMiddle + factor * radius * 0.1f * new Vector3(-1, 0, 0));
+                    break;
+            }
+
+            return pointList;
+        }
     }
-
-    #endregion
-
-    #region public method
-
-    public List<Vector3> GetPointList(char c)
-    {
-      List<Vector3> point_list = new List<Vector3>();
-      switch (c)
-      {
-        case '0':
-          point_list.Add(left_top);
-          point_list.Add(right_top);
-          point_list.Add(right_bottom);
-          point_list.Add(left_bottom);
-          point_list.Add(left_top);
-          break;
-        case '1':
-          point_list.Add(middle_top);
-          point_list.Add(middle_bottom);
-          break;
-        case '2':
-          point_list.Add(left_top);
-          point_list.Add(right_top);
-          point_list.Add(right_middle);
-          point_list.Add(left_middle);
-          point_list.Add(left_bottom);
-          point_list.Add(right_bottom);
-          break;
-        case '3':
-          point_list.Add(left_top);
-          point_list.Add(right_top);
-          point_list.Add(right_middle);
-          point_list.Add(left_middle);
-          point_list.Add(right_middle);
-          point_list.Add(right_bottom);
-          point_list.Add(left_bottom);
-          break;
-        case '4':
-          point_list.Add(middle_top);
-          point_list.Add(left_middle);
-          point_list.Add(middle_middle);
-          point_list.Add(middle_top);
-          point_list.Add(middle_bottom);
-          point_list.Add(middle_middle);
-          point_list.Add(right_middle);
-          break;
-        case '5':
-          point_list.Add(right_top);
-          point_list.Add(left_top);
-          point_list.Add(left_middle);
-          point_list.Add(right_middle);
-          point_list.Add(right_bottom);
-          point_list.Add(left_bottom);
-          break;
-        case '6':
-          point_list.Add(right_top);
-          point_list.Add(left_top);
-          point_list.Add(left_middle);
-          point_list.Add(right_middle);
-          point_list.Add(right_bottom);
-          point_list.Add(left_bottom);
-          point_list.Add(left_middle);
-          break;
-        case '7':
-          point_list.Add(left_top);
-          point_list.Add(right_top);
-          point_list.Add(middle_bottom);
-          break;
-        case '8':
-          point_list.Add(left_top);
-          point_list.Add(right_top);
-          point_list.Add(right_middle);
-          point_list.Add(left_middle);
-          point_list.Add(left_top);
-          point_list.Add(left_bottom);
-          point_list.Add(right_bottom);
-          point_list.Add(right_middle);
-          break;
-        case '9':
-          point_list.Add(right_middle);
-          point_list.Add(left_middle);
-          point_list.Add(left_top);
-          point_list.Add(right_top);
-          point_list.Add(right_bottom);
-          point_list.Add(left_bottom);
-          break;
-        case '.':
-          point_list.Add(middle_bottom + factor * radius * 0.1f * new Vector3(-1, 0, 0));
-          point_list.Add(middle_bottom + factor * radius * 0.1f * new Vector3(1, 0, 0));
-          point_list.Add(middle_bottom);
-          point_list.Add(middle_bottom + factor * radius * 0.1f * new Vector3(0, 0, 1));
-          point_list.Add(middle_bottom + factor * radius * 0.1f * new Vector3(0, 0, -1));
-          break;
-        case '-':
-          point_list.Add(left_middle + factor * radius * 0.1f * new Vector3(1, 0, 0));
-          point_list.Add(right_middle + factor * radius * 0.1f * new Vector3(-1, 0, 0));
-          break;
-      }
-
-      return point_list;
-    }
-
-    #endregion
-
-
-
-  }
 }

@@ -3,386 +3,331 @@ using System.Collections.Generic;
 
 namespace CsCat
 {
-  public class NavMesh2d
-  {
-    #region field
-
-    // Path finding session ID. This Identifies each pathfinding session
-    // so we do not need to clear out old data in the cells from previous sessions.
-    /// <summary>
-    /// 记录当前节点有没有被访问过，如果访问过，则一定在openList中或closeList中；否则不在openList中和closeList中
-    /// </summary>
-    private static int path_session_id = 0;
-
-    private List<Cell> cell_list;
-    private BinaryHeap<Cell> open_list;
-    private List<Cell> closed_list;
-
-    #endregion
-
-    #region ctor
-
-    public NavMesh2d(List<Cell> cell_list)
+    public class NavMesh2d
     {
-      this.cell_list = cell_list;
-      open_list = new BinaryHeap<Cell>(cell_list.Count,true, Cell.Compare);
-      closed_list = new List<Cell>();
-    }
+        // Path finding session ID. This Identifies each pathfinding session
+        // so we do not need to clear out old data in the cells from previous sessions.
+        /// <summary>
+        /// 记录当前节点有没有被访问过，如果访问过，则一定在openList中或closeList中；否则不在openList中和closeList中
+        /// </summary>
+        private static int pathSessionId = 0;
 
-    #endregion
+        private List<Cell> cellList;
+        private BinaryHeap<Cell> openList;
+        private List<Cell> closedList;
 
-    #region public method
 
-    public Cell GetCell(int index)
-    {
-      return cell_list[index];
-    }
-
-    //找出给定点所在的三角型
-    public Cell FindClosestCell(Vector2 point)
-    {
-      foreach (Cell cell in cell_list)
-      {
-        if (cell.IsPointIn(point))
+        public NavMesh2d(List<Cell> cellList)
         {
-          return cell;
-        }
-      }
-
-      return null;
-    }
-
-    public List<Vector2> FindPath(Vector2 start_point, Vector2 end_point)
-    {
-      path_session_id++;
-
-      Vector2 start_pos = start_point;
-      Vector2 end_pos = end_point;
-      Cell start_cell = FindClosestCell(start_pos);
-      Cell end_cell = FindClosestCell(end_pos);
-      if (start_cell == null || end_cell == null)
-      {
-        return null;
-      }
-
-      List<Vector2> outPath;
-
-      if (start_cell == end_cell)
-      {
-        outPath = new List<Vector2> { start_point, end_point };
-      }
-      else
-      {
-        outPath = BuildPath(start_cell, start_pos, end_cell, end_pos);
-      }
-
-      return outPath;
-    }
-
-    /// <summary>
-    /// 构建路径
-    /// </summary>
-    /// <param name="start_cell"></param>
-    /// <param name="start_pos"></param>
-    /// <param name="end_cell"></param>
-    /// <param name="end_pos"></param>
-    /// <returns></returns>
-    public List<Vector2> BuildPath(Cell start_cell, Vector2 start_pos,
-      Cell end_cell, Vector2 end_pos)
-    {
-      open_list.Clear();
-      closed_list.Clear();
-
-      end_cell.g = 0;
-      end_cell.ComputeH(end_pos, start_pos);
-      end_cell.ComputeF();
-
-      end_cell.is_open = false;
-      end_cell.parent = null;
-      end_cell.session_id = path_session_id;
-      open_list.Push(end_cell);
-
-      bool is_found_path = false; //是否找到路径
-      Cell curr_node; //当前节点
-      Cell adjacent_tmp = null; //当前节点的邻接三角型
-      while (open_list.Size > 0)
-      {
-        // 1. 把当前节点从开放列表删除, 加入到封闭列表
-        curr_node = open_list.Pop();
-        closed_list.Add(curr_node);
-
-        //路径是在同一个三角形内
-        if (curr_node == start_cell)
-        {
-          is_found_path = true;
-          break;
+            this.cellList = cellList;
+            openList = new BinaryHeap<Cell>(cellList.Count, true, Cell.Compare);
+            closedList = new List<Cell>();
         }
 
-        // 2. 对当前节点相邻的每一个节点依次执行以下步骤:
-        //所有邻接三角型
-        int adjacent_id;
-        for (int i = 0; i < 3; i++)
-        {
-          adjacent_id = curr_node.link_list[i];
-          // 3. 如果该相邻节点不可通行或者该相邻节点已经在封闭列表中,
-          //    则什么操作也不执行,继续检验下一个节点;
-          if (adjacent_id < 0) //不能通过
-          {
-            continue;
-          }
-          else
-          {
-            adjacent_tmp = cell_list[adjacent_id];
-          }
 
-          if (adjacent_tmp != null)
-          {
-            if (adjacent_tmp.session_id != path_session_id)
+        public Cell GetCell(int index)
+        {
+            return cellList[index];
+        }
+
+        //找出给定点所在的三角型
+        public Cell FindClosestCell(Vector2 point)
+        {
+            for (var i = 0; i < cellList.Count; i++)
             {
-              // 4. 如果该相邻节点不在开放列表中,则将该节点添加到开放列表中, 
-              //    并将该相邻节点的父节点设为当前节点,同时保存该相邻节点的G和F值;
-              adjacent_tmp.session_id = path_session_id;
-              adjacent_tmp.parent = curr_node;
-              adjacent_tmp.is_open = true;
-
-              // remember the side this caller is entering from
-              adjacent_tmp.SetAndGetArrivalWall(curr_node.index);
-
-              //计算G值
-              //当前的g值+（当前边的进入边的中点-当前边出边的中点）的距离
-              Vector2 p1;
-              if (curr_node == end_cell)
-                p1 = end_pos;
-              else
-                p1 = curr_node.lineList[curr_node.arrival_wall].center;
-              adjacent_tmp.g = curr_node.g + adjacent_tmp.ComputeGIncrease(p1, curr_node.lineList[i].center);
-
-              //计算H值
-              adjacent_tmp.ComputeH(adjacent_tmp.lineList[adjacent_tmp.arrival_wall].center, start_pos);
-              //计算F值
-              adjacent_tmp.ComputeF();
-
-              //放入开放列表并排序
-              open_list.Push(adjacent_tmp);
-
-
+                Cell cell = cellList[i];
+                if (cell.IsPointIn(point))
+                    return cell;
             }
-            else
-            {
-              // 5. 如果该相邻节点在开放列表中, 
-              //    则判断若经由当前节点到达该相邻节点的G值是否小于原来保存的G值,
-              //    若小于,则将该相邻节点的父节点设为当前节点,并重新设置该相邻节点的G和F值
-              if (adjacent_tmp.is_open) //已经在openList中
-              {
-                //计算G值
-                //当前的g值+（当前边的进入边的中点-当前边出边的中点）的距离
-                Vector2 p1;
-                if (curr_node == end_cell)
-                  p1 = end_pos;
-                else
-                  p1 = curr_node.lineList[curr_node.arrival_wall].center;
-                float increase_g = adjacent_tmp.ComputeGIncrease(p1, curr_node.lineList[i].center);
 
-                if (curr_node.g + increase_g < adjacent_tmp.g)
+            return null;
+        }
+
+        public List<Vector2> FindPath(Vector2 startPoint, Vector2 endPoint)
+        {
+            pathSessionId++;
+
+            Vector2 startPos = startPoint;
+            Vector2 endPos = endPoint;
+            Cell startCell = FindClosestCell(startPos);
+            Cell endCell = FindClosestCell(endPos);
+            if (startCell == null || endCell == null)
+                return null;
+
+            var outPath = Equals(startCell, endCell)
+                ? new List<Vector2> {startPoint, endPoint}
+                : BuildPath(startCell, startPos, endCell, endPos);
+
+            return outPath;
+        }
+
+        /// <summary>
+        /// 构建路径
+        /// </summary>
+        /// <param name="startCell"></param>
+        /// <param name="startPos"></param>
+        /// <param name="endCell"></param>
+        /// <param name="endPos"></param>
+        /// <returns></returns>
+        public List<Vector2> BuildPath(Cell startCell, Vector2 startPos,
+            Cell endCell, Vector2 endPos)
+        {
+            openList.Clear();
+            closedList.Clear();
+
+            endCell.g = 0;
+            endCell.ComputeH(endPos, startPos);
+            endCell.ComputeF();
+
+            endCell.isOpen = false;
+            endCell.parent = null;
+            endCell.sessionId = pathSessionId;
+            openList.Push(endCell);
+
+            bool isFoundPath = false; //是否找到路径
+            Cell currNode; //当前节点
+            Cell adjacentTmp = null; //当前节点的邻接三角型
+            while (openList.Size > 0)
+            {
+                // 1. 把当前节点从开放列表删除, 加入到封闭列表
+                currNode = openList.Pop();
+                closedList.Add(currNode);
+
+                //路径是在同一个三角形内
+                if (currNode == startCell)
                 {
-                  adjacent_tmp.g = curr_node.g;
-                  adjacent_tmp.parent = curr_node;
-
-                  // remember the side this caller is entering from
-                  adjacent_tmp.SetAndGetArrivalWall(curr_node.index);
-
-                  //重新设置在heap中的位置
-                  open_list.Remove(adjacent_tmp);
-                  open_list.Push(adjacent_tmp);
+                    isFoundPath = true;
+                    break;
                 }
-              }
-              else //已在closeList中
-              {
-                adjacent_tmp = null;
-                continue;
-              }
+
+                // 2. 对当前节点相邻的每一个节点依次执行以下步骤:
+                //所有邻接三角型
+                int adjacentId;
+                for (int i = 0; i < 3; i++)
+                {
+                    adjacentId = currNode.linkList[i];
+                    // 3. 如果该相邻节点不可通行或者该相邻节点已经在封闭列表中,
+                    //    则什么操作也不执行,继续检验下一个节点;
+                    if (adjacentId < 0) //不能通过
+
+                        continue;
+                    adjacentTmp = cellList[adjacentId];
+
+                    if (adjacentTmp != null)
+                    {
+                        if (adjacentTmp.sessionId != pathSessionId)
+                        {
+                            // 4. 如果该相邻节点不在开放列表中,则将该节点添加到开放列表中, 
+                            //    并将该相邻节点的父节点设为当前节点,同时保存该相邻节点的G和F值;
+                            adjacentTmp.sessionId = pathSessionId;
+                            adjacentTmp.parent = currNode;
+                            adjacentTmp.isOpen = true;
+
+                            // remember the side this caller is entering from
+                            adjacentTmp.SetAndGetArrivalWall(currNode.index);
+
+                            //计算G值
+                            //当前的g值+（当前边的进入边的中点-当前边出边的中点）的距离
+                            var p1 = Equals(currNode, endCell)
+                                ? endPos
+                                : currNode.lineList[currNode.arrivalWall].center;
+                            adjacentTmp.g =
+                                currNode.g + adjacentTmp.ComputeGIncrease(p1, currNode.lineList[i].center);
+
+                            //计算H值
+                            adjacentTmp.ComputeH(adjacentTmp.lineList[adjacentTmp.arrivalWall].center, startPos);
+                            //计算F值
+                            adjacentTmp.ComputeF();
+
+                            //放入开放列表并排序
+                            openList.Push(adjacentTmp);
+                        }
+                        else
+                        {
+                            // 5. 如果该相邻节点在开放列表中, 
+                            //    则判断若经由当前节点到达该相邻节点的G值是否小于原来保存的G值,
+                            //    若小于,则将该相邻节点的父节点设为当前节点,并重新设置该相邻节点的G和F值
+                            if (adjacentTmp.isOpen) //已经在openList中
+                            {
+                                //计算G值
+                                //当前的g值+（当前边的进入边的中点-当前边出边的中点）的距离
+                                var p1 = Equals(currNode, endCell)
+                                    ? endPos
+                                    : currNode.lineList[currNode.arrivalWall].center;
+                                float increaseG = adjacentTmp.ComputeGIncrease(p1, currNode.lineList[i].center);
+
+                                if (currNode.g + increaseG < adjacentTmp.g)
+                                {
+                                    adjacentTmp.g = currNode.g;
+                                    adjacentTmp.parent = currNode;
+
+                                    // remember the side this caller is entering from
+                                    adjacentTmp.SetAndGetArrivalWall(currNode.index);
+
+                                    //重新设置在heap中的位置
+                                    openList.Remove(adjacentTmp);
+                                    openList.Push(adjacentTmp);
+                                }
+                            }
+                            else //已在closeList中
+                            {
+                                adjacentTmp = null;
+                                continue;
+                            }
+                        }
+                    }
+                }
             }
-          }
-        }
-      }
 
-      //由网格路径生成路径
+            //由网格路径生成路径
 
-      if (is_found_path)
-      {
-        return GetPath(start_pos, end_pos);
-      }
-      else
-      {
-        return null;
-      }
+            return isFoundPath ? GetPath(startPos, endPos) : null;
 
-      /*返回cell
-          List<Vector2> ret = new List<Vector2>();
-          foreach (Cell cell in GetCellPath())
-          {
-              ret.Add(cell.Center);
-          }
-          return ret;
-           * */
-    }
-
-    #endregion
-
-    #region private method
-
-    /// <summary>
-    /// 根据经过的三角形返回路径点(下一个拐角点法)
-    /// </summary>
-    /// <param name="start"></param>
-    /// <param name="end"></param>
-    /// <returns></returns>
-    private List<Vector2> GetPath(Vector2 start, Vector2 end)
-    {
-      //经过的三角形
-      List<Cell> cellPath = GetCellPath();
-      //没有路径
-      if (cellPath == null || cellPath.Count == 0)
-      {
-        return null;
-      }
-
-      //保存最终的路径
-      List<Vector2> path = new List<Vector2>();
-
-      //开始点
-      path.Add(start);
-      //起点与终点在同一三角形中
-      if (cellPath.Count == 1)
-      {
-        path.Add(end); //结束点
-        return path;
-      }
-
-      //获取路点
-      WayPoint wayPoint = new WayPoint(cellPath[0], start);
-      while (!wayPoint.position.Equals(end))
-      {
-        wayPoint = this.GetFurthestWayPoint(wayPoint, cellPath, end);
-        path.Add(wayPoint.position);
-      }
-
-      return path;
-    }
-
-    /// <summary>
-    /// 路径经过的网格	
-    /// </summary>
-    /// <returns></returns>
-    private List<Cell> GetCellPath()
-    {
-      List<Cell> path = new List<Cell>();
-      if (closed_list.IsNullOrEmpty())
-        return null;
-      Cell st = closed_list[closed_list.Count - 1];
-      path.Add(st);
-
-      while (st.parent != null)
-      {
-        path.Add(st.parent);
-        st = st.parent;
-      }
-
-      return path;
-    }
-
-    /// <summary>
-    /// 下一个拐点 wayPoint 当前所在路点 cellPath 网格路径 end 终点	
-    /// </summary>
-    /// <param name="wayPoint"></param>
-    /// <param name="cell_path"></param>
-    /// <param name="end"></param>
-    /// <returns></returns>
-    private WayPoint GetFurthestWayPoint(WayPoint wayPoint, List<Cell> cell_path, Vector2 end)
-    {
-      Vector2 start_point = wayPoint.position; //当前所在路径点
-      Cell cell = wayPoint.cell;
-      Cell last_cell = cell;
-      int start_index = cell_path.IndexOf(cell); //开始路点所在的网格索引
-      Line outside = cell.lineList[cell.arrival_wall]; //路径线在网格中的穿出边
-      Vector2 last_point_A = outside.pointA;
-      Vector2 last_point_B = outside.pointB;
-      Line last_line_A = new Line(start_point, last_point_A);
-      Line last_line_B = new Line(start_point, last_point_B);
-      Vector2 test_point_A, test_point_B; //要测试的点
-
-      Cell last_point_cell_A = last_cell;
-      Cell last_point_cell_B = last_cell;
-
-
-
-      for (int i = start_index + 1; i < cell_path.Count; i++)
-      {
-        cell = cell_path[i];
-        outside = cell.lineList[cell.arrival_wall];
-        if (i == cell_path.Count - 1)
-        {
-          test_point_A = end;
-          test_point_B = end;
-        }
-        else
-        {
-          test_point_A = outside.pointA;
-          test_point_B = outside.pointB;
+            /*返回cell
+                List<Vector2> ret = new List<Vector2>();
+                foreach (Cell cell in GetCellPath())
+                {
+                    ret.Add(cell.Center);
+                }
+                return ret;
+                 * */
         }
 
-        if (!last_point_A.Equals(test_point_A))
+
+        /// <summary>
+        /// 根据经过的三角形返回路径点(下一个拐角点法)
+        /// </summary>
+        /// <param name="start"></param>
+        /// <param name="end"></param>
+        /// <returns></returns>
+        private List<Vector2> GetPath(Vector2 start, Vector2 end)
         {
-          if (last_line_B.ClassifyPoint(test_point_A) == PointClassification.RightSide)
-          {
-            //路点
-            return new WayPoint(last_point_cell_B, last_point_B);
-          }
-          else
-          {
-            if (last_line_A.ClassifyPoint(test_point_A) != PointClassification.LeftSide)
+            //经过的三角形
+            List<Cell> cellPath = GetCellPath();
+            //没有路径
+            if (cellPath == null || cellPath.Count == 0)
+                return null;
+
+            //保存最终的路径
+            List<Vector2> path = new List<Vector2>();
+
+            //开始点
+            path.Add(start);
+            //起点与终点在同一三角形中
+            if (cellPath.Count == 1)
             {
-              last_point_A = test_point_A;
-              last_point_cell_A = cell;
-              //重设直线
-              //						lastLineA.PointB = lastPtA;
-              //						lastLineB.PointB = lastPtB;
-              last_line_A = new Line(last_line_A.pointA, last_point_A);
-              last_line_B = new Line(last_line_B.pointA, last_point_B);
+                path.Add(end); //结束点
+                return path;
             }
-          }
-        }
 
-        if (!last_point_B.Equals(test_point_B))
-        {
-          if (last_line_A.ClassifyPoint(test_point_B) == PointClassification.LeftSide)
-          {
-            //路径点
-            return new WayPoint(last_point_cell_A, last_point_A);
-          }
-          else
-          {
-            if (last_line_B.ClassifyPoint(test_point_B) != PointClassification.RightSide)
+            //获取路点
+            WayPoint wayPoint = new WayPoint(cellPath[0], start);
+            while (!wayPoint.position.Equals(end))
             {
-              last_point_B = test_point_B;
-              last_point_cell_B = cell;
-              //重设直线
-              //						lastLineA.PointB = lastPtA;
-              //						lastLineB.PointB = lastPtB;
-              last_line_A = new Line(last_line_A.pointA, last_point_A);
-              last_line_B = new Line(last_line_B.pointA, last_point_B);
+                wayPoint = this.GetFurthestWayPoint(wayPoint, cellPath, end);
+                path.Add(wayPoint.position);
             }
-          }
+
+            return path;
         }
-      }
 
-      return new WayPoint(cell_path[cell_path.Count - 1], end); //终点
+        /// <summary>
+        /// 路径经过的网格	
+        /// </summary>
+        /// <returns></returns>
+        private List<Cell> GetCellPath()
+        {
+            List<Cell> path = new List<Cell>();
+            if (closedList.IsNullOrEmpty())
+                return null;
+            Cell st = closedList[closedList.Count - 1];
+            path.Add(st);
+
+            while (st.parent != null)
+            {
+                path.Add(st.parent);
+                st = st.parent;
+            }
+
+            return path;
+        }
+
+        /// <summary>
+        /// 下一个拐点 wayPoint 当前所在路点 cellPath 网格路径 end 终点	
+        /// </summary>
+        /// <param name="wayPoint"></param>
+        /// <param name="cellPath"></param>
+        /// <param name="endPos"></param>
+        /// <returns></returns>
+        private WayPoint GetFurthestWayPoint(WayPoint wayPoint, List<Cell> cellPath, Vector2 endPos)
+        {
+            Vector2 startPoint = wayPoint.position; //当前所在路径点
+            Cell cell = wayPoint.cell;
+            Cell lastCell = cell;
+            int startIndex = cellPath.IndexOf(cell); //开始路点所在的网格索引
+            Line outside = cell.lineList[cell.arrivalWall]; //路径线在网格中的穿出边
+            Vector2 lastPointA = outside.pointA;
+            Vector2 lastPointB = outside.pointB;
+            Line lastLineA = new Line(startPoint, lastPointA);
+            Line lastLineB = new Line(startPoint, lastPointB);
+            Vector2 testPointA, testPointB; //要测试的点
+
+            Cell lastPointCellA = lastCell;
+            Cell lastPointCellB = lastCell;
+
+
+            for (int i = startIndex + 1; i < cellPath.Count; i++)
+            {
+                cell = cellPath[i];
+                outside = cell.lineList[cell.arrivalWall];
+                if (i == cellPath.Count - 1)
+                {
+                    testPointA = endPos;
+                    testPointB = endPos;
+                }
+                else
+                {
+                    testPointA = outside.pointA;
+                    testPointB = outside.pointB;
+                }
+
+                if (!lastPointA.Equals(testPointA))
+                {
+                    if (lastLineB.ClassifyPoint(testPointA) == PointClassification.RightSide)
+                        //路点
+                        return new WayPoint(lastPointCellB, lastPointB);
+                    if (lastLineA.ClassifyPoint(testPointA) != PointClassification.LeftSide)
+                    {
+                        lastPointA = testPointA;
+                        lastPointCellA = cell;
+                        //重设直线
+                        //lastLineA.PointB = lastPtA;
+                        //lastLineB.PointB = lastPtB;
+                        lastLineA = new Line(lastLineA.pointA, lastPointA);
+                        lastLineB = new Line(lastLineB.pointA, lastPointB);
+                    }
+                }
+
+                if (!lastPointB.Equals(testPointB))
+                {
+                    if (lastLineA.ClassifyPoint(testPointB) == PointClassification.LeftSide)
+                        //路径点
+                        return new WayPoint(lastPointCellA, lastPointA);
+
+                    if (lastLineB.ClassifyPoint(testPointB) != PointClassification.RightSide)
+                    {
+                        lastPointB = testPointB;
+                        lastPointCellB = cell;
+                        //重设直线
+                        //lastLineA.PointB = lastPtA;
+                        //lastLineB.PointB = lastPtB;
+                        lastLineA = new Line(lastLineA.pointA, lastPointA);
+                        lastLineB = new Line(lastLineB.pointA, lastPointB);
+                    }
+                }
+            }
+
+            return new WayPoint(cellPath[cellPath.Count - 1], endPos); //终点
+        }
     }
-
-    #endregion
-
-
-
-
-  }
 }
