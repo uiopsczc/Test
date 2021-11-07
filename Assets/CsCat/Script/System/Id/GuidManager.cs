@@ -1,24 +1,22 @@
-
-
 namespace CsCat
 {
-  public class GuidManager
-  {
-    public ulong key_number;
-
-    public GuidManager(ulong current_key_number)
+    public class GuidManager
     {
-      this.key_number = current_key_number;
-    }
+        public ulong keyNumber;
 
-    public GuidManager()
-    {
-    }
+        public GuidManager(ulong currentKeyNumber)
+        {
+            this.keyNumber = currentKeyNumber;
+        }
 
-    public string NewGuid(string id = null)
-    {
-      key_number++;
-      return (id.IsNullOrWhiteSpace() ? "" : id) + IdConst.Rid_Infix + key_number;
+        public GuidManager()
+        {
+        }
+
+        public string NewGuid(string id = null)
+        {
+            keyNumber++;
+            return (id.IsNullOrWhiteSpace() ? StringConst.String_Empty : id) + IdConst.Rid_Infix + keyNumber;
+        }
     }
-  }
 }

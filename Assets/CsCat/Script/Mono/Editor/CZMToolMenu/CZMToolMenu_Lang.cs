@@ -21,7 +21,7 @@ namespace CsCat
       ApplyToUIPrefabs();
       AssetDatabase.Refresh();
       AssetDatabase.SaveAssets();
-      Lang.is_inited = false;
+      Lang.isInited = false;
     }
 
     [MenuItem(CZMToolConst.MenuRoot + "多语言/切换到默认")]
@@ -91,7 +91,7 @@ namespace CsCat
         return true;
       s = s.Trim();
       for (var i = 0; i < s.Length - 1; i++)
-        if (!LangConst.char_exclude_dict.ContainsKey(s[i]))
+        if (!LangConst.Char_Exclude_Dict.ContainsKey(s[i]))
           return false;
       return true;
     }

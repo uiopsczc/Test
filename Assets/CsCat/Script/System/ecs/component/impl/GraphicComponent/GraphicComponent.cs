@@ -1,42 +1,41 @@
 namespace CsCat
 {
-  public partial class GraphicComponent : GameComponent
-  {
-    private ResLoadComponentPlugin resLoadComponentPlugin;
-    public void Init(ResLoadComponent resLoadComponent)
+    public partial class GraphicComponent : GameComponent
     {
-      base.Init();
-      resLoadComponentPlugin = new ResLoadComponentPlugin(resLoadComponent);
-      this.AddListener(GetGameEntity().eventDispatchers,ECSEventNameConst.OnAllAssetsLoadDone, OnAllAssetsLoadDone);
+        private ResLoadComponentPlugin resLoadComponentPlugin;
+
+        public void Init(ResLoadComponent resLoadComponent)
+        {
+            base.Init();
+            resLoadComponentPlugin = new ResLoadComponentPlugin(resLoadComponent);
+            this.AddListener(GetGameEntity().eventDispatchers, ECSEventNameConst.OnAllAssetsLoadDone,
+                OnAllAssetsLoadDone);
+        }
+
+        protected override void _Reset()
+        {
+            base._Reset();
+            resLoadComponentPlugin.Destroy();
+            DestroyGameObject();
+        }
+
+        protected override void _Destroy()
+        {
+            base._Destroy();
+            resLoadComponentPlugin.Destroy();
+            DestroyGameObject();
+
+
+            resLoadComponentPlugin = null;
+
+            parentTransform = null;
+            gameObject = null;
+            isNotDestroyGameObject = false;
+            prefab = null;
+            _prefabPath = null;
+            prefabAssetCat = null;
+            isLoadDone = false;
+            isHide = false;
+        }
     }
-
-    protected override void _Reset()
-    {
-      base._Reset();
-      resLoadComponentPlugin.Destroy();
-      DestroyGameObject();
-    }
-
-    protected override void _Destroy()
-    {
-      base._Destroy();
-      resLoadComponentPlugin.Destroy();
-      DestroyGameObject();
-
-
-
-      resLoadComponentPlugin = null;
-
-      parent_transform = null;
-      gameObject = null;
-      is_not_destroy_gameObject = false;
-      prefab = null;
-      _prefab_path = null;
-      prefab_assetCat = null;
-      is_load_done = false;
-      is_hide = false;
-
-    }
-
-  }
 }

@@ -2,93 +2,102 @@ using System.Collections.Generic;
 
 namespace CsCat
 {
-  public class TickObject : GameEntity
-  {
-    protected override bool is_not_delete_child_relationship_immediately => true;
-
-    protected override bool is_not_delete_component_relationShip_immediately => true;
-
-    public TickObject parent_tickObject
+    public class TickObject : GameEntity
     {
-      get { return cache.GetOrAddDefault("parent_tickObject", () => parent as TickObject); }
+        private TickObject child;
+        private AbstractComponent component;
+        public bool isCanNotUpdate = false;
+
+        protected override bool isNotDeleteChildRelationshipImmediately => true;
+
+        protected override bool isNotDeleteComponentRelationShipImmediately => true;
+
+        public TickObject parentTickObject => cache.GetOrAddDefault("parent_tickObject", () => parent as TickObject);
+
+
+        public override bool IsCanUpdate()
+        {
+            return !isCanNotUpdate && base.IsCanUpdate();
+        }
+
+
+        public virtual void Update(float deltaTime = 0, float unscaledDeltaTime = 0)
+        {
+            if (!this.IsCanUpdate()) return;
+            for (var i = 0; i < childKeyList.Count; i++)
+            {
+                var childKey = childKeyList[i];
+                child = GetChild(childKey) as TickObject;
+                child?.Update(deltaTime, unscaledDeltaTime);
+            }
+
+            foreach (var componentKey in componentKeyList)
+            {
+                component = GetComponent(componentKey);
+                component?.Update(deltaTime, unscaledDeltaTime);
+            }
+
+            _Update(deltaTime, unscaledDeltaTime);
+        }
+
+        public virtual void FixedUpdate(float deltaTime = 0, float unscaledDeltaTime = 0)
+        {
+            if (!this.IsCanUpdate()) return;
+            for (var i = 0; i < childKeyList.Count; i++)
+            {
+                var childKey = childKeyList[i];
+                child = GetChild(childKey) as TickObject;
+                child?.FixedUpdate(deltaTime, unscaledDeltaTime);
+            }
+
+            for (var i = 0; i < componentKeyList.Count; i++)
+            {
+                var componentKey = componentKeyList[i];
+                component = GetComponent(componentKey);
+                component?.FixedUpdate(deltaTime, unscaledDeltaTime);
+            }
+
+            _FixedUpdate(deltaTime, unscaledDeltaTime);
+        }
+
+
+        public virtual void LateUpdate(float deltaTime = 0, float unscaledDeltaTime = 0)
+        {
+            if (!this.IsCanUpdate()) return;
+            for (var i = 0; i < childKeyList.Count; i++)
+            {
+                var childKey = childKeyList[i];
+                child = GetChild(childKey) as TickObject;
+                child?.LateUpdate(deltaTime, unscaledDeltaTime);
+            }
+
+            for (var i = 0; i < componentKeyList.Count; i++)
+            {
+                var componentKey = componentKeyList[i];
+                component = GetComponent(componentKey);
+                component?.LateUpdate(deltaTime, unscaledDeltaTime);
+            }
+
+            _LateUpdate(deltaTime, unscaledDeltaTime);
+        }
+
+
+        protected virtual void _Update(float deltaTime = 0, float unscaledDeltaTime = 0)
+        {
+        }
+
+        protected virtual void _FixedUpdate(float deltaTime = 0, float unscaledDeltaTime = 0)
+        {
+        }
+
+        protected virtual void _LateUpdate(float deltaTime = 0, float unscaledDeltaTime = 0)
+        {
+        }
+
+        protected override void _Destroy()
+        {
+            base._Destroy();
+            isCanNotUpdate = false;
+        }
     }
-
-    public bool is_can_not_update = false;
-
-    public override bool IsCanUpdate()
-    {
-      return !is_can_not_update && base.IsCanUpdate();
-    }
-
-    private TickObject child;
-    private AbstractComponent component;
-
-    public virtual void Update(float deltaTime = 0, float unscaledDeltaTime = 0)
-    {
-      if (!this.IsCanUpdate()) return;
-      foreach (var child_key in child_key_list)
-      {
-        child = GetChild(child_key) as TickObject;
-        child?.Update(deltaTime, unscaledDeltaTime);
-      }
-      foreach (var component_key in component_key_list)
-      {
-        component = GetComponent(component_key);
-        component?.Update(deltaTime, unscaledDeltaTime);
-      }
-      __Update(deltaTime, unscaledDeltaTime);
-    }
-
-    public virtual void FixedUpdate(float deltaTime = 0, float unscaledDeltaTime = 0)
-    {
-      if (!this.IsCanUpdate()) return;
-      foreach (var child_key in child_key_list)
-      {
-        child = GetChild(child_key) as TickObject;
-        child?.FixedUpdate(deltaTime, unscaledDeltaTime);
-      }
-      foreach (var component_key in component_key_list)
-      {
-        component = GetComponent(component_key);
-        component?.FixedUpdate(deltaTime, unscaledDeltaTime);
-      }
-      __FixedUpdate(deltaTime, unscaledDeltaTime);
-    }
-
-
-    public virtual void LateUpdate(float deltaTime = 0, float unscaledDeltaTime = 0)
-    {
-      if (!this.IsCanUpdate()) return;
-      foreach (var child_key in child_key_list)
-      {
-        child = GetChild(child_key) as TickObject;
-        child?.LateUpdate(deltaTime, unscaledDeltaTime);
-      }
-      foreach (var component_key in component_key_list)
-      {
-        component = GetComponent(component_key);
-        component?.LateUpdate(deltaTime, unscaledDeltaTime);
-      }
-      __LateUpdate(deltaTime, unscaledDeltaTime);
-    }
-
-
-    protected virtual void __Update(float deltaTime = 0, float unscaledDeltaTime = 0)
-    {
-    }
-
-    protected virtual void __FixedUpdate(float deltaTime = 0, float unscaledDeltaTime = 0)
-    {
-    }
-
-    protected virtual void __LateUpdate(float deltaTime = 0, float unscaledDeltaTime = 0)
-    {
-    }
-
-    protected override void __Destroy()
-    {
-      base.__Destroy();
-      is_can_not_update = false;
-    }
-  }
 }

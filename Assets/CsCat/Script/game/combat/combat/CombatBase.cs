@@ -85,21 +85,21 @@ namespace CsCat
       }
     }
 
-    protected override void __Update(float deltaTime = 0, float unscaledDeltaTime = 0)
+    protected override void _Update(float deltaTime = 0, float unscaledDeltaTime = 0)
     {
-      base.__Update(deltaTime, unscaledDeltaTime);
+      base._Update(deltaTime, unscaledDeltaTime);
       this.timerManager.Update(deltaTime, unscaledDeltaTime);
     }
 
-    protected override void __LateUpdate(float deltaTime = 0, float unscaledDeltaTime = 0)
+    protected override void _LateUpdate(float deltaTime = 0, float unscaledDeltaTime = 0)
     {
-      base.__LateUpdate(deltaTime, unscaledDeltaTime);
+      base._LateUpdate(deltaTime, unscaledDeltaTime);
       this.timerManager.Update(deltaTime, unscaledDeltaTime);
     }
 
-    protected override void __FixedUpdate(float deltaTime = 0, float unscaledDeltaTime = 0)
+    protected override void _FixedUpdate(float deltaTime = 0, float unscaledDeltaTime = 0)
     {
-      base.__FixedUpdate(deltaTime, unscaledDeltaTime);
+      base._FixedUpdate(deltaTime, unscaledDeltaTime);
       this.timerManager.FixedUpdate(deltaTime, unscaledDeltaTime);
     }
 

@@ -25,9 +25,9 @@ namespace CsCat
       SetGroupVolume("Master", GameData.instance.audioData.volume);
     }
 
-    protected override void __Update(float deltaTime = 0, float unscaledDeltaTime = 0)
+    protected override void _Update(float deltaTime = 0, float unscaledDeltaTime = 0)
     {
-      base.__Update(deltaTime, unscaledDeltaTime);
+      base._Update(deltaTime, unscaledDeltaTime);
       for (var i = playing_audioSource_list.Count - 1; i >= 0; i--)
       {
         var playing_audioSource = playing_audioSource_list[i];

@@ -90,9 +90,9 @@ namespace CsCat
     }
 
     //需要手动释放
-    protected override void __Destroy()
+    protected override void _Destroy()
     {
-      base.__Destroy();
+      base._Destroy();
       assetBundleLoader = null;
     }
   }

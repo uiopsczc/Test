@@ -35,9 +35,9 @@ namespace CsCat
       }
     }
 
-    protected override void __Destroy()
+    protected override void _Destroy()
     {
-      base.__Destroy();
+      base._Destroy();
       foreach (var pool_name in gameObject_pool_name_list)
       {
         PoolCatManagerUtil.RemovePool(pool_name);

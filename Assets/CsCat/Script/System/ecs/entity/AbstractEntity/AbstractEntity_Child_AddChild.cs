@@ -3,79 +3,77 @@ using System.Collections.Generic;
 
 namespace CsCat
 {
-  public partial class AbstractEntity
-  {
-    public AbstractEntity AddChildWithoutInit(string child_key, Type child_type)
+    public partial class AbstractEntity
     {
-      if (child_key != null && key_to_child_dict.ContainsKey(child_key))
-      {
-        LogCat.error("duplicate add child:{0},{1}", child_key, child_type);
-        return null;
-      }
-
-      bool is_key_using_parent_idPool = child_key == null;
-      if (is_key_using_parent_idPool)
-      {
-        child_key = child_key_idPool.Get().ToString();
-        //再次检查键值
-        if (key_to_child_dict.ContainsKey(child_key))
+        public AbstractEntity AddChildWithoutInit(string childKey, Type childType)
         {
-          LogCat.error("duplicate add child:{0},{1}", child_key, child_type);
-          return null;
+            if (childKey != null && keyToChildDict.ContainsKey(childKey))
+            {
+                LogCat.error("duplicate add child:{0},{1}", childKey, childType);
+                return null;
+            }
+
+            bool isKeyUsingParentIdPool = childKey == null;
+            if (isKeyUsingParentIdPool)
+            {
+                childKey = childKeyIdPool.Get().ToString();
+                //再次检查键值
+                if (keyToChildDict.ContainsKey(childKey))
+                {
+                    LogCat.error("duplicate add child:{0},{1}", childKey, childType);
+                    return null;
+                }
+            }
+
+            var child = PoolCatManagerUtil.Spawn(childType) as AbstractEntity;
+            child.key = childKey;
+            child.isKeyUsingParentIdPool = isKeyUsingParentIdPool;
+            return AddChild(child);
         }
-      }
 
-      var child = PoolCatManagerUtil.Spawn(child_type) as AbstractEntity;
-      child.key = child_key;
-      child.is_key_using_parent_idPool = is_key_using_parent_idPool;
-      return AddChild(child);
+        public T AddChildWithoutInit<T>(string childKey) where T : AbstractEntity
+        {
+            return AddChildWithoutInit(childKey, typeof(T)) as T;
+        }
+
+        public AbstractEntity AddChild(AbstractEntity child)
+        {
+            if (keyToChildDict.ContainsKey(child.key))
+            {
+                LogCat.error("duplicate add child:{0}", child.key, child.GetType());
+                return null;
+            }
+
+            child._parent = this;
+            __AddChildRelationship(child);
+            return child;
+        }
+
+        public virtual AbstractEntity AddChild(string childKey, Type childType, params object[] initArgs)
+        {
+            var child = AddChildWithoutInit(childKey, childType);
+            if (child == null) //没有加成功
+                return null;
+            child.InvokeMethod("Init", false, initArgs);
+            child.PostInit();
+            child.SetIsEnabled(true, false);
+            return child;
+        }
+
+        public T AddChild<T>(string childKey, params object[] initArgs) where T : AbstractEntity
+        {
+            return AddChild(childKey, typeof(T), initArgs) as T;
+        }
+
+
+        void __AddChildRelationship(AbstractEntity child)
+        {
+            keyToChildDict[child.key] = child;
+            typeToChildListDict.GetOrAddDefault(child.GetType(), () => PoolCatManagerUtil.Spawn<List<AbstractEntity>>())
+                .Add(child);
+            childKeyList.Add(child.key);
+            if (!childTypeList.Contains(child.GetType()))
+                childTypeList.Add(child.GetType());
+        }
     }
-
-    public T AddChildWithoutInit<T>(string child_key) where T : AbstractEntity
-    {
-      return AddChildWithoutInit(child_key, typeof(T)) as T;
-    }
-
-    public AbstractEntity AddChild(AbstractEntity child)
-    {
-      if (key_to_child_dict.ContainsKey(child.key))
-      {
-        LogCat.error("duplicate add child:{0}", child.key, child.GetType());
-        return null;
-      }
-
-      child._parent = this;
-      __AddChildRelationship(child);
-      return child;
-    }
-
-    public virtual AbstractEntity AddChild(string child_key, Type child_type, params object[] init_args)
-    {
-      var child = AddChildWithoutInit(child_key, child_type);
-      if (child == null) //没有加成功
-        return null;
-      child.InvokeMethod("Init", false, init_args);
-      child.PostInit();
-      child.SetIsEnabled(true, false);
-      return child;
-    }
-
-    public T AddChild<T>(string child_key, params object[] init_args) where T : AbstractEntity
-    {
-      return AddChild(child_key, typeof(T), init_args) as T;
-    }
-
-    
-
-    void __AddChildRelationship(AbstractEntity child)
-    {
-      key_to_child_dict[child.key] = child;
-      type_to_childList_dict.GetOrAddDefault(child.GetType(), () => PoolCatManagerUtil.Spawn<List<AbstractEntity>>()).Add(child);
-      child_key_list.Add(child.key);
-      if (!child_type_list.Contains(child.GetType()))
-        child_type_list.Add(child.GetType());
-    }
-
-    
-  }
 }

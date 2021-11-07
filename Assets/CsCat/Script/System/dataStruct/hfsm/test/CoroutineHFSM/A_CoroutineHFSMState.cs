@@ -11,9 +11,9 @@ namespace CsCat
       LogCat.log("Enter A_CoroutineHFSMState", this.key);
     }
 
-    protected override void __Update(float deltaTime = 0, float unscaledDeltaTime = 0)
+    protected override void _Update(float deltaTime = 0, float unscaledDeltaTime = 0)
     {
-      base.__Update(deltaTime, unscaledDeltaTime);
+      base._Update(deltaTime, unscaledDeltaTime);
       LogCat.log("Execute A_CoroutineHFSMState", this.key);
     }
 

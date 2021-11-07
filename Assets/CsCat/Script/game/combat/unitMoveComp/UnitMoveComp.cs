@@ -23,9 +23,9 @@ namespace CsCat
       this.unitMoveInfo.end_rotation = this.unit.GetRotation();
     }
 
-    protected override void __Update(float deltaTime = 0, float unscaledDeltaTime = 0)
+    protected override void _Update(float deltaTime = 0, float unscaledDeltaTime = 0)
     {
-      base.__Update(deltaTime, unscaledDeltaTime);
+      base._Update(deltaTime, unscaledDeltaTime);
       this.__UpdateMove(deltaTime);
 
       //    if (this.unitLookAtInfo.HasLookAt())

@@ -6,39 +6,38 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public partial class GameComponent
-  {
-    protected DOTweenPlugin dotweenPlugin = new DOTweenPlugin();
-
-    public Sequence AddDOTweenSequence(string key)
+    public partial class GameComponent
     {
-      return dotweenPlugin.AddDOTweenSequence(key);
-    }
+        protected DOTweenPlugin dotweenPlugin = new DOTweenPlugin();
 
-    public Tween AddDOTween(string key, Tween tween)
-    {
-      return dotweenPlugin.AddDOTween(key, tween);
-    }
+        public Sequence AddDOTweenSequence(string key)
+        {
+            return dotweenPlugin.AddDOTweenSequence(key);
+        }
 
-    public void RemoveDOTween(string key)
-    {
-      dotweenPlugin.RemoveDOTween(key);
-    }
+        public Tween AddDOTween(string key, Tween tween)
+        {
+            return dotweenPlugin.AddDOTween(key, tween);
+        }
 
-    public void RemoveDOTween(Tween tween)
-    {
-      dotweenPlugin.RemoveDOTween(tween);
-    }
+        public void RemoveDOTween(string key)
+        {
+            dotweenPlugin.RemoveDOTween(key);
+        }
 
-    public void RemoveAllDOTweens()
-    {
-      dotweenPlugin.RemoveDOTweens();
-    }
+        public void RemoveDOTween(Tween tween)
+        {
+            dotweenPlugin.RemoveDOTween(tween);
+        }
 
-    public void SetIsPaused_DOTweens(bool is_paused)
-    {
-      dotweenPlugin.SetIsPaused(is_paused);
-    }
+        public void RemoveAllDOTweens()
+        {
+            dotweenPlugin.RemoveDOTweens();
+        }
 
-  }
+        public void SetIsPaused_DOTweens(bool isPaused)
+        {
+            dotweenPlugin.SetIsPaused(isPaused);
+        }
+    }
 }

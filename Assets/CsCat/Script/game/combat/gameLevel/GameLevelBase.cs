@@ -16,9 +16,9 @@ namespace CsCat
       return this.IsStarted() && !this.IsFinished() && base.IsCanUpdate();
     }
 
-    protected override void __Update(float deltaTime = 0, float unscaledDeltaTime = 0)
+    protected override void _Update(float deltaTime = 0, float unscaledDeltaTime = 0)
     {
-      base.__Update(deltaTime, unscaledDeltaTime);
+      base._Update(deltaTime, unscaledDeltaTime);
     }
 
     public bool CheckWin()

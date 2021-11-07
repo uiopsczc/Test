@@ -7,64 +7,65 @@ using UnityEngine;
 
 namespace CsCat
 {
-  // 
-  public class Lang
-  {
-    public static bool is_inited = false;
-
-    public static Dictionary<string, Dictionary<string, string>> lang_dict =
-      new Dictionary<string, Dictionary<string, string>>();
-
-    public static string GetText(string lang, params object[] args)
+    // 
+    public class Lang
     {
-      Init();
-      if (GameData.instance.langData.language == null)
-        return lang;
-      if (lang == null)
-        return lang;
-      string to_lang_escape = lang.Replace("\r\n", "\n").Replace("\r", "\n");
-      if (!lang_dict.ContainsKey(to_lang_escape))
-        return string.Format(lang, args);
-      if (!lang_dict[to_lang_escape].ContainsKey(GameData.instance.langData.language))
-        return string.Format(lang, args);
-      ;
-      if (lang_dict[to_lang_escape][GameData.instance.langData.language].IsNullOrWhiteSpace())
-        return string.Format(lang, args);
-      return string.Format(lang_dict[to_lang_escape][GameData.instance.langData.language], args);
-    }
+        public static bool isInited = false;
 
-    public static void Init()
-    {
-        is_inited = true;
-        lang_dict.Clear();
-        Dictionary<string, bool> lang_fieldName_dict = new Dictionary<string, bool>();
+        public static Dictionary<string, Dictionary<string, string>> langDict =
+            new Dictionary<string, Dictionary<string, string>>();
 
-        foreach (var propertyInfo in typeof(CfgLangData).GetProperties())
+        public static string GetText(string lang, params object[] args)
         {
-          if (!propertyInfo.Name.Equals("id"))
-            lang_fieldName_dict[propertyInfo.Name] = true;
+            Init();
+            if (GameData.instance.langData.language == null)
+                return lang;
+            if (lang == null)
+                return lang;
+            string toLangEscape = lang.Replace("\r\n", "\n").Replace("\r", "\n");
+            if (!langDict.ContainsKey(toLangEscape))
+                return string.Format(lang, args);
+            if (!langDict[toLangEscape].ContainsKey(GameData.instance.langData.language))
+                return string.Format(lang, args);
+            if (langDict[toLangEscape][GameData.instance.langData.language].IsNullOrWhiteSpace())
+                return string.Format(lang, args);
+            return string.Format(langDict[toLangEscape][GameData.instance.langData.language], args);
         }
+
+        public static void Init()
+        {
+            isInited = true;
+            langDict.Clear();
+            Dictionary<string, bool> langFieldNameDict = new Dictionary<string, bool>();
+
+            var properties = typeof(CfgLangData).GetProperties();
+            for (var i = 0; i < properties.Length; i++)
+            {
+                var propertyInfo = properties[i];
+                if (!propertyInfo.Name.Equals("id"))
+                    langFieldNameDict[propertyInfo.Name] = true;
+            }
 
 #if UNITY_EDITOR
-      var json_content = AssetDatabase.LoadAssetAtPath<TextAsset>(LangConst.Json_File_Path).text;
-      CfgLang.Instance.Parse(json_content);
+            var jsonContent = AssetDatabase.LoadAssetAtPath<TextAsset>(LangConst.Json_File_Path).text;
+            CfgLang.Instance.Parse(jsonContent);
 #endif
 
-      foreach (var cfgLangData in CfgLang.Instance.All())
+            var allCfgLangDatas = CfgLang.Instance.All();
+            for (var i = 0; i < allCfgLangDatas.Count; i++)
+            {
+                var cfgLangData = allCfgLangDatas[i];
+                var id = cfgLangData.id;
+                langDict[id] = new Dictionary<string, string>();
+                foreach (var fieldName in langFieldNameDict.Keys)
+                    langDict[id][fieldName] = cfgLangData.GetPropertyValue<string>(fieldName);
+            }
+        }
+
+        public static void Refresh()
         {
-          var id = cfgLangData.id;
-          lang_dict[id] = new Dictionary<string, string>();
-          foreach (var fieldName in lang_fieldName_dict.Keys)
-          {
-            lang_dict[id][fieldName] = cfgLangData.GetPropertyValue<string>(fieldName);
-          }
+            isInited = false;
+            Init();
         }
     }
-
-    public static void Refresh()
-    {
-      is_inited = false;
-      Init();
-    }
-  }
 }

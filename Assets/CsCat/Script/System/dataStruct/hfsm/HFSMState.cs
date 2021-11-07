@@ -59,7 +59,7 @@ namespace CsCat
 
     public override bool IsCanUpdate()
     {
-      return is_enabled && base.IsCanUpdate();
+      return isEnabled && base.IsCanUpdate();
     }
 
     public List<HFSM> GetParentHFSMList()

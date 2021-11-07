@@ -16,27 +16,33 @@ namespace CsCat
 
 		public void IRemoveListener(string eventName, object handler)
 		{
-			if (!listenerDict.ContainsKey(eventName))
-				return;
-			foreach (var handlerInfo in listenerDict[eventName])
-			{
-				if (handlerInfo.key != handler)
-					continue;
-				if (!handlerInfo.value) continue;
-				handlerInfo.value = false;
-			}
+		    if (listenerDict.TryGetValue(eventName, out var listenerList))
+		    {
+		        for (var i = 0; i < listenerList.Count; i++)
+		        {
+		            var handlerInfo = listenerList[i];
+		            if (handlerInfo.key != handler)
+		                continue;
+		            if (!handlerInfo.value) continue;
+		            handlerInfo.value = false;
+		        }
+		    }
+               
 		}
 		public bool RemoveListener(string eventName, Action<P0, P1, P2> handler)
 		{
-			if (!listenerDict.ContainsKey(eventName))
-				return false;
-			foreach (var handlerInfo in listenerDict[eventName])
-			{
-				if (handlerInfo.key != handler) continue;
-				if (!handlerInfo.value) continue;
-				handlerInfo.value = false;
-				return true;
-			}
+		    if (listenerDict.TryGetValue(eventName, out var listenerList))
+		    {
+		        for (var i = 0; i < listenerList.Count; i++)
+		        {
+		            var handlerInfo = listenerList[i];
+		            if (handlerInfo.key != handler) continue;
+		            if (!handlerInfo.value) continue;
+		            handlerInfo.value = false;
+		            return true;
+		        }
+		    }
+                
 
 			return false;
 		}
@@ -45,8 +51,11 @@ namespace CsCat
 		{
 			foreach (var handlerInfoList in listenerDict.Values)
 			{
-				foreach (var handlerInfo in handlerInfoList)
-					handlerInfo.value = false;
+			    for (var i = 0; i < handlerInfoList.Count; i++)
+			    {
+			        var handlerInfo = handlerInfoList[i];
+			        handlerInfo.value = false;
+			    }
 			}
 			CheckRemoved();
 			CheckEmpty();
@@ -54,19 +63,21 @@ namespace CsCat
 
 		public void Broadcast(string eventName, P0 p0, P1 p1, P2 p2)
 		{
-			if (!this.listenerDict.ContainsKey(eventName))
-				return;
-			int count = listenerDict[eventName].Count;
-			for (int i = 0; i < count; i++)
-			{
-				var handlerInfo = listenerDict[eventName][i];
-				if (handlerInfo.value == false)
-					continue;
-				handlerInfo.key(p0, p1, p2);
-			}
+		    if (listenerDict.TryGetValue(eventName, out var listenerList))
+		    {
+		        int count = listenerList.Count;
+		        for (int i = 0; i < count; i++)
+		        {
+		            var handlerInfo = listenerList[i];
+		            if (handlerInfo.value == false)
+		                continue;
+		            handlerInfo.key(p0, p1, p2);
+		        }
 
-			CheckRemoved();
-			CheckEmpty();
+		        CheckRemoved();
+		        CheckEmpty();
+            }
+                
 		}
 
 		private void CheckRemoved()

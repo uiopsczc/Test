@@ -72,9 +72,9 @@ namespace CsCat
       this.uiLayer.AddPanel(this);
     }
 
-    protected override void __Destroy()
+    protected override void _Destroy()
     {
-      base.__Destroy();
+      base._Destroy();
       _sortingOrder = int.MinValue;
     }
 

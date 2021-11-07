@@ -113,9 +113,9 @@ namespace CsCat
 
             //调用目标函数
             var target_methodInfo = target_methodInfoProxy.GetTargetMethodInfo();
-            var target_method_args = GetTargetMethodArgs(target_methodInfoProxy.is_target_method_add_self_arg,
+            var target_method_args = GetTargetMethodArgs(target_methodInfoProxy.isTargetMethodAddSelfArg,
                 source_method_owner,
-                target_methodInfoProxy.is_target_method_with_source_args, source_method_args);
+                target_methodInfoProxy.isTargetMethodWithSourceArgs, source_method_args);
             target_methodInfo.Invoke(aopAttributeMethodInfoProxyCategory.aopAttribute, target_method_args);
         }
 

@@ -2,28 +2,28 @@ using System;
 
 namespace CsCat
 {
-  public partial class GameComponent : AbstractComponent
-  {
-    protected override void _Reset()
+    public partial class GameComponent : AbstractComponent
     {
-      base._Reset();
-      StopAllCoroutines();
-      StopAllPausableCoroutines();
-      RemoveAllDOTweens();
-      RemoveAllTimers();
+        protected override void _Reset()
+        {
+            base._Reset();
+            StopAllCoroutines();
+            StopAllPausableCoroutines();
+            RemoveAllDOTweens();
+            RemoveAllTimers();
 
-	    RemoveAllListeners();
+            RemoveAllListeners();
+        }
+
+        protected override void _Destroy()
+        {
+            base._Destroy();
+            StopAllCoroutines();
+            StopAllPausableCoroutines();
+            RemoveAllDOTweens();
+            RemoveAllTimers();
+
+            RemoveAllListeners();
+        }
     }
-
-    protected override void _Destroy()
-    {
-      base._Destroy();
-      StopAllCoroutines();
-      StopAllPausableCoroutines();
-      RemoveAllDOTweens();
-      RemoveAllTimers();
-
-      RemoveAllListeners();
-    }
-  }
 }

@@ -2,53 +2,53 @@ using System;
 
 namespace CsCat
 {
-  public partial class AbstractComponent
-  {
-    private bool __is_destroyed;
-    public Action destroy_callback;
-
-    public bool IsDestroyed()
+    public partial class AbstractComponent
     {
-      return this.__is_destroyed;
+        private bool _isDestroyed;
+        public Action destroyCallback;
+
+        public bool IsDestroyed()
+        {
+            return this._isDestroyed;
+        }
+
+
+        public void Destroy()
+        {
+            if (IsDestroyed())
+                return;
+            SetIsEnabled(false);
+            SetIsPaused(false);
+            _Destroy();
+            _isDestroyed = true;
+            _PostDestroy();
+            cache.Clear();
+        }
+
+        protected virtual void _Destroy()
+        {
+        }
+
+        protected virtual void _PostDestroy()
+        {
+            destroyCallback?.Invoke();
+            destroyCallback = null;
+        }
+
+
+        public void OnDespawn()
+        {
+            _OnDespawn_();
+            _OnDespawn_Destroy();
+            _OnDespawn_Enable();
+            _OnDespawn_Pause();
+            _OnDespawn_Reset();
+        }
+
+        void _OnDespawn_Destroy()
+        {
+            _isDestroyed = false;
+            destroyCallback = null;
+        }
     }
-
-
-    public void Destroy()
-    {
-      if (IsDestroyed())
-        return;
-      SetIsEnabled(false);
-      SetIsPaused(false);
-      _Destroy();
-      __is_destroyed = true;
-      __PostDestroy();
-      cache.Clear();
-    }
-
-    protected virtual void _Destroy()
-    {
-    }
-
-    protected virtual void __PostDestroy()
-    {
-      destroy_callback?.Invoke();
-      destroy_callback = null;
-    }
-
-
-    public void OnDespawn()
-    {
-      __OnDespawn_();
-      __OnDespawn_Destroy();
-      __OnDespawn_Enable();
-      __OnDespawn_Pause();
-      __OnDespawn_Reset();
-    }
-
-    void __OnDespawn_Destroy()
-    {
-      __is_destroyed = false;
-      destroy_callback = null;
-    }
-  }
 }

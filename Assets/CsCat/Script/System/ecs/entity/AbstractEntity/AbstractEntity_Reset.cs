@@ -3,44 +3,45 @@ using System.Collections.Generic;
 
 namespace CsCat
 {
-  public partial class AbstractEntity
-  {
-    public Action reset_callback;
+    public partial class AbstractEntity
+    {
+        public Action resetCallback;
 
 
-    public void Reset(bool is_loop_children = false)
-    {
-      if (is_loop_children)
-        ResetAllChildren();
-      ResetAllComponents();
-      __Reset();
-      __PostReset();
-    }
-    protected virtual void __Reset()
-    {
+        public void Reset(bool isLoopChildren = false)
+        {
+            if (isLoopChildren)
+                ResetAllChildren();
+            ResetAllComponents();
+            _Reset();
+            _PostReset();
+        }
 
-    }
-    protected virtual void __PostReset()
-    {
-      reset_callback?.Invoke();
-      reset_callback = null;
-    }
+        protected virtual void _Reset()
+        {
+        }
 
-    public void ResetAllChildren()
-    {
-      foreach (var child in ForeachChild())
-        child.Reset(true);
-    }
+        protected virtual void _PostReset()
+        {
+            resetCallback?.Invoke();
+            resetCallback = null;
+        }
 
-    public void ResetAllComponents()
-    {
-      foreach (var component in ForeachComponent())
-        component.Reset();
-    }
+        public void ResetAllChildren()
+        {
+            foreach (var child in ForeachChild())
+                child.Reset(true);
+        }
 
-    void __OnDespawn_Reset()
-    {
-      reset_callback = null;
+        public void ResetAllComponents()
+        {
+            foreach (var component in ForeachComponent())
+                component.Reset();
+        }
+
+        void _OnDespawn_Reset()
+        {
+            resetCallback = null;
+        }
     }
-  }
 }

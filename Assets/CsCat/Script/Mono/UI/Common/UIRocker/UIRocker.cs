@@ -75,10 +75,10 @@ namespace CsCat
       this.is_need_response_with_set_alpha = is_need_response_with_set_alpha;
     }
 
-    protected override void __SetIsEnabled(bool is_enabled)
+    protected override void _SetIsEnabled(bool isEnabled)
     {
-      base.__SetIsEnabled(is_enabled);
-      if (!is_enabled)
+      base._SetIsEnabled(isEnabled);
+      if (!isEnabled)
         this.OnUIRockerPointerUp(null);
     }
 
@@ -113,7 +113,7 @@ namespace CsCat
 
     public void OnUIRockerPointerDown(PointerEventData eventData)
     {
-      if (!this.is_enabled)
+      if (!this.isEnabled)
         return;
       this.point_id = eventData.pointerId;
       this.uiRocker_down_pos_in_eventData = eventData.pressPosition;
@@ -133,7 +133,7 @@ namespace CsCat
     public void OnUIRockerPointerUp(PointerEventData eventData)
     {
       this.is_draging = false;
-      if (!this.is_enabled)
+      if (!this.isEnabled)
         return;
       if (eventData != null && this.point_id != eventData.pointerId)
         return;
@@ -152,7 +152,7 @@ namespace CsCat
 
     public void OnUIRockerDrag(PointerEventData eventData)
     {
-      if (!this.is_enabled)
+      if (!this.isEnabled)
         return;
       if (this.point_id != eventData.pointerId)
         return;
@@ -183,17 +183,17 @@ namespace CsCat
       this.is_draging = true;
     }
 
-    protected override void __Reset()
+    protected override void _Reset()
     {
-      base.__Reset();
+      base._Reset();
       if (graphicComponent.gameObject == null)
         return;
       this.OnUIRockerPointerUp(null);
     }
 
-    protected override void __Destroy()
+    protected override void _Destroy()
     {
-      base.__Destroy();
+      base._Destroy();
       if (graphicComponent.gameObject == null)
         return;
       this.OnUIRockerPointerUp(null);

@@ -2,28 +2,27 @@ using System;
 
 namespace CsCat
 {
-  public partial class AbstractComponent
-  {
-    private bool _is_paused;
-
-    public bool is_paused => _is_paused;
-
-    public void SetIsPaused(bool is_paused)
+    public partial class AbstractComponent
     {
-      if (_is_paused == is_paused)
-        return;
-      _is_paused = is_paused;
-      _SetIsPaused(is_paused);
-    }
+        private bool _isPaused;
 
-    protected virtual void _SetIsPaused(bool isPaused)
-    {
+        public bool isPaused => _isPaused;
 
-    }
+        public void SetIsPaused(bool isPaused)
+        {
+            if (_isPaused == isPaused)
+                return;
+            _isPaused = isPaused;
+            _SetIsPaused(isPaused);
+        }
 
-    void __OnDespawn_Pause()
-    {
-      _is_paused = false;
+        protected virtual void _SetIsPaused(bool isPaused)
+        {
+        }
+
+        void _OnDespawn_Pause()
+        {
+            _isPaused = false;
+        }
     }
-  }
 }

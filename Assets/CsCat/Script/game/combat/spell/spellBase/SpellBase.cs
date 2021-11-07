@@ -46,9 +46,9 @@ namespace CsCat
       this.InitCounter();
     }
 
-    protected override void __Update(float deltaTime, float unscaledDeltaTime)
+    protected override void _Update(float deltaTime, float unscaledDeltaTime)
     {
-      base.__Update(deltaTime, unscaledDeltaTime);
+      base._Update(deltaTime, unscaledDeltaTime);
       if (!this.is_spell_animation_finished)
       {
         //脱手了就不需要执行动画了
@@ -68,9 +68,9 @@ namespace CsCat
       Client.instance.combat.spellManager.RemoveSpell(this.GetGuid());
     }
 
-    protected override void __Destroy()
+    protected override void _Destroy()
     {
-      base.__Destroy();
+      base._Destroy();
       if (!this.is_spell_animation_finished)
         Client.instance.combat.spellManager.OnSpellAnimationFinished(this);
       Client.instance.combat.spellManager.RemoveListenersByObj(this);

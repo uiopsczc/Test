@@ -55,9 +55,9 @@ namespace CsCat
       FadeTo(toAplha, duration, callback);
     }
 
-    protected override void __Reset()
+    protected override void _Reset()
     {
-      base.__Reset();
+      base._Reset();
       graphicComponent.SetIsShow(false);
       fade_image.SetColorA(1);
     }

@@ -57,9 +57,9 @@ namespace CsCat
     }
 
 
-    protected override void __Update(float deltaTime = 0, float unscaledDeltaTime = 0)
+    protected override void _Update(float deltaTime = 0, float unscaledDeltaTime = 0)
     {
-      base.__Update(deltaTime, unscaledDeltaTime);
+      base._Update(deltaTime, unscaledDeltaTime);
       for (var i = buffCache_list.Count - 1; i >= 0; i--)
       {
         var buffCache = buffCache_list[i];
@@ -146,9 +146,9 @@ namespace CsCat
       }
     }
 
-    protected override void __Destroy()
+    protected override void _Destroy()
     {
-      base.__Destroy();
+      base._Destroy();
       this.RemoveEffects();
       this.RemovePropertyDict();
       this.RemoveTriggerSpell();

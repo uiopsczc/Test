@@ -134,7 +134,7 @@ namespace CsCat
     {
       yield return new WaitUntil(() =>
       {
-        if (is_all_assets_load_done)
+        if (isAllAssetsLoadDone)
           return true;
         return false;
       });
@@ -147,7 +147,7 @@ namespace CsCat
       {
         foreach (UIPanel panel in panel_list)
         {
-          if (!panel.is_all_assets_load_done)
+          if (!panel.isAllAssetsLoadDone)
             return false;
         }
 

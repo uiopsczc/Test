@@ -4,8 +4,8 @@ using System.Collections.Generic;
 
 namespace CsCat
 {
-  public static class ECSEventNameConst
-  {
-    public const string OnAllAssetsLoadDone = "OnAllAssetsLoadDone";
-  }
+    public static class ECSEventNameConst
+    {
+        public const string OnAllAssetsLoadDone = "OnAllAssetsLoadDone";
+    }
 }

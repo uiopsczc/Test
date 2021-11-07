@@ -175,9 +175,9 @@ namespace CsCat
     }
 
 
-    protected override void __Destroy()
+    protected override void _Destroy()
     {
-      base.__Destroy();
+      base._Destroy();
       foreach (var buff_id in new List<string>(buff_dict.Keys))
         this.RemoveBuff(buff_id);
 

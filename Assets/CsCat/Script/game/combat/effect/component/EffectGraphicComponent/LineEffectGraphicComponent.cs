@@ -14,9 +14,9 @@ namespace CsCat
         xlineRenderer_list.Add(xlineRenderer);
     }
 
-    protected override void __Update(float deltaTime = 0, float unscaledDeltaTime = 0)
+    protected override void _Update(float deltaTime = 0, float unscaledDeltaTime = 0)
     {
-      base.__Update(deltaTime, unscaledDeltaTime);
+      base._Update(deltaTime, unscaledDeltaTime);
       transform.position = this.effectEntity.transformComponent.position;
       transform.eulerAngles = this.effectEntity.transformComponent.eulerAngles;
       foreach (var line in xlineRenderer_list)

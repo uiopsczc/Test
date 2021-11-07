@@ -2,101 +2,93 @@ using System.Collections.Generic;
 
 namespace CsCat
 {
-  public class LangConst
-  {
-    public static string Json_File_Path= "Assets/Cfg/lang.json";
-    private static Dictionary<char, bool> _char_exclude_dict;
-
-    public static Dictionary<char, bool> char_exclude_dict
+    public class LangConst
     {
-      get
-      {
-        if (_char_exclude_dict == null)
-        {
-          _char_exclude_dict = new Dictionary<char, bool>();
-          _char_exclude_dict[' '] = true;
-          _char_exclude_dict['0'] = true;
-          _char_exclude_dict['1'] = true;
-          _char_exclude_dict['2'] = true;
-          _char_exclude_dict['3'] = true;
-          _char_exclude_dict['4'] = true;
-          _char_exclude_dict['5'] = true;
-          _char_exclude_dict['6'] = true;
-          _char_exclude_dict['7'] = true;
-          _char_exclude_dict['8'] = true;
-          _char_exclude_dict['9'] = true;
-          // 英文符号
-          _char_exclude_dict[','] = true;
-          _char_exclude_dict['<'] = true;
-          _char_exclude_dict['.'] = true;
-          _char_exclude_dict['>'] = true;
-          _char_exclude_dict['/'] = true;
-          _char_exclude_dict['?'] = true;
-          _char_exclude_dict[';'] = true;
-          _char_exclude_dict[':'] = true;
-          _char_exclude_dict['\''] = true;
-          _char_exclude_dict['"'] = true;
-          _char_exclude_dict['['] = true;
-          _char_exclude_dict['{'] = true;
-          _char_exclude_dict[']'] = true;
-          _char_exclude_dict['}'] = true;
-          _char_exclude_dict['\\'] = true;
-          _char_exclude_dict['|'] = true;
-          _char_exclude_dict['`'] = true;
-          _char_exclude_dict['~'] = true;
-          _char_exclude_dict['!'] = true;
-          _char_exclude_dict['@'] = true;
-          _char_exclude_dict['#'] = true;
-          _char_exclude_dict['$'] = true;
-          _char_exclude_dict['%'] = true;
-          _char_exclude_dict['^'] = true;
-          _char_exclude_dict['&'] = true;
-          _char_exclude_dict['*'] = true;
-          _char_exclude_dict['('] = true;
-          _char_exclude_dict[')'] = true;
-          _char_exclude_dict['-'] = true;
-          _char_exclude_dict['_'] = true;
-          _char_exclude_dict['='] = true;
-          _char_exclude_dict['+'] = true;
-          //中文符号
-          _char_exclude_dict['，'] = true;
-          _char_exclude_dict['《'] = true;
-          _char_exclude_dict['。'] = true;
-          _char_exclude_dict['》'] = true;
-          _char_exclude_dict['、'] = true;
-          _char_exclude_dict['？'] = true;
-          _char_exclude_dict['；'] = true;
-          _char_exclude_dict['：'] = true;
-          _char_exclude_dict['‘'] = true;
-          _char_exclude_dict['’'] = true;
-          _char_exclude_dict['“'] = true;
-          _char_exclude_dict['”'] = true;
-          _char_exclude_dict['【'] = true;
-          _char_exclude_dict['｛'] = true;
-          _char_exclude_dict['】'] = true;
-          _char_exclude_dict['｝'] = true;
-          _char_exclude_dict['、'] = true;
-          _char_exclude_dict['|'] = true;
-          _char_exclude_dict['·'] = true;
-          _char_exclude_dict['~'] = true;
-          _char_exclude_dict['！'] = true;
-          _char_exclude_dict['@'] = true;
-          _char_exclude_dict['#'] = true;
-          _char_exclude_dict['￥'] = true;
-          _char_exclude_dict['%'] = true;
-          _char_exclude_dict['…'] = true;
-          _char_exclude_dict['&'] = true;
-          _char_exclude_dict['*'] = true;
-          _char_exclude_dict['（'] = true;
-          _char_exclude_dict['）'] = true;
-          _char_exclude_dict['-'] = true;
-          _char_exclude_dict['—'] = true;
-          _char_exclude_dict['='] = true;
-          _char_exclude_dict['+'] = true;
-        }
+        public static string Json_File_Path = "Assets/Cfg/lang.json";
+        private static Dictionary<char, bool> _Char_Exclude_Dict;
 
-        return _char_exclude_dict;
-      }
+        public static Dictionary<char, bool> Char_Exclude_Dict =>
+            _Char_Exclude_Dict ?? (_Char_Exclude_Dict = new Dictionary<char, bool>
+            {
+                [' '] = true,
+                ['0'] = true,
+                ['1'] = true,
+                ['2'] = true,
+                ['3'] = true,
+                ['4'] = true,
+                ['5'] = true,
+                ['6'] = true,
+                ['7'] = true,
+                ['8'] = true,
+                ['9'] = true,
+                // 英文符号
+                [','] = true,
+                ['<'] = true,
+                ['.'] = true,
+                ['>'] = true,
+                ['/'] = true,
+                ['?'] = true,
+                [';'] = true,
+                [':'] = true,
+                ['\''] = true,
+                ['"'] = true,
+                ['['] = true,
+                ['{'] = true,
+                [']'] = true,
+                ['}'] = true,
+                ['\\'] = true,
+                ['|'] = true,
+                ['`'] = true,
+                ['~'] = true,
+                ['!'] = true,
+                ['@'] = true,
+                ['#'] = true,
+                ['$'] = true,
+                ['%'] = true,
+                ['^'] = true,
+                ['&'] = true,
+                ['*'] = true,
+                ['('] = true,
+                [')'] = true,
+                ['-'] = true,
+                ['_'] = true,
+                ['='] = true,
+                ['+'] = true,
+                //中文符号
+                ['，'] = true,
+                ['《'] = true,
+                ['。'] = true,
+                ['》'] = true,
+                ['、'] = true,
+                ['？'] = true,
+                ['；'] = true,
+                ['：'] = true,
+                ['‘'] = true,
+                ['’'] = true,
+                ['“'] = true,
+                ['”'] = true,
+                ['【'] = true,
+                ['｛'] = true,
+                ['】'] = true,
+                ['｝'] = true,
+                ['、'] = true,
+                ['|'] = true,
+                ['·'] = true,
+                ['~'] = true,
+                ['！'] = true,
+                ['@'] = true,
+                ['#'] = true,
+                ['￥'] = true,
+                ['%'] = true,
+                ['…'] = true,
+                ['&'] = true,
+                ['*'] = true,
+                ['（'] = true,
+                ['）'] = true,
+                ['-'] = true,
+                ['—'] = true,
+                ['='] = true,
+                ['+'] = true
+            });
     }
-  }
 }

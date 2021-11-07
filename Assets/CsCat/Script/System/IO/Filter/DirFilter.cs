@@ -2,15 +2,11 @@ using System.IO;
 
 namespace CsCat
 {
-  public class DirFilter : IFileSystemInfoFilter
-  {
-    #region public method
-
-    public bool Accept(FileSystemInfo file)
+    public class DirFilter : IFileSystemInfoFilter
     {
-      return file.IsDirectory();
+        public bool Accept(FileSystemInfo fileSystemInfo)
+        {
+            return fileSystemInfo.IsDirectory();
+        }
     }
-
-    #endregion
-  }
 }

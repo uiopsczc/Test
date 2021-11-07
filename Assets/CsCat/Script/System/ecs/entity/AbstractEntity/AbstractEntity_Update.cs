@@ -3,11 +3,11 @@ using System.Collections.Generic;
 
 namespace CsCat
 {
-  public partial class AbstractEntity
-  {
-    public virtual bool IsCanUpdate()
+    public partial class AbstractEntity
     {
-      return is_enabled && !this.is_paused && !IsDestroyed();
+        public virtual bool IsCanUpdate()
+        {
+            return isEnabled && !this.is_paused && !IsDestroyed();
+        }
     }
-  }
 }

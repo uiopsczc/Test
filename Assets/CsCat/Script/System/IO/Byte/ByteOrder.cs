@@ -1,33 +1,20 @@
 namespace CsCat
 {
-  public sealed class ByteOrder
-  {
-    #region ctor
-
-    private ByteOrder(string name)
+    public sealed class ByteOrder
     {
-      this.name = name;
+        private readonly string name;
+        public static readonly ByteOrder BigEndian = new ByteOrder("BIG_ENDIAN");
+        public static readonly ByteOrder LittleEndian = new ByteOrder("LITTLE_ENDIAN");
+
+        private ByteOrder(string name)
+        {
+            this.name = name;
+        }
+
+
+        public override string ToString()
+        {
+            return name;
+        }
     }
-
-    #endregion
-
-    #region override method
-
-    public override string ToString()
-    {
-      return name;
-    }
-
-    #endregion
-
-    #region field
-
-    public static readonly ByteOrder BigEndian = new ByteOrder("BIG_ENDIAN");
-    public static readonly ByteOrder LittleEndian = new ByteOrder("LITTLE_ENDIAN");
-
-
-    private readonly string name;
-
-    #endregion
-  }
 }

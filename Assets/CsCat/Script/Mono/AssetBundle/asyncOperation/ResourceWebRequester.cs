@@ -120,9 +120,9 @@ namespace CsCat
       Broadcast(null, AssetBundleEventNameConst.On_ResourceWebRequester_Done, this);
     }
 
-    protected override void __Destroy()
+    protected override void _Destroy()
     {
-      base.__Destroy();
+      base._Destroy();
       assetBundleCat = null;
       _need_download_bytes = null;
       if (www != null)

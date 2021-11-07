@@ -47,11 +47,11 @@ namespace CsCat
     
 
 
-    protected override void __SetIsEnabled(bool is_enabled)
+    protected override void _SetIsEnabled(bool isEnabled)
     {
-      base.__SetIsEnabled(is_enabled);
-      graphicComponent.SetIsShow(is_enabled);
-      if (!is_enabled)
+      base._SetIsEnabled(isEnabled);
+      graphicComponent.SetIsShow(isEnabled);
+      if (!isEnabled)
         this.touch_count = 0;
     }
 
@@ -117,15 +117,15 @@ namespace CsCat
       }
     }
 
-    protected override void __Reset()
+    protected override void _Reset()
     {
-      base.__Reset();
+      base._Reset();
       cameraManager?.SetMainCameraMoveRange(null);
     }
 
-    protected override void __Destroy()
+    protected override void _Destroy()
     {
-      base.__Destroy();
+      base._Destroy();
       cameraManager?.SetMainCameraMoveRange(null);
     }
   }

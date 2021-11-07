@@ -3,48 +3,47 @@ using System.Collections.Generic;
 
 namespace CsCat
 {
-  public partial class AbstractEntity
-  {
-    private bool _is_enabled;
-
-    public bool is_enabled => _is_enabled;
-
-    public void SetIsEnabled(bool is_enabled, bool is_loop_children = false)
+    public partial class AbstractEntity
     {
-      if (_is_enabled == is_enabled)
-        return;
-      if (is_loop_children)
-      {
-        foreach (var child in ForeachChild())
-          child.SetIsEnabled(is_enabled);
-      }
+        private bool _isEnabled;
 
-      foreach (var component in ForeachComponent())
-        component.SetIsEnabled(is_enabled);
-      _is_enabled = is_enabled;
-      __SetIsEnabled(is_enabled);
-      if (is_enabled)
-        OnEnable();
-      else
-        OnDisable();
+        public bool isEnabled => _isEnabled;
+
+        public void SetIsEnabled(bool isEnabled, bool isLoopChildren = false)
+        {
+            if (_isEnabled == isEnabled)
+                return;
+            if (isLoopChildren)
+            {
+                foreach (var child in ForeachChild())
+                    child.SetIsEnabled(isEnabled);
+            }
+
+            foreach (var component in ForeachComponent())
+                component.SetIsEnabled(isEnabled);
+            _isEnabled = isEnabled;
+            _SetIsEnabled(isEnabled);
+            if (isEnabled)
+                OnEnable();
+            else
+                OnDisable();
+        }
+
+        protected virtual void _SetIsEnabled(bool isEnabled)
+        {
+        }
+
+        protected virtual void OnEnable()
+        {
+        }
+
+        protected virtual void OnDisable()
+        {
+        }
+
+        void _OnDespawn_Enable()
+        {
+            _isEnabled = false;
+        }
     }
-
-    protected virtual void __SetIsEnabled(bool is_enabled)
-    {
-
-    }
-
-    protected virtual void OnEnable()
-    {
-    }
-
-    protected virtual void OnDisable()
-    {
-    }
-
-    void __OnDespawn_Enable()
-    {
-      _is_enabled = false;
-    }
-  }
 }

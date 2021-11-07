@@ -6,17 +6,17 @@ namespace CsCat
 {
   public partial class HFSM
   {
-    public override void SetIsPaused(bool is_paused, bool is_loop_children = false)
+    public override void SetIsPaused(bool isPaused, bool isLoopChildren = false)
     {
-      if (_is_paused == is_paused)
+      if (_isPaused == isPaused)
         return;
-      this._is_paused = is_paused;
-      if (is_loop_children)
+      this._isPaused = isPaused;
+      if (isLoopChildren)
       {
-        current_sub_direct_hfsm?.SetIsPaused(is_paused, true);
-        current_sub_direct_state?.SetIsPaused(is_paused, true);
+        current_sub_direct_hfsm?.SetIsPaused(isPaused, true);
+        current_sub_direct_state?.SetIsPaused(isPaused, true);
       }
-      __SetIsPaused(is_paused);
+      _SetIsPaused(isPaused);
     }
   }
 }

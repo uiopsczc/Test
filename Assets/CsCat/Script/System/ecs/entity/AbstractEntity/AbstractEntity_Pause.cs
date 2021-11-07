@@ -3,40 +3,41 @@ using System.Collections.Generic;
 
 namespace CsCat
 {
-  public partial class AbstractEntity
-  {
-    protected bool _is_paused;
-    public bool is_paused => _is_paused;
+    public partial class AbstractEntity
+    {
+        protected bool _isPaused;
+        public bool is_paused => _isPaused;
 
-    public virtual void SetIsPaused(bool is_paused, bool is_loop_children = false)
-    {
-      if (_is_paused == is_paused)
-        return;
-      this._is_paused = is_paused;
-      if (is_loop_children)
-        SetAllChildrenIsPaused(is_paused);
-      SetAllComponentsIsPaused(is_paused);
-      __SetIsPaused(is_paused);
-    }
+        public virtual void SetIsPaused(bool isPaused, bool isLoopChildren = false)
+        {
+            if (_isPaused == isPaused)
+                return;
+            this._isPaused = isPaused;
+            if (isLoopChildren)
+                SetAllChildrenIsPaused(isPaused);
+            SetAllComponentsIsPaused(isPaused);
+            _SetIsPaused(isPaused);
+        }
 
-    protected virtual void __SetIsPaused(bool is_paused)
-    {
-    }
+        protected virtual void _SetIsPaused(bool isPaused)
+        {
+        }
 
-    public void SetAllChildrenIsPaused(bool is_paused)
-    {
-      foreach (var child in ForeachChild())
-        child.SetIsPaused(is_paused, true);
-    }
-    public void SetAllComponentsIsPaused(bool is_paused)
-    {
-      foreach (var component in ForeachComponent())
-        component.SetIsPaused(is_paused);
-    }
+        public void SetAllChildrenIsPaused(bool isPaused)
+        {
+            foreach (var child in ForeachChild())
+                child.SetIsPaused(isPaused, true);
+        }
 
-    void __OnDespawn_Pause()
-    {
-      _is_paused = false;
+        public void SetAllComponentsIsPaused(bool isPaused)
+        {
+            foreach (var component in ForeachComponent())
+                component.SetIsPaused(isPaused);
+        }
+
+        void _OnDespawn_Pause()
+        {
+            _isPaused = false;
+        }
     }
-  }
 }

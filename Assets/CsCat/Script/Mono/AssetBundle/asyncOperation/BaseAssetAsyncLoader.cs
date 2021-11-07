@@ -11,9 +11,9 @@ namespace CsCat
       return new List<string>();
     }
 
-    protected override void __Destroy()
+    protected override void _Destroy()
     {
-      base.__Destroy();
+      base._Destroy();
       assetCat = null;
     }
   }

@@ -153,9 +153,9 @@ namespace CsCat
             Goto<StageTest>();
         }
 
-        protected override void __Update(float deltaTime, float unscaledDeltaTime)
+        protected override void _Update(float deltaTime, float unscaledDeltaTime)
         {
-            base.__Update(deltaTime, unscaledDeltaTime);
+            base._Update(deltaTime, unscaledDeltaTime);
             eventDispatchers.Broadcast(GlobalEventNameConst.Update);
             eventDispatchers.Broadcast(GlobalEventNameConst.Update, deltaTime);
             eventDispatchers.Broadcast(GlobalEventNameConst.Update, deltaTime, unscaledDeltaTime);
@@ -165,9 +165,9 @@ namespace CsCat
             frameCallbackMananger.Update();
         }
 
-        protected override void __LateUpdate(float deltaTime, float unscaledDeltaTime)
+        protected override void _LateUpdate(float deltaTime, float unscaledDeltaTime)
         {
-            base.__LateUpdate(deltaTime, unscaledDeltaTime);
+            base._LateUpdate(deltaTime, unscaledDeltaTime);
             eventDispatchers.Broadcast(GlobalEventNameConst.LateUpdate);
             eventDispatchers.Broadcast(GlobalEventNameConst.LateUpdate, deltaTime);
             eventDispatchers.Broadcast(GlobalEventNameConst.LateUpdate, deltaTime, unscaledDeltaTime);
@@ -176,9 +176,9 @@ namespace CsCat
             frameCallbackMananger.LateUpdate();
         }
 
-        protected override void __FixedUpdate(float deltaTime, float unscaledDeltaTime)
+        protected override void _FixedUpdate(float deltaTime, float unscaledDeltaTime)
         {
-            base.__FixedUpdate(deltaTime, unscaledDeltaTime);
+            base._FixedUpdate(deltaTime, unscaledDeltaTime);
             eventDispatchers.Broadcast(GlobalEventNameConst.FixedUpdate);
             eventDispatchers.Broadcast(GlobalEventNameConst.FixedUpdate, deltaTime);
             eventDispatchers.Broadcast(GlobalEventNameConst.FixedUpdate, deltaTime, unscaledDeltaTime);

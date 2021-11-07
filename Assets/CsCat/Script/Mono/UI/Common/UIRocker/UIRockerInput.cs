@@ -18,9 +18,9 @@ namespace CsCat
     public string event_name_move_stop => this.name + "MoveStop";
     public string event_name_move_pct => this.name + "MovePct";
 
-    protected override void __Update(float deltaTime, float unscaledDeltaTime)
+    protected override void _Update(float deltaTime, float unscaledDeltaTime)
     {
-      base.__Update(deltaTime, unscaledDeltaTime);
+      base._Update(deltaTime, unscaledDeltaTime);
       this.__UpdateKeyInput(deltaTime, unscaledDeltaTime); // 键盘测试用的
       if (this.move_cooldown_remain_duration > 0)
         this.__UpdateMove(deltaTime, unscaledDeltaTime);

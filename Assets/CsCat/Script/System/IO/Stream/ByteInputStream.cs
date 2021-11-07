@@ -2,20 +2,16 @@ using System.IO;
 
 namespace CsCat
 {
-  public class ByteInputStream : MemoryStream
-  {
-    #region ctor
-
-    public ByteInputStream(byte[] buf, int offset, int length)
-      : base(buf, offset, length)
+    public class ByteInputStream : MemoryStream
     {
-    }
+        public ByteInputStream(byte[] buffer, int offset, int length)
+            : base(buffer, offset, length)
+        {
+        }
 
-    public ByteInputStream(byte[] buf)
-      : base(buf)
-    {
+        public ByteInputStream(byte[] buffer)
+            : base(buffer)
+        {
+        }
     }
-
-    #endregion
-  }
 }

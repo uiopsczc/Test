@@ -16,9 +16,9 @@ namespace CsCat
       graphicComponent.SetGameObject(gameObject, true);
     }
 
-    protected override void __Reset()
+    protected override void _Reset()
     {
-      base.__Reset();
+      base._Reset();
       graphicComponent.SetIsShow(false);
     }
   }

@@ -80,9 +80,9 @@ namespace CsCat
 
     }
 
-    protected override void __Destroy()
+    protected override void _Destroy()
     {
-      base.__Destroy();
+      base._Destroy();
       is_moving_up = false;
       is_rised = false;
       is_created = false;

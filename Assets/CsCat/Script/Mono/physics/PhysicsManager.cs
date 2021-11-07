@@ -168,9 +168,9 @@ namespace CsCat
       return is_can_raycast && base.IsCanUpdate();
     }
 
-    protected override void __Update(float deltaTime = 0, float unscaledDeltaTime = 0)
+    protected override void _Update(float deltaTime = 0, float unscaledDeltaTime = 0)
     {
-      base.__Update(deltaTime, unscaledDeltaTime);
+      base._Update(deltaTime, unscaledDeltaTime);
       if (Input.GetMouseButtonDown(0) && !is_click_down)
       {
         if (UIUtil.IsOverUI(Input.mousePosition)) //点击在UI上的不用处理

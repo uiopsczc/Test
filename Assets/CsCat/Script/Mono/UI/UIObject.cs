@@ -67,17 +67,17 @@ namespace CsCat
     
 
 
-    protected override void __Reset()
+    protected override void _Reset()
     {
-      base.__Reset();
+      base._Reset();
       foreach (var uguiEventListener in registered_uguiEventListener_list)
         uguiEventListener.Destroy();
       registered_uguiEventListener_list.Clear();
     }
 
-    protected override void __Destroy()
+    protected override void _Destroy()
     {
-      base.__Destroy();
+      base._Destroy();
       foreach (var uguiEventListener in registered_uguiEventListener_list)
         uguiEventListener.Destroy();
       registered_uguiEventListener_list.Clear();

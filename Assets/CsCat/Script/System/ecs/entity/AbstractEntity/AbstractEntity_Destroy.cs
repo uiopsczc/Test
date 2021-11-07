@@ -3,56 +3,55 @@ using System.Collections.Generic;
 
 namespace CsCat
 {
-  public partial class AbstractEntity
-  {
-    private bool __is_destroyed;
-    public Action destroy_callback;
-
-    public bool IsDestroyed()
+    public partial class AbstractEntity
     {
-      return __is_destroyed;
-    }
+        private bool _isDestroyed;
+        public Action destroyCallback;
 
-    public void Destroy()
-    {
-      if (IsDestroyed())
-        return;
-      RemoveAllChildren();
-      SetIsEnabled(false, false);
-      SetIsPaused(false, false);
-      RemoveAllComponents();
-      __Destroy();
-      __is_destroyed = true;
-      __PostDestroy();
-      cache.Clear();
-    }
+        public bool IsDestroyed()
+        {
+            return _isDestroyed;
+        }
 
-    protected virtual void __Destroy()
-    {
+        public void Destroy()
+        {
+            if (IsDestroyed())
+                return;
+            RemoveAllChildren();
+            SetIsEnabled(false, false);
+            SetIsPaused(false, false);
+            RemoveAllComponents();
+            _Destroy();
+            _isDestroyed = true;
+            _PostDestroy();
+            cache.Clear();
+        }
 
-    }
+        protected virtual void _Destroy()
+        {
+        }
 
-    protected virtual void __PostDestroy()
-    {
-      destroy_callback?.Invoke();
-      destroy_callback = null;
-    }
+        protected virtual void _PostDestroy()
+        {
+            destroyCallback?.Invoke();
+            destroyCallback = null;
+        }
 
-    public virtual void OnDespawn()
-    {
-      __OnDespawn_();
-      __OnDespawn_Child();
-      __OnDespawn_Component();
-      __OnDespawn_Destroy();
-      __OnDespawn_Enable();
-      __OnDespawn_Pause();
-      __OnDespawn_Reset();
-    }
+        public virtual void OnDespawn()
+        {
+            _OnDespawn_();
+            _OnDespawn_Child();
+            _OnDespawn_Component();
+            _OnDespawn_Destroy();
+            _OnDespawn_Enable();
+            _OnDespawn_Pause();
+            _OnDespawn_Reset();
+        }
 
-    void __OnDespawn_Destroy()
-    {
-      __is_destroyed = false;
-      destroy_callback = null;
+        void _OnDespawn_Destroy()
+        {
+            _isDestroyed = false;
+            destroyCallback = null;
+        }
     }
-  }
 }

@@ -40,9 +40,9 @@ namespace CsCat
     public UnitLockTargetInfo unitLockTargetInfo;
 
 
-    protected override void __Destroy()
+    protected override void _Destroy()
     {
-      base.__Destroy();
+      base._Destroy();
       this.Broadcast<Unit>(null, UnitEventNameConst.On_Unit_Destroy, this);
       if (this.animatorComp != null)
         animatorComp.Destroy();

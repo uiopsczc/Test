@@ -55,9 +55,9 @@ namespace CsCat
       return this.gameObject != null && base.IsCanUpdate();
     }
 
-    protected override void __Update(float deltaTime = 0, float unscaledDeltaTime = 0)
+    protected override void _Update(float deltaTime = 0, float unscaledDeltaTime = 0)
     {
-      base.__Update(deltaTime, unscaledDeltaTime);
+      base._Update(deltaTime, unscaledDeltaTime);
       ApplyToTransform(this.effectEntity.transformComponent.position, this.effectEntity.transformComponent.eulerAngles);
     }
   }

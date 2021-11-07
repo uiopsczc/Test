@@ -6,12 +6,12 @@ namespace CsCat
 {
 	public class EventDispatchersPluginDict
 	{
-		private Dictionary<EventDispatchers, EventDispatchersPlugin> dcit = new Dictionary<EventDispatchers, EventDispatchersPlugin>();
+		private Dictionary<EventDispatchers, EventDispatchersPlugin> dict = new Dictionary<EventDispatchers, EventDispatchersPlugin>();
 
 		public EventDispatchersPlugin GetEventDispatchersPlugin(EventDispatchers eventDispatchers)
 		{
 			eventDispatchers = eventDispatchers ?? Client.instance.eventDispatchers;
-			return dcit.GetOrAddDefault(eventDispatchers, () => new EventDispatchersPlugin(eventDispatchers));
+			return dict.GetOrAddDefault(eventDispatchers, () => new EventDispatchersPlugin(eventDispatchers));
 		}
 
 		public Action AddListener(EventDispatchers eventDispatchers, string eventName, Action handler)
@@ -82,9 +82,9 @@ namespace CsCat
 
 		public void RemoveAllListeners()
 		{
-			foreach (var eventDispatchersPlugin in dcit.Values)
+			foreach (var eventDispatchersPlugin in dict.Values)
 				eventDispatchersPlugin.RemoveAllListeners();
-			dcit.Clear();
+			dict.Clear();
 		}
 	}
 }

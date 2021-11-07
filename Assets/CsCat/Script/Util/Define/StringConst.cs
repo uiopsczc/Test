@@ -29,6 +29,7 @@ namespace CsCat
         public const string String_Tilde = "~";
         public const string String_Tab = "\t";
         public const string String_NumberSign = "#";
+        public const string String_At = "@";
 
 
         public const string String_Regex_DoubleQuotes = "\\\"";
@@ -114,6 +115,7 @@ namespace CsCat
         public const string String_datetime = "datetime";
         public const string String_yyyy_MM_dd = "yyyy-MM-dd";
         public const string String_HH_mm_ss = "HH:mm:ss";
+        public const string String_yyyyMMddHHmmssSSS = "yyyyMMddHHmmssSSS";
         public const string String_yyyy_MM_dd_HH_mm_ss = "yyyy-MM-dd HH:mm:ss";
         public const string String_Day_CN = "Ìì";
         public const string String_Hour_CN = "Ð¡Ê±";

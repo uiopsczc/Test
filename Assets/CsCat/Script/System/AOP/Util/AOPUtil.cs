@@ -98,7 +98,7 @@ namespace CsCat
             MethodInfoProxy methodInfoProxy = new MethodInfoProxy(targetMethodName, aop_attribute_type, source_type,
               is_target_method_self_arg, isTargetMethodWithSoruceArgType, source_method_arg_types);
             MethodInfo target_method = aop_attribute_type.GetMethodInfo(targetMethodName, BindingFlagsConst.All,
-              methodInfoProxy.methodArgTypesProxy.target_method_arg_types);
+              methodInfoProxy.methodArgTypesProxy.targetMethodArgTypes);
             if (target_method != null) //命中
             {
               return methodInfoProxy;

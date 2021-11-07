@@ -45,9 +45,9 @@ namespace CsCat
       this.desc_text.text = desc;
     }
 
-    protected override void __Reset()
+    protected override void _Reset()
     {
-      base.__Reset();
+      base._Reset();
       this.desc_text.text = "";
       silder.value = 0;
       graphicComponent.SetIsShow(false);

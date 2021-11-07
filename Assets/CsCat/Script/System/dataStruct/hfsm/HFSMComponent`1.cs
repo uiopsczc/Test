@@ -17,9 +17,9 @@ namespace CsCat
       this.hfsm.SetIsPaused(true, true);
     }
 
-    protected override void __SetIsEnabled(bool is_enabled)
+    protected override void _SetIsEnabled(bool isEnabled)
     {
-      base.__SetIsEnabled(is_enabled);
+      base._SetIsEnabled(isEnabled);
       this.hfsm.SetIsEnabled(true, true);
     }
 
@@ -41,21 +41,21 @@ namespace CsCat
       this.hfsm.CheckDestroyed();
     }
 
-    protected override void __Update(float deltaTime = 0, float unscaledDeltaTime = 0)
+    protected override void _Update(float deltaTime = 0, float unscaledDeltaTime = 0)
     {
-      base.__Update(deltaTime, unscaledDeltaTime);
+      base._Update(deltaTime, unscaledDeltaTime);
       this.hfsm.Update(deltaTime, unscaledDeltaTime);
     }
 
-    protected override void __FixedUpdate(float deltaTime = 0, float unscaledDeltaTime = 0)
+    protected override void _FixedUpdate(float deltaTime = 0, float unscaledDeltaTime = 0)
     {
-      base.__FixedUpdate(deltaTime, unscaledDeltaTime);
+      base._FixedUpdate(deltaTime, unscaledDeltaTime);
       this.hfsm.FixedUpdate(deltaTime, unscaledDeltaTime);
     }
 
-    protected override void __LateUpdate(float deltaTime = 0, float unscaledDeltaTime = 0)
+    protected override void _LateUpdate(float deltaTime = 0, float unscaledDeltaTime = 0)
     {
-      base.__LateUpdate(deltaTime, unscaledDeltaTime);
+      base._LateUpdate(deltaTime, unscaledDeltaTime);
       this.hfsm.LateUpdate(deltaTime, unscaledDeltaTime);
     }
   }

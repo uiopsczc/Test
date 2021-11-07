@@ -18,9 +18,9 @@ namespace CsCat
       Client.instance.Goto<StageResourceCheck>(FadeConst.Stage_Fade_Default_Appear_Duration);
     }
 
-    protected override void __Destroy()
+    protected override void _Destroy()
     {
-      base.__Destroy();
+      base._Destroy();
       Client.instance.uiManager.uiShowLogoPanel.graphicComponent.gameObject.SetActive(false);
 
     }

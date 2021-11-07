@@ -56,16 +56,16 @@ namespace CsCat
       sequence.OnComplete(() => { Reset(); });
     }
 
-    protected override void __Reset()
+    protected override void _Reset()
     {
-      base.__Reset();
+      base._Reset();
       graphicComponent.SetIsShow(false);
       Client.instance.uiManager.uiNotifyManager.__LanternNotify();
     }
 
-    protected override void __Destroy()
+    protected override void _Destroy()
     {
-      base.__Destroy();
+      base._Destroy();
       sequence?.Kill();
     }
   }

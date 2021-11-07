@@ -20,9 +20,9 @@ namespace CsCat
       this.AddListener<string, string, string>(null, UnitEventNameConst.On_Unit_Faction_Change, this.OnUnitFactionChange);
     }
 
-    protected override void __Update(float deltaTime = 0, float unscaledDeltaTime = 0)
+    protected override void _Update(float deltaTime = 0, float unscaledDeltaTime = 0)
     {
-      base.__Update(deltaTime, unscaledDeltaTime);
+      base._Update(deltaTime, unscaledDeltaTime);
       foreach (var unit in this.unit_dict.Values)
       {
         if (!unit.IsDead() && !unit.IsDestroyed())
@@ -84,12 +84,12 @@ namespace CsCat
       if (unit != null && !old_guid.Equals(new_guid))
       {
         this.unit_dict.Remove(old_guid);
-        this.key_to_child_dict.Remove(old_guid);
-        int index = this.child_key_list.IndexOf(old_guid);
+        this.keyToChildDict.Remove(old_guid);
+        int index = this.childKeyList.IndexOf(old_guid);
 
         this.unit_dict[new_guid] = unit;
-        this.key_to_child_dict[new_guid] = unit;
-        this.child_key_list[index] = new_guid;
+        this.keyToChildDict[new_guid] = unit;
+        this.childKeyList[index] = new_guid;
       }
     }
   }

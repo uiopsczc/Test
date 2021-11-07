@@ -30,6 +30,7 @@ namespace CsCat
         public const char Char_Tilde = '~';
         public const char Char_Tab = '\t';
         public const char Char_NumberSign = '#';
+        public const char Char_BackSlash = '\\';
 
         public const char Char_0 = '0';
         public const char Char_1 = '1';
@@ -47,6 +48,7 @@ namespace CsCat
         public const char Char_Z = 'Z';
 
         public const char Char_a = 'a';
+        public const char Char_c = 'c';
         public const char Char_x = 'x';
         public const char Char_y = 'y';
         public const char Char_z = 'z';

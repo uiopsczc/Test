@@ -145,9 +145,9 @@ namespace CsCat
       PoolCatManagerUtil.Despawn(this);
     }
 
-    protected override void __Destroy()
+    protected override void _Destroy()
     {
-      base.__Destroy();
+      base._Destroy();
       total_waiting_assetBundleCat_count = 0;
       waiting_assetBundleCat_dict.Clear();
       assetBundle_downloaded_bytes_dict.Clear();

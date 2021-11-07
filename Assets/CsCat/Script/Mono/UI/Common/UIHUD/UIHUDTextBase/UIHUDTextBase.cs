@@ -26,9 +26,9 @@ namespace CsCat
       this.text_animation = graphicComponent.gameObject.GetComponent<Animation>();
     }
 
-    protected override void __Reset()
+    protected override void _Reset()
     {
-      base.__Reset();
+      base._Reset();
       this.text_comp.SetColorA(this.text_alpha);
     }
   }

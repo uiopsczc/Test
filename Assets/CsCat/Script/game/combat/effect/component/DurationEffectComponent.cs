@@ -22,9 +22,9 @@ namespace CsCat
       this.remain_duration = duration;
     }
 
-    protected override void __Update(float deltaTime = 0, float unscaledDeltaTime = 0)
+    protected override void _Update(float deltaTime = 0, float unscaledDeltaTime = 0)
     {
-      base.__Update(deltaTime, unscaledDeltaTime);
+      base._Update(deltaTime, unscaledDeltaTime);
       this.remain_duration = this.remain_duration - deltaTime;
       if (this.remain_duration <= 0)
         OnNoRemainDuration();

@@ -106,9 +106,9 @@ namespace CsCat
       graphicComponent.rectTransform.anchoredPosition = pos;
     }
 
-    protected override void __Reset()
+    protected override void _Reset()
     {
-      base.__Reset();
+      base._Reset();
       duration = default_show_duration;
       this.is_showing = false;
       this.is_fading = false;

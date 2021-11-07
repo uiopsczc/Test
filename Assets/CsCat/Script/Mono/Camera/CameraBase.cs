@@ -39,12 +39,12 @@ namespace CsCat
 
     public override bool IsCanUpdate()
     {
-      return !this.is_can_not_update && base.IsCanUpdate();
+      return !this.isCanNotUpdate && base.IsCanUpdate();
     }
 
-    protected override void __LateUpdate(float deltaTime, float unscaledDeltaTime)
+    protected override void _LateUpdate(float deltaTime, float unscaledDeltaTime)
     {
-      base.__LateUpdate(deltaTime, unscaledDeltaTime);
+      base._LateUpdate(deltaTime, unscaledDeltaTime);
       switch (this.current_operation)
       {
         case CameraOperation.None:
