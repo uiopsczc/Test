@@ -2,42 +2,40 @@ using System.Collections;
 
 namespace CsCat
 {
-  public partial class DoerAttrParser
-  {
-    public bool GetDoerValue_Mission(Doer doer, string key, string type_string, out string result)
+    public partial class DoerAttrParser
     {
-      bool is_break = false;
-      result = null;
-      if (doer is Mission)
-      {
-        Mission mission = doer as Mission;
-        if (key.Equals("status"))
+        public bool GetDoerValue_Mission(Doer doer, string key, string typeString, out string result)
         {
-          if (mission.IsReady())
-          {
-            result = ConvertValue(3, type_string); //已就绪,可以被完成
-            return true;
-          }
-          else
-          {
-            result = ConvertValue(2, type_string); //未完成
-            return true;
-          }
-        }
-        else if (key.StartsWith("items.")) // 物品
-        {
-          string item_id = key.Substring("items.".Length);
-          Hashtable items = mission.Get<Hashtable>("items");
-          if (items != null)
-          {
-            int count = items.Get<int>(item_id);
-            result = ConvertValue(count, type_string);
-            return true;
-          }
-        }
-      }
+            bool isBreak = false;
+            result = null;
+            if (doer is Mission mission)
+            {
+                if (key.Equals(StringConst.String_status))
+                {
+                    if (mission.IsReady())
+                    {
+                        result = ConvertValue(3, typeString); //已就绪,可以被完成
+                        return true;
+                    }
 
-      return is_break;
+                    result = ConvertValue(2, typeString); //未完成
+                    return true;
+                }
+
+                if (key.StartsWith(StringConst.String_items_dot)) // 物品
+                {
+                    string itemId = key.Substring(StringConst.String_items_dot.Length);
+                    Hashtable items = mission.Get<Hashtable>(StringConst.String_items);
+                    if (items != null)
+                    {
+                        int count = items.Get<int>(itemId);
+                        result = ConvertValue(count, typeString);
+                        return true;
+                    }
+                }
+            }
+
+            return isBreak;
+        }
     }
-  }
 }

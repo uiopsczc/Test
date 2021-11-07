@@ -5,7 +5,7 @@ namespace CsCat
 {
   public class DoerEventFactory : DoerFactory
   {
-    protected override string default_doer_class_path => "CsCat.DoerEvent";
+    protected override string defaultDoerClassPath => "CsCat.DoerEvent";
 
     private Dictionary<string, DoerEvent> doerEvent_dict = new Dictionary<string, DoerEvent>();
 
@@ -19,9 +19,9 @@ namespace CsCat
       return CfgDoerEvent.Instance.get_by_id(id);
     }
 
-    protected override DBase __NewDBase(string id_or_rid)
+    protected override DBase _NewDBase(string idOrRid)
     {
-      return new DoerEventDBase(id_or_rid);
+      return new DoerEventDBase(idOrRid);
     }
 
     //////////////////////////////////////////////////////////////////////////
@@ -37,7 +37,7 @@ namespace CsCat
       var class_path = GetClassPath(id);
       Type type = TypeUtil.GetType(class_path);
       DoerEvent doerEvent = this.AddChildWithoutInit(null, type) as DoerEvent;
-      DBase doerEventDBase = this.__NewDBase(id);
+      DBase doerEventDBase = this._NewDBase(id);
       doerEvent.factory = this;
       doerEvent.SetDBase(doerEventDBase);
       doerEventDBase.SetDoer(doerEvent);

@@ -1,21 +1,20 @@
 namespace CsCat
 {
-  public partial class DoerAttrParser
-  {
-    public bool GetDoerValue_User(Doer doer, string key, string type_string, out string result)
+    public partial class DoerAttrParser
     {
-      bool is_break = false;
-      result = null;
-      if (doer is User)
-      {
-        User user = doer as User;
-        if (GetDoerValue_User_Missions(user, key, type_string, out result))
-          return true;
-        if (GetDoerValue_User_Items(user, key, type_string, out result))
-          return true;
-      }
+        public bool GetDoerValue_User(Doer doer, string key, string typeString, out string result)
+        {
+            bool isBreak = false;
+            result = null;
+            if (doer is User user)
+            {
+                if (GetDoerValue_User_Missions(user, key, typeString, out result))
+                    return true;
+                if (GetDoerValue_User_Items(user, key, typeString, out result))
+                    return true;
+            }
 
-      return is_break;
+            return isBreak;
+        }
     }
-  }
 }

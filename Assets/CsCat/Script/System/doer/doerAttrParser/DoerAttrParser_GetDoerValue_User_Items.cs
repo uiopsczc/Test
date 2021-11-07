@@ -1,45 +1,45 @@
 namespace CsCat
 {
-  public partial class DoerAttrParser
-  {
-    public bool GetDoerValue_User_Items(User user, string key, string type_string, out string result)
+    public partial class DoerAttrParser
     {
-      bool is_break = false;
-      result = null;
-      if (key.StartsWith("items.")) //物品对象
-      {
-        key = key.Substring("items.".Length);
-        int pos = key.IndexOf(".");
-        if (pos != -1)
+        public bool GetDoerValue_User_Items(User user, string key, string typeString, out string result)
         {
-          string item_id = key.Substring(0, pos);
-          key = key.Substring(pos);
-          if (item_id.EndsWith("t"))
-          {
-            item_id = item_id.Substring(0, item_id.Length - 1);
-            key = "t" + key;
-          }
+            bool isBreak = false;
+            result = null;
+            if (key.StartsWith(StringConst.String_items_dot)) //物品对象
+            {
+                key = key.Substring(StringConst.String_items_dot.Length);
+                int pos = key.IndexOf(CharConst.Char_Dot);
+                if (pos != -1)
+                {
+                    string itemId = key.Substring(0, pos);
+                    key = key.Substring(pos);
+                    if (itemId.EndsWith(StringConst.String_t))
+                    {
+                        itemId = itemId.Substring(0, itemId.Length - 1);
+                        key = StringConst.String_t + key;
+                    }
 
-          if (key.Equals(".count"))
-          {
-            result = ConvertValue(user.GetItemCount(item_id), type_string);
-            return true;
-          }
+                    if (key.Equals(StringConst.String_dot_count))
+                    {
+                        result = ConvertValue(user.GetItemCount(itemId), typeString);
+                        return true;
+                    }
 
-          Item item = user.GetItem(item_id);
-          if (item != null) //身上有这个物品
-          {
-            var doerAttrParser = new DoerAttrParser(item);
-            result = doerAttrParser.ParseString(type_string + "u" + key);
-            return true;
-          }
+                    Item item = user.GetItem(itemId);
+                    if (item != null) //身上有这个物品
+                    {
+                        var doerAttrParser = new DoerAttrParser(item);
+                        result = doerAttrParser.ParseString(typeString + StringConst.String_u + key);
+                        return true;
+                    }
+                }
+
+                result = ConvertValue(StringConst.String_Empty, typeString);
+                return true;
+            }
+
+            return isBreak;
         }
-
-        result = ConvertValue("", type_string);
-        return true;
-      }
-
-      return is_break;
     }
-  }
 }

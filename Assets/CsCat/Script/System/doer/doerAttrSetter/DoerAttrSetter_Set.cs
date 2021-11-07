@@ -1,113 +1,112 @@
 namespace CsCat
 {
-  public partial class DoerAttrSetter
-  {
-    public void Set(string key, string value_expression, bool is_add)
+    public partial class DoerAttrSetter
     {
-      if (this.doerAttrParser != null && key.IndexOf("{") != -1)
-        key = doerAttrParser.ParseString(key);
-
-      object object_value = doerAttrParser.Parse(value_expression);
-      SetObject(key, object_value, is_add);
-    }
-
-    public void SetObject(string key, object object_value, bool is_add)
-    {
-      if (key.StartsWith("u.")) //主动对象属性
-      {
-        key = key.Substring("u.".Length);
-        if (u != null)
-          SetObjectValue(u, key, object_value, is_add);
-        return;
-      }
-
-      if (key.StartsWith("ut.")) //主动对象临时属性
-      {
-        key = key.Substring("ut.".Length);
-        if (u != null)
-          SetObjectTmpValue(u, key, object_value, is_add);
-        return;
-      }
-
-      if (key.StartsWith("o.")) //被动对象属性
-      {
-        key = key.Substring("o.".Length);
-        if (u != null)
-          SetObjectValue(o, key, object_value, is_add);
-        return;
-      }
-
-      if (key.StartsWith("ot.")) //被动对象临时属性
-      {
-        key = key.Substring("ot.".Length);
-        if (u != null)
-          SetObjectTmpValue(o, key, object_value, is_add);
-        return;
-      }
-
-      if (key.StartsWith("e.")) //中间对象属性
-      {
-        key = key.Substring("e.".Length);
-        if (u != null)
-          SetObjectValue(e, key, object_value, is_add);
-        return;
-      }
-
-      if (key.StartsWith("et.")) //中间对象临时属性
-      {
-        key = key.Substring("et.".Length);
-        if (u != null)
-          SetObjectTmpValue(e, key, object_value, is_add);
-        return;
-      }
-
-
-      if (key.StartsWith("m.")) // 当前或中间对象
-      {
-        key = key.Substring("m.".Length);
-        if (m != null)
+        public void Set(string key, string valueExpression, bool isAdd)
         {
-          if (object_value is int)
-          {
-            if (is_add)
-              m[key] = m.Get<int>(key) + object_value.To<int>();
-            else
-              m[key] = object_value.To<int>();
-          }
+            if (this.doerAttrParser != null && key.IndexOf(CharConst.Char_LeftCurlyBrackets) != -1)
+                key = doerAttrParser.ParseString(key);
 
-          if (object_value is float)
-          {
-            if (is_add)
-              m[key] = m.Get<float>(key) + object_value.To<float>();
-            else
-              m[key] = object_value.To<float>();
-          }
-
-          if (object_value is bool)
-            m[key] = object_value.To<bool>();
-          if (object_value is string)
-          {
-            if (object_value.Equals("nil"))
-              m.Remove(key);
-            else if (is_add)
-              m[key] = m.GetOrAddDefault2(key, () => "") + object_value.To<string>();
-            else
-              m[key] = object_value;
-          }
+            object objectValue = doerAttrParser.Parse(valueExpression);
+            SetObject(key, objectValue, isAdd);
         }
 
-        return;
-      }
+        public void SetObject(string key, object objectValue, bool isAdd)
+        {
+            if (key.StartsWith(StringConst.String_u_dot)) //主动对象属性
+            {
+                key = key.Substring(StringConst.String_u_dot.Length);
+                if (u != null)
+                    SetObjectValue(u, key, objectValue, isAdd);
+                return;
+            }
 
-      if (u != null)
-        SetObject("u." + key, object_value, is_add);
-      else if (o != null)
-        SetObject("o." + key, object_value, is_add);
-      else if (e != null)
-        SetObject("e." + key, object_value, is_add);
-      else if (m != null)
-        SetObject("m." + key, object_value, is_add);
+            if (key.StartsWith(StringConst.String_ut_dot)) //主动对象临时属性
+            {
+                key = key.Substring(StringConst.String_ut_dot.Length);
+                if (u != null)
+                    SetObjectTmpValue(u, key, objectValue, isAdd);
+                return;
+            }
+
+            if (key.StartsWith(StringConst.String_o_dot)) //被动对象属性
+            {
+                key = key.Substring(StringConst.String_o_dot.Length);
+                if (u != null)
+                    SetObjectValue(o, key, objectValue, isAdd);
+                return;
+            }
+
+            if (key.StartsWith(StringConst.String_ot_dot)) //被动对象临时属性
+            {
+                key = key.Substring(StringConst.String_ot_dot.Length);
+                if (u != null)
+                    SetObjectTmpValue(o, key, objectValue, isAdd);
+                return;
+            }
+
+            if (key.StartsWith(StringConst.String_e_dot)) //中间对象属性
+            {
+                key = key.Substring(StringConst.String_e_dot.Length);
+                if (u != null)
+                    SetObjectValue(e, key, objectValue, isAdd);
+                return;
+            }
+
+            if (key.StartsWith(StringConst.String_et_dot)) //中间对象临时属性
+            {
+                key = key.Substring(StringConst.String_et_dot.Length);
+                if (u != null)
+                    SetObjectTmpValue(e, key, objectValue, isAdd);
+                return;
+            }
+
+
+            if (key.StartsWith(StringConst.String_m_dot)) // 当前或中间对象
+            {
+                key = key.Substring(StringConst.String_m_dot.Length);
+                if (m != null)
+                {
+                    if (objectValue is int)
+                    {
+                        if (isAdd)
+                            m[key] = m.Get<int>(key) + objectValue.To<int>();
+                        else
+                            m[key] = objectValue.To<int>();
+                    }
+
+                    if (objectValue is float)
+                    {
+                        if (isAdd)
+                            m[key] = m.Get<float>(key) + objectValue.To<float>();
+                        else
+                            m[key] = objectValue.To<float>();
+                    }
+
+                    if (objectValue is bool)
+                        m[key] = objectValue.To<bool>();
+                    if (objectValue is string)
+                    {
+                        if (objectValue.Equals(StringConst.String_nil))
+                            m.Remove(key);
+                        else if (isAdd)
+                            m[key] = m.GetOrAddDefault2(key, () => StringConst.String_Empty) + objectValue.To<string>();
+                        else
+                            m[key] = objectValue;
+                    }
+                }
+
+                return;
+            }
+
+            if (u != null)
+                SetObject(StringConst.String_u_dot + key, objectValue, isAdd);
+            else if (o != null)
+                SetObject(StringConst.String_o_dot + key, objectValue, isAdd);
+            else if (e != null)
+                SetObject(StringConst.String_e_dot + key, objectValue, isAdd);
+            else if (m != null)
+                SetObject(StringConst.String_m_dot + key, objectValue, isAdd);
+        }
     }
-
-  }
 }

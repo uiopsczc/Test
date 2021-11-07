@@ -28,33 +28,33 @@ namespace CsCat
     }
 
     // 保存
-    public override void DoSave(Hashtable dict, Hashtable dict_tmp)
+    public override void DoSave(Hashtable dict, Hashtable dictTmp)
     {
-      base.DoSave(dict, dict_tmp);
+      base.DoSave(dict, dictTmp);
       //存储角色
-      this.o_roles.DoSave(dict, dict_tmp);
+      this.o_roles.DoSave(dict, dictTmp);
       //存储背包
-      this.o_item_bag.DoSave(dict, dict_tmp);
+      this.o_item_bag.DoSave(dict, dictTmp);
       //存储任务
-      this.o_missions.DoSave(dict, dict_tmp);
+      this.o_missions.DoSave(dict, dictTmp);
       if (this.main_role != null)
         dict["main_role_rid"] = this.main_role.GetRid();
     }
 
     //还原
-    public override void DoRestore(Hashtable dict, Hashtable dict_tmp)
+    public override void DoRestore(Hashtable dict, Hashtable dictTmp)
     {
       //还原角色
-      this.o_roles.DoRestore(dict, dict_tmp);
+      this.o_roles.DoRestore(dict, dictTmp);
       //还原背包
-      this.o_item_bag.DoRestore(dict, dict_tmp);
+      this.o_item_bag.DoRestore(dict, dictTmp);
       //还原任务
-      this.o_missions.DoRestore(dict, dict_tmp);
+      this.o_missions.DoRestore(dict, dictTmp);
 
       string main_role_rid = dict.Remove3<string>("main_role_rid");
       this.main_role = this.GetRole(main_role_rid);
 
-      base.DoRestore(dict, dict_tmp);
+      base.DoRestore(dict, dictTmp);
     }
 
     //////////////////////OnXXX/////////////////////////////////////

@@ -33,19 +33,19 @@ namespace CsCat
     }
 
     //保存
-    public override void DoSave(Hashtable dict, Hashtable dict_tmp)
+    public override void DoSave(Hashtable dict, Hashtable dictTmp)
     {
-      base.DoSave(dict, dict_tmp);
+      base.DoSave(dict, dictTmp);
       // 存储镶物
-      this.o_embeds.DoSave(dict, dict_tmp);
+      this.o_embeds.DoSave(dict, dictTmp);
     }
 
     //还原
-    public override void DoRestore(Hashtable dict, Hashtable dict_tmp)
+    public override void DoRestore(Hashtable dict, Hashtable dictTmp)
     {
       // 还原镶物
-      this.o_embeds.DoRestore(dict, dict_tmp);
-      base.DoRestore(dict, dict_tmp);
+      this.o_embeds.DoRestore(dict, dictTmp);
+      base.DoRestore(dict, dictTmp);
     }
 
 

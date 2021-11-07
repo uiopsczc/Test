@@ -1,37 +1,37 @@
 namespace CsCat
 {
-  public partial class DoerAttrSetter
-  {
-    public bool SetObjectValue_User_Missions(User user, string key, object object_value, bool is_add)
+    public partial class DoerAttrSetter
     {
-      bool is_break = false;
-      if (key.StartsWith("missions.")) //任务对象
-      {
-        key = key.Substring("missions.".Length);
-        int pos = key.IndexOf(".");
-        if (pos != -1)
+        public bool SetObjectValue_User_Missions(User user, string key, object objectValue, bool isAdd)
         {
-          string mission_id = key.Substring(0, pos);
-          key = key.Substring(pos);
-          if (mission_id.EndsWith("t")) //改变tmpValue
-          {
-            mission_id = mission_id.Substring(0, mission_id.Length - 1);
-            key = "t" + key;
-          }
+            bool isBreak = false;
+            if (key.StartsWith(StringConst.String_missions_dot)) //任务对象
+            {
+                key = key.Substring(StringConst.String_missions_dot.Length);
+                int pos = key.IndexOf(CharConst.Char_Dot);
+                if (pos != -1)
+                {
+                    string missionId = key.Substring(0, pos);
+                    key = key.Substring(pos);
+                    if (missionId.EndsWith(StringConst.String_t)) //改变tmpValue
+                    {
+                        missionId = missionId.Substring(0, missionId.Length - 1);
+                        key = StringConst.String_t + key;
+                    }
 
-          var mission = user.GetMission(mission_id);
-          if (mission != null)
-          {
-            DoerAttrSetter doerAttrSetter = new DoerAttrSetter(desc);
-            doerAttrSetter.SetU(mission);
-            doerAttrSetter.SetObject("u" + key, object_value, is_add);
-          }
+                    var mission = user.GetMission(missionId);
+                    if (mission != null)
+                    {
+                        DoerAttrSetter doerAttrSetter = new DoerAttrSetter(desc);
+                        doerAttrSetter.SetU(mission);
+                        doerAttrSetter.SetObject(StringConst.String_u + key, objectValue, isAdd);
+                    }
+                }
+
+                return true;
+            }
+
+            return isBreak;
         }
-
-        return true;
-      }
-
-      return is_break;
     }
-  }
 }

@@ -1,216 +1,204 @@
 namespace CsCat
 {
-  public partial class DoerAttrParser
-  {
-    private RandomManager _randomManager;
-
-    private RandomManager randomManager
+    public partial class DoerAttrParser
     {
-      get { return this._randomManager == null ? Client.instance.randomManager : _randomManager; }
-    }
+        private RandomManager _randomManager;
 
-    public bool ParseBoolean(string expression, bool dv = default(bool))
-    {
-      return ParseString(expression).ToBoolOrToDefault(dv);
-    }
+        private RandomManager randomManager => _randomManager ?? Client.instance.randomManager;
 
-    public float ParseFloat(string expression, float dv = default(float))
-    {
-      return ParseString(expression).ToFloatOrToDefault(dv);
-    }
-
-    public int ParseInt(string expression, int dv = default(int))
-    {
-      return ParseString(expression).ToIntOrToDefault(dv);
-    }
-
-    public long ParseLong(string expression, long dv = default(long))
-    {
-      return ParseString(expression).ToLongOrToDefault(dv);
-    }
-
-    public string ParseString(string expression)
-    {
-      LogCat.log(string.Format("解析ing:{0}", expression));
-      //决定解析的先后顺序
-      if (expression.IndexOf("${") != -1)
-      {
-        if (expression.IndexOf("$${") != -1)
-          expression = expression.ReplaceAll(DoerAttrParserConst.Pattern3, Replace);
-        expression = expression.ReplaceAll(DoerAttrParserConst.Pattern2, Replace);
-      }
-
-      return expression.ReplaceAll(DoerAttrParserConst.Pattern1, Replace);
-    }
-
-    public string Replace(string expression)
-    {
-      if (expression.StartsWith("{"))
-        expression = expression.Substring("{".Length, expression.Length - "{".Length - 1).Trim();
-      else if (expression.StartsWith("${"))
-        expression = expression.Substring("${".Length, expression.Length - "${".Length - 1).Trim();
-      else if (expression.StartsWith("$${"))
-        expression = expression.Substring("$${".Length, expression.Length - "$${".Length - 1).Trim();
-      //type_string用于定位变量的类型，用于获取hatable.Get<T>中的值
-      string type_string = "";
-      if (expression.StartsWith(DoerAttrParserConst.Type_String_List[1]))
-      {
-        type_string = DoerAttrParserConst.Type_String_List[1];
-        expression = expression.Substring(type_string.Length).Trim();
-      }
-      else if (expression.StartsWith(DoerAttrParserConst.Type_String_List[2]))
-      {
-        type_string = DoerAttrParserConst.Type_String_List[2];
-        expression = expression.Substring(type_string.Length).Trim();
-      }
-      else if (expression.StartsWith(DoerAttrParserConst.Type_String_List[3]))
-      {
-        type_string = DoerAttrParserConst.Type_String_List[3];
-        expression = expression.Substring(DoerAttrParserConst.Type_String_List[3].Length).Trim();
-      }
-
-      if (expression.StartsWith("u.")) // 主动对象属性
-      {
-        expression = expression.Substring("u.".Length);
-        if (u != null)
-          return GetDoerValue(u, expression, type_string);
-        else
-          return ConvertValue("", type_string);
-      }
-
-      if (expression.StartsWith("ut.")) // 主动对象临时属性
-      {
-        expression = expression.Substring("ut.".Length);
-        if (u != null)
-          return GetDoerTmpValue(u, expression, type_string);
-        else
-          return ConvertValue("", type_string);
-      }
-
-
-      if (expression.StartsWith("o.")) // 被动对象属性
-      {
-        expression = expression.Substring("o.".Length);
-        if (o != null)
-          return GetDoerValue(o, expression, type_string);
-        else
-          return ConvertValue("", type_string);
-      }
-
-      if (expression.StartsWith("ot.")) // 被动对象临时属性
-      {
-        expression = expression.Substring("ot.".Length);
-        if (o != null)
-          return GetDoerTmpValue(o, expression, type_string);
-        else
-          return ConvertValue("", type_string);
-      }
-
-      if (expression.StartsWith("e.")) // 中间对象属性
-      {
-        expression = expression.Substring("e.".Length);
-        if (e != null)
-          return GetDoerValue(e, expression, type_string);
-        return ConvertValue("", type_string);
-      }
-
-      if (expression.StartsWith("et.")) // 中间对象临时属性
-      {
-        expression = expression.Substring("et.".Length);
-        if (e != null)
-          return GetDoerTmpValue(e, expression, type_string);
-        else
-          return ConvertValue("", type_string);
-      }
-
-      if (expression.StartsWith("m.")) // 当前或中间对象
-      {
-        expression = expression.Substring("m.".Length);
-        if (m != null)
-          return ConvertValue(m.Get<object>(expression), type_string);
-        else
-          return ConvertValue(type_string, "");
-      }
-
-      if (expression.StartsWith("cfgData.")) // 定义数据
-      {
-        expression = expression.Substring("cfgData.".Length);
-        int pos0 = expression.IndexOf('.');
-        string cfgData_name = expression.Substring(0, pos0);
-        expression = expression.Substring(pos0 + 1);
-        int pos1 = expression.IndexOf('.');
-        string id = expression.Substring(0, pos1);
-        string attr = expression.Substring(pos1 + 1);
-        if (cfgData_name.EqualsIgnoreCase("cfgItemData"))
-          return ConvertValue(Client.instance.itemFactory.GetCfgItemData(id).GetFieldValue(attr), type_string);
-        return null;
-      }
-
-      if (expression.StartsWith("eval(")) // 求表达式值
-      {
-        expression = expression.Substring("eval(".Length).Trim();
-        int pos = expression.WrapEndIndex("(", ")");
-        if (pos != -1)
+        public bool ParseBoolean(string expression, bool dv = default)
         {
-          string exp = expression.Substring(0, pos).Trim();
-          string end = pos == exp.Length - 1 ? "" : expression.Substring(pos + 1).Trim();
-          string v = Parse(exp) + end; // 计算结果
-          return ConvertValue(v, type_string);
+            return ParseString(expression).ToBoolOrToDefault(dv);
         }
 
-        return ConvertValue("", type_string);
-      }
-
-      if (expression.StartsWith("hasSubString(")) // 是否有子字符串查找
-      {
-        expression = expression.Substring("hasSubString(".Length);
-        if (expression.EndsWith(")"))
-          expression = expression.Substring(0, expression.Length - 1);
-        int pos = expression.LastIndexOf('|');
-        if (pos == -1)
-          pos = expression.LastIndexOf(',');
-        if (pos != -1)
+        public float ParseFloat(string expression, float dv = default)
         {
-          string src = expression.Substring(0, pos);
-          string dst = expression.Substring(pos + 1).Trim();
-          bool v = (src.IndexOf(dst) != -1);
-          return ConvertValue(v, type_string);
+            return ParseString(expression).ToFloatOrToDefault(dv);
         }
 
-        return ConvertValue("", type_string);
-      }
+        public int ParseInt(string expression, int dv = default)
+        {
+            return ParseString(expression).ToIntOrToDefault(dv);
+        }
 
-      if (expression.StartsWith("random(")) // 随机数
-      {
-        expression = expression.Substring("random(".Length);
-        int pos0 = expression.WrapEndIndex("(", ")");
-        string random_expression = expression.Substring(0, pos0).Trim();
-        string end = pos0 == expression.Length - 1 ? "" : expression.Substring(pos0 + 1).Trim();
-        int pos1 = random_expression.IndexOf(",");
-        int random_arg0 = random_expression.Substring(0, pos1).To<int>();
-        int random_arg1 = random_expression.Substring(pos1 + 1).To<int>();
-        return ConvertValue(randomManager.RandomInt(random_arg0, random_arg1) + end, type_string);
-      }
+        public long ParseLong(string expression, long dv = default)
+        {
+            return ParseString(expression).ToLongOrToDefault(dv);
+        }
+
+        public string ParseString(string expression)
+        {
+            LogCat.log(string.Format("解析ing:{0}", expression));
+            //决定解析的先后顺序
+            if (expression.IndexOf("${") != -1)
+            {
+                if (expression.IndexOf("$${") != -1)
+                    expression = expression.ReplaceAll(DoerAttrParserConst.Pattern3, Replace);
+                expression = expression.ReplaceAll(DoerAttrParserConst.Pattern2, Replace);
+            }
+
+            return expression.ReplaceAll(DoerAttrParserConst.Pattern1, Replace);
+        }
+
+        public string Replace(string expression)
+        {
+            if (expression.StartsWith(StringConst.String_LeftCurlyBrackets))
+                expression = expression.Substring(StringConst.String_LeftCurlyBrackets.Length, expression.Length - StringConst.String_LeftCurlyBrackets.Length - 1).Trim();
+            else if (expression.StartsWith("${"))
+                expression = expression.Substring("${".Length, expression.Length - "${".Length - 1).Trim();
+            else if (expression.StartsWith("$${"))
+                expression = expression.Substring("$${".Length, expression.Length - "$${".Length - 1).Trim();
+            //type_string用于定位变量的类型，用于获取hatable.Get<T>中的值
+            string typeString = StringConst.String_Empty;
+            if (expression.StartsWith(DoerAttrParserConst.Type_String_List[1]))
+            {
+                typeString = DoerAttrParserConst.Type_String_List[1];
+                expression = expression.Substring(typeString.Length).Trim();
+            }
+            else if (expression.StartsWith(DoerAttrParserConst.Type_String_List[2]))
+            {
+                typeString = DoerAttrParserConst.Type_String_List[2];
+                expression = expression.Substring(typeString.Length).Trim();
+            }
+            else if (expression.StartsWith(DoerAttrParserConst.Type_String_List[3]))
+            {
+                typeString = DoerAttrParserConst.Type_String_List[3];
+                expression = expression.Substring(DoerAttrParserConst.Type_String_List[3].Length).Trim();
+            }
+
+            if (expression.StartsWith(StringConst.String_u_dot)) // 主动对象属性
+            {
+                expression = expression.Substring(StringConst.String_u_dot.Length);
+                if (u != null)
+                    return GetDoerValue(u, expression, typeString);
+                return ConvertValue(StringConst.String_Empty, typeString);
+            }
+
+            if (expression.StartsWith(StringConst.String_ut_dot)) // 主动对象临时属性
+            {
+                expression = expression.Substring(StringConst.String_ut_dot.Length);
+                if (u != null)
+                    return GetDoerTmpValue(u, expression, typeString);
+                return ConvertValue(StringConst.String_Empty, typeString);
+            }
 
 
-      //默认的处理
-      if (m != null)
-        return ConvertValue(m.Get<object>(expression), type_string);
-      if (u != null)
-        return ConvertValue(u.Get<object>(expression), type_string);
-      if (o != null)
-        return ConvertValue(o.Get<object>(expression), type_string);
-      return ConvertValue("", type_string);
+            if (expression.StartsWith(StringConst.String_o_dot)) // 被动对象属性
+            {
+                expression = expression.Substring(StringConst.String_o_dot.Length);
+                if (o != null)
+                    return GetDoerValue(o, expression, typeString);
+                return ConvertValue(StringConst.String_Empty, typeString);
+            }
+
+            if (expression.StartsWith(StringConst.String_ot_dot)) // 被动对象临时属性
+            {
+                expression = expression.Substring(StringConst.String_ot_dot.Length);
+                if (o != null)
+                    return GetDoerTmpValue(o, expression, typeString);
+                return ConvertValue(StringConst.String_Empty, typeString);
+            }
+
+            if (expression.StartsWith(StringConst.String_e_dot)) // 中间对象属性
+            {
+                expression = expression.Substring(StringConst.String_e_dot.Length);
+                if (e != null)
+                    return GetDoerValue(e, expression, typeString);
+                return ConvertValue(StringConst.String_Empty, typeString);
+            }
+
+            if (expression.StartsWith(StringConst.String_et_dot)) // 中间对象临时属性
+            {
+                expression = expression.Substring(StringConst.String_et_dot.Length);
+                if (e != null)
+                    return GetDoerTmpValue(e, expression, typeString);
+                return ConvertValue(StringConst.String_Empty, typeString);
+            }
+
+            if (expression.StartsWith(StringConst.String_m_dot)) // 当前或中间对象
+            {
+                expression = expression.Substring(StringConst.String_m_dot.Length);
+                if (m != null)
+                    return ConvertValue(m.Get<object>(expression), typeString);
+                return ConvertValue(typeString, StringConst.String_Empty);
+            }
+
+            if (expression.StartsWith("cfgData.")) // 定义数据
+            {
+                expression = expression.Substring("cfgData.".Length);
+                int pos0 = expression.IndexOf(CharConst.Char_Dot);
+                string cfgDataName = expression.Substring(0, pos0);
+                expression = expression.Substring(pos0 + 1);
+                int pos1 = expression.IndexOf(CharConst.Char_Dot);
+                string id = expression.Substring(0, pos1);
+                string attr = expression.Substring(pos1 + 1);
+                if (cfgDataName.EqualsIgnoreCase("cfgItemData"))
+                    return ConvertValue(Client.instance.itemFactory.GetCfgItemData(id).GetFieldValue(attr),
+                        typeString);
+                return null;
+            }
+
+            if (expression.StartsWith("eval(")) // 求表达式值
+            {
+                expression = expression.Substring("eval(".Length).Trim();
+                int pos = expression.WrapEndIndex(StringConst.String_LeftRoundBrackets, StringConst.String_RightRoundBrackets);
+                if (pos != -1)
+                {
+                    string exp = expression.Substring(0, pos).Trim();
+                    string end = pos == exp.Length - 1 ? StringConst.String_Empty : expression.Substring(pos + 1).Trim();
+                    string v = Parse(exp) + end; // 计算结果
+                    return ConvertValue(v, typeString);
+                }
+
+                return ConvertValue(StringConst.String_Empty, typeString);
+            }
+
+            if (expression.StartsWith("hasSubString(")) // 是否有子字符串查找
+            {
+                expression = expression.Substring("hasSubString(".Length);
+                if (expression.EndsWith(StringConst.String_RightRoundBrackets))
+                    expression = expression.Substring(0, expression.Length - 1);
+                int pos = expression.LastIndexOf(CharConst.Char_Vertical);
+                if (pos == -1)
+                    pos = expression.LastIndexOf(CharConst.Char_Comma);
+                if (pos != -1)
+                {
+                    string src = expression.Substring(0, pos);
+                    string dst = expression.Substring(pos + 1).Trim();
+                    bool v = (src.IndexOf(dst) != -1);
+                    return ConvertValue(v, typeString);
+                }
+
+                return ConvertValue(StringConst.String_Empty, typeString);
+            }
+
+            if (expression.StartsWith("random(")) // 随机数
+            {
+                expression = expression.Substring("random(".Length);
+                int pos0 = expression.WrapEndIndex(StringConst.String_LeftRoundBrackets, StringConst.String_RightRoundBrackets);
+                string randomExpression = expression.Substring(0, pos0).Trim();
+                string end = pos0 == expression.Length - 1 ? StringConst.String_Empty : expression.Substring(pos0 + 1).Trim();
+                int pos1 = randomExpression.IndexOf(CharConst.Char_Comma);
+                int randomArg0 = randomExpression.Substring(0, pos1).To<int>();
+                int randomArg1 = randomExpression.Substring(pos1 + 1).To<int>();
+                return ConvertValue(randomManager.RandomInt(randomArg0, randomArg1) + end, typeString);
+            }
+
+
+            //默认的处理
+            if (m != null)
+                return ConvertValue(m.Get<object>(expression), typeString);
+            if (u != null)
+                return ConvertValue(u.Get<object>(expression), typeString);
+            if (o != null)
+                return ConvertValue(o.Get<object>(expression), typeString);
+            return ConvertValue(StringConst.String_Empty, typeString);
+        }
+
+
+        public string ConvertValue(object value, string typeString)
+        {
+            return DoerAttrParserUtil.ConvertValue(value, typeString).ToString();
+        }
     }
-
-
-
-
-
-    public string ConvertValue(object value, string type_string)
-    {
-      return DoerAttrParserUtil.ConvertValue(value, type_string).ToString();
-    }
-
-  }
 }

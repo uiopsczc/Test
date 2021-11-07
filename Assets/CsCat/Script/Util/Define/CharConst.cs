@@ -14,6 +14,7 @@ namespace CsCat
         public const char Char_SlashN = '\n';
         public const char Char_SlashR = '\r';
         public const char Char_Colon = ':';
+        public const char Char_Semicolon = ';';
         public const char Char_Comma = ',';
         public const char Char_Dot = '.';
         public const char Char_DoubleQuotes = '\"';

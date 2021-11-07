@@ -1,65 +1,62 @@
 namespace CsCat
 {
-  public partial class DoerAttrParser
-  {
-    public bool GetDoerValue_User_Missions(User user, string key, string type_string, out string result)
+    public partial class DoerAttrParser
     {
-      bool is_break = false;
-      result = null;
-      if (key.StartsWith("missions.")) //任务对象
-      {
-        key = key.Substring("missions.".Length);
-        string mission_id;
-        int pos = key.IndexOf(".");
-        if (pos != -1)
+        public bool GetDoerValue_User_Missions(User user, string key, string typeString, out string result)
         {
-          mission_id = key.Substring(0, pos);
-          key = key.Substring(pos);
-          if (mission_id.EndsWith("t")) //修改tmpValue
-          {
-            mission_id = mission_id.Substring(0, mission_id.Length - 1);
-            key = "t" + key;
-          }
-        }
-        else
-        {
-          mission_id = key;
-          key = "";
-        }
+            bool isBreak = false;
+            result = null;
+            if (key.StartsWith(StringConst.String_missions_dot)) //任务对象
+            {
+                key = key.Substring(StringConst.String_missions_dot.Length);
+                string missionId;
+                int pos = key.IndexOf(CharConst.Char_Dot);
+                if (pos != -1)
+                {
+                    missionId = key.Substring(0, pos);
+                    key = key.Substring(pos);
+                    if (missionId.EndsWith(StringConst.String_t)) //修改tmpValue
+                    {
+                        missionId = missionId.Substring(0, missionId.Length - 1);
+                        key = StringConst.String_t + key;
+                    }
+                }
+                else
+                {
+                    missionId = key;
+                    key = StringConst.String_Empty;
+                }
 
-        Mission mission = user.GetMission(mission_id);
-        if (mission != null) //身上有这个任务
-        {
-          if (key.Length > 0)
-          {
-            DoerAttrParser doerAttrParser = new DoerAttrParser(mission);
-            result = doerAttrParser.ParseString(type_string + "u" + key);
-            return true;
-          }
-          else
-          {
-            result = ConvertValue("1", type_string);
-            return true;
-          }
-        }
-        else if (key.StartsWith(".status"))
-        {
-          if (user.GetFinishedMissionIds().Contains(mission_id))
-          {
-            result = ConvertValue(4, type_string); // 已完成
-            return true;
-          }
-          else
-          {
-            result = ConvertValue(0, type_string); // 未接到
-            return true;
-          }
-        }
+                Mission mission = user.GetMission(missionId);
+                if (mission != null) //身上有这个任务
+                {
+                    if (key.Length > 0)
+                    {
+                        DoerAttrParser doerAttrParser = new DoerAttrParser(mission);
+                        result = doerAttrParser.ParseString(typeString + StringConst.String_u + key);
+                        return true;
+                    }
 
-        return true;
-      }
+                    result = ConvertValue(StringConst.String_1, typeString);
+                    return true;
+                }
 
-      return is_break;
+                if (key.StartsWith(StringConst.String_dot_status))
+                {
+                    if (user.GetFinishedMissionIds().Contains(missionId))
+                    {
+                        result = ConvertValue(4, typeString); // 已完成
+                        return true;
+                    }
+
+                    result = ConvertValue(0, typeString); // 未接到
+                    return true;
+                }
+
+                return true;
+            }
+
+            return isBreak;
+        }
     }
-  }
 }

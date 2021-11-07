@@ -20,14 +20,14 @@ namespace CsCat
       base.OnInit();
     }
 
-    public override void OnSave(Hashtable dict, Hashtable dict_tmp)
+    public override void OnSave(Hashtable dict, Hashtable dictTmp)
     {
-      base.OnSave(dict, dict_tmp);
+      base.OnSave(dict, dictTmp);
     }
 
-    public override void OnRestore(Hashtable dict, Hashtable dict_tmp)
+    public override void OnRestore(Hashtable dict, Hashtable dictTmp)
     {
-      base.OnRestore(dict, dict_tmp);
+      base.OnRestore(dict, dictTmp);
     }
 
     //owner 发放任务的npc

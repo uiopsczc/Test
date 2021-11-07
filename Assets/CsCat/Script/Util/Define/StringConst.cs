@@ -4,9 +4,9 @@ namespace CsCat
     {
         public const string String_Empty = "";
         public const string String_Plus = "+";
+        public const string String_Minus = "-";
         public const string String_Mutiply = "x";
         public const string String_Space = " ";
-        public const string String_Minus = "-";
         public const string String_Underline = "_";
         public const string String_Div = "/";
         public const string String_Slash = "/";
@@ -201,6 +201,41 @@ namespace CsCat
 
         public const string String_Format_RoundBrackets = "({0})";
 
+        //Doer
+        public const string String_count = "count";
+        public const string String_belong = "belong";
+        public const string String_pos2 = "pos2";
+        public const string String_pos3 = "pos3";
+        public const string String_o_pos = "o_pos";
+        public const string String_owner = "owner";
+        public const string String_o_owner = "o_owner";
+        public const string String_ownerDot = "owner.";
+        public const string String_ownertDot = "ownert.";
+        public const string String_o_env = "o_env";
+        public const string String_env = "env";
+        public const string String_env_dot = "env.";
+        public const string String_envt_dot = "envt.";
+        public const string String_o_ = "o_";
+        public const string String_u_dot = "u.";
+        public const string String_u = "u";
+        public const string String_ut_dot = "ut.";
+        public const string String_o_dot = "o.";
+        public const string String_ot_dot = "ot.";
+        public const string String_e_dot = "e.";
+        public const string String_et_dot = "et.";
+        public const string String_m_dot = "m.";
+        public const string String_mt_dot = "mt.";
+        public const string String_t = "t";
+        public const string String_items_dot = "items.";
+        public const string String_items = "items";
+        public const string String_missions_dot = "missions.";
+        public const string String_add_attr_equip_dot = "add_attr_equip.";
+        public const string String_dot_x = ".x";
+        public const string String_dot_y = ".y";
+        public const string String_dot_z = ".z";
+        public const string String_status = "status";
+        public const string String_dot_status = ".status";
+        public const string String_dot_count = ".count";
 
         public const string String_Regex_Date =
             "(([0-9]{3}[1-9]|[0-9]{2}[1-9][0-9]{1}|[0-9]{1}[1-9][0-9]{2}|[1-9][0-9]{3})-(((0[13578]|1[02])-(0[1-9]|[12][0-9]|3[01]))|((0[469]|11)-(0[1-9]|[12][0-9]|30))|(02-(0[1-9]|[1][0-9]|2[0-8]))))|((([0-9]{2})(0[48]|[2468][048]|[13579][26])|((0[48]|[2468][048]|[3579][26])00))-02-29)"; //日期正则表达式

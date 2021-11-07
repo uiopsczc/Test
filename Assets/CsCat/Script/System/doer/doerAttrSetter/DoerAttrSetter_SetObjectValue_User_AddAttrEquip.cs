@@ -3,44 +3,42 @@ using System.Collections.Generic;
 
 namespace CsCat
 {
-  public partial class DoerAttrSetter
-  {
-    public bool SetObjectValue_User_AddAttrEquip(User user, string key, string object_value, bool is_add)
+    public partial class DoerAttrSetter
     {
-      bool is_break = false;
-      if (key.StartsWith("add_attr_equip.")) //增加带属性道具
-      {
-        string item_id = key.Substring("add_attr_equip.".Length).Trim();
-        int pos = object_value.IndexOf(';'); // count;pz:2,jl:3
-        if (pos != -1)
+        public bool SetObjectValue_User_AddAttrEquip(User user, string key, string objectValue, bool isAdd)
         {
-          string count_string = object_value.Substring(0, pos).Trim();
-          int count_value = doerAttrParser.ParseInt(count_string, 0);
-          Dictionary<string, string> attrs = object_value.Substring(pos + 1).Trim().ToDictionary<string, string>();
-          Hashtable attr_dict = new Hashtable();
-          foreach (string attr_key in attrs.Keys)
-          {
-            string attr_value = attrs[attr_key];
-            string attr_key_post_parse = this.doerAttrParser.ParseString(attr_key);
-            object attr_value_post_parse = this.doerAttrParser.Parse(attr_value);
-            attr_dict[attr_key_post_parse] = attr_value_post_parse;
-          }
+            bool isBreak = false;
+            if (key.StartsWith(StringConst.String_add_attr_equip_dot)) //增加带属性道具
+            {
+                string itemId = key.Substring(StringConst.String_add_attr_equip_dot.Length).Trim();
+                int pos = objectValue.IndexOf(CharConst.Char_Semicolon); // count;pz:2,jl:3
+                if (pos != -1)
+                {
+                    string countString = objectValue.Substring(0, pos).Trim();
+                    int countValue = doerAttrParser.ParseInt(countString, 0);
+                    Dictionary<string, string> attrs = objectValue.Substring(pos + 1).Trim()
+                        .ToDictionary<string, string>();
+                    Hashtable attrDict = new Hashtable();
+                    foreach (string attrKey in attrs.Keys)
+                    {
+                        string attrValue = attrs[attrKey];
+                        string attrKeyPostParse = this.doerAttrParser.ParseString(attrKey);
+                        object attrValuePostParse = this.doerAttrParser.Parse(attrValue);
+                        attrDict[attrKeyPostParse] = attrValuePostParse;
+                    }
 
-          for (int i = 0; i < count_value; i++)
-          {
-            Item equip = Client.instance.itemFactory.NewDoer(item_id) as Item;
-            equip.AddAll(attr_dict);
-            user.AddItem(equip);
-          }
+                    for (int i = 0; i < countValue; i++)
+                    {
+                        Item equip = Client.instance.itemFactory.NewDoer(itemId) as Item;
+                        equip.AddAll(attrDict);
+                        user.AddItem(equip);
+                    }
+                }
+
+                return true;
+            }
+
+            return isBreak;
         }
-
-        return true;
-      }
-
-      return is_break;
     }
-
-
-
-  }
 }

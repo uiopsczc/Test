@@ -2,7 +2,7 @@ namespace CsCat
 {
   public class MissionFactory : DoerFactory
   {
-    protected override string default_doer_class_path => "CsCat.Mission";
+    protected override string defaultDoerClassPath => "CsCat.Mission";
 
     protected override string GetClassPath(string id)
     {
@@ -15,9 +15,9 @@ namespace CsCat
       return CfgMission.Instance.get_by_id(id);
     }
 
-    protected override DBase __NewDBase(string id_or_rid)
+    protected override DBase _NewDBase(string idOrRid)
     {
-      return new MissionDBase(id_or_rid);
+      return new MissionDBase(idOrRid);
     }
   }
 }
