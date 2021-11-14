@@ -36,7 +36,7 @@ namespace CsCat
             int px = ToParentX(base_on_parent_pos, offset_pos, x);
             int py = ToParentY(base_on_parent_pos, offset_pos, y);
             if (mapPath.IsValidPoint(px, py)) // 父场景无效区域不投影
-              mapPath.project_grids[px][py] = 0;
+              mapPath.projectGrids[px][py] = 0;
           }
         }
       }
@@ -68,7 +68,7 @@ namespace CsCat
             int px = ToParentX(base_on_parent_pos, offset_pos, x);
             int py = ToParentY(base_on_parent_pos, offset_pos, y);
             if (mapPath.IsValidPoint(px, py)) // 父场景无效区域不投影
-              mapPath.project_grids[px][py] = v;
+              mapPath.projectGrids[px][py] = v;
           }
         }
       }
@@ -81,13 +81,13 @@ namespace CsCat
       CheckParentCall();
 
       AStarMapPath mapPath = GetMapPath();
-      if (mapPath == null || mapPath.project_grids == null)
+      if (mapPath == null || mapPath.projectGrids == null)
         return;
-      for (int x = 0; x < mapPath.project_grids.Length; x++)
+      for (int x = 0; x < mapPath.projectGrids.Length; x++)
       {
-        for (int y = 0; y < mapPath.project_grids[x].Length; y++)
+        for (int y = 0; y < mapPath.projectGrids[x].Length; y++)
         {
-          mapPath.project_grids[x][y] = 0;
+          mapPath.projectGrids[x][y] = 0;
         }
       }
     }

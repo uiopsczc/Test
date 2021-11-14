@@ -6,7 +6,7 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public class AStarData
+  public class AStarConfigData
   {
     private Transform transform;
     private Vector3 transform_position;

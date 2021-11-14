@@ -2,26 +2,26 @@
 
 namespace CsCat
 {
-  [ExecuteInEditMode]
-  public partial class AStarMonoBehaviour : MonoBehaviour
-  {
-    [SerializeField] public AStarData astarData = new AStarData();
-
-    private void Awake()
+    [ExecuteInEditMode]
+    public partial class AStarMonoBehaviour : MonoBehaviour
     {
-    }
+        [SerializeField] public AStarConfigData astarConfigData = new AStarConfigData();
 
-    public void Save()
-    {
-      astarData.SetTransform(transform);
-      astarData.Save();
-    }
+        private void Awake()
+        {
+        }
 
-    public void Load()
-    {
-      astarData.SetTransform(transform);
-      astarData.Load();
-      astarData.ResetTransformInfo();
+        public void Save()
+        {
+            astarConfigData.SetTransform(transform);
+            astarConfigData.Save();
+        }
+
+        public void Load()
+        {
+            astarConfigData.SetTransform(transform);
+            astarConfigData.Load();
+            astarConfigData.ResetTransformInfo();
+        }
     }
-  }
 }

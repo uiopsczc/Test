@@ -27,8 +27,10 @@ namespace CsCat
                 return tmp;
 
             var targetType = TypeUtil.GetType(typeName, assembleName);
-            foreach (var hashtable in ValueParseUtil.GetValueParseList())
+            var list = ValueParseUtil.GetValueParseList();
+            for (var i = 0; i < list.Count; i++)
             {
+                var hashtable = list[i];
                 var type = (Type) hashtable[StringConst.String_type];
                 var parseFunc = (Delegate) hashtable[StringConst.String_parseFunc];
                 if (type == targetType)

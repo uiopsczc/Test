@@ -10,7 +10,8 @@ namespace CsCat
 
         private static void AddValueParseElement<T>(Func<string, T> func)
         {
-            var hashtable = new Hashtable {[StringConst.String_type] = typeof(T), [StringConst.String_parseFunc] = func};
+            var hashtable = new Hashtable
+                {[StringConst.String_type] = typeof(T), [StringConst.String_parseFunc] = func};
             valueParseList.Add(hashtable);
         }
 

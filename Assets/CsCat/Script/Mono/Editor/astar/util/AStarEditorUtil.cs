@@ -9,8 +9,8 @@ namespace CsCat
       int obstacleType)
     {
       Color obstacleTypeColor = AStarConst.AStarObstacleType_Dict[obstacleType].color;
-      Rect cell_rect = new Rect(0, 0, astarMonoBehaviour.astarData.cell_size.x, astarMonoBehaviour.astarData.cell_size.y);
-      cell_rect.position = astarMonoBehaviour.astarData.GetPosition(grid_x, grid_y);
+      Rect cell_rect = new Rect(0, 0, astarMonoBehaviour.astarConfigData.cell_size.x, astarMonoBehaviour.astarConfigData.cell_size.y);
+      cell_rect.position = astarMonoBehaviour.astarConfigData.GetPosition(grid_x, grid_y);
       DrawUtil.HandlesDrawSolidRectangleWithOutline(cell_rect, obstacleTypeColor, Color.green,
         astarMonoBehaviour.transform);
     }
@@ -18,8 +18,8 @@ namespace CsCat
     public static void DrawdTerrainTypeRect(AStarMonoBehaviour astarMonoBehaviour, int grid_x, int grid_y,
       int terrainType)
     {
-      Rect cell_rect = new Rect(0, 0, astarMonoBehaviour.astarData.cell_size.x, astarMonoBehaviour.astarData.cell_size.y);
-      cell_rect.position = astarMonoBehaviour.astarData.GetPosition(grid_x, grid_y);
+      Rect cell_rect = new Rect(0, 0, astarMonoBehaviour.astarConfigData.cell_size.x, astarMonoBehaviour.astarConfigData.cell_size.y);
+      cell_rect.position = astarMonoBehaviour.astarConfigData.GetPosition(grid_x, grid_y);
       DrawUtil.HandlesDrawSolidRectangleWithOutline(cell_rect, default(Color), Color.green,
         astarMonoBehaviour.transform);
       if (terrainType != 0)

@@ -17,7 +17,7 @@ namespace CsCat
 #if UNITY_EDITOR
       Undo.RegisterCompleteObjectUndo(astarMonoBehaviour, "UnDo_AStar");
 #endif
-      astarMonoBehaviour.astarData.SetDataValue(mouse_grid_x, mouse_grid_y, value);
+      astarMonoBehaviour.astarConfigData.SetDataValue(mouse_grid_x, mouse_grid_y, value);
     }
 
     public void DrawBrush(int mouse_grid_x, int mouse_grid_y, bool is_see_obstacleType, int obstacleType,
