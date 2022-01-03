@@ -2,75 +2,75 @@ using System.Collections;
 
 namespace CsCat
 {
-    public partial class LinkedHashtable
-    {
-        class DictionaryEnumerator : IDictionaryEnumerator
-        {
+	public partial class LinkedHashtable
+	{
+		class DictionaryEnumerator : IDictionaryEnumerator
+		{
 
-            ArrayList keyList;
-            ArrayList valueList;
-            int position = -1;
-            private DictionaryEntry current;
-            private DictionaryEntry entry;
-
-
-            DictionaryEntry IDictionaryEnumerator.Entry
-            {
-                get
-                {
-                    object key = keyList[position];
-                    object value = valueList[position];
-                    entry.Key = key;
-                    entry.Value = value;
-                    return entry;
-                }
-            }
-
-            object IDictionaryEnumerator.Key => keyList[position];
-
-            object IDictionaryEnumerator.Value => valueList[position];
-
-            object IEnumerator.Current
-            {
-                get
-                {
-                    object key = keyList[position];
-                    object value = valueList[position];
-                    current.Key = key;
-                    current.Value = value;
-                    return current;
-                }
-            }
+			ArrayList keyList;
+			ArrayList valueList;
+			int position = -1;
+			private DictionaryEntry current;
+			private DictionaryEntry entry;
 
 
-            public DictionaryEnumerator(ArrayList keyList, ArrayList valueList)
-            {
-                Init(keyList, valueList);
-            }
+			DictionaryEntry IDictionaryEnumerator.Entry
+			{
+				get
+				{
+					object key = keyList[position];
+					object value = valueList[position];
+					entry.Key = key;
+					entry.Value = value;
+					return entry;
+				}
+			}
 
-            public void Init(ArrayList keyList, ArrayList valueList)
-            {
-                this.keyList = keyList;
-                this.valueList = valueList;
-            }
+			object IDictionaryEnumerator.Key => keyList[position];
 
-            public void Reset()
-            {
-                position = -1;
-            }
+			object IDictionaryEnumerator.Value => valueList[position];
+
+			object IEnumerator.Current
+			{
+				get
+				{
+					object key = keyList[position];
+					object value = valueList[position];
+					current.Key = key;
+					current.Value = value;
+					return current;
+				}
+			}
 
 
-            bool IEnumerator.MoveNext()
-            {
-                position++;
-                return position < keyList.Count;
-            }
+			public DictionaryEnumerator(ArrayList keyList, ArrayList valueList)
+			{
+				Init(keyList, valueList);
+			}
 
-            void IEnumerator.Reset()
-            {
-                Reset();
-            }
+			public void Init(ArrayList keyList, ArrayList valueList)
+			{
+				this.keyList = keyList;
+				this.valueList = valueList;
+			}
 
-        }
-    }
+			public void Reset()
+			{
+				position = -1;
+			}
+
+
+			bool IEnumerator.MoveNext()
+			{
+				position++;
+				return position < keyList.Count;
+			}
+
+			void IEnumerator.Reset()
+			{
+				Reset();
+			}
+
+		}
+	}
 }

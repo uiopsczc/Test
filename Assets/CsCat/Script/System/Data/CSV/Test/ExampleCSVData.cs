@@ -1,24 +1,24 @@
 namespace CsCat
 {
-    public class TestCSVData : ISingleton
-    {
-        public void SingleInit()
-        {
-        }
+	public class TestCSVData : ISingleton
+	{
+		public void SingleInit()
+		{
+		}
 
-        public TestCSVData()
-        {
-            data = new CsvData();
-            data.Init(filePath);
-        }
-
-
-        public static TestCSVData Instance => SingletonFactory.instance.Get<TestCSVData>();
+		public TestCSVData()
+		{
+			data = new CsvData();
+			data.Init(filePath);
+		}
 
 
-        public CsvData data;
+		public static TestCSVData Instance => SingletonFactory.instance.Get<TestCSVData>();
 
 
-        private readonly string filePath = "Data/TestCSVData";
-    }
+		public CsvData data;
+
+
+		private readonly string filePath = "Data/TestCSVData";
+	}
 }

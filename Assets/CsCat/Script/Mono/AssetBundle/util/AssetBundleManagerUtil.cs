@@ -7,11 +7,11 @@ using Object = UnityEngine.Object;
 
 namespace CsCat
 {
-  public class AssetBundleManagerUtil
-  {
-    public static void SetAssetCat(AssetCat assetCat, Object[] assets)
-    {
+	public class AssetBundleManagerUtil
+	{
+		public static void SetAssetCat(AssetCat assetCat, Object[] assets)
+		{
 
-    }
-  }
+		}
+	}
 }

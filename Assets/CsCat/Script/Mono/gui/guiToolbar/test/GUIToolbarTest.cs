@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public class GUIToolbarTest : MonoBehaviour
-  {
-  }
+	public class GUIToolbarTest : MonoBehaviour
+	{
+	}
 }

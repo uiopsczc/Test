@@ -1,17 +1,11 @@
 namespace CsCat
 {
-  public class CZMToolConst
-  {
+	public class CZMToolConst
+	{
+		public const string Menu_Root = "CZMTool/";
 
-    public const string MenuRoot = "CZMTool/";
+		public const string Asset_Menu_Root = "Assets/";
 
-
-    public const string AssetMenuRoot = "Assets/";
-
-    public const string GameObjectMenuRoot = "GameObject/";
-
-
-
-
-  }
+		public const string GameObject_Menu_Root = "GameObject/";
+	}
 }

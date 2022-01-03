@@ -4,12 +4,12 @@ using UnityEngine;
 
 namespace CsCat
 {
-    public partial class EditorGUIUtil
-    {
-        public static GUIContent ObjectContent<T>()
-        {
-            return EditorGUIUtility.ObjectContent(null, typeof(T));
-        }
-    }
+	public partial class EditorGUIUtil
+	{
+		public static GUIContent ObjectContent<T>()
+		{
+			return EditorGUIUtility.ObjectContent(null, typeof(T));
+		}
+	}
 }
 #endif

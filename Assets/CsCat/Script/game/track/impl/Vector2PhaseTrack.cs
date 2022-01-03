@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public class Vector2PhaseTrack : AbstractPhaseTrack<Vector2>
-  {
+	public class Vector2PhaseTrack : AbstractPhaseTrack<Vector2>
+	{
 
-  }
+	}
 }

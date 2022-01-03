@@ -2,7 +2,7 @@ using XLua;
 
 namespace CsCat
 {
-  public static class LuaUtil
-  {
-  }
+	public static class LuaUtil
+	{
+	}
 }

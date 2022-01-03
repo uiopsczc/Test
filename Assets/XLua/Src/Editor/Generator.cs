@@ -27,7 +27,7 @@ namespace CSObjectWrapEditor
 #if XLUA_GENERAL
         public static string common_path = "./Gen/";
 #else
-    public static string common_path = Application.dataPath + "/XLua/Gen/";
+    public static string commonPath = Application.dataPath + "/XLua/Gen/";
 #endif
 
     static GeneratorConfig()
@@ -41,10 +41,10 @@ namespace CSObjectWrapEditor
         {
           if (field.FieldType == typeof(string) && field.IsDefined(typeof(GenPathAttribute), false))
           {
-            common_path = field.GetValue(null) as string;
-            if (!common_path.EndsWith("/"))
+            commonPath = field.GetValue(null) as string;
+            if (!commonPath.EndsWith("/"))
             {
-              common_path = common_path + "/";
+              commonPath = commonPath + "/";
             }
           }
         }
@@ -54,10 +54,10 @@ namespace CSObjectWrapEditor
         {
           if (prop.PropertyType == typeof(string) && prop.IsDefined(typeof(GenPathAttribute), false))
           {
-            common_path = prop.GetValue(null, null) as string;
-            if (!common_path.EndsWith("/"))
+            commonPath = prop.GetValue(null, null) as string;
+            if (!commonPath.EndsWith("/"))
             {
-              common_path = common_path + "/";
+              commonPath = commonPath + "/";
             }
           }
         }
@@ -1161,14 +1161,14 @@ namespace CSObjectWrapEditor
     {
       var delegate_types = CSharpCallLua.Where(type => typeof(Delegate).IsAssignableFrom(type));
 
-      GenDelegateBridge(delegate_types, GeneratorConfig.common_path, hotfix_check_types);
+      GenDelegateBridge(delegate_types, GeneratorConfig.commonPath, hotfix_check_types);
     }
 
     public static void GenEnumWraps()
     {
       var enum_types = LuaCallCSharp.Where(type => type.IsEnum).Distinct();
 
-      GenEnumWrap(enum_types, GeneratorConfig.common_path);
+      GenEnumWrap(enum_types, GeneratorConfig.commonPath);
     }
 
     static MethodInfo makeGenericMethodIfNeeded(MethodInfo method)
@@ -1202,7 +1202,7 @@ namespace CSObjectWrapEditor
 
       var itf_bridges = CSharpCallLua.Where(t => t.IsInterface);
 
-      string filePath = GeneratorConfig.common_path + "XLuaGenAutoRegister.cs";
+      string filePath = GeneratorConfig.commonPath + "XLuaGenAutoRegister.cs";
       StreamWriter textWriter = new StreamWriter(filePath, false, Encoding.UTF8);
 
       var lookup = LuaCallCSharp.Distinct().ToDictionary(t => t);
@@ -1704,7 +1704,7 @@ namespace CSObjectWrapEditor
       var warp_types = minimum ? new List<Type>() : LuaCallCSharp;
       var itf_bridges_types = CSharpCallLua.Where(type => type.IsInterface).Distinct();
 
-      Gen(warp_types, GCOptimizeList, itf_bridges_types, GeneratorConfig.common_path);
+      Gen(warp_types, GCOptimizeList, itf_bridges_types, GeneratorConfig.commonPath);
     }
 
 #if XLUA_GENERAL
@@ -1764,7 +1764,7 @@ namespace CSObjectWrapEditor
       }
 #endif
       var start = DateTime.Now;
-      Directory.CreateDirectory(GeneratorConfig.common_path);
+      Directory.CreateDirectory(GeneratorConfig.commonPath);
       GetGenConfig(XLua.Utils.GetAllTypes());
       luaenv.DoString("require 'TemplateCommon'");
       var gen_push_types_setter = luaenv.Global.Get<LuaFunction>("SetGenPushAndUpdateTypes");
@@ -1798,7 +1798,7 @@ namespace CSObjectWrapEditor
         "./Tools/XLuaGenerate.exe",
         "./Library/ScriptAssemblies/Assembly-CSharp.dll",
         "./Library/ScriptAssemblies/Assembly-CSharp-Editor.dll",
-        GeneratorConfig.common_path
+        GeneratorConfig.commonPath
       };
 
       var searchPaths = new List<string>();
@@ -1847,7 +1847,7 @@ namespace CSObjectWrapEditor
     [MenuItem("XLua/Clear Generated Code", false, 2)]
     public static void ClearAll()
     {
-      clear(GeneratorConfig.common_path);
+      clear(GeneratorConfig.commonPath);
     }
 
 #if UNITY_2018

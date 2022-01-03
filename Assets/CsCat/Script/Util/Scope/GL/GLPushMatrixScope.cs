@@ -3,16 +3,16 @@ using System;
 
 namespace CsCat
 {
-    public class GLPushMatrixScope : IDisposable
-    {
-        public GLPushMatrixScope()
-        {
-            GL.PushMatrix();
-        }
+	public class GLPushMatrixScope : IDisposable
+	{
+		public GLPushMatrixScope()
+		{
+			GL.PushMatrix();
+		}
 
-        public void Dispose()
-        {
-            GL.PopMatrix();
-        }
-    }
+		public void Dispose()
+		{
+			GL.PopMatrix();
+		}
+	}
 }

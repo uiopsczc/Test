@@ -3,10 +3,10 @@ using UnityEngine;
 
 namespace CsCat
 {
-    public class CsCatTest : MonoBehaviour
-    {
-        void Start()
-        {
-        }
-    }
+	public class CsCatTest : MonoBehaviour
+	{
+		void Start()
+		{
+		}
+	}
 }

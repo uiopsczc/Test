@@ -2,25 +2,25 @@ using System;
 
 namespace CsCat
 {
-  /// <summary>
-  /// Timer优先顺序attribute
-  /// </summary>
-  public class TimerPriorityAttribute : Attribute
-  {
-    #region field
+	/// <summary>
+	/// Timer优先顺序attribute
+	/// </summary>
+	public class TimerPriorityAttribute : Attribute
+	{
+		#region field
 
-    public int priority = 1;
+		public int priority = 1;
 
-    #endregion
+		#endregion
 
-    #region ctor
+		#region ctor
 
-    public TimerPriorityAttribute(int priority)
-    {
-      this.priority = priority;
-    }
+		public TimerPriorityAttribute(int priority)
+		{
+			this.priority = priority;
+		}
 
-    #endregion
+		#endregion
 
-  }
+	}
 }

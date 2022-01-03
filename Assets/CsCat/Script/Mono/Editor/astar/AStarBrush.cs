@@ -2,32 +2,31 @@ using UnityEditor;
 
 namespace CsCat
 {
-  public class AStarBrush
-  {
-    public AStarMonoBehaviour astarMonoBehaviour;
+	public class AStarBrush
+	{
+		public AStarMonoBehaviour astarMonoBehaviour;
 
 
-    public void DoPaintPressed(int mouse_grid_x, int mouse_grid_y, int value)
-    {
-      Paint(mouse_grid_x, mouse_grid_y, value);
-    }
+		public void DoPaintPressed(int mouseGridX, int mouseGridY, int value)
+		{
+			Paint(mouseGridX, mouseGridY, value);
+		}
 
-    public void Paint(int mouse_grid_x, int mouse_grid_y, int value)
-    {
+		public void Paint(int mouseGridX, int mouseGridY, int value)
+		{
 #if UNITY_EDITOR
-      Undo.RegisterCompleteObjectUndo(astarMonoBehaviour, "UnDo_AStar");
+			Undo.RegisterCompleteObjectUndo(astarMonoBehaviour, "UnDo_AStar");
 #endif
-      astarMonoBehaviour.astarConfigData.SetDataValue(mouse_grid_x, mouse_grid_y, value);
-    }
+			astarMonoBehaviour.astarConfigData.SetDataValue(mouseGridX, mouseGridY, value);
+		}
 
-    public void DrawBrush(int mouse_grid_x, int mouse_grid_y, bool is_see_obstacleType, int obstacleType,
-      bool is_see_terrainType, int terrainType)
-    {
-      if (is_see_obstacleType)
-        AStarEditorUtil.DrawdObstacleTypeRect(astarMonoBehaviour, mouse_grid_x, mouse_grid_y, obstacleType);
-      if (is_see_terrainType)
-        AStarEditorUtil.DrawdTerrainTypeRect(astarMonoBehaviour, mouse_grid_x, mouse_grid_y, terrainType);
-    }
-
-  }
+		public void DrawBrush(int mouseGridX, int mouseGridY, bool isSeeObstacleType, int obstacleType,
+			bool isSeeTerrainType, int terrainType)
+		{
+			if (isSeeObstacleType)
+				AStarEditorUtil.DrawObstacleTypeRect(astarMonoBehaviour, mouseGridX, mouseGridY, obstacleType);
+			if (isSeeTerrainType)
+				AStarEditorUtil.DrawdTerrainTypeRect(astarMonoBehaviour, mouseGridX, mouseGridY, terrainType);
+		}
+	}
 }

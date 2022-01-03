@@ -4,13 +4,13 @@ using UnityEngine.UI;
 public class EmptyImage : MaskableGraphic
 {
 
-  protected override void OnPopulateMesh(VertexHelper vh)
-  {
-    vh.Clear();
-  }
+	protected override void OnPopulateMesh(VertexHelper vh)
+	{
+		vh.Clear();
+	}
 
-  protected EmptyImage()
-  {
-    useLegacyMeshGeneration = false;
-  }
+	protected EmptyImage()
+	{
+		useLegacyMeshGeneration = false;
+	}
 }

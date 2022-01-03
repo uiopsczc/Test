@@ -4,29 +4,29 @@ using System.Threading;
 
 namespace CsCat
 {
-    public class LockScope : IDisposable
-    {
-        private object lockObject;
+	public class LockScope : IDisposable
+	{
+		private object lockObject;
 
-        public bool isHasLock { get; private set; }
+		public bool isHasLock { get; private set; }
 
-        public LockScope(object obj)
-        {
-            if (!Monitor.TryEnter(obj))
-                return;
+		public LockScope(object obj)
+		{
+			if (!Monitor.TryEnter(obj))
+				return;
 
-            this.isHasLock = true;
-            this.lockObject = obj;
-        }
+			this.isHasLock = true;
+			this.lockObject = obj;
+		}
 
-        public void Dispose()
-        {
-            if (!this.isHasLock)
-                return;
+		public void Dispose()
+		{
+			if (!this.isHasLock)
+				return;
 
-            Monitor.Exit(this.lockObject);
-            this.lockObject = null;
-            this.isHasLock = false;
-        }
-    }
+			Monitor.Exit(this.lockObject);
+			this.lockObject = null;
+			this.isHasLock = false;
+		}
+	}
 }

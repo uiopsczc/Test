@@ -1,8 +1,8 @@
 namespace CsCat
 {
-  public partial class UINotifyManager : UIObject
-  {
-  }
+	public partial class UINotifyManager : UIObject
+	{
+	}
 }
 
 

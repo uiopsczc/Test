@@ -4,10 +4,10 @@ using UnityEngine;
 
 namespace CsCat
 {
-  /// <summary>
-  ///   CZM工具菜单
-  /// </summary>
-  public partial class CZMToolMenu : MonoBehaviour
-  {
-  }
+	/// <summary>
+	///   CZM工具菜单
+	/// </summary>
+	public partial class CZMToolMenu : MonoBehaviour
+	{
+	}
 }

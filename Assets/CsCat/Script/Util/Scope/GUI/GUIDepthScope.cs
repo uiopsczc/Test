@@ -3,23 +3,23 @@ using UnityEngine;
 
 namespace CsCat
 {
-    /// <summary>
-    ///   GUI.depth   相当于SortingOrder
-    /// </summary>
-    public class GUIDepthScope : IDisposable
-    {
-        [SerializeField] private int _preDepth { get; }
+	/// <summary>
+	///   GUI.depth   相当于SortingOrder
+	/// </summary>
+	public class GUIDepthScope : IDisposable
+	{
+		[SerializeField] private int _preDepth { get; }
 
-        public GUIDepthScope(int newDepth)
-        {
-            _preDepth = GUI.depth;
-            GUI.depth = newDepth;
-        }
+		public GUIDepthScope(int newDepth)
+		{
+			_preDepth = GUI.depth;
+			GUI.depth = newDepth;
+		}
 
 
-        public void Dispose()
-        {
-            GUI.depth = _preDepth;
-        }
-    }
+		public void Dispose()
+		{
+			GUI.depth = _preDepth;
+		}
+	}
 }

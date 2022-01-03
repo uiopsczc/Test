@@ -1,7 +1,7 @@
 namespace CsCat
 {
-    public interface IToLinkedHashtable2
-    {
-        LinkedHashtable ToLinkedHashtable2();
-    }
+	public interface IToLinkedHashtable2
+	{
+		LinkedHashtable ToLinkedHashtable2();
+	}
 }

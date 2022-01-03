@@ -4,224 +4,224 @@ using UnityEditor;
 
 namespace CsCat
 {
-  public partial class AStarEditor
-  {
-    private int mouse_grid_x;
-    private int mouse_grid_y;
-    private bool is_mouse_grid_changed;
-    private Vector2 local_brush_position;
-    private int selected_obstacleType_index = 0;
-    private bool is_see_obstacleType = true;
-    private int selected_terrainType_index = 0;
-    private bool is_see_terrainType = true;
-    private Event e;
+	public partial class AStarEditor
+	{
+		private int mouseGridX;
+		private int mouseGridY;
+		private bool isMouseGridChanged;
+		private Vector2 localBrushPosition;
+		private int selectedObstacleTypeIndex = 0;
+		private bool isSeeObstacleType = true;
+		private int selectedTerrainTypeIndex = 0;
+		private bool isSeeTerrainType = true;
+		private Event e;
 
-    private AStarObstacleType selected_obstacleType
-    {
-      get { return AStarConst.AStarObstacleType_List[selected_obstacleType_index]; }
-    }
+		private AStarObstacleType selectedObstacleType => AStarConst.AStarObstacleTypeList[selectedObstacleTypeIndex];
 
-    private AStarTerrainType selected_terrainType
-    {
-      get { return AStarConst.AStarTerrainType_List[selected_terrainType_index]; }
-    }
+		private AStarTerrainType selectedTerrainType => AStarConst.AStarTerrainType_List[selectedTerrainTypeIndex];
 
 
-    void OnSceneGUI()
-    {
-      int control_id = GUIUtility.GetControlID(FocusType.Passive);
-      HandleUtility.AddDefaultControl(control_id);
-      UpdateLocalBrushPosition();
-      UpdateMouseGrid();
+		void OnSceneGUI()
+		{
+			int controlId = GUIUtility.GetControlID(FocusType.Passive);
+			HandleUtility.AddDefaultControl(controlId);
+			UpdateLocalBrushPosition();
+			UpdateMouseGrid();
 
-      DrawBounds();
-      DrawDataDict();
-      brush.DrawBrush(mouse_grid_x, mouse_grid_y, is_see_obstacleType, selected_obstacleType.value, is_see_terrainType,
-        selected_terrainType.value);
-      DrawInfo();
-      DrawMainToolbar();
-      DrawTips();
-      HandleEvent();
+			DrawBounds();
+			DrawDataDict();
+			_brush.DrawBrush(mouseGridX, mouseGridY, isSeeObstacleType, selectedObstacleType.value,
+				isSeeTerrainType,
+				selectedTerrainType.value);
+			DrawInfo();
+			DrawMainToolbar();
+			DrawTips();
+			HandleEvent();
 
-      SceneView.RepaintAll();
-    }
+			SceneView.RepaintAll();
+		}
 
-    void UpdateLocalBrushPosition()
-    {
-      Plane plane = new Plane(target.transform.forward, target.transform.position);
-      Vector2 mouse_pos = Event.current.mousePosition;
-      mouse_pos.y = Screen.height - mouse_pos.y;
-      Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
-      float distance;
-      if (plane.Raycast(ray, out distance))
-      {
-        Rect cell_rect = new Rect(0, 0, target.astarConfigData.cell_size.x, target.astarConfigData.cell_size.y);
-        cell_rect.position = target.transform.InverseTransformPoint(ray.GetPoint(distance));
+		void UpdateLocalBrushPosition()
+		{
+			Plane plane = new Plane(_target.transform.forward, _target.transform.position);
+			Vector2 mousePosition = Event.current.mousePosition;
+			mousePosition.y = Screen.height - mousePosition.y;
+			Ray ray = HandleUtility.GUIPointToWorldRay(Event.current.mousePosition);
+			float distance;
+			if (plane.Raycast(ray, out distance))
+			{
+				Rect cellRect = new Rect(0, 0, _target.astarConfigData.cellSize.x, _target.astarConfigData.cellSize.y);
+				cellRect.position = _target.transform.InverseTransformPoint(ray.GetPoint(distance));
 
-        Vector2 cell_pos = cell_rect.position;
-        if (cell_pos.x < 0)
-          cell_pos.x -= target.astarConfigData.cell_size.x; //因为负数是从-1开始的，正数是从0开始的
-        if (cell_pos.y < 0)
-          cell_pos.y -= target.astarConfigData.cell_size.y; //因为负数是从-1开始的，正数是从0开始的
-        cell_pos.x -= cell_pos.x % target.astarConfigData.cell_size.x; //取整
-        cell_pos.y -= cell_pos.y % target.astarConfigData.cell_size.y; //取整
-        cell_rect.position = cell_pos;
-        local_brush_position = target.transform.InverseTransformPoint(ray.GetPoint(distance));
-      }
-    }
+				Vector2 cellRectPosition = cellRect.position;
+				if (cellRectPosition.x < 0)
+					cellRectPosition.x -= _target.astarConfigData.cellSize.x; //因为负数是从-1开始的，正数是从0开始的
+				if (cellRectPosition.y < 0)
+					cellRectPosition.y -= _target.astarConfigData.cellSize.y; //因为负数是从-1开始的，正数是从0开始的
+				cellRectPosition.x -= cellRectPosition.x % _target.astarConfigData.cellSize.x; //取整
+				cellRectPosition.y -= cellRectPosition.y % _target.astarConfigData.cellSize.y; //取整
+				cellRect.position = cellRectPosition;
+				localBrushPosition = _target.transform.InverseTransformPoint(ray.GetPoint(distance));
+			}
+		}
 
-    void DrawBounds()
-    {
-      for (int grid_y = target.astarConfigData.min_grid_y; grid_y <= target.astarConfigData.max_grid_y; grid_y++)
-      {
-        for (int grid_x = target.astarConfigData.min_grid_x; grid_x <= target.astarConfigData.max_grid_x; grid_x++)
-        {
-          Rect cell_rect = new Rect(0, 0, target.astarConfigData.cell_size.x, target.astarConfigData.cell_size.y);
-          cell_rect.position = target.astarConfigData.GetPosition(grid_x, grid_y);
-          DrawUtil.HandlesDrawSolidRectangleWithOutline(cell_rect, default(Color), Color.white, target.transform);
-        }
-      }
-    }
+		void DrawBounds()
+		{
+			for (int gridY = _target.astarConfigData.minGridY; gridY <= _target.astarConfigData.maxGridY; gridY++)
+			{
+				for (int gridX = _target.astarConfigData.minGridX;
+					gridX <= _target.astarConfigData.maxGridX;
+					gridX++)
+				{
+					Rect cellRect = new Rect(0, 0, _target.astarConfigData.cellSize.x,
+						_target.astarConfigData.cellSize.y);
+					cellRect.position = _target.astarConfigData.GetPosition(gridX, gridY);
+					DrawUtil.HandlesDrawSolidRectangleWithOutline(cellRect, default(Color), Color.white,
+						_target.transform);
+				}
+			}
+		}
 
-    void DrawDataDict()
-    {
-      for (int grid_y = target.astarConfigData.min_grid_y; grid_y <= target.astarConfigData.max_grid_y; grid_y++)
-      {
-        for (int grid_x = target.astarConfigData.min_grid_x; grid_x <= target.astarConfigData.max_grid_x; grid_x++)
-        {
-          int value = target.astarConfigData.GetDataValue(grid_x, grid_y);
-          int obstacleType = AStarUtil.GetObstacleType(value);
-          int terrainType = AStarUtil.GetTerrainType(value);
-          //draw obstacleType
-          if (this.is_see_obstacleType && obstacleType == AStarConst.Default_Obstacle_Type_Value)
-            AStarEditorUtil.DrawdObstacleTypeRect(target, grid_x, grid_y, obstacleType);
-          // draw terrainType
-          if (this.is_see_terrainType && obstacleType == AStarConst.Default_Terrain_Type_Value)
-            AStarEditorUtil.DrawdTerrainTypeRect(target, grid_x, grid_y, terrainType);
-        }
-      }
-    }
-
-
-    void UpdateMouseGrid()
-    {
-      e = Event.current;
-      int pre_mouse_grid_x = mouse_grid_x;
-      int pre_mouse_grid_y = mouse_grid_y;
-      if (e.isMouse)
-      {
-        mouse_grid_x = target.astarConfigData.GetPointXWithOffset(local_brush_position);
-        mouse_grid_y = target.astarConfigData.GetPointYWithOffset(local_brush_position);
-      }
-
-      is_mouse_grid_changed = pre_mouse_grid_x != mouse_grid_x || pre_mouse_grid_y != mouse_grid_y;
-    }
+		void DrawDataDict()
+		{
+			for (int gridY = _target.astarConfigData.minGridY; gridY <= _target.astarConfigData.maxGridY; gridY++)
+			{
+				for (int gridX = _target.astarConfigData.minGridX;
+					gridX <= _target.astarConfigData.maxGridX;
+					gridX++)
+				{
+					int value = _target.astarConfigData.GetDataValue(gridX, gridY);
+					int obstacleType = AStarUtil.GetObstacleType(value);
+					int terrainType = AStarUtil.GetTerrainType(value);
+					//draw obstacleType
+					if (this.isSeeObstacleType && obstacleType == AStarConst.Default_Obstacle_Type_Value)
+						AStarEditorUtil.DrawObstacleTypeRect(_target, gridX, gridY, obstacleType);
+					// draw terrainType
+					if (this.isSeeTerrainType && obstacleType == AStarConst.Default_Terrain_Type_Value)
+						AStarEditorUtil.DrawdTerrainTypeRect(_target, gridX, gridY, terrainType);
+				}
+			}
+		}
 
 
-    void DrawInfo()
-    {
-      string info = "<b>Grid:(" + mouse_grid_x + "," + mouse_grid_y + ") </b>";
-      GUIContent info_guiContent = info.ToGUIContent();
-      Rect info_rect = new Rect(new Vector2(4f, 4f), GUIStyleConst.Toolbar_Box_Style.CalcSize(info_guiContent));
-      using (new HandlesBeginGUIScope())
-      {
-        using (new GUILayoutBeginAreaScope(info_rect))
-        {
-          DrawUtil.HandlesDrawSolidRectangleWithOutline(new Rect(Vector2.zero, info_rect.size),
-            new Color(0, 0, 1, 0.2f), Color.black);
-          GUILayout.Label(info, GUIStyleConst.Toolbar_Box_Style);
-        }
-      }
-    }
+		void UpdateMouseGrid()
+		{
+			e = Event.current;
+			int preMouseGridX = mouseGridX;
+			int preMouseGridY = mouseGridY;
+			if (e.isMouse)
+			{
+				mouseGridX = _target.astarConfigData.GetPointXWithOffset(localBrushPosition);
+				mouseGridY = _target.astarConfigData.GetPointYWithOffset(localBrushPosition);
+			}
+
+			isMouseGridChanged = preMouseGridX != mouseGridX || preMouseGridY != mouseGridY;
+		}
 
 
-    void DrawMainToolbar()
-    {
-      using (new HandlesBeginGUIScope())
-      {
-        using (new GUILayoutBeginAreaScope(new Rect(120, 4, Screen.width - 40, 80)))
-        {
-          using (new GUILayoutBeginHorizontalScope())
-          {
-            DrawObstacleTypeTool();
-            GUILayout.Space(20);
-            DrawTerrainTypeTool();
-          }
-        }
-      }
-    }
+		void DrawInfo()
+		{
+			string info = "<b>Grid:(" + mouseGridX + "," + mouseGridY + ") </b>";
+			GUIContent infoGUIContent = info.ToGUIContent();
+			Rect infoRect = new Rect(new Vector2(4f, 4f), GUIStyleConst.ToolbarBoxStyle.CalcSize(infoGUIContent));
+			using (new HandlesBeginGUIScope())
+			{
+				using (new GUILayoutBeginAreaScope(infoRect))
+				{
+					DrawUtil.HandlesDrawSolidRectangleWithOutline(new Rect(Vector2.zero, infoRect.size),
+						new Color(0, 0, 1, 0.2f), Color.black);
+					GUILayout.Label(info, GUIStyleConst.ToolbarBoxStyle);
+				}
+			}
+		}
 
 
-    void DrawObstacleTypeTool()
-    {
-      List<GUIContent> obstacleType_guiContent_list = new List<GUIContent>();
-      foreach (var astarObstacleType in AStarConst.AStarObstacleType_List)
-      {
-        GUIContent guiContent = new GUIContent();
-        guiContent.text = astarObstacleType.name;
-        guiContent.image = astarObstacleType.GetColorImage();
-        obstacleType_guiContent_list.Add(guiContent);
-      }
-
-      is_see_obstacleType = EditorGUILayout.Toggle(is_see_obstacleType, new GUIStyle("Toggle"), GUILayout.Width(10));
-      selected_obstacleType_index = EditorGUILayout.Popup(selected_obstacleType_index,
-        obstacleType_guiContent_list.ToArray(), new GUIStyle("Popup"), GUILayout.Width(80));
-    }
-
-    void DrawTips()
-    {
-      GUIContent infoGUIContent = "按住Ctrl进行绘制".ToGUIContent();
-      Rect infoRect = new Rect(new Vector2(230, 6), GUIStyleConst.Toolbar_Box_Style.CalcSize(infoGUIContent));
-      using (new HandlesBeginGUIScope())
-      {
-        using (new GUILayoutBeginAreaScope(infoRect))
-        {
-          DrawUtil.HandlesDrawSolidRectangleWithOutline(new Rect(Vector2.zero, infoRect.size),
-            new Color(1, 1, 0, 1f), Color.black);
-          using (new GUIColorScope(Color.black))
-          {
-            GUILayout.Label(infoGUIContent, GUIStyleConst.Toolbar_Box_Style);
-          }
-        }
-      }
-    }
-
-    void DrawTerrainTypeTool()
-    {
-      List<GUIContent> terrainType_guiContent_list = new List<GUIContent>();
-      foreach (var astarTerrainType in AStarConst.AStarTerrainType_List)
-      {
-        GUIContent guiContent = new GUIContent();
-        guiContent.text = string.Format("{0}:{1}", astarTerrainType.value, astarTerrainType.name);
-        terrainType_guiContent_list.Add(guiContent);
-      }
-
-      is_see_terrainType = EditorGUILayout.Toggle(is_see_terrainType, new GUIStyle("Toggle"), GUILayout.Width(10));
-      selected_terrainType_index = EditorGUILayout.Popup(selected_terrainType_index,
-        terrainType_guiContent_list.ToArray(), new GUIStyle("Popup"), GUILayout.Width(80));
-    }
+		void DrawMainToolbar()
+		{
+			using (new HandlesBeginGUIScope())
+			{
+				using (new GUILayoutBeginAreaScope(new Rect(120, 4, Screen.width - 40, 80)))
+				{
+					using (new GUILayoutBeginHorizontalScope())
+					{
+						DrawObstacleTypeTool();
+						GUILayout.Space(20);
+						DrawTerrainTypeTool();
+					}
+				}
+			}
+		}
 
 
+		void DrawObstacleTypeTool()
+		{
+			List<GUIContent> obstacleType_guiContent_list = new List<GUIContent>();
+			foreach (var astarObstacleType in AStarConst.AStarObstacleTypeList)
+			{
+				GUIContent guiContent = new GUIContent();
+				guiContent.text = astarObstacleType.name;
+				guiContent.image = astarObstacleType.GetColorImage();
+				obstacleType_guiContent_list.Add(guiContent);
+			}
+
+			isSeeObstacleType =
+				EditorGUILayout.Toggle(isSeeObstacleType, new GUIStyle("Toggle"), GUILayout.Width(10));
+			selectedObstacleTypeIndex = EditorGUILayout.Popup(selectedObstacleTypeIndex,
+				obstacleType_guiContent_list.ToArray(), new GUIStyle("Popup"), GUILayout.Width(80));
+		}
+
+		void DrawTips()
+		{
+			GUIContent infoGUIContent = "按住Ctrl进行绘制".ToGUIContent();
+			Rect infoRect = new Rect(new Vector2(230, 6), GUIStyleConst.ToolbarBoxStyle.CalcSize(infoGUIContent));
+			using (new HandlesBeginGUIScope())
+			{
+				using (new GUILayoutBeginAreaScope(infoRect))
+				{
+					DrawUtil.HandlesDrawSolidRectangleWithOutline(new Rect(Vector2.zero, infoRect.size),
+						new Color(1, 1, 0, 1f), Color.black);
+					using (new GUIColorScope(Color.black))
+					{
+						GUILayout.Label(infoGUIContent, GUIStyleConst.ToolbarBoxStyle);
+					}
+				}
+			}
+		}
+
+		void DrawTerrainTypeTool()
+		{
+			List<GUIContent> terrainTypeGUIContentList = new List<GUIContent>();
+			foreach (var astarTerrainType in AStarConst.AStarTerrainType_List)
+			{
+				GUIContent guiContent = new GUIContent();
+				guiContent.text = string.Format("{0}:{1}", astarTerrainType.value, astarTerrainType.name);
+				terrainTypeGUIContentList.Add(guiContent);
+			}
+
+			isSeeTerrainType =
+				EditorGUILayout.Toggle(isSeeTerrainType, new GUIStyle("Toggle"), GUILayout.Width(10));
+			selectedTerrainTypeIndex = EditorGUILayout.Popup(selectedTerrainTypeIndex,
+				terrainTypeGUIContentList.ToArray(), new GUIStyle("Popup"), GUILayout.Width(80));
+		}
 
 
-    void HandleEvent()
-    {
-      if (e.control && (e.type == EventType.MouseDown || e.type == EventType.MouseDrag) && e.button == 0) //press
-      {
-        if (!target.astarConfigData.IsInRange(mouse_grid_x, mouse_grid_y) && !target.astarConfigData.is_enable_edit_outside_bounds)
-          return;
-        int org_value = target.astarConfigData.GetDataValue(mouse_grid_x, mouse_grid_y);
-        int obstacleType = AStarUtil.GetObstacleType(org_value);
-        int terrainType = AStarUtil.GetTerrainType(org_value);
-        if (is_see_obstacleType)
-          obstacleType = this.selected_obstacleType.value;
-        if (is_see_terrainType)
-          terrainType = this.selected_terrainType.value;
-        int value = AStarUtil.ToGridType(0, terrainType, obstacleType);
-        brush.DoPaintPressed(mouse_grid_x, mouse_grid_y, value);
-      }
-
-    }
-
-  }
+		void HandleEvent()
+		{
+			if (e.control && (e.type == EventType.MouseDown || e.type == EventType.MouseDrag) && e.button == 0) //press
+			{
+				if (!_target.astarConfigData.IsInRange(mouseGridX, mouseGridY) &&
+				    !_target.astarConfigData.isEnableEditOutsideBounds)
+					return;
+				int orgValue = _target.astarConfigData.GetDataValue(mouseGridX, mouseGridY);
+				int obstacleType = AStarUtil.GetObstacleType(orgValue);
+				int terrainType = AStarUtil.GetTerrainType(orgValue);
+				if (isSeeObstacleType)
+					obstacleType = this.selectedObstacleType.value;
+				if (isSeeTerrainType)
+					terrainType = this.selectedTerrainType.value;
+				int value = AStarUtil.ToGridType(0, terrainType, obstacleType);
+				_brush.DoPaintPressed(mouseGridX, mouseGridY, value);
+			}
+		}
+	}
 }

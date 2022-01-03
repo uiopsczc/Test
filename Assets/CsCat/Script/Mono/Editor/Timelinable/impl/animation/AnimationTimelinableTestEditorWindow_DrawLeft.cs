@@ -8,19 +8,19 @@ namespace CsCat
 
     void DrawLeft()
     {
-      using (new GUILayout.AreaScope(this.resizableRects.rects[0]))
+      using (new GUILayout.AreaScope(this._resizableRects.rects[0]))
       {
         GUILayout.Space(20);
         using (new GUILayoutBeginVerticalScope(EditorStyles.helpBox))
         {
-          TimelinableEditorWindowUtil.DrawGUISetting_Sequence(ref sequence);
-          if (sequence == null)
+          TimelinableEditorWindowUtil.DrawGUISetting_Sequence(ref _sequence);
+          if (_sequence == null)
             return;
-          sequence.DrawGUISetting_Detail();
+          _sequence.DrawGUISetting_Detail();
         }
-        if (sequence.tracks.Length <= 0)
+        if (_sequence.tracks.Length <= 0)
           return;
-        sequence.DrawGUISetting_Tracks(timelineRect.play_time);
+        _sequence.DrawGUISetting_Tracks(_timelineRect.playTime);
       }
     }
 

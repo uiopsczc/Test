@@ -1,11 +1,11 @@
 namespace CsCat
 {
-  public class AOPExample
-  {
+	public class AOPExample
+	{
 
 
 
 
 
-  }
+	}
 }

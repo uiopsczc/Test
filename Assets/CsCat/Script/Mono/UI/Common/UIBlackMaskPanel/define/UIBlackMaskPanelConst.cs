@@ -6,8 +6,8 @@ using XLua;
 
 namespace CsCat
 {
-  public static class UIBlackMaskPanelConst
-  {
-    public const int Offset = -20;
-  }
+	public static class UIBlackMaskPanelConst
+	{
+		public const int Offset = -20;
+	}
 }

@@ -4,11 +4,11 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public partial class TransformFinderBase
-  {
-    public virtual void DrawGUI()
-    {
-    }
-  }
+	public partial class TransformFinderBase
+	{
+		public virtual void DrawGUI()
+		{
+		}
+	}
 }
 #endif

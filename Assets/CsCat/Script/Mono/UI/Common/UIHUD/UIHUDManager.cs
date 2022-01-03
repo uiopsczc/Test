@@ -1,9 +1,9 @@
 namespace CsCat
 {
-  public class UIHUDManager : UIObject
-  {
+	public class UIHUDManager : UIObject
+	{
 
-  }
+	}
 }
 
 

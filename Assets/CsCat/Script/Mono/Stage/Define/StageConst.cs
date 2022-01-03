@@ -1,9 +1,9 @@
 
 namespace CsCat
 {
-  public static class StageConst
-  {
-  }
+	public static class StageConst
+	{
+	}
 }
 
 

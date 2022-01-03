@@ -1,7 +1,7 @@
 namespace CsCat
 {
-  public partial class CombatTest : CombatBase
-  {
+	public partial class CombatTest : CombatBase
+	{
 
-  }
+	}
 }

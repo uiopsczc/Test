@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public static class PhysicsEventNameConst
-  {
-    public const string On_Raycast = "On_Raycast";
-  }
+	public static class PhysicsEventNameConst
+	{
+		public const string On_Raycast = "On_Raycast";
+	}
 }

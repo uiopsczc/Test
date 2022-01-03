@@ -5,17 +5,17 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public class SkinnedMeshRendererTimelinableItemInfoLibrary : TimelinableItemInfoLibraryBase
-  {
-    [SerializeField]
-    private SkinnedMeshRendererTimelinableItemInfo[] _itemInfoes = new SkinnedMeshRendererTimelinableItemInfo[0];
+	public class SkinnedMeshRendererTimelinableItemInfoLibrary : TimelinableItemInfoLibraryBase
+	{
+		[SerializeField]
+		private SkinnedMeshRendererTimelinableItemInfo[] _itemInfoes = new SkinnedMeshRendererTimelinableItemInfo[0];
 
-    public override TimelinableItemInfoBase[] itemInfoes
-    {
-      get { return _itemInfoes; }
-      set { _itemInfoes = value as SkinnedMeshRendererTimelinableItemInfo[]; }
-    }
-  }
+		public override TimelinableItemInfoBase[] itemInfoes
+		{
+			get { return _itemInfoes; }
+			set { _itemInfoes = value as SkinnedMeshRendererTimelinableItemInfo[]; }
+		}
+	}
 }
 
 

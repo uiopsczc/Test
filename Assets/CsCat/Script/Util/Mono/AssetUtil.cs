@@ -1,6 +1,6 @@
 namespace CsCat
 {
-    public class AssetUtil
-    {
-    }
+	public class AssetUtil
+	{
+	}
 }

@@ -3,61 +3,61 @@
 
 namespace CsCat
 {
-  public static partial class BuildConst
-  {
-    #region AssetPathMap
+	public static partial class BuildConst
+	{
+		#region AssetPathMap
 
-    public const string AssetPathMap_File_Name = "AssetPathMap.bytes";
+		public const string AssetPathMap_File_Name = "AssetPathMap.bytes";
 
-    #endregion
+		#endregion
 
-    public static string AssetsPackage_Root = "Assets/" + AssetsPackage_Folder_Name + "/";
-    public static string Lua_Root = "Assets/" + "Lua" + "/";
+		public static string AssetsPackage_Root = "Assets/" + AssetsPackage_Folder_Name + "/";
+		public static string Lua_Root = "Assets/" + "Lua" + "/";
 
 
 
-    #region Mainifest
+		#region Mainifest
 
-    public const string ManifestBundle_Path = AssetBundle_Folder_Name;
-    public const string Manifest_Path = "AssetBundleManifest";
+		public const string ManifestBundle_Path = AssetBundle_Folder_Name;
+		public const string Manifest_Path = "AssetBundleManifest";
 
-    #endregion
+		#endregion
 
-    #region AssetsPackage
+		#region AssetsPackage
 
-    public const string AssetsPackage_Folder_Name = "AssetsPackage";
+		public const string AssetsPackage_Folder_Name = "AssetsPackage";
 
-    #endregion
+		#endregion
 
-    #region AssetBundle
+		#region AssetBundle
 
-    public const string AssetBundle_Suffix = ".ab";
-    public const string AssetBundle_Folder_Name = "AssetBundle";
+		public const string AssetBundle_Suffix = ".ab";
+		public const string AssetBundle_Folder_Name = "AssetBundle";
 
-    #endregion
+		#endregion
 
-    #region ResVersion
+		#region ResVersion
 
-    public const string Res_Version_Default = "1.0.00000";
-    public const string Res_Version_File_Name = "ResVersion.bytes";
-    public const string Res_Version_File_Path = "Assets/" + Res_Version_File_Name;
+		public const string ResVersionDefault = "1.0.00000";
+		public const string ResVersionFileName = "ResVersion.bytes";
+		public const string ResVersionFilePath = "Assets/" + ResVersionFileName;
 
-    #endregion
+		#endregion
 
-    #region AssetBundleMap
+		#region AssetBundleMap
 
-    public const string AssetBundleMap_File_Name = "AssetBundleMap.bytes";
-    public const string AssetBundleMap_File_Path = "Assets/" + AssetBundleMap_File_Name;
+		public const string AssetBundleMap_File_Name = "AssetBundleMap.bytes";
+		public const string AssetBundleMap_File_Path = "Assets/" + AssetBundleMap_File_Name;
 
-    #endregion
+		#endregion
 
-    #region Lua
+		#region Lua
 
-    public const string LuaBundle_Prefix_Name = "@lua_"; //小写，assetBundle_path全部都是小写的
-    public const string Lua_Suffix = ".lua.txt";
+		public const string LuaBundlePrefixName = "@lua_"; //小写，assetBundle_path全部都是小写的
+		public const string Lua_Suffix = ".lua.txt";
 
-    public const string Lua_Path_Map_File_Name = "LuaPathMap.bytes";
+		public const string Lua_Path_Map_File_Name = "LuaPathMap.bytes";
 
-    #endregion
-  }
+		#endregion
+	}
 }

@@ -1,6 +1,6 @@
 namespace CsCat
 {
-  public partial class GameLevelTest : GameLevelBase
-  {
-  }
+	public partial class GameLevelTest : GameLevelBase
+	{
+	}
 }

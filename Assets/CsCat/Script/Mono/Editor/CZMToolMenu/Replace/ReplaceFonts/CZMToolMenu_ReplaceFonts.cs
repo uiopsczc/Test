@@ -8,69 +8,82 @@ using Debug = UnityEngine.Debug;
 
 namespace CsCat
 {
-  /// <summary>
-  ///   CZM工具菜单
-  /// </summary>
-  public partial class CZMToolMenu
-  {
-    public static string font_to_replace_path = Application.dataPath; //Application.dataPath+"/UI"
+	/// <summary>
+	///   CZM工具菜单
+	/// </summary>
+	public partial class CZMToolMenu
+	{
+		public static string fontToReplacePath = Application.dataPath; //Application.dataPath+"/UI"
 
-    public static Dictionary<string, Dictionary<string, string>> font_to_replace_dict
-    {
-      get
-      {
-        var result = new Dictionary<string, Dictionary<string, string>>();
-        foreach (var font_to_replace_dict in font_to_replace_dict_list)
-          result[font_to_replace_dict["old_fileId"]] = font_to_replace_dict;
-        return result;
-      }
-    }
+		public static Dictionary<string, Dictionary<string, string>> fontToReplaceDict
+		{
+			get
+			{
+				var result = new Dictionary<string, Dictionary<string, string>>();
+				foreach (var fontToReplaceDict in _fontToReplaceDictList)
+					result[fontToReplaceDict["old_fileId"]] = fontToReplaceDict;
+				return result;
+			}
+		}
 
-    private static ValueDictList<string, string> font_to_replace_dict_list = new ValueDictList<string, string>()
-    {
-      { new Dictionary<string, string>(){{"old_guid",""},{"old_fileId",""},{"old_type","type:0"},{"new_guid:",""},{"new_fileId:",""},{"new_type", "type:3" } }},
-      { new Dictionary<string, string>(){{"old_guid",""},{"old_fileId",""},{"old_type","type:0"},{"new_guid:",""},{"new_fileId:",""},{"new_type", "type:3" } }},
-    };
+		private static ValueDictList<string, string> _fontToReplaceDictList = new ValueDictList<string, string>()
+		{
+			{
+				new Dictionary<string, string>()
+				{
+					{"old_guid", ""}, {"old_fileId", ""}, {"old_type", "type:0"}, {"new_guid:", ""},
+					{"new_fileId:", ""}, {"new_type", "type:3"}
+				}
+			},
+			{
+				new Dictionary<string, string>()
+				{
+					{"old_guid", ""}, {"old_fileId", ""}, {"old_type", "type:0"}, {"new_guid:", ""},
+					{"new_fileId:", ""}, {"new_type", "type:3"}
+				}
+			},
+		};
 
 
-    [MenuItem(CZMToolConst.MenuRoot + "Relpace/Relpace Fonts")]
-    public static void RelpaceFonts()
-    {
-      var root_prefab_path = font_to_replace_path;
-      if (Directory.Exists(root_prefab_path))
-      {
-        string[] all_prefab_pathes = Directory.GetFiles(root_prefab_path, "*.prefab", SearchOption.AllDirectories);
-        foreach (string prefab_path in all_prefab_pathes)
-        {
-          bool is_changed = false;
-          var lines = File.ReadAllLines(prefab_path);
-          for (int i = 0; i < lines.Length; i++)
-          {
-            var line = lines[i];
-            string matched_line_content = MetaConst.Font_Regex.Match(line).Value;
-            if (!matched_line_content.IsNullOrEmpty())
-            {
-              string old_filedId = MetaConst.FileID_Regex.Match(matched_line_content).Value;
-              string old_guid = MetaConst.Guid_Regex.Match(matched_line_content).Value;
+		[MenuItem(CZMToolConst.Menu_Root + "Relpace/Relpace Fonts")]
+		public static void RelpaceFonts()
+		{
+			var rootPrefabPath = fontToReplacePath;
+			if (Directory.Exists(rootPrefabPath))
+			{
+				string[] allPrefabPathes =
+					Directory.GetFiles(rootPrefabPath, "*.prefab", SearchOption.AllDirectories);
+				foreach (string prefabPath in allPrefabPathes)
+				{
+					bool isChanged = false;
+					var lines = File.ReadAllLines(prefabPath);
+					for (int i = 0; i < lines.Length; i++)
+					{
+						var line = lines[i];
+						string matchedLineContent = MetaConst.Font_Regex.Match(line).Value;
+						if (!matchedLineContent.IsNullOrEmpty())
+						{
+							string oldFiledId = MetaConst.FileID_Regex.Match(matchedLineContent).Value;
+							string oldGUID = MetaConst.Guid_Regex.Match(matchedLineContent).Value;
 
-              if (font_to_replace_dict.ContainsKey(old_filedId) &&
-                  old_guid.Equals(font_to_replace_dict[old_filedId]["old_guid"]))
-              {
-                is_changed = true;
-                var dict = font_to_replace_dict[old_filedId];
-                lines[i] = Regex.Replace(lines[i], old_filedId, dict["new_fileId"])
-                  .Replace(old_guid, dict["new_guid"]).Replace(dict["old_type"], dict["new_type"]);
-              }
-            }
-          }
+							if (fontToReplaceDict.ContainsKey(oldFiledId) &&
+							    oldGUID.Equals(fontToReplaceDict[oldFiledId]["old_guid"]))
+							{
+								isChanged = true;
+								var dict = fontToReplaceDict[oldFiledId];
+								lines[i] = Regex.Replace(lines[i], oldFiledId, dict["new_fileId"])
+									.Replace(oldGUID, dict["new_guid"]).Replace(dict["old_type"], dict["new_type"]);
+							}
+						}
+					}
 
-          if (is_changed)
-            File.WriteAllLines(prefab_path, lines);
-        }
+					if (isChanged)
+						File.WriteAllLines(prefabPath, lines);
+				}
 
-        AssetDatabase.Refresh();
-        EditorUtilityCat.DisplayDialog("Relpace Fonts finished");
-      }
-    }
-  }
+				AssetDatabase.Refresh();
+				EditorUtilityCat.DisplayDialog("Relpace Fonts finished");
+			}
+		}
+	}
 }

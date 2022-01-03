@@ -1,9 +1,9 @@
 namespace CsCat
 {
-    public enum UpdateModeCat
-    {
-        Update,
-        LateUpdate,
-        FixedUpdate
-    }
+	public enum UpdateModeCat
+	{
+		Update,
+		LateUpdate,
+		FixedUpdate
+	}
 }

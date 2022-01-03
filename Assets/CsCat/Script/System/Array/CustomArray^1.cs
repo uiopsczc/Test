@@ -1,7 +1,7 @@
 
 namespace CsCat
 {
-    public class CustomArray<T>
-    {
-    }
+	public class CustomArray<T>
+	{
+	}
 }

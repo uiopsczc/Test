@@ -2,24 +2,24 @@ using UnityEditor;
 
 namespace CsCat
 {
-  [CustomEditor(typeof(AStarMonoBehaviour))]
-  public partial class AStarEditor : Editor
-  {
-    private AStarMonoBehaviour target => base.target as AStarMonoBehaviour;
-    private Tool org_editor_tool_selected;
-    private AStarBrush brush = new AStarBrush();
+	[CustomEditor(typeof(AStarMonoBehaviour))]
+	public partial class AStarEditor : Editor
+	{
+		private AStarMonoBehaviour _target => base.target as AStarMonoBehaviour;
+		private Tool _orgEditorToolSelected;
+		private AStarBrush _brush = new AStarBrush();
 
-    void OnEnable()
-    {
-      org_editor_tool_selected = Tools.current;
-      Tools.current = Tool.None;
+		void OnEnable()
+		{
+			_orgEditorToolSelected = Tools.current;
+			Tools.current = Tool.None;
 
-      brush.astarMonoBehaviour = target;
-    }
+			_brush.astarMonoBehaviour = _target;
+		}
 
-    void OnDisable()
-    {
-      Tools.current = org_editor_tool_selected;
-    }
-  }
+		void OnDisable()
+		{
+			Tools.current = _orgEditorToolSelected;
+		}
+	}
 }

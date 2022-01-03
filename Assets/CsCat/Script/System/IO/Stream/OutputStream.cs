@@ -1,9 +1,9 @@
 namespace CsCat
 {
-    public abstract class OutputStream : StreamCat
-    {
-        public abstract void Flush();
+	public abstract class OutputStream : StreamCat
+	{
+		public abstract void Flush();
 
-        public abstract bool Write(byte[] buffer, int offset, int length);
-    }
+		public abstract bool Write(byte[] buffer, int offset, int length);
+	}
 }

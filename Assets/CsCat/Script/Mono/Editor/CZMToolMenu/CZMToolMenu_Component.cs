@@ -10,7 +10,7 @@ namespace CsCat
 	{
 		static Component[] copiedComponents;
 
-		[MenuItem(CZMToolConst.MenuRoot + "Component/Copy All Components #C")]
+		[MenuItem(CZMToolConst.Menu_Root + "Component/Copy All Components #C")]
 		//crtl+alt+shift+c
 		static void CopyAllComponents()
 		{
@@ -21,7 +21,7 @@ namespace CsCat
 			Debug.LogWarning("Copyed");
 		}
 
-		[MenuItem(CZMToolConst.MenuRoot + "Component/Paste All Components #P")]
+		[MenuItem(CZMToolConst.Menu_Root + "Component/Paste All Components #P")]
 		//crtl+alt+shift+P
 		static void PasteAllComponents()
 		{
@@ -59,6 +59,7 @@ namespace CsCat
 					}
 				}
 			}
+
 			copiedComponents = null; // to prevent wrong pastes in future
 			Debug.LogWarning("Paseted");
 		}

@@ -7,10 +7,10 @@ using Debug = UnityEngine.Debug;
 
 namespace CsCat
 {
-  /// <summary>
-  ///   CZM工具菜单
-  /// </summary>
-  public partial class CZMToolMenu
-  {
-  }
+	/// <summary>
+	///   CZM工具菜单
+	/// </summary>
+	public partial class CZMToolMenu
+	{
+	}
 }

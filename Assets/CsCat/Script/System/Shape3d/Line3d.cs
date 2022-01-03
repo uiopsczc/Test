@@ -3,54 +3,54 @@ using UnityEngine;
 
 namespace CsCat
 {
-    [Serializable]
-    public partial class Line3D : Polygon3D
-    {
-        #region property
+	[Serializable]
+	public partial class Line3D : Polygon3D
+	{
+		#region property
 
-        public Vector3 pointA => ToWorldSpace(localVertexList[0]);
+		public Vector3 pointA => ToWorldSpace(localVertexList[0]);
 
-        public Vector3 pointB => ToWorldSpace(localVertexList[1]);
+		public Vector3 pointB => ToWorldSpace(localVertexList[1]);
 
-        #endregion
+		#endregion
 
-        #region ctor
+		#region ctor
 
-        public Line3D(Vector3 start, Vector3 end) : base(start, end)
-        {
-        }
+		public Line3D(Vector3 start, Vector3 end) : base(start, end)
+		{
+		}
 
-        #endregion
+		#endregion
 
-        #region static method
+		#region static method
 
-        public static Line3D operator +(Line3D line, Vector3 vector)
-        {
-            Line3D clone = CloneUtil.CloneDeep(line);
-            clone.AddWorldOffset(vector);
-            return clone;
-        }
+		public static Line3D operator +(Line3D line, Vector3 vector)
+		{
+			Line3D clone = CloneUtil.CloneDeep(line);
+			clone.AddWorldOffset(vector);
+			return clone;
+		}
 
-        public static Line3D operator -(Line3D line, Vector3 vector)
-        {
-            Line3D clone = CloneUtil.CloneDeep(line);
-            clone.AddWorldOffset(-vector);
-            return clone;
-        }
+		public static Line3D operator -(Line3D line, Vector3 vector)
+		{
+			Line3D clone = CloneUtil.CloneDeep(line);
+			clone.AddWorldOffset(-vector);
+			return clone;
+		}
 
-        #endregion
+		#endregion
 
-        #region override method
+		#region override method
 
-        #region ToString
+		#region ToString
 
-        public override string ToString()
-        {
-            return string.Format("A:{0} B:{1}", this.pointA, this.pointB);
-        }
+		public override string ToString()
+		{
+			return string.Format("A:{0} B:{1}", this.pointA, this.pointB);
+		}
 
-        #endregion
+		#endregion
 
-        #endregion
-    }
+		#endregion
+	}
 }

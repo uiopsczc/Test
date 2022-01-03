@@ -4,13 +4,13 @@ using UnityEditor;
 
 namespace CsCat
 {
-    public partial class EditorGUIUtil
-    {
-        public static EditorGUIBeginPropertyScope BeginProperty(Rect totalPosition, GUIContent label,
-            SerializedProperty property)
-        {
-            return new EditorGUIBeginPropertyScope(totalPosition, label, property);
-        }
-    }
+	public partial class EditorGUIUtil
+	{
+		public static EditorGUIBeginPropertyScope BeginProperty(Rect totalPosition, GUIContent label,
+			SerializedProperty property)
+		{
+			return new EditorGUIBeginPropertyScope(totalPosition, label, property);
+		}
+	}
 }
 #endif

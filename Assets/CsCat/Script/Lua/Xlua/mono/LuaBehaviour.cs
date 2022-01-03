@@ -12,53 +12,53 @@ using XLua;
 
 namespace CsCat
 {
-  public class LuaBehaviour : MonoBehaviour
-  {
-    public TextAsset lua_file;
-    private Action luaAwake;
-    private Action luaOnDestroy;
-    private Action luaStart;
-    private Action luaUpdate;
-    private LuaTable script_env;
+	public class LuaBehaviour : MonoBehaviour
+	{
+		public TextAsset lua_file;
+		private Action luaAwake;
+		private Action luaOnDestroy;
+		private Action luaStart;
+		private Action luaUpdate;
+		private LuaTable script_env;
 
-    private void Awake()
-    {
-      script_env = XLuaManager.instance.luaEnv.NewScriptEnv(this, lua_file.text);
-      InitScriptEnv();
-      luaAwake?.Invoke();
-    }
+		private void Awake()
+		{
+			script_env = XLuaManager.instance.luaEnv.NewScriptEnv(this, lua_file.text);
+			InitScriptEnv();
+			luaAwake?.Invoke();
+		}
 
-    private void InitScriptEnv()
-    {
-      script_env.Get("Awake", out luaAwake);
-      script_env.Get("Start", out luaStart);
-      script_env.Get("Update", out luaUpdate);
-      script_env.Get("OnDestroy", out luaOnDestroy);
-    }
+		private void InitScriptEnv()
+		{
+			script_env.Get("Awake", out luaAwake);
+			script_env.Get("Start", out luaStart);
+			script_env.Get("Update", out luaUpdate);
+			script_env.Get("OnDestroy", out luaOnDestroy);
+		}
 
-    private void ResetScriptEnv()
-    {
-      luaAwake = null;
-      luaStart = null;
-      luaUpdate = null;
-      luaOnDestroy = null;
-      script_env.Dispose();
-    }
+		private void ResetScriptEnv()
+		{
+			luaAwake = null;
+			luaStart = null;
+			luaUpdate = null;
+			luaOnDestroy = null;
+			script_env.Dispose();
+		}
 
-    private void Start()
-    {
-      luaStart?.Invoke();
-    }
+		private void Start()
+		{
+			luaStart?.Invoke();
+		}
 
-    private void Update()
-    {
-      luaUpdate?.Invoke();
-    }
+		private void Update()
+		{
+			luaUpdate?.Invoke();
+		}
 
-    private void OnDestroy()
-    {
-      luaOnDestroy?.Invoke();
-      ResetScriptEnv();
-    }
-  }
+		private void OnDestroy()
+		{
+			luaOnDestroy?.Invoke();
+			ResetScriptEnv();
+		}
+	}
 }

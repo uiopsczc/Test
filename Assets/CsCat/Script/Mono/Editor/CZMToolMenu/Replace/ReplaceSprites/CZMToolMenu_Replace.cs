@@ -6,69 +6,75 @@ using UnityEngine;
 
 namespace CsCat
 {
-  /// <summary>
-  ///   CZM工具菜单
-  /// </summary>
-  public partial class CZMToolMenu
-  {
-    public static string sprite_to_replace_path = Application.dataPath; //Application.dataPath+"/UI"
+	/// <summary>
+	///   CZM工具菜单
+	/// </summary>
+	public partial class CZMToolMenu
+	{
+		public static string spriteToReplacePath = Application.dataPath; //Application.dataPath+"/UI"
 
-    public static Dictionary<string, Dictionary<string, string>> sprite_to_replace_dict
-    {
-      get
-      {
-        var result = new Dictionary<string, Dictionary<string, string>>();
-        foreach (var sprite_to_replace_dict in sprite_to_replace_dict_list)
-          result[sprite_to_replace_dict["old_fileId"]] = sprite_to_replace_dict;
-        return result;
-      }
-    }
+		public static Dictionary<string, Dictionary<string, string>> spriteToReplaceDict
+		{
+			get
+			{
+				var result = new Dictionary<string, Dictionary<string, string>>();
+				foreach (var spriteToReplaceDict in _spriteToReplaceDictList)
+					result[spriteToReplaceDict["old_fileId"]] = spriteToReplaceDict;
+				return result;
+			}
+		}
 
-    private static ValueDictList<string, string> sprite_to_replace_dict_list = new ValueDictList<string, string>()
-    {
-      { new Dictionary<string, string>(){{"old_guid:",""},{"old_fileId:",""},{"new_guid:",""},{"new_fileId:",""}}},
-      { new Dictionary<string, string>(){{"old_guid:",""},{"old_fileId:",""},{"new_guid:",""},{"new_fileId:",""}}},
+		private static ValueDictList<string, string> _spriteToReplaceDictList = new ValueDictList<string, string>()
+		{
+			{
+				new Dictionary<string, string>()
+					{{"old_guid:", ""}, {"old_fileId:", ""}, {"new_guid:", ""}, {"new_fileId:", ""}}
+			},
+			{
+				new Dictionary<string, string>()
+					{{"old_guid:", ""}, {"old_fileId:", ""}, {"new_guid:", ""}, {"new_fileId:", ""}}
+			},
+		};
 
-    };
+		[MenuItem(CZMToolConst.Menu_Root + "Relpace/Relpace Sprites")]
+		public static void RelpaceSprites()
+		{
+			var rootPrefabPath = spriteToReplacePath;
+			if (Directory.Exists(rootPrefabPath))
+			{
+				string[] allPrefabPathes =
+					Directory.GetFiles(rootPrefabPath, "*.prefab", SearchOption.AllDirectories);
+				foreach (string prefabPath in allPrefabPathes)
+				{
+					bool isChanged = false;
+					var lines = File.ReadAllLines(prefabPath);
+					for (int i = 0; i < lines.Length; i++)
+					{
+						var line = lines[i];
+						string matchedLineContent = MetaConst.Sprite_Regex.Match(line).Value;
+						if (!matchedLineContent.IsNullOrEmpty())
+						{
+							string oldFiledId = MetaConst.FileID_Regex.Match(matchedLineContent).Value;
+							string oldGUID = MetaConst.Guid_Regex.Match(matchedLineContent).Value;
 
-    [MenuItem(CZMToolConst.MenuRoot + "Relpace/Relpace Sprites")]
-    public static void RelpaceSprites()
-    {
-      var root_prefab_path = sprite_to_replace_path;
-      if (Directory.Exists(root_prefab_path))
-      {
-        string[] all_prefab_pathes = Directory.GetFiles(root_prefab_path, "*.prefab", SearchOption.AllDirectories);
-        foreach (string prefab_path in all_prefab_pathes)
-        {
-          bool is_changed = false;
-          var lines = File.ReadAllLines(prefab_path);
-          for (int i = 0; i < lines.Length; i++)
-          {
-            var line = lines[i];
-            string matched_line_content = MetaConst.Sprite_Regex.Match(line).Value;
-            if (!matched_line_content.IsNullOrEmpty())
-            {
-              string old_filedId = MetaConst.FileID_Regex.Match(matched_line_content).Value;
-              string old_guid = MetaConst.Guid_Regex.Match(matched_line_content).Value;
+							if (spriteToReplaceDict.ContainsKey(oldFiledId) &&
+							    oldGUID.Equals(spriteToReplaceDict[oldFiledId]["old_guid"]))
+							{
+								isChanged = true;
+								var dict = spriteToReplaceDict[oldFiledId];
+								lines[i] = Regex.Replace(lines[i], oldFiledId, dict["new_fileId"])
+									.Replace(oldGUID, dict["new_guid"]);
+							}
+						}
+					}
 
-              if (sprite_to_replace_dict.ContainsKey(old_filedId) &&
-                  old_guid.Equals(sprite_to_replace_dict[old_filedId]["old_guid"]))
-              {
-                is_changed = true;
-                var dict = sprite_to_replace_dict[old_filedId];
-                lines[i] = Regex.Replace(lines[i], old_filedId, dict["new_fileId"])
-                  .Replace(old_guid, dict["new_guid"]);
-              }
-            }
-          }
+					if (isChanged)
+						File.WriteAllLines(prefabPath, lines);
+				}
 
-          if (is_changed)
-            File.WriteAllLines(prefab_path, lines);
-        }
-
-        AssetDatabase.Refresh();
-        EditorUtilityCat.DisplayDialog("Relpace Sprites finished");
-      }
-    }
-  }
+				AssetDatabase.Refresh();
+				EditorUtilityCat.DisplayDialog("Relpace Sprites finished");
+			}
+		}
+	}
 }

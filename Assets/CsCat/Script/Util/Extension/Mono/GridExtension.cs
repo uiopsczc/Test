@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace CsCat
 {
-    public static partial class GridExtension
-    {
-    }
+	public static partial class GridExtension
+	{
+	}
 }

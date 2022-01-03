@@ -1,7 +1,7 @@
 namespace CsCat
 {
-  public class AudioData : PropObserver
-  {
-    [Serialize] public float volume = 0f;
-  }
+	public class AudioData : PropObserver
+	{
+		[Serialize] public float volume = 0f;
+	}
 }

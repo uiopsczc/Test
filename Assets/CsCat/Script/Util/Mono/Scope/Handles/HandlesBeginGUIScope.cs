@@ -4,17 +4,17 @@ using UnityEditor;
 
 namespace CsCat
 {
-    public class HandlesBeginGUIScope : IDisposable
-    {
-        public HandlesBeginGUIScope()
-        {
-            Handles.BeginGUI();
-        }
+	public class HandlesBeginGUIScope : IDisposable
+	{
+		public HandlesBeginGUIScope()
+		{
+			Handles.BeginGUI();
+		}
 
-        public void Dispose()
-        {
-            Handles.EndGUI();
-        }
-    }
+		public void Dispose()
+		{
+			Handles.EndGUI();
+		}
+	}
 }
 #endif

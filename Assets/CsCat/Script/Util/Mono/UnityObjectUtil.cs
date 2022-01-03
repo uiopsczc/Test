@@ -6,24 +6,24 @@ using Object = UnityEngine.Object;
 
 namespace CsCat
 {
-    public class UnityObjectUtil
-    {
-        public static void Destroy(Object o)
-        {
+	public class UnityObjectUtil
+	{
+		public static void Destroy(Object o)
+		{
 #if UNITY_EDITOR
-            if (o.IsAsset())
-            {
-                AssetDatabase.DeleteAsset(o.GetAssetPath());
-                return;
-            }
+			if (o.IsAsset())
+			{
+				AssetDatabase.DeleteAsset(o.GetAssetPath());
+				return;
+			}
 #endif
 
-            if (Application.isPlaying)
-                Object.Destroy(o);
-            else
-            {
-                Object.DestroyImmediate(o);
-            }
-        }
-    }
+			if (Application.isPlaying)
+				Object.Destroy(o);
+			else
+			{
+				Object.DestroyImmediate(o);
+			}
+		}
+	}
 }

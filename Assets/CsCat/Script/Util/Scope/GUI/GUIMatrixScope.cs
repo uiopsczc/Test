@@ -3,23 +3,23 @@ using UnityEngine;
 
 namespace CsCat
 {
-    /// <summary>
-    ///   GUI.matrix   GUI使用的矩阵
-    /// </summary>
-    public class GUIMatrixScope : IDisposable
-    {
-        [SerializeField] private Matrix4x4 _preMartix { get; }
+	/// <summary>
+	///   GUI.matrix   GUI使用的矩阵
+	/// </summary>
+	public class GUIMatrixScope : IDisposable
+	{
+		[SerializeField] private Matrix4x4 _preMatrix { get; }
 
-        public GUIMatrixScope(Matrix4x4 newMartix)
-        {
-            _preMartix = GUI.matrix;
-            GUI.matrix = newMartix;
-        }
+		public GUIMatrixScope(Matrix4x4 newMatrix)
+		{
+			_preMatrix = GUI.matrix;
+			GUI.matrix = newMatrix;
+		}
 
 
-        public void Dispose()
-        {
-            GUI.matrix = _preMartix;
-        }
-    }
+		public void Dispose()
+		{
+			GUI.matrix = _preMatrix;
+		}
+	}
 }

@@ -21,7 +21,7 @@ public class LinkXmlGen : ScriptableObject
     yield return new CustomGenTask
     {
       Data = data,
-      Output = new StreamWriter(GeneratorConfig.common_path + "/link.xml",
+      Output = new StreamWriter(GeneratorConfig.commonPath + "/link.xml",
         false, Encoding.UTF8)
     };
   }

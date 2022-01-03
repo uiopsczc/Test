@@ -6,9 +6,9 @@ namespace CsCat
   {
     void OnAnimatingCallback(float play_time)
     {
-      if (sequence == null || sequence.tracks.IsNullOrEmpty())
+      if (_sequence == null || _sequence.tracks.IsNullOrEmpty())
         return;
-      foreach (AnimationTimelinableTrack track in sequence.tracks)
+      foreach (AnimationTimelinableTrack track in _sequence.tracks)
       {
         foreach (AnimationTimelinableItemInfo itemInfo in track.itemInfoes)
         {

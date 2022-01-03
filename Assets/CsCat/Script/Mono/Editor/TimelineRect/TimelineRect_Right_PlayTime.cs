@@ -5,44 +5,44 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public partial class TimelineRect
-  {
-    private Rect play_time_line_rect;
+	public partial class TimelineRect
+	{
+		private Rect _playTimeLineRect;
 
-    private float _play_time;
+		private float _playTime;
 
-    public float play_time
-    {
-      get { return _play_time; }
-      set
-      {
-        float pre_play_time = _play_time;
-        _play_time = value < 0 ? 0 : value;
-        if (pre_play_time != _play_time)
-          OnPlayTimeChange();
-      }
-    }
+		public float playTime
+		{
+			get => _playTime;
+			set
+			{
+				float prePlayTime = _playTime;
+				_playTime = value < 0 ? 0 : value;
+				if (prePlayTime != _playTime)
+					OnPlayTimeChange();
+			}
+		}
 
 
-    void DrawPlayTimeLine()
-    {
-      play_time_line_rect.x = play_time * width_per_second;
-      play_time_line_rect.y = 0;
-      play_time_line_rect.width = 1;
-      play_time_line_rect.height = total_rect.height;
-      EditorGUI.DrawRect(play_time_line_rect, Color.red);
-    }
+		void DrawPlayTimeLine()
+		{
+			_playTimeLineRect.x = playTime * widthPerSecond;
+			_playTimeLineRect.y = 0;
+			_playTimeLineRect.width = 1;
+			_playTimeLineRect.height = totalRect.height;
+			EditorGUI.DrawRect(_playTimeLineRect, Color.red);
+		}
 
-    void OnPlayTimeChange()
-    {
-      on_play_time_change_callback?.Invoke(play_time);
-      if (!EditorApplication.isPlaying && AnimationMode.InAnimationMode())
-      {
-        AnimationMode.BeginSampling();
-        on_animating_callback?.Invoke(play_time);
-        AnimationMode.EndSampling();
-        SceneView.RepaintAll();
-      }
-    }
-  }
+		void OnPlayTimeChange()
+		{
+			onPlayTimeChangeCallback?.Invoke(playTime);
+			if (!EditorApplication.isPlaying && AnimationMode.InAnimationMode())
+			{
+				AnimationMode.BeginSampling();
+				onAnimatingCallback?.Invoke(playTime);
+				AnimationMode.EndSampling();
+				SceneView.RepaintAll();
+			}
+		}
+	}
 }

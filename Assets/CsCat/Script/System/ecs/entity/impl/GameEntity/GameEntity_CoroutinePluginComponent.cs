@@ -6,25 +6,25 @@ using UnityEngine;
 
 namespace CsCat
 {
-    public partial class GameEntity
-    {
-        public string StartCoroutine(IEnumerator ie, string key = null)
-        {
-            return coroutinePluginComponent.StartCoroutine(ie, key);
-        }
+	public partial class GameEntity
+	{
+		public string StartCoroutine(IEnumerator ie, string key = null)
+		{
+			return coroutinePluginComponent.StartCoroutine(ie, key);
+		}
 
-        /// <summary>
-        /// 此处的key与StartCoroutine的key保持一致
-        /// </summary>
-        /// <param name="key"></param>
-        public void StopCoroutine(string key)
-        {
-            coroutinePluginComponent.StopCoroutine(key);
-        }
+		/// <summary>
+		/// 此处的key与StartCoroutine的key保持一致
+		/// </summary>
+		/// <param name="key"></param>
+		public void StopCoroutine(string key)
+		{
+			coroutinePluginComponent.StopCoroutine(key);
+		}
 
-        public void StopAllCoroutines()
-        {
-            coroutinePluginComponent.StopAllCoroutines();
-        }
-    }
+		public void StopAllCoroutines()
+		{
+			coroutinePluginComponent.StopAllCoroutines();
+		}
+	}
 }

@@ -1,65 +1,66 @@
 namespace CsCat
 {
-    public class Template
-    {
-        //////////////////////////////////////////////////////////////////////
-        // TODO
-        //////////////////////////////////////////////////////////////////////
+	public class Template
+	{
+		//////////////////////////////////////////////////////////////////////
+		// TODO
+		//////////////////////////////////////////////////////////////////////
 
-        //////////////////////////////////////////////////////////////////////
-        // Get
-        //////////////////////////////////////////////////////////////////////
+		//////////////////////////////////////////////////////////////////////
+		// Get
+		//////////////////////////////////////////////////////////////////////
 
-        
-        //////////////////////////////////////////////////////////////////////
-        // Set
-        //////////////////////////////////////////////////////////////////////
-        #region field
 
-        #endregion
+		//////////////////////////////////////////////////////////////////////
+		// Set
+		//////////////////////////////////////////////////////////////////////
 
-        #region property
+		#region field
 
-        #endregion
+		#endregion
 
-        #region delegate
+		#region property
 
-        #endregion
+		#endregion
 
-        #region ctor
+		#region delegate
 
-        #endregion
+		#endregion
 
-        #region static method
+		#region ctor
 
-        #endregion
+		#endregion
 
-        #region abstract method
+		#region static method
 
-        #endregion
+		#endregion
 
-        #region virtual method
+		#region abstract method
 
-        #endregion
+		#endregion
 
-        #region override method
+		#region virtual method
 
-        #endregion
+		#endregion
 
-        #region public method
+		#region override method
 
-        #endregion
+		#endregion
 
-        #region internal method
+		#region public method
 
-        #endregion
+		#endregion
 
-        #region protected method
+		#region internal method
 
-        #endregion
+		#endregion
 
-        #region private method
+		#region protected method
 
-        #endregion
-    }
+		#endregion
+
+		#region private method
+
+		#endregion
+	}
 }

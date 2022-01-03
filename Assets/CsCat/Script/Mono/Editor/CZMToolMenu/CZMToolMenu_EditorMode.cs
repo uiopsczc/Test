@@ -3,30 +3,30 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public partial class CZMToolMenu
-  {
+	public partial class CZMToolMenu
+	{
+		[MenuItem(CZMToolConst.Menu_Root + "/EditorMode/设置为EditorMode")]
+		public static void SetToEditorMode()
+		{
+			EditorModeConst.IsEditorMode = true;
+		}
 
-    [MenuItem(CZMToolConst.MenuRoot + "/EditorMode/设置为EditorMode")]
-    public static void SetToEditorMode()
-    {
-      EditorModeConst.Is_Editor_Mode = true;
-    }
-    [MenuItem(CZMToolConst.MenuRoot + "/EditorMode/设置为EditorMode", true)]
-    public static bool CanSetToEditorMode()
-    {
-      return !EditorModeConst.Is_Editor_Mode;
-    }
+		[MenuItem(CZMToolConst.Menu_Root + "/EditorMode/设置为EditorMode", true)]
+		public static bool CanSetToEditorMode()
+		{
+			return !EditorModeConst.IsEditorMode;
+		}
 
-    [MenuItem(CZMToolConst.MenuRoot + "/EditorMode/设置为SimulationMode")]
-    public static void SetToSimulationMode()
-    {
-      EditorModeConst.Is_Editor_Mode = false;
-    }
-    [MenuItem(CZMToolConst.MenuRoot + "/EditorMode/设置为SimulationMode", true)]
-    public static bool CanSetToSimulationMode()
-    {
-      return EditorModeConst.Is_Editor_Mode;
-    }
+		[MenuItem(CZMToolConst.Menu_Root + "/EditorMode/设置为SimulationMode")]
+		public static void SetToSimulationMode()
+		{
+			EditorModeConst.IsEditorMode = false;
+		}
 
-  }
+		[MenuItem(CZMToolConst.Menu_Root + "/EditorMode/设置为SimulationMode", true)]
+		public static bool CanSetToSimulationMode()
+		{
+			return EditorModeConst.IsEditorMode;
+		}
+	}
 }

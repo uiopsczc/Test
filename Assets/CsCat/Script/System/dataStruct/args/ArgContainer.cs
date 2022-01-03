@@ -4,8 +4,8 @@ using System;
 
 namespace CsCat
 {
-  [Serializable]
-  public class ArgContainer
-  {
-  }
+	[Serializable]
+	public class ArgContainer
+	{
+	}
 }

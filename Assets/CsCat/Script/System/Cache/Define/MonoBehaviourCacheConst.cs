@@ -1,20 +1,20 @@
 namespace CsCat
 {
-  public static class MonoBehaviourCacheConst
-  {
-    #region Dicts
+	public static class MonoBehaviourCacheConst
+	{
+		#region Dicts
 
-    /// <summary>
-    ///   基础的
-    /// </summary>
-    public const string MonoBehaviourCache = "monoBehaviourCache";
+		/// <summary>
+		///   基础的
+		/// </summary>
+		public const string MonoBehaviourCache = "monoBehaviourCache";
 
-    /// <summary>
-    /// </summary>
-    public const string IEnumeratorDict = "IEnumeratorDict";
+		/// <summary>
+		/// </summary>
+		public const string IEnumeratorDict = "IEnumeratorDict";
 
-    public const string PausableCoroutineDict = "PausableCoroutineDict";
+		public const string PausableCoroutineDict = "PausableCoroutineDict";
 
-    #endregion
-  }
+		#endregion
+	}
 }

@@ -1,6 +1,6 @@
 namespace CsCat
 {
-    public static class TrackAssetExtension
-    {
-    }
+	public static class TrackAssetExtension
+	{
+	}
 }

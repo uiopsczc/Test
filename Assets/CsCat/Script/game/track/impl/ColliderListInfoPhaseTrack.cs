@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public class ColliderListInfoPhaseTrack : AbstractPhaseTrack<ColliderListInfoPhase>
-  {
+	public class ColliderListInfoPhaseTrack : AbstractPhaseTrack<ColliderListInfoPhase>
+	{
 
-  }
+	}
 }

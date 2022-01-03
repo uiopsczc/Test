@@ -5,195 +5,194 @@ using UnityEngine;
 
 namespace CsCat
 {
-  public partial class TimelineRect
-  {
-    bool is_mouse_left_button_pressed = false;
+	public partial class TimelineRect
+	{
+		bool isMouseLeftButtonPressed = false;
 
-    private bool sb = false;
-    void Handle_Right_MouseInput()
-    {
-      if (Event.current.isMouse)
-      {
-        if (this.resizableRects.is_resizing)
-          return;
-        switch (Event.current.type)
-        {
-          case EventType.MouseDown:
-            if (Event.current.button == 0)
-            {
-              is_mouse_left_button_pressed = true;
-              EditorMouseInput.touch_point = Event.current.mousePosition;
-              EditorMouseInput.last_touch_point = EditorMouseInput.touch_point;
-              Rect timeline_rect = new Rect(view_rect);
-              timeline_rect.x = 0;
-              timeline_rect.height = TimelineRectConst.Timeline_Track_Height;
-              if (timeline_rect.Contains(EditorMouseInput.touch_point))
-                EditorMouseInput.status = EditorMouseInputStatus.Retime;
-              else if (IsMouseDownOfSelectedItem())
-                ;
-              else if (TryToSelectUnselectedItem())
-                EditorMouseInput.status = EditorMouseInputStatus.Selected;
-              else if (Event.current.control)
-                ;
-              else
-                EditorMouseInput.status = EditorMouseInputStatus.Normal;
-            }
-            else if (Event.current.button == 1)
-            {
-              Rect position_rect = new Rect();
-              position_rect.position = Event.current.mousePosition;
-              OnMouseRightButtonClick(position_rect);
-            }
-            break;
-          case EventType.MouseDrag:
-            if (is_mouse_left_button_pressed)
-            {
-              EditorMouseInput.touch_point = Event.current.mousePosition;
-              switch (EditorMouseInput.status)
-              {
-                case EditorMouseInputStatus.Normal:
-                  EditorMouseInput.status = EditorMouseInputStatus.Selecting;
-                  UpdateSelectedItems();
-                  break;
-                case EditorMouseInputStatus.Retime:
-                  EditorMouseInput.status = EditorMouseInputStatus.Retime;
-                  break;
-                case EditorMouseInputStatus.Selected:
-                  if (!Event.current.control)
-                  {
-                    EditorMouseInput.status = EditorMouseInputStatus.DraggingSelected;
-                    OnDraggingSelected();
-                  }
-                  else
-                  {
-                    EditorMouseInput.status = EditorMouseInputStatus.Selecting;
-                    UpdateSelectedItems();
-                  }
+		void HandleRightMouseInput()
+		{
+			if (Event.current.isMouse)
+			{
+				if (this.resizableRects.isResizing)
+					return;
+				switch (Event.current.type)
+				{
+					case EventType.MouseDown:
+						if (Event.current.button == 0)
+						{
+							isMouseLeftButtonPressed = true;
+							EditorMouseInput.touchPoint = Event.current.mousePosition;
+							EditorMouseInput.lastTouchPoint = EditorMouseInput.touchPoint;
+							Rect timelineRect = new Rect(_viewRect);
+							timelineRect.x = 0;
+							timelineRect.height = TimelineRectConst.Timeline_Track_Height;
+							if (timelineRect.Contains(EditorMouseInput.touchPoint))
+								EditorMouseInput.status = EditorMouseInputStatus.Retime;
+							else if (IsMouseDownOfSelectedItem())
+								;
+							else if (TryToSelectUnselectedItem())
+								EditorMouseInput.status = EditorMouseInputStatus.Selected;
+							else if (Event.current.control)
+								;
+							else
+								EditorMouseInput.status = EditorMouseInputStatus.Normal;
+						}
+						else if (Event.current.button == 1)
+						{
+							Rect positionRect = new Rect();
+							positionRect.position = Event.current.mousePosition;
+							OnMouseRightButtonClick(positionRect);
+						}
 
-                  break;
-                case EditorMouseInputStatus.Selecting:
-                  EditorMouseInput.status = EditorMouseInputStatus.Selecting;
-                  UpdateSelectedItems();
-                  break;
-                case EditorMouseInputStatus.DraggingSelected:
-                  EditorMouseInput.status = EditorMouseInputStatus.DraggingSelected;
-                  OnDraggingSelected();
-                  break;
-              }
-            }
-            break;
-        }
-      }
-      else if (Event.current.isKey)
-      {
-        if (Event.current.type == EventType.KeyDown)
-        {
-          switch (Event.current.keyCode)
-          {
-            case KeyCode.V:
-              if (Event.current.alt)
-                DoEditorCommand(EditorCommand.Paste);
-              break;
-            case KeyCode.D:
-              if (Event.current.alt)
-                DoEditorCommand(EditorCommand.Delete);
-              break;
+						break;
+					case EventType.MouseDrag:
+						if (isMouseLeftButtonPressed)
+						{
+							EditorMouseInput.touchPoint = Event.current.mousePosition;
+							switch (EditorMouseInput.status)
+							{
+								case EditorMouseInputStatus.Normal:
+									EditorMouseInput.status = EditorMouseInputStatus.Selecting;
+									UpdateSelectedItems();
+									break;
+								case EditorMouseInputStatus.Retime:
+									EditorMouseInput.status = EditorMouseInputStatus.Retime;
+									break;
+								case EditorMouseInputStatus.Selected:
+									if (!Event.current.control)
+									{
+										EditorMouseInput.status = EditorMouseInputStatus.DraggingSelected;
+										OnDraggingSelected();
+									}
+									else
+									{
+										EditorMouseInput.status = EditorMouseInputStatus.Selecting;
+										UpdateSelectedItems();
+									}
 
-            default:
-              break;
-          }
-        }
-      }
+									break;
+								case EditorMouseInputStatus.Selecting:
+									EditorMouseInput.status = EditorMouseInputStatus.Selecting;
+									UpdateSelectedItems();
+									break;
+								case EditorMouseInputStatus.DraggingSelected:
+									EditorMouseInput.status = EditorMouseInputStatus.DraggingSelected;
+									OnDraggingSelected();
+									break;
+							}
+						}
 
+						break;
+				}
+			}
+			else if (Event.current.isKey)
+			{
+				if (Event.current.type == EventType.KeyDown)
+				{
+					switch (Event.current.keyCode)
+					{
+						case KeyCode.V:
+							if (Event.current.alt)
+								DoEditorCommand(EditorCommand.Paste);
+							break;
+						case KeyCode.D:
+							if (Event.current.alt)
+								DoEditorCommand(EditorCommand.Delete);
+							break;
 
-      if (Event.current.rawType == EventType.MouseUp)
-      {
-        if (is_mouse_left_button_pressed)
-        {
-          EditorMouseInput.touch_point = Event.current.mousePosition;
-          is_mouse_left_button_pressed = false;
-          switch (EditorMouseInput.status)
-          {
-            case EditorMouseInputStatus.Retime:
-            case EditorMouseInputStatus.Selecting:
-              EditorMouseInput.status =
-                IsHasSelectedItem() ? EditorMouseInputStatus.Selected : EditorMouseInputStatus.Normal;
-              break;
-            case EditorMouseInputStatus.DraggingSelected:
-              EditorMouseInput.status = EditorMouseInputStatus.Selected;
-              break;
-          }
-        }
-      }
-    }
-
-    void OnEditorMouseInputStatusChanged(EditorMouseInputStatus editorMouseInputStatus)
-    {
-      switch (editorMouseInputStatus)
-      {
-        case EditorMouseInputStatus.Retime:
-          var time = EditorMouseInput.touch_point.x / width_per_second;
-          this.play_time = time < 0 ? 0 : time;
-          AutoScrollPosition();
-          break;
-        case EditorMouseInputStatus.Selecting:
-        case EditorMouseInputStatus.DraggingSelected:
-          AutoScrollPosition();
-          break;
-      }
-
-      on_editorMouseInputStatus_change_callback?.Invoke(editorMouseInputStatus);
-    }
-
-    void AutoScrollPosition()
-    {
-      const float sample_ratio = 1 / 30f;
-      if (EditorMouseInput.touch_point.x - scroll_position.x > scroll_rect.width * 0.85f)
-        scroll_position.x += width_per_second * sample_ratio;
-      else if (EditorMouseInput.touch_point.x - scroll_position.x < scroll_rect.width * 0.15f)
-        scroll_position.x -= width_per_second * sample_ratio;
-    }
+						default:
+							break;
+					}
+				}
+			}
 
 
-    bool TryToSelectUnselectedItem()
-    {
-      if (try_to_select_unselected_item_callback != null)
-        return try_to_select_unselected_item_callback(Event.current.mousePosition);
-      return false;
-    }
+			if (Event.current.rawType == EventType.MouseUp)
+			{
+				if (isMouseLeftButtonPressed)
+				{
+					EditorMouseInput.touchPoint = Event.current.mousePosition;
+					isMouseLeftButtonPressed = false;
+					switch (EditorMouseInput.status)
+					{
+						case EditorMouseInputStatus.Retime:
+						case EditorMouseInputStatus.Selecting:
+							EditorMouseInput.status =
+								IsHasSelectedItem() ? EditorMouseInputStatus.Selected : EditorMouseInputStatus.Normal;
+							break;
+						case EditorMouseInputStatus.DraggingSelected:
+							EditorMouseInput.status = EditorMouseInputStatus.Selected;
+							break;
+					}
+				}
+			}
+		}
 
-    bool IsMouseDownOfSelectedItem()
-    {
-      if (is_mouse_down_of_selected_item != null)
-        return is_mouse_down_of_selected_item(Event.current.mousePosition);
-      return false;
-    }
+		void OnEditorMouseInputStatusChanged(EditorMouseInputStatus editorMouseInputStatus)
+		{
+			switch (editorMouseInputStatus)
+			{
+				case EditorMouseInputStatus.Retime:
+					var time = EditorMouseInput.touchPoint.x / widthPerSecond;
+					this.playTime = time < 0 ? 0 : time;
+					AutoScrollPosition();
+					break;
+				case EditorMouseInputStatus.Selecting:
+				case EditorMouseInputStatus.DraggingSelected:
+					AutoScrollPosition();
+					break;
+			}
 
-    bool IsHasSelectedItem()
-    {
-      if (is_has_selected_item != null)
-        return is_has_selected_item();
-      return false;
-    }
+			onEditorMouseInputStatusChangeCallback?.Invoke(editorMouseInputStatus);
+		}
 
-    void UpdateSelectedItems()
-    {
-      update_selected_items_callback?.Invoke(EditorMouseInput.selected_rect);
-    }
+		void AutoScrollPosition()
+		{
+			const float sampleRatio = 1 / 30f;
+			if (EditorMouseInput.touchPoint.x - _scrollPosition.x > scrollRect.width * 0.85f)
+				_scrollPosition.x += widthPerSecond * sampleRatio;
+			else if (EditorMouseInput.touchPoint.x - _scrollPosition.x < scrollRect.width * 0.15f)
+				_scrollPosition.x -= widthPerSecond * sampleRatio;
+		}
 
-    void OnDraggingSelected()
-    {
-      on_dragging_selected_callback?.Invoke(Event.current.delta.x / width_per_second);
-    }
 
-    void DoEditorCommand(EditorCommand editorCommand)
-    {
-      on_do_editorCommand_callback?.Invoke(editorCommand);
-    }
+		bool TryToSelectUnselectedItem()
+		{
+			if (tryToSelectUnselectedItemCallback != null)
+				return tryToSelectUnselectedItemCallback(Event.current.mousePosition);
+			return false;
+		}
 
-    void OnMouseRightButtonClick(Rect position_rect)
-    {
-      this.on_mouse_right_button_click_callback?.Invoke(position_rect);
-    }
-  }
+		bool IsMouseDownOfSelectedItem()
+		{
+			if (isMouseDownOfSelectedItem != null)
+				return isMouseDownOfSelectedItem(Event.current.mousePosition);
+			return false;
+		}
+
+		bool IsHasSelectedItem()
+		{
+			return isHasSelectedItem != null && isHasSelectedItem();
+		}
+
+		void UpdateSelectedItems()
+		{
+			updateSelectedItemsCallback?.Invoke(EditorMouseInput.selectedRect);
+		}
+
+		void OnDraggingSelected()
+		{
+			onDraggingSelectedCallback?.Invoke(Event.current.delta.x / widthPerSecond);
+		}
+
+		void DoEditorCommand(EditorCommand editorCommand)
+		{
+			onDoEditorCommandCallback?.Invoke(editorCommand);
+		}
+
+		void OnMouseRightButtonClick(Rect positionRect)
+		{
+			this.onMouseRightButtonClickCallback?.Invoke(positionRect);
+		}
+	}
 }

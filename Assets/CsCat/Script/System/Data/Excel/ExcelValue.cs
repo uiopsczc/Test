@@ -2,26 +2,26 @@ using System;
 
 namespace CsCat
 {
-  /// <summary>
-  /// excel的行列的对应的值
-  /// </summary>
-  [Serializable]
-  public class ExcelValue
-  {
-    #region field
+	/// <summary>
+	/// excel的行列的对应的值
+	/// </summary>
+	[Serializable]
+	public class ExcelValue
+	{
+		#region field
 
-    public string value;
+		public string value;
 
-    #endregion
+		#endregion
 
-    #region public method
+		#region public method
 
-    public override string ToString()
-    {
-      return this.value ?? base.ToString();
-    }
+		public override string ToString()
+		{
+			return this.value ?? base.ToString();
+		}
 
-    #endregion
+		#endregion
 
-  }
+	}
 }

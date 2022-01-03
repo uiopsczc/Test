@@ -4,21 +4,21 @@ using System.Collections.Generic;
 
 namespace CsCat
 {
-    public class EnumeratorScope<T> : IDisposable
-    {
-        public IEnumerator<T> iterator;
+	public class EnumeratorScope<T> : IDisposable
+	{
+		public IEnumerator<T> iterator;
 
 
-        public EnumeratorScope(IEnumerator<T> iterator)
-        {
-            this.iterator = iterator;
-        }
+		public EnumeratorScope(IEnumerator<T> iterator)
+		{
+			this.iterator = iterator;
+		}
 
 
-        public void Dispose()
-        {
-            iterator.Dispose();
-            iterator = null;
-        }
-    }
+		public void Dispose()
+		{
+			iterator.Dispose();
+			iterator = null;
+		}
+	}
 }

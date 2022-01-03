@@ -2,55 +2,55 @@ using UnityEngine;
 
 namespace CsCat
 {
-    public class TemplateMono : MonoBehaviour
-    {
-        //////////////////////////////////////////////////////////////////////
-        // TODO
-        //////////////////////////////////////////////////////////////////////
+	public class TemplateMono : MonoBehaviour
+	{
+		//////////////////////////////////////////////////////////////////////
+		// TODO
+		//////////////////////////////////////////////////////////////////////
 
 
-        #region field
+		#region field
 
-        #endregion
+		#endregion
 
-        #region property
+		#region property
 
-        #endregion
+		#endregion
 
-        #region delegate
+		#region delegate
 
-        #endregion
+		#endregion
 
-        #region ctor
+		#region ctor
 
-        #endregion
+		#endregion
 
-        #region static method
+		#region static method
 
-        #endregion
+		#endregion
 
-        #region abstract method
+		#region abstract method
 
-        #endregion
+		#endregion
 
-        #region virtual method
+		#region virtual method
 
-        #endregion
+		#endregion
 
-        #region public method
+		#region public method
 
-        #endregion
+		#endregion
 
-        #region internal method
+		#region internal method
 
-        #endregion
+		#endregion
 
-        #region protected method
+		#region protected method
 
-        #endregion
+		#endregion
 
-        #region private method
+		#region private method
 
-        #endregion
-    }
+		#endregion
+	}
 }

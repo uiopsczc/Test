@@ -1,7 +1,7 @@
 namespace CsCat
 {
-  public class AOPConst
-  {
+	public class AOPConst
+	{
 
-  }
+	}
 }

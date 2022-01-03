@@ -1,7 +1,7 @@
 namespace CsCat
 {
-  public interface IGetLinkedHashtable
-  {
-    LinkedHashtable GetLinkedHashtable();
-  }
+	public interface IGetLinkedHashtable
+	{
+		LinkedHashtable GetLinkedHashtable();
+	}
 }

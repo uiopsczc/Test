@@ -2,109 +2,109 @@ using System;
 
 namespace CsCat
 {
-    public class EventDispatcher<P0, P1> : IDespawn, IEventDispatcher
-    {
-        private ValueListDictionary<string, KeyValuePairCat<Action<P0, P1>, bool>> listenerDict =
-            new ValueListDictionary<string, KeyValuePairCat<Action<P0, P1>, bool>>();
+	public class EventDispatcher<P0, P1> : IDespawn, IEventDispatcher
+	{
+		private ValueListDictionary<string, KeyValuePairCat<Action<P0, P1>, bool>> listenerDict =
+			new ValueListDictionary<string, KeyValuePairCat<Action<P0, P1>, bool>>();
 
-        public Action<P0, P1> AddListener(string eventName, Action<P0, P1> handler)
-        {
-            var handlerInfo = PoolCatManagerUtil.Spawn<KeyValuePairCat<Action<P0, P1>, bool>>().Init(handler, true);
-            listenerDict.Add(eventName, handlerInfo);
-            return handler;
-        }
+		public Action<P0, P1> AddListener(string eventName, Action<P0, P1> handler)
+		{
+			var handlerInfo = PoolCatManagerUtil.Spawn<KeyValuePairCat<Action<P0, P1>, bool>>().Init(handler, true);
+			listenerDict.Add(eventName, handlerInfo);
+			return handler;
+		}
 
-        public void IRemoveListener(string eventName, object handler)
-        {
-            if (listenerDict.TryGetValue(eventName, out var listenerList))
-            {
-                for (var i = 0; i < listenerList.Count; i++)
-                {
-                    var handlerInfo = listenerList[i];
-                    if (handlerInfo.key != handler)
-                        continue;
-                    if (!handlerInfo.value) continue;
-                    handlerInfo.value = false;
-                }
-            }
+		public void IRemoveListener(string eventName, object handler)
+		{
+			if (listenerDict.TryGetValue(eventName, out var listenerList))
+			{
+				for (var i = 0; i < listenerList.Count; i++)
+				{
+					var handlerInfo = listenerList[i];
+					if (handlerInfo.key != handler)
+						continue;
+					if (!handlerInfo.value) continue;
+					handlerInfo.value = false;
+				}
+			}
 
-        }
+		}
 
-        public bool RemoveListener(string eventName, Action<P0, P1> handler)
-        {
-            if (listenerDict.TryGetValue(eventName, out var listenerList))
-            {
-                for (var i = 0; i < listenerList.Count; i++)
-                {
-                    var handlerInfo = listenerList[i];
-                    if (handlerInfo.key != handler) continue;
-                    if (!handlerInfo.value) continue;
-                    handlerInfo.value = false;
-                    return true;
-                }
-            }
-            return false;
-        }
+		public bool RemoveListener(string eventName, Action<P0, P1> handler)
+		{
+			if (listenerDict.TryGetValue(eventName, out var listenerList))
+			{
+				for (var i = 0; i < listenerList.Count; i++)
+				{
+					var handlerInfo = listenerList[i];
+					if (handlerInfo.key != handler) continue;
+					if (!handlerInfo.value) continue;
+					handlerInfo.value = false;
+					return true;
+				}
+			}
+			return false;
+		}
 
-        public void RemoveAllListeners()
-        {
-            foreach (var handlerInfoList in listenerDict.Values)
-            {
-                for (var i = 0; i < handlerInfoList.Count; i++)
-                {
-                    var handlerInfo = handlerInfoList[i];
-                    handlerInfo.value = false;
-                }
-            }
+		public void RemoveAllListeners()
+		{
+			foreach (var handlerInfoList in listenerDict.Values)
+			{
+				for (var i = 0; i < handlerInfoList.Count; i++)
+				{
+					var handlerInfo = handlerInfoList[i];
+					handlerInfo.value = false;
+				}
+			}
 
-            CheckRemoved();
-            CheckEmpty();
-        }
+			CheckRemoved();
+			CheckEmpty();
+		}
 
-        public void Broadcast(string eventName, P0 p0, P1 p1)
-        {
-            if (listenerDict.TryGetValue(eventName, out var listenerList))
-            {
-                int count = listenerList.Count;
-                for (int i = 0; i < count; i++)
-                {
-                    var handlerInfo = listenerList[i];
-                    if (handlerInfo.value == false)
-                        continue;
-                    handlerInfo.key(p0, p1);
-                }
+		public void Broadcast(string eventName, P0 p0, P1 p1)
+		{
+			if (listenerDict.TryGetValue(eventName, out var listenerList))
+			{
+				int count = listenerList.Count;
+				for (int i = 0; i < count; i++)
+				{
+					var handlerInfo = listenerList[i];
+					if (handlerInfo.value == false)
+						continue;
+					handlerInfo.key(p0, p1);
+				}
 
-                CheckRemoved();
-                CheckEmpty();
-            }
-        }
+				CheckRemoved();
+				CheckEmpty();
+			}
+		}
 
-        private void CheckRemoved()
-        {
-            foreach (var handlerInfoList in listenerDict.Values)
-            {
-                for (int i = handlerInfoList.Count - 1; i >= 0; i--)
-                {
-                    var handlerInfo = handlerInfoList[i];
-                    if (handlerInfo.value) continue;
-                    handlerInfoList.RemoveAt(i);
-                    handlerInfo.Despawn();
-                }
-            }
-        }
+		private void CheckRemoved()
+		{
+			foreach (var handlerInfoList in listenerDict.Values)
+			{
+				for (int i = handlerInfoList.Count - 1; i >= 0; i--)
+				{
+					var handlerInfo = handlerInfoList[i];
+					if (handlerInfo.value) continue;
+					handlerInfoList.RemoveAt(i);
+					handlerInfo.Despawn();
+				}
+			}
+		}
 
-        private void CheckEmpty()
-        {
-            foreach (var eventName in listenerDict.Keys)
-            {
-                if (listenerDict[eventName].Count == 0)
-                    listenerDict.Remove(eventName);
-            }
-        }
+		private void CheckEmpty()
+		{
+			foreach (var eventName in listenerDict.Keys)
+			{
+				if (listenerDict[eventName].Count == 0)
+					listenerDict.Remove(eventName);
+			}
+		}
 
-        public void OnDespawn()
-        {
-            RemoveAllListeners();
-        }
-    }
+		public void OnDespawn()
+		{
+			RemoveAllListeners();
+		}
+	}
 }

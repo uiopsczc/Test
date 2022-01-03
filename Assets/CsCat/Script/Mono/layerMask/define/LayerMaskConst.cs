@@ -1,10 +1,10 @@
 namespace CsCat
 {
-  public static class LayerMaskConst
-  {
-    //  public static LayerMask EveryThingLayerMask = LayerMask.
+	public static class LayerMaskConst
+	{
+		//  public static LayerMask EveryThingLayerMask = LayerMask.
 
 
 
-  }
+	}
 }

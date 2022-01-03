@@ -2,73 +2,53 @@ using UnityEditor;
 
 namespace CsCat
 {
-  [CustomEditor(typeof(TransformTweenClip))]
-  public class TransformTweenClipEditor : Editor
-  {
-    private TransformTweenClip self;
+	[CustomEditor(typeof(TransformTweenClip))]
+	public class TransformTweenClipEditor : Editor
+	{
+		private TransformTweenClip _self;
+
+		public override void OnInspectorGUI()
+		{
+			_self = target as TransformTweenClip;
 
 
+			using (new EditorGUILayoutBeginHorizontalScope())
+			{
+				if (EditorGUILayoutUtil.Toggle("UseTarget(T)", ref _self.template.isUsePositionTarget))
+					_self.template.positionTarget = EditorGUILayout.Vector3Field("", _self.template.positionTarget);
+			}
 
-    public override void OnInspectorGUI()
-    {
-      self = target as TransformTweenClip;
-
-
-
-      using (new EditorGUILayoutBeginHorizontalScope())
-      {
-        if (EditorGUILayoutUtil.Toggle("UseTarget(T)", ref self.template.is_use_position_target))
-          self.template.position_target = EditorGUILayout.Vector3Field("", self.template.position_target);
-      }
-
-      using (new EditorGUILayoutBeginHorizontalScope())
-      {
-        if (EditorGUILayoutUtil.Toggle("UseTarget(R)", ref self.template.is_use_rotation_target))
-          self.template.rotation_target = EditorGUILayout.Vector3Field("", self.template.rotation_target);
-      }
+			using (new EditorGUILayoutBeginHorizontalScope())
+			{
+				if (EditorGUILayoutUtil.Toggle("UseTarget(R)", ref _self.template.is_use_rotation_target))
+					_self.template.rotation_target = EditorGUILayout.Vector3Field("", _self.template.rotation_target);
+			}
 
 
-      using (new EditorGUILayoutBeginHorizontalScope())
-      {
-        if (EditorGUILayoutUtil.Toggle("UseTarget(S)", ref self.template.is_use_scale_target))
-          self.template.scale_target = EditorGUILayout.Vector3Field("", self.template.scale_target);
-      }
+			using (new EditorGUILayoutBeginHorizontalScope())
+			{
+				if (EditorGUILayoutUtil.Toggle("UseTarget(S)", ref _self.template.isUseScaleTarget))
+					_self.template.scaleTarget = EditorGUILayout.Vector3Field("", _self.template.scaleTarget);
+			}
 
-      EditorGUILayoutUtil.Space(4);
+			EditorGUILayoutUtil.Space(4);
 
-      using (new EditorGUILayoutBeginHorizontalScope())
-      {
-        self.template.position_multiply = EditorGUILayout.Vector3Field("Mutiply(T)", self.template.position_multiply);
-      }
+			using (new EditorGUILayoutBeginHorizontalScope())
+			{
+				_self.template.positionMultiply =
+					EditorGUILayout.Vector3Field("Mutiply(T)", _self.template.positionMultiply);
+			}
 
-      using (new EditorGUILayoutBeginHorizontalScope())
-      {
-        self.template.rotation_multiply = EditorGUILayout.Vector3Field("Mutiply(R)", self.template.rotation_multiply);
-      }
+			using (new EditorGUILayoutBeginHorizontalScope())
+			{
+				_self.template.rotationMultiply =
+					EditorGUILayout.Vector3Field("Mutiply(R)", _self.template.rotationMultiply);
+			}
 
-      using (new EditorGUILayoutBeginHorizontalScope())
-      {
-        self.template.scale_multiply = EditorGUILayout.Vector3Field("Mutiply(S)", self.template.scale_multiply);
-      }
-
-    }
-
-
-  }
+			using (new EditorGUILayoutBeginHorizontalScope())
+			{
+				_self.template.scaleMultiply = EditorGUILayout.Vector3Field("Mutiply(S)", _self.template.scaleMultiply);
+			}
+		}
+	}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
