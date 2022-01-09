@@ -5,7 +5,7 @@ namespace CsCat
 {
 	public partial class UIBloodManager : UIObject
 	{
-		List<GameObject> uiBlood_gameObject_pool = new List<GameObject>();
+		List<GameObject> uiBloodGameObjectPool = new List<GameObject>();
 
 		public override void Init()
 		{
@@ -14,27 +14,27 @@ namespace CsCat
 			graphicComponent.SetGameObject(gameObject, true);
 		}
 
-		public UIBlood AddUIBlood(Transform parent_transform, float max_value, int? slider_count, float? to_value,
-		  List<Color> slider_color_list = null)
+		public UIBlood AddUIBlood(Transform parentTransform, float maxValue, int? sliderCount, float? toValue,
+		  List<Color> sliderColorList = null)
 		{
 			var uiBlood =
-			  this.AddChild<UIBlood>(null, parent_transform, max_value, slider_count, to_value, slider_color_list);
+			  this.AddChild<UIBlood>(null, parentTransform, maxValue, sliderCount, toValue, sliderColorList);
 			return uiBlood;
 		}
 
 		public GameObject SpawnUIBloodGameObject()
 		{
-			if (uiBlood_gameObject_pool.Count > 0)
-				return uiBlood_gameObject_pool.RemoveLast();
+			if (uiBloodGameObjectPool.Count > 0)
+				return uiBloodGameObjectPool.RemoveLast();
 			return null;
 		}
 
-		public void DespawnUIBloodGameObject(GameObject uiBlood_gameObject)
+		public void DespawnUIBloodGameObject(GameObject uiBloodGameObject)
 		{
-			if (uiBlood_gameObject == null)
+			if (uiBloodGameObject == null)
 				return;
-			uiBlood_gameObject_pool.Add(uiBlood_gameObject);
-			uiBlood_gameObject.transform.SetParent(graphicComponent.transform);
+			uiBloodGameObjectPool.Add(uiBloodGameObject);
+			uiBloodGameObject.transform.SetParent(graphicComponent.transform);
 		}
 
 		protected override void _Reset()

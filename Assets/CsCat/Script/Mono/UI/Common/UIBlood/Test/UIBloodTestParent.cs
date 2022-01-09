@@ -8,7 +8,7 @@ namespace CsCat
 	{
 		public UIBlood uiBlood;
 
-		public void Init(string name, int slider_count)
+		public void Init(string name, int sliderCount)
 		{
 			base.Init();
 			var rectTransform = GameObject.Find("UITestPanel").NewChildWithRectTransform(name);
@@ -16,12 +16,12 @@ namespace CsCat
 			rectTransform.anchorMax = Vector2.one;
 			rectTransform.sizeDelta = Vector2.zero;
 			graphicComponent.SetGameObject(rectTransform.gameObject, false);
-			this.uiBlood = Client.instance.uiManager.AddUIBlood(graphicComponent.transform, 150, slider_count, null, null);
+			this.uiBlood = Client.instance.uiManager.AddUIBlood(graphicComponent.transform, 150, sliderCount, null, null);
 		}
 
-		public Tween SlideTo(float to_value, Action<float, Tween> callback = null)
+		public Tween SlideTo(float toValue, Action<float, Tween> callback = null)
 		{
-			return this.uiBlood.SlideTo(to_value, callback);
+			return this.uiBlood.SlideTo(toValue, callback);
 		}
 
 

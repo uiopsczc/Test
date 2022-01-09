@@ -61,12 +61,12 @@ namespace CsCat
 		// spawn的时候重用
 		public void __OnAllAssetsLoadDone()
 		{
-			var slider_info = this.__GetSliderInfoByValue(this.toValue);
+			var sliderInfo = this.__GetSliderInfoByValue(this.toValue);
 			if (sliderCat != null)
-				this.sliderCat.Init(this.slider, slider_info.index, this.slideFrom0To1Duration, slider_info.pct);
+				this.sliderCat.Init(this.slider, sliderInfo.index, this.slideFrom0To1Duration, sliderInfo.pct);
 			else
 				this.sliderCat =
-				  new SliderCat(this.slider, slider_info.index, this.slideFrom0To1Duration, slider_info.pct);
+				  new SliderCat(this.slider, sliderInfo.index, this.slideFrom0To1Duration, sliderInfo.pct);
 			this.__SetSliderColor(this.sliderCat.curIndex);
 			graphicComponent.SetIsShow(true);
 		}
@@ -87,12 +87,12 @@ namespace CsCat
 			}
 			else
 			{
-				float slider_each_value = this.maxValue / this.sliderCount;
-				index = (int)Mathf.Ceil(value / slider_each_value);
-				int int_part = (int)Mathf.Floor(value / slider_each_value);
-				float fractional_part = value / slider_each_value - int_part;
-				pct = fractional_part;
-				if (int_part == index)
+				float sliderEachValue = this.maxValue / this.sliderCount;
+				index = (int)Mathf.Ceil(value / sliderEachValue);
+				int intPart = (int)Mathf.Floor(value / sliderEachValue);
+				float fractionalPart = value / sliderEachValue - intPart;
+				pct = fractionalPart;
+				if (intPart == index)
 					pct = 1;
 				index = index - 1;
 			}
@@ -102,33 +102,33 @@ namespace CsCat
 
 		public void __SetSliderColor(int index)
 		{
-			var slider_back_color = this.sliderColorList[index];
-			var slider_front_color = this.sliderColorList[index + 1];
-			this.sliderBackImage.color = slider_back_color;
-			this.sliderFrontImage.color = slider_front_color;
+			var sliderBackColor = this.sliderColorList[index];
+			var sliderFrontColor = this.sliderColorList[index + 1];
+			this.sliderBackImage.color = sliderBackColor;
+			this.sliderFrontImage.color = sliderFrontColor;
 		}
 
-		public Tween SlideTo(float to_value, Action<float, Tween> callback = null, float? max_value = null,
-		  int? slider_count = null)
+		public Tween SlideTo(float toValue, Action<float, Tween> callback = null, float? maxValue = null,
+		  int? sliderCount = null)
 		{
-			this.toValue = to_value;
-			if (max_value.HasValue)
-				this.maxValue = max_value.Value;
-			if (slider_count.HasValue)
-				this.sliderCount = slider_count.Value;
+			this.toValue = toValue;
+			if (maxValue.HasValue)
+				this.maxValue = maxValue.Value;
+			if (sliderCount.HasValue)
+				this.sliderCount = sliderCount.Value;
 			if (this.sliderCat == null)
 				return null;
-			var slider_info = this.__GetSliderInfoByValue(to_value);
-			return this.AddDOTween("UIBlood", this.sliderCat.SlideTo(slider_info.index, slider_info.pct,
-			  (index, pct, next_tween) =>
+			var sliderInfo = this.__GetSliderInfoByValue(toValue);
+			return this.AddDOTween("UIBlood", this.sliderCat.SlideTo(sliderInfo.index, sliderInfo.pct,
+			  (index, pct, nextTween) =>
 			  {
 				  this.__SetSliderColor(this.sliderCat.curIndex);
-				  if (next_tween != null)
-					  this.AddDOTween("UIBlood", next_tween);
+				  if (nextTween != null)
+					  this.AddDOTween("UIBlood", nextTween);
 				  if (callback != null)
 				  {
-					  var current_value = this.sliderCat.GetCurrentValue() * (this.maxValue / this.sliderCount);
-					  callback(current_value, next_tween);
+					  var currentValue = this.sliderCat.GetCurrentValue() * (this.maxValue / this.sliderCount);
+					  callback(currentValue, nextTween);
 				  }
 			  }));
 		}
