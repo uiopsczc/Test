@@ -21,10 +21,7 @@ namespace CsCat
 			this._type = type;
 		}
 
-		public virtual string name
-		{
-			get { return this._name; }
-		}
+		public virtual string name => this._name;
 
 		public virtual object body
 		{

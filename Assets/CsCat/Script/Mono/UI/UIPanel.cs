@@ -10,11 +10,11 @@ namespace CsCat
 		/// <summary>
 		/// 是否是常驻的,即不被销毁
 		/// </summary>
-		public virtual bool is_resident => false;
+		public virtual bool isResident => false;
 		public virtual EUILayerName layerName => EUILayerName.PopUpUILayer;
-		public UILayer uiLayer => Client.instance.uiManager.uiLayerManager.uiLayer_dict[layerName];
-		protected Transform frame_transform => this.cache.GetOrAddDefault("frameTransform", () => this.graphicComponent.gameObject.transform.Find("frame"));
-		protected Transform content_transform => this.cache.GetOrAddDefault("contentTransform", () => frame_transform.Find("content"));
+		public UILayer uiLayer => Client.instance.uiManager.uiLayerManager.uiLayerDict[layerName];
+		protected Transform frameTransform => this.cache.GetOrAddDefault("frameTransform", () => this.graphicComponent.gameObject.transform.Find("frame"));
+		protected Transform contentTransform => this.cache.GetOrAddDefault("contentTransform", () => frameTransform.Find("content"));
 		protected Canvas canvas => this.cache.GetOrAddDefault("canvas", () => graphicComponent.gameObject.GetOrAddComponent<Canvas>());
 		public int sortingOrder
 		{
@@ -28,10 +28,7 @@ namespace CsCat
 			}
 		}
 
-		public virtual bool is_hide_blackMaskBehide
-		{
-			get => false;
-		}
+		public virtual bool isHideBlackMaskBehind => false;
 
 		protected virtual void OnSortingOrderChange()
 		{
@@ -50,9 +47,9 @@ namespace CsCat
 			this.uiLayer.SetPanelToBottom(this);
 		}
 
-		public void SetPanelIndex(int new_index)
+		public void SetPanelIndex(int newIndex)
 		{
-			this.uiLayer.SetPanelIndex(this, new_index);
+			this.uiLayer.SetPanelIndex(this, newIndex);
 		}
 
 
@@ -66,9 +63,9 @@ namespace CsCat
 			OnSortingOrderChange();
 		}
 
-		public void OnInitPanel(Transform parent_transform)
+		public void OnInitPanel(Transform parentTransform)
 		{
-			graphicComponent.SetParentTransform(parent_transform == null ? uiLayer.graphicComponent.transform : parent_transform);
+			graphicComponent.SetParentTransform(parentTransform == null ? uiLayer.graphicComponent.transform : parentTransform);
 			this.uiLayer.AddPanel(this);
 		}
 
@@ -82,7 +79,7 @@ namespace CsCat
 		public virtual void Close()
 		{
 			this.uiLayer.RemovePanel(this);
-			this.parent_uiObject.CloseChildPanel(this.key);
+			this.parentUIObject.CloseChildPanel(this.key);
 		}
 
 	}

@@ -7,16 +7,16 @@ namespace CsCat
 	public static partial class AStarUtil
 	{
 		//获得轨迹中可通过的最远点
-		public static Vector2Int GetMostPassPoint(AStarMapPath astarMapPath, List<Vector2Int> track_list,
-		  int[] can_pass_obstacle_types,
-		  int[] can_pass_terrain_types, bool can_out = false)
+		public static Vector2Int GetMostPassPoint(AStarMapPath astarMapPath, List<Vector2Int> trackList,
+		  int[] canPassObstacleTypes,
+		  int[] canPassTerrainTypes, bool canOut = false)
 		{
-			Vector2Int lp = track_list[0];
+			Vector2Int lp = trackList[0];
 			Vector2Int tp = lp;
-			for (int i = 1; i < track_list.Count; i++)
+			for (int i = 1; i < trackList.Count; i++)
 			{
-				Vector2Int p = track_list[i];
-				if (!CanPass(astarMapPath, p.x, p.y, can_pass_obstacle_types, can_pass_terrain_types, can_out))
+				Vector2Int p = trackList[i];
+				if (!CanPass(astarMapPath, p.x, p.y, canPassObstacleTypes, canPassTerrainTypes, canOut))
 					break;
 
 				DirectionInfo directionInfo = DirectionInfoUtil.GetDirectionInfo(p.x - lp.x, p.y - lp.y);
@@ -25,30 +25,30 @@ namespace CsCat
 				if (directionInfo == DirectionInfoConst.LeftTopDirectionInfo) // 左上角
 				{
 
-					if (!CanPass(astarMapPath, p.x + 1, p.y, can_pass_obstacle_types, can_pass_terrain_types, can_out))
+					if (!CanPass(astarMapPath, p.x + 1, p.y, canPassObstacleTypes, canPassTerrainTypes, canOut))
 						break;
-					if (!CanPass(astarMapPath, p.x, p.y - 1, can_pass_obstacle_types, can_pass_terrain_types, can_out))
+					if (!CanPass(astarMapPath, p.x, p.y - 1, canPassObstacleTypes, canPassTerrainTypes, canOut))
 						break;
 				}
 				else if (directionInfo == DirectionInfoConst.RightTopDirectionInfo) // 右上角
 				{
-					if (!CanPass(astarMapPath, p.x - 1, p.y, can_pass_obstacle_types, can_pass_terrain_types, can_out))
+					if (!CanPass(astarMapPath, p.x - 1, p.y, canPassObstacleTypes, canPassTerrainTypes, canOut))
 						break;
-					if (!CanPass(astarMapPath, p.x, p.y - 1, can_pass_obstacle_types, can_pass_terrain_types, can_out))
+					if (!CanPass(astarMapPath, p.x, p.y - 1, canPassObstacleTypes, canPassTerrainTypes, canOut))
 						break;
 				}
 				else if (directionInfo == DirectionInfoConst.RightBottomDirectionInfo) // 右下角
 				{
-					if (!CanPass(astarMapPath, p.x - 1, p.y, can_pass_obstacle_types, can_pass_terrain_types, can_out))
+					if (!CanPass(astarMapPath, p.x - 1, p.y, canPassObstacleTypes, canPassTerrainTypes, canOut))
 						break;
-					if (!CanPass(astarMapPath, p.x, p.y + 1, can_pass_obstacle_types, can_pass_terrain_types, can_out))
+					if (!CanPass(astarMapPath, p.x, p.y + 1, canPassObstacleTypes, canPassTerrainTypes, canOut))
 						break;
 				}
 				else if (directionInfo == DirectionInfoConst.LeftBottomDirectionInfo) // 左下角
 				{
-					if (!CanPass(astarMapPath, p.x + 1, p.y, can_pass_obstacle_types, can_pass_terrain_types, can_out))
+					if (!CanPass(astarMapPath, p.x + 1, p.y, canPassObstacleTypes, canPassTerrainTypes, canOut))
 						break;
-					if (!CanPass(astarMapPath, p.x, p.y + 1, can_pass_obstacle_types, can_pass_terrain_types, can_out))
+					if (!CanPass(astarMapPath, p.x, p.y + 1, canPassObstacleTypes, canPassTerrainTypes, canOut))
 						break;
 				}
 
@@ -62,12 +62,12 @@ namespace CsCat
 		//获得两点间可通过的最远点
 		// can_out  是否允许通过场景外
 		public static Vector2Int GetMostLinePassPoint(AStarMapPath astarMapPath, Vector2Int lp, Vector2Int tp,
-		  int[] can_pass_obstacle_types, int[] can_pass_terrain_types, bool can_out = false)
+		  int[] canPassObstacleTypes, int[] canPassTerrainTypes, bool canOut = false)
 		{
-			if (!can_out && !IsInRange(astarMapPath.GetFinalGrids(), lp))
+			if (!canOut && !IsInRange(astarMapPath.GetFinalGrids(), lp))
 				return lp;
-			List<Vector2Int> point_list = GetLinePointList(lp, tp);
-			return GetMostPassPoint(astarMapPath, point_list, can_pass_obstacle_types, can_pass_terrain_types, can_out);
+			List<Vector2Int> pointList = GetLinePointList(lp, tp);
+			return GetMostPassPoint(astarMapPath, pointList, canPassObstacleTypes, canPassTerrainTypes, canOut);
 		}
 
 	}

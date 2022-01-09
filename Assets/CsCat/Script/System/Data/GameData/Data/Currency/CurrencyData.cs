@@ -7,9 +7,9 @@ namespace CsCat
 	// 货币
 	public class CurrencyData : PropObserver
 	{
-		[Serialize] public Dictionary<string, int> currency_dict = new Dictionary<string, int>();
-		private float power_add_remain_duration;
-		private float power_last_update_time;
+		[Serialize] public Dictionary<string, int> currencyDict = new Dictionary<string, int>();
+		private float powerAddRemainDuration;
+		private float powerLastUpdateTime;
 
 		public override void OnNewCreate()
 		{
@@ -24,95 +24,95 @@ namespace CsCat
 
 		private void OnPowerLoaded()
 		{
-			var current_power_count = GetPowerCount();
-			if (GameData._instance.quit_time_ticks > 0 && current_power_count < CurrencyConst.Max_Power_Count)
+			var currentPowerCount = GetPowerCount();
+			if (GameData._instance.quitTimeTicks > 0 && currentPowerCount < CurrencyConst.Max_Power_Count)
 			{
-				var diff_seconds = (int)(DateTimeUtil.NowDateTime() - new DateTime(GameData._instance.quit_time_ticks))
+				var diffSeconds = (int)(DateTimeUtil.NowDateTime() - new DateTime(GameData._instance.quitTimeTicks))
 				  .TotalSeconds;
-				var add_power_count = diff_seconds / CurrencyConst.Add_Power_Period * CurrencyConst.Add_Power_Count;
-				AddPower(add_power_count, true);
-				power_add_remain_duration = diff_seconds % CurrencyConst.Add_Power_Period;
+				var addPowerCount = diffSeconds / CurrencyConst.Add_Power_Period * CurrencyConst.Add_Power_Count;
+				AddPower(addPowerCount, true);
+				powerAddRemainDuration = diffSeconds % CurrencyConst.Add_Power_Period;
 			}
 			else
 			{
-				power_add_remain_duration = CurrencyConst.Add_Power_Period;
+				powerAddRemainDuration = CurrencyConst.Add_Power_Period;
 			}
 
 
-			power_last_update_time = Time.realtimeSinceStartup;
+			powerLastUpdateTime = Time.realtimeSinceStartup;
 			Client.instance.timerManager.AddTimer(args =>
 			{
-				current_power_count = GetPowerCount();
-				var current_time = Time.realtimeSinceStartup;
-				var deltaTime = current_time - power_last_update_time;
-				power_last_update_time = current_time;
-				if (current_power_count >= CurrencyConst.Max_Power_Count)
+				currentPowerCount = GetPowerCount();
+				var currentTime = Time.realtimeSinceStartup;
+				var deltaTime = currentTime - powerLastUpdateTime;
+				powerLastUpdateTime = currentTime;
+				if (currentPowerCount >= CurrencyConst.Max_Power_Count)
 				{
-					power_add_remain_duration = CurrencyConst.Add_Power_Period;
+					powerAddRemainDuration = CurrencyConst.Add_Power_Period;
 					return true;
 				}
 
-				power_add_remain_duration = power_add_remain_duration - deltaTime;
-				while (power_add_remain_duration <= 0)
+				powerAddRemainDuration = powerAddRemainDuration - deltaTime;
+				while (powerAddRemainDuration <= 0)
 				{
-					power_add_remain_duration = power_add_remain_duration + CurrencyConst.Add_Power_Period;
-					if (current_power_count >= CurrencyConst.Max_Power_Count)
+					powerAddRemainDuration = powerAddRemainDuration + CurrencyConst.Add_Power_Period;
+					if (currentPowerCount >= CurrencyConst.Max_Power_Count)
 						break;
-					var add_power_count = AddPower(CurrencyConst.Add_Power_Count, true);
-					current_power_count = current_power_count + add_power_count;
+					var addPowerCount = AddPower(CurrencyConst.Add_Power_Count, true);
+					currentPowerCount = currentPowerCount + addPowerCount;
 				}
 
 				return true;
 			}, 1, 1);
 		}
 
-		public bool CanCost(string currency_id, int cost_count)
+		public bool CanCost(string currencyId, int costCount)
 		{
-			if (cost_count < 0)
-				cost_count = -cost_count;
-			if (!currency_dict.ContainsKey(currency_id))
+			if (costCount < 0)
+				costCount = -costCount;
+			if (!currencyDict.ContainsKey(currencyId))
 				return false;
-			if (currency_dict[currency_id] < cost_count)
+			if (currencyDict[currencyId] < costCount)
 				return false;
 			return true;
 		}
 
-		public void Add(string currency_id, int add_count)
+		public void Add(string currencyId, int addCount)
 		{
-			var current_count = currency_dict.GetOrGetDefault(currency_id, () => 0);
-			current_count = current_count + add_count;
-			currency_dict[currency_id] = current_count;
+			var currentCount = currencyDict.GetOrGetDefault(currencyId, () => 0);
+			currentCount = currentCount + addCount;
+			currencyDict[currencyId] = currentCount;
 		}
 
-		public bool TryCost(string currency_id, int cost_count)
+		public bool TryCost(string currencyId, int costCount)
 		{
-			if (cost_count < 0)
-				cost_count = -cost_count;
-			if (!CanCost(currency_id, cost_count))
+			if (costCount < 0)
+				costCount = -costCount;
+			if (!CanCost(currencyId, costCount))
 				return false;
-			Add(currency_id, -cost_count);
+			Add(currencyId, -costCount);
 			return true;
 		}
 
-		public int GetCount(string currency_id)
+		public int GetCount(string currencyId)
 		{
-			return currency_dict.GetOrGetDefault(currency_id, () => 0);
+			return currencyDict.GetOrGetDefault(currencyId, () => 0);
 		}
 
 		//金币
-		public bool CanCostCoin(int cost_count)
+		public bool CanCostCoin(int costCount)
 		{
-			return CanCost(CurrencyConst.Coin_Item_Id, cost_count);
+			return CanCost(CurrencyConst.Coin_Item_Id, costCount);
 		}
 
-		public void AddCoin(int add_count)
+		public void AddCoin(int addCount)
 		{
-			Add(CurrencyConst.Coin_Item_Id, add_count);
+			Add(CurrencyConst.Coin_Item_Id, addCount);
 		}
 
-		public bool TryCostCoin(int cost_count)
+		public bool TryCostCoin(int costCount)
 		{
-			return TryCost(CurrencyConst.Coin_Item_Id, cost_count);
+			return TryCost(CurrencyConst.Coin_Item_Id, costCount);
 		}
 
 		public int GetCoinCount()
@@ -121,19 +121,19 @@ namespace CsCat
 		}
 
 		//钻石
-		public bool CanCostDiamond(int cost_count)
+		public bool CanCostDiamond(int costCount)
 		{
-			return CanCost(CurrencyConst.Diamond_Item_Id, cost_count);
+			return CanCost(CurrencyConst.Diamond_Item_Id, costCount);
 		}
 
-		public void AddDiamond(int add_count)
+		public void AddDiamond(int addCount)
 		{
-			Add(CurrencyConst.Diamond_Item_Id, add_count);
+			Add(CurrencyConst.Diamond_Item_Id, addCount);
 		}
 
-		public bool TryCostDiamond(int cost_count)
+		public bool TryCostDiamond(int costCount)
 		{
-			return TryCost(CurrencyConst.Diamond_Item_Id, cost_count);
+			return TryCost(CurrencyConst.Diamond_Item_Id, costCount);
 		}
 
 		public int GetDiamondCount()
@@ -142,35 +142,35 @@ namespace CsCat
 		}
 
 		//体力
-		public bool CanCostPower(int cost_count)
+		public bool CanCostPower(int costCount)
 		{
-			return CanCost(CurrencyConst.Power_Item_Id, cost_count);
+			return CanCost(CurrencyConst.Power_Item_Id, costCount);
 		}
 
-		public int AddPower(int add_count, bool is_limit_max_power = false)
+		public int AddPower(int addCount, bool isLimitMaxPower = false)
 		{
-			var current_power_count = GetPowerCount();
-			if (is_limit_max_power)
-				if (current_power_count + add_count > CurrencyConst.Max_Power_Count)
-					add_count = CurrencyConst.Max_Power_Count - current_power_count;
+			var currentPowerCount = GetPowerCount();
+			if (isLimitMaxPower)
+				if (currentPowerCount + addCount > CurrencyConst.Max_Power_Count)
+					addCount = CurrencyConst.Max_Power_Count - currentPowerCount;
 
-			if ((current_power_count >= CurrencyConst.Max_Power_Count &&
-				 current_power_count + add_count < CurrencyConst.Max_Power_Count) // 本来》=Power的最大值，加完后比Power的最大值小，则设置倒计时
+			if ((currentPowerCount >= CurrencyConst.Max_Power_Count &&
+				 currentPowerCount + addCount < CurrencyConst.Max_Power_Count) // 本来》=Power的最大值，加完后比Power的最大值小，则设置倒计时
 				||
-				(current_power_count < CurrencyConst.Max_Power_Count &&
-				 current_power_count + add_count >= CurrencyConst.Max_Power_Count)) //本来<Power的最大值，加完后比Power的最大值大，则取消倒计时
+				(currentPowerCount < CurrencyConst.Max_Power_Count &&
+				 currentPowerCount + addCount >= CurrencyConst.Max_Power_Count)) //本来<Power的最大值，加完后比Power的最大值大，则取消倒计时
 			{
-				power_add_remain_duration = CurrencyConst.Add_Power_Period;
-				power_last_update_time = Time.realtimeSinceStartup;
+				powerAddRemainDuration = CurrencyConst.Add_Power_Period;
+				powerLastUpdateTime = Time.realtimeSinceStartup;
 			}
 
-			Add(CurrencyConst.Power_Item_Id, add_count);
-			return add_count;
+			Add(CurrencyConst.Power_Item_Id, addCount);
+			return addCount;
 		}
 
-		public bool TryCostPower(int cost_count)
+		public bool TryCostPower(int costCount)
 		{
-			return TryCost(CurrencyConst.Power_Item_Id, cost_count);
+			return TryCost(CurrencyConst.Power_Item_Id, costCount);
 		}
 
 		public int GetPowerCount()

@@ -1,5 +1,3 @@
-
-
 using System;
 using System.Reflection;
 
@@ -14,8 +12,8 @@ namespace CsCat
 		///     2.方法名：被切面的方法的名称_AOPMethodType的类型 
 		private static string[] Seach_Format_Target_Method_Name_Orders = new string[]
 		{
-	  "{0}_{1}_{2}",
-	  "{1}_{2}",
+			"{0}_{1}_{2}",
+			"{1}_{2}",
 		};
 
 		///维度2 目标函数的参数维度-是否 目标函数的参数列表 带有 原函数的参数列表
@@ -24,8 +22,8 @@ namespace CsCat
 		///     2.参数列表：不带有原函数的参数列表
 		private static bool[] Is_Target_Method_With_Source_ArgTypes_Orders = new bool[]
 		{
-	  true,
-	  false
+			true,
+			false
 		};
 
 		///维度3 目标函数的参数维度-是否 目标函数的参数列表 带有 原函数所在类的实例引用self
@@ -34,8 +32,8 @@ namespace CsCat
 		///     2.参数列表：不原函数所在类的实例引用self
 		private static bool[] Is_Target_Method_Self_Arg_Orders = new bool[]
 		{
-	  true,
-	  false
+			true,
+			false
 		};
 
 
@@ -47,12 +45,13 @@ namespace CsCat
 		/// <param name="aop_method_type"></param>
 		/// <returns></returns>
 		private static string[] GetSeachTargetMethodNameOrders(Type source_type, string source_method_name,
-		  AOPMethodType aop_method_type)
+			AOPMethodType aop_method_type)
 		{
 			string[] result = new string[Seach_Format_Target_Method_Name_Orders.Length + 1];
 			for (int i = 0; i < Seach_Format_Target_Method_Name_Orders.Length; i++)
-				result[i] = GetTargetMethodName(Seach_Format_Target_Method_Name_Orders[i], source_type, source_method_name,
-				  aop_method_type);
+				result[i] = GetTargetMethodName(Seach_Format_Target_Method_Name_Orders[i], source_type,
+					source_method_name,
+					aop_method_type);
 			// 再加上默认的处理方法
 			result[Seach_Format_Target_Method_Name_Orders.Length] = aop_method_type.ToString();
 			return result;
@@ -67,10 +66,10 @@ namespace CsCat
 		/// <param name="aopMethodType"></param>
 		/// <returns></returns>
 		private static string GetTargetMethodName(string format_target_method_name, Type source_type,
-		  string source_method_name, AOPMethodType aopMethodType)
+			string source_method_name, AOPMethodType aopMethodType)
 		{
 			return string.Format(format_target_method_name, source_type.GetLastName(), source_method_name,
-			  aopMethodType.ToString());
+				aopMethodType.ToString());
 		}
 
 
@@ -84,33 +83,35 @@ namespace CsCat
 		/// 4.被切面的方法的名称_AOPMethodType的类型（）
 		///   4.1.被切面的方法的类_被切面的方法的名称_AOPMethodType的类型()
 		/// 5.默认的处理方法
-		public static MethodInfoProxy SeachTargetMethodInfoProxy(Type aop_attribute_type, Type source_type,
-		  string source_method_name, AOPMethodType aopMethodType, Type[] source_method_arg_types)
+		public static MethodInfoProxy SeachTargetMethodInfoProxy(Type aopAttributeType, Type sourceType,
+			string sourceMethodName, AOPMethodType aopMethodType, Type[] sourceMethodArgTypes)
 		{
 			//从特殊到一般，注意有顺序先后的查找
-			foreach (string targetMethodName in GetSeachTargetMethodNameOrders(source_type, source_method_name, aopMethodType)
-			)
+			var names = GetSeachTargetMethodNameOrders(sourceType, sourceMethodName,
+				aopMethodType);
+			for (var i = 0; i < names.Length; i++)
 			{
-				foreach (bool isTargetMethodWithSoruceArgType in Is_Target_Method_With_Source_ArgTypes_Orders)
+				string targetMethodName = names[i];
+				for (var j = 0; j < Is_Target_Method_With_Source_ArgTypes_Orders.Length; j++)
 				{
-					foreach (bool is_target_method_self_arg in Is_Target_Method_Self_Arg_Orders)
+					bool isTargetMethodWithSoruceArgType = Is_Target_Method_With_Source_ArgTypes_Orders[j];
+					for (var k = 0; k < Is_Target_Method_Self_Arg_Orders.Length; k++)
 					{
-						MethodInfoProxy methodInfoProxy = new MethodInfoProxy(targetMethodName, aop_attribute_type, source_type,
-						  is_target_method_self_arg, isTargetMethodWithSoruceArgType, source_method_arg_types);
-						MethodInfo target_method = aop_attribute_type.GetMethodInfo(targetMethodName, BindingFlagsConst.All,
-						  methodInfoProxy.methodArgTypesProxy.targetMethodArgTypes);
-						if (target_method != null) //命中
-						{
+						bool isTargetMethodSelfArg = Is_Target_Method_Self_Arg_Orders[k];
+						MethodInfoProxy methodInfoProxy = new MethodInfoProxy(targetMethodName, aopAttributeType,
+							sourceType,
+							isTargetMethodSelfArg, isTargetMethodWithSoruceArgType, sourceMethodArgTypes);
+						MethodInfo targetMethod = aopAttributeType.GetMethodInfo(targetMethodName,
+							BindingFlagsConst.All,
+							methodInfoProxy.methodArgTypesProxy.targetMethodArgTypes);
+						if (targetMethod != null) //命中
 							return methodInfoProxy;
-						}
 					}
 				}
 			}
 
 			throw new Exception(string.Format("can not find AOPAttributeMethod of  Method:{0}->{1}  AOPAttribute:{2}",
-			  source_type.ToString(), source_method_name, aop_attribute_type));
+				sourceType.ToString(), sourceMethodName, aopAttributeType));
 		}
-
-
 	}
 }

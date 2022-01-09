@@ -5,19 +5,13 @@ namespace CsCat
 {
 	public class UILoadingPanel : UIPanel
 	{
-		public override bool is_resident
-		{
-			get { return true; }
-		}
+		public override bool isResident => true;
 
-		public override EUILayerName layerName
-		{
-			get { return EUILayerName.LoadingUILayer; }
-		}
+		public override EUILayerName layerName => EUILayerName.LoadingUILayer;
 
 		private float pct;
 		private Slider silder;
-		private Text desc_text;
+		private Text descText;
 
 		public void Init(GameObject gameObject)
 		{
@@ -29,8 +23,8 @@ namespace CsCat
 		public override void InitGameObjectChildren()
 		{
 			base.InitGameObjectChildren();
-			silder = frame_transform.FindComponentInChildren<Slider>("Slider");
-			desc_text = graphicComponent.transform.FindComponentInChildren<Text>("desc");
+			silder = frameTransform.FindComponentInChildren<Slider>("Slider");
+			descText = graphicComponent.transform.FindComponentInChildren<Text>("desc");
 		}
 
 		public void SetPct(float pct)
@@ -42,13 +36,13 @@ namespace CsCat
 		public void SetDesc(string desc)
 		{
 			graphicComponent.SetIsShow(true);
-			this.desc_text.text = desc;
+			this.descText.text = desc;
 		}
 
 		protected override void _Reset()
 		{
 			base._Reset();
-			this.desc_text.text = "";
+			this.descText.text = "";
 			silder.value = 0;
 			graphicComponent.SetIsShow(false);
 		}
@@ -58,7 +52,5 @@ namespace CsCat
 			Reset();
 			graphicComponent.SetIsShow(false);
 		}
-
-
 	}
 }

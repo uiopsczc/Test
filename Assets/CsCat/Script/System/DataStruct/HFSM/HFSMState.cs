@@ -9,23 +9,22 @@ namespace CsCat
 	/// </summary>
 	public class HFSMState : TickObject
 	{
-		public HFSM parent_hfsm;
+		public HFSM parentHFSM;
 
-		#region ctor
 
 		public HFSMState()
 		{
 		}
 
-		#endregion
 
 		public T GetOwner<T>() where T : GameEntity
 		{
 			return this.GetRootHFSM().owner as T;
 		}
+
 		#region virtual method
 
-		public virtual bool IsCanChangeToState(HFSMState to_state, params object[] args)
+		public virtual bool IsCanChangeToState(HFSMState toState, params object[] args)
 		{
 			return true;
 		}
@@ -33,28 +32,28 @@ namespace CsCat
 		public virtual void Enter(params object[] args)
 		{
 			this.SetIsEnabled(true, false);
-			this.parent_hfsm.current_sub_direct_state = this;
+			this.parentHFSM.currentSubDirectState = this;
 		}
 
 
 		public virtual void Exit(params object[] args)
 		{
 			this.SetIsEnabled(false, false);
-			this.parent_hfsm.current_sub_direct_state = null;
+			this.parentHFSM.currentSubDirectState = null;
 		}
 
-		public virtual void ExitLoopTo(HFSM to_hfsm, params object[] args)
+		public virtual void ExitLoopTo(HFSM toHFSM, params object[] args)
 		{
 			this.Exit();
-			var _hfsm = parent_hfsm;
-			while (_hfsm != to_hfsm)
+			var hfsm = parentHFSM;
+			while (hfsm != toHFSM)
 			{
-				_hfsm.Exit(args);
-				_hfsm = _hfsm.parent_hfsm;
+				hfsm.Exit(args);
+				hfsm = hfsm.parentHFSM;
 			}
 		}
-		#endregion
 
+		#endregion
 
 
 		public override bool IsCanUpdate()
@@ -65,9 +64,9 @@ namespace CsCat
 		public List<HFSM> GetParentHFSMList()
 		{
 			List<HFSM> list = new List<HFSM>();
-			var _hfsm = parent_hfsm;
-			list.Add(_hfsm);
-			list.AddRange(_hfsm.GetParentHFSMList());
+			var hfsm = parentHFSM;
+			list.Add(hfsm);
+			list.AddRange(hfsm.GetParentHFSMList());
 			return list;
 		}
 
@@ -76,47 +75,45 @@ namespace CsCat
 		{
 			if (state2 == null)
 				return this.GetRootHFSM();
-			List<HFSM> hfsm_list1 = GetParentHFSMList();
-			List<HFSM> hfsm_list2 = state2.GetParentHFSMList();
+			List<HFSM> hfsmList1 = GetParentHFSMList();
+			List<HFSM> hfsmList2 = state2.GetParentHFSMList();
 
-			List<HFSM> hfsm_deeper_list;
-			Dictionary<HFSM, bool> hfsm_dict = new Dictionary<HFSM, bool>();
-			if (hfsm_list1.Count > hfsm_list2.Count)
-				hfsm_deeper_list = hfsm_list1;
-			else
-				hfsm_deeper_list = hfsm_list2;
-			var hfsm_lower_list = hfsm_deeper_list == hfsm_list1 ? hfsm_list2 : hfsm_list1;
-			foreach (var hfsm in hfsm_lower_list)
-				hfsm_dict[hfsm] = true;
+			List<HFSM> hfsmDeeperList;
+			Dictionary<HFSM, bool> hfsmDict = new Dictionary<HFSM, bool>();
+			hfsmDeeperList = hfsmList1.Count > hfsmList2.Count ? hfsmList1 : hfsmList2;
+			var hfsmLowerList = hfsmDeeperList == hfsmList1 ? hfsmList2 : hfsmList1;
+			foreach (var hfsm in hfsmLowerList)
+				hfsmDict[hfsm] = true;
 
-			foreach (var hfsm in hfsm_deeper_list)
+			for (var i = 0; i < hfsmDeeperList.Count; i++)
 			{
-				if (hfsm_dict.ContainsKey(hfsm))
+				var hfsm = hfsmDeeperList[i];
+				if (hfsmDict.ContainsKey(hfsm))
 					return hfsm;
 			}
+
 			return null;
 		}
 
 
-
 		public HFSM GetRootHFSM()
 		{
-			return this.parent_hfsm.GetRootHFSM();
+			return this.parentHFSM.GetRootHFSM();
 		}
 
-		public void ChangeToState(string key, bool is_force = false, params object[] args)
+		public void ChangeToState(string key, bool isForce = false, params object[] args)
 		{
-			this.GetRootHFSM().ChangeToState(key, is_force, args);
+			this.GetRootHFSM().ChangeToState(key, isForce, args);
 		}
 
-		public void ChangeToState(HFSMState to_state, bool is_force = false, params object[] args)
+		public void ChangeToState(HFSMState toState, bool isForce = false, params object[] args)
 		{
-			this.GetRootHFSM().ChangeToState(to_state, is_force, args);
+			this.GetRootHFSM().ChangeToState(toState, isForce, args);
 		}
 
-		public void ChangeToHFSM(string key, bool is_force = false, params object[] args)
+		public void ChangeToHFSM(string key, bool isForce = false, params object[] args)
 		{
-			this.GetRootHFSM().ChangeToHFSM(key, is_force, args);
+			this.GetRootHFSM().ChangeToHFSM(key, isForce, args);
 		}
 
 		/// <summary>

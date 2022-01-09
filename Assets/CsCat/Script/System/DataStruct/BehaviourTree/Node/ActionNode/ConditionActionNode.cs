@@ -40,10 +40,7 @@ namespace CsCat
 		public override BehaviourTreeNodeStatus Update()
 		{
 			var match = ParseCondition();
-			if (match)
-				status = BehaviourTreeNodeStatus.Success;
-			else
-				status = BehaviourTreeNodeStatus.Fail;
+			status = match ? BehaviourTreeNodeStatus.Success : BehaviourTreeNodeStatus.Fail;
 			return status;
 		}
 

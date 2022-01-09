@@ -2,9 +2,9 @@ namespace CsCat
 {
 	public interface ICommandManager
 	{
-		void RegisterCommand<CommandHandleType>(string message_name);
+		void RegisterCommand<CommandHandleType>(string commandName);
 		void ExecuteCommand(ICommandMessage commandMessage);
-		void RemoveCommand(string message_name);
-		bool HasCommand(string message_name);
+		void RemoveCommand(string commandName);
+		bool HasCommand(string commandName);
 	}
 }

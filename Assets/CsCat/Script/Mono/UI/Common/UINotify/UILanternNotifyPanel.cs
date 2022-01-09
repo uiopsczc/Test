@@ -7,25 +7,19 @@ namespace CsCat
 	// 走马灯效果
 	public class UILanternNotifyPanel : UIPanel
 	{
-		public override bool is_resident
-		{
-			get { return true; }
-		}
+		public override bool isResident => true;
 
-		public override EUILayerName layerName
-		{
-			get { return EUILayerName.NotifyUILayer; }
-		}
+		public override EUILayerName layerName => EUILayerName.NotifyUILayer;
 
-		private Text desc_text;
-		private RectTransform desc_rectTransform;
-		private RectTransform mask_rectTransform;
+		private Text descText;
+		private RectTransform descRectTransform;
+		private RectTransform maskRectTransform;
 
 		private Sequence sequence;
 
-		private float move_to_center_duration = 1f;
-		private float stay_center_duration = 1f;
-		private float move_to_end_duration = 1f;
+		private float moveToCenterDuration = 1f;
+		private float stayCenterDuration = 1f;
+		private float moveToEndDuration = 1f;
 
 		public void Init(GameObject gameObject)
 		{
@@ -37,22 +31,22 @@ namespace CsCat
 		public override void InitGameObjectChildren()
 		{
 			base.InitGameObjectChildren();
-			desc_text = this.frame_transform.FindComponentInChildren<Text>("mask/desc");
-			desc_rectTransform = desc_text.GetComponent<RectTransform>();
-			mask_rectTransform = this.frame_transform.FindComponentInChildren<RectTransform>("mask");
+			descText = this.frameTransform.FindComponentInChildren<Text>("mask/desc");
+			descRectTransform = descText.GetComponent<RectTransform>();
+			maskRectTransform = this.frameTransform.FindComponentInChildren<RectTransform>("mask");
 		}
 
 		public void Show(string desc)
 		{
 			graphicComponent.SetIsShow(true);
-			desc_text.text = desc;
-			LayoutRebuilder.ForceRebuildLayoutImmediate(desc_rectTransform); //计算desc_rtf的长度
-			desc_rectTransform.SetAnchoredPositionX(mask_rectTransform.sizeDelta.x / 2 + desc_rectTransform.sizeDelta.x / 2);
+			descText.text = desc;
+			LayoutRebuilder.ForceRebuildLayoutImmediate(descRectTransform); //计算desc_rtf的长度
+			descRectTransform.SetAnchoredPositionX(maskRectTransform.sizeDelta.x / 2 + descRectTransform.sizeDelta.x / 2);
 			sequence = DOTween.Sequence();
-			sequence.Append(desc_rectTransform.DOMoveX(0, move_to_center_duration));
-			sequence.Append(desc_rectTransform.DOWait(stay_center_duration));
-			sequence.Append(desc_rectTransform.DOAnchorPosX(
-			  -mask_rectTransform.sizeDelta.x / 2 - desc_rectTransform.sizeDelta.x, move_to_end_duration));
+			sequence.Append(descRectTransform.DOMoveX(0, moveToCenterDuration));
+			sequence.Append(descRectTransform.DOWait(stayCenterDuration));
+			sequence.Append(descRectTransform.DOAnchorPosX(
+			  -maskRectTransform.sizeDelta.x / 2 - descRectTransform.sizeDelta.x, moveToEndDuration));
 			sequence.OnComplete(() => { Reset(); });
 		}
 

@@ -7,32 +7,32 @@ namespace CsCat
 	public static partial class AStarUtil
 	{
 		//是否有效障碍
-		public static bool IsValidObstacleType(int grid_type)
+		public static bool IsValidObstacleType(int gridType)
 		{
-			return (grid_type & 0xff) != AStarMapPathConst.Invalid_Obstacle_Types;
+			return (gridType & 0xff) != AStarMapPathConst.Invalid_Obstacle_Types;
 		}
 
-		public static int ToGridType(int field, int terrain_type, int obstacle_type)
+		public static int ToGridType(int field, int terrainType, int obstacleType)
 		{
-			return (field << 8) + (terrain_type << 3) + obstacle_type;
+			return (field << 8) + (terrainType << 3) + obstacleType;
 		}
 
 		// 障碍类型，取后3位, 数值范围[0,7]
-		public static int GetObstacleType(int grid_type)
+		public static int GetObstacleType(int gridType)
 		{
-			return (grid_type & 0x7);
+			return (gridType & 0x7);
 		}
 
 		// 地形类型，取后三位向前的5位 数值范围[0,31]
-		public static int GetTerrainType(int grid_type)
+		public static int GetTerrainType(int gridType)
 		{
-			return (grid_type & 0xff) >> 3;
+			return (gridType & 0xff) >> 3;
 		}
 
 		//区块编号值 ,基于grid_type的低16位移除低8位的值
-		public static int GetField(int grid_type)
+		public static int GetField(int gridType)
 		{
-			return (grid_type & 0xff00) >> 8; //>>8去掉低8位
+			return (gridType & 0xff00) >> 8; //>>8去掉低8位
 		}
 
 
@@ -69,15 +69,15 @@ namespace CsCat
 		}
 
 		//是否在相邻区块，block是基于Client_View_Width_Grid_Count，Client_View_Height_Grid_Count
-		public static bool IsNeighborBlock(int x1, int y1, Vector2Int block_point2)
+		public static bool IsNeighborBlock(int x1, int y1, Vector2Int blockPoint2)
 		{
-			return IsNeighborBlock(new Vector2Int(x1, y1), block_point2);
+			return IsNeighborBlock(new Vector2Int(x1, y1), blockPoint2);
 		}
 
 		//是否在相邻区块，block是基于Client_View_Width_Grid_Count，Client_View_Height_Grid_Count
-		public static bool IsNeighborBlock(Vector2Int block_point1, int x2, int y2)
+		public static bool IsNeighborBlock(Vector2Int blockPoint1, int x2, int y2)
 		{
-			return IsNeighborBlock(block_point1, new Vector2Int(x2, y2));
+			return IsNeighborBlock(blockPoint1, new Vector2Int(x2, y2));
 		}
 
 		//是否在相邻区块，block是基于Client_View_Width_Grid_Count，Client_View_Height_Grid_Count

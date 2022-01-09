@@ -8,32 +8,32 @@ namespace CsCat
 {
 	public partial class UIObject
 	{
-		private List<UGUIEventListener> registered_uguiEventListener_list = new List<UGUIEventListener>();
+		private List<UGUIEventListener> registeredUGUIEventListenerList = new List<UGUIEventListener>();
 
 		protected void SaveRegisteredUGUIEventListener(UGUIEventListener uguiEventListener)
 		{
-			if (registered_uguiEventListener_list.Contains(uguiEventListener))
+			if (registeredUGUIEventListenerList.Contains(uguiEventListener))
 				return;
-			registered_uguiEventListener_list.Add(uguiEventListener);
+			registeredUGUIEventListenerList.Add(uguiEventListener);
 		}
 
 		//////////////////////////////////////////////////////////////////////
 		// OnClick
 		//////////////////////////////////////////////////////////////////////
 		public Action<GameObject, PointerEventData> RegisterOnClick(Component component, Action action,
-		  string sound_path = null)
+		  string soundPath = null)
 		{
-			return RegisterOnClick(component.gameObject, action, sound_path);
+			return RegisterOnClick(component.gameObject, action, soundPath);
 		}
 
 		public Action<GameObject, PointerEventData> RegisterOnClick(GameObject gameObject, Action action,
-		  string sound_path = null)
+		  string soundPath = null)
 		{
 			Button button = gameObject.GetComponent<Button>();
 			Action<GameObject, PointerEventData> result = (go, eventData) =>
 			{
-				if (!sound_path.IsNullOrWhiteSpace())
-					Client.instance.audioManager.PlayUISound(sound_path);
+				if (!soundPath.IsNullOrWhiteSpace())
+					Client.instance.audioManager.PlayUISound(soundPath);
 				action();
 			};
 			UGUIEventListener.Get(button).onClick += result;

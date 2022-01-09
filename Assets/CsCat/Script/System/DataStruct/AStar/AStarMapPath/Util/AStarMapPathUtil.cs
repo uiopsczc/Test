@@ -76,7 +76,7 @@ namespace CsCat
 
 		//直角寻路(先横向再纵向寻路)
 		public static List<Vector2Int> BorderFindPath(AStarMapPath astarMapPath, Vector2Int pointA, Vector2Int pointB,
-			int[] can_pass_obstacle_types, int[] can_pass_terrain_types)
+			int[] canPassObstacleTypes, int[] canPassTerrainTypes)
 		{
 			if (!AStarUtil.IsInRange(astarMapPath.GetFinalGrids(), pointA) ||
 				!AStarUtil.IsInRange(astarMapPath.GetFinalGrids(), pointB))
@@ -86,7 +86,7 @@ namespace CsCat
 			for (int x = pointA.x + dv; x * dv <= pointB.x * dv; x += dv)
 			{
 				//      LogCat.log(x, point_a.y);
-				if (!AStarUtil.CanPass(astarMapPath, x, pointA.y, can_pass_obstacle_types, can_pass_terrain_types))
+				if (!AStarUtil.CanPass(astarMapPath, x, pointA.y, canPassObstacleTypes, canPassTerrainTypes))
 					return null;
 				list.Add(new Vector2Int(x, pointA.y));
 			}
@@ -94,7 +94,7 @@ namespace CsCat
 			dv = pointB.y > pointA.y ? 1 : -1;
 			for (int y = pointA.y + dv; y * dv < pointB.y * dv; y += dv)
 			{
-				if (!AStarUtil.CanPass(astarMapPath, pointB.x, y, can_pass_obstacle_types, can_pass_terrain_types))
+				if (!AStarUtil.CanPass(astarMapPath, pointB.x, y, canPassObstacleTypes, canPassTerrainTypes))
 					return null;
 				list.Add(new Vector2Int(pointB.x, y));
 			}

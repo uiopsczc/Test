@@ -13,14 +13,7 @@ namespace CsCat
 
 		private MonoBehaviourCache _monoBehaviourCache;
 
-		public MonoBehaviourCache monoBehaviourCache
-		{
-			get
-			{
-				if (_monoBehaviourCache == null) _monoBehaviourCache = new MonoBehaviourCache(this);
-				return _monoBehaviourCache;
-			}
-		}
+		public MonoBehaviourCache monoBehaviourCache => _monoBehaviourCache ?? (_monoBehaviourCache = new MonoBehaviourCache(this));
 
 		#endregion
 	}

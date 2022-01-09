@@ -8,7 +8,7 @@ namespace CsCat
 	public class UILayer : UIObject
 	{
 		public UILayerConfig uiLayerConfig;
-		public List<object> panel_list = new List<object>();
+		public List<object> panelList = new List<object>();
 
 		public void Init(GameObject gameObject, UILayerConfig uiLayerConfig)
 		{
@@ -27,74 +27,73 @@ namespace CsCat
 		}
 
 
-
 		public override void Refresh()
 		{
 			base.Refresh();
-			for (var i = 0; i < panel_list.Count; i++)
+			for (var i = 0; i < panelList.Count; i++)
 			{
-				object panel = panel_list[i];
-				int sortingOrder = uiLayerConfig.order_in_layer + (i + 1) * UILayerConst.Order_Per_Panel;
+				object panel = panelList[i];
+				int sortingOrder = uiLayerConfig.orderInLayer + (i + 1) * UILayerConst.Order_Per_Panel;
 
 				if (panel is UIPanel uiPanel)
 				{
 					uiPanel.sortingOrder = sortingOrder;
 
 					if (uiLayerConfig.uiLayerRule.IsHideLowerOrderUI())
-						uiPanel.graphicComponent.SetIsShow(i == panel_list.Count - 1);
-
+						uiPanel.graphicComponent.SetIsShow(i == panelList.Count - 1);
 				}
-				else//lua UIPanel
+				else //lua UIPanel
 				{
-					LuaTable panel_luaTable = (LuaTable)panel;
-					panel_luaTable.InvokeAction("SetSortingOrder", sortingOrder);
+					LuaTable panelLuaTable = (LuaTable) panel;
+					panelLuaTable.InvokeAction("SetSortingOrder", sortingOrder);
 
 					if (uiLayerConfig.uiLayerRule.IsHideLowerOrderUI())
-						panel_luaTable.InvokeAction("graphicComponent.SetIsShow", i == panel_list.Count - 1);
+						panelLuaTable.InvokeAction("graphicComponent.SetIsShow", i == panelList.Count - 1);
 				}
 			}
 
 
 			if (uiLayerConfig.uiLayerRule.IsHideBackgroundUILayer())
-				this.Broadcast(null, UIEventNameConst.SetIsHideUILayer, EUILayerName.BackgroundUILayer, panel_list.Count > 0);
+				this.Broadcast(null, UIEventNameConst.SetIsHideUILayer, EUILayerName.BackgroundUILayer,
+					panelList.Count > 0);
 			if (uiLayerConfig.uiLayerRule.IsHideFrontUILayer())
-				this.Broadcast(null, UIEventNameConst.SetIsHideUILayer, EUILayerName.FrontUILayer, panel_list.Count > 0);
-			if (uiLayerConfig.uiLayerRule.IsAddBlackMaskBehide())
-				HandleLayerAddBlackMaskBehide();
+				this.Broadcast(null, UIEventNameConst.SetIsHideUILayer, EUILayerName.FrontUILayer, panelList.Count > 0);
+			if (uiLayerConfig.uiLayerRule.IsAddBlackMaskBehind())
+				HandleLayerAddBlackMaskBehind();
 		}
 
 		public void RemovePanel(object panel)
 		{
-			var index = this.panel_list.IndexOf(panel);
+			var index = this.panelList.IndexOf(panel);
 			if (index == -1)
 				return;
-			this.panel_list.RemoveAt(index);
+			this.panelList.RemoveAt(index);
 			Refresh();
 		}
 
 		public void AddPanel(object panel)
 		{
-			panel_list.Add(panel);
+			panelList.Add(panel);
 			Refresh();
 		}
 
-		public void SetPanelIndex(object panel, int new_index)
+		public void SetPanelIndex(object panel, int newIndex)
 		{
-			var index = this.panel_list.IndexOf(panel);
-			if (index == -1 || index == new_index)
+			var index = this.panelList.IndexOf(panel);
+			if (index == -1 || index == newIndex)
 				return;
-			this.panel_list.Insert(new_index, panel);
-			if (index < new_index)
-				this.panel_list.RemoveAt(index);
+			this.panelList.Insert(newIndex, panel);
+			if (index < newIndex)
+				this.panelList.RemoveAt(index);
 			else
-				this.panel_list.RemoveAt(index + 1);
+				this.panelList.RemoveAt(index + 1);
 			Refresh();
 		}
 
 		public void SetPanelToTop(object panel)
 		{
-			var top_index = panel_list.Count;
-			SetPanelIndex(panel, top_index);
+			var topIndex = panelList.Count;
+			SetPanelIndex(panel, topIndex);
 		}
 
 		public void SetPanelToBottom(object panel)
@@ -103,35 +102,35 @@ namespace CsCat
 		}
 
 
-		void HandleLayerAddBlackMaskBehide()
+		void HandleLayerAddBlackMaskBehind()
 		{
-			object target_panel = null;
-			int target_panel_sorttingOrder = 0;
+			object targetPanel = null;
+			int targetPanelSortingOrder = 0;
 			for (int i = EnumUtil.GetCount<EUILayerName>() - 1; i >= 0; i--)
 			{
-				EUILayerName uiLayerName = (EUILayerName)i;
+				EUILayerName uiLayerName = (EUILayerName) i;
 				var uiLayer = Client.instance.uiManager.uiLayerManager.GetUILayer(uiLayerName);
-				if (uiLayer.graphicComponent.IsShow() && uiLayer.uiLayerConfig.uiLayerRule.IsAddBlackMaskBehide())
+				if (uiLayer.graphicComponent.IsShow() && uiLayer.uiLayerConfig.uiLayerRule.IsAddBlackMaskBehind())
 				{
-					for (int j = uiLayer.panel_list.Count - 1; j >= 0; j--)
+					for (int j = uiLayer.panelList.Count - 1; j >= 0; j--)
 					{
-						var panel = uiLayer.panel_list[j];
-						if (panel is UIPanel ui_panel)
+						var panel = uiLayer.panelList[j];
+						if (panel is UIPanel uiPanel)
 						{
-							if (!ui_panel.is_hide_blackMaskBehide)
+							if (!uiPanel.isHideBlackMaskBehind)
 							{
-								target_panel = ui_panel;
-								target_panel_sorttingOrder = ui_panel.sortingOrder;
+								targetPanel = uiPanel;
+								targetPanelSortingOrder = uiPanel.sortingOrder;
 								break;
 							}
 						}
 						else
 						{
-							LuaTable panel_luaTable = (LuaTable)panel;
-							if (!panel_luaTable.InvokeFunc<bool>("IsHideBlackMaskBehide"))
+							LuaTable panelLuaTable = (LuaTable) panel;
+							if (!panelLuaTable.InvokeFunc<bool>("IsHideBlackMaskBehind"))
 							{
-								target_panel = panel;
-								target_panel_sorttingOrder = panel_luaTable.InvokeFunc<int>("GetSortingOrder");
+								targetPanel = panel;
+								targetPanelSortingOrder = panelLuaTable.InvokeFunc<int>("GetSortingOrder");
 								break;
 							}
 						}
@@ -139,15 +138,10 @@ namespace CsCat
 				}
 			}
 
-			if (target_panel == null)
+			if (targetPanel == null)
 				this.Broadcast(null, UIEventNameConst.HideUIBlackMask);
 			else
-				this.Broadcast(null, UIEventNameConst.ShowUIBlackMask, target_panel_sorttingOrder, target_panel);
+				this.Broadcast(null, UIEventNameConst.ShowUIBlackMask, targetPanelSortingOrder, targetPanel);
 		}
-
-
-
-
-
 	}
 }

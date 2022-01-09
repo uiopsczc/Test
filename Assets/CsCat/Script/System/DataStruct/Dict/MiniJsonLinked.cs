@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections;
 using System.Globalization;
@@ -112,7 +111,6 @@ namespace CsCat
 				}
 				else
 				{
-
 					// name
 					string name = ParseString(json, ref index, ref success);
 					if (!success)
@@ -230,7 +228,6 @@ namespace CsCat
 			bool complete = false;
 			while (!complete)
 			{
-
 				if (index == json.Length)
 				{
 					break;
@@ -244,7 +241,6 @@ namespace CsCat
 				}
 				else if (c == '\\')
 				{
-
 					if (index == json.Length)
 					{
 						break;
@@ -291,13 +287,13 @@ namespace CsCat
 							// parse the 32 bit hex into an integer codepoint
 							uint codePoint;
 							if (!(success = UInt32.TryParse(new string(json, index, 4), NumberStyles.HexNumber,
-							  CultureInfo.InvariantCulture, out codePoint)))
+								CultureInfo.InvariantCulture, out codePoint)))
 							{
 								return "";
 							}
 
 							// convert the integer codepoint to a unicode char and add to string
-							s.Append(Char.ConvertFromUtf32((int)codePoint));
+							s.Append(Char.ConvertFromUtf32((int) codePoint));
 							// skip 4 chars
 							index += 4;
 						}
@@ -306,13 +302,11 @@ namespace CsCat
 							break;
 						}
 					}
-
 				}
 				else
 				{
 					s.Append(c);
 				}
-
 			}
 
 			if (!complete)
@@ -332,8 +326,9 @@ namespace CsCat
 			int charLength = (lastIndex - index) + 1;
 
 			double number;
-			success = Double.TryParse(new string(json, index, charLength), NumberStyles.Any, CultureInfo.InvariantCulture,
-			  out number);
+			success = Double.TryParse(new string(json, index, charLength), NumberStyles.Any,
+				CultureInfo.InvariantCulture,
+				out number);
 
 			index = lastIndex + 1;
 			return number;
@@ -420,10 +415,10 @@ namespace CsCat
 			if (remainingLength >= 5)
 			{
 				if (json[index] == 'f' &&
-					json[index + 1] == 'a' &&
-					json[index + 2] == 'l' &&
-					json[index + 3] == 's' &&
-					json[index + 4] == 'e')
+				    json[index + 1] == 'a' &&
+				    json[index + 2] == 'l' &&
+				    json[index + 3] == 's' &&
+				    json[index + 4] == 'e')
 				{
 					index += 5;
 					return MiniJsonLinked.TOKEN_FALSE;
@@ -434,9 +429,9 @@ namespace CsCat
 			if (remainingLength >= 4)
 			{
 				if (json[index] == 't' &&
-					json[index + 1] == 'r' &&
-					json[index + 2] == 'u' &&
-					json[index + 3] == 'e')
+				    json[index + 1] == 'r' &&
+				    json[index + 2] == 'u' &&
+				    json[index + 3] == 'e')
 				{
 					index += 4;
 					return MiniJsonLinked.TOKEN_TRUE;
@@ -447,9 +442,9 @@ namespace CsCat
 			if (remainingLength >= 4)
 			{
 				if (json[index] == 'n' &&
-					json[index + 1] == 'u' &&
-					json[index + 2] == 'l' &&
-					json[index + 3] == 'l')
+				    json[index + 1] == 'u' &&
+				    json[index + 2] == 'l' &&
+				    json[index + 3] == 'l')
 				{
 					index += 4;
 					return MiniJsonLinked.TOKEN_NULL;
@@ -465,25 +460,25 @@ namespace CsCat
 
 			if (value is string)
 			{
-				success = SerializeString((string)value, builder);
+				success = SerializeString((string) value, builder);
 			}
 			else if (value is LinkedHashtable)
 			{
-				success = SerializeObject((LinkedHashtable)value, builder);
+				success = SerializeObject((LinkedHashtable) value, builder);
 			}
 			else if (value is IGetLinkedHashtable)
 			{
-				success = SerializeObject(((IGetLinkedHashtable)value).GetLinkedHashtable(), builder);
+				success = SerializeObject(((IGetLinkedHashtable) value).GetLinkedHashtable(), builder);
 			}
 			else if (value is ArrayList)
 			{
-				success = SerializeArray((ArrayList)value, builder);
+				success = SerializeArray((ArrayList) value, builder);
 			}
-			else if ((value is Boolean) && ((Boolean)value == true))
+			else if ((value is Boolean) && ((Boolean) value == true))
 			{
 				builder.Append("true");
 			}
-			else if ((value is Boolean) && ((Boolean)value == false))
+			else if ((value is Boolean) && ((Boolean) value == false))
 			{
 				builder.Append("false");
 			}
@@ -623,10 +618,5 @@ namespace CsCat
 		#endregion
 
 		#endregion
-
-
-
 	}
 }
-
-

@@ -5,20 +5,20 @@ namespace CsCat
 {
 	public partial class UINotifyManager
 	{
-		private Dictionary<string, bool> uiNotifyPanel_dict = new Dictionary<string, bool>();
+		private Dictionary<string, bool> uiNotifyPanelDict = new Dictionary<string, bool>();
 
-		public void Notify(string desc, Transform parent = null, bool is_add_to_child_panel_stack = false)
+		public void Notify(string desc, Transform parent = null, bool isAddToChildPanelStack = false)
 		{
 			PreNotify();
 			UINotifyPanel panel = Client.instance.uiManager.CreateChildPanel(null, default(UINotifyPanel), parent,
-			  is_add_to_child_panel_stack, desc);
-			uiNotifyPanel_dict[panel.key] = true;
-			panel.destroyCallback += () => { uiNotifyPanel_dict.Remove(panel.key); };
+			  isAddToChildPanelStack, desc);
+			uiNotifyPanelDict[panel.key] = true;
+			panel.destroyCallback += () => { uiNotifyPanelDict.Remove(panel.key); };
 		}
 
 		public void PreNotify()
 		{
-			foreach (string key in uiNotifyPanel_dict.Keys)
+			foreach (string key in uiNotifyPanelDict.Keys)
 			{
 				UINotifyPanel panel = Client.instance.uiManager.GetChildPanel<UINotifyPanel>(key);
 				panel.Rise();

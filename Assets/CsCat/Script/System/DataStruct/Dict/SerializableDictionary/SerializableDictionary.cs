@@ -20,9 +20,9 @@ namespace CsCat
 
 		public void OnAfterDeserialize()
 		{
-			var c = keys.Length;
-			dict = new Dictionary<TKey, TValue>(c);
-			for (int i = 0; i < c; i++)
+			var length = keys.Length;
+			dict = new Dictionary<TKey, TValue>(length);
+			for (int i = 0; i < length; i++)
 			{
 				dict[keys[i]] = values[i];
 			}
@@ -49,26 +49,17 @@ namespace CsCat
 
 
 		/////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-		public int Count
-		{
-			get { return this.dict.Count; }
-		}
+		public int Count => this.dict.Count;
 
-		public Dictionary<TKey, TValue>.KeyCollection Keys
-		{
-			get { return this.dict.Keys; }
-		}
+		public Dictionary<TKey, TValue>.KeyCollection Keys => this.dict.Keys;
 
-		public Dictionary<TKey, TValue>.ValueCollection Values
-		{
-			get { return this.dict.Values; }
-		}
+		public Dictionary<TKey, TValue>.ValueCollection Values => this.dict.Values;
 
 
 		public TValue this[TKey key]
 		{
-			get { return this.dict[key]; }
-			set { this.dict[key] = value; }
+			get => this.dict[key];
+			set => this.dict[key] = value;
 		}
 
 		public void Add(TKey key, TValue value)

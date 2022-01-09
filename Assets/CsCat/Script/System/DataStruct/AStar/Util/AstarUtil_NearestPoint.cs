@@ -6,87 +6,87 @@ namespace CsCat
 	public static partial class AStarUtil
 	{
 		//获取离a,b最近的点
-		public static Vector2Int GetNearestPoint(AStarMapPath astarMapPath, Vector2Int point_a, Vector2Int point_b,
-		  int[] can_pass_obstacle_types, int[] can_pass_terrain_types)
+		public static Vector2Int GetNearestPoint(AStarMapPath astarMapPath, Vector2Int pointA, Vector2Int pointB,
+		  int[] canPassObstacleTypes, int[] canPassTerrainTypes)
 		{
-			Vector2Int p = point_a;
+			Vector2Int p = pointA;
 			do
 			{
-				if (!p.Equals(point_a))
-					point_a = p;
-				p = GetNearestNearbyPoint(astarMapPath, point_a, point_b, can_pass_obstacle_types, can_pass_terrain_types);
-			} while (!p.Equals(point_a));
+				if (!p.Equals(pointA))
+					pointA = p;
+				p = GetNearestNearbyPoint(astarMapPath, pointA, pointB, canPassObstacleTypes, canPassTerrainTypes);
+			} while (!p.Equals(pointA));
 
 			return p;
 		}
 
-		private static Vector2Int GetNearestNearbyPoint(AStarMapPath astarMapPath, Vector2Int point_a, Vector2Int point_b,
-		  int[] can_pass_obstacle_types,
-		  int[] can_pass_terrain_types)
+		private static Vector2Int GetNearestNearbyPoint(AStarMapPath astarMapPath, Vector2Int pointA, Vector2Int pointB,
+		  int[] canPassObstacleTypes,
+		  int[] canPassTerrainTypes)
 		{
-			int dx = point_b.x > point_a.x ? 1 : point_b.x < point_a.x ? -1 : 0;
-			int dy = point_b.y > point_a.y ? 1 : point_b.y < point_a.y ? -1 : 0;
+			int dx = pointB.x > pointA.x ? 1 : pointB.x < pointA.x ? -1 : 0;
+			int dy = pointB.y > pointA.y ? 1 : pointB.y < pointA.y ? -1 : 0;
 
-			int min_distance = GetMapDistance(point_a, point_b);
-			Vector2Int min_point = point_a;
+			int minDistance = GetMapDistance(pointA, pointB);
+			Vector2Int minPoint = pointA;
 			int x, y;
 
-			x = point_a.x + dx;
-			y = point_a.y;
+			x = pointA.x + dx;
+			y = pointA.y;
 			bool s1 = false;
 			if (IsInRange(astarMapPath.GetFinalGrids(), x, y))
 			{
 				Vector2Int p = new Vector2Int(x, y);
-				if (CanPass(astarMapPath, x, y, can_pass_obstacle_types, can_pass_terrain_types))
+				if (CanPass(astarMapPath, x, y, canPassObstacleTypes, canPassTerrainTypes))
 				{
 					s1 = true;
-					int d = GetMapDistance(p, point_b);
-					if (d < min_distance)
+					int d = GetMapDistance(p, pointB);
+					if (d < minDistance)
 					{
-						min_point = p;
-						min_distance = d;
+						minPoint = p;
+						minDistance = d;
 					}
 				}
 			}
 
-			x = point_a.x;
-			y = point_a.y + dy;
+			x = pointA.x;
+			y = pointA.y + dy;
 			bool s2 = false;
 			if (IsInRange(astarMapPath.GetFinalGrids(), x, y))
 			{
 				Vector2Int p = new Vector2Int(x, y);
-				if (CanPass(astarMapPath, x, y, can_pass_obstacle_types, can_pass_terrain_types))
+				if (CanPass(astarMapPath, x, y, canPassObstacleTypes, canPassTerrainTypes))
 				{
 					s2 = true;
-					int d = GetMapDistance(p, point_b);
-					if (d < min_distance)
+					int d = GetMapDistance(p, pointB);
+					if (d < minDistance)
 					{
-						min_point = p;
-						min_distance = d;
+						minPoint = p;
+						minDistance = d;
 					}
 				}
 			}
 
 			if (s1 || s2)
 			{
-				x = point_a.x + dx;
-				y = point_a.y + dy;
+				x = pointA.x + dx;
+				y = pointA.y + dy;
 				if (IsInRange(astarMapPath.GetFinalGrids(), x, y))
 				{
 					Vector2Int p = new Vector2Int(x, y);
-					if (CanPass(astarMapPath, x, y, can_pass_obstacle_types, can_pass_terrain_types))
+					if (CanPass(astarMapPath, x, y, canPassObstacleTypes, canPassTerrainTypes))
 					{
-						int d = GetMapDistance(p, point_b);
-						if (d < min_distance)
+						int d = GetMapDistance(p, pointB);
+						if (d < minDistance)
 						{
-							min_point = p;
-							min_distance = d;
+							minPoint = p;
+							minDistance = d;
 						}
 					}
 				}
 			}
 
-			return min_point;
+			return minPoint;
 		}
 
 

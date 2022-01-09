@@ -6,6 +6,6 @@ namespace CsCat
 		Hide_BackgroundUILayer = 1 << 0,
 		Hide_FrontUILayer = 1 << 1,
 		Hide_LowerOrderUI = 1 << 2,
-		Add_BlackMaskBehide = 1 << 3,
+		Add_BlackMaskBehind = 1 << 3,
 	}
 }

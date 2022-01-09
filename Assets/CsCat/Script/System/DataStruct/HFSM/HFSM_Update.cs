@@ -17,8 +17,8 @@ namespace CsCat
 			_Update(deltaTime, unscaledDeltaTime);
 			foreach (var component in ForeachComponent())
 				component.Update(deltaTime, unscaledDeltaTime);
-			current_sub_direct_state?.Update(deltaTime, unscaledDeltaTime);
-			current_sub_direct_hfsm?.Update(deltaTime, unscaledDeltaTime);
+			currentSubDirectState?.Update(deltaTime, unscaledDeltaTime);
+			currentSubDirectHFSM?.Update(deltaTime, unscaledDeltaTime);
 		}
 
 		public override void FixedUpdate(float deltaTime = 0, float unscaledDeltaTime = 0)
@@ -27,8 +27,8 @@ namespace CsCat
 			_FixedUpdate(deltaTime, unscaledDeltaTime);
 			foreach (var component in ForeachComponent())
 				component.FixedUpdate(deltaTime, unscaledDeltaTime);
-			current_sub_direct_state?.FixedUpdate(deltaTime, unscaledDeltaTime);
-			current_sub_direct_hfsm?.FixedUpdate(deltaTime, unscaledDeltaTime);
+			currentSubDirectState?.FixedUpdate(deltaTime, unscaledDeltaTime);
+			currentSubDirectHFSM?.FixedUpdate(deltaTime, unscaledDeltaTime);
 		}
 
 
@@ -38,8 +38,8 @@ namespace CsCat
 			_LateUpdate(deltaTime, unscaledDeltaTime);
 			foreach (var component in ForeachComponent())
 				component.LateUpdate(deltaTime, unscaledDeltaTime);
-			current_sub_direct_state?.LateUpdate(deltaTime, unscaledDeltaTime);
-			current_sub_direct_hfsm?.LateUpdate(deltaTime, unscaledDeltaTime);
+			currentSubDirectState?.LateUpdate(deltaTime, unscaledDeltaTime);
+			currentSubDirectHFSM?.LateUpdate(deltaTime, unscaledDeltaTime);
 		}
 	}
 }

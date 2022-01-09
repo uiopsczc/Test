@@ -258,7 +258,7 @@ namespace CsCat
 
 									var excelValue = new ExcelValue();
 									excelValue.value = sCellValue;
-									excelValueList.value_list.Add(excelValue);
+									excelValueList.valueList.Add(excelValue);
 								}
 
 								//多语言表处理,对没有翻译的key不用写asset中，以减少数据
@@ -268,7 +268,7 @@ namespace CsCat
 										removeList.Add(id);
 								}
 
-								if (excelValueList.value_list.Count > 0)
+								if (excelValueList.valueList.Count > 0)
 								{
 									linkedDictionary[id] = excelValueList;
 								}

@@ -8,15 +8,9 @@ namespace CsCat
 {
 	public partial class UIObject : GameEntity
 	{
-		public UIObject parent_uiObject
-		{
-			get { return cache.GetOrAddDefault("parent_uiObject", () => parent as UIObject); }
-		}
+		public UIObject parentUIObject => cache.GetOrAddDefault("parent_uiObject", () => parent as UIObject);
 
-		public UIPanel parent_uiPanel
-		{
-			get { return cache.GetOrAddDefault("parent_uiPanel", () => parent as UIPanel); }
-		}
+		public UIPanel parentUIPanel => cache.GetOrAddDefault("parent_uiPanel", () => parent as UIPanel);
 
 		protected override GraphicComponent CreateGraphicComponent()
 		{
@@ -25,11 +19,11 @@ namespace CsCat
 
 		public virtual void Open()
 		{
-			this.AddUntiyEvnts();
+			this.AddUnityEvents();
 			this.AddGameEvents();
 		}
 
-		protected virtual void AddUntiyEvnts()
+		protected virtual void AddUnityEvents()
 		{
 		}
 		protected virtual void AddGameEvents()
@@ -37,29 +31,29 @@ namespace CsCat
 		}
 
 
-		public void SetImageAsync(Image image, string asset_path, Action<Image> callbak = null,
-		  bool is_setNativeSize = true)
+		public void SetImageAsync(Image image, string assetPath, Action<Image> callbak = null,
+		  bool isSetNativeSize = true)
 		{
-			resLoadComponent.GetOrLoadAsset(asset_path.GetMainAssetPath(), (assetCat) =>
+			resLoadComponent.GetOrLoadAsset(assetPath.GetMainAssetPath(), (assetCat) =>
 			{
 				if (image == null)
 					return;
-				image.sprite = assetCat.Get<Sprite>(asset_path.GetSubAssetPath());
-				if (is_setNativeSize)
+				image.sprite = assetCat.Get<Sprite>(assetPath.GetSubAssetPath());
+				if (isSetNativeSize)
 					image.SetNativeSize();
 				callbak?.Invoke(image);
 			}, null, null, this);
 		}
 
-		public void SetRawImageAsync(RawImage image, string asset_path, Action<RawImage> callbak = null,
-		  bool is_setNativeSize = true)
+		public void SetRawImageAsync(RawImage image, string assetPath, Action<RawImage> callbak = null,
+		  bool isSetNativeSize = true)
 		{
-			resLoadComponent.GetOrLoadAsset(asset_path, (assetCat) =>
+			resLoadComponent.GetOrLoadAsset(assetPath, (assetCat) =>
 			{
 				if (image == null)
 					return;
-				image.texture = assetCat.Get<Texture>(asset_path.GetSubAssetPath());
-				if (is_setNativeSize)
+				image.texture = assetCat.Get<Texture>(assetPath.GetSubAssetPath());
+				if (isSetNativeSize)
 					image.SetNativeSize();
 				callbak?.Invoke(image);
 			}, null, null, this);
@@ -70,17 +64,25 @@ namespace CsCat
 		protected override void _Reset()
 		{
 			base._Reset();
-			foreach (var uguiEventListener in registered_uguiEventListener_list)
+			for (var i = 0; i < registeredUGUIEventListenerList.Count; i++)
+			{
+				var uguiEventListener = registeredUGUIEventListenerList[i];
 				uguiEventListener.Destroy();
-			registered_uguiEventListener_list.Clear();
+			}
+
+			registeredUGUIEventListenerList.Clear();
 		}
 
 		protected override void _Destroy()
 		{
 			base._Destroy();
-			foreach (var uguiEventListener in registered_uguiEventListener_list)
+			for (var i = 0; i < registeredUGUIEventListenerList.Count; i++)
+			{
+				var uguiEventListener = registeredUGUIEventListenerList[i];
 				uguiEventListener.Destroy();
-			registered_uguiEventListener_list.Clear();
+			}
+
+			registeredUGUIEventListenerList.Clear();
 		}
 	}
 }

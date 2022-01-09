@@ -5,16 +5,16 @@ namespace CsCat
 	public partial class UIGuidePanelBase : UIPopUpPanel
 	{
 
-		private GameObject bg_prefab;
-		private GameObject dialog_right_prefab;
-		private GameObject dialog_left_prefab;
-		private GameObject finger_prefab;
-		private GameObject arrow_prefab;
-		private GameObject desc_prefab;
+		private GameObject bgPrefab;
+		private GameObject dialogRightPrefab;
+		private GameObject dialogLeftPrefab;
+		private GameObject fingerPrefab;
+		private GameObject arrowPrefab;
+		private GameObject descPrefab;
 
 		public UIGuidePanelBase.BgItem bgItem;
 
-		public override bool is_hide_blackMaskBehide { get => true; }
+		public override bool isHideBlackMaskBehind => true;
 
 		public override void Init()
 		{
@@ -25,47 +25,47 @@ namespace CsCat
 		public override void InitGameObjectChildren()
 		{
 			base.InitGameObjectChildren();
-			bg_prefab = this.frame_transform.Find("bg").gameObject;
-			dialog_right_prefab = this.frame_transform.Find("dialog_right").gameObject;
-			dialog_left_prefab = this.frame_transform.Find("dialog_left").gameObject;
-			finger_prefab = this.frame_transform.Find("finger").gameObject;
-			arrow_prefab = this.frame_transform.Find("arrow").gameObject;
-			desc_prefab = this.frame_transform.Find("desc").gameObject;
+			bgPrefab = this.frameTransform.Find("bg").gameObject;
+			dialogRightPrefab = this.frameTransform.Find("dialog_right").gameObject;
+			dialogLeftPrefab = this.frameTransform.Find("dialog_left").gameObject;
+			fingerPrefab = this.frameTransform.Find("finger").gameObject;
+			arrowPrefab = this.frameTransform.Find("arrow").gameObject;
+			descPrefab = this.frameTransform.Find("desc").gameObject;
 
-			bgItem = this.AddChild<UIGuidePanelBase.BgItem>(null, bg_prefab);
+			bgItem = this.AddChild<UIGuidePanelBase.BgItem>(null, bgPrefab);
 		}
 
 		public UIGuidePanelBase.DialogItem CreateDialogLeftItem()
 		{
-			GameObject clone = GameObject.Instantiate(dialog_left_prefab, graphicComponent.transform);
+			GameObject clone = GameObject.Instantiate(dialogLeftPrefab, graphicComponent.transform);
 			clone.SetActive(true);
 			return this.AddChild<UIGuidePanelBase.DialogItem>(null, clone);
 		}
 
 		public UIGuidePanelBase.DialogItem CreateDialogRightItem()
 		{
-			GameObject clone = GameObject.Instantiate(dialog_right_prefab, graphicComponent.transform);
+			GameObject clone = GameObject.Instantiate(dialogRightPrefab, graphicComponent.transform);
 			clone.SetActive(true);
 			return this.AddChild<UIGuidePanelBase.DialogItem>(null, clone);
 		}
 
 		public UIGuidePanelBase.FingerItem CreateFingerItem()
 		{
-			GameObject clone = GameObject.Instantiate(finger_prefab, graphicComponent.transform);
+			GameObject clone = GameObject.Instantiate(fingerPrefab, graphicComponent.transform);
 			clone.SetActive(true);
 			return this.AddChild<UIGuidePanelBase.FingerItem>(null, clone);
 		}
 
 		public UIGuidePanelBase.ArrowItem CreateArrowItem()
 		{
-			GameObject clone = GameObject.Instantiate(arrow_prefab, graphicComponent.transform);
+			GameObject clone = GameObject.Instantiate(arrowPrefab, graphicComponent.transform);
 			clone.SetActive(true);
 			return this.AddChild<UIGuidePanelBase.ArrowItem>(null, clone);
 		}
 
 		public UIGuidePanelBase.DescItem CreateDescItem()
 		{
-			GameObject clone = GameObject.Instantiate(desc_prefab, graphicComponent.transform);
+			GameObject clone = GameObject.Instantiate(descPrefab, graphicComponent.transform);
 			clone.SetActive(true);
 			return this.AddChild<UIGuidePanelBase.DescItem>(null, clone);
 		}

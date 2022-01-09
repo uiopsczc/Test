@@ -6,10 +6,7 @@ namespace CsCat
 
 		public override BehaviourTreeNodeStatus Update()
 		{
-			if (status == BehaviourTreeNodeStatus.WaitingToRun)
-				status = Enter();
-			else
-				status = Execute();
+			status = status == BehaviourTreeNodeStatus.WaitingToRun ? Enter() : Execute();
 
 			if (status != BehaviourTreeNodeStatus.Running)
 				Exit();

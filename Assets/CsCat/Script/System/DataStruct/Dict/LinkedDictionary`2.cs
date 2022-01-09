@@ -79,16 +79,23 @@ namespace CsCat
 		{
 			_keyList.QuickSort(compareFunc);
 			_valueList.Clear();
-			foreach (var key in _keyList)
+			for (var i = 0; i < _keyList.Count; i++)
+			{
+				var key = _keyList[i];
 				_valueList.Add(this[key]);
+			}
 		}
 
 
 		public LinkedHashtable GetLinkedHashtable()
 		{
 			table.Clear();
-			foreach (var key in Keys)
+			for (var i = 0; i < Keys.Count; i++)
+			{
+				var key = Keys[i];
 				table[key] = this[key];
+			}
+
 			return table;
 		}
 	}

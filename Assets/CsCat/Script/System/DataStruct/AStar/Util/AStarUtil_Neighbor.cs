@@ -6,54 +6,54 @@ namespace CsCat
 	//坐标是x增加是向右，y增加是向上（与unity的坐标系一致），数组用ToLeftBottomBaseArrays转换
 	public static partial class AStarUtil
 	{
-		public static List<Vector2Int> GetNeighborList(Vector2Int base_point)
+		public static List<Vector2Int> GetNeighborList(Vector2Int basePoint)
 		{
-			List<Vector2Int> neighbor_list = new List<Vector2Int>();
-			neighbor_list.Add(new Vector2Int(base_point.x - 1, base_point.y + 1)); // 增加左上角邻居节点
-			neighbor_list.Add(new Vector2Int(base_point.x - 1, base_point.y)); // 增加左侧邻居节点
-			neighbor_list.Add(new Vector2Int(base_point.x - 1, base_point.y - 1)); // 增加左下角的邻居节点
-			neighbor_list.Add(new Vector2Int(base_point.x, base_point.y + 1)); // 增加上方邻居节点
-			neighbor_list.Add(new Vector2Int(base_point.x, base_point.y - 1)); // 增加下方邻居节点
-			neighbor_list.Add(new Vector2Int(base_point.x + 1, base_point.y + 1)); // 增加右上角邻居节点
-			neighbor_list.Add(new Vector2Int(base_point.x + 1, base_point.y)); // 增加右侧邻居节点
-			neighbor_list.Add(new Vector2Int(base_point.x + 1, base_point.y - 1)); // 增加右下角邻居节点
-			return neighbor_list;
+			List<Vector2Int> neighborList = new List<Vector2Int>();
+			neighborList.Add(new Vector2Int(basePoint.x - 1, basePoint.y + 1)); // 增加左上角邻居节点
+			neighborList.Add(new Vector2Int(basePoint.x - 1, basePoint.y)); // 增加左侧邻居节点
+			neighborList.Add(new Vector2Int(basePoint.x - 1, basePoint.y - 1)); // 增加左下角的邻居节点
+			neighborList.Add(new Vector2Int(basePoint.x, basePoint.y + 1)); // 增加上方邻居节点
+			neighborList.Add(new Vector2Int(basePoint.x, basePoint.y - 1)); // 增加下方邻居节点
+			neighborList.Add(new Vector2Int(basePoint.x + 1, basePoint.y + 1)); // 增加右上角邻居节点
+			neighborList.Add(new Vector2Int(basePoint.x + 1, basePoint.y)); // 增加右侧邻居节点
+			neighborList.Add(new Vector2Int(basePoint.x + 1, basePoint.y - 1)); // 增加右下角邻居节点
+			return neighborList;
 		}
 
-		public static List<Vector2Int> GetLeftTopNeighborList(Vector2Int base_point)
+		public static List<Vector2Int> GetLeftTopNeighborList(Vector2Int basePoint)
 		{
-			List<Vector2Int> neighbor_list = new List<Vector2Int>();
-			neighbor_list.Add(new Vector2Int(base_point.x - 1, base_point.y + 1)); // 增加左上角邻居节点
-			neighbor_list.Add(new Vector2Int(base_point.x - 1, base_point.y)); // 增加左侧邻居节点
-			neighbor_list.Add(new Vector2Int(base_point.x, base_point.y + 1)); // 增加上方邻居节点
-			return neighbor_list;
+			List<Vector2Int> neighborList = new List<Vector2Int>();
+			neighborList.Add(new Vector2Int(basePoint.x - 1, basePoint.y + 1)); // 增加左上角邻居节点
+			neighborList.Add(new Vector2Int(basePoint.x - 1, basePoint.y)); // 增加左侧邻居节点
+			neighborList.Add(new Vector2Int(basePoint.x, basePoint.y + 1)); // 增加上方邻居节点
+			return neighborList;
 		}
 
-		public static List<Vector2Int> GetLeftBottomNeighborList(Vector2Int base_point)
+		public static List<Vector2Int> GetLeftBottomNeighborList(Vector2Int basePoint)
 		{
-			List<Vector2Int> neighbor_list = new List<Vector2Int>();
-			neighbor_list.Add(new Vector2Int(base_point.x - 1, base_point.y)); // 增加左侧邻居节点
-			neighbor_list.Add(new Vector2Int(base_point.x - 1, base_point.y - 1)); // 增加左下角的邻居节点
-			neighbor_list.Add(new Vector2Int(base_point.x, base_point.y - 1)); // 增加下方邻居节点
-			return neighbor_list;
+			List<Vector2Int> neighborList = new List<Vector2Int>();
+			neighborList.Add(new Vector2Int(basePoint.x - 1, basePoint.y)); // 增加左侧邻居节点
+			neighborList.Add(new Vector2Int(basePoint.x - 1, basePoint.y - 1)); // 增加左下角的邻居节点
+			neighborList.Add(new Vector2Int(basePoint.x, basePoint.y - 1)); // 增加下方邻居节点
+			return neighborList;
 		}
 
-		public static List<Vector2Int> GetRightTopNeighborList(Vector2Int base_point)
+		public static List<Vector2Int> GetRightTopNeighborList(Vector2Int basePoint)
 		{
-			List<Vector2Int> neighbor_list = new List<Vector2Int>();
-			neighbor_list.Add(new Vector2Int(base_point.x, base_point.y + 1)); // 增加上方邻居节点
-			neighbor_list.Add(new Vector2Int(base_point.x + 1, base_point.y + 1)); // 增加右上角邻居节点
-			neighbor_list.Add(new Vector2Int(base_point.x + 1, base_point.y)); // 增加右侧邻居节点
-			return neighbor_list;
+			List<Vector2Int> neighborList = new List<Vector2Int>();
+			neighborList.Add(new Vector2Int(basePoint.x, basePoint.y + 1)); // 增加上方邻居节点
+			neighborList.Add(new Vector2Int(basePoint.x + 1, basePoint.y + 1)); // 增加右上角邻居节点
+			neighborList.Add(new Vector2Int(basePoint.x + 1, basePoint.y)); // 增加右侧邻居节点
+			return neighborList;
 		}
 
-		public static List<Vector2Int> GetRightBottomNeighborList(Vector2Int base_point)
+		public static List<Vector2Int> GetRightBottomNeighborList(Vector2Int basePoint)
 		{
-			List<Vector2Int> neighbor_list = new List<Vector2Int>();
-			neighbor_list.Add(new Vector2Int(base_point.x + 1, base_point.y)); // 增加右侧邻居节点
-			neighbor_list.Add(new Vector2Int(base_point.x + 1, base_point.y - 1)); // 增加右下角邻居节点
-			neighbor_list.Add(new Vector2Int(base_point.x, base_point.y - 1)); // 增加下方邻居节点
-			return neighbor_list;
+			List<Vector2Int> neighborList = new List<Vector2Int>();
+			neighborList.Add(new Vector2Int(basePoint.x + 1, basePoint.y)); // 增加右侧邻居节点
+			neighborList.Add(new Vector2Int(basePoint.x + 1, basePoint.y - 1)); // 增加右下角邻居节点
+			neighborList.Add(new Vector2Int(basePoint.x, basePoint.y - 1)); // 增加下方邻居节点
+			return neighborList;
 		}
 
 

@@ -6,14 +6,13 @@ namespace CsCat
 {
 	public partial class AStarUtilTest
 	{
-
 		public static int[][] __grids = new int[][]
 		{
-	  new int[] {1, 1, 3, 1, 1, 1},
-	  new int[] {3, 1, 1, 1, 3, 1},
-	  new int[] {3, 1, 1, 3, 1, 1},
-	  new int[] {1, 1, 1, 1, 3, 1},
-	  new int[] {1, 1, 1, 1, 1, 1},
+			new int[] {1, 1, 3, 1, 1, 1},
+			new int[] {3, 1, 1, 1, 3, 1},
+			new int[] {3, 1, 1, 3, 1, 1},
+			new int[] {1, 1, 1, 1, 3, 1},
+			new int[] {1, 1, 1, 1, 1, 1},
 		};
 
 		public static int[][] _grids;
@@ -58,7 +57,7 @@ namespace CsCat
 			Vector2Int a_point = new Vector2Int(-4, -4);
 			Vector2Int b_point = new Vector2Int(3, 2);
 			Vector2Int target_point = AStarUtil.GetExtendPoint(a_point, b_point, 2);
-			return () => { AStarUtil.GUIShowPointList(-5, -5, 5, 5, new List<Vector2Int>() { target_point }); };
+			return () => { AStarUtil.GUIShowPointList(-5, -5, 5, 5, new List<Vector2Int>() {target_point}); };
 		}
 
 		public static void Test_GetNearestDistance()

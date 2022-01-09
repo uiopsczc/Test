@@ -11,7 +11,7 @@ namespace CsCat
 	{
 		#region field
 
-		public List<ExcelValue> value_list = new List<ExcelValue>();
+		public List<ExcelValue> valueList = new List<ExcelValue>();
 
 		#endregion
 

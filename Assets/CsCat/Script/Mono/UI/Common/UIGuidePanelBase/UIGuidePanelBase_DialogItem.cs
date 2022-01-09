@@ -7,8 +7,8 @@ namespace CsCat
 	{
 		public class DialogItem : UIObject
 		{
-			private Image tou_xiang_img;
-			private Text desc_text;
+			private Image touXiangImg;
+			private Text descText;
 
 			public void Init(GameObject gameObject)
 			{
@@ -19,15 +19,15 @@ namespace CsCat
 			public override void InitGameObjectChildren()
 			{
 				base.InitGameObjectChildren();
-				tou_xiang_img = graphicComponent.transform.FindComponentInChildren<Image>("tou_xiang");
-				desc_text = graphicComponent.transform.FindComponentInChildren<Text>("content/desc");
+				touXiangImg = graphicComponent.transform.FindComponentInChildren<Image>("tou_xiang");
+				descText = graphicComponent.transform.FindComponentInChildren<Text>("content/desc");
 			}
 
-			public void Show(string desc, string image_path = null)
+			public void Show(string desc, string imagePath = null)
 			{
-				desc_text.text = desc;
-				if (image_path != null)
-					SetImageAsync(tou_xiang_img, image_path);
+				descText.text = desc;
+				if (imagePath != null)
+					SetImageAsync(touXiangImg, imagePath);
 			}
 		}
 	}

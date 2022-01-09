@@ -13,15 +13,15 @@ namespace CsCat
 
 		public override BehaviourTreeNodeStatus Update()
 		{
-			if (child_list == null || child_list.Count == 0)
+			if (childList == null || childList.Count == 0)
 			{
 				status = BehaviourTreeNodeStatus.Success;
 				return status;
 			}
 
-			var random = randomManager.RandomInt(0, child_list.Count);
-			var child_status = child_list[random].Update();
-			status = child_status;
+			var random = randomManager.RandomInt(0, childList.Count);
+			var childStatus = childList[random].Update();
+			status = childStatus;
 			return status;
 		}
 

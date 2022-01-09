@@ -4,14 +4,14 @@ namespace CsCat
 {
 	public class XMLConfigUtil
 	{
-		public static XMLConfig LoadConfig(string config_file_path)
+		public static XMLConfig LoadConfig(string configFilePath)
 		{
-			return new XMLConfig(config_file_path);
+			return new XMLConfig(configFilePath);
 		}
 
-		public static XMLConfig LoadConfig(FileInfo config_file)
+		public static XMLConfig LoadConfig(FileInfo configFile)
 		{
-			return new XMLConfig(config_file);
+			return new XMLConfig(configFile);
 		}
 
 		public static XMLConfig LoadConfig(Stream stream)

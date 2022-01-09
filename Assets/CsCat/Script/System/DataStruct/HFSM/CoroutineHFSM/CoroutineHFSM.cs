@@ -20,53 +20,53 @@ namespace CsCat
 			yield break;
 		}
 
-		public virtual IEnumerator IEEnterLoopTo(CoroutineHFSMState to_state, params object[] args)
+		public virtual IEnumerator IEEnterLoopTo(CoroutineHFSMState toState, params object[] args)
 		{
-			var hfsm_list = new List<CoroutineHFSM>();//倒序
-			var _hfsm = to_state.parent_hfsm as CoroutineHFSM;
-			while (_hfsm != this)
+			var hfsmList = new List<CoroutineHFSM>();//倒序
+			var hfsm = toState.parentHFSM as CoroutineHFSM;
+			while (hfsm != this)
 			{
-				hfsm_list.Add(_hfsm);
-				_hfsm = _hfsm.parent_hfsm as CoroutineHFSM;
+				hfsmList.Add(hfsm);
+				hfsm = hfsm.parentHFSM as CoroutineHFSM;
 			}
 
-			for (int i = hfsm_list.Count - 1; i >= 0; i--)
-				yield return hfsm_list[i].IEEnter(args);
+			for (int i = hfsmList.Count - 1; i >= 0; i--)
+				yield return hfsmList[i].IEEnter(args);
 
-			yield return to_state.IEEnter(args);
+			yield return toState.IEEnter(args);
 		}
 
 
-		public override void ChangeToState(HFSMState to_state, bool is_force = false, params object[] args)
+		public override void ChangeToState(HFSMState toState, bool isForce = false, params object[] args)
 		{
-			StartCoroutine(IEChangeToState(to_state as CoroutineHFSMState, is_force, args));
+			StartCoroutine(IEChangeToState(toState as CoroutineHFSMState, isForce, args));
 		}
 
-		public IEnumerator IEChangeToState(CoroutineHFSMState to_state, bool is_force = false, params object[] args)
+		public IEnumerator IEChangeToState(CoroutineHFSMState toState, bool isForce = false, params object[] args)
 		{
-			CoroutineHFSM root_hfsm = this.GetRootHFSM() as CoroutineHFSM;
-			CoroutineHFSMState from_state = root_hfsm.GetCurrentState() as CoroutineHFSMState;
+			CoroutineHFSM rootHFSM = this.GetRootHFSM() as CoroutineHFSM;
+			CoroutineHFSMState fromState = rootHFSM.GetCurrentState() as CoroutineHFSMState;
 
-			if (from_state == to_state)
+			if (fromState == toState)
 				yield break;
 
-			if (!is_force && from_state != null && !from_state.IsCanChangeToState(to_state, args))
+			if (!isForce && fromState != null && !fromState.IsCanChangeToState(toState, args))
 				yield break;
 
-			CoroutineHFSM nearest_same_parent_hfsm = to_state.GetNearestSameParentHFSM(from_state) as CoroutineHFSM;
-			if (from_state != null)
+			CoroutineHFSM nearestSameParentHFSM = toState.GetNearestSameParentHFSM(fromState) as CoroutineHFSM;
+			if (fromState != null)
 			{
-				this.Broadcast(root_hfsm.eventDispatchers, CoroutineHFSMEventNameConst.Pre_State_Exit, from_state);
-				yield return from_state.IEExitLoopTo(nearest_same_parent_hfsm);
-				this.Broadcast(root_hfsm.eventDispatchers, CoroutineHFSMEventNameConst.Post_State_Exit, from_state);
+				this.Broadcast(rootHFSM.eventDispatchers, CoroutineHFSMEventNameConst.Pre_State_Exit, fromState);
+				yield return fromState.IEExitLoopTo(nearestSameParentHFSM);
+				this.Broadcast(rootHFSM.eventDispatchers, CoroutineHFSMEventNameConst.Post_State_Exit, fromState);
 			}
 
-			this.Broadcast(root_hfsm.eventDispatchers, CoroutineHFSMEventNameConst.Pre_State_Enter, to_state);
-			yield return nearest_same_parent_hfsm.IEEnterLoopTo(to_state, args);
-			this.Broadcast(root_hfsm.eventDispatchers, CoroutineHFSMEventNameConst.Post_State_Enter, to_state);
+			this.Broadcast(rootHFSM.eventDispatchers, CoroutineHFSMEventNameConst.Pre_State_Enter, toState);
+			yield return nearestSameParentHFSM.IEEnterLoopTo(toState, args);
+			this.Broadcast(rootHFSM.eventDispatchers, CoroutineHFSMEventNameConst.Post_State_Enter, toState);
 
-			previous_state = from_state;
-			this.Broadcast(root_hfsm.eventDispatchers, CoroutineHFSMEventNameConst.State_Change_Finish, from_state, to_state);
+			previousState = fromState;
+			this.Broadcast(rootHFSM.eventDispatchers, CoroutineHFSMEventNameConst.State_Change_Finish, fromState, toState);
 		}
 
 

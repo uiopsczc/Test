@@ -47,9 +47,7 @@ namespace CsCat
 
 		public bool ContainsValue(object value)
 		{
-			if (this.dict.ContainsValue(value))
-				return true;
-			return false;
+			return this.dict.ContainsValue(value);
 		}
 
 

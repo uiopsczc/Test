@@ -7,7 +7,7 @@ using UnityEngine.UI;
 public class MultiGraphicButton : Button
 {
 	private Graphic[] _graphics;
-	protected Dictionary<Graphic, Color> graphic_orgin_color_dict = new Dictionary<Graphic, Color>();
+	protected Dictionary<Graphic, Color> graphicOrginColorDict = new Dictionary<Graphic, Color>();
 
 
 	protected Graphic[] graphics
@@ -16,8 +16,12 @@ public class MultiGraphicButton : Button
 		{
 			if (_graphics != null) return _graphics;
 			_graphics = targetGraphic.transform.parent.GetComponentsInChildren<Graphic>();
-			foreach (var graphic in graphics)
-				graphic_orgin_color_dict[graphic] = graphic.color;
+			for (var i = 0; i < graphics.Length; i++)
+			{
+				var graphic = graphics[i];
+				graphicOrginColorDict[graphic] = graphic.color;
+			}
+
 			return _graphics;
 		}
 	}
@@ -65,7 +69,7 @@ public class MultiGraphicButton : Button
 		foreach (Graphic graphic in this.graphics)
 		{
 			if (targetColor == null)
-				final_color = graphic_orgin_color_dict[graphic];
+				final_color = graphicOrginColorDict[graphic];
 			else
 				final_color = targetColor.Value * colorMultiplier;
 			graphic.CrossFadeColor(final_color, (!instant) ? this.colors.fadeDuration : 0f, true, true);

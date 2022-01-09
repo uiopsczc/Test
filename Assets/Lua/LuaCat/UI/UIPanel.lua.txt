@@ -2,13 +2,13 @@
 ---@field is_add_to_child_panel_stack
 ---@field layerName string
 ---@field is_resident boolean
----@field is_hide_blackMaskBehide boolean
+---@field is_hide_blackMaskBehind boolean
 local UIPanel = Class("UIPanel", UIObject)
 
 function UIPanel:Init()
   UIPanel.super.Init(self)
   self.sortingOrder = math.mininteger
-  self.is_hide_blackMaskBehide = false
+  self.is_hide_blackMaskBehind = false
 end
 
 
@@ -50,8 +50,8 @@ function UIPanel:GetSortingOrder()
   return self.sortingOrder
 end
 
-function UIPanel:IsHideBlackMaskBehide()
-  return self.is_hide_blackMaskBehide
+function UIPanel:IsHideBlackMaskBehind()
+  return self.is_hide_blackMaskBehind
 end
 
 ---@param sortingOrder number
@@ -89,7 +89,7 @@ function UIPanel:__Destroy()
   UIPanel.super.__Destroy(self)
   self.sortingOrder = math.mininteger
   self.canvas = nil
-  self.is_hide_blackMaskBehide = false
+  self.is_hide_blackMaskBehind = false
 end
 
 function UIPanel:Close()

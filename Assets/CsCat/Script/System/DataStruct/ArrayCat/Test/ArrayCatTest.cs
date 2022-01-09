@@ -7,6 +7,5 @@ namespace CsCat
 			var t = ArrayCat.New("tttt", false, 4);
 			LogCat.error(t.data1);
 		}
-
 	}
 }

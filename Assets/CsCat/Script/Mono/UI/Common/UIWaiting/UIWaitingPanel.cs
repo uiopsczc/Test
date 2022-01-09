@@ -4,19 +4,13 @@ namespace CsCat
 {
 	public class UIWaitingPanel : UIPanel
 	{
-		public override bool is_resident
-		{
-			get { return true; }
-		}
+		public override bool isResident => true;
 
-		public override EUILayerName layerName
-		{
-			get { return EUILayerName.WaitingUILayer; }
-		}
+		public override EUILayerName layerName => EUILayerName.WaitingUILayer;
 
-		private int waiting_count = 0;
-		private Animation waiting_ainimation;
-		private GameObject waiting_gameObject;
+		private int waitingCount = 0;
+		private Animation waitingAinimation;
+		private GameObject waitingGameObject;
 
 		public void Init(GameObject gameObject)
 		{
@@ -28,22 +22,22 @@ namespace CsCat
 		public override void InitGameObjectChildren()
 		{
 			base.InitGameObjectChildren();
-			waiting_gameObject = frame_transform.Find("waiting").gameObject;
-			waiting_ainimation = waiting_gameObject.GetComponent<Animation>();
+			waitingGameObject = frameTransform.Find("waiting").gameObject;
+			waitingAinimation = waitingGameObject.GetComponent<Animation>();
 		}
 
 		public void StartWaiting()
 		{
-			this.waiting_count += 1;
+			this.waitingCount += 1;
 			graphicComponent.SetIsShow(true);
 		}
 
 		public void EndWaiting()
 		{
-			this.waiting_count -= 1;
-			if (this.waiting_count <= 0)
+			this.waitingCount -= 1;
+			if (this.waitingCount <= 0)
 			{
-				this.waiting_count = 0;
+				this.waitingCount = 0;
 				graphicComponent.SetIsShow(false);
 			}
 		}
@@ -52,7 +46,7 @@ namespace CsCat
 		protected override void _Reset()
 		{
 			base._Reset();
-			this.waiting_count = 0;
+			this.waitingCount = 0;
 		}
 
 		public void HideWaiting()

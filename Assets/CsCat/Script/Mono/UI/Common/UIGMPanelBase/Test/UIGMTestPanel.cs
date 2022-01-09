@@ -9,11 +9,11 @@ namespace CsCat
 		{
 			base.InitConfigList();
 			config_list.Add(new Dictionary<string, object>
-	  {
-		{"type", "switch_item"},
-		{"desc", "GMTest"},
-		{"yes_callback", new Action(() => GMTest())},
-	  });
+			{
+				{"type", "switch_item"},
+				{"desc", "GMTest"},
+				{"yes_callback", new Action(() => GMTest())},
+			});
 		}
 
 		public void GMTest()

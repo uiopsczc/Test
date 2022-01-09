@@ -7,8 +7,9 @@ namespace CsCat
 	{
 		public static int CompareWithRules<T>(T data1, T data2, IList<Comparison<T>> compareRules)
 		{
-			foreach (var compareRule in compareRules)
+			for (var i = 0; i < compareRules.Count; i++)
 			{
+				var compareRule = compareRules[i];
 				if (compareRule == null)
 					continue;
 				var result = compareRule(data1, data2);
@@ -16,6 +17,7 @@ namespace CsCat
 					continue;
 				return result;
 			}
+
 			return 0;
 		}
 	}

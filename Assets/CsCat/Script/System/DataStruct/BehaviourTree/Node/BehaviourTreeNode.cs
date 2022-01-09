@@ -22,14 +22,14 @@ namespace CsCat
 
 		public BehaviourTreeNodeStatus status
 		{
-			get { return _status; }
+			get => _status;
 			set
 			{
 				_status = value;
 				if (_status == BehaviourTreeNodeStatus.Success && onSuccess != null)
 					onSuccess();
-				else if (_status == BehaviourTreeNodeStatus.Fail && onFail != null)
-					onFail();
+				else if (_status == BehaviourTreeNodeStatus.Fail)
+					onFail?.Invoke();
 			}
 		}
 
@@ -41,7 +41,6 @@ namespace CsCat
 		{
 			return BehaviourTreeNodeStatus.Fail;
 		}
-
 
 
 		public virtual T GetChild<T>(bool loop = false) where T : BehaviourTreeNode
@@ -57,10 +56,8 @@ namespace CsCat
 		public virtual void Interrupt()
 		{
 			this.status = BehaviourTreeNodeStatus.WaitingToRun;
-
 		}
 
 		#endregion
-
 	}
 }

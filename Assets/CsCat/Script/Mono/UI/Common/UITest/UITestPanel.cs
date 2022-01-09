@@ -17,9 +17,9 @@ namespace CsCat
 		public override void InitGameObjectChildren()
 		{
 			base.InitGameObjectChildren();
-			gm_btn = this.frame_transform.FindComponentInChildren<Button>("gm_btn");
-			test_btn = this.frame_transform.FindComponentInChildren<Button>("test_btn");
-			combat_test_btn = this.frame_transform.FindComponentInChildren<Button>("combat_test_btn");
+			gm_btn = this.frameTransform.FindComponentInChildren<Button>("gm_btn");
+			test_btn = this.frameTransform.FindComponentInChildren<Button>("test_btn");
+			combat_test_btn = this.frameTransform.FindComponentInChildren<Button>("combat_test_btn");
 
 
 			UIItemBaseTest.Test(this);
@@ -27,9 +27,9 @@ namespace CsCat
 
 		}
 
-		protected override void AddUntiyEvnts()
+		protected override void AddUnityEvents()
 		{
-			base.AddUntiyEvnts();
+			base.AddUnityEvents();
 			this.RegisterOnClick(gm_btn,
 			  () => { Client.instance.uiManager.CreateChildPanel("UIGMPanel", default(UIGMTestPanel)); });
 			this.RegisterOnClick(combat_test_btn, () =>

@@ -5,38 +5,40 @@ namespace CsCat
 {
 	public static class UIRockerTest
 	{
-		private static GameObject unit_gameObject;
-		private static RectTransform unit_rectTransform;
-		private static Text unit_text;
+		private static GameObject unitGameObject;
+		private static RectTransform unitRectTransform;
+		private static Text unitText;
 		private static UIRockerInput rockerInput;
 		private static UIRocker uiRocker;
 
 		public static void Test()
 		{
-			UIRockerTest.unit_gameObject = GameObject.Find("UITestPanel").NewChildWithImage("unit").gameObject;
-			UIRockerTest.unit_text =
-			  UIRockerTest.unit_gameObject.NewChildWithText("state", null, 40, Color.black, TextAnchor.MiddleCenter, null);
-			UIRockerTest.unit_rectTransform = UIRockerTest.unit_gameObject.GetComponent<RectTransform>();
+			UIRockerTest.unitGameObject = GameObject.Find("UITestPanel").NewChildWithImage("unit").gameObject;
+			UIRockerTest.unitText =
+				UIRockerTest.unitGameObject.NewChildWithText("state", null, 40, Color.black, TextAnchor.MiddleCenter,
+					null);
+			UIRockerTest.unitRectTransform = UIRockerTest.unitGameObject.GetComponent<RectTransform>();
 			UIRockerTest.rockerInput = Client.instance.AddChild<UIRockerInput>(null);
 			UIRockerTest.uiRocker = Client.instance.AddChild<UIRocker>(null, null,
-			  GameObject.Find("UITestPanel").transform,
-			  UIRockerTest.rockerInput);
+				GameObject.Find("UITestPanel").transform,
+				UIRockerTest.rockerInput);
 
-			Client.instance.AddListener<float, float>(null, UIRockerTest.rockerInput.event_name_move_pct, UIRockerTest.MovePct);
-			Client.instance.AddListener(null, UIRockerTest.rockerInput.event_name_move_stop, UIRockerTest.MoveStop);
+			Client.instance.AddListener<float, float>(null, UIRockerTest.rockerInput.eventNameMovePCT,
+				UIRockerTest.MovePct);
+			Client.instance.AddListener(null, UIRockerTest.rockerInput.eventNameMoveStop, UIRockerTest.MoveStop);
 		}
 
-		public static void MovePct(float pct_x, float pct_y)
+		public static void MovePct(float pctX, float pctY)
 		{
-			Vector3 localPosition = UIRockerTest.unit_rectTransform.localPosition;
-			UIRockerTest.unit_rectTransform.localPosition =
-			  new Vector3(localPosition.x + pct_x, localPosition.y + pct_y, localPosition.z);
-			UIRockerTest.unit_text.text = "Move";
+			Vector3 localPosition = UIRockerTest.unitRectTransform.localPosition;
+			UIRockerTest.unitRectTransform.localPosition =
+				new Vector3(localPosition.x + pctX, localPosition.y + pctY, localPosition.z);
+			UIRockerTest.unitText.text = "Move";
 		}
 
 		public static void MoveStop()
 		{
-			UIRockerTest.unit_text.text = "Stop";
+			UIRockerTest.unitText.text = "Stop";
 		}
 	}
 }

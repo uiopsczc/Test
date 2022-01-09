@@ -4,10 +4,10 @@ namespace CsCat
 	{
 		#region ctor
 
-		public DecortorNode(BehaviourTreeNodeStatus until_status, int count_limit = -1)
+		public DecortorNode(BehaviourTreeNodeStatus untilStatus, int countLimit = -1)
 		{
-			this.until_status = until_status;
-			this.count_limit = count_limit;
+			this.untilStatus = untilStatus;
+			this.countLimit = countLimit;
 		}
 
 		#endregion
@@ -20,32 +20,32 @@ namespace CsCat
 		/// <returns></returns>
 		public override BehaviourTreeNodeStatus Update()
 		{
-			if (child_list == null || child_list.Count == 0)
+			if (childList == null || childList.Count == 0)
 			{
-				cur_count = 0;
+				curCount = 0;
 				status = BehaviourTreeNodeStatus.Success;
 				return status;
 			}
 
-			var child = child_list[0];
-			var child_status = child.Update();
-			if (child_status == until_status)
+			var child = childList[0];
+			var childStatus = child.Update();
+			if (childStatus == untilStatus)
 			{
 				status = BehaviourTreeNodeStatus.Success;
 				return status;
 			}
 
-			if (cur_count == -1)
+			if (curCount == -1)
 			{
-				cur_count = 0;
+				curCount = 0;
 				status = BehaviourTreeNodeStatus.Running;
 				return status;
 			}
 
-			cur_count++;
-			if (cur_count >= count_limit)
+			curCount++;
+			if (curCount >= countLimit)
 			{
-				cur_count = 0;
+				curCount = 0;
 				status = BehaviourTreeNodeStatus.Fail;
 				return status;
 			}
@@ -58,9 +58,9 @@ namespace CsCat
 
 		#region field
 
-		public BehaviourTreeNodeStatus until_status;
-		public int count_limit;
-		public int cur_count;
+		public BehaviourTreeNodeStatus untilStatus;
+		public int countLimit;
+		public int curCount;
 
 		#endregion
 	}

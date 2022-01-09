@@ -8,9 +8,9 @@ namespace CsCat
 		{
 			var xml = new XmlDocument();
 			xml.Load(path);
-			var root_xmlNode = xml.FirstChild;
-			var root_node = ParseNode(root_xmlNode, o);
-			return root_node;
+			var rootXMLNode = xml.FirstChild;
+			var rootNode = ParseNode(rootXMLNode, o);
+			return rootNode;
 		}
 
 		public static BehaviourTreeNode GetRefNode(string value, object o = null)
@@ -20,8 +20,8 @@ namespace CsCat
 			XmlNode xmlNode = null;
 			foreach (XmlNode child in xml.FirstChild.ChildNodes)
 			{
-				var child_value = XMLUtil.GetNodeAttrValue(child, "name", "");
-				if (child_value == value)
+				var childValue = XMLUtil.GetNodeAttrValue(child, "name", "");
+				if (childValue == value)
 					xmlNode = child;
 			}
 
@@ -30,36 +30,37 @@ namespace CsCat
 			return null;
 		}
 
-		public static BehaviourTreeNode ParseNode(XmlNode parent_xmlNode, object o = null)
+		public static BehaviourTreeNode ParseNode(XmlNode parentXMLNode, object o = null)
 		{
 			BehaviourTreeNode parent = null;
-			if (parent_xmlNode.Name == "RefNode")
-				parent = GetRefNode(XMLUtil.GetNodeAttrValue(parent_xmlNode, "ref", ""), o);
-			if (parent_xmlNode.Name == "SelectorNode")
+			if (parentXMLNode.Name == "RefNode")
+				parent = GetRefNode(XMLUtil.GetNodeAttrValue(parentXMLNode, "ref", ""), o);
+			if (parentXMLNode.Name == "SelectorNode")
 				parent = new SelectorNode();
-			if (parent_xmlNode.Name == "ConditionNode")
-				parent = new ConditionActionNode(XMLUtil.GetNodeAttrValue(parent_xmlNode, "condition", ""));
-			if (parent_xmlNode.Name == "DecortorNode")
+			if (parentXMLNode.Name == "ConditionNode")
+				parent = new ConditionActionNode(XMLUtil.GetNodeAttrValue(parentXMLNode, "condition", ""));
+			if (parentXMLNode.Name == "DecortorNode")
 			{
-				var untilStatus_s = XMLUtil.GetNodeAttrValue(parent_xmlNode, "untilStatus", "").ToLower();
-				var untilStatus = untilStatus_s == "success" ? BehaviourTreeNodeStatus.Success : BehaviourTreeNodeStatus.Fail;
+				var untilStatusString = XMLUtil.GetNodeAttrValue(parentXMLNode, "untilStatus", "").ToLower();
+				var untilStatus = untilStatusString == "success" ? BehaviourTreeNodeStatus.Success : BehaviourTreeNodeStatus.Fail;
 				parent = new DecortorNode(untilStatus);
 			}
 
-			if (parent_xmlNode.Name == "ParallelNode")
+			if (parentXMLNode.Name == "ParallelNode")
 				parent = new ParallelNode();
-			if (parent_xmlNode.Name == "ParallelNode2")
+			if (parentXMLNode.Name == "ParallelNode2")
 				parent = new ParallelNode2();
-			if (parent_xmlNode.Name == "RandomSelectorNode")
+			if (parentXMLNode.Name == "RandomSelectorNode")
 				parent = new RandomSelectorNode();
-			if (parent_xmlNode.Name == "SequenceNode")
+			if (parentXMLNode.Name == "SequenceNode")
 				parent = new SequenceNode();
 
 
-			foreach (XmlNode child_xmlNode in parent_xmlNode.ChildNodes)
+			for (var i = 0; i < parentXMLNode.ChildNodes.Count; i++)
 			{
-				var child = ParseNode(child_xmlNode, o);
-				((BehaviourTreeCompositeNode)parent).AddChild(child);
+				XmlNode childXMLNode = parentXMLNode.ChildNodes[i];
+				var child = ParseNode(childXMLNode, o);
+				((BehaviourTreeCompositeNode) parent).AddChild(child);
 			}
 
 			return parent;

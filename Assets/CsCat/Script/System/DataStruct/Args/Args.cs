@@ -25,6 +25,7 @@ namespace CsCat
 		{
 			this.args = args;
 		}
+
 		public void Init(object args0, params object[] args)
 		{
 			int offset = 1;
@@ -37,16 +38,16 @@ namespace CsCat
 
 		public override bool Equals(object obj)
 		{
-			Args other = (Args)obj;
+			Args other = (Args) obj;
 
 			if (other == null)
 				return false;
 
 			if (this.args == null && other.args == null)
 				return true;
-			else if (this.args == null && other.args != null)
+			if (this.args == null && other.args != null)
 				return false;
-			else if (this.args != null && other.args == null)
+			if (this.args != null && other.args == null)
 				return false;
 
 			if (this.args.Length == other.args.Length)
@@ -87,6 +88,7 @@ namespace CsCat
 					if (i != args.Length - 1)
 						result.Append(",");
 				}
+
 				result.Append(")");
 				return result.ToString();
 			}

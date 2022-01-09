@@ -7,25 +7,25 @@ namespace CsCat
 	public static partial class AStarUtil
 	{
 		//是否在视图内
-		public static bool IsInViewingRange(Vector2Int viewing_range_base_point, Vector2Int check_point)
+		public static bool IsInViewingRange(Vector2Int viewingRangeBasePoint, Vector2Int checkPoint)
 		{
-			return GetViewingRange(viewing_range_base_point, viewing_range_base_point).IsInRange(check_point);
+			return GetViewingRange(viewingRangeBasePoint, viewingRangeBasePoint).IsInRange(checkPoint);
 		}
 
 		//获得left_bottom和right_top的范围两边外延（AStarConst.Client_View_Width_Grid_Count / 2，AStarConst.Client_View_Height_Grid_Count / 2） 可见范围
-		public static AStarRange GetViewingRange(Vector2Int left_bottom, Vector2Int right_top)
+		public static AStarRange GetViewingRange(Vector2Int leftBottom, Vector2Int rightTop)
 		{
-			int min_x = Math.Min(left_bottom.x, right_top.x) - AStarMapPathConst.Client_View_Width_Grid_Count / 2;
-			int min_y = Math.Min(left_bottom.y, right_top.y) - AStarMapPathConst.Client_View_Height_Grid_Count / 2;
-			int max_x = Math.Max(left_bottom.x, right_top.x) + AStarMapPathConst.Client_View_Width_Grid_Count / 2;
-			int max_y = Math.Max(left_bottom.y, right_top.y) + AStarMapPathConst.Client_View_Height_Grid_Count / 2;
-			return new AStarRange(min_x, min_y, max_x, max_y);
+			int minX = Math.Min(leftBottom.x, rightTop.x) - AStarMapPathConst.Client_View_Width_Grid_Count / 2;
+			int minY = Math.Min(leftBottom.y, rightTop.y) - AStarMapPathConst.Client_View_Height_Grid_Count / 2;
+			int maxX = Math.Max(leftBottom.x, rightTop.x) + AStarMapPathConst.Client_View_Width_Grid_Count / 2;
+			int maxY = Math.Max(leftBottom.y, rightTop.y) + AStarMapPathConst.Client_View_Height_Grid_Count / 2;
+			return new AStarRange(minX, minY, maxX, maxY);
 		}
 
 		//获得可见范围
-		public static AStarRange GetViewingRange(Vector2Int viewing_range_base_point)
+		public static AStarRange GetViewingRange(Vector2Int viewingRangeBasePoint)
 		{
-			return GetViewingRange(viewing_range_base_point, viewing_range_base_point);
+			return GetViewingRange(viewingRangeBasePoint, viewingRangeBasePoint);
 		}
 
 	}

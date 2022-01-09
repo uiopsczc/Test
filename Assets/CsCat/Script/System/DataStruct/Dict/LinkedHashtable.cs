@@ -78,8 +78,11 @@ namespace CsCat
 		{
 			_keyList.QuickSort(compareFunc);
 			_valueList.Clear();
-			foreach (var key in _keyList)
+			for (var i = 0; i < _keyList.Count; i++)
+			{
+				var key = _keyList[i];
 				_valueList.Add(this[key]);
+			}
 		}
 
 		public string ToString2(bool isFillStringWithDoubleQuote = false)
@@ -88,8 +91,9 @@ namespace CsCat
 			using (var scope = PoolCatManagerUtil.SpawnScope<StringBuilderScope>())
 			{
 				scope.stringBuilder.Append(CharConst.Char_LeftCurlyBrackets);
-				foreach (object key in _keyList)
+				for (var i = 0; i < _keyList.Count; i++)
 				{
+					object key = _keyList[i];
 					if (first)
 						first = false;
 					else

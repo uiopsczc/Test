@@ -28,7 +28,7 @@ namespace CsCat
 		///   bool 参数中是否加了self作为参数
 		/// </summary>
 		public Dictionary<AOPMethodType, MethodInfoProxy>
-		  aop_methodInfo_dict = new Dictionary<AOPMethodType, MethodInfoProxy>();
+		  aopMethodInfoDict = new Dictionary<AOPMethodType, MethodInfoProxy>();
 
 		#endregion
 	}

@@ -23,15 +23,15 @@ namespace CsCat
 			return IsContains((uint)EUILayerRule.Hide_LowerOrderUI);
 		}
 
-		public bool IsAddBlackMaskBehide()
+		public bool IsAddBlackMaskBehind()
 		{
-			return IsContains((uint)EUILayerRule.Add_BlackMaskBehide);
+			return IsContains((uint)EUILayerRule.Add_BlackMaskBehind);
 		}
 
 
-		public bool IsContains(uint be_contained_value)
+		public bool IsContains(uint beContainedValue)
 		{
-			return this.rule.IsContains(be_contained_value);
+			return this.rule.IsContains(beContainedValue);
 		}
 	}
 }

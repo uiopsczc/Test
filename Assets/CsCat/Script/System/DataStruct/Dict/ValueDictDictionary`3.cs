@@ -44,15 +44,18 @@ namespace CsCat
 
 		public void CheckAll()
 		{
-			List<TKey1> to_remove_key1_list = new List<TKey1>();
+			List<TKey1> toRemoveKey1List = new List<TKey1>();
 			foreach (var key1 in this.Keys)
 			{
 				if (this[key1].IsNullOrEmpty())
-					to_remove_key1_list.Add(key1);
+					toRemoveKey1List.Add(key1);
 			}
 
-			foreach (var to_remove_key1 in to_remove_key1_list)
-				this.Remove(to_remove_key1);
+			for (var i = 0; i < toRemoveKey1List.Count; i++)
+			{
+				var toRemoveKey1 = toRemoveKey1List[i];
+				this.Remove(toRemoveKey1);
+			}
 		}
 
 		public void ForeachKV2OfKey1(TKey1 key1, Action<TKey2, TValue2> action)
@@ -74,6 +77,7 @@ namespace CsCat
 					LogCat.LogError(e);
 				}
 			}
+
 			CheckAll();
 		}
 	}

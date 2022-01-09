@@ -8,40 +8,40 @@ namespace CsCat
 	{
 		public class SwitchItem : UIObject
 		{
-			private Text desc_text;
-			private Button no_btn;
-			private Button yes_btn;
+			private Text descText;
+			private Button noBtn;
+			private Button yesBtn;
 
 			private string desc;
-			private Action yes_callback;
-			private Action no_callback;
+			private Action yesCallback;
+			private Action noCallback;
 
-			public void Init(GameObject gameObject, string desc, Action yes_callback, Action no_callback = null)
+			public void Init(GameObject gameObject, string desc, Action yesCallback, Action noCallback = null)
 			{
 				base.Init();
 				this.desc = desc;
-				this.yes_callback = yes_callback;
-				this.no_callback = no_callback;
+				this.yesCallback = yesCallback;
+				this.noCallback = noCallback;
 				graphicComponent.SetGameObject(gameObject, true);
 			}
 
 			public override void InitGameObjectChildren()
 			{
 				base.InitGameObjectChildren();
-				desc_text = graphicComponent.transform.FindComponentInChildren<Text>("desc");
-				no_btn = graphicComponent.transform.FindComponentInChildren<Button>("no_btn");
-				yes_btn = graphicComponent.transform.FindComponentInChildren<Button>("yes_btn");
+				descText = graphicComponent.transform.FindComponentInChildren<Text>("desc");
+				noBtn = graphicComponent.transform.FindComponentInChildren<Button>("no_btn");
+				yesBtn = graphicComponent.transform.FindComponentInChildren<Button>("yes_btn");
 
-				this.desc_text.text = this.desc;
+				this.descText.text = this.desc;
 
 			}
 
-			protected override void AddUntiyEvnts()
+			protected override void AddUnityEvents()
 			{
-				base.AddUntiyEvnts();
-				this.RegisterOnClick(yes_btn, () => { this.yes_callback(); });
-				if (this.no_callback != null)
-					this.RegisterOnClick(no_btn, () => { this.no_callback(); });
+				base.AddUnityEvents();
+				this.RegisterOnClick(yesBtn, () => { this.yesCallback(); });
+				if (this.noCallback != null)
+					this.RegisterOnClick(noBtn, () => { this.noCallback(); });
 			}
 
 		}

@@ -82,9 +82,9 @@ namespace CsCat
 		//////////////////////////////////////////////////////////////////////
 		// UIBlood
 		//////////////////////////////////////////////////////////////////////
-		public UIBlood AddUIBlood(Transform parent_transform, float max_value, int? slider_count, float? to_value, List<Color> slider_color_list = null)
+		public UIBlood AddUIBlood(Transform parentTransform, float maxValue, int? sliderCount, float? toValue, List<Color> sliderColorList = null)
 		{
-			return this.uiBloodManager.AddUIBlood(parent_transform, max_value, slider_count, to_value, slider_color_list);
+			return this.uiBloodManager.AddUIBlood(parentTransform, maxValue, sliderCount, toValue, sliderColorList);
 		}
 
 		public void RemoveUIBlood(UIBlood uiBlood)
@@ -95,9 +95,9 @@ namespace CsCat
 		//////////////////////////////////////////////////////////////////////
 		// Notify
 		//////////////////////////////////////////////////////////////////////
-		public void Notify(string desc, Transform parent_transform = null, bool is_add_to_child_panel_stack = false)
+		public void Notify(string desc, Transform parentTransform = null, bool isAddToChildPanelStack = false)
 		{
-			uiNotifyManager.Notify(desc, parent_transform, is_add_to_child_panel_stack);
+			uiNotifyManager.Notify(desc, parentTransform, isAddToChildPanelStack);
 		}
 
 		public void LanternNotify(string desc)
@@ -118,14 +118,14 @@ namespace CsCat
 			uiFadePanel.FadeInOut(duration, callback);
 		}
 
-		public void FadeTo(float toAplha, float duration, Action callback = null)
+		public void FadeTo(float toAlpha, float duration, Action callback = null)
 		{
-			uiFadePanel.FadeTo(toAplha, duration, callback);
+			uiFadePanel.FadeTo(toAlpha, duration, callback);
 		}
 
-		public void FadeTo(float fromAplha, float toAplha, float duration, Action callback = null)
+		public void FadeTo(float fromAlpha, float toAlpha, float duration, Action callback = null)
 		{
-			uiFadePanel.FadeTo(fromAplha, toAplha, duration, callback);
+			uiFadePanel.FadeTo(fromAlpha, toAlpha, duration, callback);
 		}
 
 		//////////////////////////////////////////////////////////////////////

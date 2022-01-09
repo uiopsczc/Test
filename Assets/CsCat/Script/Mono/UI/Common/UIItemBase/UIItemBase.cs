@@ -6,17 +6,17 @@ namespace CsCat
 	public class UIItemBase : UIObject
 	{
 
-		private Transform content_transform;
-		private Image content_bg_image;
-		private Image content_quality_image;
-		private Image content_icon_image;
-		private Text content_count_text;
-		private Transform name_transform;
-		private Image name_bg_image;
-		private Text name_text;
+		private Transform contentTransform;
+		private Image contentBgImage;
+		private Image contentQualityImage;
+		private Image contentIconImage;
+		private Text contentCountText;
+		private Transform nameTransform;
+		private Image nameBgImage;
+		private Text nameText;
 
-		private string item_id;
-		private int item_count;
+		private string itemId;
+		private int itemCount;
 		private CfgItemData cfgItemData;
 		private CfgQualityData cfgQualityData;
 
@@ -30,37 +30,37 @@ namespace CsCat
 		public override void InitGameObjectChildren()
 		{
 			base.InitGameObjectChildren();
-			this.content_transform = graphicComponent.transform.Find("content");
-			this.content_bg_image = content_transform.FindComponentInChildren<Image>("bg");
-			this.content_quality_image = content_transform.FindComponentInChildren<Image>("quality");
-			this.content_icon_image = content_transform.FindComponentInChildren<Image>("icon");
-			this.content_count_text = content_transform.FindComponentInChildren<Text>("count");
-			this.name_transform = graphicComponent.transform.Find("name");
-			this.name_bg_image = this.name_transform.FindComponentInChildren<Image>("bg");
-			this.name_text = this.name_transform.FindComponentInChildren<Text>("text");
+			this.contentTransform = graphicComponent.transform.Find("content");
+			this.contentBgImage = contentTransform.FindComponentInChildren<Image>("bg");
+			this.contentQualityImage = contentTransform.FindComponentInChildren<Image>("quality");
+			this.contentIconImage = contentTransform.FindComponentInChildren<Image>("icon");
+			this.contentCountText = contentTransform.FindComponentInChildren<Text>("count");
+			this.nameTransform = graphicComponent.transform.Find("name");
+			this.nameBgImage = this.nameTransform.FindComponentInChildren<Image>("bg");
+			this.nameText = this.nameTransform.FindComponentInChildren<Text>("text");
 		}
 
-		public void Show(string item_id, int item_count, bool is_show_name = true)
+		public void Show(string itemId, int itemCount, bool isShowName = true)
 		{
-			this.item_id = item_id;
-			this.item_count = item_count;
+			this.itemId = itemId;
+			this.itemCount = itemCount;
 
-			this.cfgItemData = CfgItem.Instance.get_by_id(item_id);
+			this.cfgItemData = CfgItem.Instance.get_by_id(itemId);
 			this.cfgQualityData = cfgItemData.quality_id == null
 			  ? null
 			  : CfgQuality.Instance.get_by_id(cfgItemData.quality_id);
 
 			if (!cfgItemData.bg_path.IsNullOrWhiteSpace())
-				this.SetImageAsync(this.content_bg_image, cfgItemData.bg_path, null, false);
+				this.SetImageAsync(this.contentBgImage, cfgItemData.bg_path, null, false);
 			if (this.cfgQualityData != null && !this.cfgQualityData.icon_path.IsNullOrWhiteSpace())
-				this.SetImageAsync(this.content_quality_image, cfgQualityData.icon_path, null, false);
+				this.SetImageAsync(this.contentQualityImage, cfgQualityData.icon_path, null, false);
 			else
-				this.content_bg_image.gameObject.SetActive(false);
+				this.contentBgImage.gameObject.SetActive(false);
 			//    LogCat.LogWarning(this.content_icon_image);
 			//    LogCat.LogWarning(itemData.icon_path);
-			this.SetImageAsync(this.content_icon_image, cfgItemData.icon_path, null, false);
-			this.content_count_text.text = (item_count == 0 || item_count == 1) ? "" : string.Format("x{0}", item_count);
-			this.name_text.text = cfgItemData.name;
+			this.SetImageAsync(this.contentIconImage, cfgItemData.icon_path, null, false);
+			this.contentCountText.text = (itemCount == 0 || itemCount == 1) ? "" : string.Format("x{0}", itemCount);
+			this.nameText.text = cfgItemData.name;
 
 		}
 	}

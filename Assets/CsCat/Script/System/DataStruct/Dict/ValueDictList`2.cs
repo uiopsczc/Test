@@ -10,9 +10,9 @@ namespace CsCat
 			base.Add(dict);
 		}
 
-		public void Add(string dict_string)
+		public void Add(string dictString)
 		{
-			var dict = dict_string.ToDictionary<TKey, TValue>();
+			var dict = dictString.ToDictionary<TKey, TValue>();
 			Add(dict);
 		}
 

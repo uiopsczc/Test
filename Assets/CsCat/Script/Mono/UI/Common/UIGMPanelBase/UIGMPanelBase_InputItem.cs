@@ -8,34 +8,34 @@ namespace CsCat
 	{
 		public class InputItem : UIObject
 		{
-			private Text desc_text;
+			private Text descText;
 			private InputField inputField;
-			private Button yes_btn;
+			private Button yesBtn;
 
 			private string desc;
-			private Action<InputField> yes_callback;
+			private Action<InputField> yesCallback;
 
-			public void Init(GameObject gameObject, string desc, Action<InputField> yes_callback)
+			public void Init(GameObject gameObject, string desc, Action<InputField> yesCallback)
 			{
 				base.Init();
 				this.desc = desc;
-				this.yes_callback = yes_callback;
+				this.yesCallback = yesCallback;
 				graphicComponent.SetGameObject(gameObject, true);
 			}
 
 			public override void InitGameObjectChildren()
 			{
 				base.InitGameObjectChildren();
-				desc_text = graphicComponent.transform.FindComponentInChildren<Text>("desc");
+				descText = graphicComponent.transform.FindComponentInChildren<Text>("desc");
 				inputField = graphicComponent.transform.FindComponentInChildren<InputField>("InputField");
-				yes_btn = graphicComponent.transform.FindComponentInChildren<Button>("yes_btn");
+				yesBtn = graphicComponent.transform.FindComponentInChildren<Button>("yes_btn");
 
-				this.desc_text.text = desc;
+				this.descText.text = desc;
 			}
-			protected override void AddUntiyEvnts()
+			protected override void AddUnityEvents()
 			{
-				base.AddUntiyEvnts();
-				this.RegisterOnClick(yes_btn, () => { yes_callback(inputField); });
+				base.AddUnityEvents();
+				this.RegisterOnClick(yesBtn, () => { yesCallback(inputField); });
 			}
 
 

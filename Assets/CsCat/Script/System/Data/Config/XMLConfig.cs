@@ -17,15 +17,15 @@ namespace CsCat
 	{
 		#region field
 
-		protected HashSet<string> crypto_prop_set = new HashSet<string>();
-		protected Dictionary<string, string> prop_dict = new Dictionary<string, string>();
-		protected Dictionary<string, string> attr_dict = new Dictionary<string, string>();
+		protected HashSet<string> cryptoPropSet = new HashSet<string>();
+		protected Dictionary<string, string> propDict = new Dictionary<string, string>();
+		protected Dictionary<string, string> attrDict = new Dictionary<string, string>();
 
 
 
-		private XMLConfig parent_config = null;
-		private FileInfo config_file = null;
-		private List<XMLConfig> config_list = new List<XMLConfig>();
+		private XMLConfig parentConfig = null;
+		private FileInfo configFile = null;
+		private List<XMLConfig> configList = new List<XMLConfig>();
 		protected string name = null;
 		private const string Config_Path_Key = "config_path";
 		private const string Name_Key = "name";
@@ -36,14 +36,14 @@ namespace CsCat
 
 		#region ctor
 
-		public XMLConfig(string config_file_path)
-		  : this(new FileInfo(config_file_path))
+		public XMLConfig(string configFilePath)
+		  : this(new FileInfo(configFilePath))
 		{
 		}
 
-		public XMLConfig(FileInfo config_file)
+		public XMLConfig(FileInfo configFile)
 		{
-			SetConfigFile(config_file);
+			SetConfigFile(configFile);
 			LoadFrom(GetConfigFile());
 		}
 
@@ -64,104 +64,104 @@ namespace CsCat
 
 		public bool IsCryptoProperty(string name)
 		{
-			return this.crypto_prop_set.Contains(name);
+			return this.cryptoPropSet.Contains(name);
 		}
 
 		public void SetCryptoProperty(string name)
 		{
-			this.crypto_prop_set.Add(name);
+			this.cryptoPropSet.Add(name);
 		}
 
 		public string GetProperty(string name)
 		{
-			return this.prop_dict[name];
+			return this.propDict[name];
 		}
 
 		public string GetProperty(string name, string dv)
 		{
-			return this.prop_dict.GetOrAddDefault(name, () => dv);
+			return this.propDict.GetOrAddDefault(name, () => dv);
 		}
 
 		public void SetProperty(string name, string value)
 		{
-			this.prop_dict[name] = value;
+			this.propDict[name] = value;
 		}
 
 		public string RemoveProperty(string name)
 		{
-			string value = this.prop_dict[name];
-			this.prop_dict.Remove(name);
+			string value = this.propDict[name];
+			this.propDict.Remove(name);
 			return value;
 		}
 
 		public bool HasProperty(string name)
 		{
-			return this.prop_dict.ContainsKey(name);
+			return this.propDict.ContainsKey(name);
 		}
 
 		public Dictionary<string, string>.KeyCollection GetPropertyNames()
 		{
-			return this.prop_dict.Keys;
+			return this.propDict.Keys;
 		}
 
 		public Dictionary<string, string> GetProperties()
 		{
-			return this.prop_dict;
+			return this.propDict;
 		}
 
 		public string GetAttribute(string name)
 		{
-			return this.attr_dict[name];
+			return this.attrDict[name];
 		}
 
 		public string GetAttribute(string name, string dv)
 		{
-			return this.prop_dict.GetOrAddDefault(name, () => dv);
+			return this.propDict.GetOrAddDefault(name, () => dv);
 		}
 
 		public void SetAttribute(string name, string value)
 		{
-			this.attr_dict[name] = value;
+			this.attrDict[name] = value;
 		}
 
 		public string RemoveAttribute(string name)
 		{
-			string value = this.attr_dict[name];
-			this.attr_dict.Remove(name);
+			string value = this.attrDict[name];
+			this.attrDict.Remove(name);
 			return value;
 		}
 
 		public bool HasAttribute(string name)
 		{
-			return this.attr_dict.ContainsKey(name);
+			return this.attrDict.ContainsKey(name);
 		}
 
 		public Dictionary<string, string>.KeyCollection GetAttributeName()
 		{
-			return this.attr_dict.Keys;
+			return this.attrDict.Keys;
 		}
 
 		public Dictionary<string, string> GetAttributes()
 		{
-			return this.attr_dict;
+			return this.attrDict;
 		}
 
 		public bool Reloadable()
 		{
-			return this.config_file != null;
+			return this.configFile != null;
 		}
 
 		public void Reload()
 		{
 			if (Reloadable())
 			{
-				this.config_list.Clear();
-				this.prop_dict.Clear();
-				this.attr_dict.Clear();
-				this.parent_config = null;
+				this.configList.Clear();
+				this.propDict.Clear();
+				this.attrDict.Clear();
+				this.parentConfig = null;
 				this.name = null;
 
-				LoadFrom(this.config_file);
+				LoadFrom(this.configFile);
 				return;
 			}
 
@@ -170,36 +170,32 @@ namespace CsCat
 
 		public FileInfo GetConfigFile()
 		{
-			return this.config_file;
+			return this.configFile;
 		}
 
 		public void SetConfigFile(FileInfo file)
 		{
-			this.config_file = file;
+			this.configFile = file;
 		}
 
 		public FileInfo GetSuperConfigFile()
 		{
-			if (this.parent_config != null)
-			{
-				if (this.parent_config.config_file != null)
-					return this.parent_config.config_file;
-				return this.parent_config.GetSuperConfigFile();
-			}
+			if (this.parentConfig != null)
+				return this.parentConfig.configFile ?? this.parentConfig.GetSuperConfigFile();
 
 			return null;
 		}
 
 		public XMLConfig RootConfig()
 		{
-			if (this.parent_config == null)
+			if (this.parentConfig == null)
 				return this;
-			return this.parent_config.RootConfig();
+			return this.parentConfig.RootConfig();
 		}
 
 		public XMLConfig SuperConfig()
 		{
-			return this.parent_config;
+			return this.parentConfig;
 		}
 
 		public string GetName()
@@ -212,9 +208,9 @@ namespace CsCat
 			this.name = name;
 		}
 
-		public void LoadFrom(string file_path)
+		public void LoadFrom(string filePath)
 		{
-			LoadFrom(new FileInfo(file_path));
+			LoadFrom(new FileInfo(filePath));
 		}
 
 		public void LoadFrom(FileInfo file)
@@ -247,17 +243,17 @@ namespace CsCat
 					this.name = name.Trim();
 			}
 
-			Dictionary<string, string> node_attr_dict = XMLUtil.GetNodeAttrs(node);
-			foreach (string key in node_attr_dict.Keys)
+			Dictionary<string, string> nodeAttrDict = XMLUtil.GetNodeAttrs(node);
+			foreach (string key in nodeAttrDict.Keys)
 			{
-				if (this.attr_dict.ContainsKey(key))
+				if (this.attrDict.ContainsKey(key))
 					continue;
-				string value = node_attr_dict.GetOrAddDefault(key, () => "");
-				this.attr_dict[key] = value;
+				string value = nodeAttrDict.GetOrAddDefault(key, () => "");
+				this.attrDict[key] = value;
 			}
 
 			XmlNode child = node.FirstChild;
-			XMLConfig sub_config = null;
+			XMLConfig subConfig = null;
 			while (child != null)
 			{
 				if (child.NodeType == XmlNodeType.Element)
@@ -266,45 +262,45 @@ namespace CsCat
 						LoadProperty(child);
 					else
 					{
-						string child_node_name = child.Name;
-						if (child_node_name == null)
+						string childNodeName = child.Name;
+						if (childNodeName == null)
 							continue;
-						child_node_name = child_node_name.Trim();
-						string parse_class_string = XMLUtil.GetNodeAttrValue(child, "parseClass", "");
-						if (parse_class_string.Length > 0)
-							sub_config = (XMLConfig)Activator.CreateInstance(Type.GetType(parse_class_string));
+						childNodeName = childNodeName.Trim();
+						string parseClassString = XMLUtil.GetNodeAttrValue(child, "parseClass", "");
+						if (parseClassString.Length > 0)
+							subConfig = (XMLConfig)Activator.CreateInstance(Type.GetType(parseClassString));
 						else
-							sub_config = new XMLConfig();
-						sub_config.parent_config = this;
-						sub_config.name = child_node_name;
-						sub_config.LoadFrom(child); // 不断循环下一层
-						this.config_list.Add(sub_config);
+							subConfig = new XMLConfig();
+						subConfig.parentConfig = this;
+						subConfig.name = childNodeName;
+						subConfig.LoadFrom(child); // 不断循环下一层
+						this.configList.Add(subConfig);
 					}
 				}
 
 				child = child.NextSibling;
 			}
 
-			string config_path = node_attr_dict.GetOrAddDefault(Config_Path_Key, () => "");
-			if (config_path.Length > 0)
-				LoadFrom(config_path);
+			string configPath = nodeAttrDict.GetOrAddDefault(Config_Path_Key, () => "");
+			if (configPath.Length > 0)
+				LoadFrom(configPath);
 		}
 
 		public int GetConfigCount()
 		{
-			return this.config_list.Count;
+			return this.configList.Count;
 		}
 
 		public XMLConfig GetConfig(int index)
 		{
-			return (XMLConfig)this.config_list[index];
+			return (XMLConfig)this.configList[index];
 		}
 
 		public bool HasConfig(string tag)
 		{
-			for (int i = 0; i < this.config_list.Count; i++)
+			for (int i = 0; i < this.configList.Count; i++)
 			{
-				XMLConfig conf = (XMLConfig)this.config_list[i];
+				XMLConfig conf = (XMLConfig)this.configList[i];
 				if (tag == conf.GetName())
 					return true;
 			}
@@ -314,9 +310,9 @@ namespace CsCat
 
 		public XMLConfig GetConfig(string tag)
 		{
-			for (int i = 0; i < this.config_list.Count; i++)
+			for (int i = 0; i < this.configList.Count; i++)
 			{
-				XMLConfig config = (XMLConfig)this.config_list[i];
+				XMLConfig config = (XMLConfig)this.configList[i];
 				if (tag == config.GetName())
 					return config;
 			}
@@ -326,47 +322,47 @@ namespace CsCat
 
 		public XMLConfig[] GetConfigs(string tag)
 		{
-			List<XMLConfig> config_list = new List<XMLConfig>();
-			for (int i = 0; i < this.config_list.Count; i++)
+			List<XMLConfig> configList = new List<XMLConfig>();
+			for (int i = 0; i < this.configList.Count; i++)
 			{
-				XMLConfig config = (XMLConfig)this.config_list[i];
+				XMLConfig config = (XMLConfig)this.configList[i];
 				if (tag == config.GetName())
-					config_list.Add(config);
+					configList.Add(config);
 			}
 
-			XMLConfig[] configs = new XMLConfig[config_list.Count];
-			configs = config_list.ToArray();
+			XMLConfig[] configs = new XMLConfig[configList.Count];
+			configs = configList.ToArray();
 			return configs;
 		}
 
 		public XMLConfig[] GetConfigs()
 		{
-			XMLConfig[] configs = new XMLConfig[this.config_list.Count];
-			configs = this.config_list.ToArray();
+			XMLConfig[] configs = new XMLConfig[this.configList.Count];
+			configs = this.configList.ToArray();
 			return configs;
 		}
 
-		public XMLConfig GetConfig(string attr_name, string attr_value)
+		public XMLConfig GetConfig(string attrName, string attrValue)
 		{
 			for (int i = 0; i < GetConfigCount(); i++)
 			{
-				XMLConfig config = (XMLConfig)this.config_list[i];
-				if (config.GetAttribute(attr_name) == attr_value)
+				XMLConfig config = (XMLConfig)this.configList[i];
+				if (config.GetAttribute(attrName) == attrValue)
 					return config;
 			}
 
 			return null;
 		}
 
-		public XMLConfig MatchesConfig(string attr_name, string attr_value)
+		public XMLConfig MatchesConfig(string attrName, string attrValue)
 		{
-			Regex r = new Regex(attr_value, RegexOptions.IgnoreCase);
+			Regex r = new Regex(attrValue, RegexOptions.IgnoreCase);
 			for (int i = 0; i < GetConfigCount(); i++)
 			{
-				XMLConfig config = (XMLConfig)this.config_list[i];
-				if (config.HasAttribute(attr_name))
+				XMLConfig config = (XMLConfig)this.configList[i];
+				if (config.HasAttribute(attrName))
 				{
-					Match m = r.Match(config.GetAttribute(attr_name));
+					Match m = r.Match(config.GetAttribute(attrName));
 					if (m.Success)
 						return config;
 				}
@@ -377,38 +373,38 @@ namespace CsCat
 
 		public XMLConfig AddConfig(string tag)
 		{
-			XMLConfig sub_config = new XMLConfig();
-			sub_config.parent_config = this;
-			sub_config.SetName(tag);
-			this.config_list.Add(sub_config);
-			return sub_config;
+			XMLConfig subConfig = new XMLConfig();
+			subConfig.parentConfig = this;
+			subConfig.SetName(tag);
+			this.configList.Add(subConfig);
+			return subConfig;
 		}
 
 		public XMLConfig AddConfig(int index, string tag)
 		{
-			XMLConfig sub_config = new XMLConfig();
-			sub_config.parent_config = this;
-			sub_config.SetName(tag);
-			this.config_list.Insert(index, sub_config);
-			return sub_config;
+			XMLConfig subConfig = new XMLConfig();
+			subConfig.parentConfig = this;
+			subConfig.SetName(tag);
+			this.configList.Insert(index, subConfig);
+			return subConfig;
 		}
 
-		public void AddConfig(XMLConfig sub_config)
+		public void AddConfig(XMLConfig subConfig)
 		{
-			sub_config.parent_config = this;
-			this.config_list.Add(sub_config);
+			subConfig.parentConfig = this;
+			this.configList.Add(subConfig);
 		}
 
-		public void AddConfig(int index, XMLConfig sub_config)
+		public void AddConfig(int index, XMLConfig subConfig)
 		{
-			sub_config.parent_config = this;
-			this.config_list.Insert(index, sub_config);
+			subConfig.parentConfig = this;
+			this.configList.Insert(index, subConfig);
 		}
 
 		public XMLConfig RemoveConfig(int index)
 		{
-			XMLConfig config = this.config_list[index];
-			this.config_list.RemoveAt(index);
+			XMLConfig config = this.configList[index];
+			this.configList.RemoveAt(index);
 			return config;
 		}
 
@@ -416,15 +412,15 @@ namespace CsCat
 		{
 			XMLConfig config = GetConfig(tag);
 			if (config != null)
-				this.config_list.Remove(config);
+				this.configList.Remove(config);
 			return config;
 		}
 
-		public XMLConfig removeConfig(string attr_name, string attr_value)
+		public XMLConfig removeConfig(string attrName, string attrValue)
 		{
-			XMLConfig config = GetConfig(attr_name, attr_value);
+			XMLConfig config = GetConfig(attrName, attrValue);
 			if (config != null)
-				this.config_list.Remove(config);
+				this.configList.Remove(config);
 			return config;
 		}
 
@@ -432,13 +428,13 @@ namespace CsCat
 		{
 			XMLConfig[] configs = GetConfigs(tag);
 			for (int i = 0; i < configs.Length; i++)
-				this.config_list.Remove(configs[i]);
+				this.configList.Remove(configs[i]);
 			return configs;
 		}
 
 		public void ClearConfigs()
 		{
-			this.config_list.Clear();
+			this.configList.Clear();
 		}
 
 		protected bool IsPropertyNode(XmlNode node)
@@ -451,12 +447,12 @@ namespace CsCat
 			string key = XMLUtil.GetNodeAttrValue(node, Name_Key, "").Trim();
 			if (key.Length > 0)
 			{
-				if (!this.prop_dict.ContainsKey(key))
+				if (!this.propDict.ContainsKey(key))
 				{
 					string value = XMLUtil.GetNodeAttrValue(node, Value_Key, "");
 					if (value.Length == 0)
 						value = XMLUtil.GetNodeValue(node, "").Trim();
-					this.prop_dict[key] = value;
+					this.propDict[key] = value;
 				}
 			}
 		}
@@ -465,17 +461,17 @@ namespace CsCat
 		public static XmlNode ToXMLNode(XmlNode parent, XMLConfig config)
 		{
 			XmlNode root = XMLUtil.AddChildNode(parent, config.name, "");
-			foreach (string key in config.attr_dict.Keys)
+			foreach (string key in config.attrDict.Keys)
 			{
 				if (key == Config_Path_Key)
 					continue;
-				string value = config.attr_dict[key];
+				string value = config.attrDict[key];
 				XMLUtil.SetNodeAttrValue(root, key, value);
 			}
 
-			foreach (string key in config.prop_dict.Keys)
+			foreach (string key in config.propDict.Keys)
 			{
-				string value = config.prop_dict[key];
+				string value = config.propDict[key];
 				XmlNode child = XMLUtil.AddChildNode(root, Property_Key, "");
 				XMLUtil.SetNodeAttrValue(child, Name_Key, key);
 				if (value.Length < 100 && value.IndexOf('\n') == -1 && value.IndexOf('\r') == -1)
@@ -484,8 +480,8 @@ namespace CsCat
 					XMLUtil.SetNodeValue(child, value);
 			}
 
-			for (int i = 0; i < config.config_list.Count; i++)
-				ToXMLNode(root, (XMLConfig)config.config_list[i]);
+			for (int i = 0; i < config.configList.Count; i++)
+				ToXMLNode(root, (XMLConfig)config.configList[i]);
 			return root;
 		}
 

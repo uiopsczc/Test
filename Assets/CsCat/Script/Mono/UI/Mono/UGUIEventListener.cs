@@ -23,11 +23,11 @@ namespace CsCat
 	  IUpdateSelectedHandler,
 	  IScrollHandler
 	{
-		private bool is_down;
-		private readonly bool is_long_press_repeat = false; //是否repeate
-		private PointerEventData long_press_eventData;
-		private readonly float long_press_trigger_period = 1; //长按周期
-		private float long_press_trigger_remain_duration; // 长按触发剩余时间
+		private bool isDown;
+		private readonly bool isLongPressRepeat = false; //是否repeate
+		private PointerEventData longPressEventData;
+		private readonly float longPressTriggerPeriod = 1; //长按周期
+		private float longPressTriggerRemainDuration; // 长按触发剩余时间
 		public Action<GameObject, PointerEventData> onBeforeBeginDrag;
 		public Action<GameObject, PointerEventData> onBeginDrag;
 		public Action<GameObject, BaseEventData> onCancel;
@@ -103,7 +103,7 @@ namespace CsCat
 		{
 			onPointerDown?.Invoke(gameObject, eventData);
 			HandleLongPressDown(eventData);
-			is_down = true;
+			isDown = true;
 		}
 
 		public void OnPointerEnter(PointerEventData eventData)
@@ -119,7 +119,7 @@ namespace CsCat
 		public void OnPointerUp(PointerEventData eventData)
 		{
 			onPointerUp?.Invoke(gameObject, eventData);
-			is_down = false;
+			isDown = false;
 		}
 
 
@@ -150,12 +150,12 @@ namespace CsCat
 		{
 			if (onLongPress == null)
 				return;
-			if (!is_down)
-				long_press_trigger_remain_duration = long_press_trigger_period;
-			long_press_trigger_remain_duration -= Time.deltaTime;
-			if (!(long_press_trigger_remain_duration < 0)) return;
-			onLongPress(gameObject, long_press_eventData);
-			long_press_trigger_remain_duration = is_long_press_repeat ? long_press_trigger_period : float.MaxValue;
+			if (!isDown)
+				longPressTriggerRemainDuration = longPressTriggerPeriod;
+			longPressTriggerRemainDuration -= Time.deltaTime;
+			if (!(longPressTriggerRemainDuration < 0)) return;
+			onLongPress(gameObject, longPressEventData);
+			longPressTriggerRemainDuration = isLongPressRepeat ? longPressTriggerPeriod : float.MaxValue;
 		}
 
 

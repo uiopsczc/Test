@@ -10,9 +10,9 @@ namespace CsCat
 		/// <summary>
 		/// 父节点
 		/// </summary>
-		public HFSM parent_hfsm;
+		public HFSM parentHFSM;
 
-		protected HFSMState previous_state;
+		protected HFSMState previousState;
 
 		public GameEntity owner;
 
@@ -43,10 +43,10 @@ namespace CsCat
 		public override void Start()
 		{
 			base.Start();
-			if (default_sub_direct_state != null)
-				ChangeToState(default_sub_direct_state);
-			if (default_sub_direct_hfsm != null)
-				ChangeToHFSM(default_sub_direct_hfsm.key);
+			if (defaultSubDirectState != null)
+				ChangeToState(defaultSubDirectState);
+			if (defaultSubDirectHFSM != null)
+				ChangeToHFSM(defaultSubDirectHFSM.key);
 		}
 
 		public T GetOwner<T>() where T : GameEntity
@@ -57,31 +57,31 @@ namespace CsCat
 		public virtual void Enter(params object[] args)
 		{
 			this.SetIsEnabled(true, false);
-			if (parent_hfsm != null)
-				parent_hfsm.current_sub_direct_hfsm = this;
+			if (parentHFSM != null)
+				parentHFSM.currentSubDirectHFSM = this;
 
 		}
 
 		public virtual void Exit(params object[] args)
 		{
 			this.SetIsEnabled(false, false);
-			if (parent_hfsm != null)
-				parent_hfsm.current_sub_direct_hfsm = null;
+			if (parentHFSM != null)
+				parentHFSM.currentSubDirectHFSM = null;
 		}
 
-		public virtual void EnterLoopTo(HFSMState to_state, params object[] args)
+		public virtual void EnterLoopTo(HFSMState toState, params object[] args)
 		{
-			var hfsm_list = new List<HFSM>();//倒序
-			var _hfsm = to_state.parent_hfsm;
-			while (_hfsm != this)
+			var hfsmList = new List<HFSM>();//倒序
+			var hfsm = toState.parentHFSM;
+			while (hfsm != this)
 			{
-				hfsm_list.Add(_hfsm);
-				_hfsm = _hfsm.parent_hfsm;
+				hfsmList.Add(hfsm);
+				hfsm = hfsm.parentHFSM;
 			}
 
-			for (int i = hfsm_list.Count - 1; i >= 0; i--)
-				hfsm_list[i].Enter(args);
-			to_state.Enter(args);
+			for (int i = hfsmList.Count - 1; i >= 0; i--)
+				hfsmList[i].Enter(args);
+			toState.Enter(args);
 		}
 
 		//////////////////////////////////////////////////////////////////////
@@ -90,10 +90,10 @@ namespace CsCat
 
 		public HFSMState GetCurrentState()
 		{
-			if (this.current_sub_direct_state != null)
-				return this.current_sub_direct_state;
-			else if (this.current_sub_direct_hfsm != null)
-				return this.current_sub_direct_hfsm.GetCurrentState();
+			if (this.currentSubDirectState != null)
+				return this.currentSubDirectState;
+			else if (this.currentSubDirectHFSM != null)
+				return this.currentSubDirectHFSM.GetCurrentState();
 			return null;
 		}
 
@@ -103,7 +103,7 @@ namespace CsCat
 		/// <returns>状态</returns>
 		public HFSMState GetPreviousState()
 		{
-			return this.previous_state;
+			return this.previousState;
 		}
 
 		/// <summary>
@@ -117,24 +117,24 @@ namespace CsCat
 
 		public HFSM GetRootHFSM()
 		{
-			HFSM root_hfsm = this.cache.GetOrAddDefault("root_hfsm", () =>
+			HFSM rootHFSM = this.cache.GetOrAddDefault("root_hfsm", () =>
 			{
-				HFSM _root_hfsm = this;
-				while (_root_hfsm.parent_hfsm != null)
-					_root_hfsm = _root_hfsm.parent_hfsm;
-				return _root_hfsm;
+				HFSM hfsm = this;
+				while (hfsm.parentHFSM != null)
+					hfsm = hfsm.parentHFSM;
+				return hfsm;
 			});
-			return root_hfsm;
+			return rootHFSM;
 		}
 
 		public List<HFSM> GetParentHFSMList()
 		{
 			List<HFSM> list = new List<HFSM>();
-			var _hfsm = parent_hfsm;
-			while (_hfsm != null)
+			var hfsm = parentHFSM;
+			while (hfsm != null)
 			{
-				list.Add(_hfsm);
-				_hfsm = _hfsm.parent_hfsm;
+				list.Add(hfsm);
+				hfsm = hfsm.parentHFSM;
 			}
 
 			return list;

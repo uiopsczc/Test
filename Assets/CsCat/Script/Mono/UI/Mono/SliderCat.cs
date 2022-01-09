@@ -8,58 +8,58 @@ namespace CsCat
 	{
 		private Slider slider;
 		private float duration; // slide from 0 to 1 duration
-		public int cur_index;
+		public int curIndex;
 
-		public SliderCat(Slider slider, int cur_index, float duration, float? cur_pct = null)
+		public SliderCat(Slider slider, int curIndex, float duration, float? curPCT = null)
 		{
-			Init(slider, cur_index, duration, cur_pct);
+			Init(slider, curIndex, duration, curPCT);
 		}
 
-		public void Init(Slider slider, int cur_index, float duration, float? cur_pct = null)
+		public void Init(Slider slider, int curIndex, float duration, float? curPCT = null)
 		{
 			this.slider = slider;
-			this.cur_index = cur_index;
+			this.curIndex = curIndex;
 			this.duration = duration;
-			if (cur_pct.HasValue)
-				this.slider.value = cur_pct.Value;
+			if (curPCT.HasValue)
+				this.slider.value = curPCT.Value;
 		}
 
 		public float GetCurrentValue()
 		{
-			return this.cur_index + this.slider.value;
+			return this.curIndex + this.slider.value;
 		}
 
-		public Tween SlideTo(int to_index, float to_pct, Action<int, float, Tween> callback = null)
+		public Tween SlideTo(int toIndex, float toPCT, Action<int, float, Tween> callback = null)
 		{
-			if (cur_index == to_index)
+			if (curIndex == toIndex)
 			{
-				float tween_druation = Math.Abs(this.slider.value - to_pct) * this.duration;
-				Tween tween = this.slider.DOValue(to_pct, tween_druation).SetEase(Ease.Linear);
+				float tweenDuration = Math.Abs(this.slider.value - toPCT) * this.duration;
+				Tween tween = this.slider.DOValue(toPCT, tweenDuration).SetEase(Ease.Linear);
 				if (callback != null)
-					tween.OnComplete(() => callback(to_index, to_pct, null));
+					tween.OnComplete(() => callback(toIndex, toPCT, null));
 				return tween;
 			}
 			else
 			{
-				bool is_to_large_index = cur_index < to_index; //是否是向更大的index滑动
-				float tween_to_pct = is_to_large_index ? 1 : 0;
-				float tween_druation = Math.Abs(this.slider.value - tween_to_pct);
-				Tween tween = this.slider.DOValue(tween_to_pct, tween_druation).SetEase(Ease.Linear);
+				bool isToLargeIndex = curIndex < toIndex; //是否是向更大的index滑动
+				float tweenToPCT = isToLargeIndex ? 1 : 0;
+				float tweenDuration = Math.Abs(this.slider.value - tweenToPCT);
+				Tween tween = this.slider.DOValue(tweenToPCT, tweenDuration).SetEase(Ease.Linear);
 				tween.OnComplete(() =>
 				{
-					if (is_to_large_index) //向更大的index滑动
-			{
+					if (isToLargeIndex) //向更大的index滑动
+					{
 						this.slider.value = 0;
-						this.cur_index = this.cur_index + 1;
+						this.curIndex = this.curIndex + 1;
 					}
 					else
 					{
 						this.slider.value = 1;
-						this.cur_index = this.cur_index - 1;
+						this.curIndex = this.curIndex - 1;
 					}
 
-					Tween next_tween = SlideTo(to_index, to_pct, callback);
-					callback?.Invoke(this.cur_index, this.slider.value, next_tween);
+					Tween nextTween = SlideTo(toIndex, toPCT, callback);
+					callback?.Invoke(this.curIndex, this.slider.value, nextTween);
 				});
 				return tween;
 			}

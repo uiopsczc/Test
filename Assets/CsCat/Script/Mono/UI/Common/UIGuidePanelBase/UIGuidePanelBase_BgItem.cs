@@ -24,18 +24,16 @@ namespace CsCat
 				button = graphicComponent.gameObject.GetComponent<Button>();
 			}
 
-			public void Show(bool is_clickable = true, Action<UIPanel> click_callback = null, bool is_visible = true)
+			public void Show(bool isClickable = true, Action<UIPanel> clickCallback = null, bool isVisible = true)
 			{
-				if (!is_visible)
+				if (!isVisible)
 					image.SetAlpha(0.007f);
-				if (is_clickable)
+				if (isClickable)
 				{
-					if (click_callback == null)
-					{
-						this.parent_uiPanel.RegisterOnClick(button, () => { parent_uiPanel.Close(); });
-					}
+					if (clickCallback == null)
+						this.parentUIPanel.RegisterOnClick(button, () => { parentUIPanel.Close(); });
 					else
-						this.parent_uiPanel.RegisterOnClick(button, () => { click_callback(parent_uiPanel); });
+						this.parentUIPanel.RegisterOnClick(button, () => { clickCallback(parentUIPanel); });
 				}
 
 			}

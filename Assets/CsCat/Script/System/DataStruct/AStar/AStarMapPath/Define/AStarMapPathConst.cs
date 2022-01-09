@@ -13,19 +13,19 @@ namespace CsCat
 		public static int[] Critter_Can_Pass_Obstacle_Types =
 		{
 			1, //保留位,对应int的数值是0
-            1, //正常道路,对应int的数值是1
-            1, //遮挡,即走在这里的话，该生物半透明显示，看起来该生物被其他东西遮挡,对应int的数值是2
-            0, //低障碍,对应int的数值是3
-            0, //高障碍,对应int的数值是4
-            0, //未定义,对应int的数值是5
-            0, //未定义,对应int的数值是6
-            0, //填充区域,对应int的数值是7
-        };
+			1, //正常道路,对应int的数值是1
+			1, //遮挡,即走在这里的话，该生物半透明显示，看起来该生物被其他东西遮挡,对应int的数值是2
+			0, //低障碍,对应int的数值是3
+			0, //高障碍,对应int的数值是4
+			0, //未定义,对应int的数值是5
+			0, //未定义,对应int的数值是6
+			0, //填充区域,对应int的数值是7
+		};
 
-		public static int[] Skill_Can_Pass_Obstacle_Types = { 1, 1, 1, 1, 0, 0, 0, 0 }; // skill默认可通过障碍 0表示不能通过，1表示可以通过
+		public static int[] Skill_Can_Pass_Obstacle_Types = {1, 1, 1, 1, 0, 0, 0, 0}; // skill默认可通过障碍 0表示不能通过，1表示可以通过
 
 		/////////////////////////////////////////////////////0, 1, 2, 3, 4, 5, 6, 7  对应的int数值
-		public static int[] Air_Can_Pass_Obstacle_Types = { 1, 1, 1, 1, 1, 1, 1, 1 }; // 空中可通过障碍 0表示不能通过，1表示可以通过
+		public static int[] Air_Can_Pass_Obstacle_Types = {1, 1, 1, 1, 1, 1, 1, 1}; // 空中可通过障碍 0表示不能通过，1表示可以通过
 
 
 		//地形类型相关 数值0是保留位(即第一位)

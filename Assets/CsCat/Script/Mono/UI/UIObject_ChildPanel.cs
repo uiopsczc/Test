@@ -8,30 +8,30 @@ namespace CsCat
 {
 	public partial class UIObject
 	{
-		public Dictionary<string, UIPanel> child_panel_dict = new Dictionary<string, UIPanel>();
+		public Dictionary<string, UIPanel> childPanelDict = new Dictionary<string, UIPanel>();
 
-		public T __CreateChildPanel<T>(string key, T t, Transform parent_transform,
-		  Action<UIPanel> init_callback) where T : UIPanel, new()
+		public T __CreateChildPanel<T>(string key, T t, Transform parentTransform,
+		  Action<UIPanel> initCallback) where T : UIPanel, new()
 		{
-			T child_panel = default(T);
+			T childPanel = default(T);
 			if (key != null)
-				child_panel = this.GetChild<T>(key);
-			if (child_panel != null)
-				return child_panel;
-			child_panel = this.AddChildWithoutInit<T>(key);
-			init_callback(child_panel);
-			child_panel.OnInitPanel(parent_transform);
-			child_panel.PostInit();
-			child_panel.SetIsEnabled(true, false);
-			child_panel_dict[child_panel.key] = child_panel;
-			return child_panel;
+				childPanel = this.GetChild<T>(key);
+			if (childPanel != null)
+				return childPanel;
+			childPanel = this.AddChildWithoutInit<T>(key);
+			initCallback(childPanel);
+			childPanel.OnInitPanel(parentTransform);
+			childPanel.PostInit();
+			childPanel.SetIsEnabled(true, false);
+			childPanelDict[childPanel.key] = childPanel;
+			return childPanel;
 		}
 
-		public virtual T CreateChildPanel<T>(string key, T t, Transform parent_transform = null,
+		public virtual T CreateChildPanel<T>(string key, T t, Transform parentTransform = null,
 		   params object[] args) where T : UIPanel, new()
 		{
-			return this.__CreateChildPanel(key, t, parent_transform,
-			  (child_panel) => child_panel.InvokeMethod("Init", false, args));
+			return this.__CreateChildPanel(key, t, parentTransform,
+			  (childPanel) => childPanel.InvokeMethod("Init", false, args));
 		}
 
 		public UIPanel GetChildPanel(string key)
@@ -48,24 +48,22 @@ namespace CsCat
 		// 从Panle中Close，再调到这里来，不要直接使用这个
 		public void CloseChildPanel(string key)
 		{
-			var child_panel = GetChildPanel(key);
-			if (child_panel == null)
+			var childPanel = GetChildPanel(key);
+			if (childPanel == null)
 				return;
-			if (child_panel_dict.ContainsKey(key))
-				child_panel_dict.Remove(key);
+			if (childPanelDict.ContainsKey(key))
+				childPanelDict.Remove(key);
 			this.RemoveChild(key);
 		}
 
-		public void CloseAllChildPanels(bool is_reamin_resident_panels = false)
+		public void CloseAllChildPanels(bool isRemainResidentPanels = false)
 		{
-			List<string> panel_name_list = new List<string>(child_panel_dict.Keys);
-			foreach (string panel_name in panel_name_list)
+			List<string> panelNameList = new List<string>(childPanelDict.Keys);
+			for (var i = 0; i < panelNameList.Count; i++)
 			{
-				UIPanel child_panel = this.child_panel_dict[panel_name];
-				if (!child_panel.is_resident || !is_reamin_resident_panels)
-				{
-					child_panel.Close();
-				}
+				string panelName = panelNameList[i];
+				UIPanel childPanel = this.childPanelDict[panelName];
+				if (!childPanel.isResident || !isRemainResidentPanels) childPanel.Close();
 			}
 		}
 	}

@@ -4,7 +4,6 @@ namespace CsCat
 {
 	public partial class AStarUtilTest
 	{
-
 		public static void Test_IsInRangeX()
 		{
 			LogCat.log(AStarUtil.IsInRangeX(grids, 6));
@@ -19,8 +18,5 @@ namespace CsCat
 		{
 			LogCat.log(AStarUtil.IsInRange(grids, new Vector2Int(4, 5)));
 		}
-
-
-
 	}
 }

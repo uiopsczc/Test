@@ -5,10 +5,7 @@ namespace CsCat
 {
 	public class ExcelAssetBase
 	{
-		protected virtual string path
-		{
-			get { return null; }
-		}
+		protected virtual string path => null;
 
 		private ExcelDatabase instance;
 
@@ -47,7 +44,7 @@ namespace CsCat
 
 		public List<string> GetIdList()
 		{
-			return GetInstance().id_list;
+			return GetInstance().idList;
 		}
 
 		public List<int> GetIdListAsInt()

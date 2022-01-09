@@ -5,24 +5,21 @@ namespace CsCat
 {
 	public class UINotifyPanel : UIPanel
 	{
-		public override EUILayerName layerName
-		{
-			get { return EUILayerName.NotifyUILayer; }
-		}
+		public override EUILayerName layerName => EUILayerName.NotifyUILayer;
 
 
-		private Text desc_text;
-		private Image bg_image;
+		private Text descText;
+		private Image bgImage;
 
 
 		private string desc;
-		private bool is_moving_up;
-		private bool is_rised;
+		private bool isMovingUp;
+		private bool isRised;
 		private float position;
-		private bool is_created;
+		private bool isCreated;
 
-		private float move_up_delay_duration = 1f;
-		private float close_delay_duration = 2.8f;
+		private float moveUpDelayDuration = 1f;
+		private float closeDelayDuration = 2.8f;
 
 		public void Init(string desc)
 		{
@@ -34,45 +31,45 @@ namespace CsCat
 		public override void InitGameObjectChildren()
 		{
 			base.InitGameObjectChildren();
-			desc_text = graphicComponent.transform.FindComponentInChildren<Text>("desc");
-			bg_image = graphicComponent.transform.FindComponentInChildren<Image>("bg");
+			descText = graphicComponent.transform.FindComponentInChildren<Text>("desc");
+			bgImage = graphicComponent.transform.FindComponentInChildren<Image>("bg");
 
-			this.AddTimer(MoveUp, this.move_up_delay_duration);
+			this.AddTimer(MoveUp, this.moveUpDelayDuration);
 			this.AddTimer((args) =>
 			{
 				this.Close();
 				return false;
-			}, this.close_delay_duration);
-			this.is_created = true;
-			if (this.is_rised)
+			}, this.closeDelayDuration);
+			this.isCreated = true;
+			if (this.isRised)
 				Rise();
 		}
 
 		public override void Refresh()
 		{
 			base.Refresh();
-			desc_text.text = desc;
+			descText.text = desc;
 		}
 
 		public bool MoveUp(params object[] args)
 		{
 			graphicComponent.transform.DOBlendableMoveYBy(5, 1);
-			desc_text.DOFade(0, 1);
-			bg_image.DOFade(0, 1);
-			is_moving_up = true;
+			descText.DOFade(0, 1);
+			bgImage.DOFade(0, 1);
+			isMovingUp = true;
 			return false;
 		}
 
 		public void Rise()
 		{
-			if (!is_created)
+			if (!isCreated)
 			{
-				is_rised = true;
+				isRised = true;
 				this.position = this.position + 0.5f;
 				return;
 			}
 
-			if (this.is_moving_up)
+			if (this.isMovingUp)
 				return;
 
 			graphicComponent.transform.DOBlendableMoveYBy(this.position + 0.5f, 0.2f);
@@ -83,9 +80,9 @@ namespace CsCat
 		protected override void _Destroy()
 		{
 			base._Destroy();
-			is_moving_up = false;
-			is_rised = false;
-			is_created = false;
+			isMovingUp = false;
+			isRised = false;
+			isCreated = false;
 		}
 	}
 }

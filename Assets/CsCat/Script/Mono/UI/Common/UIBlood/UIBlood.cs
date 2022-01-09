@@ -9,30 +9,30 @@ namespace CsCat
 	public partial class UIBlood : UIObject
 	{
 
-		private float slide_from_0_to_1_duration = 1;
-		private float max_value;
-		private int slider_count;
-		private float to_value;
-		private List<Color> slider_color_list;
+		private float slideFrom0To1Duration = 1;
+		private float maxValue;
+		private int sliderCount;
+		private float toValue;
+		private List<Color> sliderColorList;
 		private Slider slider;
-		private Image slider_front_image;
-		private Image slider_back_image;
+		private Image sliderFrontImage;
+		private Image sliderBackImage;
 		private SliderCat sliderCat;
 
-		public void Init(Transform parent_transform, float max_value, int? slider_count, float? to_value, List<Color> slider_color_list = null)
+		public void Init(Transform parentTransform, float maxValue, int? sliderCount, float? toValue, List<Color> sliderColorList = null)
 		{
 			base.Init();
-			this.graphicComponent.SetParentTransform(parent_transform);
+			this.graphicComponent.SetParentTransform(parentTransform);
 			this.graphicComponent.SetPrefabPath("Assets/Resources/common/ui/prefab/UIBoold.prefab");
-			InitBlood(max_value, slider_count, to_value, slider_color_list);
+			InitBlood(maxValue, sliderCount, toValue, sliderColorList);
 		}
 
-		protected void InitBlood(float max_value, int? slider_count, float? to_value, List<Color> slider_color_list = null)
+		protected void InitBlood(float maxValue, int? sliderCount, float? toValue, List<Color> sliderColorList = null)
 		{
-			this.max_value = max_value;
-			this.slider_count = slider_count.GetValueOrDefault(1);
-			this.to_value = to_value.GetValueOrDefault(this.max_value);
-			this.slider_color_list = this.slider_color_list ?? UIBloodConst.Color_List1;
+			this.maxValue = maxValue;
+			this.sliderCount = sliderCount.GetValueOrDefault(1);
+			this.toValue = toValue.GetValueOrDefault(this.maxValue);
+			this.sliderColorList = this.sliderColorList ?? UIBloodConst.Color_List1;
 		}
 
 		//    public override GameObject InstantiateGameObject(GameObject prefab)
@@ -47,8 +47,8 @@ namespace CsCat
 		{
 			base.InitGameObjectChildren();
 			this.slider = graphicComponent.transform.Find("slider").GetComponent<Slider>();
-			this.slider_back_image = graphicComponent.transform.FindChildRecursive("Background").GetComponent<Image>();
-			this.slider_front_image = graphicComponent.transform.FindChildRecursive("Fill").GetComponent<Image>();
+			this.sliderBackImage = graphicComponent.transform.FindChildRecursive("Background").GetComponent<Image>();
+			this.sliderFrontImage = graphicComponent.transform.FindChildRecursive("Fill").GetComponent<Image>();
 		}
 
 		//    public override void OnAllAssetsLoadDone()
@@ -61,13 +61,13 @@ namespace CsCat
 		// spawn的时候重用
 		public void __OnAllAssetsLoadDone()
 		{
-			var slider_info = this.__GetSliderInfoByValue(this.to_value);
+			var slider_info = this.__GetSliderInfoByValue(this.toValue);
 			if (sliderCat != null)
-				this.sliderCat.Init(this.slider, slider_info.index, this.slide_from_0_to_1_duration, slider_info.pct);
+				this.sliderCat.Init(this.slider, slider_info.index, this.slideFrom0To1Duration, slider_info.pct);
 			else
 				this.sliderCat =
-				  new SliderCat(this.slider, slider_info.index, this.slide_from_0_to_1_duration, slider_info.pct);
-			this.__SetSliderColor(this.sliderCat.cur_index);
+				  new SliderCat(this.slider, slider_info.index, this.slideFrom0To1Duration, slider_info.pct);
+			this.__SetSliderColor(this.sliderCat.curIndex);
 			graphicComponent.SetIsShow(true);
 		}
 
@@ -80,14 +80,14 @@ namespace CsCat
 				index = 0;
 				pct = 0;
 			}
-			else if (value == this.max_value)
+			else if (value == this.maxValue)
 			{
-				index = this.slider_count - 1;
+				index = this.sliderCount - 1;
 				pct = 1;
 			}
 			else
 			{
-				float slider_each_value = this.max_value / this.slider_count;
+				float slider_each_value = this.maxValue / this.sliderCount;
 				index = (int)Mathf.Ceil(value / slider_each_value);
 				int int_part = (int)Mathf.Floor(value / slider_each_value);
 				float fractional_part = value / slider_each_value - int_part;
@@ -102,32 +102,32 @@ namespace CsCat
 
 		public void __SetSliderColor(int index)
 		{
-			var slider_back_color = this.slider_color_list[index];
-			var slider_front_color = this.slider_color_list[index + 1];
-			this.slider_back_image.color = slider_back_color;
-			this.slider_front_image.color = slider_front_color;
+			var slider_back_color = this.sliderColorList[index];
+			var slider_front_color = this.sliderColorList[index + 1];
+			this.sliderBackImage.color = slider_back_color;
+			this.sliderFrontImage.color = slider_front_color;
 		}
 
 		public Tween SlideTo(float to_value, Action<float, Tween> callback = null, float? max_value = null,
 		  int? slider_count = null)
 		{
-			this.to_value = to_value;
+			this.toValue = to_value;
 			if (max_value.HasValue)
-				this.max_value = max_value.Value;
+				this.maxValue = max_value.Value;
 			if (slider_count.HasValue)
-				this.slider_count = slider_count.Value;
+				this.sliderCount = slider_count.Value;
 			if (this.sliderCat == null)
 				return null;
 			var slider_info = this.__GetSliderInfoByValue(to_value);
 			return this.AddDOTween("UIBlood", this.sliderCat.SlideTo(slider_info.index, slider_info.pct,
 			  (index, pct, next_tween) =>
 			  {
-				  this.__SetSliderColor(this.sliderCat.cur_index);
+				  this.__SetSliderColor(this.sliderCat.curIndex);
 				  if (next_tween != null)
 					  this.AddDOTween("UIBlood", next_tween);
 				  if (callback != null)
 				  {
-					  var current_value = this.sliderCat.GetCurrentValue() * (this.max_value / this.slider_count);
+					  var current_value = this.sliderCat.GetCurrentValue() * (this.maxValue / this.sliderCount);
 					  callback(current_value, next_tween);
 				  }
 			  }));

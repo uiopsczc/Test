@@ -6,30 +6,27 @@ namespace CsCat
 {
 	public class GameData2 : ISingleton
 	{
-		public static GameData2 instance
-		{
-			get { return SingletonFactory.instance.Get<GameData2>(); }
-		}
+		public static GameData2 instance => SingletonFactory.instance.Get<GameData2>();
 
-		private string file_path = SerializeDataConst.SaveFilePathCS2;
+		private string filePath = SerializeDataConst.SaveFilePathCS2;
 		public Hashtable data;
 
 		public void SingleInit()
 		{
-			var fileInfo = new FileInfo(file_path);
+			var fileInfo = new FileInfo(filePath);
 			if (!fileInfo.Exists)
 			{
 				var org_data = new Hashtable()
-		{
-		  {"user_id", "user1"},
-		  {"dict_user_tmp", new Hashtable()},
-		  {"dict_user", new Hashtable()}
-		};
+				{
+					{"user_id", "user1"},
+					{"dict_user_tmp", new Hashtable()},
+					{"dict_user", new Hashtable()}
+				};
 				data = org_data;
 				return;
 			}
 
-			var conentBytes = StdioUtil.ReadFile(file_path);
+			var conentBytes = StdioUtil.ReadFile(filePath);
 			//conentBytes = CompressUtil.GZipDecompress(conentBytes);--½âÑ¹Ëõ
 			var content = Encoding.UTF8.GetString(conentBytes);
 			data = MiniJson.JsonDecode(content) as Hashtable;
@@ -42,38 +39,36 @@ namespace CsCat
 
 		public User RestoreUser()
 		{
-			string user_id = GameData2.instance.data["user_id"] as string;
-			var dict_user = GameData2.instance.data["dict_user"] as Hashtable;
-			var dict_user_tmp = GameData2.instance.data["dict_user_tmp"] as Hashtable;
-			User user = Client.instance.userFactory.NewDoer(user_id) as User;
-			user.DoRestore(dict_user, dict_user_tmp);
-			if (user.main_role == null)
-				user.main_role = user.AddRole("1");
-			Client.instance.main_role = user.main_role;
+			string userId = GameData2.instance.data["user_id"] as string;
+			var dictUser = GameData2.instance.data["dict_user"] as Hashtable;
+			var dictUserTmp = GameData2.instance.data["dict_user_tmp"] as Hashtable;
+			User user = Client.instance.userFactory.NewDoer(userId) as User;
+			user.DoRestore(dictUser, dictUserTmp);
+			if (user.mainRole == null)
+				user.mainRole = user.AddRole("1");
+			Client.instance.mainRole = user.mainRole;
 			return user;
 		}
-
 
 
 		private void SaveUser()
 		{
 			User user = Client.instance.user;
-			Hashtable dict_user = new Hashtable();
-			Hashtable dict_user_tmp = new Hashtable();
-			user.DoSave(dict_user, dict_user_tmp);
-			string user_id = user.GetId();
+			Hashtable dictUser = new Hashtable();
+			Hashtable dictUserTmp = new Hashtable();
+			user.DoSave(dictUser, dictUserTmp);
+			string userId = user.GetId();
 
 
-			Hashtable save_data = new Hashtable();
-			save_data["dict_user"] = dict_user;
-			save_data["dict_user_tmp"] = dict_user_tmp;
-			save_data["user_id"] = user_id;
+			Hashtable saveData = new Hashtable();
+			saveData["dict_user"] = dictUser;
+			saveData["dict_user_tmp"] = dictUserTmp;
+			saveData["user_id"] = userId;
 
-			var content = MiniJson.JsonEncode(save_data);
+			var content = MiniJson.JsonEncode(saveData);
 			var contentBytes = Encoding.UTF8.GetBytes(content);
 			//contentBytes = CompressUtil.GZipCompress(contentBytes);//Ñ¹Ëõ
-			StdioUtil.WriteFile(file_path, contentBytes);
+			StdioUtil.WriteFile(filePath, contentBytes);
 		}
-
 	}
 }

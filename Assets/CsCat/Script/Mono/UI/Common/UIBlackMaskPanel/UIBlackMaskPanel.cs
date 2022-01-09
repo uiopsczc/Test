@@ -8,18 +8,12 @@ namespace CsCat
 {
 	public class UIBlackMaskPanel : UIPanel
 	{
-		private Image bg_image;
-		private Action close_action;
+		private Image bgImage;
+		private Action closeAction;
 
-		public override bool is_resident
-		{
-			get { return true; }
-		}
+		public override bool isResident => true;
 
-		public override EUILayerName layerName
-		{
-			get { return EUILayerName.BlackMaskUILayer; }
-		}
+		public override EUILayerName layerName => EUILayerName.BlackMaskUILayer;
 
 
 		public void Init(GameObject gameObject)
@@ -32,18 +26,18 @@ namespace CsCat
 		public override void InitGameObjectChildren()
 		{
 			base.InitGameObjectChildren();
-			bg_image = this.frame_transform.Find("bg").GetComponent<Image>();
+			bgImage = this.frameTransform.Find("bg").GetComponent<Image>();
 
 
 
 
 		}
 
-		protected override void AddUntiyEvnts()
+		protected override void AddUnityEvents()
 		{
-			base.AddUntiyEvnts();
-			this.RegisterOnClick(bg_image,
-			  () => { close_action?.Invoke(); });
+			base.AddUnityEvents();
+			this.RegisterOnClick(bgImage,
+			  () => { closeAction?.Invoke(); });
 		}
 
 		protected override void AddGameEvents()
@@ -60,9 +54,9 @@ namespace CsCat
 
 
 			if (target_panel is UIPanel uiPanel)
-				close_action = uiPanel.Close;
+				closeAction = uiPanel.Close;
 			else
-				close_action = () => { ((LuaTable)target_panel).InvokeAction("Close"); };
+				closeAction = () => { ((LuaTable)target_panel).InvokeAction("Close"); };
 		}
 
 
@@ -70,13 +64,13 @@ namespace CsCat
 		{
 			graphicComponent.SetIsShow(false);
 			SetIsRaycastTarget(true);
-			close_action = null;
+			closeAction = null;
 		}
 
 
-		public void SetIsRaycastTarget(bool is_raycastTarget)
+		public void SetIsRaycastTarget(bool isRaycastTarget)
 		{
-			this.bg_image.raycastTarget = is_raycastTarget;
+			this.bgImage.raycastTarget = isRaycastTarget;
 		}
 	}
 }

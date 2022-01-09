@@ -10,11 +10,11 @@ namespace CsCat
 			base.InitConfigList();
 			this.graphicComponent.gameObject.name = "test2";
 			config_list.Add(new Dictionary<string, object>
-	  {
-		{"type", "InputItem"},
-		{"desc", "KKK"},
-		{"yes_callback", new Action(() => LogCat.LogWarning("KKK"))},
-	  });
+			{
+				{"type", "InputItem"},
+				{"desc", "KKK"},
+				{"yes_callback", new Action(() => LogCat.LogWarning("KKK"))},
+			});
 		}
 	}
 }

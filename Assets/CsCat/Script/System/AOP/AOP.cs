@@ -19,12 +19,12 @@ namespace CsCat
 	{
 		#region ctor
 
-		public AOP(object source_method_owner, params object[] source_method_args)
+		public AOP(object sourceMethodOwner, params object[] sourceMethodArgs)
 		{
-			source_method = StackTraceUtil.GetMethodOfFrame(1); //获取被切面的方法
-			_source_method_owner = source_method_owner;
-			_source_method_args = source_method_args;
-			AOPHandler.instance.Pre_AOP_Handle(source_method_owner, source_method, source_method_args);
+			sourceMethod = StackTraceUtil.GetMethodOfFrame(1); //获取被切面的方法
+			_sourceMethodOwner = sourceMethodOwner;
+			_sourceMethodArgs = sourceMethodArgs;
+			AOPHandler.instance.Pre_AOP_Handle(sourceMethodOwner, sourceMethod, sourceMethodArgs);
 		}
 
 		#endregion
@@ -33,7 +33,7 @@ namespace CsCat
 
 		public void Dispose()
 		{
-			AOPHandler.instance.Post_AOP_Handle(_source_method_owner, source_method, _source_method_args);
+			AOPHandler.instance.Post_AOP_Handle(_sourceMethodOwner, sourceMethod, _sourceMethodArgs);
 		}
 
 		//public void HandleException(Exception e)
@@ -61,17 +61,17 @@ namespace CsCat
 		/// <summary>
 		///   被切面的方法的拥有者
 		/// </summary>
-		private readonly object _source_method_owner;
+		private readonly object _sourceMethodOwner;
 
 		/// <summary>
 		///   被切面的方法
 		/// </summary>
-		private readonly MethodBase source_method;
+		private readonly MethodBase sourceMethod;
 
 		/// <summary>
 		///   被切面的方法的参数
 		/// </summary>
-		private readonly object[] _source_method_args;
+		private readonly object[] _sourceMethodArgs;
 
 		#endregion
 	}

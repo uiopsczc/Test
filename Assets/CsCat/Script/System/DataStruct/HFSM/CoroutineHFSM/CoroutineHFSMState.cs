@@ -19,14 +19,14 @@ namespace CsCat
 			yield break;
 		}
 
-		public virtual IEnumerator IEExitLoopTo(CoroutineHFSM to_hfsm, params object[] args)
+		public virtual IEnumerator IEExitLoopTo(CoroutineHFSM toHFSM, params object[] args)
 		{
 			yield return IEExit();
-			var _hfsm = parent_hfsm as CoroutineHFSM;
-			while (_hfsm != to_hfsm)
+			var hfsm = parentHFSM as CoroutineHFSM;
+			while (hfsm != toHFSM)
 			{
-				yield return _hfsm.IEExit(args);
-				_hfsm = _hfsm.parent_hfsm as CoroutineHFSM;
+				yield return hfsm.IEExit(args);
+				hfsm = hfsm.parentHFSM as CoroutineHFSM;
 			}
 		}
 	}

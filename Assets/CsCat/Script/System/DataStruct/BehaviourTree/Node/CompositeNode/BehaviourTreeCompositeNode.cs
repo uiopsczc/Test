@@ -6,7 +6,7 @@ namespace CsCat
 	{
 		#region field
 
-		public List<BehaviourTreeNode> child_list = new List<BehaviourTreeNode>();
+		public List<BehaviourTreeNode> childList = new List<BehaviourTreeNode>();
 
 		#endregion
 
@@ -14,7 +14,7 @@ namespace CsCat
 
 		public void AddChild(BehaviourTreeNode child)
 		{
-			child_list.Add(child);
+			childList.Add(child);
 			child.parent = this;
 		}
 
@@ -24,34 +24,44 @@ namespace CsCat
 
 		public override T GetChild<T>(bool loop = false)
 		{
-			foreach (var child in child_list)
+			for (var i = 0; i < childList.Count; i++)
+			{
+				var child = childList[i];
 				if (!loop)
 				{
-					if (child is T)
-						return (T)child;
+					if (child is T node)
+						return node;
 				}
 				else
 				{
-					BehaviourTreeNode childchild = child.GetChild<T>(loop);
-					if (childchild is T)
-						return (T)childchild;
+					BehaviourTreeNode grandchild = child.GetChild<T>(loop);
+					if (grandchild is T)
+						return (T) grandchild;
 				}
+			}
 
 			return null;
 		}
 
 		public override void Interrupt()
 		{
-			foreach (var child in child_list)
+			for (var i = 0; i < childList.Count; i++)
+			{
+				var child = childList[i];
 				child.Interrupt();
+			}
+
 			base.Interrupt();
 		}
 
 		public override void RestStatus()
 		{
 			base.RestStatus();
-			foreach (var child in child_list)
+			for (var i = 0; i < childList.Count; i++)
+			{
+				var child = childList[i];
 				child.RestStatus();
+			}
 		}
 
 		#endregion

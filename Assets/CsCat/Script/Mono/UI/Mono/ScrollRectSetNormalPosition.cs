@@ -8,9 +8,9 @@ namespace CsCat
 	{
 		private ScrollRect scrollRect;
 
-		private const float default_normalizedPosition = -1;
-		public float target_verticalNormalizedPosition = default_normalizedPosition;
-		public float target_horizontalNormalizedPosition = default_normalizedPosition;
+		private const float defaultNormalizedPosition = -1;
+		public float targetVerticalNormalizedPosition = defaultNormalizedPosition;
+		public float targetHorizontalNormalizedPosition = defaultNormalizedPosition;
 
 		public void Awake()
 		{
@@ -19,18 +19,18 @@ namespace CsCat
 
 		void Update()
 		{
-			if (target_verticalNormalizedPosition != default_normalizedPosition)
+			if (targetVerticalNormalizedPosition != defaultNormalizedPosition)
 			{
-				scrollRect.verticalNormalizedPosition = target_verticalNormalizedPosition;
-				if (scrollRect.verticalNormalizedPosition == target_verticalNormalizedPosition)
-					target_verticalNormalizedPosition = default_normalizedPosition;
+				scrollRect.verticalNormalizedPosition = targetVerticalNormalizedPosition;
+				if (scrollRect.verticalNormalizedPosition == targetVerticalNormalizedPosition)
+					targetVerticalNormalizedPosition = defaultNormalizedPosition;
 			}
 
-			if (target_horizontalNormalizedPosition != default_normalizedPosition)
+			if (targetHorizontalNormalizedPosition != defaultNormalizedPosition)
 			{
-				scrollRect.horizontalNormalizedPosition = target_horizontalNormalizedPosition;
-				if (scrollRect.horizontalNormalizedPosition == target_horizontalNormalizedPosition)
-					target_horizontalNormalizedPosition = default_normalizedPosition;
+				scrollRect.horizontalNormalizedPosition = targetHorizontalNormalizedPosition;
+				if (scrollRect.horizontalNormalizedPosition == targetHorizontalNormalizedPosition)
+					targetHorizontalNormalizedPosition = defaultNormalizedPosition;
 			}
 		}
 	}

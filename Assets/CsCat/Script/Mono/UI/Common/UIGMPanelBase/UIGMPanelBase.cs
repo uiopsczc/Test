@@ -22,11 +22,11 @@ namespace CsCat
 		public override void InitGameObjectChildren()
 		{
 			base.InitGameObjectChildren();
-			inner_content_transform = this.frame_transform.Find("content/Scroll View/Viewport/Content");
+			inner_content_transform = this.frameTransform.Find("content/Scroll View/Viewport/Content");
 			switch_item_prefab = inner_content_transform.Find("switch_item").gameObject;
 			input_item_prefab = inner_content_transform.Find("input_item").gameObject;
 			input_item2_prefab = inner_content_transform.Find("input_item_2").gameObject;
-			close_btn_gameObject = this.frame_transform.Find("content/close_btn").gameObject;
+			close_btn_gameObject = this.frameTransform.Find("content/close_btn").gameObject;
 
 			this.RegisterOnClick(close_btn_gameObject, () => this.Close());
 

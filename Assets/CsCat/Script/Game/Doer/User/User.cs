@@ -7,7 +7,7 @@ namespace CsCat
 		private ItemBag o_item_bag;
 		private Roles o_roles;
 		private Missions o_missions;
-		public Role main_role;
+		public Role mainRole;
 
 		public override void Init()
 		{
@@ -37,8 +37,8 @@ namespace CsCat
 			this.o_item_bag.DoSave(dict, dictTmp);
 			//存储任务
 			this.o_missions.DoSave(dict, dictTmp);
-			if (this.main_role != null)
-				dict["main_role_rid"] = this.main_role.GetRid();
+			if (this.mainRole != null)
+				dict["main_role_rid"] = this.mainRole.GetRid();
 		}
 
 		//还原
@@ -52,7 +52,7 @@ namespace CsCat
 			this.o_missions.DoRestore(dict, dictTmp);
 
 			string main_role_rid = dict.Remove3<string>("main_role_rid");
-			this.main_role = this.GetRole(main_role_rid);
+			this.mainRole = this.GetRole(main_role_rid);
 
 			base.DoRestore(dict, dictTmp);
 		}

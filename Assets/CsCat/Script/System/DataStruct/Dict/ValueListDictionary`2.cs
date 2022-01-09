@@ -5,10 +5,10 @@ namespace CsCat
 {
 	public class ValueListDictionary<TKey, TValue> : Dictionary<TKey, List<TValue>>
 	{
-		public void Add(TKey key, TValue value, bool is_value_unique = false)
+		public void Add(TKey key, TValue value, bool isValueUnique = false)
 		{
 			this.GetOrAddDefault(key, () => new List<TValue>());
-			if (is_value_unique && this[key].Contains(value))
+			if (isValueUnique && this[key].Contains(value))
 				return;
 			this[key].Add(value);
 		}
@@ -41,15 +41,18 @@ namespace CsCat
 
 		public void CheckAll()
 		{
-			List<TKey> to_remove_key_list = new List<TKey>();
+			List<TKey> toRemoveKeyList = new List<TKey>();
 			foreach (var key in this.Keys)
 			{
 				if (this[key].IsNullOrEmpty())
-					to_remove_key_list.Add(key);
+					toRemoveKeyList.Add(key);
 			}
 
-			foreach (var to_remove_key in to_remove_key_list)
-				this.Remove(to_remove_key);
+			for (var i = 0; i < toRemoveKeyList.Count; i++)
+			{
+				var toRemoveKey = toRemoveKeyList[i];
+				this.Remove(toRemoveKey);
+			}
 		}
 
 		public void ForEach(Action<TKey, TValue> action)
@@ -57,24 +60,28 @@ namespace CsCat
 			foreach (var key in this.Keys)
 			{
 				var valueList = this[key];
-				foreach (var value in valueList)
+				for (var i = 0; i < valueList.Count; i++)
+				{
+					var value = valueList[i];
 					action(key, value);
+				}
 			}
 
 			CheckAll();
 		}
 
-		public void Foreach(TKey key, Action<TValue> action, bool is_ignore_value_null = true)
+		public void Foreach(TKey key, Action<TValue> action, bool isIgnoreValueNull = true)
 		{
 			if (!this.ContainsKey(key))
 				return;
-			List<TValue> value_list = this[key];
-			if (value_list == null)
+			List<TValue> valueList = this[key];
+			if (valueList == null)
 				return;
 
-			foreach (TValue value in value_list)
+			for (var i = 0; i < valueList.Count; i++)
 			{
-				if (is_ignore_value_null && value == null)
+				TValue value = valueList[i];
+				if (isIgnoreValueNull && value == null)
 					continue;
 				try
 				{

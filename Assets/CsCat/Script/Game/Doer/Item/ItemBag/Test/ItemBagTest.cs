@@ -8,7 +8,7 @@ namespace CsCat
 		{
 			User user = Client.instance.user;
 			user.AddItems("4", 4);
-			user.UseItem("4", user.main_role);
+			user.UseItem("4", user.mainRole);
 			//    Client.instance.user.DealItems(new Dictionary<string, string>() { { "4", "4" }, { "5", "5\"hhhhhp:6\"" } });
 
 			var dict = new Hashtable();

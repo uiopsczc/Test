@@ -7,77 +7,77 @@ namespace CsCat
 	public static partial class AStarUtil
 	{
 		//检测某个点是否可通过
-		public static bool CanPass(int[][] grids, int x, int y, int[] can_pass_obstacle_types, int[] can_pass_terrain_types)
+		public static bool CanPass(int[][] grids, int x, int y, int[] canPassObstacleTypes, int[] canPassTerrainTypes)
 		{
-			int grid_type = grids[x][y];
-			int grid_obstacle_type = GetObstacleType(grid_type);
-			if (grid_obstacle_type != 0 && can_pass_obstacle_types[grid_obstacle_type] == 0) // 障碍
+			int gridType = grids[x][y];
+			int gridObstacleType = GetObstacleType(gridType);
+			if (gridObstacleType != 0 && canPassObstacleTypes[gridObstacleType] == 0) // 障碍
 				return false;
-			int grid_terrain_type = GetTerrainType(grid_type);
-			if (grid_terrain_type != 0 && can_pass_terrain_types[grid_terrain_type] == 0) // 地形
+			int gridTerrainType = GetTerrainType(gridType);
+			if (gridTerrainType != 0 && canPassTerrainTypes[gridTerrainType] == 0) // 地形
 				return false;
 			return true;
 		}
 
 		//检测某个点是否可通过
 		// can_out 是否允许在场景外
-		public static bool CanPass(AStarMapPath astarMapPath, int x, int y, int[] can_pass_obstacle_types,
-		  int[] can_pass_terrain_types, bool can_out = false)
+		public static bool CanPass(AStarMapPath astarMapPath, int x, int y, int[] canPassObstacleTypes,
+		  int[] canPassTerrainTypes, bool canOut = false)
 		{
 			if (!IsInRange(astarMapPath.GetFinalGrids(), x, y))
-				return can_out;
+				return canOut;
 			int grid_type = astarMapPath.GetFinalGrids()[x][y]; // 固有地形+障碍
 			if (!IsValidObstacleType(grid_type)) // 填充区域
-				return can_out;
-			if (!CanPass(astarMapPath.GetFinalGrids(), x, y, can_pass_obstacle_types, can_pass_terrain_types))
+				return canOut;
+			if (!CanPass(astarMapPath.GetFinalGrids(), x, y, canPassObstacleTypes, canPassTerrainTypes))
 				return false;
 			return true;
 		}
 
 		//检测轨迹是否可通过
 		// can_out 是否允许在场景外
-		public static bool CanPass(AStarMapPath astarMapPath, List<Vector2Int> track_list, int[] can_pass_obstacle_types,
-		  int[] can_pass_terrain_types, bool can_out = false)
+		public static bool CanPass(AStarMapPath astarMapPath, List<Vector2Int> trackList, int[] canPassObstacleTypes,
+		  int[] canPassTerrainTypes, bool canOut = false)
 		{
-			if (track_list.Count == 0)
+			if (trackList.Count == 0)
 				return true;
-			Vector2Int lp = track_list[0];
-			if (track_list.Count == 1)
-				return CanPass(astarMapPath, lp.x, lp.y, can_pass_obstacle_types, can_pass_terrain_types, can_out);
-			for (int i = 1; i < track_list.Count; i++)
+			Vector2Int lp = trackList[0];
+			if (trackList.Count == 1)
+				return CanPass(astarMapPath, lp.x, lp.y, canPassObstacleTypes, canPassTerrainTypes, canOut);
+			for (int i = 1; i < trackList.Count; i++)
 			{
-				Vector2Int p = track_list[i];
-				if (!CanPass(astarMapPath, p.x, p.y, can_pass_obstacle_types, can_pass_terrain_types, can_out))
+				Vector2Int p = trackList[i];
+				if (!CanPass(astarMapPath, p.x, p.y, canPassObstacleTypes, canPassTerrainTypes, canOut))
 					return false;
 
 				DirectionInfo directionInfo = DirectionInfoUtil.GetDirectionInfo(p.x - lp.x, p.y - lp.y);
 				//      directionInfo = DirectionConst.GetDirectionInfo(0, 0);
 				if (directionInfo == DirectionInfoConst.LeftTopDirectionInfo) // 左上角
 				{
-					if (!CanPass(astarMapPath, p.x + 1, p.y, can_pass_obstacle_types, can_pass_terrain_types, can_out))
+					if (!CanPass(astarMapPath, p.x + 1, p.y, canPassObstacleTypes, canPassTerrainTypes, canOut))
 						return false;
-					if (!CanPass(astarMapPath, p.x, p.y - 1, can_pass_obstacle_types, can_pass_terrain_types, can_out))
+					if (!CanPass(astarMapPath, p.x, p.y - 1, canPassObstacleTypes, canPassTerrainTypes, canOut))
 						return false;
 				}
 				else if (directionInfo == DirectionInfoConst.RightTopDirectionInfo) // 右上角
 				{
-					if (!CanPass(astarMapPath, p.x - 1, p.y, can_pass_obstacle_types, can_pass_terrain_types, can_out))
+					if (!CanPass(astarMapPath, p.x - 1, p.y, canPassObstacleTypes, canPassTerrainTypes, canOut))
 						return false;
-					if (!CanPass(astarMapPath, p.x, p.y - 1, can_pass_obstacle_types, can_pass_terrain_types, can_out))
+					if (!CanPass(astarMapPath, p.x, p.y - 1, canPassObstacleTypes, canPassTerrainTypes, canOut))
 						return false;
 				}
 				else if (directionInfo == DirectionInfoConst.RightBottomDirectionInfo) // 右下角
 				{
-					if (!CanPass(astarMapPath, p.x - 1, p.y, can_pass_obstacle_types, can_pass_terrain_types, can_out))
+					if (!CanPass(astarMapPath, p.x - 1, p.y, canPassObstacleTypes, canPassTerrainTypes, canOut))
 						return false;
-					if (!CanPass(astarMapPath, p.x, p.y + 1, can_pass_obstacle_types, can_pass_terrain_types, can_out))
+					if (!CanPass(astarMapPath, p.x, p.y + 1, canPassObstacleTypes, canPassTerrainTypes, canOut))
 						return false;
 				}
 				else if (directionInfo == DirectionInfoConst.LeftBottomDirectionInfo) // 左下角
 				{
-					if (!CanPass(astarMapPath, p.x + 1, p.y, can_pass_obstacle_types, can_pass_terrain_types, can_out))
+					if (!CanPass(astarMapPath, p.x + 1, p.y, canPassObstacleTypes, canPassTerrainTypes, canOut))
 						return false;
-					if (!CanPass(astarMapPath, p.x, p.y + 1, can_pass_obstacle_types, can_pass_terrain_types, can_out))
+					if (!CanPass(astarMapPath, p.x, p.y + 1, canPassObstacleTypes, canPassTerrainTypes, canOut))
 						return false;
 				}
 
@@ -88,17 +88,15 @@ namespace CsCat
 		}
 
 		//检测两点间直线是否可通过
-		public static bool CanLinePass(AStarMapPath astarMapPath, Vector2Int point_a, Vector2Int point_b,
-		  int[] can_pass_obstacle_types,
-		  int[] can_pass_terrain_types, bool can_out = false)
+		public static bool CanLinePass(AStarMapPath astarMapPath, Vector2Int pointA, Vector2Int pointB,
+		  int[] canPassObstacleTypes,
+		  int[] canPassTerrainTypes, bool canOut = false)
 		{
-			if (!can_out && (!IsInRange(astarMapPath.GetFinalGrids(), point_a) ||
-							 !IsInRange(astarMapPath.GetFinalGrids(), point_b)))
+			if (!canOut && (!IsInRange(astarMapPath.GetFinalGrids(), pointA) ||
+							 !IsInRange(astarMapPath.GetFinalGrids(), pointB)))
 				return false;
-			var line_point_list = GetLinePointList(point_a, point_b);
-			if (!CanPass(astarMapPath, line_point_list, can_pass_obstacle_types, can_pass_terrain_types, can_out))
-				return false;
-			return true;
+			var linePointList = GetLinePointList(pointA, pointB);
+			return CanPass(astarMapPath, linePointList, canPassObstacleTypes, canPassTerrainTypes, canOut);
 		}
 
 

@@ -42,7 +42,7 @@ namespace CsCat
 		//    public RedDotLogic redDotLogic;
 
 		public User user;
-		public Role main_role;
+		public Role mainRole;
 
 
 		public StageBase stage;
@@ -78,7 +78,7 @@ namespace CsCat
 			this.moveManager = graphicComponent.gameObject.AddComponent<MoveManager>();
 
 			language = GameData.instance.langData.language;
-			guidManager = new GuidManager(GameData.instance.guid_current);
+			guidManager = new GuidManager(GameData.instance.guidCurrent);
 			assetBundleUpdater = AddChild<AssetBundleUpdater>("AssetBundleUpdater");
 			assetBundleManager = AddChild<AssetBundleManager>("AssetBundleManager");
 			cfgManager = AddChild<CfgManager>("CfgManager");
@@ -189,7 +189,7 @@ namespace CsCat
 
 		public void OnApplicationQuit()
 		{
-			GameData.instance.quit_time_ticks = DateTimeUtil.NowTicks();
+			GameData.instance.quitTimeTicks = DateTimeUtil.NowTicks();
 			GameData.instance.Save();
 			GameData2.instance.Save();
 		}

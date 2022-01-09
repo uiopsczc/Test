@@ -7,9 +7,9 @@ namespace CsCat
 	public class UIHUDTextBase : UIObject
 	{
 
-		float text_alpha;
-		public Text text_comp;
-		public Animation text_animation;
+		float textAlpha;
+		public Text textComp;
+		public Animation textAnimation;
 
 		public void Init(Transform parent_transform)
 		{
@@ -21,15 +21,15 @@ namespace CsCat
 		public override void InitGameObjectChildren()
 		{
 			base.InitGameObjectChildren();
-			this.text_comp = graphicComponent.gameObject.GetComponent<Text>();
-			this.text_alpha = text_comp.color.a;
-			this.text_animation = graphicComponent.gameObject.GetComponent<Animation>();
+			this.textComp = graphicComponent.gameObject.GetComponent<Text>();
+			this.textAlpha = textComp.color.a;
+			this.textAnimation = graphicComponent.gameObject.GetComponent<Animation>();
 		}
 
 		protected override void _Reset()
 		{
 			base._Reset();
-			this.text_comp.SetColorA(this.text_alpha);
+			this.textComp.SetColorA(this.textAlpha);
 		}
 	}
 }

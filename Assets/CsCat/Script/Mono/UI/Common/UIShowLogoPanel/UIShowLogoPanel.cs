@@ -4,10 +4,7 @@ namespace CsCat
 {
 	public class UIShowLogoPanel : UIBackgroundPanel
 	{
-		public override bool is_resident
-		{
-			get { return true; }
-		}
+		public override bool isResident => true;
 
 
 		public void Init(GameObject gameObject)

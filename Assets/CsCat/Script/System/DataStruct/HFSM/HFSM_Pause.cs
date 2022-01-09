@@ -13,9 +13,10 @@ namespace CsCat
 			this._isPaused = isPaused;
 			if (isLoopChildren)
 			{
-				current_sub_direct_hfsm?.SetIsPaused(isPaused, true);
-				current_sub_direct_state?.SetIsPaused(isPaused, true);
+				currentSubDirectHFSM?.SetIsPaused(isPaused, true);
+				currentSubDirectState?.SetIsPaused(isPaused, true);
 			}
+
 			_SetIsPaused(isPaused);
 		}
 	}

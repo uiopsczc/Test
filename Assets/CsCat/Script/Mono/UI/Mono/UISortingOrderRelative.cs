@@ -7,10 +7,10 @@ namespace CsCat
 	public class UISortingOrderRelative : MonoBehaviour
 	{
 		public Canvas canvas;
-		private readonly List<Renderer> children_renderer_list = new List<Renderer>();
-		public int last_sorting_order = -1;
+		private readonly List<Renderer> childRendererList = new List<Renderer>();
+		public int lastSortingOrder = -1;
 
-		public int relative_sorting_order = 0;
+		public int relativeSortingOrder = 0;
 
 		public void Start()
 		{
@@ -22,19 +22,19 @@ namespace CsCat
 			}
 
 
-			gameObject.GetComponentsInChildren(true, children_renderer_list);
+			gameObject.GetComponentsInChildren(true, childRendererList);
 
-			var sorting_order = canvas.sortingOrder + relative_sorting_order;
-			UpdateChildrenSortingOrder(sorting_order);
+			var sortingOrder = canvas.sortingOrder + relativeSortingOrder;
+			UpdateChildrenSortingOrder(sortingOrder);
 		}
 
 
 		private void UpdateChildrenSortingOrder(int sorting_order)
 		{
-			for (var i = 0; i < children_renderer_list.Count; ++i)
-				if (children_renderer_list[i] != null)
-					children_renderer_list[i].sortingOrder = sorting_order;
-			last_sorting_order = sorting_order;
+			for (var i = 0; i < childRendererList.Count; ++i)
+				if (childRendererList[i] != null)
+					childRendererList[i].sortingOrder = sorting_order;
+			lastSortingOrder = sorting_order;
 		}
 
 
@@ -43,11 +43,11 @@ namespace CsCat
 			if (canvas == null)
 				return;
 
-			var sorting_order = canvas.sortingOrder + relative_sorting_order;
-			if (last_sorting_order == sorting_order)
+			var sortingOrder = canvas.sortingOrder + relativeSortingOrder;
+			if (lastSortingOrder == sortingOrder)
 				return;
 
-			UpdateChildrenSortingOrder(sorting_order);
+			UpdateChildrenSortingOrder(sortingOrder);
 		}
 	}
 }

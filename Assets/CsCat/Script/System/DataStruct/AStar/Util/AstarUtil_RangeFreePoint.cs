@@ -9,8 +9,8 @@ namespace CsCat
 
 		//获取range范围内的可以通过的格子列表
 		public static List<Vector2Int> GetRangeFreePointList(AStarMapPath astarMapPath, int x1, int y1, int x2, int y2,
-		  List<Vector2Int> except_point_list,
-		  int[] can_pass_obstacle_types, int[] can_pass_terrain_types)
+		  List<Vector2Int> exceptPointList,
+		  int[] canPassObstacleTypes, int[] canPassTerrainTypes)
 		{
 			List<Vector2Int> list = new List<Vector2Int>();
 			for (int x = x1; x <= x2; x++)
@@ -19,11 +19,11 @@ namespace CsCat
 				{
 					if (!IsInRange(astarMapPath.GetFinalGrids(), x, y))
 						continue;
-					bool can_pass = CanPass(astarMapPath, x, y, can_pass_obstacle_types, can_pass_terrain_types);
-					if (can_pass)
+					bool canPass = CanPass(astarMapPath, x, y, canPassObstacleTypes, canPassTerrainTypes);
+					if (canPass)
 					{
 						Vector2Int p = new Vector2Int(x, y);
-						if (except_point_list == null || !except_point_list.Contains(p))
+						if (exceptPointList == null || !exceptPointList.Contains(p))
 							list.Add(p);
 					}
 				}
@@ -35,25 +35,25 @@ namespace CsCat
 
 		//获取range范围内的可以通过的格子
 		public static Vector2Int? FindRangeFreePoint(AStarMapPath astarMapPath, int x1, int y1, int x2, int y2,
-		  int[] can_pass_obstacle_types, int[] can_pass_terrain_types, RandomManager randomManager = null)
+		  int[] canPassObstacleTypes, int[] canPassTerrainTypes, RandomManager randomManager = null)
 		{
 			return FindRangeFreePoint(astarMapPath, x1, y1, x2, y2, null,
-			  can_pass_obstacle_types, can_pass_terrain_types, randomManager);
+			  canPassObstacleTypes, canPassTerrainTypes, randomManager);
 		}
 
 
 		//获取range范围内的可以通过的格子
 		public static Vector2Int? FindRangeFreePoint(AStarMapPath astarMapPath, int x1, int y1, int x2, int y2,
-		  List<Vector2Int> except_point_list,
-		  int[] can_pass_obstacle_types, int[] can_pass_terrain_types, RandomManager randomManager = null)
+		  List<Vector2Int> exceptPointList,
+		  int[] canPassObstacleTypes, int[] canPassTerrainTypes, RandomManager randomManager = null)
 		{
 			randomManager = randomManager ?? Client.instance.randomManager;
-			List<Vector2Int> list = GetRangeFreePointList(astarMapPath, x1, y1, x2, y2, except_point_list,
-			  can_pass_obstacle_types, can_pass_terrain_types);
+			List<Vector2Int> list = GetRangeFreePointList(astarMapPath, x1, y1, x2, y2, exceptPointList,
+			  canPassObstacleTypes, canPassTerrainTypes);
 
-			if (except_point_list != null)
+			if (exceptPointList != null)
 			{
-				list.RemoveElementsOfSub(except_point_list);
+				list.RemoveElementsOfSub(exceptPointList);
 			}
 
 			if (list.Count > 0)

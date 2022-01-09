@@ -9,8 +9,8 @@ namespace CsCat
 			User user = Client.instance.user;
 			user.AddItems("5", 5);
 			user.AddItems("6", 6);
-			user.PutOnEquip("5", user.main_role);
-			user.PutOnEquip("6", user.main_role);
+			user.PutOnEquip("5", user.mainRole);
+			user.PutOnEquip("6", user.mainRole);
 
 			var dict = new Hashtable();
 			var dict_tmp = new Hashtable();

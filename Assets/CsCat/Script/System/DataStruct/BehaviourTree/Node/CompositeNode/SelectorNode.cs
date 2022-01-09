@@ -6,18 +6,19 @@ namespace CsCat
 
 		public override BehaviourTreeNodeStatus Update()
 		{
-			if (child_list == null || child_list.Count == 0)
+			if (childList == null || childList.Count == 0)
 			{
 				status = BehaviourTreeNodeStatus.Success;
 				return status;
 			}
 
-			foreach (var child in child_list)
+			for (var i = 0; i < childList.Count; i++)
 			{
-				var child_status = child.Update();
-				if (child_status == BehaviourTreeNodeStatus.Running || child_status == BehaviourTreeNodeStatus.Success)
+				var child = childList[i];
+				var childStatus = child.Update();
+				if (childStatus == BehaviourTreeNodeStatus.Running || childStatus == BehaviourTreeNodeStatus.Success)
 				{
-					status = child_status;
+					status = childStatus;
 					return status;
 				}
 			}

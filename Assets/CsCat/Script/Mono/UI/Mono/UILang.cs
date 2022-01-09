@@ -7,15 +7,15 @@ namespace CsCat
 	[ExecuteInEditMode]
 	public class UILang : MonoBehaviour
 	{
-		private Text _ui_text;
+		private Text _uiText;
 
-		private Text ui_text
+		private Text uiText
 		{
 			get
 			{
-				if (_ui_text == null)
-					_ui_text = this.GetComponent<Text>();
-				return _ui_text;
+				if (_uiText == null)
+					_uiText = this.GetComponent<Text>();
+				return _uiText;
 			}
 		}
 
@@ -33,13 +33,13 @@ namespace CsCat
 
 		public void UpdateLangIdFromTextComponent()
 		{
-			langId = ui_text.text;
+			langId = uiText.text;
 		}
 
 		public void RefreshUIText()
 		{
 			if (!langId.IsNullOrWhiteSpace())
-				ui_text.text = Lang.GetText(langId);
+				uiText.text = Lang.GetText(langId);
 		}
 	}
 }

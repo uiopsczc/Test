@@ -11,12 +11,12 @@ namespace CsCat
 	/// </summary>
 	public class BinaryHeap<T>
 	{
-		private Comparison<T>[] compare_rules;
+		private Comparison<T>[] compareRules;
 		private int capacity;
 		private T[] datas;
 		private int size;
-		private bool is_can_remove_specific_data;
-		private Dictionary<T, int> index_dict = new Dictionary<T, int>();
+		private bool isCanRemoveSpecificData;
+		private Dictionary<T, int> indexDict = new Dictionary<T, int>();
 
 		public int Size => this.size;
 		protected T this[int index]
@@ -24,26 +24,26 @@ namespace CsCat
 			set
 			{
 				this.datas[index] = value;
-				if (is_can_remove_specific_data)
-					this.index_dict[value] = index;
+				if (isCanRemoveSpecificData)
+					this.indexDict[value] = index;
 			}
 		}
 
 
 		//默认comparison返回-1，则排在上面，即默认是按c#的最小排在前面
 		//是否能删除特定位置的数据
-		public BinaryHeap(int? capacity, bool is_can_remove_specific_data, params Comparison<T>[] compare_rules)
+		public BinaryHeap(int? capacity, bool isCanRemoveSpecificData, params Comparison<T>[] compareRules)
 		{
-			this.compare_rules = compare_rules;
+			this.compareRules = compareRules;
 			this.capacity = capacity.GetValueOrDefault(BinaryHeapConst.Default_Capacity);
-			this.is_can_remove_specific_data = is_can_remove_specific_data;
+			this.isCanRemoveSpecificData = isCanRemoveSpecificData;
 			datas = new T[this.capacity];
 		}
 
 		public void Clear()
 		{
 			Array.Clear(datas, 0, size);
-			index_dict.Clear();
+			indexDict.Clear();
 			size = 0;
 		}
 
@@ -51,39 +51,39 @@ namespace CsCat
 		//需要is_need_get_index为true才能生效
 		public int GetIndex(T data)
 		{
-			if (index_dict.ContainsKey(data))
-				return index_dict[data];
+			if (indexDict.ContainsKey(data))
+				return indexDict[data];
 			return -1;
 		}
 
 		//需要is_need_get_index为true才能生效
 		public bool Remove(T data)
 		{
-			var to_remove_index = GetIndex(data);
-			if (to_remove_index < 0)
+			var removeIndex = GetIndex(data);
+			if (removeIndex < 0)
 				return false;
-			return RemoveAt(to_remove_index);
+			return RemoveAt(removeIndex);
 		}
 
-		private bool RemoveAt(int to_remove_index)
+		private bool RemoveAt(int toRemoveIndex)
 		{
-			if (to_remove_index < 0 || to_remove_index >= size)
+			if (toRemoveIndex < 0 || toRemoveIndex >= size)
 				return false;
-			this[to_remove_index] = datas[size - 1];
+			this[toRemoveIndex] = datas[size - 1];
 			datas[size - 1] = default;
-			if (is_can_remove_specific_data)
-				index_dict.Remove(datas[size - 1]);
+			if (isCanRemoveSpecificData)
+				indexDict.Remove(datas[size - 1]);
 			size--;
-			if (HasParent(to_remove_index) && CompareWithRules(datas[to_remove_index], GetParentData(to_remove_index)) < 0)
-				HeapifyUp(to_remove_index);
+			if (HasParent(toRemoveIndex) && CompareWithRules(datas[toRemoveIndex], GetParentData(toRemoveIndex)) < 0)
+				HeapifyUp(toRemoveIndex);
 			else
-				HeapifyDown(to_remove_index);
+				HeapifyDown(toRemoveIndex);
 			return true;
 		}
 
 		private int CompareWithRules(T data1, T data2)
 		{
-			return CompareUtil.CompareWithRules(data1, data2, this.compare_rules);
+			return CompareUtil.CompareWithRules(data1, data2, this.compareRules);
 		}
 
 		public void Push(T data)
@@ -101,8 +101,8 @@ namespace CsCat
 			T result = datas[0];
 			this[0] = datas[size - 1];
 			datas[size - 1] = default;
-			if (is_can_remove_specific_data)
-				index_dict.Remove(datas[size - 1]);
+			if (isCanRemoveSpecificData)
+				indexDict.Remove(datas[size - 1]);
 			size--;
 			HeapifyDown(0);
 			return result;
@@ -110,29 +110,29 @@ namespace CsCat
 
 		void HeapifyUp(int start_index)
 		{
-			int cur_index = start_index;
-			while (HasParent(cur_index) && CompareWithRules(GetData(cur_index), GetParentData(cur_index)) < 0)
+			int curIndex = start_index;
+			while (HasParent(curIndex) && CompareWithRules(GetData(curIndex), GetParentData(curIndex)) < 0)
 			{
-				Swap(cur_index, GetParentIndex(cur_index));
-				cur_index = GetParentIndex(cur_index);
+				Swap(curIndex, GetParentIndex(curIndex));
+				curIndex = GetParentIndex(curIndex);
 			}
 		}
 
 
-		void HeapifyDown(int start_index)
+		void HeapifyDown(int startIndex)
 		{
-			int cur_index = start_index;
-			while (HasLeftChild(cur_index))//没有左子节点，必定就没有右子节点，所以判断是否有左子节点就可以了
+			int curIndex = startIndex;
+			while (HasLeftChild(curIndex))//没有左子节点，必定就没有右子节点，所以判断是否有左子节点就可以了
 			{
-				int to_swap_child_index;
-				if (HasRightChild(cur_index) && CompareWithRules(GetRightChildData(cur_index), GetLeftChildData(cur_index)) < 0)
-					to_swap_child_index = GetRightChildIndex(cur_index);
+				int toSwapChildIndex;
+				if (HasRightChild(curIndex) && CompareWithRules(GetRightChildData(curIndex), GetLeftChildData(curIndex)) < 0)
+					toSwapChildIndex = GetRightChildIndex(curIndex);
 				else
-					to_swap_child_index = GetLeftChildIndex(cur_index);
-				if (CompareWithRules(GetData(to_swap_child_index), GetData(cur_index)) < 0)
+					toSwapChildIndex = GetLeftChildIndex(curIndex);
+				if (CompareWithRules(GetData(toSwapChildIndex), GetData(curIndex)) < 0)
 				{
-					Swap(cur_index, to_swap_child_index);
-					cur_index = to_swap_child_index;
+					Swap(curIndex, toSwapChildIndex);
+					curIndex = toSwapChildIndex;
 				}
 				else
 					break;
@@ -147,14 +147,14 @@ namespace CsCat
 		}
 
 		//确保有足够的容量
-		private void EnsureEnoughCapacity(int need_size)
+		private void EnsureEnoughCapacity(int needSize)
 		{
-			if (capacity < need_size)
+			if (capacity < needSize)
 			{
 				capacity = capacity * 2;//翻倍
-				T[] new_datas = new T[capacity];
-				Array.Copy(datas, new_datas, datas.Length);
-				datas = new_datas;
+				T[] newDatas = new T[capacity];
+				Array.Copy(datas, newDatas, datas.Length);
+				datas = newDatas;
 			}
 		}
 

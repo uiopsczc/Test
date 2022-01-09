@@ -11,13 +11,13 @@ namespace CsCat
 		/// <summary>
 		/// 存数数据
 		/// </summary>
-		public LinkedDictionary<string, LinkedDictionary<string, string>> data_dict =
+		public LinkedDictionary<string, LinkedDictionary<string, string>> dataDict =
 		  new LinkedDictionary<string, LinkedDictionary<string, string>>();
 
 		/// <summary>
 		/// 作为键的列名  即以（key）结尾的列名
 		/// </summary>
-		public List<string> key_column_name_list = new List<string>();
+		public List<string> keyColumnNameList = new List<string>();
 
 		#endregion
 
@@ -26,12 +26,12 @@ namespace CsCat
 		/// <summary>
 		/// 数据的行数
 		/// </summary>
-		int data_row_count;
+		int dataRowCount;
 
 		/// <summary>
 		/// 文件路径
 		/// </summary>
-		private string _file_path;
+		private string _filePath;
 
 		#endregion
 
@@ -39,10 +39,7 @@ namespace CsCat
 
 		#region property
 
-		public virtual string file_path
-		{
-			get { return this._file_path; }
-		}
+		public virtual string filePath => this._filePath;
 
 		#endregion
 
@@ -51,14 +48,14 @@ namespace CsCat
 		/// <summary>
 		/// 获取对应列，对应行的值
 		/// </summary>
-		/// <param name="column_name"></param>
-		/// <param name="row_keys"></param>
+		/// <param name="columnName"></param>
+		/// <param name="rowKeys"></param>
 		/// <returns></returns>
-		protected virtual string GetValue(string column_name, params string[] row_keys)
+		protected virtual string GetValue(string columnName, params string[] rowKeys)
 		{
-			string row_key = GetKeys(row_keys);
-			if (data_dict.ContainsKey(row_key) && data_dict[row_key].ContainsKey(column_name))
-				return data_dict[row_key][column_name].Trim();
+			string rowKey = GetKeys(rowKeys);
+			if (dataDict.ContainsKey(rowKey) && dataDict[rowKey].ContainsKey(columnName))
+				return dataDict[rowKey][columnName].Trim();
 			return null;
 		}
 
@@ -67,66 +64,66 @@ namespace CsCat
 		/// </summary>
 		public virtual void Refresh()
 		{
-			Init(file_path);
+			Init(filePath);
 		}
 
 		#endregion
 
 		#region public method
 
-		public void Init(string file_path)
+		public void Init(string filePath)
 		{
-			this._file_path = file_path;
-			data_dict.Clear();
-			key_column_name_list.Clear();
-			string content = FileUtilCat.ReadUnityFile(file_path);
+			this._filePath = filePath;
+			dataDict.Clear();
+			keyColumnNameList.Clear();
+			string content = FileUtilCat.ReadUnityFile(filePath);
 
 			//读取每一行的内容
 			//window用"\r\n"
 			string[] lines = content.Split("\r\n".ToCharArray());
 			//string[] lineArray = textAsset.text.Split("\r".ToCharArray());
-			data_row_count = lines.Length - 1;
+			dataRowCount = lines.Length - 1;
 
-			string[] column_names = lines[0].Split(',');
+			string[] columnNames = lines[0].Split(',');
 
-			for (int i = 0; i < column_names.Length; i++)
+			for (int i = 0; i < columnNames.Length; i++)
 			{
-				string column_name = column_names[i];
-				int key_index = GetKeyIndex(column_name);
-				if (key_index != -1)
+				string columnName = columnNames[i];
+				int keyIndex = GetKeyIndex(columnName);
+				if (keyIndex != -1)
 				{
-					column_name = column_name.Substring(0, key_index);
-					key_column_name_list.Add(column_name);
-					column_names[i] = column_name;
+					columnName = columnName.Substring(0, keyIndex);
+					keyColumnNameList.Add(columnName);
+					columnNames[i] = columnName;
 				}
 			}
 
 			for (int i = 1; i < lines.Length; i++)
 			{
-				string[] row_contents = lines[i].Split(',');
-				if (row_contents[0] == "\n" || row_contents[0] == "")
+				string[] rowContents = lines[i].Split(',');
+				if (rowContents[0] == "\n" || rowContents[0] == "")
 				{
-					data_row_count = data_row_count - 1;
+					dataRowCount = dataRowCount - 1;
 					continue;
 				}
 
-				LinkedDictionary<string, string> line_data_dict = new LinkedDictionary<string, string>();
+				LinkedDictionary<string, string> lineDataDict = new LinkedDictionary<string, string>();
 				string keys = "";
 
-				for (int j = 0; j < column_names.Length; j++)
+				for (int j = 0; j < columnNames.Length; j++)
 				{
-					bool isKey = key_column_name_list.Contains(column_names[j]);
-					line_data_dict[column_names[j]] = row_contents[j];
+					bool isKey = keyColumnNameList.Contains(columnNames[j]);
+					lineDataDict[columnNames[j]] = rowContents[j];
 					if (isKey)
 					{
 						if (keys == "")
-							keys = row_contents[j];
+							keys = rowContents[j];
 						else
-							keys += "_" + row_contents;
+							keys += "_" + rowContents;
 					}
 				}
 
-				data_dict[keys] = line_data_dict;
+				dataDict[keys] = lineDataDict;
 			}
 
 		}
@@ -137,7 +134,7 @@ namespace CsCat
 		/// <returns></returns>
 		public int GetDataRowCount()
 		{
-			return data_row_count;
+			return dataRowCount;
 		}
 
 		/// <summary>
@@ -148,8 +145,9 @@ namespace CsCat
 		public string GetKeys(params string[] keys)
 		{
 			string key = "";
-			foreach (string r in keys)
+			for (var i = 0; i < keys.Length; i++)
 			{
+				string r = keys[i];
 				if (key.IsNullOrWhiteSpace())
 					key = r;
 				else
@@ -164,37 +162,39 @@ namespace CsCat
 		/// </summary>
 		public void Save()
 		{
-			if (data_dict != null)
+			if (dataDict != null)
 			{
 				string path = CsvConst.BasePath +
-							  (this.file_path.Contains(".csv") ? file_path : string.Format("{0}.csv", this.file_path));
-				List<string> column_name_list = GetColumnNames();
-				string column_name = "";
-				foreach (string column in column_name_list)
+							  (this.filePath.Contains(".csv") ? filePath : string.Format("{0}.csv", this.filePath));
+				List<string> columnNameList = GetColumnNames();
+				string columnName = "";
+				for (var i = 0; i < columnNameList.Count; i++)
 				{
-					if (key_column_name_list.Contains(column))
-						column_name += column + "(key)" + ",";
+					string column = columnNameList[i];
+					if (keyColumnNameList.Contains(column))
+						columnName += column + "(key)" + ",";
 					else
-						column_name += column + ",";
+						columnName += column + ",";
 				}
 
-				column_name = column_name.Substring(0, column_name.Length - 1); //去掉最后一个逗号
-				StdioUtil.WriteTextFile(path, column_name, true);
+				columnName = columnName.Substring(0, columnName.Length - 1); //去掉最后一个逗号
+				StdioUtil.WriteTextFile(path, columnName, true);
 
 
-				foreach (LinkedDictionary<string, string> line_data_dict in data_dict.Values)
+				foreach (LinkedDictionary<string, string> lineDataDict in dataDict.Values)
 				{
-					string row_value = "";
-					foreach (string column in column_name_list)
+					string rowValue = "";
+					for (var i = 0; i < columnNameList.Count; i++)
 					{
-						if (line_data_dict.ContainsKey(column))
-							row_value += line_data_dict[column] + ",";
+						string column = columnNameList[i];
+						if (lineDataDict.ContainsKey(column))
+							rowValue += lineDataDict[column] + ",";
 						else
-							row_value += ",";
+							rowValue += ",";
 					}
 
-					row_value = row_value.Substring(0, row_value.Length - 1); //去掉最后一个逗号
-					StdioUtil.WriteTextFile(path, row_value, true, true);
+					rowValue = rowValue.Substring(0, rowValue.Length - 1); //去掉最后一个逗号
+					StdioUtil.WriteTextFile(path, rowValue, true, true);
 				}
 
 				LogCat.LogWarning("Save Finish");
@@ -205,12 +205,13 @@ namespace CsCat
 
 		#region private method
 
-		private int GetKeyIndex(string colum_name)
+		private int GetKeyIndex(string columName)
 		{
-			string column_name_low = colum_name.ToLower();
-			foreach (string key_symbol in CsvConst.Key_Symbol_List)
+			string columnNameLow = columName.ToLower();
+			for (var i = 0; i < CsvConst.Key_Symbol_List.Count; i++)
 			{
-				int index = column_name_low.IndexOf(key_symbol);
+				string keySymbol = CsvConst.Key_Symbol_List[i];
+				int index = columnNameLow.IndexOf(keySymbol);
 				if (index != -1)
 					return index;
 			}
@@ -224,17 +225,17 @@ namespace CsCat
 		/// <returns></returns>
 		List<string> GetColumnNames()
 		{
-			List<string> column_name_list = new List<string>();
-			foreach (LinkedDictionary<string, string> line_data_dict in data_dict.Values)
+			List<string> columnNameList = new List<string>();
+			foreach (LinkedDictionary<string, string> lineDataDict in dataDict.Values)
 			{
-				foreach (string key in line_data_dict.Keys)
+				foreach (string key in lineDataDict.Keys)
 				{
-					if (!column_name_list.Contains(key))
-						column_name_list.Add(key);
+					if (!columnNameList.Contains(key))
+						columnNameList.Add(key);
 				}
 			}
 
-			return column_name_list;
+			return columnNameList;
 		}
 
 		#endregion

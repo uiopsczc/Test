@@ -18,27 +18,27 @@ namespace CsCat
 
 		protected Dictionary<object, object> GetOwnerDict(object owner)
 		{
-			return dict.GetOrAddDefault2(owner, () => { return new Dictionary<object, object>(); });
+			return dict.GetOrAddDefault2(owner, () => new Dictionary<object, object>());
 		}
 
-		public T Get<T>(object owner, string field_name)
+		public T Get<T>(object owner, string fieldName)
 		{
-			return GetOwnerDict(owner).GetOrGetDefault2<T>(field_name);
+			return GetOwnerDict(owner).GetOrGetDefault2<T>(fieldName);
 		}
 
 
-		public void Remove(object owner, string field_name = null)
+		public void Remove(object owner, string fieldName = null)
 		{
-			Remove<object>(owner, field_name);
+			Remove<object>(owner, fieldName);
 		}
 
-		public T Remove<T>(object owner, string field_name = null)
+		public T Remove<T>(object owner, string fieldName = null)
 		{
 			if (dict.ContainsKey(owner))
 			{
-				if (field_name == null)
+				if (fieldName == null)
 					return dict.Remove3<T>(owner);
-				return GetOwnerDict(owner).Remove3<T>(field_name);
+				return GetOwnerDict(owner).Remove3<T>(fieldName);
 			}
 
 			return default;

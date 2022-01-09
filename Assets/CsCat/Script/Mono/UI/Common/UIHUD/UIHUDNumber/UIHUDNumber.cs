@@ -6,16 +6,16 @@ namespace CsCat
 {
 	public class UIHUDNumber : UIHUDTextBase
 	{
-		public Vector2 spawn_uiPosition;
-		private bool is_showing;
-		private bool is_fading;
-		private const float default_show_duration = 1;
+		public Vector2 spawnUIPosition;
+		private bool isShowing;
+		private bool isFading;
+		private const float defaultShowDuration = 1;
 		public float duration;
-		public float duration_half = default_show_duration * 0.5f;
-		public float pos_diff_x;
-		public float pos_diff_y;
-		float __pos_diff_x;
-		float __pos_diff_y;
+		public float durationHalf = defaultShowDuration * 0.5f;
+		public float posDiffX;
+		public float posDiffY;
+		float __posDiffX;
+		float __posDiffY;
 		private RandomManager _randomManager;
 
 		public override void Init()
@@ -32,38 +32,40 @@ namespace CsCat
 		}
 
 
-		public void Show(Transform tf, string show_string, Color color)
+		public void Show(Transform transform, string showString, Color color)
 		{
-			Show(() => tf == null ? null : (Vector3?)tf.position, show_string, color);
+			Show(() => transform == null ? null : (Vector3?) transform.position, showString, color);
 		}
 
-		public void Show(Vector3 position, string show_string, Color color)
+		public void Show(Vector3 position, string showString, Color color)
 		{
-			Show(() => position, show_string, color);
+			Show(() => position, showString, color);
 		}
 
-		public void Show(Func<Vector3?> spawn_worldPosition_func, string show_string, Color color)
+		public void Show(Func<Vector3?> spawnWorldPositionFunc, string showString, Color color)
 		{
 			InvokeAfterAllAssetsLoadDone(() =>
 			{
-				duration = default_show_duration;
-				Vector3? spawn_worldPosition = spawn_worldPosition_func();
-				if (spawn_worldPosition == null)
+				duration = defaultShowDuration;
+				Vector3? spawnWorldPosition = spawnWorldPositionFunc();
+				if (spawnWorldPosition == null)
 				{
 					Reset();
 					return;
 				}
 
-				this.spawn_uiPosition = CameraUtil.WorldToUIPos(null,
-			Client.instance.combat.cameraManager.main_cameraBase.camera, spawn_worldPosition.Value);
-				this.text_comp.text = show_string;
-				this.text_comp.color = color;
+				this.spawnUIPosition = CameraUtil.WorldToUIPos(null,
+					Client.instance.combat.cameraManager.main_cameraBase.camera, spawnWorldPosition.Value);
+				this.textComp.text = showString;
+				this.textComp.color = color;
 
 
-				this.pos_diff_x = randomManager.RandomBoolean() ? randomManager.RandomFloat(30, 100f) : randomManager.RandomFloat(-100, -30);
-				this.pos_diff_y = randomManager.RandomFloat(50, 100f);
+				this.posDiffX = randomManager.RandomBoolean()
+					? randomManager.RandomFloat(30, 100f)
+					: randomManager.RandomFloat(-100, -30);
+				this.posDiffY = randomManager.RandomFloat(50, 100f);
 
-				this.is_showing = true;
+				this.isShowing = true;
 				graphicComponent.SetIsShow(true);
 				UpdatePos(0);
 			});
@@ -78,7 +80,7 @@ namespace CsCat
 
 		public void UpdatePos(float deltaTime)
 		{
-			if (!this.is_showing)
+			if (!this.isShowing)
 				return;
 			duration = duration - deltaTime;
 			if (duration <= 0)
@@ -88,30 +90,30 @@ namespace CsCat
 			}
 
 
-			if (duration > duration_half)
-				__pos_diff_y = EaseCat.Cubic.EaseOut2(0, this.pos_diff_y, (default_show_duration - duration) / duration_half);
+			if (duration > durationHalf)
+				__posDiffY = EaseCat.Cubic.EaseOut2(0, this.posDiffY, (defaultShowDuration - duration) / durationHalf);
 			else
-				__pos_diff_y = EaseCat.Cubic.EaseIn2(this.pos_diff_y, 0, (duration_half - duration) / duration_half);
+				__posDiffY = EaseCat.Cubic.EaseIn2(this.posDiffY, 0, (durationHalf - duration) / durationHalf);
 
-			float pct = (default_show_duration - duration) / default_show_duration;
-			__pos_diff_x = EaseCat.Linear.EaseNone2(0, this.pos_diff_x, pct);
+			float pct = (defaultShowDuration - duration) / defaultShowDuration;
+			__posDiffX = EaseCat.Linear.EaseNone2(0, this.posDiffX, pct);
 
-			if (!is_fading && pct >= 0.8f)
+			if (!isFading && pct >= 0.8f)
 			{
-				is_fading = true;
-				this.text_comp.DOFade(0.2f, duration);
+				isFading = true;
+				this.textComp.DOFade(0.2f, duration);
 			}
 
-			Vector2 pos = spawn_uiPosition + new Vector2(__pos_diff_x, __pos_diff_y);
+			Vector2 pos = spawnUIPosition + new Vector2(__posDiffX, __posDiffY);
 			graphicComponent.rectTransform.anchoredPosition = pos;
 		}
 
 		protected override void _Reset()
 		{
 			base._Reset();
-			duration = default_show_duration;
-			this.is_showing = false;
-			this.is_fading = false;
+			duration = defaultShowDuration;
+			this.isShowing = false;
+			this.isFading = false;
 			graphicComponent.SetIsShow(false);
 		}
 	}
