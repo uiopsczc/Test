@@ -6,29 +6,30 @@ namespace CsCat
 	public class CatmullRomSpline
 	{
 		public float length;
-		public List<CatmullRomSegment> segment_list = new List<CatmullRomSegment>();
-		private readonly CatmullRomPoint[] org_points;
+		public List<CatmullRomSegment> segmentList = new List<CatmullRomSegment>();
+		private readonly CatmullRomPoint[] orgPoints;
 		private int segment_num;
 
-		public CatmullRomSpline(CatmullRomPoint[] org_points, int sub_segment_num)
+		public CatmullRomSpline(CatmullRomPoint[] orgPoints, int subSegmentNum)
 		{
-			segment_num = org_points.Length - 1;
+			segment_num = orgPoints.Length - 1;
 			//添加头尾顺延曲线方向的两个点
-			var list = new List<CatmullRomPoint>(org_points);
-			var first = new CatmullRomPoint(2 * org_points[0].position - org_points[1].position, org_points[0].created_time);
+			var list = new List<CatmullRomPoint>(orgPoints);
+			var first = new CatmullRomPoint(2 * orgPoints[0].position - orgPoints[1].position,
+				orgPoints[0].createTime);
 			var last = new CatmullRomPoint(
-			  2 * org_points[org_points.Length - 1].position - org_points[org_points.Length - 2].position,
-			  org_points[org_points.Length - 1].created_time);
+				2 * orgPoints[orgPoints.Length - 1].position - orgPoints[orgPoints.Length - 2].position,
+				orgPoints[orgPoints.Length - 1].createTime);
 			list.Insert(0, first);
 			list.Add(last);
-			this.org_points = list.ToArray();
+			this.orgPoints = list.ToArray();
 
 			length = 0;
-			for (var i = 1; i <= this.org_points.Length - 3; i++)
+			for (var i = 1; i <= this.orgPoints.Length - 3; i++)
 			{
-				segment_list.Add(new CatmullRomSegment(this.org_points[i - 1], this.org_points[i], this.org_points[i + 1],
-				  this.org_points[i + 2], sub_segment_num));
-				length += segment_list[segment_list.Count - 1].length;
+				segmentList.Add(new CatmullRomSegment(this.orgPoints[i - 1], this.orgPoints[i], this.orgPoints[i + 1],
+					this.orgPoints[i + 2], subSegmentNum));
+				length += segmentList[segmentList.Count - 1].length;
 			}
 		}
 
@@ -36,44 +37,46 @@ namespace CsCat
 		public CatmullRomPoint GetPointAtDistance(float distance)
 		{
 			distance = Mathf.Clamp(distance, 0, length);
-			float cur_length = 0;
-			float last_length = 0;
-			foreach (var segment in segment_list)
+			float curLength = 0;
+			float lastLength = 0;
+			for (var i = 0; i < segmentList.Count; i++)
 			{
-				cur_length += segment.length;
-				if (cur_length < distance)
+				var segment = segmentList[i];
+				curLength += segment.length;
+				if (curLength < distance)
 				{
-					last_length = cur_length;
+					lastLength = curLength;
 					continue;
 				}
 
-				var subDistance = distance - last_length;
+				var subDistance = distance - lastLength;
 				return segment.GetPointAtDistance(subDistance);
 			}
 
-			var last = segment_list[segment_list.Count - 1];
+			var last = segmentList[segmentList.Count - 1];
 			return last.GetPointAtDistance(last.length);
 		}
 
 		public CatmullRomPoint GetTangentAtDistance(float distance)
 		{
 			distance = Mathf.Clamp(distance, 0, length);
-			float cur_length = 0;
-			float last_length = 0;
-			foreach (var segment in segment_list)
+			float curLength = 0;
+			float lastLength = 0;
+			for (var i = 0; i < segmentList.Count; i++)
 			{
-				cur_length += segment.length;
-				if (cur_length < distance)
+				var segment = segmentList[i];
+				curLength += segment.length;
+				if (curLength < distance)
 				{
-					last_length = cur_length;
+					lastLength = curLength;
 					continue;
 				}
 
-				var sub_distance = distance - last_length;
-				return segment.GetTangentAtDistance(sub_distance);
+				var subDistance = distance - lastLength;
+				return segment.GetTangentAtDistance(subDistance);
 			}
 
-			var last = segment_list[segment_list.Count - 1];
+			var last = segmentList[segmentList.Count - 1];
 			return last.GetTangentAtDistance(last.length);
 		}
 

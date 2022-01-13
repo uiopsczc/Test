@@ -5,31 +5,25 @@ namespace CsCat
 {
 	public class TransformFinderInfo
 	{
-		public Type transformFinder_type;
+		public Type transformFinderType;
 		public string name;
-		private Func<object> create_callback;
+		private Func<object> createCallback;
 
-		public TransformFinderInfo(Type transformFinder_type)
+		public TransformFinderInfo(Type transformFinderType)
 		{
-			this.name = transformFinder_type.GetLastName();
-			this.transformFinder_type = transformFinder_type;
-			this.create_callback = () => Activator.CreateInstance(transformFinder_type);
+			this.name = transformFinderType.GetLastName();
+			this.transformFinderType = transformFinderType;
+			this.createCallback = () => Activator.CreateInstance(transformFinderType);
 		}
 
 		public TransformFinderBase CreateInstance()
 		{
-			return Activator.CreateInstance(transformFinder_type) as TransformFinderBase;
+			return Activator.CreateInstance(transformFinderType) as TransformFinderBase;
 		}
 
 		public T CreateInstance<T>() where T : TransformFinderBase
 		{
 			return CreateInstance() as T;
 		}
-
-
 	}
 }
-
-
-
-

@@ -6,7 +6,7 @@ namespace CsCat
 	{
 		public virtual TimelinableTrackBase[] tracks
 		{
-			get { return null; }
+			get => null;
 			set { }
 		}
 
@@ -41,8 +41,11 @@ namespace CsCat
 
 		public void StopAllPlayingItemInfo(params object[] args)
 		{
-			foreach (var track in tracks)
+			for (var i = 0; i < tracks.Length; i++)
+			{
+				var track = tracks[i];
 				track.StopAllPlayingItemInfo(args);
+			}
 		}
 
 		public virtual void OnSequenceDisable(params object[] args)

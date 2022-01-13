@@ -8,13 +8,13 @@ namespace CsCat
 	public partial class CameraTimelinableTrack : TimelinableTrackBase
 	{
 		[NonSerialized] public Animator animator;
-		[NonSerialized] public float animator_speed_when_paused;
+		[NonSerialized] public float animatorSpeedWhenPaused;
 
 		[SerializeField] private CameraTimelinableItemInfo[] _itemInfoes = new CameraTimelinableItemInfo[0];
 
 		public override TimelinableItemInfoBase[] itemInfoes
 		{
-			get { return _itemInfoes; }
+			get => _itemInfoes;
 			set { _itemInfoes = value as CameraTimelinableItemInfo[]; }
 		}
 
@@ -24,10 +24,10 @@ namespace CsCat
 			base.OnPauseStateChange();
 			if (animator != null)
 			{
-				if (is_paused)
-					animator_speed_when_paused = animator.speed;
+				if (isPaused)
+					animatorSpeedWhenPaused = animator.speed;
 				else
-					animator.speed = animator_speed_when_paused;
+					animator.speed = animatorSpeedWhenPaused;
 			}
 		}
 

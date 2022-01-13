@@ -6,69 +6,87 @@ namespace CsCat
 {
 	public class ColliderGroup
 	{
-		public List<ColliderCat> collider_list = new List<ColliderCat>();
-		public Dictionary<ColliderType, List<ColliderCat>> collider_list_dict =
+		public List<ColliderCat> colliderList = new List<ColliderCat>();
+		public Dictionary<ColliderType, List<ColliderCat>> colliderListDict =
 		  new Dictionary<ColliderType, List<ColliderCat>>();
 
-		private List<ColliderType> _tmp_check_colliderType_list_1 = new List<ColliderType>();
-		private List<ColliderType> _tmp_check_colliderType_list_2 = new List<ColliderType>();
-		private List<ColliderCat> _tmp_to_check_collider_list_1 = new List<ColliderCat>();
-		private List<ColliderCat> _tmp_to_check_collider_list_2 = new List<ColliderCat>();
+		private List<ColliderType> _tmpCheckColliderTypeList1 = new List<ColliderType>();
+		private List<ColliderType> _tmpCheckColliderTypeList_2 = new List<ColliderType>();
+		private List<ColliderCat> _tmpToCheckColliderList1 = new List<ColliderCat>();
+		private List<ColliderCat> _tmpToCheckColliderList2 = new List<ColliderCat>();
 
-		public bool IsIntersect(ColliderGroup colliderGroup2, List<ColliderType> check_colliderType_list_1,
-		  List<ColliderType> check_colliderType_list_2)
+		public bool IsIntersect(ColliderGroup colliderGroup2, List<ColliderType> checkColliderTypeList1,
+		  List<ColliderType> checkColliderTypeList2)
 		{
-			_tmp_to_check_collider_list_1.Clear();
-			_tmp_to_check_collider_list_2.Clear();
+			_tmpToCheckColliderList1.Clear();
+			_tmpToCheckColliderList2.Clear();
 
-			foreach (var colliderType in check_colliderType_list_1)
-				_tmp_to_check_collider_list_1.AddRange(collider_list_dict[colliderType]);
-			foreach (var colliderType in check_colliderType_list_2)
-				_tmp_to_check_collider_list_2.AddRange(colliderGroup2.collider_list_dict[colliderType]);
-			foreach (var collider1 in _tmp_to_check_collider_list_1)
-				foreach (var collider2 in _tmp_to_check_collider_list_2)
+			for (var i = 0; i < checkColliderTypeList1.Count; i++)
+			{
+				var colliderType = checkColliderTypeList1[i];
+				_tmpToCheckColliderList1.AddRange(colliderListDict[colliderType]);
+			}
+
+			for (var i = 0; i < checkColliderTypeList2.Count; i++)
+			{
+				var colliderType = checkColliderTypeList2[i];
+				_tmpToCheckColliderList2.AddRange(colliderGroup2.colliderListDict[colliderType]);
+			}
+
+			for (var i = 0; i < _tmpToCheckColliderList1.Count; i++)
+			{
+				var collider1 = _tmpToCheckColliderList1[i];
+				for (var j = 0; j < _tmpToCheckColliderList2.Count; j++)
+				{
+					var collider2 = _tmpToCheckColliderList2[j];
 					if (collider1.IsIntersect(collider2))
 						return true;
+				}
+			}
+
 			return false;
 		}
 
-		public bool IsIntersect(ColliderGroup colliderGroup2, ColliderType check_colliderType_1,
-		  ColliderType check_colliderType_2)
+		public bool IsIntersect(ColliderGroup colliderGroup2, ColliderType checkColliderType1,
+		  ColliderType checkColliderType2)
 		{
-			_tmp_check_colliderType_list_1.Clear();
-			_tmp_check_colliderType_list_1.Add(check_colliderType_1);
+			_tmpCheckColliderTypeList1.Clear();
+			_tmpCheckColliderTypeList1.Add(checkColliderType1);
 
-			_tmp_check_colliderType_list_2.Clear();
-			_tmp_check_colliderType_list_2.Add(check_colliderType_2);
+			_tmpCheckColliderTypeList_2.Clear();
+			_tmpCheckColliderTypeList_2.Add(checkColliderType2);
 
-			return IsIntersect(colliderGroup2, _tmp_check_colliderType_list_1, _tmp_check_colliderType_list_2);
+			return IsIntersect(colliderGroup2, _tmpCheckColliderTypeList1, _tmpCheckColliderTypeList_2);
 		}
 
 		public void AddCollider(ColliderCat collider)
 		{
-			collider_list.Add(collider);
-			collider_list_dict.GetOrAddDefault(collider.collider_type, () => new List<ColliderCat>()).Add(collider);
+			colliderList.Add(collider);
+			colliderListDict.GetOrAddDefault(collider.colliderType, () => new List<ColliderCat>()).Add(collider);
 		}
 
 		public void RemoveCollider(ColliderCat collider)
 		{
-			if (!collider_list_dict.ContainsKey(collider.collider_type))
+			if (!colliderListDict.ContainsKey(collider.colliderType))
 				return;
-			collider_list.Remove(collider);
-			collider_list_dict[collider.collider_type].Remove(collider);
+			colliderList.Remove(collider);
+			colliderListDict[collider.colliderType].Remove(collider);
 		}
 
 		public void RemoveAllColliders()
 		{
-			collider_list.Clear();
-			collider_list_dict.Clear();
+			colliderList.Clear();
+			colliderListDict.Clear();
 		}
 
 
 		public void DebugDraw()
 		{
-			foreach (var collider in collider_list)
+			for (var i = 0; i < colliderList.Count; i++)
+			{
+				var collider = colliderList[i];
 				collider.DebugDraw(Vector3.zero);
+			}
 		}
 	}
 }

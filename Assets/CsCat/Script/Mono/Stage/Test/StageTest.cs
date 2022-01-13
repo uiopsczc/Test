@@ -2,16 +2,16 @@ namespace CsCat
 {
 	public class StageTest : StageBase
 	{
-		public override bool is_show_fade => true;
-		public override bool is_show_loading => false;
-		public override string stage_name => "StageTest";
-		public override string scene_path => "Assets/Resources/common/ui/scene/StageTestScene.unity";
+		public override bool isShowFade => true;
+		public override bool isShowLoading => false;
+		public override string stageName => "StageTest";
+		public override string scenePath => "Assets/Resources/common/ui/scene/StageTestScene.unity";
 
 
 		public override void LoadPanels()
 		{
 			base.LoadPanels();
-			panel_list.Add(Client.instance.uiManager.CreateChildPanel("UITestPanel", default(UITestPanel)));
+			panelList.Add(Client.instance.uiManager.CreateChildPanel("UITestPanel", default(UITestPanel)));
 		}
 
 		public override void Show()

@@ -4,12 +4,12 @@ namespace CsCat
 {
 	public class CombatStageTest : CombatStageBase
 	{
-		public override bool is_show_fade
+		public override bool isShowFade
 		{
 			get { return true; }
 		}
 
-		public override string stage_name
+		public override string stageName
 		{
 			get { return "CombatStageTest"; }
 		}
@@ -17,7 +17,7 @@ namespace CsCat
 		public override void LoadPanels()
 		{
 			base.LoadPanels();
-			panel_list.Add(Client.instance.uiManager.CreateChildPanel("UICombatTestPanel", default(UICombatTestPanel)));
+			panelList.Add(Client.instance.uiManager.CreateChildPanel("UICombatTestPanel", default(UICombatTestPanel)));
 		}
 
 		public override void Show()

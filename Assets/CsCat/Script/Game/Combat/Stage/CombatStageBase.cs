@@ -4,17 +4,17 @@ namespace CsCat
 {
 	public class CombatStageBase : StageBase
 	{
-		public override bool is_show_fade
+		public override bool isShowFade
 		{
 			get { return true; }
 		}
 
-		public override bool is_show_loading
+		public override bool isShowLoading
 		{
 			get { return true; }
 		}
 
-		public override string stage_name
+		public override string stageName
 		{
 			get { return "CombatStageBase"; }
 		}

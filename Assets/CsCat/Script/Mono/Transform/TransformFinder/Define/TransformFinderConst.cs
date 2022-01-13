@@ -6,31 +6,30 @@ namespace CsCat
 {
 	public static class TransformFinderConst
 	{
-		public static List<TransformFinderInfo> transformFinderInfo_list = new List<TransformFinderInfo>()
-	{
-	  new TransformFinderInfo(typeof(TransformFinder0)),
-	  new TransformFinderInfo(typeof(TransformFinder1)),
-	};
+		public static List<TransformFinderInfo> transformFinderInfoList = new List<TransformFinderInfo>()
+		{
+			new TransformFinderInfo(typeof(TransformFinder0)),
+			new TransformFinderInfo(typeof(TransformFinder1)),
+		};
 
-		private static Dictionary<Type, TransformFinderInfo> _transformFinderInfo_dict;
+		private static Dictionary<Type, TransformFinderInfo> _transformFinderInfoDict;
 
-		public static Dictionary<Type, TransformFinderInfo> transformFinderInfo_dict
+		public static Dictionary<Type, TransformFinderInfo> transformFinderInfoDict
 		{
 			get
 			{
-				if (_transformFinderInfo_dict == null)
+				if (_transformFinderInfoDict == null)
 				{
-					_transformFinderInfo_dict = new Dictionary<Type, TransformFinderInfo>();
-					foreach (var transformFinderInfo in transformFinderInfo_list)
-						_transformFinderInfo_dict[transformFinderInfo.transformFinder_type] = transformFinderInfo;
+					_transformFinderInfoDict = new Dictionary<Type, TransformFinderInfo>();
+					for (var i = 0; i < transformFinderInfoList.Count; i++)
+					{
+						var transformFinderInfo = transformFinderInfoList[i];
+						_transformFinderInfoDict[transformFinderInfo.transformFinderType] = transformFinderInfo;
+					}
 				}
-				return _transformFinderInfo_dict;
+
+				return _transformFinderInfoDict;
 			}
 		}
-
 	}
 }
-
-
-
-

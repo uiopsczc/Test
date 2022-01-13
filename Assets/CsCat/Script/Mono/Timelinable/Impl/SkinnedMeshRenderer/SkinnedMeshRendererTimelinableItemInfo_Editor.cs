@@ -7,18 +7,11 @@ namespace CsCat
 {
 	public partial class SkinnedMeshRendererTimelinableItemInfo
 	{
-		[NonSerialized] private ReorderableListInfo _skinnedMeshRendererSubBlendShapeInfo_reorderableListInfo;
+		[NonSerialized] private ReorderableListInfo _skinnedMeshRendererSubBlendShapeInfoReorderableListInfo;
 
-		public ReorderableListInfo skinnedMeshRendererSubBlendShapeInfo_reorderableListInfo
-		{
-			get
-			{
-				if (_skinnedMeshRendererSubBlendShapeInfo_reorderableListInfo == null)
-					_skinnedMeshRendererSubBlendShapeInfo_reorderableListInfo =
-					  new ReorderableListInfo(skinnedMeshRendererSubBlendShapeInfo_list);
-				return _skinnedMeshRendererSubBlendShapeInfo_reorderableListInfo;
-			}
-		}
+		public ReorderableListInfo skinnedMeshRendererSubBlendShapeInfoReorderableListInfo => _skinnedMeshRendererSubBlendShapeInfoReorderableListInfo ??
+		                                                                                      (_skinnedMeshRendererSubBlendShapeInfoReorderableListInfo =
+			                                                                                      new ReorderableListInfo(skinnedMeshRendererSubBlendShapeInfoList));
 
 
 		public override void DrawGUISetting_Detail()
@@ -29,48 +22,48 @@ namespace CsCat
 				EditorGUILayout.FloatField("blend_druation", duration);
 			}
 
-			var skinnedMeshRenderer_names = new string[skinnedMeshRenderer_list.Count];
-			var blendShap_names = new string[skinnedMeshRenderer_list.Count][];
-			for (int i = 0; i < skinnedMeshRenderer_list.Count; i++)
+			var skinnedMeshRendererNames = new string[skinnedMeshRendererList.Count];
+			var blendShapNames = new string[skinnedMeshRendererList.Count][];
+			for (int i = 0; i < skinnedMeshRendererList.Count; i++)
 			{
-				var skinnedMeshRenderer = skinnedMeshRenderer_list[i];
+				var skinnedMeshRenderer = skinnedMeshRendererList[i];
 				if (skinnedMeshRenderer == null)
 					continue;
-				skinnedMeshRenderer_names[i] = skinnedMeshRenderer.name;
+				skinnedMeshRendererNames[i] = skinnedMeshRenderer.name;
 				int blendShapeCount = skinnedMeshRenderer.sharedMesh.blendShapeCount;
-				blendShap_names[i] = new string[blendShapeCount];
+				blendShapNames[i] = new string[blendShapeCount];
 				for (int j = 0; j < blendShapeCount; j++)
-					blendShap_names[i][j] = skinnedMeshRenderer.sharedMesh.GetBlendShapeName(j);
+					blendShapNames[i][j] = skinnedMeshRenderer.sharedMesh.GetBlendShapeName(j);
 			}
 
-			if (skinnedMeshRenderer_names.IsNullOrEmpty() || skinnedMeshRenderer_index >= skinnedMeshRenderer_names.Length)
+			if (skinnedMeshRendererNames.IsNullOrEmpty() || skinnedMeshRendererIndex >= skinnedMeshRendererNames.Length)
 				return;
 
-			skinnedMeshRenderer_index =
-			  EditorGUILayout.Popup("skinnedMeshRenderer_name", skinnedMeshRenderer_index, skinnedMeshRenderer_names);
+			skinnedMeshRendererIndex =
+			  EditorGUILayout.Popup("skinnedMeshRenderer_name", skinnedMeshRendererIndex, skinnedMeshRendererNames);
 
-			if (blendShap_names.IsNullOrEmpty() || blendShap_names[skinnedMeshRenderer_index].IsNullOrEmpty() ||
-				blendShape_index >= blendShap_names[skinnedMeshRenderer_index].Length)
+			if (blendShapNames.IsNullOrEmpty() || blendShapNames[skinnedMeshRendererIndex].IsNullOrEmpty() ||
+				blendShapeIndex >= blendShapNames[skinnedMeshRendererIndex].Length)
 				return;
-			blendShape_index =
-			  EditorGUILayout.Popup("blendShape_name", blendShape_index, blendShap_names[skinnedMeshRenderer_index]);
-			blendShape_weight = EditorGUILayout.Slider("Weight", blendShape_weight, 0, 100);
+			blendShapeIndex =
+			  EditorGUILayout.Popup("blendShape_name", blendShapeIndex, blendShapNames[skinnedMeshRendererIndex]);
+			blendShapeWeight = EditorGUILayout.Slider("Weight", blendShapeWeight, 0, 100);
 
 
 			//Draw subBlendShapeInfo_list
-			skinnedMeshRendererSubBlendShapeInfo_reorderableListInfo.SetElementHeight(EditorConst.Single_Line_Height * 2 +
+			skinnedMeshRendererSubBlendShapeInfoReorderableListInfo.SetElementHeight(EditorConst.Single_Line_Height * 2 +
 																					  2 * ReorderableListConst.Padding);
-			skinnedMeshRendererSubBlendShapeInfo_reorderableListInfo.reorderableList.drawElementCallback =
+			skinnedMeshRendererSubBlendShapeInfoReorderableListInfo.reorderableList.drawElementCallback =
 			  (rect, index, isActive, isFocused) =>
 			  {
 				  var skinnedMeshRendererSubBlendShapeInfo =
-			  skinnedMeshRendererSubBlendShapeInfo_reorderableListInfo.reorderableList.list[index] as
+			  skinnedMeshRendererSubBlendShapeInfoReorderableListInfo.reorderableList.list[index] as
 				SkinnedMeshRendererSubBlendShapeInfo;
-				  skinnedMeshRendererSubBlendShapeInfo.DrawGUISetting(rect, skinnedMeshRenderer_names, blendShap_names,
+				  skinnedMeshRendererSubBlendShapeInfo.DrawGUISetting(rect, skinnedMeshRendererNames, blendShapNames,
 			  EditorConst.Single_Line_Height,
 			  ReorderableListConst.Padding);
 			  };
-			skinnedMeshRendererSubBlendShapeInfo_reorderableListInfo.DrawGUI("skinnedMeshRendererSubBlendShapeInfo_list");
+			skinnedMeshRendererSubBlendShapeInfoReorderableListInfo.DrawGUI("skinnedMeshRendererSubBlendShapeInfo_list");
 		}
 	}
 }

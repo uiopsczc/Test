@@ -25,7 +25,3 @@ namespace CsCat
 		}
 	}
 }
-
-
-
-

@@ -5,9 +5,9 @@ namespace CsCat
 {
 	public class StageResourceCheck : StageBase
 	{
-		public override bool is_show_fade => true;
-		public override bool is_show_loading => false;
-		public override string stage_name => "StageResourceCheck";
+		public override bool isShowFade => true;
+		public override bool isShowLoading => false;
+		public override string stageName => "StageResourceCheck";
 
 
 		public override void Show()
@@ -32,7 +32,7 @@ namespace CsCat
 			XLuaManager.instance.OnInit();
 			XLuaManager.instance.StartXLua();
 			Client.instance.Goto<StageTest>(0,
-			  () => { Client.instance.uiManager.uiLoadingPanel.Reset(); });
+				() => { Client.instance.uiManager.uiLoadingPanel.Reset(); });
 		}
 
 
@@ -41,11 +41,11 @@ namespace CsCat
 			StartCoroutine(Client.instance.assetBundleUpdater.CheckUpdate());
 			yield return new WaitUntil(() =>
 			{
-				bool is_update_finish = Client.instance.assetBundleUpdater.is_update_finish;
-				if (!is_update_finish)
+				bool isUpdateFinish = Client.instance.assetBundleUpdater.is_update_finish;
+				if (!isUpdateFinish)
 				{
-					int downloading_count = Client.instance.assetBundleUpdater.need_download_dict.Count;
-					if (downloading_count == 0)
+					int downloadingCount = Client.instance.assetBundleUpdater.need_download_dict.Count;
+					if (downloadingCount == 0)
 						Client.instance.uiManager.SetLoadingPct(0);
 					else
 					{
@@ -53,21 +53,16 @@ namespace CsCat
 						foreach (var key in Client.instance.assetBundleUpdater.need_download_dict.Keys)
 						{
 							if (Client.instance.assetBundleUpdater.need_download_dict[key]
-						.GetOrGetDefault2("is_finished", () => false))
+								.GetOrGetDefault2("is_finished", () => false))
 								cur_loaded_count++;
 						}
 
-						Client.instance.uiManager.SetLoadingPct(cur_loaded_count / (float)downloading_count);
-
-
+						Client.instance.uiManager.SetLoadingPct(cur_loaded_count / (float) downloadingCount);
 					}
 				}
 
-				return is_update_finish;
+				return isUpdateFinish;
 			});
 		}
 	}
 }
-
-
-

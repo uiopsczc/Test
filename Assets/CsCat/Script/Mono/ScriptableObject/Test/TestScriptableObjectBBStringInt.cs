@@ -1,4 +1,3 @@
-
 using System;
 using UnityEngine;
 
@@ -12,6 +11,3 @@ namespace CsCat
 		}
 	}
 }
-
-
-

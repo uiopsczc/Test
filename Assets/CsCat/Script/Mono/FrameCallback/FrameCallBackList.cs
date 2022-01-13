@@ -10,8 +10,8 @@ namespace CsCat
 	{
 		#region field
 
-		private List<FrameCallback> callback_list = new List<FrameCallback>();
-		private readonly List<FrameCallback> executing_callback_list = new List<FrameCallback>();
+		private List<FrameCallback> callbackList = new List<FrameCallback>();
+		private readonly List<FrameCallback> executingCallbackList = new List<FrameCallback>();
 
 		#endregion
 
@@ -19,18 +19,19 @@ namespace CsCat
 
 		public void Execute()
 		{
-			if (callback_list.Count == 0)
+			if (callbackList.Count == 0)
 				return;
-			executing_callback_list.Swap(ref callback_list);
-			foreach (var current_callback in executing_callback_list)
+			executingCallbackList.Swap(ref callbackList);
+			for (var i = 0; i < executingCallbackList.Count; i++)
 			{
-				if (current_callback.is_cancel) continue;
+				var currentCallback = executingCallbackList[i];
+				if (currentCallback.is_cancel) continue;
 				try
 				{
 					//下一帧要继续执行这个函数，所以要加到callbackList中
-					var is_need_remain = current_callback.Execute();
-					if (is_need_remain)
-						callback_list.Add(current_callback);
+					var isNeedRemain = currentCallback.Execute();
+					if (isNeedRemain)
+						callbackList.Add(currentCallback);
 				}
 				catch (Exception ex)
 				{
@@ -38,17 +39,17 @@ namespace CsCat
 				}
 			}
 
-			executing_callback_list.Clear();
+			executingCallbackList.Clear();
 		}
 
 		public void Add(FrameCallback frameCallback)
 		{
-			callback_list.Add(frameCallback);
+			callbackList.Add(frameCallback);
 		}
 
 		public void Add(Func<object, bool> callback, object callback_arg)
 		{
-			callback_list.Add(new FrameCallback(callback, callback_arg));
+			callbackList.Add(new FrameCallback(callback, callback_arg));
 		}
 
 		#endregion

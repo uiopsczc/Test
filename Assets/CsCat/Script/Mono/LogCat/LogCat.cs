@@ -10,26 +10,28 @@ namespace CsCat
 {
 	public partial class LogCat : MonoBehaviour
 	{
-		private static List<LogMessage> message_list = new List<LogMessage>();
+		private static List<LogMessage> messageList = new List<LogMessage>();
 		private static StringBuilder stringBuilder = new StringBuilder();
-		private static bool is_inited = false;
+		private static bool isInited = false;
 
 
 		public static void Init()
 		{
-			if (is_inited)
+			if (isInited)
 				return;
-			is_inited = true;
+			isInited = true;
 			Application.logMessageReceived += HandleLog;
 			if (Directory.Exists(LogCatConst.LogBasePath))
 			{
 				//每次启动客户端删除10天前保存的Log
 				DateTime time = DateTimeUtil.NowDateTime();
-				DateTime pass_time = time.AddDays(-10);
-				foreach (string full_file_name in Directory.GetFiles(LogCatConst.LogBasePath))
+				DateTime passTime = time.AddDays(-10);
+				var files = Directory.GetFiles(LogCatConst.LogBasePath);
+				for (var i = 0; i < files.Length; i++)
 				{
-					if (File.GetLastWriteTime(full_file_name) < pass_time)
-						File.Delete(full_file_name);
+					string fullFileName = files[i];
+					if (File.GetLastWriteTime(fullFileName) < passTime)
+						File.Delete(fullFileName);
 				}
 			}
 		}
@@ -144,8 +146,8 @@ namespace CsCat
 		//////////////////////////////////////////////////////////////////////
 		private static string GetFormatString(object msg, Color color)
 		{
-			string color_string = color.ToHtmlStringRGB();
-			return string.Format("<color=#{0}>{1}</color>", color_string, msg);
+			string colorString = color.ToHtmlStringRGB();
+			return string.Format("<color=#{0}>{1}</color>", colorString, msg);
 		}
 
 		public static string GetLogString(params object[] args)
@@ -153,48 +155,52 @@ namespace CsCat
 			StringBuilder result = new StringBuilder("");
 			if (args == null)
 				return result.ToString();
-			foreach (var arg in args)
+			for (var i = 0; i < args.Length; i++)
 			{
+				var arg = args[i];
 				if (arg == null)
 					result.Append("null ");
 				else
 					result.Append(arg.ToString2() + " ");
 			}
+
 			return result.ToString();
 		}
 
 		private static void HandleLog(string message, string stackTrace, LogType logType)
 		{
-			message_list.Add(new LogMessage(message, stackTrace, LogCatConst.LogType_2_LogCatType_Dict[logType]));
+			messageList.Add(new LogMessage(message, stackTrace, LogCatConst.LogType_2_LogCatType_Dict[logType]));
 			if (!Application.isPlaying)
 				Flush();
 		}
 
 		private static void Flush()
 		{
-			if (message_list.Count > 0)
+			if (messageList.Count > 0)
 			{
-				var now_timeSpan = DateTimeUtil.NowDateTime().TimeOfDay;
-				foreach (var message in message_list)
+				var nowTimeSpan = DateTimeUtil.NowDateTime().TimeOfDay;
+				for (var i = 0; i < messageList.Count; i++)
 				{
+					var message = messageList[i];
 					if (message.logType < LogCatConst.Write_Log_Level && message.logType < LogCatConst.GUI_Log_Level)
 						continue;
 
-					string log_content = string.Format("[{0}][{1}] {2}\n{3}", now_timeSpan,
-					  message.logType,
-					  message.message, message.stackTrace);
+					string logContent = string.Format("[{0}][{1}] {2}\n{3}", nowTimeSpan,
+						message.logType,
+						message.message, message.stackTrace);
 
 					if (message.logType >= LogCatConst.Write_Log_Level)
-						stringBuilder.Append(log_content + "\n");
+						stringBuilder.Append(logContent + "\n");
 
 					if (message.logType >= LogCatConst.GUI_Log_Level)
 					{
-						gui_message_list.Add(string.Format("<color=#{0}>{1}</color>", LogCatConst.LogCatTypeInfo_Dict[message.logType].color.ToHtmlStringRGBA(), log_content));
+						guiMessageList.Add(string.Format("<color=#{0}>{1}</color>",
+							LogCatConst.LogCatTypeInfo_Dict[message.logType].color.ToHtmlStringRGBA(), logContent));
 					}
 				}
 
 				WriteLogFile(stringBuilder.ToString());
-				message_list.Clear();
+				messageList.Clear();
 				stringBuilder.Clear();
 			}
 		}
@@ -204,8 +210,8 @@ namespace CsCat
 			if (content.IsNullOrWhiteSpace())
 				return;
 			string day = DateTimeUtil.GetDateTime("date", DateTimeUtil.NowTicks());
-			string file_path = LogCatConst.LogBasePath + day + ".txt";
-			StdioUtil.WriteTextFile(file_path, content, false, true);
+			string filePath = LogCatConst.LogBasePath + day + ".txt";
+			StdioUtil.WriteTextFile(filePath, content, false, true);
 		}
 	}
 }

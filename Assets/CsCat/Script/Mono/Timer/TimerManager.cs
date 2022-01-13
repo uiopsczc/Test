@@ -12,23 +12,19 @@ namespace CsCat
 		/// <summary>
 		/// update的timer
 		/// </summary>
-		public List<Timer> update_timer_list = new List<Timer>();
+		public List<Timer> updateTimerList = new List<Timer>();
 
 		/// <summary>
 		/// lateUpdate的timer
 		/// </summary>
-		public List<Timer> lateUpdate_timer_list = new List<Timer>();
+		public List<Timer> lateUpdateTimerList = new List<Timer>();
 
 		/// <summary>
 		/// fixedUpdate的timer
 		/// </summary>
-		public List<Timer> fixedUpdate_timer_list = new List<Timer>();
+		public List<Timer> fixedUpdateTimerList = new List<Timer>();
 
-		private bool is_updating;
-
-		#endregion
-
-		#region property
+		private bool isUpdating;
 
 		#endregion
 
@@ -40,19 +36,20 @@ namespace CsCat
 		/// </summary>
 		/// <param name="func">返回false表示不继续执行，结束</param>
 		/// <param name="interval">触发间隔  0 每帧都触发</param>
-		/// <param name="need_run_count">触发次数 0:一直触发</param>
+		/// <param name="needRunCount">触发次数 0:一直触发</param>
 		/// <param name="duration">整个过程的时间 不会包含delay</param>
 		/// <param name="delay">第一次的延迟时间</param>
 		/// <param name="mode"></param>
 		/// <param name="parent"></param>
 		/// <param name="priority"></param>
-		public Timer AddTimer(Func<object[], bool> updateFunc, float delay = 0, float interval = 0, int need_run_count = 0,
-		  UpdateModeCat updateMode = UpdateModeCat.Update, bool is_use_unscaledDeltaTime = false, int priority = 1,
-		  params object[] updateFunc_args)
+		public Timer AddTimer(Func<object[], bool> updateFunc, float delay = 0, float interval = 0,
+			int needRunCount = 0,
+			UpdateModeCat updateMode = UpdateModeCat.Update, bool isUseUnscaledDeltaTime = false, int priority = 1,
+			params object[] updateFuncArgs)
 		{
 			Timer timer = PoolCatManagerUtil.Spawn<Timer>();
-			timer.Init(updateFunc, delay, interval, need_run_count, updateMode, is_use_unscaledDeltaTime,
-			  priority, updateFunc_args);
+			timer.Init(updateFunc, delay, interval, needRunCount, updateMode, isUseUnscaledDeltaTime,
+				priority, updateFuncArgs);
 			AddTimer(timer);
 			return timer;
 		}
@@ -62,11 +59,11 @@ namespace CsCat
 			switch (updateMode)
 			{
 				case UpdateModeCat.Update:
-					return this.update_timer_list;
+					return this.updateTimerList;
 				case UpdateModeCat.LateUpdate:
-					return this.lateUpdate_timer_list;
+					return this.lateUpdateTimerList;
 				case UpdateModeCat.FixedUpdate:
-					return this.fixedUpdate_timer_list;
+					return this.fixedUpdateTimerList;
 				default:
 					return null;
 			}
@@ -88,11 +85,11 @@ namespace CsCat
 		/// <param name="timer"></param>
 		public void RemoveTimer(Timer timer, int? index = null)
 		{
-			List<Timer> timer_list = this.GetTimerList(timer.updateMode);
+			List<Timer> timerList = this.GetTimerList(timer.updateMode);
 			if (index != null)
-				timer_list.RemoveAt(index.Value);
+				timerList.RemoveAt(index.Value);
 			else
-				timer_list.Remove(timer);
+				timerList.Remove(timer);
 
 			timer.Finish();
 			PoolCatManagerUtil.Despawn(timer);
@@ -105,29 +102,25 @@ namespace CsCat
 		/// <summary>
 		/// 添加timer
 		/// </summary>
-		/// <param name="timer_list"></param>
+		/// <param name="timerList"></param>
 		/// <param name="timer"></param>
-		private void Add(List<Timer> timer_list, Timer timer)
+		private void Add(List<Timer> timerList, Timer timer)
 		{
-			bool is_timer_exist = false;
-			int index = timer_list.Count;
-			for (int i = 0; i < timer_list.Count; i++)
+			bool isTimerExist = false;
+			int index = timerList.Count;
+			for (int i = 0; i < timerList.Count; i++)
 			{
-				Timer _timer = timer_list[i];
-				if (!is_timer_exist)
-				{
-					is_timer_exist = (_timer == timer);
-				}
+				Timer curTimer = timerList[i];
+				if (!isTimerExist)
+					isTimerExist = (curTimer == timer);
 
-				if (timer.priority > _timer.priority)
-				{
+				if (timer.priority > curTimer.priority)
 					index = i - 1;
-				}
 			}
 
-			if (!is_timer_exist)
+			if (!isTimerExist)
 			{
-				timer_list.Insert(index, timer);
+				timerList.Insert(index, timer);
 				timer.Start();
 			}
 		}
@@ -138,59 +131,52 @@ namespace CsCat
 		/// 2.将timerList中是IsFinished的Timer移除
 		/// 3.执行timer.DoUpdate的updateFunc
 		/// </summary>
-		/// <param name="timer_list"></param>
+		/// <param name="timerList"></param>
 		/// <param name="isFixed"></param>
-		private void DoUpdate(List<Timer> timer_list, float deltaTime, float unscaledDeltaTime)
+		private void DoUpdate(List<Timer> timerList, float deltaTime, float unscaledDeltaTime)
 		{
-			if (timer_list.Count <= 0)
-			{
+			if (timerList.Count <= 0)
 				return;
-			}
 
-			this.is_updating = true;
+			this.isUpdating = true;
 
-			int count = timer_list.Count;
+			int count = timerList.Count;
 			for (int j = 0; j < count; j++)
 			{
-				Timer timer = timer_list[j];
-				if (timer.is_finished) //如果该timer的状态是结束的话，从timerList中移除
+				Timer timer = timerList[j];
+				if (timer.isFinished) //如果该timer的状态是结束的话，从timerList中移除
 					continue;
 				timer.DoUpdate(deltaTime, unscaledDeltaTime);
 			}
 
 			// check remove
-			for (int j = timer_list.Count - 1; j >= 0; j--)
+			for (int j = timerList.Count - 1; j >= 0; j--)
 			{
-				Timer timer = timer_list[j];
-				if (timer.is_finished)
+				Timer timer = timerList[j];
+				if (timer.isFinished)
 					this.RemoveTimer(timer, j);
 			}
 
-			this.is_updating = false;
+			this.isUpdating = false;
 		}
 
 		#endregion
 
 
-
-
 		public void Update(float deltaTime, float unscaledDeltaTime)
 		{
-			DoUpdate(this.update_timer_list, deltaTime, unscaledDeltaTime);
+			DoUpdate(this.updateTimerList, deltaTime, unscaledDeltaTime);
 		}
 
 
 		public void FixedUpdate(float deltaTime, float unscaledDeltaTime)
 		{
-			DoUpdate(this.fixedUpdate_timer_list, deltaTime, unscaledDeltaTime);
+			DoUpdate(this.fixedUpdateTimerList, deltaTime, unscaledDeltaTime);
 		}
 
 		public void LateUpdate(float deltaTime, float unscaledDeltaTime)
 		{
-			DoUpdate(this.lateUpdate_timer_list, deltaTime, unscaledDeltaTime);
+			DoUpdate(this.lateUpdateTimerList, deltaTime, unscaledDeltaTime);
 		}
-
-
-
 	}
 }

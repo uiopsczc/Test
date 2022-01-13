@@ -5,12 +5,12 @@ namespace CsCat
 	public class UnitPosition : IPosition
 	{
 		public Unit unit;
-		public string socket_name;
+		public string socketName;
 
-		public UnitPosition(Unit unit, string socket_name = null)
+		public UnitPosition(Unit unit, string socketName = null)
 		{
 			this.unit = unit;
-			this.socket_name = socket_name;
+			this.socketName = socketName;
 		}
 
 		public Vector3 GetPosition()
@@ -20,12 +20,12 @@ namespace CsCat
 
 		public Transform GetTransform()
 		{
-			return !socket_name.IsNullOrWhiteSpace() ? this.unit.graphicComponent.transform.GetSocketTransform(socket_name) : this.unit.graphicComponent.transform;
+			return !socketName.IsNullOrWhiteSpace() ? this.unit.graphicComponent.transform.GetSocketTransform(socketName) : this.unit.graphicComponent.transform;
 		}
 
-		public void SetSocketName(string socket_name)
+		public void SetSocketName(string socketName)
 		{
-			this.socket_name = socket_name;
+			this.socketName = socketName;
 		}
 
 

@@ -143,7 +143,7 @@ namespace CsCat
 			}
 
 			stage = this.AddChild<T>(null);
-			stage.on_show_callback = on_stage_show_callback;
+			stage.onShowCallback = on_stage_show_callback;
 			stage.Start();
 		}
 

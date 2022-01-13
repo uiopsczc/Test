@@ -6,26 +6,26 @@ namespace CsCat
 {
 	public class ReorderableListInfo : ICopyable
 	{
-		public IList to_reorder_list;
+		public IList toReorderList;
 		private GUIToggleTween toggleTween = new GUIToggleTween();
 		public ReorderableList _reorderableList;
 		public ReorderableList reorderableList
 		{
 			get
 			{
-				to_reorder_list.ToReorderableList(ref _reorderableList);
+				toReorderList.ToReorderableList(ref _reorderableList);
 				return _reorderableList;
 			}
 		}
 
-		public ReorderableListInfo(IList to_reorder_list)
+		public ReorderableListInfo(IList toReorderList)
 		{
-			this.to_reorder_list = to_reorder_list;
+			this.toReorderList = toReorderList;
 		}
 
-		public void SetElementHeight(float element_height)
+		public void SetElementHeight(float elementHeight)
 		{
-			this.reorderableList.SetElementHeight(element_height);
+			this.reorderableList.SetElementHeight(elementHeight);
 		}
 
 		public void DrawGUI(string title)
@@ -35,40 +35,42 @@ namespace CsCat
 
 		public void CopyTo(object dest)
 		{
-			var _dest = dest as ReorderableListInfo;
-			_dest.to_reorder_list.Clear();
-			foreach (var to_reorder_element in to_reorder_list)
+			var destReorderableListInfo = dest as ReorderableListInfo;
+			destReorderableListInfo.toReorderList.Clear();
+			for (var i = 0; i < toReorderList.Count; i++)
 			{
-				if (to_reorder_element is ICopyable)
+				var toReorderElement = toReorderList[i];
+				if (toReorderElement is ICopyable toReorderElement1)
 				{
-					var _to_reorder_element = (ICopyable)to_reorder_element;
-					var _dest_clone_elemnt = _to_reorder_element.GetType().CreateInstance<ICopyable>();
-					_to_reorder_element.CopyTo(_dest_clone_elemnt);
-					_dest.to_reorder_list.Add(_dest_clone_elemnt);
+					var destCloneElement = toReorderElement1.GetType().CreateInstance<ICopyable>();
+					toReorderElement1.CopyTo(destCloneElement);
+					destReorderableListInfo.toReorderList.Add(destCloneElement);
 				}
 				else
-					_dest.to_reorder_list.Add(to_reorder_element);
+					destReorderableListInfo.toReorderList.Add(toReorderElement);
 			}
 
-			_dest.to_reorder_list.ToReorderableList(ref _dest._reorderableList);
+			destReorderableListInfo.toReorderList.ToReorderableList(ref destReorderableListInfo._reorderableList);
 		}
 
 		public void CopyFrom(object source)
 		{
-			var _source = source as ReorderableListInfo;
-			to_reorder_list.Clear();
-			foreach (var source_to_reorder_element in _source.to_reorder_list)
+			var sourceReorderableListInfo = source as ReorderableListInfo;
+			toReorderList.Clear();
+			for (var i = 0; i < sourceReorderableListInfo.toReorderList.Count; i++)
 			{
-				if (source_to_reorder_element is ICopyable _source_to_reorder_element)
+				var sourceToReorderElement = sourceReorderableListInfo.toReorderList[i];
+				if (sourceToReorderElement is ICopyable sourceToReorderElementClone)
 				{
-					var clone_elemnt = _source_to_reorder_element.GetType().CreateInstance<ICopyable>();
-					clone_elemnt.CopyFrom(_source_to_reorder_element);
-					to_reorder_list.Add(clone_elemnt);
+					var cloneElement = sourceToReorderElementClone.GetType().CreateInstance<ICopyable>();
+					cloneElement.CopyFrom(sourceToReorderElementClone);
+					toReorderList.Add(cloneElement);
 				}
 				else
-					to_reorder_list.Add(source_to_reorder_element);
+					toReorderList.Add(sourceToReorderElement);
 			}
-			to_reorder_list.ToReorderableList(ref _reorderableList);
+
+			toReorderList.ToReorderableList(ref _reorderableList);
 		}
 	}
 }

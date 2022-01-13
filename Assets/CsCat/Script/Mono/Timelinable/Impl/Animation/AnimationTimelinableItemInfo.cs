@@ -14,13 +14,13 @@ namespace CsCat
 			get => _animationClip;
 			set
 			{
-				var pre_animationClip = _animationClip;
+				var preAnimationClip = _animationClip;
 				_animationClip = value;
-				if (pre_animationClip != value)
+				if (preAnimationClip != value)
 					duration = _animationClip.length;
 			}
 		}
-		public float cross_fade_duration = 0.1f;
+		public float crossFadeDuration = 0.1f;
 
 
 		public float speed
@@ -49,15 +49,15 @@ namespace CsCat
 
 		public override void CopyTo(object dest)
 		{
-			var _dest = dest as AnimationTimelinableItemInfo;
-			_dest.animationClip = animationClip;
+			var destAnimationTimelinableItemInfo = dest as AnimationTimelinableItemInfo;
+			destAnimationTimelinableItemInfo.animationClip = animationClip;
 			base.CopyTo(dest);
 		}
 
 		public override void CopyFrom(object source)
 		{
-			var _source = source as AnimationTimelinableItemInfo;
-			animationClip = _source.animationClip;
+			var sourceAnimationTimelinableItemInfo = source as AnimationTimelinableItemInfo;
+			animationClip = sourceAnimationTimelinableItemInfo.animationClip;
 			base.CopyFrom(source);
 		}
 
@@ -68,7 +68,7 @@ namespace CsCat
 			if (animator != null)
 			{
 				animator.speed = speed;
-				animator.CrossFade(animationClip.name, cross_fade_duration);
+				animator.CrossFade(animationClip.name, crossFadeDuration);
 			}
 			base.Play(args);
 			//      LogCat.log("Play");

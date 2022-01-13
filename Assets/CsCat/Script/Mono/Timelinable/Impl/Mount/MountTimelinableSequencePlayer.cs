@@ -25,12 +25,17 @@ namespace CsCat
 			base.Reset();
 			if (sequence != null)
 			{
-				foreach (var track in sequence.tracks)
+				for (var m = 0; m < sequence.tracks.Length; m++)
 				{
-					for (int i = track.playing_itemInfo_list.Count - 1; i >= 0; i--)
-						track.Stop(track.playing_itemInfo_list[i], transform,
-						  !Application.isPlaying ? null : (Func<GameObject, Transform, GameObject>)TimelinableUtil.SpawnGameObject,
-						  !Application.isPlaying ? null : (Action<GameObject, Transform>)TimelinableUtil.DespawnGameObject);
+					var track = sequence.tracks[m];
+					for (int n = track.playingItemInfoList.Count - 1; n >= 0; n--)
+						track.Stop(track.playingItemInfoList[n], transform,
+							!Application.isPlaying
+								? null
+								: (Func<GameObject, Transform, GameObject>) TimelinableUtil.SpawnGameObject,
+							!Application.isPlaying
+								? null
+								: (Action<GameObject, Transform>) TimelinableUtil.DespawnGameObject);
 				}
 			}
 		}
@@ -52,8 +57,8 @@ namespace CsCat
 
 		public override void UpdateTime(float time)
 		{
-			cur_time = time;
-			if (is_playing)
+			curTime = time;
+			if (isPlaying)
 				sequence.Tick(time, this);
 			else
 				sequence.Retime(time, this);

@@ -6,10 +6,10 @@ namespace CsCat
 	{
 		public Transform transform;
 		public TimelinableSequenceBase sequence;
-		protected float cur_time;
+		protected float curTime;
 
-		protected bool is_playing;
-		protected bool is_paused;
+		protected bool isPlaying;
+		protected bool isPaused;
 
 		public TimelinableSequencePlayerBase(Transform transform)
 		{
@@ -21,8 +21,8 @@ namespace CsCat
 		{
 			Reset();
 			if (sequence != null)
-				sequence.tracks.Foreach(track => { track.cur_time_itemInfo_index = -1; });
-			is_playing = true;
+				sequence.tracks.Foreach(track => { track.curTimeItemInfoIndex = -1; });
+			isPlaying = true;
 		}
 
 		public virtual void Stop()
@@ -33,12 +33,12 @@ namespace CsCat
 
 		public virtual void Pause()
 		{
-			is_paused = true;
+			isPaused = true;
 		}
 
 		public virtual void UnPause()
 		{
-			is_paused = false;
+			isPaused = false;
 		}
 
 		public void SetTime(float time)
@@ -48,8 +48,8 @@ namespace CsCat
 
 		public virtual void UpdateTime(float time)
 		{
-			cur_time = time;
-			if (is_playing)
+			curTime = time;
+			if (isPlaying)
 				sequence.Tick(time);
 			else
 				sequence.Retime(time);
@@ -59,9 +59,9 @@ namespace CsCat
 		public virtual void Reset()
 		{
 			if (sequence != null)
-				sequence.tracks.Foreach(track => { track.cur_time_itemInfo_index = -1; });
-			is_playing = false;
-			is_paused = false;
+				sequence.tracks.Foreach(track => { track.curTimeItemInfoIndex = -1; });
+			isPlaying = false;
+			isPaused = false;
 		}
 
 		public virtual void Dispose()

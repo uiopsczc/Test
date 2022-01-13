@@ -8,30 +8,30 @@ namespace CsCat
 	{
 		public RuntimeAnimatorController runtimeAnimatorController;
 		[NonSerialized] public Animator animator;
-		[NonSerialized] public float animator_speed_when_paused;
+		[NonSerialized] public float animatorSpeedWhenPaused;
 
 		[SerializeField] private AnimationTimelinableItemInfo[] _itemInfoes = new AnimationTimelinableItemInfo[0];
 
 		public override TimelinableItemInfoBase[] itemInfoes
 		{
-			get { return _itemInfoes; }
+			get => _itemInfoes;
 			set { _itemInfoes = value as AnimationTimelinableItemInfo[]; }
 		}
 
 		public override void CopyTo(object dest)
 		{
 			base.CopyTo(dest);
-			var _dest = dest as AnimationTimelinableTrack;
-			_dest.animator = animator;
-			_dest.runtimeAnimatorController = runtimeAnimatorController;
+			var destAnimationTimelinableTrack = dest as AnimationTimelinableTrack;
+			destAnimationTimelinableTrack.animator = animator;
+			destAnimationTimelinableTrack.runtimeAnimatorController = runtimeAnimatorController;
 		}
 
 		public override void CopyFrom(object source)
 		{
 			base.CopyFrom(source);
-			var _source = source as AnimationTimelinableTrack;
-			animator = _source.animator;
-			runtimeAnimatorController = _source.runtimeAnimatorController;
+			var sourceAnimationTimelinableTrack = source as AnimationTimelinableTrack;
+			animator = sourceAnimationTimelinableTrack.animator;
+			runtimeAnimatorController = sourceAnimationTimelinableTrack.runtimeAnimatorController;
 		}
 
 		protected override void OnPauseStateChange()
@@ -39,10 +39,10 @@ namespace CsCat
 			base.OnPauseStateChange();
 			if (animator != null)
 			{
-				if (is_paused)
-					animator_speed_when_paused = animator.speed;
+				if (isPaused)
+					animatorSpeedWhenPaused = animator.speed;
 				else
-					animator.speed = animator_speed_when_paused;
+					animator.speed = animatorSpeedWhenPaused;
 			}
 		}
 

@@ -10,30 +10,30 @@ namespace CsCat
 	{
 		private GUIToolbar guiToolbar;
 
-		List<GUIContent> button_guiContent_list = new List<GUIContent>()
-	{
-	  "A".ToGUIContent(),
-	  "B".ToGUIContent(),
-	  "C".ToGUIContent(),
-	  "D".ToGUIContent(),
-	};
+		List<GUIContent> buttonGUIContentList = new List<GUIContent>()
+		{
+			"A".ToGUIContent(),
+			"B".ToGUIContent(),
+			"C".ToGUIContent(),
+			"D".ToGUIContent(),
+		};
 
 		void OnEnable()
 		{
-			guiToolbar = new GUIToolbar(button_guiContent_list);
-			guiToolbar.OnToolSelected += OnToolSelected;
+			guiToolbar = new GUIToolbar(buttonGUIContentList);
+			guiToolbar.onToolSelected += OnToolSelected;
 			guiToolbar.TriggerButton(1);
 			//    guiToolbar.SetHighlight(3, true);
 		}
 
 		void OnDisable()
 		{
-			guiToolbar.OnToolSelected -= OnToolSelected;
+			guiToolbar.onToolSelected -= OnToolSelected;
 		}
 
-		public void OnToolSelected(GUIToolbar guiToolbar, int selected_index, int pre_selected_index)
+		public void OnToolSelected(GUIToolbar guiToolbar, int selectedIndex, int preSelectedIndex)
 		{
-			switch (selected_index)
+			switch (selectedIndex)
 			{
 				case 0: //对应button_guiContent_list的"A"
 					LogCat.log("A");

@@ -10,7 +10,7 @@ namespace CsCat
 		private Vector3 localEulerAngles;
 		private Vector3 localScale;
 
-		private float speed_when_paused;//停止时的播放速度
+		private float speedWhenPaused; //停止时的播放速度
 		public float speed = 1;
 
 		public AnimationTimelinableSequencePlayer(Transform transform, float speed = 1) : base(transform)
@@ -33,7 +33,6 @@ namespace CsCat
 				animator.enabled = true;
 				animator.speed = 1;
 			}
-
 		}
 
 		public override void Stop()
@@ -63,7 +62,7 @@ namespace CsCat
 			base.Pause();
 			if (animator != null)
 			{
-				speed_when_paused = animator.speed;
+				speedWhenPaused = animator.speed;
 				animator.speed = 0;
 			}
 		}
@@ -72,20 +71,16 @@ namespace CsCat
 		{
 			base.UnPause();
 			if (animator != null)
-				animator.speed = speed_when_paused;
+				animator.speed = speedWhenPaused;
 		}
 
 		public override void UpdateTime(float time)
 		{
-			cur_time = time;
-			if (is_playing)
+			curTime = time;
+			if (isPlaying)
 				sequence.Tick(time, this);
 			else
 				sequence.Retime(time, this);
 		}
-
 	}
 }
-
-
-

@@ -1,4 +1,3 @@
-
 using System;
 using UnityEngine;
 
@@ -17,28 +16,22 @@ namespace CsCat
 		}
 
 
-
 		public void CopyTo(object dest)
 		{
-			var _dest = dest as MountPrefabInfo;
-			_dest.localPosition = localPosition;
-			_dest.localEulerAngles = localEulerAngles;
-			_dest.localScale = localScale;
-			_dest.prefab = prefab;
+			var destMountPrefabInfo = dest as MountPrefabInfo;
+			destMountPrefabInfo.localPosition = localPosition;
+			destMountPrefabInfo.localEulerAngles = localEulerAngles;
+			destMountPrefabInfo.localScale = localScale;
+			destMountPrefabInfo.prefab = prefab;
 		}
 
 		public void CopyFrom(object source)
 		{
-			var _source = source as MountPrefabInfo;
-			localPosition = _source.localPosition;
-			localEulerAngles = _source.localEulerAngles;
-			localScale = _source.localScale;
-			prefab = _source.prefab;
+			var sourceMountPrefabInfo = source as MountPrefabInfo;
+			localPosition = sourceMountPrefabInfo.localPosition;
+			localEulerAngles = sourceMountPrefabInfo.localEulerAngles;
+			localScale = sourceMountPrefabInfo.localScale;
+			prefab = sourceMountPrefabInfo.prefab;
 		}
-
-
 	}
 }
-
-
-

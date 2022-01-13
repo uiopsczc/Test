@@ -10,7 +10,8 @@ namespace CsCat
 		{
 			using (new EditorGUILabelWidthScope(100))
 			{
-				humanBodyBones = (HumanBodyBones)EditorGUILayout.Popup("humanBodyBones", (int)humanBodyBones, EnumUtil.GetNames<HumanBodyBones>().ToArray());
+				humanBodyBones = (HumanBodyBones) EditorGUILayout.Popup("humanBodyBones", (int) humanBodyBones,
+					EnumUtil.GetNames<HumanBodyBones>().ToArray());
 			}
 		}
 	}

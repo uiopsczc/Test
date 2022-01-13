@@ -6,7 +6,7 @@ namespace CsCat
 	{
 		Vector3 GetPosition();
 		Transform GetTransform();
-		void SetSocketName(string socket_name);
+		void SetSocketName(string socketName);
 		bool IsValid();
 	}
 }

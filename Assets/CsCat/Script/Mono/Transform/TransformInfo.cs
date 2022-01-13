@@ -24,13 +24,5 @@ namespace CsCat
 			this.rotation = rotation;
 			this.scale = scale;
 		}
-
-
-
-
 	}
 }
-
-
-
-

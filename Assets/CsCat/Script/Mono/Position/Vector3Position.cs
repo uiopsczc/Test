@@ -21,7 +21,7 @@ namespace CsCat
 			return null;
 		}
 
-		public void SetSocketName(string socket_name)
+		public void SetSocketName(string socketName)
 		{
 		}
 

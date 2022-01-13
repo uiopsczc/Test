@@ -7,13 +7,13 @@ namespace CsCat
 		public static List<TransformFinderBase> CreateInstanceList()
 		{
 			List<TransformFinderBase> list = new List<TransformFinderBase>();
-			foreach (var transformFinderInfo in TransformFinderConst.transformFinderInfo_list)
+			for (var i = 0; i < TransformFinderConst.transformFinderInfoList.Count; i++)
+			{
+				var transformFinderInfo = TransformFinderConst.transformFinderInfoList[i];
 				list.Add(transformFinderInfo.CreateInstance());
+			}
+
 			return list;
 		}
 	}
 }
-
-
-
-

@@ -17,16 +17,16 @@ namespace CsCat
 
 		public override void CopyTo(object dest)
 		{
-			var _dest = dest as TransformFinder1;
-			_dest.humanBodyBones = humanBodyBones;
+			var destTransformFinder = dest as TransformFinder1;
+			destTransformFinder.humanBodyBones = humanBodyBones;
 			base.CopyTo(dest);
 		}
 
 		public override void CopyFrom(object source)
 		{
-			var _source = source as TransformFinder1;
-			humanBodyBones = _source.humanBodyBones;
-			base.CopyFrom(_source);
+			var sourceTransformFinder = source as TransformFinder1;
+			humanBodyBones = sourceTransformFinder.humanBodyBones;
+			base.CopyFrom(sourceTransformFinder);
 		}
 	}
 }

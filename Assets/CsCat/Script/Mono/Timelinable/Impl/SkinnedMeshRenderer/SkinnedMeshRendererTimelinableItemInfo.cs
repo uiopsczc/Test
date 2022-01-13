@@ -7,22 +7,19 @@ namespace CsCat
 	[Serializable]
 	public partial class SkinnedMeshRendererTimelinableItemInfo : TimelinableItemInfoBase
 	{
-		[NonSerialized] public List<SkinnedMeshRenderer> skinnedMeshRenderer_list = new List<SkinnedMeshRenderer>();
-		public int skinnedMeshRenderer_index;
+		[NonSerialized] public List<SkinnedMeshRenderer> skinnedMeshRendererList = new List<SkinnedMeshRenderer>();
+		public int skinnedMeshRendererIndex;
 
-		public int blendShape_index;
-		public float blendShape_weight;
+		public int blendShapeIndex;
+		public float blendShapeWeight;
 
-		public List<SkinnedMeshRendererSubBlendShapeInfo> skinnedMeshRendererSubBlendShapeInfo_list =
+		public List<SkinnedMeshRendererSubBlendShapeInfo> skinnedMeshRendererSubBlendShapeInfoList =
 		  new List<SkinnedMeshRendererSubBlendShapeInfo>();
 
 		[NonSerialized]
-		private readonly Dictionary<Vector2Int, float> fixed_weight_blendShape_dict = new Dictionary<Vector2Int, float>();
+		private readonly Dictionary<Vector2Int, float> fixedWeightBlendShapeDict = new Dictionary<Vector2Int, float>();
 
-		public float blend_duration
-		{
-			get { return this.duration; }
-		}
+		public float blendDuration => this.duration;
 
 		public SkinnedMeshRendererTimelinableItemInfo()
 		{
@@ -36,81 +33,81 @@ namespace CsCat
 
 		public override void CopyTo(object dest)
 		{
-			var _dest = dest as SkinnedMeshRendererTimelinableItemInfo;
-			_dest.skinnedMeshRenderer_index = skinnedMeshRenderer_index;
-			_dest.blendShape_index = blendShape_index;
-			_dest.blendShape_weight = blendShape_weight;
+			var destSkinnedMeshRendererTimelinableItemInfo = dest as SkinnedMeshRendererTimelinableItemInfo;
+			destSkinnedMeshRendererTimelinableItemInfo.skinnedMeshRendererIndex = skinnedMeshRendererIndex;
+			destSkinnedMeshRendererTimelinableItemInfo.blendShapeIndex = blendShapeIndex;
+			destSkinnedMeshRendererTimelinableItemInfo.blendShapeWeight = blendShapeWeight;
 #if UNITY_EDITOR
-			skinnedMeshRendererSubBlendShapeInfo_reorderableListInfo.CopyTo(_dest.skinnedMeshRendererSubBlendShapeInfo_reorderableListInfo);
+			skinnedMeshRendererSubBlendShapeInfoReorderableListInfo.CopyTo(destSkinnedMeshRendererTimelinableItemInfo.skinnedMeshRendererSubBlendShapeInfoReorderableListInfo);
 #endif
 			base.CopyTo(dest);
 		}
 
 		public override void CopyFrom(object source)
 		{
-			var _source = source as SkinnedMeshRendererTimelinableItemInfo;
-			skinnedMeshRenderer_index = _source.skinnedMeshRenderer_index;
-			blendShape_index = _source.blendShape_index;
-			blendShape_weight = _source.blendShape_weight;
+			var sourceSkinnedMeshRendererTimelinableItemInfo = source as SkinnedMeshRendererTimelinableItemInfo;
+			skinnedMeshRendererIndex = sourceSkinnedMeshRendererTimelinableItemInfo.skinnedMeshRendererIndex;
+			blendShapeIndex = sourceSkinnedMeshRendererTimelinableItemInfo.blendShapeIndex;
+			blendShapeWeight = sourceSkinnedMeshRendererTimelinableItemInfo.blendShapeWeight;
 #if UNITY_EDITOR
-			skinnedMeshRendererSubBlendShapeInfo_reorderableListInfo.CopyFrom(_source.skinnedMeshRendererSubBlendShapeInfo_reorderableListInfo);
+			skinnedMeshRendererSubBlendShapeInfoReorderableListInfo.CopyFrom(sourceSkinnedMeshRendererTimelinableItemInfo.skinnedMeshRendererSubBlendShapeInfoReorderableListInfo);
 #endif
-			base.CopyFrom(_source);
+			base.CopyFrom(sourceSkinnedMeshRendererTimelinableItemInfo);
 		}
 
 
 		public override void Play(params object[] args)
 		{
 			var track = args[args.Length - 1] as SkinnedMeshRendererTimelinableTrack;
-			int this_itemInfo_index_in_track = track.itemInfoes.IndexOf(this); //当前的itemInfo在track中的index
-			int this_itemInfo_pre_index_in_track = this_itemInfo_index_in_track - 1; //当前的itemInfo的前一个itemInfo在track中的index
-			float cur_time = track.curTime;
+			int thisItemInfoIndexInTrack = track.itemInfoes.IndexOf(this); //当前的itemInfo在track中的index
+			int thisItemInfoPreIndexInTrack = thisItemInfoIndexInTrack - 1; //当前的itemInfo的前一个itemInfo在track中的index
+			float curTime = track.curTime;
 			//处理前一个itemInfo
-			if (this_itemInfo_pre_index_in_track >= 0)
+			if (thisItemInfoPreIndexInTrack >= 0)
 			{
-				var pre_itemInfo = track.itemInfoes[this_itemInfo_pre_index_in_track] as SkinnedMeshRendererTimelinableItemInfo;
+				var preItemInfo = track.itemInfoes[thisItemInfoPreIndexInTrack] as SkinnedMeshRendererTimelinableItemInfo;
 
-				if (!track.to_play_itemInfo_index_list.Contains(this_itemInfo_pre_index_in_track))
+				if (!track.toPlayItemInfoIndexList.Contains(thisItemInfoPreIndexInTrack))
 				{
-					UpdateBlendShape(cur_time, pre_itemInfo.skinnedMeshRenderer_index, pre_itemInfo.blendShape_index,
-					  blend_duration, time, pre_itemInfo.blendShape_weight, 0);
-					for (int i = 0; i < pre_itemInfo.skinnedMeshRendererSubBlendShapeInfo_list.Count; i++)
+					UpdateBlendShape(curTime, preItemInfo.skinnedMeshRendererIndex, preItemInfo.blendShapeIndex,
+					  blendDuration, time, preItemInfo.blendShapeWeight, 0);
+					for (int i = 0; i < preItemInfo.skinnedMeshRendererSubBlendShapeInfoList.Count; i++)
 					{
-						var pre_skinnedMeshRendererSubBlendShapeInfo = pre_itemInfo.skinnedMeshRendererSubBlendShapeInfo_list[i];
-						UpdateBlendShape(cur_time, pre_skinnedMeshRendererSubBlendShapeInfo.skinnedMeshRenderer_index,
+						var pre_skinnedMeshRendererSubBlendShapeInfo = preItemInfo.skinnedMeshRendererSubBlendShapeInfoList[i];
+						UpdateBlendShape(curTime, pre_skinnedMeshRendererSubBlendShapeInfo.skinnedMeshRendererIndex,
 						  pre_skinnedMeshRendererSubBlendShapeInfo.blendShape_index,
-						  blend_duration,
-						  time, pre_itemInfo.blendShape_weight, 0);
+						  blendDuration,
+						  time, preItemInfo.blendShapeWeight, 0);
 					}
 				}
 			}
 
 			//处理当前的itemInfo
-			if (blend_duration > 0)
+			if (blendDuration > 0)
 			{
-				UpdateBlendShape(cur_time, skinnedMeshRenderer_index, blendShape_index,
-				  blend_duration, time,
-				  GetBlendShapeWeight(skinnedMeshRenderer_index, blendShape_index),
-				  blendShape_weight);
-				for (int i = 0; i < skinnedMeshRendererSubBlendShapeInfo_list.Count; i++)
+				UpdateBlendShape(curTime, skinnedMeshRendererIndex, blendShapeIndex,
+				  blendDuration, time,
+				  GetBlendShapeWeight(skinnedMeshRendererIndex, blendShapeIndex),
+				  blendShapeWeight);
+				for (int i = 0; i < skinnedMeshRendererSubBlendShapeInfoList.Count; i++)
 				{
-					var skinnedMeshRendererSubBlendShapeInfo = skinnedMeshRendererSubBlendShapeInfo_list[i];
-					UpdateBlendShape(cur_time, skinnedMeshRendererSubBlendShapeInfo.skinnedMeshRenderer_index,
+					var skinnedMeshRendererSubBlendShapeInfo = skinnedMeshRendererSubBlendShapeInfoList[i];
+					UpdateBlendShape(curTime, skinnedMeshRendererSubBlendShapeInfo.skinnedMeshRendererIndex,
 					  skinnedMeshRendererSubBlendShapeInfo.blendShape_index,
-					  blend_duration, time,
-					  GetBlendShapeWeight(skinnedMeshRendererSubBlendShapeInfo.skinnedMeshRenderer_index,
-						skinnedMeshRendererSubBlendShapeInfo.blendShape_index), blendShape_weight);
+					  blendDuration, time,
+					  GetBlendShapeWeight(skinnedMeshRendererSubBlendShapeInfo.skinnedMeshRendererIndex,
+						skinnedMeshRendererSubBlendShapeInfo.blendShape_index), blendShapeWeight);
 				}
 			}
 			else
 			{
-				UpdateBlendShape(skinnedMeshRenderer_index, blendShape_index,
-				  blendShape_weight);
-				for (int i = 0; i < skinnedMeshRendererSubBlendShapeInfo_list.Count; i++)
+				UpdateBlendShape(skinnedMeshRendererIndex, blendShapeIndex,
+				  blendShapeWeight);
+				for (int i = 0; i < skinnedMeshRendererSubBlendShapeInfoList.Count; i++)
 				{
-					var skinnedMeshRendererSubBlendShapeInfo = skinnedMeshRendererSubBlendShapeInfo_list[i];
-					UpdateBlendShape(skinnedMeshRendererSubBlendShapeInfo.skinnedMeshRenderer_index,
-					  skinnedMeshRendererSubBlendShapeInfo.blendShape_index, blendShape_weight);
+					var skinnedMeshRendererSubBlendShapeInfo = skinnedMeshRendererSubBlendShapeInfoList[i];
+					UpdateBlendShape(skinnedMeshRendererSubBlendShapeInfo.skinnedMeshRendererIndex,
+					  skinnedMeshRendererSubBlendShapeInfo.blendShape_index, blendShapeWeight);
 				}
 			}
 
@@ -124,38 +121,38 @@ namespace CsCat
 		}
 
 		//////////////////////////////////////////////////////////////////////////////////////
-		void RegisterFixedWeightBlendShape(int skinnedMeshRenderer_index, int blendShape_index, float weight)
+		void RegisterFixedWeightBlendShape(int skinnedMeshRendererIndex, int blendShapeIndex, float weight)
 		{
-			var key = new Vector2Int(skinnedMeshRenderer_index, blendShape_index);
-			fixed_weight_blendShape_dict[key] = weight;
-			UpdateBlendShape(skinnedMeshRenderer_index, blendShape_index, weight, false);
+			var key = new Vector2Int(skinnedMeshRendererIndex, blendShapeIndex);
+			fixedWeightBlendShapeDict[key] = weight;
+			UpdateBlendShape(skinnedMeshRendererIndex, blendShapeIndex, weight, false);
 		}
 
-		bool IsContainsFixedWeightBlendShape(int skinnedMeshRenderer_index, int blendShape_index)
+		bool IsContainsFixedWeightBlendShape(int skinnedMeshRendererIndex, int blendShapeIndex)
 		{
-			var key = new Vector2Int(skinnedMeshRenderer_index, blendShape_index);
-			return fixed_weight_blendShape_dict.ContainsKey(key);
+			var key = new Vector2Int(skinnedMeshRendererIndex, blendShapeIndex);
+			return fixedWeightBlendShapeDict.ContainsKey(key);
 		}
 
-		private void ResetBlendShapes(SkinnedMeshRenderer skinnedMeshRenderer, int skinnedMeshRenderer_index)
+		private void ResetBlendShapes(SkinnedMeshRenderer skinnedMeshRenderer, int skinnedMeshRendererIndex)
 		{
 			if (skinnedMeshRenderer != null && skinnedMeshRenderer.sharedMesh != null)
 			{
-				for (int blendShape_index = 0;
-				  blendShape_index < skinnedMeshRenderer.sharedMesh.blendShapeCount;
-				  blendShape_index++)
+				for (int blendShapeIndex = 0;
+				  blendShapeIndex < skinnedMeshRenderer.sharedMesh.blendShapeCount;
+				  blendShapeIndex++)
 				{
-					if (!IsContainsFixedWeightBlendShape(skinnedMeshRenderer_index, blendShape_index))
-						skinnedMeshRenderer.SetBlendShapeWeight(blendShape_index, 0);
+					if (!IsContainsFixedWeightBlendShape(skinnedMeshRendererIndex, blendShapeIndex))
+						skinnedMeshRenderer.SetBlendShapeWeight(blendShapeIndex, 0);
 				}
 			}
 		}
 
 		public float GetBlendShapeWeight(int skinnedMeshRenderer_index, int blendShape_index)
 		{
-			if (skinnedMeshRenderer_index >= 0 && skinnedMeshRenderer_index < skinnedMeshRenderer_list.Count)
+			if (skinnedMeshRenderer_index >= 0 && skinnedMeshRenderer_index < skinnedMeshRendererList.Count)
 			{
-				SkinnedMeshRenderer skinnedMeshRenderer = skinnedMeshRenderer_list[skinnedMeshRenderer_index];
+				SkinnedMeshRenderer skinnedMeshRenderer = skinnedMeshRendererList[skinnedMeshRenderer_index];
 				if (skinnedMeshRenderer != null)
 				{
 					if (skinnedMeshRenderer.sharedMesh != null && blendShape_index >= 0 &&
@@ -169,41 +166,41 @@ namespace CsCat
 
 		public void UpdateBlendShape()
 		{
-			UpdateBlendShape(skinnedMeshRenderer_index, blendShape_index, blendShape_weight);
-			for (int i = 0; i < skinnedMeshRendererSubBlendShapeInfo_list.Count; i++)
+			UpdateBlendShape(skinnedMeshRendererIndex, blendShapeIndex, blendShapeWeight);
+			for (int i = 0; i < skinnedMeshRendererSubBlendShapeInfoList.Count; i++)
 			{
-				var skinnedMeshRendererSubBlendShapeInfo = skinnedMeshRendererSubBlendShapeInfo_list[i];
-				UpdateBlendShape(skinnedMeshRendererSubBlendShapeInfo.skinnedMeshRenderer_index,
-				  skinnedMeshRendererSubBlendShapeInfo.blendShape_index, blendShape_weight);
+				var skinnedMeshRendererSubBlendShapeInfo = skinnedMeshRendererSubBlendShapeInfoList[i];
+				UpdateBlendShape(skinnedMeshRendererSubBlendShapeInfo.skinnedMeshRendererIndex,
+				  skinnedMeshRendererSubBlendShapeInfo.blendShape_index, blendShapeWeight);
 			}
 		}
 
-		public void UpdateBlendShape(float time, int skinnedMeshRenderer_index, int blendShape_index, float blend_duration,
-		  float itemInfo_time, float from_weight, float to_weight)
+		public void UpdateBlendShape(float time, int skinnedMeshRendererIndex, int blendShapeIndex, float blendDuration,
+		  float itemInfoTime, float fromWeight, float toWeight)
 		{
-			if (from_weight != to_weight)
+			if (fromWeight != toWeight)
 			{
-				float weight = to_weight;
-				if (blend_duration > 0)
-					weight = Mathf.Lerp(from_weight, to_weight, (time - itemInfo_time) / blend_duration);
-				UpdateBlendShape(skinnedMeshRenderer_index, blendShape_index, weight);
+				float weight = toWeight;
+				if (blendDuration > 0)
+					weight = Mathf.Lerp(fromWeight, toWeight, (time - itemInfoTime) / blendDuration);
+				UpdateBlendShape(skinnedMeshRendererIndex, blendShapeIndex, weight);
 			}
 		}
 
-		public void UpdateBlendShape(int skinnedMeshRenderer_index, int blendShap_index, float weight,
-		  bool is_fixed_weight = true)
+		public void UpdateBlendShape(int skinnedMeshRendererIndex, int blendShapIndex, float weight,
+		  bool isFixedWeight = true)
 		{
-			if (!IsContainsFixedWeightBlendShape(skinnedMeshRenderer_index, blendShap_index) || !is_fixed_weight)
+			if (!IsContainsFixedWeightBlendShape(skinnedMeshRendererIndex, blendShapIndex) || !isFixedWeight)
 			{
-				if (skinnedMeshRenderer_index >= 0 && skinnedMeshRenderer_index < skinnedMeshRenderer_list.Count)
+				if (skinnedMeshRendererIndex >= 0 && skinnedMeshRendererIndex < skinnedMeshRendererList.Count)
 				{
-					SkinnedMeshRenderer skinnedMeshRenderer = skinnedMeshRenderer_list[skinnedMeshRenderer_index];
+					SkinnedMeshRenderer skinnedMeshRenderer = skinnedMeshRendererList[skinnedMeshRendererIndex];
 					if (skinnedMeshRenderer != null && skinnedMeshRenderer.sharedMesh != null)
 					{
-						if (blendShap_index >= 0 && blendShap_index < skinnedMeshRenderer.sharedMesh.blendShapeCount)
+						if (blendShapIndex >= 0 && blendShapIndex < skinnedMeshRenderer.sharedMesh.blendShapeCount)
 						{
-							if (skinnedMeshRenderer.GetBlendShapeWeight(blendShap_index) != weight)
-								skinnedMeshRenderer.SetBlendShapeWeight(blendShap_index, weight);
+							if (skinnedMeshRenderer.GetBlendShapeWeight(blendShapIndex) != weight)
+								skinnedMeshRenderer.SetBlendShapeWeight(blendShapIndex, weight);
 						}
 					}
 				}
@@ -212,10 +209,10 @@ namespace CsCat
 
 		public void ClearBlendShape()
 		{
-			UpdateBlendShape(skinnedMeshRenderer_index, blendShape_index, 0);
-			for (int i = 0; i < skinnedMeshRendererSubBlendShapeInfo_list.Count; i++)
-				UpdateBlendShape(skinnedMeshRendererSubBlendShapeInfo_list[i].skinnedMeshRenderer_index,
-				  skinnedMeshRendererSubBlendShapeInfo_list[i].blendShape_index, 0);
+			UpdateBlendShape(skinnedMeshRendererIndex, blendShapeIndex, 0);
+			for (int i = 0; i < skinnedMeshRendererSubBlendShapeInfoList.Count; i++)
+				UpdateBlendShape(skinnedMeshRendererSubBlendShapeInfoList[i].skinnedMeshRendererIndex,
+				  skinnedMeshRendererSubBlendShapeInfoList[i].blendShape_index, 0);
 		}
 	}
 }

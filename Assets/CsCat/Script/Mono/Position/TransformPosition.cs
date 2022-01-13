@@ -5,12 +5,12 @@ namespace CsCat
 	public class TransformPosition : IPosition
 	{
 		public Transform transform;
-		public string socket_name;
+		public string socketName;
 
-		public TransformPosition(Transform transform, string socket_name = null)
+		public TransformPosition(Transform transform, string socketName = null)
 		{
 			this.transform = transform;
-			this.socket_name = socket_name;
+			this.socketName = socketName;
 		}
 
 		public Vector3 GetPosition()
@@ -20,12 +20,12 @@ namespace CsCat
 
 		public Transform GetTransform()
 		{
-			return !socket_name.IsNullOrWhiteSpace() ? this.transform.GetSocketTransform(socket_name) : this.transform;
+			return !socketName.IsNullOrWhiteSpace() ? this.transform.GetSocketTransform(socketName) : this.transform;
 		}
 
-		public void SetSocketName(string socket_name)
+		public void SetSocketName(string socketName)
 		{
-			this.socket_name = socket_name;
+			this.socketName = socketName;
 		}
 
 		public bool IsValid()

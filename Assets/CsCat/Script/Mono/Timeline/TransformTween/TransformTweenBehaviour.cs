@@ -10,7 +10,7 @@ namespace CsCat
 
 		[SerializeField] public bool isUsePositionTarget = true;
 
-		[SerializeField] public bool is_use_rotation_target;
+		[SerializeField] public bool isUseRotationTarget;
 
 		[SerializeField] public bool isUseScaleTarget;
 
@@ -21,7 +21,7 @@ namespace CsCat
 
 		[SerializeField] public Vector3 rotationMultiply = Vector3.one;
 
-		[SerializeField] public Vector3 rotation_target;
+		[SerializeField] public Vector3 rotationTarget;
 
 		[SerializeField] public Vector3 scaleMultiply = Vector3.one;
 

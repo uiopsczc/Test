@@ -7,70 +7,59 @@ namespace CsCat
 {
 	public class EditorIconGUIContent
 	{
-		static Dictionary<string, GUIContent> icon_GUIContent_cache_dict = new Dictionary<string, GUIContent>();
+		static Dictionary<string, GUIContent> iconGUIContentCacheDict = new Dictionary<string, GUIContent>();
 
-		public static int count { get { return icon_GUIContent_cache_dict.Count; } }
+		public static int count => iconGUIContentCacheDict.Count;
 
-		public static GUIContent custom_GUIContent
-		{
-			get
-			{
-				GUIContent content = Get("CustomContent");
-				return content;
-			}
-		}
+		public static GUIContent Custom_GUIContent => Get("CustomContent");
 
 
 		public static GUIContent Get(string name, string text, string tips)
 		{
-			if (icon_GUIContent_cache_dict.ContainsKey(name))
-				return icon_GUIContent_cache_dict[name];
-			GUIContent gui_content = new GUIContent(text, EditorIconTexture.GetCustom(name), tips);
-			icon_GUIContent_cache_dict[name] = gui_content;
-			return gui_content;
+			if (iconGUIContentCacheDict.ContainsKey(name))
+				return iconGUIContentCacheDict[name];
+			GUIContent guiContent = new GUIContent(text, EditorIconTexture.GetCustom(name), tips);
+			iconGUIContentCacheDict[name] = guiContent;
+			return guiContent;
 		}
 
 		public static GUIContent Get(string name, string text)
 		{
-			if (icon_GUIContent_cache_dict.ContainsKey(name))
-				return icon_GUIContent_cache_dict[name];
-			GUIContent gui_content = new GUIContent(text, EditorIconTexture.GetCustom(name));
-			icon_GUIContent_cache_dict[name] = gui_content;
-			return gui_content;
+			if (iconGUIContentCacheDict.ContainsKey(name))
+				return iconGUIContentCacheDict[name];
+			GUIContent guiContent = new GUIContent(text, EditorIconTexture.GetCustom(name));
+			iconGUIContentCacheDict[name] = guiContent;
+			return guiContent;
 		}
 
 		public static GUIContent Get(string name)
 		{
-			if (icon_GUIContent_cache_dict.ContainsKey(name))
-				return icon_GUIContent_cache_dict[name];
-			GUIContent gui_content = new GUIContent(EditorIconTexture.GetCustom(name));
-			icon_GUIContent_cache_dict.Add(name, gui_content);
-			return gui_content;
+			if (iconGUIContentCacheDict.ContainsKey(name))
+				return iconGUIContentCacheDict[name];
+			GUIContent guiContent = new GUIContent(EditorIconTexture.GetCustom(name));
+			iconGUIContentCacheDict.Add(name, guiContent);
+			return guiContent;
 		}
 
 		public static GUIContent Get(EditorIconTextureType editorIconTextureType)
 		{
-			if (icon_GUIContent_cache_dict.ContainsKey(editorIconTextureType.ToString()))
-				return icon_GUIContent_cache_dict[editorIconTextureType.ToString()];
-			GUIContent gui_content = new GUIContent(EditorIconTexture.GetSystem(editorIconTextureType));
-			icon_GUIContent_cache_dict.Add(editorIconTextureType.ToString(), gui_content);
-			return gui_content;
+			if (iconGUIContentCacheDict.ContainsKey(editorIconTextureType.ToString()))
+				return iconGUIContentCacheDict[editorIconTextureType.ToString()];
+			GUIContent guiContent = new GUIContent(EditorIconTexture.GetSystem(editorIconTextureType));
+			iconGUIContentCacheDict.Add(editorIconTextureType.ToString(), guiContent);
+			return guiContent;
 		}
 
 		public static GUIContent GetSystem(EditorIconGUIContentType editorIconGUIContentType)
 		{
-			string name = EditorIconGUIContentConst.IconGUIContentNames[(int)editorIconGUIContentType];
-			if (icon_GUIContent_cache_dict.ContainsKey(name))
-				return icon_GUIContent_cache_dict[name];
+			string name = EditorIconGUIContentConst.IconGUIContentNames[(int) editorIconGUIContentType];
+			if (iconGUIContentCacheDict.ContainsKey(name))
+				return iconGUIContentCacheDict[name];
 
-			GUIContent gui_content = EditorGUIUtility.IconContent(name);
-			icon_GUIContent_cache_dict[name] = gui_content;
-			return gui_content;
+			GUIContent guiContent = EditorGUIUtility.IconContent(name);
+			iconGUIContentCacheDict[name] = guiContent;
+			return guiContent;
 		}
 	}
 }
 #endif
-
-
-
-

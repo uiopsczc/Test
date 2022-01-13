@@ -7,9 +7,9 @@ namespace CsCat
 	{
 		public float mass;
 		public Vector3 velocity;
-		public bool is_rising;
-		public float rising_gravity;
-		public float falling_gravity;
+		public bool isRising;
+		public float risingGravity;
+		public float fallingGravity;
 
 
 		public RigidbodyComponent(float mass)
@@ -60,13 +60,13 @@ namespace CsCat
 		}
 
 		//到达顶端需要的时间
-		public float GetToTopDruation()
+		public float GetToTopDuration()
 		{
-			float velocity_y = this.velocity.y;
+			float velocityY = this.velocity.y;
 			//确保初速度向上，否则无法到达顶端
-			if (velocity_y <= 0)
+			if (velocityY <= 0)
 				return 0;
-			return velocity_y / this.rising_gravity;
+			return velocityY / this.risingGravity;
 		}
 
 	}

@@ -2,9 +2,9 @@ namespace CsCat
 {
 	public class StageShowLogo : StageBase
 	{
-		public override bool is_show_fade => false;
-		public override bool is_show_loading => false;
-		public override string stage_name => "StageShowLogo";
+		public override bool isShowFade => false;
+		public override bool isShowLoading => false;
+		public override string stageName => "StageShowLogo";
 
 
 		public override void LoadPanels()

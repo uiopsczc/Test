@@ -13,6 +13,3 @@ namespace CsCat
 	}
 }
 #endif
-
-
-

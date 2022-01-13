@@ -5,8 +5,11 @@ namespace CsCat
 	{
 		public void SyncAnimationWindow()
 		{
-			foreach (var playing_itemInfo in playing_itemInfo_list)
-				(playing_itemInfo as CameraTimelinableItemInfo).SyncAnimationWindow(curTime);
+			for (var i = 0; i < playingItemInfoList.Count; i++)
+			{
+				var playingItemInfo = playingItemInfoList[i];
+				(playingItemInfo as CameraTimelinableItemInfo).SyncAnimationWindow(curTime);
+			}
 		}
 	}
 }

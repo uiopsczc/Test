@@ -13,16 +13,16 @@ namespace CsCat
 			EditorMessageBox editorMessageBox = EditorWindow.CreateWindow<EditorMessageBox>();
 			editorMessageBox.minSize = new Vector2(EditorMessageBoxConst.Width, EditorMessageBoxConst.Height);
 			editorMessageBox.maxSize = editorMessageBox.minSize;
-			editorMessageBox.message_title = title;
+			editorMessageBox.messageTitle = title;
 			editorMessageBox.content = content;
 
-			editorMessageBox.button1_text = button1_text;
-			editorMessageBox.on_button1_callback = on_button1_callback;
+			editorMessageBox.button1Text = button1_text;
+			editorMessageBox.onButton1Callback = on_button1_callback;
 
 			editorMessageBox.button2_text = button2_text;
-			editorMessageBox.on_button2_callback = on_button2_callback;
+			editorMessageBox.onButton2Callback = on_button2_callback;
 
-			editorMessageBox.on_cancel_callback = on_cancel_callback;
+			editorMessageBox.onCancelCallback = on_cancel_callback;
 
 			editorMessageBox.Show();
 

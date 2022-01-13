@@ -8,8 +8,8 @@ namespace CsCat
 	{
 		public static Action action;
 		Vector2 scrollPosition;
-		public bool is_show_log = true;
-		public bool is_lockTo_bottom = true;
+		public bool isShowLog = true;
+		public bool isLockToBottom = true;
 
 		void OnGUI()
 		{

@@ -6,39 +6,48 @@ namespace CsCat
 	public class StateMachineBehaviourEvents : StateMachineBehaviour
 	{
 		[SerializeField]
-		public List<StateMachineBehaviourEventInfo> eventInfo_list = new List<StateMachineBehaviourEventInfo>();
+		public List<StateMachineBehaviourEventInfo> eventInfoList = new List<StateMachineBehaviourEventInfo>();
 
 		public override void OnStateEnter(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 		{
-			foreach (var eventInfo in eventInfo_list)
-				eventInfo.is_triggered = false;
+			for (var i = 0; i < eventInfoList.Count; i++)
+			{
+				var eventInfo = eventInfoList[i];
+				eventInfo.isTriggered = false;
+			}
 		}
 
 		public override void OnStateUpdate(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 		{
 			if (Application.isPlaying)
-				foreach (var eventInfo in eventInfo_list)
-					if (!eventInfo.is_trigger_on_exit && !eventInfo.is_triggered &&
-						stateInfo.normalizedTime >= eventInfo.normalized_time)
+				for (var i = 0; i < eventInfoList.Count; i++)
+				{
+					var eventInfo = eventInfoList[i];
+					if (!eventInfo.isTriggerOnExit && !eventInfo.isTriggered &&
+					    stateInfo.normalizedTime >= eventInfo.normalizedTime)
 					{
-						eventInfo.is_triggered = true;
+						eventInfo.isTriggered = true;
 						//            Client.instance.eventDispatchers.Broadcast<StateMachineBehaviourEventName, List<ValueParse>>(
 						//              animator.GetEventName(),
 						//              eventInfo.eventName, eventInfo.arg_list);
 					}
+				}
 		}
 
 		public override void OnStateExit(Animator animator, AnimatorStateInfo stateInfo, int layerIndex)
 		{
 			if (Application.isPlaying)
-				foreach (var eventInfo in eventInfo_list)
-					if (eventInfo.is_trigger_on_exit)
+				for (var i = 0; i < eventInfoList.Count; i++)
+				{
+					var eventInfo = eventInfoList[i];
+					if (eventInfo.isTriggerOnExit)
 					{
-						eventInfo.is_triggered = true;
+						eventInfo.isTriggered = true;
 						//            Client.instance.eventDispatchers.Broadcast<StateMachineBehaviourEventName, List<ValueParse>>(
 						//              animator.GetEventName(),
 						//              eventInfo.eventName, eventInfo.arg_list);
 					}
+				}
 		}
 	}
 }

@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -9,15 +8,13 @@ namespace CsCat
 {
 	public class SkinnedMeshRendererTimelinableSequence : TimelinableSequenceBase
 	{
-		[SerializeField] private SkinnedMeshRendererTimelinableTrack[] _tracks = new SkinnedMeshRendererTimelinableTrack[0];
+		[SerializeField]
+		private SkinnedMeshRendererTimelinableTrack[] _tracks = new SkinnedMeshRendererTimelinableTrack[0];
 
 		public override TimelinableTrackBase[] tracks
 		{
-			get { return _tracks; }
+			get => _tracks;
 			set { _tracks = value as SkinnedMeshRendererTimelinableTrack[]; }
 		}
 	}
 }
-
-
-

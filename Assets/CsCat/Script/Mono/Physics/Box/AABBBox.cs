@@ -6,123 +6,108 @@ namespace CsCat
 {
 	public class AABBBox : BoxBase
 	{
-		private float _min_x;
-		private float _min_y;
-		private float _min_z;
+		private float _minX;
+		private float _minY;
+		private float _minZ;
 
-		private float _max_x;
-		private float _max_y;
-		private float _max_z;
+		private float _maxX;
+		private float _maxY;
+		private float _maxZ;
 
-		public float min_x
+		public float minX
 		{
-			get { return this._min_x; }
+			get => this._minX;
 			set
 			{
-				if (this._min_x == value)
+				if (this._minX == value)
 					return;
-				this._min_x = value;
+				this._minX = value;
 				this.UpdateBox();
 			}
 		}
 
-		public float min_y
+		public float minY
 		{
-			get { return this._min_y; }
+			get => this._minY;
 			set
 			{
-				if (this._min_y == value)
+				if (this._minY == value)
 					return;
-				this._min_y = value;
+				this._minY = value;
 				this.UpdateBox();
 			}
 		}
 
-		public float min_z
+		public float minZ
 		{
-			get { return this._min_z; }
+			get => this._minZ;
 			set
 			{
-				if (this._min_z == value)
+				if (this._minZ == value)
 					return;
-				this._min_z = value;
+				this._minZ = value;
 				this.UpdateBox();
 			}
 		}
 
-		public float max_x
+		public float maxX
 		{
-			get { return this._max_x; }
+			get => this._maxX;
 			set
 			{
-				if (this._max_x == value)
+				if (this._maxX == value)
 					return;
-				this._max_x = value;
-				this.UpdateBox();
-			}
-		}
-
-
-		public float max_y
-		{
-			get { return this._max_y; }
-			set
-			{
-				if (this._max_y == value)
-					return;
-				this._max_y = value;
+				this._maxX = value;
 				this.UpdateBox();
 			}
 		}
 
 
-		public float max_z
+		public float maxY
 		{
-			get { return this._max_z; }
+			get => this._maxY;
 			set
 			{
-				if (this._max_z == value)
+				if (this._maxY == value)
 					return;
-				this._max_z = value;
+				this._maxY = value;
+				this.UpdateBox();
+			}
+		}
+
+
+		public float maxZ
+		{
+			get => this._maxZ;
+			set
+			{
+				if (this._maxZ == value)
+					return;
+				this._maxZ = value;
 				this.UpdateBox();
 			}
 		}
 
 		private Vector3 _min;
 
-		public Vector3 min
-		{
-			get { return _min; }
-		}
+		public Vector3 min => _min;
 
 		private Vector3 _max;
 
-		public Vector3 max
-		{
-			get { return _max; }
-		}
+		public Vector3 max => _max;
 
 		private Vector3 _center;
 
-		public Vector3 center
-		{
-			get { return _center; }
-		}
+		public Vector3 center => _center;
 
 		private Vector3 _size;
 
-		public Vector3 size
-		{
-			get { return _size; }
-		}
+		public Vector3 size => _size;
 
 
 		private Vector3 _extents;
 
-		public Vector3 extents
-		{
-			get { return _extents; }
-		}
+		public Vector3 extents => _extents;
 
 
 		public AABBBox()
@@ -131,70 +116,70 @@ namespace CsCat
 
 		public AABBBox(AABBBox aabbBox)
 		{
-			this._min_x = aabbBox._min_x;
-			this._min_y = aabbBox._min_y;
-			this._min_z = aabbBox._min_z;
+			this._minX = aabbBox._minX;
+			this._minY = aabbBox._minY;
+			this._minZ = aabbBox._minZ;
 
-			this._max_x = aabbBox._max_x;
-			this._max_y = aabbBox._max_y;
-			this._max_z = aabbBox._max_z;
+			this._maxX = aabbBox._maxX;
+			this._maxY = aabbBox._maxY;
+			this._maxZ = aabbBox._maxZ;
 
 			UpdateBox();
 		}
 
-		public AABBBox(float min_x, float min_y, float min_z, float max_x, float max_y, float max_z)
+		public AABBBox(float minX, float minY, float min_z, float max_x, float max_y, float max_z)
 		{
-			this._min_x = min_x;
-			this._min_y = min_y;
-			this._min_z = min_z;
+			this._minX = minX;
+			this._minY = minY;
+			this._minZ = min_z;
 
-			this._max_x = max_x;
-			this._max_y = max_y;
-			this._max_z = max_z;
+			this._maxX = max_x;
+			this._maxY = max_y;
+			this._maxZ = max_z;
 
 			UpdateBox();
 		}
 
 		public AABBBox(Vector3 min, Vector3 max)
 		{
-			this._min_x = min.x;
-			this._min_y = min.y;
-			this._min_z = min.z;
+			this._minX = min.x;
+			this._minY = min.y;
+			this._minZ = min.z;
 
-			this._max_x = max.x;
-			this._max_y = max.y;
-			this._max_z = max.z;
+			this._maxX = max.x;
+			this._maxY = max.y;
+			this._maxZ = max.z;
 
 			UpdateBox();
 		}
 
 		public void SetMin(Vector3 min)
 		{
-			this._min_x = min.x;
-			this._min_y = min.y;
-			this._min_z = min.z;
+			this._minX = min.x;
+			this._minY = min.y;
+			this._minZ = min.z;
 
 			UpdateBox();
 		}
 
 		public void SetMax(Vector3 max)
 		{
-			this._max_x = max.x;
-			this._max_y = max.y;
-			this._max_z = max.z;
+			this._maxX = max.x;
+			this._maxY = max.y;
+			this._maxZ = max.z;
 
 			UpdateBox();
 		}
 
 		public void SetMinMax(Vector3 min, Vector3 max)
 		{
-			this._min_x = min.x;
-			this._min_y = min.y;
-			this._min_z = min.z;
+			this._minX = min.x;
+			this._minY = min.y;
+			this._minZ = min.z;
 
-			this._max_x = max.x;
-			this._max_y = max.y;
-			this._max_z = max.z;
+			this._maxX = max.x;
+			this._maxY = max.y;
+			this._maxZ = max.z;
 
 			UpdateBox();
 		}
@@ -203,13 +188,13 @@ namespace CsCat
 		public void SetCenter(Vector3 center)
 		{
 			Vector3 extents = this.extents;
-			this._min_x = center.x - extents.x;
-			this._min_y = center.y - extents.y;
-			this._min_z = center.z - extents.z;
+			this._minX = center.x - extents.x;
+			this._minY = center.y - extents.y;
+			this._minZ = center.z - extents.z;
 
-			this._max_x = center.x + extents.x;
-			this._max_y = center.y + extents.y;
-			this._max_z = center.z + extents.z;
+			this._maxX = center.x + extents.x;
+			this._maxY = center.y + extents.y;
+			this._maxZ = center.z + extents.z;
 
 			UpdateBox();
 		}
@@ -218,13 +203,13 @@ namespace CsCat
 		{
 			Vector3 center = this.center;
 
-			this._min_x = center.x - extents.x;
-			this._min_y = center.y - extents.y;
-			this._min_z = center.z - extents.z;
+			this._minX = center.x - extents.x;
+			this._minY = center.y - extents.y;
+			this._minZ = center.z - extents.z;
 
-			this._max_x = center.x + extents.x;
-			this._max_y = center.y + extents.y;
-			this._max_z = center.z + extents.z;
+			this._maxX = center.x + extents.x;
+			this._maxY = center.y + extents.y;
+			this._maxZ = center.z + extents.z;
 
 			UpdateBox();
 		}
@@ -240,23 +225,23 @@ namespace CsCat
 			this._min = new Vector3(_min.x, _min.y, _min.z);
 			this._max = new Vector3(_max.x, _max.y, _max.z);
 			this._center = _min + _max / 2;
-			this._size = new Vector3(Math.Abs(_max_x - _min_x), Math.Abs(_max_y - _min_y), Math.Abs(_max_z - _min_z));
+			this._size = new Vector3(Math.Abs(_maxX - _minX), Math.Abs(_maxY - _minY), Math.Abs(_maxZ - _minZ));
 			this._extents = _size / 2;
 		}
 
 		public override bool IsIntersect(BoxBase other, float tolerence = float.Epsilon)
 		{
-			var other_aabbBox = other as AABBBox;
-			return IsIntersect_With_AABBBox(other_aabbBox);
+			var otherAABBBox = other as AABBBox;
+			return IsIntersectWithAABBBox(otherAABBBox);
 		}
 
-		public bool IsIntersect_With_AABBBox(AABBBox other_aabbBox, float tolerence = float.Epsilon)
+		public bool IsIntersectWithAABBBox(AABBBox otherAABBBox, float tolerence = float.Epsilon)
 		{
-			if (max_x + tolerence < other_aabbBox.min_x || min_x > other_aabbBox.max_x + tolerence)
+			if (maxX + tolerence < otherAABBBox.minX || minX > otherAABBBox.maxX + tolerence)
 				return false;
-			if (max_y + tolerence < other_aabbBox.min_y || min_y > other_aabbBox.max_y + tolerence)
+			if (maxY + tolerence < otherAABBBox.minY || minY > otherAABBBox.maxY + tolerence)
 				return false;
-			if (max_z + tolerence < other_aabbBox.min_z || min_z > other_aabbBox.max_z + tolerence)
+			if (maxZ + tolerence < otherAABBBox.minZ || minZ > otherAABBBox.maxZ + tolerence)
 				return false;
 			return true;
 		}
@@ -284,9 +269,7 @@ namespace CsCat
 
 		public override string ToString()
 		{
-			return string.Format("[min:({0},{1},{2}),max:({3},{4},{5})]", min_x, min_y, min_z, max_x, max_y, max_z);
+			return string.Format("[min:({0},{1},{2}),max:({3},{4},{5})]", minX, minY, minZ, maxX, maxY, maxZ);
 		}
-
-
 	}
 }

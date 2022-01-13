@@ -7,86 +7,85 @@ namespace CsCat
 {
 	public class TransformTweenMixerBehaviour : PlayableBehaviour
 	{
-		public List<TimelineClip> clip_list;
+		public List<TimelineClip> clipList;
 
 
 		public PlayableDirector director;
-		private bool is_first_frame_happened;
+		private bool isFirstFrameHappened;
 
 
-		private Transform is_track_binding;
+		private Transform isTrackBinding;
 
-		public Vector3 position_default;
+		public Vector3 defaultPosition;
 
-		private Vector3 position_end;
+		private Vector3 endPosition;
 
-		public Vector3 position_start;
-		public Vector3 rotation_default;
-		private Vector3 rotation_end;
-		public Vector3 rotation_start;
-		public Vector3 scale_default;
-		private Vector3 scale_end;
-		public Vector3 scale_start;
+		public Vector3 startPosition;
+		public Vector3 defaultRotation;
+		private Vector3 endRotation;
+		public Vector3 startRotation;
+		public Vector3 defaultScale;
+		private Vector3 endScale;
+		public Vector3 startScale;
 
 
 		private void HandleStart()
 		{
-			position_start = position_default;
-			rotation_start = rotation_default;
-			scale_start = scale_default;
-			foreach (var e in clip_list)
+			startPosition = defaultPosition;
+			startRotation = defaultRotation;
+			startScale = defaultScale;
+			for (var i = 0; i < clipList.Count; i++)
 			{
-				var clip = e.asset as TransformTweenClip;
-				if (director.time >= clip.clip.start + clip.clip.duration)
+				var e = clipList[i];
+				var transformTweenClip = e.asset as TransformTweenClip;
+				if (director.time >= transformTweenClip.clip.start + transformTweenClip.clip.duration)
 				{
-					if (clip.template.isUsePositionTarget)
-						position_start = clip.template.positionTarget;
-					if (clip.template.is_use_rotation_target)
-						rotation_start = clip.template.rotation_target;
-					if (clip.template.isUseScaleTarget)
-						scale_start = clip.template.scaleTarget;
+					if (transformTweenClip.template.isUsePositionTarget)
+						startPosition = transformTweenClip.template.positionTarget;
+					if (transformTweenClip.template.isUseRotationTarget)
+						startRotation = transformTweenClip.template.rotationTarget;
+					if (transformTweenClip.template.isUseScaleTarget)
+						startScale = transformTweenClip.template.scaleTarget;
 
 
-					position_start = position_start.Multiply(clip.template.positionMultiply);
-					rotation_start = rotation_start.Multiply(clip.template.rotationMultiply);
-					scale_start = scale_start.Multiply(clip.template.scaleMultiply);
+					startPosition = startPosition.Multiply(transformTweenClip.template.positionMultiply);
+					startRotation = startRotation.Multiply(transformTweenClip.template.rotationMultiply);
+					startScale = startScale.Multiply(transformTweenClip.template.scaleMultiply);
 				}
 				else
-				{
 					break;
-				}
 			}
 		}
 
 
 		public override void ProcessFrame(Playable playable, FrameData info, object arg)
 		{
-			is_track_binding = arg as Transform;
+			isTrackBinding = arg as Transform;
 
-			if (is_track_binding == null)
+			if (isTrackBinding == null)
 				return;
 
 
 			HandleStart();
 
 
-			var input_count = playable.GetInputCount();
-			var weight_blend_total = 0f;
+			var inputCount = playable.GetInputCount();
+			var totalBlendWeight = 0f;
 
 
-			var position_blend = Vector3.zero;
-			var rotation_blend = Vector3.zero;
-			var scale_blend = Vector3.zero;
+			var blendPosition = Vector3.zero;
+			var blendRotation = Vector3.zero;
+			var blendScale = Vector3.zero;
 
-			for (var i = 0; i < input_count; i++)
+			for (var i = 0; i < inputCount; i++)
 			{
-				var input_weight = playable.GetInputWeight(i);
+				var inputWeight = playable.GetInputWeight(i);
 				var inputPlayable =
 				  (ScriptPlayable<TransformTweenBehaviour>)playable.GetInput(i);
 				var input = inputPlayable.GetBehaviour();
-				weight_blend_total += input_weight;
+				totalBlendWeight += inputWeight;
 
-				if (Mathf.Approximately(input_weight, 0f))
+				if (Mathf.Approximately(inputWeight, 0f))
 					continue;
 
 				if (input.clip.IsInRange(director.time))
@@ -95,33 +94,33 @@ namespace CsCat
 
 
 					if (input.isUsePositionTarget)
-						position_blend += Vector3.Lerp(position_start, input.positionTarget, percent) * input_weight;
+						blendPosition += Vector3.Lerp(startPosition, input.positionTarget, percent) * inputWeight;
 					else
-						position_blend += position_start * input_weight;
+						blendPosition += startPosition * inputWeight;
 
-					if (input.is_use_rotation_target)
-						rotation_blend += Vector3.Lerp(rotation_start, input.rotation_target, percent) * input_weight;
+					if (input.isUseRotationTarget)
+						blendRotation += Vector3.Lerp(startRotation, input.rotationTarget, percent) * inputWeight;
 					else
-						rotation_blend += rotation_start * input_weight;
+						blendRotation += startRotation * inputWeight;
 
 
 					if (input.isUseScaleTarget)
-						scale_blend += Vector3.Lerp(scale_start, input.scaleTarget, percent) * input_weight;
+						blendScale += Vector3.Lerp(startScale, input.scaleTarget, percent) * inputWeight;
 					else
-						scale_blend += scale_start * input_weight;
+						blendScale += startScale * inputWeight;
 
-					position_blend = position_blend.Multiply(input.positionMultiply) * input_weight;
-					rotation_blend = rotation_blend.Multiply(input.rotationMultiply) * input_weight;
-					scale_blend = scale_blend.Multiply(input.scaleMultiply) * input_weight;
+					blendPosition = blendPosition.Multiply(input.positionMultiply) * inputWeight;
+					blendRotation = blendRotation.Multiply(input.rotationMultiply) * inputWeight;
+					blendScale = blendScale.Multiply(input.scaleMultiply) * inputWeight;
 				}
 			}
 
-			var weight_remain_default = Mathf.Clamp(1 - weight_blend_total, 0, 1);
+			var remainDefaultWeight = Mathf.Clamp(1 - totalBlendWeight, 0, 1);
 
 
-			is_track_binding.transform.localPosition = weight_remain_default * position_start + position_blend;
-			is_track_binding.transform.localEulerAngles = weight_remain_default * rotation_start + rotation_blend;
-			is_track_binding.transform.localScale = weight_remain_default * scale_start + scale_blend;
+			isTrackBinding.transform.localPosition = remainDefaultWeight * startPosition + blendPosition;
+			isTrackBinding.transform.localEulerAngles = remainDefaultWeight * startRotation + blendRotation;
+			isTrackBinding.transform.localScale = remainDefaultWeight * startScale + blendScale;
 		}
 	}
 }

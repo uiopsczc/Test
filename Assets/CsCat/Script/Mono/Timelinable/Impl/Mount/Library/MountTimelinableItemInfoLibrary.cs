@@ -12,7 +12,7 @@ namespace CsCat
 
 		public override TimelinableItemInfoBase[] itemInfoes
 		{
-			get { return _itemInfoes; }
+			get => _itemInfoes;
 			set { _itemInfoes = value as MountTimelinableItemInfo[]; }
 		}
 	}

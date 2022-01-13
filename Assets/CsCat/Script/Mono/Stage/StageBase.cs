@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -10,23 +9,22 @@ namespace CsCat
 	public class StageBase : TickObject
 	{
 		public LoadSceneMode loadSceneMode = LoadSceneMode.Additive;
-		public List<UIPanel> panel_list = new List<UIPanel>();
+		public List<UIPanel> panelList = new List<UIPanel>();
 
 
-		public virtual bool is_show_fade => false;
-		public virtual bool is_show_loading => true;
-		public virtual string stage_name { get; }
-		public virtual string scene_path { get; }
-		public string scene_name => scene_path.WithoutSuffix().FileName();
+		public virtual bool isShowFade => false;
+		public virtual bool isShowLoading => true;
+		public virtual string stageName { get; }
+		public virtual string scenePath { get; }
+		public string sceneName => scenePath.WithoutSuffix().FileName();
 
 
-		public Action on_show_callback;
+		public Action onShowCallback;
 
 
 		public virtual void LoadPanels()
 		{
 		}
-
 
 
 		public override void Start()
@@ -37,25 +35,25 @@ namespace CsCat
 
 		public IEnumerator StartLoading()
 		{
-			float last_pct = 0;
-			SetLoadingPct(last_pct);
+			float lastPCT = 0;
+			SetLoadingPct(lastPCT);
 
 
 			LoadPanels();
 			yield return WaitUntilAllPanelsLoadDone();
-			last_pct = 0.1f;
-			SetLoadingPct(last_pct);
+			lastPCT = 0.1f;
+			SetLoadingPct(lastPCT);
 
 
-			if (!scene_path.IsNullOrWhiteSpace())
-				yield return SceneManager.LoadSceneAsync(scene_path, loadSceneMode);
-			last_pct = 0.2f;
-			SetLoadingPct(last_pct);
+			if (!scenePath.IsNullOrWhiteSpace())
+				yield return SceneManager.LoadSceneAsync(scenePath, loadSceneMode);
+			lastPCT = 0.2f;
+			SetLoadingPct(lastPCT);
 
 
 			yield return WaitUntilPreLoadAssetsLoadDone((pct) =>
 			{
-				SetLoadingPct(last_pct + Mathf.Lerp(pct, 0, 0.9f - last_pct));
+				SetLoadingPct(lastPCT + Mathf.Lerp(pct, 0, 0.9f - lastPCT));
 			});
 
 
@@ -70,7 +68,6 @@ namespace CsCat
 
 			this.Broadcast(null, StageEventNameConst.On_Stage_Loaded, this);
 			Show();
-
 		}
 
 		public virtual IEnumerator IEPreShow()
@@ -80,7 +77,7 @@ namespace CsCat
 
 		public virtual void Show()
 		{
-			on_show_callback?.Invoke();
+			onShowCallback?.Invoke();
 		}
 
 		//////////////////////////////////////////////////////////////////////
@@ -90,7 +87,7 @@ namespace CsCat
 		{
 			if (Client.instance.uiManager.uiFadePanel.graphicComponent.gameObject.activeInHierarchy)
 				Client.instance.uiManager.FadeTo(0, FadeConst.Stage_Fade_Default_Hide_Duration,
-				  () => { Client.instance.uiManager.HideFade(); });
+					() => { Client.instance.uiManager.HideFade(); });
 		}
 
 		//////////////////////////////////////////////////////////////////////
@@ -98,32 +95,33 @@ namespace CsCat
 		//////////////////////////////////////////////////////////////////////
 		public void SetLoadingPct(float pct)
 		{
-			if (is_show_loading)
+			if (isShowLoading)
 				Client.instance.uiManager.SetLoadingPct(pct);
 		}
 
 		public void HideLoading()
 		{
-			if (is_show_loading)
+			if (isShowLoading)
 				Client.instance.uiManager.HideLoading();
 		}
 
 		/////////////////////////////////////////////////////////////////////////////////////////////
 		public IEnumerator WaitUntilPreLoadAssetsLoadDone(Action<float> callback)
 		{
-			var assetAsyncloader_prosessing_list = Client.instance.assetBundleManager.assetAsyncloader_prosessing_list;
-			var assetBundleAsyncLoader_prosessing_list =
-			  Client.instance.assetBundleManager.assetBundleAsyncLoader_prosessing_list;
-			float total_loading_count = assetAsyncloader_prosessing_list.Count + assetBundleAsyncLoader_prosessing_list.Count;
-			float cur_pct = 0;
-			float next_pct = 0;
-			while (assetAsyncloader_prosessing_list.Count > 0 || assetBundleAsyncLoader_prosessing_list.Count > 0)
+			var assetAsyncloaderProsessingList = Client.instance.assetBundleManager.assetAsyncloader_prosessing_list;
+			var assetBundleAsyncLoaderProsessingList =
+				Client.instance.assetBundleManager.assetBundleAsyncLoader_prosessing_list;
+			float total_loading_count =
+				assetAsyncloaderProsessingList.Count + assetBundleAsyncLoaderProsessingList.Count;
+			float curPCT = 0;
+			float nextPCT = 0;
+			while (assetAsyncloaderProsessingList.Count > 0 || assetBundleAsyncLoaderProsessingList.Count > 0)
 			{
-				cur_pct = (assetAsyncloader_prosessing_list.Count + assetBundleAsyncLoader_prosessing_list.Count) /
-						  total_loading_count;
-				if (cur_pct > next_pct)
-					next_pct = cur_pct;
-				callback(cur_pct);
+				curPCT = (assetAsyncloaderProsessingList.Count + assetBundleAsyncLoaderProsessingList.Count) /
+				          total_loading_count;
+				if (curPCT > nextPCT)
+					nextPCT = curPCT;
+				callback(curPCT);
 				yield return null;
 			}
 
@@ -145,8 +143,9 @@ namespace CsCat
 		{
 			yield return new WaitUntil(() =>
 			{
-				foreach (UIPanel panel in panel_list)
+				for (var i = 0; i < panelList.Count; i++)
 				{
+					UIPanel panel = panelList[i];
 					if (!panel.isAllAssetsLoadDone)
 						return false;
 				}
@@ -163,18 +162,13 @@ namespace CsCat
 		public IEnumerator IEPreDestroy()
 		{
 			Client.instance.uiManager.Reset();
-			PoolCatManager.instance.Trim();//清理所有的对象池
-			if (!scene_path.IsNullOrWhiteSpace())
+			PoolCatManager.instance.Trim(); //清理所有的对象池
+			if (!scenePath.IsNullOrWhiteSpace())
 			{
-				yield return SceneManager.UnloadSceneAsync(scene_name);
+				yield return SceneManager.UnloadSceneAsync(sceneName);
 			}
 
 			yield return null;
 		}
-
-
 	}
 }
-
-
-

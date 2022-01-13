@@ -9,8 +9,11 @@ namespace CsCat
 	{
 		public void SyncAnimationWindow()
 		{
-			foreach (var playing_itemInfo in playing_itemInfo_list)
-				(playing_itemInfo as AnimationTimelinableItemInfo).SyncAnimationWindow(curTime);
+			for (var i = 0; i < playingItemInfoList.Count; i++)
+			{
+				var playingItemInfo = playingItemInfoList[i];
+				(playingItemInfo as AnimationTimelinableItemInfo).SyncAnimationWindow(curTime);
+			}
 		}
 
 		public override bool IsItemInfoCanAddToLibrary()
@@ -26,18 +29,18 @@ namespace CsCat
 		public override void DrawGUISetting_Detail()
 		{
 			base.DrawGUISetting_Detail();
-			var _runtimeAnimatorController = (RuntimeAnimatorController)EditorGUILayout.ObjectField(
+			var editorRuntimeAnimatorController = (RuntimeAnimatorController)EditorGUILayout.ObjectField(
 			  "runtimeAnimatorController", runtimeAnimatorController, typeof(RuntimeAnimatorController), false);
-			if (runtimeAnimatorController != _runtimeAnimatorController)
+			if (runtimeAnimatorController != editorRuntimeAnimatorController)
 			{
-				runtimeAnimatorController = _runtimeAnimatorController;
+				runtimeAnimatorController = editorRuntimeAnimatorController;
 				UpdateRuntimeAnimatorController();
 			}
 
-			var _animator = EditorGUILayout.ObjectField("animator", animator, typeof(Animator));
-			if (animator != _animator)
+			var editorAnimator = EditorGUILayout.ObjectField("animator", animator, typeof(Animator));
+			if (animator != editorAnimator)
 			{
-				animator = _animator as Animator;
+				animator = editorAnimator as Animator;
 				UpdateRuntimeAnimatorController();
 			}
 		}
@@ -54,7 +57,7 @@ namespace CsCat
 		{
 			if (animator == null)
 				return;
-			using (new GUILayoutToggleAreaScope(itemInfoLibrary_toggleTween, "Library"))
+			using (new GUILayoutToggleAreaScope(itemInfoLibraryToggleTween, "Library"))
 			{
 				if (animator.runtimeAnimatorController == null)
 					EditorGUILayout.HelpBox("Library is empty\nruntimeAnimatorController==null", MessageType.Warning);
@@ -65,20 +68,20 @@ namespace CsCat
 						EditorGUILayout.HelpBox("Library is empty\nanimationClips==null", MessageType.Warning);
 					else
 					{
-						is_itemInfoLibrary_sorted = GUILayout.Toggle(is_itemInfoLibrary_sorted, "Sort", "button");
-						if (is_itemInfoLibrary_sorted)
+						isItemInfoLibrarySorted = GUILayout.Toggle(isItemInfoLibrarySorted, "Sort", "button");
+						if (isItemInfoLibrarySorted)
 							Array.Sort(animationClips, (x, y) => x.name.AlphanumCompareTo(y.name));
 						for (int i = 0; i < animationClips.Length; i++)
 						{
 							var animationClip = animationClips[i];
 							if (GUILayout.Button(animationClip.name))
 							{
-								var new_itemInfo = new AnimationTimelinableItemInfo();
-								new_itemInfo.time = curTime;
-								new_itemInfo.duration = animationClip.length;
-								new_itemInfo.animationClip = animationClip;
-								new_itemInfo.name = animationClip.name;
-								AddItemInfo(new_itemInfo);
+								var newItemInfo = new AnimationTimelinableItemInfo();
+								newItemInfo.time = curTime;
+								newItemInfo.duration = animationClip.length;
+								newItemInfo.animationClip = animationClip;
+								newItemInfo.name = animationClip.name;
+								AddItemInfo(newItemInfo);
 							}
 						}
 					}

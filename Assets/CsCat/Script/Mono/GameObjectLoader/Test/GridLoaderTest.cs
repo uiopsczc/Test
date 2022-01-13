@@ -6,13 +6,5 @@ namespace CsCat
 		{
 			GameObjectLoader.instance.LoadFromPath("Assets/test/tilemap_unity/tilemap_unity_save_data.txt");
 		}
-
-
-
-
 	}
 }
-
-
-
-

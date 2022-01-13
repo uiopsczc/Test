@@ -7,28 +7,28 @@ namespace CsCat
 {
 	public class EditorIconTexture
 	{
-		static Dictionary<string, Texture2D> icon_texture_cache_dict = new Dictionary<string, Texture2D>();
+		static Dictionary<string, Texture2D> iconTextureCacheDict = new Dictionary<string, Texture2D>();
 
 
-		public static int count => icon_texture_cache_dict.Count;
+		public static int count => iconTextureCacheDict.Count;
 
 		public static Texture2D Get(string name)
 		{
-			if (icon_texture_cache_dict.ContainsKey(name))
-				return icon_texture_cache_dict[name];
+			if (iconTextureCacheDict.ContainsKey(name))
+				return iconTextureCacheDict[name];
 
 			Texture2D texture = (Texture2D)EditorGUIUtility.Load(name);
-			icon_texture_cache_dict[name] = texture;
+			iconTextureCacheDict[name] = texture;
 			return texture;
 		}
 
 		public static Texture2D GetCustom(string name)
 		{
-			if (icon_texture_cache_dict.ContainsKey(name))
-				return icon_texture_cache_dict[name];
+			if (iconTextureCacheDict.ContainsKey(name))
+				return iconTextureCacheDict[name];
 
 			Texture2D texture = AssetDatabase.LoadAssetAtPath<Texture2D>(string.Format("Assets/Editor/EditorExtensions/EditorTextures/{0}.png", name));
-			icon_texture_cache_dict.Add(name, texture);
+			iconTextureCacheDict.Add(name, texture);
 			return texture;
 		}
 
@@ -36,11 +36,11 @@ namespace CsCat
 		public static Texture2D GetSystem(EditorIconTextureType editorIconTextureType)
 		{
 			string name = EditorIconTextureConst.IconTextureNames[(int)editorIconTextureType];
-			if (icon_texture_cache_dict.ContainsKey(name))
-				return icon_texture_cache_dict[name];
+			if (iconTextureCacheDict.ContainsKey(name))
+				return iconTextureCacheDict[name];
 
 			Texture2D texture = EditorGUIUtility.FindTexture(name);
-			icon_texture_cache_dict.Add(name, texture);
+			iconTextureCacheDict.Add(name, texture);
 			return texture;
 		}
 

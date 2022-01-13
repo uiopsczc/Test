@@ -12,14 +12,8 @@ namespace CsCat
 
 		public TransformFinderBase this[int index]
 		{
-			get
-			{
-				return this.GetFieldValue<TransformFinderBase>(string.Format("_transformFinder{0}", index));
-			}
-			set
-			{
-				this.SetFieldValue(string.Format("_transformFinder{0}", index), value);
-			}
+			get => this.GetFieldValue<TransformFinderBase>(string.Format("_transformFinder{0}", index));
+			set => this.SetFieldValue(string.Format("_transformFinder{0}", index), value);
 		}
 
 		public void CopyTo(object dest)
@@ -35,8 +29,5 @@ namespace CsCat
 			_transformFinder0.CopyFrom(_source._transformFinder0);
 			_transformFinder1.CopyFrom(_source._transformFinder1);
 		}
-
-
-
 	}
 }

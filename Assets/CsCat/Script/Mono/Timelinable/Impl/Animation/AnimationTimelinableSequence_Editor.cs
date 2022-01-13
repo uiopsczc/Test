@@ -12,12 +12,6 @@ namespace CsCat
 			foreach (var track in tracks)
 				(track as AnimationTimelinableTrack).SyncAnimationWindow();
 		}
-
-
-
-
-
-
 	}
 }
 #endif

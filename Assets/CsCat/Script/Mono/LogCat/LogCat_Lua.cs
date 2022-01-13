@@ -11,12 +11,13 @@ namespace CsCat
 	public partial class LogCat
 	{
 		//给Lua端调用
-		public static void LuaBatchLog(List<Dictionary<string, string>> message_info_list)
+		public static void LuaBatchLog(List<Dictionary<string, string>> messageInfoList)
 		{
-			foreach (var message_info in message_info_list)
+			for (var i = 0; i < messageInfoList.Count; i++)
 			{
-				string logType = message_info["logType"];
-				string message = message_info["message"];
+				var messageInfo = messageInfoList[i];
+				string logType = messageInfo["logType"];
+				string message = messageInfo["message"];
 				switch (logType)
 				{
 					case "log":
@@ -29,10 +30,7 @@ namespace CsCat
 						LogError(message);
 						break;
 				}
-
 			}
 		}
-
-
 	}
 }

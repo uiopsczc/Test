@@ -7,27 +7,29 @@ namespace CsCat
 	[Serializable]
 	public partial class SkinnedMeshRendererTimelinableTrack : TimelinableTrackBase
 	{
-		[SerializeField] private SkinnedMeshRendererTimelinableItemInfo[] _itemInfoes = new SkinnedMeshRendererTimelinableItemInfo[0];
+		[SerializeField]
+		private SkinnedMeshRendererTimelinableItemInfo[] _itemInfoes = new SkinnedMeshRendererTimelinableItemInfo[0];
+
 		[SerializeField] private SkinnedMeshRendererTimelinableItemInfoLibrary _itemInfoLibrary;
-		[NonSerialized] private List<SkinnedMeshRenderer> skinnedMeshRenderer_list = new List<SkinnedMeshRenderer>();
+		[NonSerialized] private List<SkinnedMeshRenderer> skinnedMeshRendererList = new List<SkinnedMeshRenderer>();
 
 		public override TimelinableItemInfoBase[] itemInfoes
 		{
-			get { return _itemInfoes; }
+			get => _itemInfoes;
 			set { _itemInfoes = value as SkinnedMeshRendererTimelinableItemInfo[]; }
 		}
 
 		public override TimelinableItemInfoLibraryBase itemInfoLibrary
 		{
-			get { return _itemInfoLibrary; }
+			get => _itemInfoLibrary;
 			set { _itemInfoLibrary = value as SkinnedMeshRendererTimelinableItemInfoLibrary; }
 		}
 
 
-		protected override void Handle_Time(int start_index, params object[] args)
+		protected override void HandleTime(int startIndex, params object[] args)
 		{
 			StopAllPlayingItemInfo();
-			for (int i = start_index; i < _itemInfoes.Length; i++)
+			for (int i = startIndex; i < _itemInfoes.Length; i++)
 			{
 				if (i < 0)
 					continue;
@@ -37,47 +39,50 @@ namespace CsCat
 				{
 					if (curTime < itemInfo.time + itemInfo.duration)
 						AddToToPlayItemInfoIndexList(i);
-					cur_time_itemInfo_index = i;
+					curTimeItemInfoIndex = i;
 				}
 				else
 					break;
 			}
+
 			//加上最后一个cur_time_itemInfo_index
-			if (cur_time_itemInfo_index >= 0)
-				AddToToPlayItemInfoIndexList(cur_time_itemInfo_index);
-			Handle_To_Play_And_Stop_ItemInfo_Index_list(args);
+			if (curTimeItemInfoIndex >= 0)
+				AddToToPlayItemInfoIndexList(curTimeItemInfoIndex);
+			HandleToPlayAndStopItemInfoIndexList(args);
 		}
 
-		protected override void AddToToPlayItemInfoIndexList(int itemInfo_index)
+		protected override void AddToToPlayItemInfoIndexList(int itemInfoIndex)
 		{
-			if (!this.to_play_itemInfo_index_list.Contains(itemInfo_index))
-				this.to_play_itemInfo_index_list.Add(itemInfo_index);
+			if (!this.toPlayItemInfoIndexList.Contains(itemInfoIndex))
+				this.toPlayItemInfoIndexList.Add(itemInfoIndex);
 		}
 
 		public override void CopyTo(object dest)
 		{
-			var _dest = dest as SkinnedMeshRendererTimelinableTrack;
+			var destSkinnedMeshRendererTimelinableTrack = dest as SkinnedMeshRendererTimelinableTrack;
 #if UNITY_EDITOR
-			skinnedMeshRenderer_reorderableListInfo.CopyTo(_dest.skinnedMeshRenderer_reorderableListInfo);
+			skinnedMeshRendererReorderableListInfo.CopyTo(destSkinnedMeshRendererTimelinableTrack.skinnedMeshRendererReorderableListInfo);
 #endif
 			base.CopyTo(dest);
 		}
 
 		public override void CopyFrom(object source)
 		{
-			var _source = source as SkinnedMeshRendererTimelinableTrack;
+			var sourceSkinnedMeshRendererTimelinableTrack = source as SkinnedMeshRendererTimelinableTrack;
 #if UNITY_EDITOR
-			skinnedMeshRenderer_reorderableListInfo.CopyFrom(_source.skinnedMeshRenderer_reorderableListInfo);
+			skinnedMeshRendererReorderableListInfo.CopyFrom(sourceSkinnedMeshRendererTimelinableTrack.skinnedMeshRendererReorderableListInfo);
 #endif
 			base.CopyFrom(source);
-
 		}
 
 		//////////////////////////////////////////////////////////////////////////////////////
-		public void SetSkinnedMeshRendererList_Of_ItemInfoes()
+		public void SetSkinnedMeshRendererListOfItemInfoes()
 		{
-			foreach (var itemInfo in _itemInfoes)
-				itemInfo.skinnedMeshRenderer_list = skinnedMeshRenderer_list;
+			for (var i = 0; i < _itemInfoes.Length; i++)
+			{
+				var itemInfo = _itemInfoes[i];
+				itemInfo.skinnedMeshRendererList = skinnedMeshRendererList;
+			}
 		}
 	}
 }

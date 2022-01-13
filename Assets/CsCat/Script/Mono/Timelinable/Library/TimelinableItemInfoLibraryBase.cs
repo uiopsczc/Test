@@ -8,7 +8,7 @@ namespace CsCat
 	{
 		public virtual TimelinableItemInfoBase[] itemInfoes
 		{
-			get { return null; }
+			get => null;
 			set { }
 		}
 

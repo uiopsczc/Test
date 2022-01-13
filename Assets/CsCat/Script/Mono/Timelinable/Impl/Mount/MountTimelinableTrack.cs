@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,14 +7,13 @@ namespace CsCat
 	[Serializable]
 	public partial class MountTimelinableTrack : TimelinableTrackBase
 	{
-		[NonSerialized]
-		public Transform transform;
+		[NonSerialized] public Transform transform;
 		[SerializeField] private MountTimelinableItemInfo[] _itemInfoes = new MountTimelinableItemInfo[0];
 		[SerializeField] private MountTimelinableItemInfoLibrary _itemInfoLibrary;
 
 		public override TimelinableItemInfoBase[] itemInfoes
 		{
-			get { return _itemInfoes; }
+			get => _itemInfoes;
 			set { _itemInfoes = value as MountTimelinableItemInfo[]; }
 		}
 
@@ -35,11 +33,5 @@ namespace CsCat
 		{
 			base.Tick(time, args.ToList().AddFirst(this.transform).ToArray());
 		}
-
-
-
 	}
 }
-
-
-

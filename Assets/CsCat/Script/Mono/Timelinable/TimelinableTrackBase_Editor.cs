@@ -9,8 +9,8 @@ namespace CsCat
 	public partial class TimelinableTrackBase : ICopyable
 	{
 		[NonSerialized] public GUIToggleTween toggleTween = new GUIToggleTween();
-		[NonSerialized] public GUIToggleTween itemInfoLibrary_toggleTween = new GUIToggleTween();
-		[NonSerialized] public bool is_itemInfoLibrary_sorted;
+		[NonSerialized] public GUIToggleTween itemInfoLibraryToggleTween = new GUIToggleTween();
+		[NonSerialized] public bool isItemInfoLibrarySorted;
 
 		public virtual bool IsItemInfoCanAddToLibrary()
 		{
@@ -36,41 +36,43 @@ namespace CsCat
 
 		public virtual void DrawGUISetting_ItemInfoes()
 		{
-			List<TimelinableItemInfoBase> display_itemInfo_list = new List<TimelinableItemInfoBase>();
-			foreach (var itemInfo in itemInfoes)
+			List<TimelinableItemInfoBase> displayItemInfoList = new List<TimelinableItemInfoBase>();
+			for (var i = 0; i < itemInfoes.Length; i++)
 			{
+				var itemInfo = itemInfoes[i];
 				if (itemInfo.isSelected || itemInfo.IsTimeInside(curTime))
-					display_itemInfo_list.Add(itemInfo);
+					displayItemInfoList.Add(itemInfo);
 			}
 
 			using (new GUILayoutBeginVerticalIndentLevelScope(3))
 			{
-				for (int i = 0; i < display_itemInfo_list.Count; i++)
+				for (int i = 0; i < displayItemInfoList.Count; i++)
 				{
-					var display_itemInfo = display_itemInfo_list[i];
-					display_itemInfo.DrawGUISetting(this);
+					var displayItemInfo = displayItemInfoList[i];
+					displayItemInfo.DrawGUISetting(this);
 				}
 			}
 		}
 
 		public virtual void DrawGUISetting_ItemInfoLibrary()
 		{
-			Type itemInfoLibrary_type = this.GetFieldInfo("_itemInfoLibrary").FieldType;
-			using (new GUILayoutToggleAreaScope(itemInfoLibrary_toggleTween, "Library", () =>
+			Type itemInfoLibraryType = this.GetFieldInfo("_itemInfoLibrary").FieldType;
+			using (new GUILayoutToggleAreaScope(itemInfoLibraryToggleTween, "Library", () =>
 			{
-				itemInfoLibrary = (TimelinableItemInfoLibraryBase)EditorGUILayout.ObjectField(itemInfoLibrary,
-			itemInfoLibrary_type, false);
+				itemInfoLibrary = (TimelinableItemInfoLibraryBase) EditorGUILayout.ObjectField(itemInfoLibrary,
+					itemInfoLibraryType, false);
 				if (GUILayout.Button("create", GUILayout.Width(64)))
 				{
 					var path = EditorUtility.SaveFilePanel(
-				"保存文件到",
-				"",
-				string.Format("{0}.asset", itemInfoLibrary_type.GetLastName()),
-				"asset");
+						"保存文件到",
+						"",
+						string.Format("{0}.asset", itemInfoLibraryType.GetLastName()),
+						"asset");
 					if (!path.IsNullOrEmpty())
 						itemInfoLibrary =
-					typeof(ScriptableObjectUtil).InvokeGenericMethod<TimelinableItemInfoLibraryBase>("CreateAsset",
-					  new Type[] { itemInfoLibrary_type }, false, path);
+							typeof(ScriptableObjectUtil).InvokeGenericMethod<TimelinableItemInfoLibraryBase>(
+								"CreateAsset",
+								new Type[] {itemInfoLibraryType}, false, path);
 				}
 
 				using (new GUIEnabledScope(itemInfoLibrary != null))
@@ -88,10 +90,10 @@ namespace CsCat
 					EditorGUILayout.HelpBox("Library is empty", MessageType.Warning);
 				else
 				{
-					is_itemInfoLibrary_sorted = GUILayout.Toggle(is_itemInfoLibrary_sorted, "Sort", "button");
-					if (is_itemInfoLibrary_sorted)
+					isItemInfoLibrarySorted = GUILayout.Toggle(isItemInfoLibrarySorted, "Sort", "button");
+					if (isItemInfoLibrarySorted)
 						Array.Sort(itemInfoLibrary.itemInfoes, (x, y) => x.name.AlphanumCompareTo(y.name));
-					List<int> to_remove_index_list = new List<int>();
+					List<int> toRemoveIndexList = new List<int>();
 					for (int i = 0; i < itemInfoLibrary.itemInfoes.Length; i++)
 					{
 						TimelinableItemInfoBase itemInfo = itemInfoLibrary.itemInfoes[i];
@@ -99,20 +101,20 @@ namespace CsCat
 						{
 							if (GUILayout.Button(itemInfo.name))
 							{
-								var new_itemInfo = itemInfo.GetType().CreateInstance<TimelinableItemInfoBase>();
-								new_itemInfo.CopyFrom(itemInfo);
-								new_itemInfo.time = curTime;
-								AddItemInfo(new_itemInfo);
+								var newItemInfo = itemInfo.GetType().CreateInstance<TimelinableItemInfoBase>();
+								newItemInfo.CopyFrom(itemInfo);
+								newItemInfo.time = curTime;
+								AddItemInfo(newItemInfo);
 							}
 
 							if (GUILayout.Button("-", GUILayout.Width(32)))
 							{
-								to_remove_index_list.Add(i);
+								toRemoveIndexList.Add(i);
 							}
 						}
 					}
 
-					for (int i = to_remove_index_list.Count - 1; i >= 0; i--)
+					for (int i = toRemoveIndexList.Count - 1; i >= 0; i--)
 						itemInfoLibrary.RemoveItemInfo(itemInfoLibrary.itemInfoes[i]);
 				}
 			}

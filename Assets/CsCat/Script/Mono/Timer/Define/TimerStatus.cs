@@ -1,4 +1,3 @@
-
 namespace CsCat
 {
 	public enum TimerStatus

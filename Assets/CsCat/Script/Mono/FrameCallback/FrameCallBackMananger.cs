@@ -14,9 +14,9 @@ namespace CsCat
 	{
 		#region field
 
-		private readonly FrameCallbackList update_callbackList = new FrameCallbackList();
-		private readonly FrameCallbackList lateUpdate_callbackList = new FrameCallbackList();
-		private readonly FrameCallbackList fixedUpdate_callbackList = new FrameCallbackList();
+		private readonly FrameCallbackList updateCallbackList = new FrameCallbackList();
+		private readonly FrameCallbackList lateUpdateCallbackList = new FrameCallbackList();
+		private readonly FrameCallbackList fixedUpdateCallbackList = new FrameCallbackList();
 
 		#endregion
 
@@ -26,19 +26,19 @@ namespace CsCat
 		{
 		}
 
-		public void AddFrameUpdateCallback(Func<object, bool> callback, object callback_arg)
+		public void AddFrameUpdateCallback(Func<object, bool> callback, object callbackArg)
 		{
-			update_callbackList.Add(callback, callback_arg);
+			updateCallbackList.Add(callback, callbackArg);
 		}
 
-		public void AddFrameLateUpdateCallback(Func<object, bool> callback, object callback_arg)
+		public void AddFrameLateUpdateCallback(Func<object, bool> callback, object callbackArg)
 		{
-			lateUpdate_callbackList.Add(callback, callback_arg);
+			lateUpdateCallbackList.Add(callback, callbackArg);
 		}
 
-		public void AddFrameFixedUpdateCallback(Func<object, bool> callback, object callback_arg)
+		public void AddFrameFixedUpdateCallback(Func<object, bool> callback, object callbackArg)
 		{
-			fixedUpdate_callbackList.Add(callback, callback_arg);
+			fixedUpdateCallbackList.Add(callback, callbackArg);
 		}
 
 		#endregion
@@ -47,17 +47,17 @@ namespace CsCat
 
 		public void Update()
 		{
-			update_callbackList.Execute();
+			updateCallbackList.Execute();
 		}
 
 		public void LateUpdate()
 		{
-			lateUpdate_callbackList.Execute();
+			lateUpdateCallbackList.Execute();
 		}
 
 		public void FixedUpdate()
 		{
-			fixedUpdate_callbackList.Execute();
+			fixedUpdateCallbackList.Execute();
 		}
 
 		#endregion

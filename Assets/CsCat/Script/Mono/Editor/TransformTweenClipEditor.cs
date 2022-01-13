@@ -20,8 +20,8 @@ namespace CsCat
 
 			using (new EditorGUILayoutBeginHorizontalScope())
 			{
-				if (EditorGUILayoutUtil.Toggle("UseTarget(R)", ref _self.template.is_use_rotation_target))
-					_self.template.rotation_target = EditorGUILayout.Vector3Field("", _self.template.rotation_target);
+				if (EditorGUILayoutUtil.Toggle("UseTarget(R)", ref _self.template.isUseRotationTarget))
+					_self.template.rotationTarget = EditorGUILayout.Vector3Field("", _self.template.rotationTarget);
 			}
 
 

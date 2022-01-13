@@ -53,18 +53,22 @@ namespace CsCat
 		BuildSettings_Editor,
 		BuildSettings_Metro,
 		BuildSettings_N3DS,
+
 		//    BuildSettings_PS3,
 		BuildSettings_PS4,
 		BuildSettings_PSP2,
+
 		//    BuildSettings_SamsungTV,
 		BuildSettings_SelectedIcon,
 		BuildSettings_Standalone,
 		BuildSettings_StandaloneGLESEmu,
+
 		//    BuildSettings_Tizen,
 		BuildSettings_Web,
 		BuildSettings_Web_Small,
 		BuildSettings_WebGL,
 		BuildSettings_WebGL_Small,
+
 		//    BuildSettings_WiiU,
 		BuildSettings_XBox360,
 		BuildSettings_XboxOne,
@@ -98,12 +102,15 @@ namespace CsCat
 		MonoLogo,
 		MoveTool_On,
 		MoveTool,
+
 		//    PauseButton_Anim,
 		PauseButton_On,
 		PauseButton,
+
 		//    PlayButton_Anim,
 		PlayButton_On,
 		PlayButton,
+
 		//    PlayButtonProfile_Anim,
 		PlayButtonProfile_On,
 		PlayButtonProfile,
@@ -120,6 +127,7 @@ namespace CsCat
 		PreTextureRGB,
 		Prefab_Icon,
 		PrefabModel_Icon,
+
 		//    PrefabNormal_Icon,
 		Profiler_NextFrame,
 		Profiler_PrevFrame,
@@ -146,6 +154,7 @@ namespace CsCat
 		SocialNetworks_UDNOpen,
 		SpeedScale,
 		Sprite_Icon,
+
 		//    StepButton_Anim,
 		StepButton_On,
 		StepButton,
@@ -197,6 +206,7 @@ namespace CsCat
 		WaitSpin10,
 		WaitSpin11,
 		WelcomeScreen_AssetStoreLogo,
+
 		//    WelcomeScreen_MainHeader,
 		//    WelcomeScreen_UnityAnswersLogo,
 		//    WelcomeScreen_UnityBasicsLogo,
@@ -280,9 +290,4 @@ namespace CsCat
 		tree_icon_frond,
 		tree_icon_leaf,
 	}
-
 }
-
-
-
-

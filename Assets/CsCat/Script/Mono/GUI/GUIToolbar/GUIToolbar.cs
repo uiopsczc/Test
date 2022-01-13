@@ -8,54 +8,56 @@ namespace CsCat
 {
 	public class GUIToolbar
 	{
-		private List<GUIContent> button_guiContent_list;
-		private int _selected_index = -1;
-		private bool[] is_highlighted;
+		private List<GUIContent> buttonGUIContentList;
+		private int _selectedIndex = -1;
+		private bool[] isHighlighted;
 
-		public int selected_index
+		public int selectedIndex
 		{
-			get { return _selected_index; }
-			set { _selected_index = value; }
+			get => _selectedIndex;
+			set => _selectedIndex = value;
 		}
 
-		public Action<GUIToolbar, int, int> OnToolSelected;
+		public Action<GUIToolbar, int, int> onToolSelected;
 
-		public GUIToolbar(List<GUIContent> button_guiContent_list)
+		public GUIToolbar(List<GUIContent> buttonGUIContentList)
 		{
-			this.button_guiContent_list = new List<GUIContent>(button_guiContent_list);
-			is_highlighted = new bool[this.button_guiContent_list.Count];
+			this.buttonGUIContentList = new List<GUIContent>(buttonGUIContentList);
+			isHighlighted = new bool[this.buttonGUIContentList.Count];
 		}
 
-		public void SetHighlight(int index, bool is_highlight)
+		public void SetHighlight(int index, bool isHighlight)
 		{
-			if (index >= 0 && index < is_highlighted.Length)
-				is_highlighted[index] = is_highlight;
+			if (index >= 0 && index < isHighlighted.Length)
+				isHighlighted[index] = isHighlight;
 		}
 
-		public void DrawGUI(Vector2 position, Vector2 button_size, Color? _background_color, Color? _outline_color)
+		public void DrawGUI(Vector2 position, Vector2 buttonSize, Color? backgroundColor, Color? outlineColor)
 		{
-			Color background_color = _background_color.GetValueOrDefault(Color.white);
-			Color outline_color = _outline_color.GetValueOrDefault(Color.black);
+			Color backgroundColorValue = backgroundColor.GetValueOrDefault(Color.white);
+			Color outlineColorValue = outlineColor.GetValueOrDefault(Color.black);
 			using (new GUIColorScope())
 			{
-				int button_count = button_guiContent_list.Count;
-				Rect toolbar_rect = new Rect(position.x, position.y, button_count * button_size.y, button_size.y);
-				using (new GUILayoutBeginAreaScope(toolbar_rect))
+				int buttonCount = buttonGUIContentList.Count;
+				Rect toolbarRect = new Rect(position.x, position.y, buttonCount * buttonSize.y, buttonSize.y);
+				using (new GUILayoutBeginAreaScope(toolbarRect))
 				{
-					DrawUtil.HandlesDrawSolidRectangleWithOutline(new Rect(Vector2.zero, toolbar_rect.size), background_color,
-					  outline_color);
+					DrawUtil.HandlesDrawSolidRectangleWithOutline(new Rect(Vector2.zero, toolbarRect.size),
+						backgroundColorValue,
+						outlineColorValue);
 					using (new GUILayoutBeginHorizontalScope())
 					{
-						if (is_highlighted.Length != button_guiContent_list.Count)
-							Array.Resize(ref is_highlighted, button_guiContent_list.Count);
+						if (isHighlighted.Length != buttonGUIContentList.Count)
+							Array.Resize(ref isHighlighted, buttonGUIContentList.Count);
 
-						int button_padding = 4;
-						Rect tool_button_rect = new Rect(button_padding, button_padding, toolbar_rect.size.y - 2 * button_padding,
-						  toolbar_rect.size.y - 2 * button_padding);
-						for (int index = 0; index < button_guiContent_list.Count; ++index)
+						int buttonPadding = 4;
+						Rect toolButtonRect = new Rect(buttonPadding, buttonPadding,
+							toolbarRect.size.y - 2 * buttonPadding,
+							toolbarRect.size.y - 2 * buttonPadding);
+						for (int index = 0; index < buttonGUIContentList.Count; ++index)
 						{
-							DrawToolbarButton(tool_button_rect, index);
-							tool_button_rect.x = tool_button_rect.xMax + 2 * button_padding;
+							DrawToolbarButton(toolButtonRect, index);
+							toolButtonRect.x = toolButtonRect.xMax + 2 * buttonPadding;
 						}
 					}
 				}
@@ -64,27 +66,26 @@ namespace CsCat
 
 		public void TriggerButton(int index)
 		{
-			int pre_index = _selected_index;
-			_selected_index = index;
-			if (OnToolSelected != null)
-				OnToolSelected(this, _selected_index, pre_index);
+			int preIndex = _selectedIndex;
+			_selectedIndex = index;
+			onToolSelected?.Invoke(this, _selectedIndex, preIndex);
 		}
 
-		private void DrawToolbarButton(Rect tool_button_rect, int index)
+		private void DrawToolbarButton(Rect toolButtonRect, int index)
 		{
-			int icon_padding = 6;
-			Rect toolIcon_rect = new Rect(tool_button_rect.x + icon_padding, tool_button_rect.y + icon_padding,
-			  tool_button_rect.size.x - 2 * icon_padding, tool_button_rect.size.y - 2 * icon_padding);
+			int iconPadding = 6;
+			Rect toolIconRect = new Rect(toolButtonRect.x + iconPadding, toolButtonRect.y + iconPadding,
+				toolButtonRect.size.x - 2 * iconPadding, toolButtonRect.size.y - 2 * iconPadding);
 
-			if (is_highlighted[index])
+			if (isHighlighted[index])
 				GUI.color = GUIToolbarConst.Highlith_Color;
 			else
-				GUI.color = _selected_index == index ? GUIToolbarConst.Active_Color : GUIToolbarConst.Disable_Color;
-			if (GUI.Button(tool_button_rect, button_guiContent_list[index]))
+				GUI.color = _selectedIndex == index ? GUIToolbarConst.Active_Color : GUIToolbarConst.Disable_Color;
+			if (GUI.Button(toolButtonRect, buttonGUIContentList[index]))
 				TriggerButton(index);
 			GUI.color = Color.white;
-			if (button_guiContent_list[index].image)
-				GUI.DrawTexture(toolIcon_rect, button_guiContent_list[index].image);
+			if (buttonGUIContentList[index].image)
+				GUI.DrawTexture(toolIconRect, buttonGUIContentList[index].image);
 		}
 	}
 }

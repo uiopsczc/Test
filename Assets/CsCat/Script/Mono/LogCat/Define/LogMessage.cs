@@ -14,6 +14,5 @@ namespace CsCat
 			this.stackTrace = stackTrace != null ? "  " + stackTrace.Replace("\n", "\n  ") : null;
 			this.logType = logType;
 		}
-
 	}
 }

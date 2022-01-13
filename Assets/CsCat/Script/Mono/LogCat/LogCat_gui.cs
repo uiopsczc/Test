@@ -7,21 +7,21 @@ namespace CsCat
 	public partial class LogCat
 	{
 
-		private static List<string> gui_message_list = new List<string>();
-		private static GUIStyle _gui_font_style;
-		private static GUIStyle gui_font_style
+		private static List<string> guiMessageList = new List<string>();
+		private static GUIStyle _guiFontStyle;
+		private static GUIStyle guiFontStyle
 		{
 			get
 			{
-				if (_gui_font_style == null)
+				if (_guiFontStyle == null)
 				{
-					_gui_font_style = new GUIStyle();
+					_guiFontStyle = new GUIStyle();
 					//          _gui_font_style.normal.background = null;    //设置背景填充
 					//          _gui_font_style.normal.textColor = Color.red; //设置字体颜色
-					_gui_font_style.fontSize = 30;
+					_guiFontStyle.fontSize = 30;
 				}
 
-				return _gui_font_style;
+				return _guiFontStyle;
 			}
 		}
 
@@ -29,8 +29,11 @@ namespace CsCat
 		public static void Flush_GUI()
 		{
 			//      GUILayout.Label(string.Format("fps:{0}",(int)(1/Time.unscaledDeltaTime)), gui_font_style);//FPS太快了，看不清的
-			foreach (var gui_message in gui_message_list)
-				GUILayout.Label(gui_message, gui_font_style);
+			for (var i = 0; i < guiMessageList.Count; i++)
+			{
+				var guiMessage = guiMessageList[i];
+				GUILayout.Label(guiMessage, guiFontStyle);
+			}
 		}
 
 	}
