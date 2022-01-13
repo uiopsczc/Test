@@ -25,7 +25,7 @@ namespace CsCat
 			for (var i = 0; i < executingCallbackList.Count; i++)
 			{
 				var currentCallback = executingCallbackList[i];
-				if (currentCallback.is_cancel) continue;
+				if (currentCallback.isCancel) continue;
 				try
 				{
 					//下一帧要继续执行这个函数，所以要加到callbackList中

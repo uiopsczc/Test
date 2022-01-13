@@ -8,7 +8,7 @@ namespace CsCat
 {
 	public static class EditorMessageBoxUtil
 	{
-		public static EditorMessageBox Show(string title, string content, string button1_text, Action on_button1_callback = null, string button2_text = null, Action on_button2_callback = null, Action on_cancel_callback = null)
+		public static EditorMessageBox Show(string title, string content, string button1Text, Action onButton1Callback = null, string button2Text = null, Action onButton2Callback = null, Action onCancelCallback = null)
 		{
 			EditorMessageBox editorMessageBox = EditorWindow.CreateWindow<EditorMessageBox>();
 			editorMessageBox.minSize = new Vector2(EditorMessageBoxConst.Width, EditorMessageBoxConst.Height);
@@ -16,13 +16,13 @@ namespace CsCat
 			editorMessageBox.messageTitle = title;
 			editorMessageBox.content = content;
 
-			editorMessageBox.button1Text = button1_text;
-			editorMessageBox.onButton1Callback = on_button1_callback;
+			editorMessageBox.button1Text = button1Text;
+			editorMessageBox.onButton1Callback = onButton1Callback;
 
-			editorMessageBox.button2_text = button2_text;
-			editorMessageBox.onButton2Callback = on_button2_callback;
+			editorMessageBox.button2_text = button2Text;
+			editorMessageBox.onButton2Callback = onButton2Callback;
 
-			editorMessageBox.onCancelCallback = on_cancel_callback;
+			editorMessageBox.onCancelCallback = onCancelCallback;
 
 			editorMessageBox.Show();
 
