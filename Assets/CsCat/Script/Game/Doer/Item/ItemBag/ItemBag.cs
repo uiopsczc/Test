@@ -5,93 +5,93 @@ namespace CsCat
 {
 	public class ItemBag
 	{
-		private Doer parent_doer;
-		private string sub_doer_key;
+		private Doer parentDoer;
+		private string subDoerKey;
 
-		public ItemBag(Doer parent_doer, string sub_doer_key)
+		public ItemBag(Doer parentDoer, string subDoerKey)
 		{
-			this.parent_doer = parent_doer;
-			this.sub_doer_key = sub_doer_key;
+			this.parentDoer = parentDoer;
+			this.subDoerKey = subDoerKey;
 		}
 
 		////////////////////DoXXX/////////////////////////////////
 		//卸载
 		public void DoRelease()
 		{
-			SubDoerUtil2.DoReleaseSubDoer<Item>(this.parent_doer, this.sub_doer_key);
+			SubDoerUtil2.DoReleaseSubDoer<Item>(this.parentDoer, this.subDoerKey);
 		}
 
 		//保存
-		public void DoSave(Hashtable dict, Hashtable dict_tmp, string save_key = null)
+		public void DoSave(Hashtable dict, Hashtable dictTmp, string saveKey = null)
 		{
-			save_key = save_key ?? "item_bag";
+			saveKey = saveKey ?? "item_bag";
 			var items = this.GetItems();
-			var dict_items = new Hashtable();
-			var dict_items_tmp = new Hashtable();
-			foreach (var item in items)
+			var dictItems = new Hashtable();
+			var dictItemsTmp = new Hashtable();
+			for (var i = 0; i < items.Length; i++)
 			{
+				var item = items[i];
 				var id = item.GetId();
 				var rid = item.GetRid();
-				var can_fold = item.CanFold();
-				if (can_fold) //可折叠
-				{
-					dict_items[id] = item.GetCount();
-				}
+				var isCanFold = item.CanFold();
+				if (isCanFold) //可折叠
+					dictItems[id] = item.GetCount();
 				else
 				{
-					var dict_item_list = dict_items.GetOrAddDefault2(id, () => new ArrayList());
-					var dict_item = new Hashtable();
-					var dict_item_tmp = new Hashtable();
-					item.PrepareSave(dict_item, dict_item_tmp);
-					dict_item["rid"] = rid;
-					dict_item_list.Add(dict_item);
-					if (!dict_item_tmp.IsNullOrEmpty())
-						dict_items_tmp[rid] = dict_item_tmp;
+					var dictItemList = dictItems.GetOrAddDefault2(id, () => new ArrayList());
+					var dictItem = new Hashtable();
+					var dictItemTmp = new Hashtable();
+					item.PrepareSave(dictItem, dictItemTmp);
+					dictItem["rid"] = rid;
+					dictItemList.Add(dictItem);
+					if (!dictItemTmp.IsNullOrEmpty())
+						dictItemsTmp[rid] = dictItemTmp;
 				}
 			}
 
-			if (!dict_items.IsNullOrEmpty())
-				dict[save_key] = dict_items;
-			if (!dict_items_tmp.IsNullOrEmpty())
-				dict_tmp[save_key] = dict_items_tmp;
+			if (!dictItems.IsNullOrEmpty())
+				dict[saveKey] = dictItems;
+			if (!dictItemsTmp.IsNullOrEmpty())
+				dictTmp[saveKey] = dictItemsTmp;
 		}
 
 		//还原
-		public void DoRestore(Hashtable dict, Hashtable dict_tmp, string restore_key = null)
+		public void DoRestore(Hashtable dict, Hashtable dictTmp, string restoreKey = null)
 		{
-			restore_key = restore_key ?? "item_bag";
+			restoreKey = restoreKey ?? "item_bag";
 			this.ClearItems();
-			var dict_items = dict.Remove3<Hashtable>(restore_key);
-			var dict_items_tmp = dict_tmp?.Remove3<Hashtable>(restore_key);
-			if (!dict_items.IsNullOrEmpty())
+			var dictItems = dict.Remove3<Hashtable>(restoreKey);
+			var dictItemsTmp = dictTmp?.Remove3<Hashtable>(restoreKey);
+			if (!dictItems.IsNullOrEmpty())
 			{
 				Item item;
-				foreach (var key in dict_items.Keys)
+				foreach (var key in dictItems.Keys)
 				{
 					var id = key as string;
-					var value = dict_items[id];
+					var value = dictItems[id];
 					var items = this.GetItems_ToEdit(id);
 					if (value is double) //id情况，可折叠的item
 					{
 						var count = int.Parse(value.ToString());
 						item = Client.instance.itemFactory.NewDoer(id) as Item;
-						item.SetEnv(this.parent_doer);
+						item.SetEnv(this.parentDoer);
 						item.SetCount(count);
 						items.Add(item);
 					}
 					else //不可折叠的情况
 					{
-						var dict_item_list = value as ArrayList;
-						foreach (var _dict_item in dict_item_list)
+						var dictItemList = value as ArrayList;
+						for (var i = 0; i < dictItemList.Count; i++)
 						{
-							var dict_item = _dict_item as Hashtable;
-							var rid = dict_item.Remove3<string>("rid");
+							var curDictItem = dictItemList[i];
+							var dictItem = curDictItem as Hashtable;
+							var rid = dictItem.Remove3<string>("rid");
 							item = Client.instance.itemFactory.NewDoer(id) as Item;
-							item.SetEnv(this.parent_doer);
-							Hashtable dict_item_tmp = null;
-							if (dict_items_tmp != null && dict_items_tmp.ContainsKey(rid))
-								dict_item_tmp = dict_items_tmp[rid] as Hashtable;
-							item.FinishRestore(dict_item, dict_item_tmp);
+							item.SetEnv(this.parentDoer);
+							Hashtable dictItemTmp = null;
+							if (dictItemsTmp != null && dictItemsTmp.ContainsKey(rid))
+								dictItemTmp = dictItemsTmp[rid] as Hashtable;
+							item.FinishRestore(dictItem, dictItemTmp);
 							items.Add(item);
 						}
 					}
@@ -102,52 +102,49 @@ namespace CsCat
 
 
 		////////////////////////////////////////////////////////////////////////////
-		public bool __FilterType(Item equip, string type_1, string type_2 = null)
+		public bool __FilterType(Item equip, string type1, string type2 = null)
 		{
-			if (equip.GetType1() == type_1 && (type_2 == null || type_2.Equals(equip.GetType2())))
-				return true;
-			else
-				return false;
+			return equip.GetType1() == type1 && (type2 == null || type2.Equals(equip.GetType2()));
 		}
 
 
 		public Item[] GetItems(string id = null)
 		{
-			return SubDoerUtil2.GetSubDoers<Item>(this.parent_doer, this.sub_doer_key, id, null);
+			return SubDoerUtil2.GetSubDoers<Item>(this.parentDoer, this.subDoerKey, id, null);
 		}
 
 		public ArrayList GetItems_ToEdit(string id) //可以直接插入删除
 		{
-			return SubDoerUtil2.GetSubDoers_ToEdit(this.parent_doer, this.sub_doer_key, id);
+			return SubDoerUtil2.GetSubDoers_ToEdit(this.parentDoer, this.subDoerKey, id);
 		}
 
 		//获得指定的镶物
-		public Item GetItem(string id_or_rid)
+		public Item GetItem(string idOrRid)
 		{
-			return SubDoerUtil2.GetSubDoer<Item>(this.parent_doer, this.sub_doer_key, id_or_rid);
+			return SubDoerUtil2.GetSubDoer<Item>(this.parentDoer, this.subDoerKey, idOrRid);
 		}
 
 
-		public Item[] GetItemsOfTypes(string type_1, string type_2 = null)
+		public Item[] GetItemsOfTypes(string type1, string type2 = null)
 		{
-			return SubDoerUtil2.GetSubDoers<Item>(this.parent_doer, this.sub_doer_key, null,
-			  (item) => this.__FilterType(item, type_1, type_2));
+			return SubDoerUtil2.GetSubDoers<Item>(this.parentDoer, this.subDoerKey, null,
+			  (item) => this.__FilterType(item, type1, type2));
 		}
 
 
 		public string[] GetItemIds()
 		{
-			return SubDoerUtil2.GetSubDoerIds(this.parent_doer, this.sub_doer_key);
+			return SubDoerUtil2.GetSubDoerIds(this.parentDoer, this.subDoerKey);
 		}
 
 		public int GetItemCount(string id)
 		{
-			return SubDoerUtil2.GetSubDoerCount<Item>(this.parent_doer, this.sub_doer_key, id);
+			return SubDoerUtil2.GetSubDoerCount<Item>(this.parentDoer, this.subDoerKey, id);
 		}
 
 		public bool HasItem(string id)
 		{
-			return SubDoerUtil2.HasSubDoers<Item>(this.parent_doer, this.sub_doer_key, id);
+			return SubDoerUtil2.HasSubDoers<Item>(this.parentDoer, this.subDoerKey, id);
 		}
 
 		// 放入物品
@@ -156,10 +153,10 @@ namespace CsCat
 		public List<Item> AddItems(string id, int count)
 		{
 			var cfgItemData = CfgItem.Instance.get_by_id(id);
-			var can_fold = cfgItemData.can_fold;
+			var isCanFold = cfgItemData.can_fold;
 			Item item = null;
 			List<Item> result = new List<Item>();
-			if (can_fold)
+			if (isCanFold)
 			{
 				item = Client.instance.itemFactory.NewDoer(id) as Item;
 				item.SetCount(count);
@@ -181,33 +178,33 @@ namespace CsCat
 
 		public void AddItem(Item item)
 		{
-			SubDoerUtil2.AddSubDoers(this.parent_doer, this.sub_doer_key, item);
+			SubDoerUtil2.AddSubDoers(this.parentDoer, this.subDoerKey, item);
 		}
 
 		public Item[] RemoveItems(string id, int count)
 		{
-			return SubDoerUtil2.RemoveSubDoers<Item>(this.parent_doer, this.sub_doer_key, id, count,
+			return SubDoerUtil2.RemoveSubDoers<Item>(this.parentDoer, this.subDoerKey, id, count,
 			  Client.instance.itemFactory);
 		}
 
 		public bool CanRemoveItems(string id, int count)
 		{
-			return SubDoerUtil2.CanRemoveSubDoers(this.parent_doer, this.sub_doer_key, id, count);
+			return SubDoerUtil2.CanRemoveSubDoers(this.parentDoer, this.subDoerKey, id, count);
 		}
 
 		public Item RemoveItem(string rid)
 		{
-			return SubDoerUtil2.RemoveSubDoer<Item>(this.parent_doer, this.sub_doer_key, rid);
+			return SubDoerUtil2.RemoveSubDoer<Item>(this.parentDoer, this.subDoerKey, rid);
 		}
 
 		public Item RemoveItem(Item item)
 		{
-			return SubDoerUtil2.RemoveSubDoer<Item>(this.parent_doer, this.sub_doer_key, item);
+			return SubDoerUtil2.RemoveSubDoer<Item>(this.parentDoer, this.subDoerKey, item);
 		}
 
 		public void ClearItems()
 		{
-			SubDoerUtil2.ClearSubDoers<Scene>(this.parent_doer, this.sub_doer_key);
+			SubDoerUtil2.ClearSubDoers<Scene>(this.parentDoer, this.subDoerKey);
 		}
 	}
 }

@@ -5,9 +5,9 @@ namespace CsCat
 	public class DurationEffectComponent : EffectComponent
 	{
 		private float duration;
-		private float remain_duration;
+		private float remainDuration;
 
-		public Action no_remain_duration_callback;
+		public Action noRemainDurationCallback;
 
 		public void Init(float duration)
 		{
@@ -19,21 +19,21 @@ namespace CsCat
 		public void SetDuration(float duration)
 		{
 			this.duration = duration;
-			this.remain_duration = duration;
+			this.remainDuration = duration;
 		}
 
 		protected override void _Update(float deltaTime = 0, float unscaledDeltaTime = 0)
 		{
 			base._Update(deltaTime, unscaledDeltaTime);
-			this.remain_duration = this.remain_duration - deltaTime;
-			if (this.remain_duration <= 0)
+			this.remainDuration = this.remainDuration - deltaTime;
+			if (this.remainDuration <= 0)
 				OnNoRemainDuration();
 		}
 
 		protected virtual void OnNoRemainDuration()
 		{
 			effectEntity.OnNoRemainDuration();
-			no_remain_duration_callback?.Invoke();
+			noRemainDurationCallback?.Invoke();
 		}
 
 

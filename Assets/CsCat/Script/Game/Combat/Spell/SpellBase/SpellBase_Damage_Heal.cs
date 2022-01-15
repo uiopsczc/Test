@@ -4,93 +4,93 @@ namespace CsCat
 {
 	public partial class SpellBase
 	{
-		public void ___Hit(Unit source_unit, Unit target_unit, float? damage_factor = null, int? force_damage_value = null)
+		public void ___Hit(Unit sourceUnit, Unit targetUnit, float? damageFactor = null, int? forceDamageValue = null)
 		{
-			if (target_unit == null || target_unit.IsDead())
+			if (targetUnit == null || targetUnit.IsDead())
 				return;
-			this.CreateHitEffect(source_unit, target_unit);
-			var (damage_value, special_effect_dict) =
-			  this.TakeDamage(source_unit, target_unit, damage_factor, force_damage_value);
-			this.Broadcast<Unit, Unit, SpellBase, int>(null, UnitEventNameConst.On_Unit_Hit, source_unit, target_unit, this, damage_value);
-			this.AddCombatNumber(damage_value, target_unit.GetGuid(), "physical", special_effect_dict);
-			target_unit.PlayAnimation(AnimationNameConst.be_hit, null, null, null, true);
+			this.CreateHitEffect(sourceUnit, targetUnit);
+			var (damageValue, specialEffectDict) =
+			  this.TakeDamage(sourceUnit, targetUnit, damageFactor, forceDamageValue);
+			this.Broadcast<Unit, Unit, SpellBase, int>(null, UnitEventNameConst.On_Unit_Hit, sourceUnit, targetUnit, this, damageValue);
+			this.AddCombatNumber(damageValue, targetUnit.GetGuid(), "physical", specialEffectDict);
+			targetUnit.PlayAnimation(AnimationNameConst.be_hit, null, null, null, true);
 		}
 
-		public void Hit(Unit source_unit, Unit target_unit, float? damage_factor = null, int? force_damage_value = null)
+		public void Hit(Unit sourceUnit, Unit targetUnit, float? damageFactor = null, int? forceDamageValue = null)
 		{
-			this.___Hit(source_unit, target_unit, damage_factor, force_damage_value);
+			this.___Hit(sourceUnit, targetUnit, damageFactor, forceDamageValue);
 		}
 
-		public (int damage_value, Hashtable special_effect_dict) TakeDamage(Unit source_unit, Unit target_unit,
-		  float? damage_factor = null,
-		  int? force_damage_value = null)
+		public (int damageValue, Hashtable specialEffectDict) TakeDamage(Unit sourceUnit, Unit targetUnit,
+		  float? damageFactor = null,
+		  int? forceDamageValue = null)
 		{
-			var special_effect_dict = new Hashtable();
-			if (target_unit == null || target_unit.IsDead())
-				return (0, special_effect_dict);
-			float _damage_factor;
-			if (damage_factor != null && damage_factor.Value > 0)
-				_damage_factor = damage_factor.Value;
+			var specialEffectDict = new Hashtable();
+			if (targetUnit == null || targetUnit.IsDead())
+				return (0, specialEffectDict);
+			float damageFactorValue;
+			if (damageFactor != null && damageFactor.Value > 0)
+				damageFactorValue = damageFactor.Value;
 			else
-				_damage_factor = this.cfgSpellData.damage_factor == 0 ? 1 : this.cfgSpellData.damage_factor;
+				damageFactorValue = this.cfgSpellData.damage_factor == 0 ? 1 : this.cfgSpellData.damage_factor;
 			//计算原始伤害值
-			int damage_value;
-			if (force_damage_value == null)
+			int damageValue;
+			if (forceDamageValue == null)
 			{
-				Hashtable arg_dict = new Hashtable();
-				arg_dict["damage_factor"] = _damage_factor;
-				arg_dict["cur_hp_pct"] = source_unit.GetHp() / (float)source_unit.GetMaxHp();
-				(damage_value, special_effect_dict) = source_unit.propertyComp.CalculateOriginalDamageValue(arg_dict);
+				Hashtable argDict = new Hashtable();
+				argDict["damage_factor"] = damageFactorValue;
+				argDict["cur_hp_pct"] = sourceUnit.GetHp() / (float)sourceUnit.GetMaxHp();
+				(damageValue, specialEffectDict) = sourceUnit.propertyComp.CalculateOriginalDamageValue(argDict);
 			}
 			else
-				damage_value = force_damage_value.Value;
+				damageValue = forceDamageValue.Value;
 
 			//计算减伤
-			damage_value = source_unit.propertyComp.CalculateRealDamageValue(damage_value, target_unit);
+			damageValue = sourceUnit.propertyComp.CalculateRealDamageValue(damageValue, targetUnit);
 			//伤害前的回调
-			this.Broadcast<Unit, Unit, SpellBase, int>(null, UnitEventNameConst.Before_Unit_Hit, source_unit, target_unit, this, damage_value);
-			Client.instance.combat.spellManager.BeforeHit(source_unit, target_unit, this, damage_value);
+			this.Broadcast<Unit, Unit, SpellBase, int>(null, UnitEventNameConst.Before_Unit_Hit, sourceUnit, targetUnit, this, damageValue);
+			Client.instance.combat.spellManager.BeforeHit(sourceUnit, targetUnit, this, damageValue);
 			//目标接收伤害
-			damage_value = target_unit.TakeDamage(damage_value, source_unit, this);
-			return (damage_value, special_effect_dict);
+			damageValue = targetUnit.TakeDamage(damageValue, sourceUnit, this);
+			return (damageValue, specialEffectDict);
 		}
 
 
-		public (int heal_value, Hashtable special_effect_dict) Heal(Unit source_unit, Unit target_unit,
-		  int? force_damage_value = null, float? heal_factor = null)
+		public (int healValue, Hashtable specialEffectDict) Heal(Unit sourceUnit, Unit targetUnit,
+		  int? forceDamageValue = null, float? healFactor = null)
 		{
-			target_unit = target_unit ?? this.target_unit;
-			source_unit = source_unit ?? this.source_unit;
-			Hashtable special_effect_dict = new Hashtable();
-			if (target_unit == null || target_unit.IsDead())
-				return (0, special_effect_dict);
-			float _heal_factor;
-			if (heal_factor != null)
-				_heal_factor = heal_factor.Value;
+			targetUnit = targetUnit ?? this.targetUnit;
+			sourceUnit = sourceUnit ?? this.sourceUnit;
+			Hashtable specialEffectDict = new Hashtable();
+			if (targetUnit == null || targetUnit.IsDead())
+				return (0, specialEffectDict);
+			float healFactorValue;
+			if (healFactor != null)
+				healFactorValue = healFactor.Value;
 			else
-				_heal_factor = this.cfgSpellData.damage_factor == 0 ? 1 : this.cfgSpellData.damage_factor;
+				healFactorValue = this.cfgSpellData.damage_factor == 0 ? 1 : this.cfgSpellData.damage_factor;
 
-			int heal_value;
-			if (force_damage_value != null)
-				heal_value = force_damage_value.Value;
+			int healValue;
+			if (forceDamageValue != null)
+				healValue = forceDamageValue.Value;
 			else
 			{
-				Hashtable arg_dict = new Hashtable();
-				arg_dict["heal_factor"] = _heal_factor;
-				arg_dict["damage_type"] = this.cfgSpellData.damage_type;
-				(heal_value, special_effect_dict) =
-				  source_unit.propertyComp.CalculateOriginalHealValue(arg_dict);
+				Hashtable argDict = new Hashtable();
+				argDict["heal_factor"] = healFactorValue;
+				argDict["damage_type"] = this.cfgSpellData.damage_type;
+				(healValue, specialEffectDict) =
+				  sourceUnit.propertyComp.CalculateOriginalHealValue(argDict);
 			}
 
-			heal_value = source_unit.propertyComp.CalculateRealHealValue(heal_value, target_unit);
-			target_unit.Heal(heal_value, source_unit);
-			return (heal_value, special_effect_dict);
+			healValue = sourceUnit.propertyComp.CalculateRealHealValue(healValue, targetUnit);
+			targetUnit.Heal(healValue, sourceUnit);
+			return (healValue, specialEffectDict);
 		}
 
 		//吸血
-		public void SuckBlood(Unit source_unit, Unit target_unit, int? force_heal_value = null)
+		public void SuckBlood(Unit sourceUnit, Unit targetUnit, int? forceHealValue = null)
 		{
-			Heal(source_unit, target_unit, force_heal_value);
+			Heal(sourceUnit, targetUnit, forceHealValue);
 		}
 
 	}

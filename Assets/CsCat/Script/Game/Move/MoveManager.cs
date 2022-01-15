@@ -5,9 +5,9 @@ namespace CsCat
 {
 	public class MoveManager : MonoBehaviour
 	{
-		public Dictionary<Transform, MoveInfo> moveInfo_dict = new Dictionary<Transform, MoveInfo>();
-		public Dictionary<Transform, FollowInfo> followInfo_dict = new Dictionary<Transform, FollowInfo>();
-		public List<Transform> delete_cache = new List<Transform>();
+		public Dictionary<Transform, MoveInfo> moveInfoDict = new Dictionary<Transform, MoveInfo>();
+		public Dictionary<Transform, FollowInfo> followInfoDict = new Dictionary<Transform, FollowInfo>();
+		public List<Transform> deleteCache = new List<Transform>();
 
 		void Update()
 		{
@@ -17,105 +17,107 @@ namespace CsCat
 		}
 
 		/////////////////////////////////////////////////////移动///////////////////////////////
-		void UpdateMove(float delta_time)
+		void UpdateMove(float deltaTime)
 		{
-			foreach (KeyValuePair<Transform, MoveInfo> kv in moveInfo_dict)
+			foreach (KeyValuePair<Transform, MoveInfo> kv in moveInfoDict)
 			{
 				MoveInfo moveInfo = kv.Value;
-				moveInfo.current_time += delta_time;
+				moveInfo.currentTime += deltaTime;
 				if (moveInfo.transform == null)
 				{
-					delete_cache.Add(moveInfo.transform);
+					deleteCache.Add(moveInfo.transform);
 				}
-				else if (moveInfo.current_time < moveInfo.duration)
+				else if (moveInfo.currentTime < moveInfo.duration)
 				{
-					moveInfo.transform.position = Vector3.LerpUnclamped(moveInfo.from_pos, moveInfo.to_pos,
-					  moveInfo.current_time / moveInfo.duration);
+					moveInfo.transform.position = Vector3.LerpUnclamped(moveInfo.fromPos, moveInfo.toPos,
+						moveInfo.currentTime / moveInfo.duration);
 				}
 				else
 				{
-					moveInfo.transform.position = moveInfo.to_pos;
-					delete_cache.Add(moveInfo.transform);
+					moveInfo.transform.position = moveInfo.toPos;
+					deleteCache.Add(moveInfo.transform);
 				}
 			}
 
-			if (delete_cache.Count > 0)
+			if (deleteCache.Count > 0)
 			{
-				foreach (Transform transform in delete_cache)
+				for (var i = 0; i < deleteCache.Count; i++)
 				{
-					moveInfo_dict.Remove(transform);
+					Transform transform = deleteCache[i];
+					moveInfoDict.Remove(transform);
 				}
 
-				delete_cache.Clear();
+				deleteCache.Clear();
 			}
 		}
 
-		public void MoveTo(Transform transform, Vector3 to_pos, float duration)
+		public void MoveTo(Transform transform, Vector3 toPos, float duration)
 		{
 			MoveInfo moveInfo = null;
-			bool is_contained = moveInfo_dict.TryGetValue(transform, out moveInfo);
-			if (!is_contained)
+			bool isContained = moveInfoDict.TryGetValue(transform, out moveInfo);
+			if (!isContained)
 			{
 				moveInfo = new MoveInfo();
 				moveInfo.transform = transform;
-				moveInfo_dict[transform] = moveInfo;
+				moveInfoDict[transform] = moveInfo;
 			}
 
-			moveInfo.from_pos = transform.position;
-			moveInfo.to_pos = to_pos;
+			moveInfo.fromPos = transform.position;
+			moveInfo.toPos = toPos;
 			moveInfo.duration = duration;
-			moveInfo.current_time = 0;
+			moveInfo.currentTime = 0;
 		}
 
-		public void StopMoveTo(Transform transfrom)
+		public void StopMoveTo(Transform transform)
 		{
-			moveInfo_dict.Remove(transfrom);
+			moveInfoDict.Remove(transform);
 		}
 
 		/////////////////////////////////////////////////////跟随///////////////////////////////
 		void UpdateFollow(float deltaTime)
 		{
-			foreach (KeyValuePair<Transform, FollowInfo> kv in followInfo_dict)
+			foreach (KeyValuePair<Transform, FollowInfo> kv in followInfoDict)
 			{
 				FollowInfo followInfo = kv.Value;
-				if (followInfo.transform == null || followInfo.follow_transform == null)
+				if (followInfo.transform == null || followInfo.followTransform == null)
 				{
-					delete_cache.Add(followInfo.transform);
+					deleteCache.Add(followInfo.transform);
 				}
 				else
 				{
-					followInfo.transform.position = followInfo.follow_transform.position;
+					followInfo.transform.position = followInfo.followTransform.position;
 				}
 			}
 
-			if (delete_cache.Count > 0)
+			if (deleteCache.Count > 0)
 			{
-				foreach (Transform transfrom in delete_cache)
+				for (var i = 0; i < deleteCache.Count; i++)
 				{
-					followInfo_dict.Remove(transfrom);
+					Transform transform = deleteCache[i];
+					followInfoDict.Remove(transform);
 				}
 
-				delete_cache.Clear();
+				deleteCache.Clear();
 			}
 		}
 
-		public void Follow(Transform transform, Transform follow_transform)
+		public void Follow(Transform transform, Transform followTransform)
 		{
 			FollowInfo followInfo = null;
-			bool is_contained = followInfo_dict.TryGetValue(transform, out followInfo);
-			if (!is_contained)
+			bool isContained = followInfoDict.TryGetValue(transform, out followInfo);
+			if (!isContained)
 			{
 				followInfo = new FollowInfo();
 				followInfo.transform = transform;
-				followInfo_dict[transform] = followInfo;
+				followInfoDict[transform] = followInfo;
 			}
 
-			followInfo.follow_transform = follow_transform;
+			followInfo.followTransform = followTransform;
 		}
 
 		public void StopFollow(Transform transform)
 		{
-			followInfo_dict.Remove(transform);
+			followInfoDict.Remove(transform);
 		}
 	}
 }

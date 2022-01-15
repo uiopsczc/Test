@@ -41,18 +41,18 @@ namespace CsCat
 			StartCoroutine(Client.instance.assetBundleUpdater.CheckUpdate());
 			yield return new WaitUntil(() =>
 			{
-				bool isUpdateFinish = Client.instance.assetBundleUpdater.is_update_finish;
+				bool isUpdateFinish = Client.instance.assetBundleUpdater.isUpdateFinish;
 				if (!isUpdateFinish)
 				{
-					int downloadingCount = Client.instance.assetBundleUpdater.need_download_dict.Count;
+					int downloadingCount = Client.instance.assetBundleUpdater.needDownloadDict.Count;
 					if (downloadingCount == 0)
 						Client.instance.uiManager.SetLoadingPct(0);
 					else
 					{
 						int cur_loaded_count = 0;
-						foreach (var key in Client.instance.assetBundleUpdater.need_download_dict.Keys)
+						foreach (var key in Client.instance.assetBundleUpdater.needDownloadDict.Keys)
 						{
-							if (Client.instance.assetBundleUpdater.need_download_dict[key]
+							if (Client.instance.assetBundleUpdater.needDownloadDict[key]
 								.GetOrGetDefault2("is_finished", () => false))
 								cur_loaded_count++;
 						}

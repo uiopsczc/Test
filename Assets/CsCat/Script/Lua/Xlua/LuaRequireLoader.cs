@@ -7,16 +7,16 @@ namespace CsCat
 	{
 		/// <summary>
 		/// </summary>
-		/// <param name="relative_file_path"></param>
+		/// <param name="relativeFilePath"></param>
 		/// <returns></returns>
-		public static byte[] GetLoader(ref string relative_file_path)
+		public static byte[] GetLoader(ref string relativeFilePath)
 		{
-			var asset_path = XLuaConst.Lua_Root_Folder + relative_file_path;
-			asset_path = asset_path.Replace(".", "/");
-			asset_path = asset_path + BuildConst.Lua_Suffix;
+			var assetPath = XLuaConst.Lua_Root_Folder + relativeFilePath;
+			assetPath = assetPath.Replace(".", "/");
+			assetPath = assetPath + BuildConst.Lua_Suffix;
 
 
-			var assetCat = Client.instance.assetBundleManager.GetOrLoadAssetCat(asset_path);
+			var assetCat = Client.instance.assetBundleManager.GetOrLoadAssetCat(assetPath);
 			return assetCat.Get<TextAsset>().text.GetBytes();
 		}
 
@@ -24,20 +24,25 @@ namespace CsCat
 		{
 			if (Application.isEditor && EditorModeConst.IsEditorMode)
 				yield break;
-			var assetBundle_name_list = Client.instance.assetBundleManager.assetPathMap.GetLuaAssetBundlePathList();
+			var assetBundleNameList = Client.instance.assetBundleManager.assetPathMap.GetLuaAssetBundlePathList();
 
 			using (new StopwatchScope("Lua Load"))
 			{
-				foreach (var assetBundle_name in assetBundle_name_list)
+				for (var i = 0; i < assetBundleNameList.Count; i++)
 				{
-					var asset_path_list = Client.instance.assetBundleManager.assetPathMap.GetAllAssetPathList(assetBundle_name);
-					Client.instance.assetBundleManager.SetResidentAssets(asset_path_list, true);
-					foreach (var asset_path in asset_path_list)
-						Client.instance.assetBundleManager.LoadAssetAsync(asset_path);
+					var assetBundleName = assetBundleNameList[i];
+					var assetPathList =
+						Client.instance.assetBundleManager.assetPathMap.GetAllAssetPathList(assetBundleName);
+					Client.instance.assetBundleManager.SetResidentAssets(assetPathList, true);
+					for (var j = 0; j < assetPathList.Count; j++)
+					{
+						var assetPath = assetPathList[j];
+						Client.instance.assetBundleManager.LoadAssetAsync(assetPath);
+					}
 				}
 
 				yield return new WaitUntil(
-				  () => { return Client.instance.assetBundleManager.resourceWebRequester_all_dict.Count == 0; });
+				  () => Client.instance.assetBundleManager.resourceWebRequesterAllDict.Count == 0);
 			}
 
 			Debug.LogWarning("LoadLuaFiles finished");

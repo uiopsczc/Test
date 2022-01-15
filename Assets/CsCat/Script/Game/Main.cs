@@ -12,14 +12,7 @@ namespace CsCat
 
 		public GameObject prefab;
 
-		public MonoBehaviourCache monoBehaviourCache
-		{
-			get
-			{
-				if (_monoBehaviourCache == null) _monoBehaviourCache = new MonoBehaviourCache(this);
-				return _monoBehaviourCache;
-			}
-		}
+		public MonoBehaviourCache monoBehaviourCache => _monoBehaviourCache ?? (_monoBehaviourCache = new MonoBehaviourCache(this));
 
 		public static Main instance => SingletonFactory.instance.GetMono<Main>();
 
@@ -64,9 +57,9 @@ namespace CsCat
 		}
 
 
-		void OnApplicationPause(bool is_paused)
+		void OnApplicationPause(bool isPaused)
 		{
-			Client.instance.OnApplicationPause(is_paused);
+			Client.instance.OnApplicationPause(isPaused);
 		}
 
 		IEnumerator DOIE()

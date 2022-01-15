@@ -5,13 +5,13 @@ namespace CsCat
 {
 	public class LuaPathMap
 	{
-		private string file_content;
-		protected Dictionary<string, string> luaName_2_luaPath_Dict = new Dictionary<string, string>();
+		private string fileContent;
+		protected Dictionary<string, string> luaName2LuaPathDict = new Dictionary<string, string>();
 
 		public void SaveToDisk()
 		{
 			var path = BuildConst.Lua_Path_Map_File_Name.WithRootPath(FilePathConst.PersistentAssetBundleRoot);
-			StdioUtil.WriteTextFile(path, file_content);
+			StdioUtil.WriteTextFile(path, fileContent);
 		}
 
 
@@ -23,32 +23,33 @@ namespace CsCat
 				return;
 			}
 
-			file_content = content;
+			fileContent = content;
 			content = content.Replace("\r\n", "\n");
-			var map_list = content.Split('\n');
-			foreach (var map in map_list)
+			var mapList = content.Split('\n');
+			for (var i = 0; i < mapList.Length; i++)
 			{
+				var map = mapList[i];
 				if (map.IsNullOrWhiteSpace())
 					continue;
 
-				var splits = map.Split(new[] { StringConst.String_Comma }, StringSplitOptions.None);
+				var splits = map.Split(new[] {StringConst.String_Comma}, StringSplitOptions.None);
 				if (splits.Length < 2)
 				{
 					LogCat.LogError("splitArr length < 2 : " + map);
 					continue;
 				}
 
-				var lua_name = splits[0];
-				var lua_path = splits[1];
+				var luaName = splits[0];
+				var luaPath = splits[1];
 
-				luaName_2_luaPath_Dict[lua_name] = lua_path;
+				luaName2LuaPathDict[luaName] = luaPath;
 			}
 		}
 
 
-		public string GetLuaPath(string lua_name)
+		public string GetLuaPath(string luaName)
 		{
-			return luaName_2_luaPath_Dict[lua_name];
+			return luaName2LuaPathDict[luaName];
 		}
 	}
 }

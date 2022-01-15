@@ -18,28 +18,28 @@ namespace CsCat
 			return this.resLoad.IsAllLoadDone();
 		}
 
-		public IEnumerator IEIsAllLoadDone(Action on_all_load_done_callback = null)
+		public IEnumerator IEIsAllLoadDone(Action onAllLoadDoneCallback = null)
 		{
-			yield return this.resLoad.IEIsAllLoadDone(on_all_load_done_callback);
+			yield return this.resLoad.IEIsAllLoadDone(onAllLoadDoneCallback);
 		}
 
-		public void CheckIsAllLoadDone(Action on_all_load_done_callback = null)
+		public void CheckIsAllLoadDone(Action onAllLoadDoneCallback = null)
 		{
-			this.StartCoroutine(IEIsAllLoadDone(on_all_load_done_callback));
+			this.StartCoroutine(IEIsAllLoadDone(onAllLoadDoneCallback));
 		}
 
 
 
 		// 加载某个资源
-		public AssetCat GetOrLoadAsset(string asset_path, Action<AssetCat> on_load_success_callback = null, Action<AssetCat> on_load_fail_callback = null, Action<AssetCat> on_load_done_callback = null, object callback_cause = null)
+		public AssetCat GetOrLoadAsset(string assetPath, Action<AssetCat> onLoadSuccessCallback = null, Action<AssetCat> onLoadFailCallback = null, Action<AssetCat> onLoadDoneCallback = null, object callbackCause = null)
 		{
-			return this.resLoad.GetOrLoadAsset(asset_path, on_load_success_callback, on_load_fail_callback, on_load_done_callback, callback_cause);
+			return this.resLoad.GetOrLoadAsset(assetPath, onLoadSuccessCallback, onLoadFailCallback, onLoadDoneCallback, callbackCause);
 		}
 
 
-		public void CancelLoadCallback(AssetCat assetCat, object callback_cause = null)
+		public void CancelLoadCallback(AssetCat assetCat, object callbackCause = null)
 		{
-			this.resLoad.CancelLoadCallback(assetCat, callback_cause);
+			this.resLoad.CancelLoadCallback(assetCat, callbackCause);
 		}
 
 		public void CancelLoadAllCallbacks(AssetCat assetCat)

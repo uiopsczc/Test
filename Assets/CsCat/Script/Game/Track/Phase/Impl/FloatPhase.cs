@@ -5,10 +5,10 @@ namespace CsCat
 {
 	public class FloatPhase : AbstractPhase<float>
 	{
-		public override float Lerp(AbstractPhase<float> to_phase, int lerp_tick)
+		public override float Lerp(AbstractPhase<float> toPhase, int lerpTick)
 		{
-			return this.Tween(to_phase, lerp_tick,
-			  (from_value, to_value, t) => { return Mathf.Lerp(from_value, to_value, t); });
+			return this.Tween(toPhase, lerpTick,
+			  (fromValue, toValue, t) => Mathf.Lerp(fromValue, toValue, t));
 		}
 
 		public override void DoSave(Hashtable dict)

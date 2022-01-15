@@ -6,53 +6,59 @@ namespace CsCat
 	public class ResLoadDataInfo
 	{
 		public ResLoadData resLoadData;
-		public Dictionary<object, bool> callback_cause_dict = new Dictionary<object, bool>();
-		private bool is_not_check_destroy;
+		public Dictionary<object, bool> callbackCauseDict = new Dictionary<object, bool>();
+		private bool isNotCheckDestroy;
 
-		public ResLoadDataInfo(ResLoadData resLoadData, bool is_not_check_destroy)
+		public ResLoadDataInfo(ResLoadData resLoadData, bool isNotCheckDestroy)
 		{
 			this.resLoadData = resLoadData;
-			this.is_not_check_destroy = is_not_check_destroy;
+			this.isNotCheckDestroy = isNotCheckDestroy;
 		}
 
-		public void AddCallbackCause(object callback_cause)
+		public void AddCallbackCause(object callbackCause)
 		{
-			if (this.callback_cause_dict.ContainsKey(callback_cause.GetNotNullKey()))//不重复
+			if (this.callbackCauseDict.ContainsKey(callbackCause.GetNotNullKey())) //不重复
 				return;
-			this.callback_cause_dict[callback_cause] = true;
+			this.callbackCauseDict[callbackCause] = true;
 		}
 
 		//callback_cause==null时是全部删除
-		public void RemoveCallbackCause(object callback_cause)
+		public void RemoveCallbackCause(object callbackCause)
 		{
-			this.callback_cause_dict.Remove(callback_cause.GetNotNullKey());
-			this.resLoadData.assetCat.RemoveCallback(callback_cause.GetNullableKey());
-			if (!is_not_check_destroy)
+			this.callbackCauseDict.Remove(callbackCause.GetNotNullKey());
+			this.resLoadData.assetCat.RemoveCallback(callbackCause.GetNullableKey());
+			if (!isNotCheckDestroy)
 				CheckDestroy();
 		}
 
 		public void RemoveAllCallbackCauses()
 		{
-			foreach (var callback_cuase in callback_cause_dict.Keys)
-				this.resLoadData.assetCat.RemoveCallback(callback_cuase.GetNullableKey());
-			this.callback_cause_dict.Clear();
-			if (!is_not_check_destroy)
+			foreach (var keyValue in callbackCauseDict)
+			{
+				var callbackCause = keyValue.Key;
+				this.resLoadData.assetCat.RemoveCallback(callbackCause.GetNullableKey());
+			}
+
+			this.callbackCauseDict.Clear();
+			if (!isNotCheckDestroy)
 				CheckDestroy();
 		}
 
 
-
 		void CheckDestroy()
 		{
-			if (this.callback_cause_dict.Count == 0)
+			if (this.callbackCauseDict.Count == 0)
 				resLoadData.Destroy();
 		}
 
 		public void Destroy()
 		{
-			foreach (var callback_cuase in callback_cause_dict.Keys)
-				this.resLoadData.assetCat.RemoveCallback(callback_cuase.GetNullableKey());
-			this.callback_cause_dict.Clear();
+			foreach (var keyValue in callbackCauseDict)
+			{
+				var callbackCause = keyValue.Key;
+				this.resLoadData.assetCat.RemoveCallback(callbackCause.GetNullableKey());
+			}
+			this.callbackCauseDict.Clear();
 			this.resLoadData.Destroy();
 		}
 	}

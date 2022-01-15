@@ -22,10 +22,7 @@ namespace CsCat
 
 				return result;
 			}
-			set
-			{
-				this._data[key] = value;
-			}
+			set => this._data[key] = value;
 		}
 	}
 }

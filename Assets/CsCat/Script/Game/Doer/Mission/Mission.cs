@@ -33,13 +33,13 @@ namespace CsCat
 		//owner 发放任务的npc
 		public virtual bool OnAccept(User user)
 		{
-			string onAccept_doerEvent_id = this.GetCfgMissionData().onAccept_doerEvent_id;
-			if (!onAccept_doerEvent_id.IsNullOrWhiteSpace())
+			string onAcceptDoerEventId = this.GetCfgMissionData().onAccept_doerEvent_id;
+			if (!onAcceptDoerEventId.IsNullOrWhiteSpace())
 			{
-				var cfgDoerEventData = CfgDoerEvent.Instance.get_by_id(onAccept_doerEvent_id);
+				var cfgDoerEventData = CfgDoerEvent.Instance.get_by_id(onAcceptDoerEventId);
 				if (!cfgDoerEventData.is_not_open)
 				{
-					if (!Client.instance.doerEventFactory.GetDoerEvent(onAccept_doerEvent_id).Execute(
+					if (!Client.instance.doerEventFactory.GetDoerEvent(onAcceptDoerEventId).Execute(
 					  string.Format("{0} 接受任务 {1}", user.GetShort(), this.GetShort()), this.GetOwner(),
 					  new DoerAttrParser(user, this, this.GetOwner())))
 						return false;
@@ -52,14 +52,14 @@ namespace CsCat
 		//owner 发放任务的npc
 		public virtual void OnFinish(User user)
 		{
-			string onFinish_doerEvent_id = this.GetCfgMissionData().onFinish_doerEvent_id;
-			if (!onFinish_doerEvent_id.IsNullOrWhiteSpace())
+			string onFinishDoerEventId = this.GetCfgMissionData().onFinish_doerEvent_id;
+			if (!onFinishDoerEventId.IsNullOrWhiteSpace())
 			{
 				var cfgDoerEventData =
-				  CfgDoerEvent.Instance.get_by_id(onFinish_doerEvent_id);
+				  CfgDoerEvent.Instance.get_by_id(onFinishDoerEventId);
 				if (!cfgDoerEventData.is_not_open)
 				{
-					Client.instance.doerEventFactory.GetDoerEvent(onFinish_doerEvent_id).Execute(
+					Client.instance.doerEventFactory.GetDoerEvent(onFinishDoerEventId).Execute(
 					  string.Format("{0} 完成任务 {1}", user.GetShort(), this.GetShort()), this.GetOwner(),
 					  new DoerAttrParser(user, this, this.GetOwner()));
 				}
@@ -69,14 +69,14 @@ namespace CsCat
 		//owner 发放任务的npc
 		public void OnGiveUp(User user)
 		{
-			string onGiveUp_doerEvent_id = this.GetCfgMissionData().onGiveUp_doerEvent_id;
-			if (!onGiveUp_doerEvent_id.IsNullOrWhiteSpace())
+			string onGiveUpDoerEventId = this.GetCfgMissionData().onGiveUp_doerEvent_id;
+			if (!onGiveUpDoerEventId.IsNullOrWhiteSpace())
 			{
 				var cfgDoerEventData =
-				  CfgDoerEvent.Instance.get_by_id(onGiveUp_doerEvent_id);
+				  CfgDoerEvent.Instance.get_by_id(onGiveUpDoerEventId);
 				if (!cfgDoerEventData.is_not_open)
 				{
-					Client.instance.doerEventFactory.GetDoerEvent(onGiveUp_doerEvent_id).Execute(
+					Client.instance.doerEventFactory.GetDoerEvent(onGiveUpDoerEventId).Execute(
 					  string.Format("{0} 放弃任务 {1}", user.GetShort(), this.GetShort()), this.GetOwner(),
 					  new DoerAttrParser(user, this, this.GetOwner()));
 				}
@@ -85,18 +85,16 @@ namespace CsCat
 
 		public virtual bool IsReady()
 		{
-			if (CheckFinishCondition())
-				return true;
-			return false;
+			return CheckFinishCondition();
 		}
 
 		public bool CheckFinishCondition()
 		{
-			string finish_condition = this.GetCfgMissionData().finish_condition;
-			if (!finish_condition.IsNullOrWhiteSpace()) // 未设置完成条件的办事任务不能根据派发任务处来完成，只能在设置了可完成任务的时候检测是否就绪
+			string finishCondition = this.GetCfgMissionData().finish_condition;
+			if (!finishCondition.IsNullOrWhiteSpace()) // 未设置完成条件的办事任务不能根据派发任务处来完成，只能在设置了可完成任务的时候检测是否就绪
 			{
 				DoerAttrParser doerAttrParser = new DoerAttrParser(Client.instance.user, this, this.GetOwner());
-				if (doerAttrParser.ParseBoolean(finish_condition, false))
+				if (doerAttrParser.ParseBoolean(finishCondition, false))
 					return true;
 			}
 
@@ -112,15 +110,15 @@ namespace CsCat
 		{
 			Dictionary<string, int> result = new Dictionary<string, int>();
 
-			Dictionary<string, string> reward_dict = GetCfgMissionData()._reward_dict;
-			if (!reward_dict.IsNullOrEmpty())
+			Dictionary<string, string> rewardDict = GetCfgMissionData()._reward_dict;
+			if (!rewardDict.IsNullOrEmpty())
 			{
-				foreach (string item_id in reward_dict.Keys)
+				foreach (string itemId in rewardDict.Keys)
 				{
-					string _item_id = doerAttrParser.ParseString(item_id);
-					string count_string = reward_dict[item_id];
-					int count = doerAttrParser.ParseInt(count_string);
-					result[_item_id] = count;
+					string curItemId = doerAttrParser.ParseString(itemId);
+					string countString = rewardDict[itemId];
+					int count = doerAttrParser.ParseInt(countString);
+					result[curItemId] = count;
 				}
 			}
 

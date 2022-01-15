@@ -108,9 +108,9 @@ namespace CsCat
 		/////////////////////////////////////////////////////////////////////////////////////////////
 		public IEnumerator WaitUntilPreLoadAssetsLoadDone(Action<float> callback)
 		{
-			var assetAsyncloaderProsessingList = Client.instance.assetBundleManager.assetAsyncloader_prosessing_list;
+			var assetAsyncloaderProsessingList = Client.instance.assetBundleManager.assetAsyncloaderProcessingList;
 			var assetBundleAsyncLoaderProsessingList =
-				Client.instance.assetBundleManager.assetBundleAsyncLoader_prosessing_list;
+				Client.instance.assetBundleManager.assetBundleAsyncLoaderProcessingList;
 			float total_loading_count =
 				assetAsyncloaderProsessingList.Count + assetBundleAsyncLoaderProsessingList.Count;
 			float curPCT = 0;

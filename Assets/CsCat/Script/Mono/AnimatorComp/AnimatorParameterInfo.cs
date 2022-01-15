@@ -22,30 +22,41 @@ namespace CsCat
 
 		public object GetValue()
 		{
-			if (this.animatorControllerParameterType == UnityEngine.AnimatorControllerParameterType.Bool)
-				return this.animator.GetBool(this.name);
-			else if (this.animatorControllerParameterType == UnityEngine.AnimatorControllerParameterType.Float)
-				return this.animator.GetFloat(this.name);
-			else if (this.animatorControllerParameterType == UnityEngine.AnimatorControllerParameterType.Int)
-				return this.animator.GetInteger(this.name);
-			else if (this.animatorControllerParameterType == UnityEngine.AnimatorControllerParameterType.Trigger)
-				return null;
-			else
-				throw new Exception("no animatorControllerParameterType");
+			switch (this.animatorControllerParameterType)
+			{
+				case UnityEngine.AnimatorControllerParameterType.Bool:
+					return this.animator.GetBool(this.name);
+				case UnityEngine.AnimatorControllerParameterType.Float:
+					return this.animator.GetFloat(this.name);
+				case UnityEngine.AnimatorControllerParameterType.Int:
+					return this.animator.GetInteger(this.name);
+				case UnityEngine.AnimatorControllerParameterType.Trigger:
+					return null;
+				default:
+					throw new Exception("no animatorControllerParameterType");
+			}
 		}
 
 		public void SetValue(object value = null)
 		{
-			if (this.animatorControllerParameterType == UnityEngine.AnimatorControllerParameterType.Bool)
-				this.animator.SetBool(this.name, value.To<bool>());
-			else if (this.animatorControllerParameterType == UnityEngine.AnimatorControllerParameterType.Float)
-				this.animator.SetFloat(this.name, value.To<float>());
-			else if (this.animatorControllerParameterType == UnityEngine.AnimatorControllerParameterType.Int)
-				this.animator.SetInteger(this.name, value.To<int>());
-			else if (this.animatorControllerParameterType == UnityEngine.AnimatorControllerParameterType.Trigger)
-				this.animator.SetTrigger(this.name);
-			else
-				throw new Exception("no animatorControllerParameterType");
+			switch (this.animatorControllerParameterType)
+			{
+				case UnityEngine.AnimatorControllerParameterType.Bool:
+					this.animator.SetBool(this.name, value.To<bool>());
+					break;
+				case UnityEngine.AnimatorControllerParameterType.Float:
+					this.animator.SetFloat(this.name, value.To<float>());
+					break;
+				case UnityEngine.AnimatorControllerParameterType.Int:
+					this.animator.SetInteger(this.name, value.To<int>());
+					break;
+				case UnityEngine.AnimatorControllerParameterType.Trigger:
+					this.animator.SetTrigger(this.name);
+					break;
+				default:
+					throw new Exception("no animatorControllerParameterType");
+			}
+
 			this.animator.Update(0);
 		}
 

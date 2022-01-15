@@ -14,11 +14,10 @@ namespace CsCat
 			});
 			async.WaitForSeconds(5);
 			async.Then(next =>
-			  {
-				  World();
-				  next();
-			  }
-
+				{
+					World();
+					next();
+				}
 			);
 		}
 

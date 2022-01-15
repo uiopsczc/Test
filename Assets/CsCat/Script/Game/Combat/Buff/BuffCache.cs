@@ -5,18 +5,18 @@ namespace CsCat
 	public class BuffCache
 	{
 		public float duration;
-		public float remain_duration;
-		public Unit source_unit;
-		public SpellBase source_spell;
-		public Hashtable arg_dict;
+		public float remainDuration;
+		public Unit sourceUnit;
+		public SpellBase sourceSpell;
+		public Hashtable argDict;
 
-		public BuffCache(float duration, Unit source_unit, SpellBase source_spell, Hashtable arg_dict)
+		public BuffCache(float duration, Unit sourceUnit, SpellBase sourceSpell, Hashtable argDict)
 		{
 			this.duration = duration;
-			this.remain_duration = this.duration;
-			this.source_unit = source_unit;
-			this.source_spell = source_spell;
-			this.arg_dict = arg_dict;
+			this.remainDuration = this.duration;
+			this.sourceUnit = sourceUnit;
+			this.sourceSpell = sourceSpell;
+			this.argDict = argDict;
 		}
 
 	}

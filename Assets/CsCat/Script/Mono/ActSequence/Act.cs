@@ -7,7 +7,7 @@ namespace CsCat
 	{
 		protected MonoBehaviour _owner;
 		public string id;
-		public bool is_break;
+		public bool isBreak;
 		public ActSequence parent;
 		public Status status;
 
@@ -24,11 +24,11 @@ namespace CsCat
 			}
 		}
 
-		public Action<Action> on_exit_callback; //参数是用于跳到下一个act    (参数next)
-		public Action on_pre_exit_callback;
-		public Action<Act> on_start_callback;
-		public Action on_pre_start_callback;
-		public Action<Act> on_update_callback;
+		public Action<Action> onExitCallback; //参数是用于跳到下一个act    (参数next)
+		public Action onPreExitCallback;
+		public Action<Act> onStartCallback;
+		public Action onPreStartCallback;
+		public Action<Act> onUpdateCallback;
 
 
 		public Act()
@@ -53,48 +53,48 @@ namespace CsCat
 		}
 
 
-		public Act OnPreStart(Action on_pre_start_callback, bool is_append = true)
+		public Act OnPreStart(Action onPreStartCallback, bool isAppend = true)
 		{
-			if (is_append)
-				this.on_pre_start_callback += on_pre_start_callback;
+			if (isAppend)
+				this.onPreStartCallback += onPreStartCallback;
 			else
-				this.on_pre_start_callback.InsertFirst(on_pre_start_callback);
+				this.onPreStartCallback.InsertFirst(onPreStartCallback);
 			return this;
 		}
 
-		public Act OnStart(Action<Act> on_start_callback, bool is_append = true)
+		public Act OnStart(Action<Act> onStartCallback, bool isAppend = true)
 		{
-			if (is_append)
-				this.on_start_callback += on_start_callback;
+			if (isAppend)
+				this.onStartCallback += onStartCallback;
 			else
-				this.on_start_callback.InsertFirst(on_start_callback);
+				this.onStartCallback.InsertFirst(onStartCallback);
 			return this;
 		}
 
-		public Act OnUpdate(Action<Act> on_update_callback, bool is_append = true)
+		public Act OnUpdate(Action<Act> onUpdateCallback, bool isAppend = true)
 		{
-			if (is_append)
-				this.on_update_callback += on_update_callback;
+			if (isAppend)
+				this.onUpdateCallback += onUpdateCallback;
 			else
-				this.on_update_callback.InsertFirst(on_update_callback);
+				this.onUpdateCallback.InsertFirst(onUpdateCallback);
 			return this;
 		}
 
-		public Act OnPreExit(Action on_pre_exit_callback, bool is_append = true)
+		public Act OnPreExit(Action onPreExitCallback, bool isAppend = true)
 		{
-			if (is_append)
-				this.on_pre_exit_callback += on_pre_exit_callback;
+			if (isAppend)
+				this.onPreExitCallback += onPreExitCallback;
 			else
-				this.on_pre_exit_callback.InsertFirst(on_pre_exit_callback);
+				this.onPreExitCallback.InsertFirst(onPreExitCallback);
 			return this;
 		}
 
-		public Act OnExit(Action<Action> on_exit_callback, bool is_append = true)
+		public Act OnExit(Action<Action> onExitCallback, bool isAppend = true)
 		{
-			if (is_append)
-				this.on_exit_callback += on_exit_callback;
+			if (isAppend)
+				this.onExitCallback += onExitCallback;
 			else
-				this.on_exit_callback.InsertFirst(on_exit_callback);
+				this.onExitCallback.InsertFirst(onExitCallback);
 			return this;
 		}
 
@@ -102,32 +102,32 @@ namespace CsCat
 		public virtual void Start()
 		{
 			status = Status.Starting;
-			on_pre_start_callback?.Invoke();
-			on_start_callback?.Invoke(this);
+			onPreStartCallback?.Invoke();
+			onStartCallback?.Invoke(this);
 		}
 
 		public virtual void Update()
 		{
-			if (status == Status.Started) on_update_callback?.Invoke(this);
+			if (status == Status.Started) onUpdateCallback?.Invoke(this);
 		}
 
 		public virtual void Exit()
 		{
 			status = Status.Exiting;
-			on_pre_exit_callback?.Invoke();
+			onPreExitCallback?.Invoke();
 
-			Action parent_next_action = () => { };
+			Action parentNextAction = () => { };
 			if (parent != null)
-				parent_next_action = parent.Next;
+				parentNextAction = parent.Next;
 
-			if (is_break)
-				parent_next_action = () => { };
+			if (isBreak)
+				parentNextAction = () => { };
 
 
-			if (on_exit_callback != null)
-				on_exit_callback(parent_next_action);
+			if (onExitCallback != null)
+				onExitCallback(parentNextAction);
 			else
-				parent_next_action();
+				parentNextAction();
 			status = Status.Exited;
 
 			Reset();
@@ -136,12 +136,12 @@ namespace CsCat
 		protected virtual void Reset()
 		{
 			status = Status.Ready;
-			is_break = false;
+			isBreak = false;
 		}
 
 		public virtual void Break()
 		{
-			is_break = true;
+			isBreak = true;
 			Exit();
 		}
 
@@ -150,15 +150,15 @@ namespace CsCat
 		{
 			_owner = null;
 			id = null;
-			is_break = false;
+			isBreak = false;
 			parent = null;
 			status = Status.Ready;
 
-			on_exit_callback = null;
-			on_pre_exit_callback = null;
-			on_start_callback = null;
-			on_pre_start_callback = null;
-			on_update_callback = null;
+			onExitCallback = null;
+			onPreExitCallback = null;
+			onStartCallback = null;
+			onPreStartCallback = null;
+			onUpdateCallback = null;
 		}
 	}
 }

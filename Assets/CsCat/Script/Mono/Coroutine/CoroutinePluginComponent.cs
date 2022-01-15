@@ -7,6 +7,7 @@ namespace CsCat
 	public class CoroutinePluginComponent : AbstractComponent
 	{
 		public CoroutinePlugin coroutinePlugin;
+
 		public void Init(CoroutinePlugin coroutinePlugin)
 		{
 			base.Init();
@@ -25,7 +26,6 @@ namespace CsCat
 		public void StopCoroutine(string key)
 		{
 			coroutinePlugin.StopCoroutine(key);
-
 		}
 
 		public void StopAllCoroutines()

@@ -10,9 +10,9 @@ namespace CsCat
 			user.AcceptMission("1", user);
 
 			var dict = new Hashtable();
-			var dict_tmp = new Hashtable();
-			user.DoSave(dict, dict_tmp);
-			LogCat.log(dict, dict_tmp);
+			var dictTmp = new Hashtable();
+			user.DoSave(dict, dictTmp);
+			LogCat.log(dict, dictTmp);
 		}
 
 		public static void Test2()
@@ -21,9 +21,9 @@ namespace CsCat
 			user.FinishMission("1", user);
 
 			var dict = new Hashtable();
-			var dict_tmp = new Hashtable();
-			user.DoSave(dict, dict_tmp);
-			LogCat.log(dict, dict_tmp);
+			var dictTmp = new Hashtable();
+			user.DoSave(dict, dictTmp);
+			LogCat.log(dict, dictTmp);
 		}
 
 		public static void Test3()
@@ -32,9 +32,9 @@ namespace CsCat
 			user.GiveUpMission("1", user);
 
 			var dict = new Hashtable();
-			var dict_tmp = new Hashtable();
-			user.DoSave(dict, dict_tmp);
-			LogCat.log(dict, dict_tmp);
+			var dictTmp = new Hashtable();
+			user.DoSave(dict, dictTmp);
+			LogCat.log(dict, dictTmp);
 		}
 
 	}

@@ -4,26 +4,26 @@ namespace CsCat
 {
 	public partial class User : Thing
 	{
-		private ItemBag o_item_bag;
-		private Roles o_roles;
-		private Missions o_missions;
+		private ItemBag oItemBag;
+		private Roles oRoles;
+		private Missions oMissions;
 		public Role mainRole;
 
 		public override void Init()
 		{
 			base.Init();
-			this.o_roles = new Roles(this, "o_roles");
-			this.o_item_bag = new ItemBag(this, "o_item_bag");
-			this.o_missions = new Missions(this, "o_missions");
+			this.oRoles = new Roles(this, "o_roles");
+			this.oItemBag = new ItemBag(this, "o_item_bag");
+			this.oMissions = new Missions(this, "o_missions");
 		}
 
 		//////////////////////DoXXX/////////////////////////////////////
 		//卸载
 		public override void DoRelease()
 		{
-			this.o_roles.DoRelease();
-			this.o_item_bag.DoRelease();
-			this.o_missions.DoRelease();
+			this.oRoles.DoRelease();
+			this.oItemBag.DoRelease();
+			this.oMissions.DoRelease();
 			base.DoRelease();
 		}
 
@@ -32,11 +32,11 @@ namespace CsCat
 		{
 			base.DoSave(dict, dictTmp);
 			//存储角色
-			this.o_roles.DoSave(dict, dictTmp);
+			this.oRoles.DoSave(dict, dictTmp);
 			//存储背包
-			this.o_item_bag.DoSave(dict, dictTmp);
+			this.oItemBag.DoSave(dict, dictTmp);
 			//存储任务
-			this.o_missions.DoSave(dict, dictTmp);
+			this.oMissions.DoSave(dict, dictTmp);
 			if (this.mainRole != null)
 				dict["main_role_rid"] = this.mainRole.GetRid();
 		}
@@ -45,14 +45,14 @@ namespace CsCat
 		public override void DoRestore(Hashtable dict, Hashtable dictTmp)
 		{
 			//还原角色
-			this.o_roles.DoRestore(dict, dictTmp);
+			this.oRoles.DoRestore(dict, dictTmp);
 			//还原背包
-			this.o_item_bag.DoRestore(dict, dictTmp);
+			this.oItemBag.DoRestore(dict, dictTmp);
 			//还原任务
-			this.o_missions.DoRestore(dict, dictTmp);
+			this.oMissions.DoRestore(dict, dictTmp);
 
-			string main_role_rid = dict.Remove3<string>("main_role_rid");
-			this.mainRole = this.GetRole(main_role_rid);
+			string mainRoleRid = dict.Remove3<string>("main_role_rid");
+			this.mainRole = this.GetRole(mainRoleRid);
 
 			base.DoRestore(dict, dictTmp);
 		}

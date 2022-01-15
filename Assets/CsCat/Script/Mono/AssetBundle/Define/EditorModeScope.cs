@@ -4,17 +4,17 @@ namespace CsCat
 {
 	public class EditorModeScope : IDisposable
 	{
-		private bool org_is_editor_mode;
+		private bool orgIsEditorMode;
 
-		public EditorModeScope(bool is_editor_mode)
+		public EditorModeScope(bool isEditorMode)
 		{
-			org_is_editor_mode = EditorModeConst.IsEditorMode;
-			EditorModeConst.IsEditorMode = is_editor_mode;
+			orgIsEditorMode = EditorModeConst.IsEditorMode;
+			EditorModeConst.IsEditorMode = isEditorMode;
 		}
 
 		public void Dispose()
 		{
-			EditorModeConst.IsEditorMode = org_is_editor_mode;
+			EditorModeConst.IsEditorMode = orgIsEditorMode;
 		}
 	}
 }

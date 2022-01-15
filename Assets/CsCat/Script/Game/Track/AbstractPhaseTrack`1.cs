@@ -7,69 +7,69 @@ namespace CsCat
 {
 	public class AbstractPhaseTrack<T>
 	{
-		public bool is_loop;
+		public bool isLoop;
 		//持续时间
-		public int duration_tick;
+		public int durationTick;
 
-		public List<AbstractPhase<T>> phase_list = new List<AbstractPhase<T>>();
+		public List<AbstractPhase<T>> phaseList = new List<AbstractPhase<T>>();
 
-		public T GetSnapshot(int target_tick)
+		public T GetSnapshot(int targetTick)
 		{
-			if (target_tick < 0)
-				throw new ArgumentException(string.Format("Tick should be zero or positive number. tick:{0}", target_tick));
-			if (this.is_loop && target_tick >= this.duration_tick)
-				target_tick = this.duration_tick != 0 ? target_tick % this.duration_tick : 0;
+			if (targetTick < 0)
+				throw new ArgumentException(string.Format("Tick should be zero or positive number. tick:{0}", targetTick));
+			if (this.isLoop && targetTick >= this.durationTick)
+				targetTick = this.durationTick != 0 ? targetTick % this.durationTick : 0;
 			int n = 0;
-			int lerp_tick = 0;
-			AbstractPhase<T> from_phase = null;
-			AbstractPhase<T> to_phase = null;
-			for (int i = 0; i < this.phase_list.Count; i++)
+			int lerpTick = 0;
+			AbstractPhase<T> fromPhase = null;
+			AbstractPhase<T> toPhase = null;
+			for (int i = 0; i < this.phaseList.Count; i++)
 			{
-				AbstractPhase<T> phase = this.phase_list[i];
-				n += phase.duration_tick;
-				if (n > target_tick)
+				AbstractPhase<T> phase = this.phaseList[i];
+				n += phase.durationTick;
+				if (n > targetTick)
 				{
-					from_phase = phase;
-					to_phase = i + 1 < this.phase_list.Count ? this.phase_list[i + 1] : null;
-					lerp_tick = target_tick - (n - phase.duration_tick);
+					fromPhase = phase;
+					toPhase = i + 1 < this.phaseList.Count ? this.phaseList[i + 1] : null;
+					lerpTick = targetTick - (n - phase.durationTick);
 					break;
 				}
 			}
-			if (from_phase == null)
+			if (fromPhase == null)
 			{
-				from_phase = this.phase_list[this.phase_list.Count - 1];
-				to_phase = null;
-				lerp_tick = 0;
+				fromPhase = this.phaseList[this.phaseList.Count - 1];
+				toPhase = null;
+				lerpTick = 0;
 			}
-			T result = from_phase.Lerp(to_phase, lerp_tick);
+			T result = fromPhase.Lerp(toPhase, lerpTick);
 			return result;
 		}
 
 		public virtual void DoSave(Hashtable dict)
 		{
-			duration_tick = 0;
+			durationTick = 0;
 
-			var phase_arrayList = phase_list.DoSaveList((phase, sub_dict) =>
+			var phaseArrayList = phaseList.DoSaveList((phase, subDict) =>
 			{
-				phase.DoSave(sub_dict);
-				duration_tick += phase.duration_tick;
+				phase.DoSave(subDict);
+				durationTick += phase.durationTick;
 			});
 
-			dict["duration_tick"] = duration_tick;
-			dict["is_loop"] = is_loop;
-			dict["phase_arrayList"] = phase_arrayList;
+			dict["duration_tick"] = durationTick;
+			dict["is_loop"] = isLoop;
+			dict["phase_arrayList"] = phaseArrayList;
 		}
 
 		public virtual void DoRestore(Hashtable dict)
 		{
-			phase_list.DoRestoreList(dict["phase_arrayList"] as ArrayList, (sub_dict) =>
+			phaseList.DoRestoreList(dict["phase_arrayList"] as ArrayList, (subDict) =>
 			{
 				AbstractPhase<T> phase = new AbstractPhase<T>();
-				phase.DoRestore(sub_dict);
+				phase.DoRestore(subDict);
 				return phase;
 			});
-			duration_tick = dict["duration_tick"].ToIntOrToDefault();
-			is_loop = dict["is_loop"].ToBoolOrToDefault();
+			durationTick = dict["duration_tick"].ToIntOrToDefault();
+			isLoop = dict["is_loop"].ToBoolOrToDefault();
 
 		}
 	}

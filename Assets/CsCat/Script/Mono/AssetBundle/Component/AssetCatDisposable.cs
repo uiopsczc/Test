@@ -4,15 +4,15 @@ namespace CsCat
 {
 	public class AssetCatDisposable : MonoBehaviour
 	{
-		public string cur_asset_path;
+		public string curAssetPath;
 
-		public string pre_asset_path;
+		public string preAssetPath;
 
 		//当前使用的资源
-		protected AssetCat cur_assetCat; //可能是加载完成状态或者加载中状态
+		protected AssetCat curAssetCat; //可能是加载完成状态或者加载中状态
 
 		// 上一次使用的资源，只有当assetCatCur加载出asset后且在下次进行assetCatCur赋予新值，才会进行assetCatPre.SubRefCnt（并不是assetCatCur加载出asset后就进行assetCatPre.SubRefCnt，而是在assetCatCur下次进行新的赋值时进行assetCatPre.SubRefCnt）
-		protected AssetCat pre_assetCat; //只能是加载完成个状态
+		protected AssetCat preAssetCat; //只能是加载完成个状态
 
 
 		private void OnDestroy()
@@ -20,42 +20,42 @@ namespace CsCat
 			ReleaseAll();
 		}
 
-		public void SetCurAssetCat(AssetCat cur_assetCat, string cur_asset_path)
+		public void SetCurAssetCat(AssetCat curAssetCat, string curAssetPath)
 		{
-			this.cur_assetCat = cur_assetCat;
-			this.cur_asset_path = cur_asset_path;
+			this.curAssetCat = curAssetCat;
+			this.curAssetPath = curAssetPath;
 		}
 
-		public void SetPreAssetCat(AssetCat pre_assetCat, string pre_asset_path)
+		public void SetPreAssetCat(AssetCat preAssetCat, string preAssetPath)
 		{
-			this.pre_assetCat = pre_assetCat;
-			this.pre_asset_path = pre_asset_path;
+			this.preAssetCat = preAssetCat;
+			this.preAssetPath = preAssetPath;
 		}
 
 		public void ReleaseCurAssetCat()
 		{
-			if (cur_assetCat != null)
+			if (curAssetCat != null)
 			{
-				if (!cur_assetCat.IsLoadSuccess())
-					cur_assetCat.RemoveCallback(this);
-				cur_assetCat.SubRefCount(1, true);
+				if (!curAssetCat.IsLoadSuccess())
+					curAssetCat.RemoveCallback(this);
+				curAssetCat.SubRefCount(1, true);
 			}
 
-			cur_asset_path = null;
-			cur_assetCat = null;
+			curAssetPath = null;
+			curAssetCat = null;
 		}
 
 		public void ReleasePreAssetCat()
 		{
-			if (pre_assetCat != null)
+			if (preAssetCat != null)
 			{
-				if (!pre_assetCat.IsLoadSuccess())
-					pre_assetCat.RemoveCallback(this);
-				pre_assetCat.SubRefCount(1, true);
+				if (!preAssetCat.IsLoadSuccess())
+					preAssetCat.RemoveCallback(this);
+				preAssetCat.SubRefCount(1, true);
 			}
 
-			pre_asset_path = null;
-			pre_assetCat = null;
+			preAssetPath = null;
+			preAssetCat = null;
 		}
 
 		public void ReleaseAll()

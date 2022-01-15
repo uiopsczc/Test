@@ -5,33 +5,36 @@ namespace CsCat
 {
 	public class CfgManager : TickObject
 	{
-		private int total_count;
-		private int loaded_count;
+		private int totalCount;
+		private int loadedCount;
 		public override void Init()
 		{
 			base.Init();
-			resLoadComponent.GetOrLoadAsset(CfgConst.CfgFilePathes, OnLoadedCfgFilePathes);
+			resLoadComponent.GetOrLoadAsset(CfgConst.CfgFilePaths, OnLoadedCfgFilePaths);
 		}
 
-		void OnLoadedCfgFilePathes(AssetCat assetCat)
+		void OnLoadedCfgFilePaths(AssetCat assetCat)
 		{
-			string file_contnet = assetCat.Get<TextAsset>().text;
-			file_contnet = file_contnet.Replace("\r", "");
-			string[] file_pathes = file_contnet.Split('\n');
-			loaded_count = 0;
-			total_count = file_pathes.Length;
-			foreach (var file_path in file_pathes)
-				resLoadComponent.GetOrLoadAsset(file_path, OnLoadedCfgFile);
+			string fileContent = assetCat.Get<TextAsset>().text;
+			fileContent = fileContent.Replace("\r", "");
+			string[] filePaths = fileContent.Split('\n');
+			loadedCount = 0;
+			totalCount = filePaths.Length;
+			for (var i = 0; i < filePaths.Length; i++)
+			{
+				var filePath = filePaths[i];
+				resLoadComponent.GetOrLoadAsset(filePath, OnLoadedCfgFile);
+			}
 		}
 
 		void OnLoadedCfgFile(AssetCat assetCat)
 		{
-			string class_name = "CsCat.Cfg" + Path.GetFileNameWithoutExtension(assetCat.asset_path).UpperFirstLetter();
-			string json_contnet = assetCat.Get<TextAsset>().text;
-			TypeUtil.GetType(class_name).GetPropertyValue("Instance").InvokeMethod("Parse", false, json_contnet);
-			loaded_count++;
+			string className = "CsCat.Cfg" + Path.GetFileNameWithoutExtension(assetCat.assetPath).UpperFirstLetter();
+			string jsonContent = assetCat.Get<TextAsset>().text;
+			TypeUtil.GetType(className).GetPropertyValue("Instance").InvokeMethod("Parse", false, jsonContent);
+			loadedCount++;
 		}
 
-		public bool IsLoadFinished => loaded_count >= total_count;
+		public bool IsLoadFinished => loadedCount >= totalCount;
 	}
 }

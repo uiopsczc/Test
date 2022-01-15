@@ -14,7 +14,7 @@ namespace CsCat
 			if (!CheckIsStarted())
 				return false;
 
-			return coroutine.is_finished;
+			return coroutine.isFinished;
 		}
 	}
 }

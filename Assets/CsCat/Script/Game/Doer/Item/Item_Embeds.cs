@@ -8,30 +8,30 @@ namespace CsCat
 		//获得指定的镶物
 		public Item[] GetEmbeds(string id = null)
 		{
-			return this.o_embeds.GetEmbeds(id);
+			return this.oEmbeds.GetEmbeds(id);
 		}
 
 		//是否有镶物
 		public bool HasEmbeds()
 		{
-			return this.o_embeds.HasEmbeds();
+			return this.oEmbeds.HasEmbeds();
 		}
 
 		public int GetEmbedsCount()
 		{
-			return this.o_embeds.GetEmbedsCount();
+			return this.oEmbeds.GetEmbedsCount();
 		}
 
 		//获得指定的镶物
-		public Item GetEmbed(string id_or_rid)
+		public Item GetEmbed(string idOrRid)
 		{
-			return this.o_embeds.GetEmbed(id_or_rid);
+			return this.oEmbeds.GetEmbed(idOrRid);
 		}
 
 		//清除所有镶物
 		public void ClearEmbeds(Item embed)
 		{
-			this.o_embeds.ClearEmbeds();
+			this.oEmbeds.ClearEmbeds();
 		}
 
 		//检测镶入镶物
@@ -50,7 +50,7 @@ namespace CsCat
 				return false;
 			}
 
-			var list = this.o_embeds.GetEmbeds_ToEdit();
+			var list = this.oEmbeds.GetEmbeds_ToEdit();
 			if (list.Contains(embed))
 			{
 				LogCat.error(string.Format("{0} already embed on {1}", this, embed));
@@ -74,7 +74,7 @@ namespace CsCat
 		//卸下镶物
 		public bool EmbedOff(Item embed)
 		{
-			var list = this.o_embeds.GetEmbeds_ToEdit();
+			var list = this.oEmbeds.GetEmbeds_ToEdit();
 			if (!list.Contains(embed))
 			{
 				LogCat.error(string.Format("{0} not contains embed:{1}", this, embed));

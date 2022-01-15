@@ -8,32 +8,32 @@ namespace CsCat
 		protected T value;
 
 		//持续时间
-		public int duration_tick;
+		public int durationTick;
 
 
 		//lerp_tick的范围在[0, 这个this的duration_tick]之间
-		public T Tween(AbstractPhase<T> to_phase, int lerp_tick, Func<T, T, float, T> lerp_callback)
+		public T Tween(AbstractPhase<T> toPhase, int lerpTick, Func<T, T, float, T> lerpCallback)
 		{
-			T from_value = value;
-			if (to_phase == null)
-				return from_value;
-			T to_value = to_phase.value;
-			return lerp_callback(from_value, to_value, (float)lerp_tick / duration_tick);
+			T fromValue = value;
+			if (toPhase == null)
+				return fromValue;
+			T toValue = toPhase.value;
+			return lerpCallback(fromValue, toValue, (float)lerpTick / durationTick);
 		}
 
-		public virtual T Lerp(AbstractPhase<T> to_phase, int lerp_tick)
+		public virtual T Lerp(AbstractPhase<T> toPhase, int lerpTick)
 		{
 			return default(T);
 		}
 
 		public virtual void DoSave(Hashtable dict)
 		{
-			dict["duration_tick"] = duration_tick;
+			dict["duration_tick"] = durationTick;
 		}
 
 		public virtual void DoRestore(Hashtable dict)
 		{
-			duration_tick = dict["duration_tick"].ToIntOrToDefault();
+			durationTick = dict["duration_tick"].ToIntOrToDefault();
 		}
 	}
 }

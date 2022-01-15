@@ -7,10 +7,10 @@ namespace CsCat
 {
 	public class Vector2Phase : AbstractPhase<Vector2>
 	{
-		public override Vector2 Lerp(AbstractPhase<Vector2> to_phase, int lerp_tick)
+		public override Vector2 Lerp(AbstractPhase<Vector2> toPhase, int lerpTick)
 		{
-			return this.Tween(to_phase, lerp_tick,
-			  (from_value, to_value, t) => { return Vector2.Lerp(from_value, to_value, t); });
+			return this.Tween(toPhase, lerpTick,
+			  (fromValue, toValue, t) => Vector2.Lerp(fromValue, toValue, t));
 		}
 
 		public override void DoSave(Hashtable dict)

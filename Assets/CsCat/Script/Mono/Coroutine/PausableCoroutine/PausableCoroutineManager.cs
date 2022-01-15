@@ -247,7 +247,7 @@ namespace CsCat
 					{
 						coroutines.RemoveAt(j);
 						coroutine.current_yield = null;
-						coroutine.is_finished = true;
+						coroutine.isFinished = true;
 					}
 
 					if (coroutines.Count == 0)

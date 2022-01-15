@@ -11,22 +11,16 @@ namespace CsCat
 
 		public void ApplySetting(Vector3 position, Quaternion rotation, float fov)
 		{
-			this.current_position = position;
-			this.current_eulerAngles = rotation.eulerAngles;
-			this.current_rotation = rotation;
-			this.current_fov = fov;
+			this.currentPosition = position;
+			this.currentEulerAngles = rotation.eulerAngles;
+			this.currentRotation = rotation;
+			this.currentFOV = fov;
 
 
-			this.org_position = position;
-			this.org_eulerAngles = rotation.eulerAngles;
-			this.org_rotation = rotation;
-			this.org_fov = fov;
+			this.orgPosition = position;
+			this.orgEulerAngles = rotation.eulerAngles;
+			this.orgRotation = rotation;
+			this.orgFOV = fov;
 		}
-
-
 	}
 }
-
-
-
-

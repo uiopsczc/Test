@@ -4,74 +4,74 @@ namespace CsCat
 {
 	public partial class CameraBase
 	{
-		private Transform move_to_target_transform;
-		private Vector3? move_to_target_position;
-		private Quaternion move_to_target_rotation;
+		private Transform moveToTargetTransform;
+		private Vector3? moveToTargetPosition;
+		private Quaternion moveToTargetRotation;
 
-		private Vector3 move_to_target_start_position;
-		private Quaternion move_to_target_start_rotation;
+		private Vector3 moveToTargetStartPosition;
+		private Quaternion moveToTargetStartRotation;
 
-		private float move_to_target_duration;
-		private float move_to_target_current_time;
+		private float moveToTargetDuration;
+		private float moveToTargetCurrentTime;
 
 
-		private bool is_reach_need_stop;
+		private bool isReachNeedStop;
 
-		public void SetMoveToTarget(Transform move_to_target_transform, float move_to_target_duration,
-		  Vector3 move_to_target_eulerAngles, Vector3 move_to_target_look_position, bool is_reach_need_stop = false)
+		public void SetMoveToTarget(Transform moveToTargetTransform, float moveToTargetDuration,
+		  Vector3 moveToTargetEulerAngles, Vector3 moveToTargetLookPosition, bool isReachNeedStop = false)
 		{
-			this.move_to_target_transform = move_to_target_transform;
-			SetMoveToTarget(this.move_to_target_transform.position, move_to_target_duration, move_to_target_eulerAngles,
-			  move_to_target_look_position, is_reach_need_stop);
+			this.moveToTargetTransform = moveToTargetTransform;
+			SetMoveToTarget(this.moveToTargetTransform.position, moveToTargetDuration, moveToTargetEulerAngles,
+			  moveToTargetLookPosition, isReachNeedStop);
 		}
 
-		public void SetMoveToTarget(GameObject move_to_gameObject, float move_to_target_duration,
-		  Vector3 move_to_target_eulerAngles, Vector3 move_to_target_look_position, bool is_reach_need_stop = false)
+		public void SetMoveToTarget(GameObject moveToGameObject, float moveToTargetDuration,
+		  Vector3 moveToTargetEulerAngles, Vector3 moveToTargetLookPosition, bool isReachNeedStop = false)
 		{
-			SetMoveToTarget(move_to_gameObject.transform, move_to_target_duration, move_to_target_eulerAngles,
-			  move_to_target_look_position, is_reach_need_stop);
+			SetMoveToTarget(moveToGameObject.transform, moveToTargetDuration, moveToTargetEulerAngles,
+			  moveToTargetLookPosition, isReachNeedStop);
 		}
 
-		public void SetMoveToTarget(Vector3 move_to_target_position, float move_to_target_duration,
-		  Vector3? move_to_target_eulerAngles, Vector3? move_to_target_look_position, bool is_reach_need_stop = false)
+		public void SetMoveToTarget(Vector3 moveToTargetPosition, float moveToTargetDuration,
+		  Vector3? moveToTargetEulerAngles, Vector3? moveToTargetLookPosition, bool isReachNeedStop = false)
 
 		{
-			this.move_to_target_position = move_to_target_position;
+			this.moveToTargetPosition = moveToTargetPosition;
 
-			this.move_to_target_duration = move_to_target_duration;
-			if (move_to_target_eulerAngles != null)
-				this.move_to_target_rotation = Quaternion.Euler(move_to_target_eulerAngles.Value);
-			if (move_to_target_look_position != null)
-				this.move_to_target_rotation =
-				  Quaternion.LookRotation(move_to_target_look_position.Value - move_to_target_position);
+			this.moveToTargetDuration = moveToTargetDuration;
+			if (moveToTargetEulerAngles != null)
+				this.moveToTargetRotation = Quaternion.Euler(moveToTargetEulerAngles.Value);
+			if (moveToTargetLookPosition != null)
+				this.moveToTargetRotation =
+				  Quaternion.LookRotation(moveToTargetLookPosition.Value - moveToTargetPosition);
 
-			this.is_reach_need_stop = is_reach_need_stop;
+			this.isReachNeedStop = isReachNeedStop;
 
-			this.move_to_target_start_position = this.current_position;
-			this.move_to_target_start_rotation = this.current_rotation;
+			this.moveToTargetStartPosition = this.currentPosition;
+			this.moveToTargetStartRotation = this.currentRotation;
 
-			move_to_target_current_time = 0;
+			moveToTargetCurrentTime = 0;
 		}
 
 		public void ApplyMoveToTarget(float deltaTime)
 		{
-			if (move_to_target_transform != null)
-				move_to_target_position = move_to_target_transform.position;
-			this.move_to_target_current_time = this.move_to_target_current_time + deltaTime;
+			if (moveToTargetTransform != null)
+				moveToTargetPosition = moveToTargetTransform.position;
+			this.moveToTargetCurrentTime = this.moveToTargetCurrentTime + deltaTime;
 			Vector3 position;
 			Quaternion rotation;
-			if (this.move_to_target_duration == 0 || move_to_target_current_time >= this.move_to_target_duration)
+			if (this.moveToTargetDuration == 0 || moveToTargetCurrentTime >= this.moveToTargetDuration)
 			{
-				position = move_to_target_position.Value;
-				rotation = move_to_target_start_rotation;
-				if (this.is_reach_need_stop)
+				position = moveToTargetPosition.Value;
+				rotation = moveToTargetStartRotation;
+				if (this.isReachNeedStop)
 					MoveToTargetReset();
 			}
 			else
 			{
-				float percent = move_to_target_current_time.GetPercent(0, move_to_target_duration);
-				position = Vector3.Lerp(this.move_to_target_start_position, move_to_target_position.Value, percent);
-				rotation = Quaternion.Slerp(move_to_target_start_rotation, move_to_target_start_rotation, percent);
+				float percent = moveToTargetCurrentTime.GetPercent(0, moveToTargetDuration);
+				position = Vector3.Lerp(this.moveToTargetStartPosition, moveToTargetPosition.Value, percent);
+				rotation = Quaternion.Slerp(moveToTargetStartRotation, moveToTargetStartRotation, percent);
 			}
 
 			graphicComponent.transform.position = position;
@@ -80,10 +80,10 @@ namespace CsCat
 
 		public void MoveToTargetReset()
 		{
-			current_operation = CameraOperation.None;
-			move_to_target_position = null;
-			move_to_target_transform = null;
-			this.is_reach_need_stop = false;
+			currentOperation = CameraOperation.None;
+			moveToTargetPosition = null;
+			moveToTargetTransform = null;
+			this.isReachNeedStop = false;
 		}
 	}
 }

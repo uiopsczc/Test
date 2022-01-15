@@ -4,67 +4,69 @@ namespace CsCat
 {
 	public class Roles
 	{
-		private Doer parent_doer;
-		private string sub_doer_key;
+		private Doer parentDoer;
+		private string subDoerKey;
 
-		public Roles(Doer parent_doer, string sub_doer_key)
+		public Roles(Doer parentDoer, string subDoerKey)
 		{
-			this.parent_doer = parent_doer;
-			this.sub_doer_key = sub_doer_key;
+			this.parentDoer = parentDoer;
+			this.subDoerKey = subDoerKey;
 		}
 
 		////////////////////DoXXX/////////////////////////////////
 		//卸载
 		public void DoRelease()
 		{
-			SubDoerUtil1.DoReleaseSubDoer<Role>(this.parent_doer, this.sub_doer_key);
+			SubDoerUtil1.DoReleaseSubDoer<Role>(this.parentDoer, this.subDoerKey);
 		}
 
 		//保存
-		public void DoSave(Hashtable dict, Hashtable dict_tmp, string save_key = null)
+		public void DoSave(Hashtable dict, Hashtable dictTmp, string saveKey = null)
 		{
-			save_key = save_key ?? "roles";
+			saveKey = saveKey ?? "roles";
 			var roles = this.GetRoles();
-			var dict_roles = new ArrayList();
-			var dict_roles_tmp = new Hashtable();
-			foreach (var role in roles)
+			var dictRoles = new ArrayList();
+			var dictRolesTmp = new Hashtable();
+			for (var i = 0; i < roles.Length; i++)
 			{
-				var dict_role = new Hashtable();
-				var dict_role_tmp = new Hashtable();
+				var role = roles[i];
+				var dictRole = new Hashtable();
+				var dictRoleTmp = new Hashtable();
 				var rid = role.GetRid();
-				role.PrepareSave(dict_role, dict_role_tmp);
-				dict_role["rid"] = rid;
-				dict_roles.Add(dict_role);
-				if (!dict_role_tmp.IsNullOrEmpty())
-					dict_roles_tmp[rid] = dict_role_tmp;
+				role.PrepareSave(dictRole, dictRoleTmp);
+				dictRole["rid"] = rid;
+				dictRoles.Add(dictRole);
+				if (!dictRoleTmp.IsNullOrEmpty())
+					dictRolesTmp[rid] = dictRoleTmp;
 			}
 
-			if (!dict_roles.IsNullOrEmpty())
-				dict[save_key] = dict_roles;
-			if (!dict_roles_tmp.IsNullOrEmpty())
-				dict_tmp[save_key] = dict_roles;
+			if (!dictRoles.IsNullOrEmpty())
+				dict[saveKey] = dictRoles;
+			if (!dictRolesTmp.IsNullOrEmpty())
+				dictTmp[saveKey] = dictRoles;
 		}
 
 		//还原
-		public void DoRestore(Hashtable dict, Hashtable dict_tmp, string restore_key = null)
+		public void DoRestore(Hashtable dict, Hashtable dictTmp, string restoreKey = null)
 		{
-			restore_key = restore_key ?? "roles";
+			restoreKey = restoreKey ?? "roles";
 			this.ClearRoles();
-			var dict_roles = dict.Remove3<ArrayList>(restore_key);
-			var dict_roles_tmp = dict_tmp?.Remove3<Hashtable>(restore_key);
-			if (!dict_roles.IsNullOrEmpty())
+			var dictRoles = dict.Remove3<ArrayList>(restoreKey);
+			var dictRolesTmp = dictTmp?.Remove3<Hashtable>(restoreKey);
+			if (!dictRoles.IsNullOrEmpty())
 			{
 				var roles = this.GetRoles_ToEdit();
-				foreach (var _dict_role in dict_roles)
+				for (var i = 0; i < dictRoles.Count; i++)
 				{
-					var dict_role = _dict_role as Hashtable;
-					var rid = dict_role.Remove3<string>("rid");
+					var curDictRole = dictRoles[i];
+					var dictRole = curDictRole as Hashtable;
+					var rid = dictRole.Remove3<string>("rid");
 					Role role = Client.instance.roleFactory.NewDoer(rid) as Role;
-					role.SetEnv(this.parent_doer);
-					Hashtable dict_role_tmp = null;
-					if (dict_roles_tmp != null && dict_roles_tmp.ContainsKey(rid))
-						dict_role_tmp = dict_roles_tmp[rid] as Hashtable;
-					role.FinishRestore(dict_role, dict_role_tmp);
+					role.SetEnv(this.parentDoer);
+					Hashtable dictRoleTmp = null;
+					if (dictRolesTmp != null && dictRolesTmp.ContainsKey(rid))
+						dictRoleTmp = dictRolesTmp[rid] as Hashtable;
+					role.FinishRestore(dictRole, dictRoleTmp);
 					roles.Add(role);
 				}
 			}
@@ -76,30 +78,30 @@ namespace CsCat
 		//获得指定的角色
 		public Role[] GetRoles(string id = null)
 		{
-			return SubDoerUtil1.GetSubDoers<Role>(this.parent_doer, this.sub_doer_key, id, null);
+			return SubDoerUtil1.GetSubDoers<Role>(this.parentDoer, this.subDoerKey, id, null);
 		}
 
 		public ArrayList GetRoles_ToEdit() //可以直接插入删除
 		{
-			return SubDoerUtil1.GetSubDoers_ToEdit(this.parent_doer, this.sub_doer_key);
+			return SubDoerUtil1.GetSubDoers_ToEdit(this.parentDoer, this.subDoerKey);
 		}
 
 		public int GetRolesCount()
 		{
-			return SubDoerUtil1.GetSubDoersCount<Role>(this.parent_doer, this.sub_doer_key);
+			return SubDoerUtil1.GetSubDoersCount<Role>(this.parentDoer, this.subDoerKey);
 		}
 
 		//获得指定的角色
-		public Role GetRole(string id_or_rid)
+		public Role GetRole(string idOrRid)
 		{
-			return SubDoerUtil1.GetSubDoer<Role>(this.parent_doer, this.sub_doer_key, id_or_rid);
+			return SubDoerUtil1.GetSubDoer<Role>(this.parentDoer, this.subDoerKey, idOrRid);
 		}
 
 		//清除所有角色
 		public void ClearRoles()
 		{
-			SubDoerUtil1.ClearSubDoers<Role>(this.parent_doer, this.sub_doer_key,
-			  (role) => { ((User)this.parent_doer).RemoveRole(role); });
+			SubDoerUtil1.ClearSubDoers<Role>(this.parentDoer, this.subDoerKey,
+			  (role) => { ((User)this.parentDoer).RemoveRole(role); });
 		}
 	}
 }

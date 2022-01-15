@@ -7,7 +7,7 @@ namespace CsCat
 {
 	public class GameHotKeyManager : TickObject
 	{
-		public Action gui_callback;
+		public Action guiCallback;
 
 		private HFSMComponent<TestCoroutineHFSM> hfsmComponent;
 
@@ -76,7 +76,7 @@ namespace CsCat
 
 			if (Input.GetKeyDown("f6"))
 			{
-				Client.instance.Rebort();
+				Client.instance.Reboot();
 			}
 
 			if (Input.GetKeyDown("f7"))

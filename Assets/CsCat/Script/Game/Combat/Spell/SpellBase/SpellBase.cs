@@ -6,50 +6,50 @@ namespace CsCat
 {
 	public partial class SpellBase : TickObject
 	{
-		public Unit source_unit;
-		public string spell_id;
-		public Unit target_unit;
+		public Unit sourceUnit;
+		public string spellId;
+		public Unit targetUnit;
 		public CfgSpellData cfgSpellData;
-		public Hashtable instance_arg_dict;
+		public Hashtable instanceArgDict;
 
-		public Vector3? origin_position;
-		public Hashtable transmit_arg_dict;
-		public Vector3 attack_dir;
-		public string new_spell_trigger_id;
-		public Hashtable arg_dict;
-		private bool is_can_move_while_cast;
-		public bool is_spell_animation_finished;
-		public List<Hashtable> animation_event_list = new List<Hashtable>();
+		public Vector3? originPosition;
+		public Hashtable transmitArgDict;
+		public Vector3 attackDir;
+		public string newSpellTriggerId;
+		public Hashtable argDict;
+		private bool isCanMoveWhileCast;
+		public bool isSpellAnimationFinished;
+		public List<Hashtable> animationEventList = new List<Hashtable>();
 
-		public void Init(Unit source_unit, string spell_id,
-		  Unit target_unit, CfgSpellData cfgSpellData, Hashtable instance_arg_dict)
+		public void Init(Unit sourceUnit, string spellId,
+		  Unit targetUnit, CfgSpellData cfgSpellData, Hashtable instanceArgDict)
 		{
 			base.Init();
-			this.source_unit = source_unit;
-			this.spell_id = spell_id;
-			this.target_unit = target_unit;
+			this.sourceUnit = sourceUnit;
+			this.spellId = spellId;
+			this.targetUnit = targetUnit;
 			this.cfgSpellData = cfgSpellData;
-			this.instance_arg_dict = instance_arg_dict;
+			this.instanceArgDict = instanceArgDict;
 
-			this.origin_position =
-			  this.instance_arg_dict.GetOrGetDefault2<Vector3>("origin_position", () => this.source_unit.GetPosition());
-			this.transmit_arg_dict = this.instance_arg_dict.GetOrGetDefault2("transmit_arg_dict", () => new Hashtable());
-			this.attack_dir = this.transmit_arg_dict.Get<Vector3>(attack_dir);
-			this.new_spell_trigger_id = this.transmit_arg_dict.Get<string>("new_spell_trigger_id"); // 通过哪个trigger_id启动的技能
+			this.originPosition =
+			  this.instanceArgDict.GetOrGetDefault2<Vector3>("origin_position", () => this.sourceUnit.GetPosition());
+			this.transmitArgDict = this.instanceArgDict.GetOrGetDefault2("transmit_arg_dict", () => new Hashtable());
+			this.attackDir = this.transmitArgDict.Get<Vector3>(attackDir);
+			this.newSpellTriggerId = this.transmitArgDict.Get<string>("new_spell_trigger_id"); // 通过哪个trigger_id启动的技能
 
-			this.arg_dict = DoerAttrParserUtil.ConvertTableWithTypeString(this.cfgSpellData._arg_dict);
-			this.is_can_move_while_cast = this.cfgSpellData.is_can_move_while_cast;
-			this.is_spell_animation_finished = "触发".Equals(this.cfgSpellData.cast_type);
+			this.argDict = DoerAttrParserUtil.ConvertTableWithTypeString(this.cfgSpellData._arg_dict);
+			this.isCanMoveWhileCast = this.cfgSpellData.is_can_move_while_cast;
+			this.isSpellAnimationFinished = "触发".Equals(this.cfgSpellData.cast_type);
 
-			if (this.is_can_move_while_cast && this.source_unit != null && !this.source_unit.IsDead())
-				this.source_unit.SetIsMoveWithMoveAnimation(false);
+			if (this.isCanMoveWhileCast && this.sourceUnit != null && !this.sourceUnit.IsDead())
+				this.sourceUnit.SetIsMoveWithMoveAnimation(false);
 			this.InitCounter();
 		}
 
 		protected override void _Update(float deltaTime, float unscaledDeltaTime)
 		{
 			base._Update(deltaTime, unscaledDeltaTime);
-			if (!this.is_spell_animation_finished)
+			if (!this.isSpellAnimationFinished)
 			{
 				//脱手了就不需要执行动画了
 				//      if self.action then
@@ -71,23 +71,23 @@ namespace CsCat
 		protected override void _Destroy()
 		{
 			base._Destroy();
-			if (!this.is_spell_animation_finished)
+			if (!this.isSpellAnimationFinished)
 				Client.instance.combat.spellManager.OnSpellAnimationFinished(this);
 			Client.instance.combat.spellManager.RemoveListenersByObj(this);
 
 		}
 
-		public void AddCombatNumber(int number, string target_unit_guid, string max_type, Hashtable arg_dict)
+		public void AddCombatNumber(int number, string targetUnitGuid, string maxType, Hashtable argDict)
 		{
 
 		}
 
-		public void AddCombatImage(int immune_type, string target_unit_guid)
+		public void AddCombatImage(int immuneType, string targetUnitGuid)
 		{
 
 		}
 
-		public void AddCombatText(string str_info, string target_unit_guid)
+		public void AddCombatText(string strInfo, string targetUnitGuid)
 		{
 
 		}

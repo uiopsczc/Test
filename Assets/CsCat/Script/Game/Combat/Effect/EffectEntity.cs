@@ -5,17 +5,17 @@ namespace CsCat
 	//创建后需要调用CreateEffect
 	public class EffectEntity : GameObjectEntity
 	{
-		public string effect_id;
+		public string effectId;
 		public CfgEffectData cfgEffectData;
 		public Unit unit;
 
 
-		public virtual void Init(string effect_id, Unit unit)
+		public virtual void Init(string effectId, Unit unit)
 		{
 			base.Init();
-			this.effect_id = effect_id;
+			this.effectId = effectId;
 			this.unit = unit;
-			cfgEffectData = CfgEffect.Instance.get_by_id(this.effect_id);
+			cfgEffectData = CfgEffect.Instance.get_by_id(this.effectId);
 			graphicComponent.SetPrefabPath(cfgEffectData.prefab_path);
 		}
 

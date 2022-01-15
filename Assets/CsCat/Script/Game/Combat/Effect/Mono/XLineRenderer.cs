@@ -8,27 +8,27 @@ namespace CsCat
 	{
 		public Material mat;
 
-		public AnimationCurve width_animationCurve =
+		public AnimationCurve widthAnimationCurve =
 		  new AnimationCurve(new Keyframe[] { new Keyframe(0, 2), new Keyframe(1, 2) });
 
-		public float life_time = 1;
-		public int loop_count = 1;
-		public int tile_column_count = 1;
-		public int tile_row_count = 1;
-		public int tile_last_row_column_count = 1;
+		public float lifeTime = 1;
+		public int loopCount = 1;
+		public int tileColumnCount = 1;
+		public int tileRowCount = 1;
+		public int tileLastRowColumnCount = 1;
 		public float fps = 24;
 		public Color[] colors = new Color[] { new Color(1, 1, 1, 1), new Color(1, 1, 1, 1) };
-		public bool is_test_replay = false;
+		public bool isTestReplay = false;
 		public Transform target;
 
 		private Mesh mesh;
 		private Vector3[] vertices;
 		private Vector2[] uv;
-		private Color[] vertex_colors;
+		private Color[] vertexColors;
 		private int[] indices;
-		private float current_time;
-		private float last_time;
-		private int current_tile_id;
+		private float currentTime;
+		private float lastTime;
+		private int currentTileId;
 
 		void Awake()
 		{
@@ -40,9 +40,9 @@ namespace CsCat
 			mesh = new Mesh();
 			vertices = new Vector3[4];
 			uv = new Vector2[] { new Vector2(0, 0), new Vector2(0, 1), new Vector2(1, 0), new Vector2(1, 1) };
-			vertex_colors = new Color[] { Color.white, Color.white, Color.white, Color.white };
+			vertexColors = new Color[] { Color.white, Color.white, Color.white, Color.white };
 			indices = new int[] { 0, 1, 2, 2, 1, 3 };
-			current_time = 0;
+			currentTime = 0;
 
 			if (target == null)
 			{
@@ -61,18 +61,18 @@ namespace CsCat
 
 		void OnEnable()
 		{
-			current_time = 0;
+			currentTime = 0;
 			if (!Application.isPlaying)
 				Init();
 		}
 
 		void Update()
 		{
-			current_time = current_time + Time.deltaTime;
-			if (is_test_replay)
+			currentTime = currentTime + Time.deltaTime;
+			if (isTestReplay)
 			{
-				is_test_replay = false;
-				current_time = 0;
+				isTestReplay = false;
+				currentTime = 0;
 			}
 		}
 
@@ -81,18 +81,22 @@ namespace CsCat
 #if UNITY_EDITOR
 			if (!Application.isPlaying)
 			{
-				bool is_selected = false;
-				foreach (Transform selected_transform in UnityEditor.Selection.transforms)
-					if (selected_transform.IsChildOf(transform) || transform.IsChildOf(selected_transform))
-						is_selected = true;
-				if (!is_selected)
+				bool isSelected = false;
+				for (var i = 0; i < UnityEditor.Selection.transforms.Length; i++)
 				{
-					current_time = 0;
+					Transform selectedTransform = UnityEditor.Selection.transforms[i];
+					if (selectedTransform.IsChildOf(transform) || transform.IsChildOf(selectedTransform))
+						isSelected = true;
+				}
+
+				if (!isSelected)
+				{
+					currentTime = 0;
 					return;
 				}
 
-				current_time = current_time + Mathf.Max(Time.realtimeSinceStartup - last_time, 0);
-				last_time = Time.realtimeSinceStartup;
+				currentTime = currentTime + Mathf.Max(Time.realtimeSinceStartup - lastTime, 0);
+				lastTime = Time.realtimeSinceStartup;
 				UnityEditor.SceneView.RepaintAll();
 			}
 #endif
@@ -101,52 +105,50 @@ namespace CsCat
 				return;
 			Camera camera = Camera.current;
 			if ((camera.cullingMask & (1 << gameObject.layer)) == 0)
-			{
 				return;
-			}
 
-			float total_time = life_time * loop_count;
-			if (total_time > 0 && current_time > total_time)
+			float totalTime = lifeTime * loopCount;
+			if (totalTime > 0 && currentTime > totalTime)
 			{
 				if (Application.isEditor && !Application.isPlaying)
 				{
-					if (current_time > total_time + 2)
-						current_time = current_time % (total_time + 2);
+					if (currentTime > totalTime + 2)
+						currentTime = currentTime % (totalTime + 2);
 					return;
 				}
 			}
 
-			float life_pct = life_time > 0 ? current_time / life_time % 1 : 0;
-			Vector3 source_position = transform.position;
-			Vector3 target_position = target.position;
-			Vector3 camera_position = camera.transform.position;
-			Vector3 dir = target_position - source_position;
+			float lifePct = lifeTime > 0 ? currentTime / lifeTime % 1 : 0;
+			Vector3 sourcePosition = transform.position;
+			Vector3 targetPosition = target.position;
+			Vector3 cameraPosition = camera.transform.position;
+			Vector3 dir = targetPosition - sourcePosition;
 			//    float dist = dir.magnitude;
-			Vector3 source_dir = Vector3.Cross(dir, camera_position - source_position);
-			Vector3 target_dir = Vector3.Cross(dir, camera_position - target_position);
-			source_dir.Normalize();
-			target_dir.Normalize();
+			Vector3 sourceDir = Vector3.Cross(dir, cameraPosition - sourcePosition);
+			Vector3 targetDir = Vector3.Cross(dir, cameraPosition - targetPosition);
+			sourceDir.Normalize();
+			targetDir.Normalize();
 
-			float offset = width_animationCurve.Evaluate(life_pct) / 2;
-			vertices[0] = source_position + source_dir * offset;
-			vertices[1] = source_position - source_dir * offset;
-			vertices[2] = target_position + target_dir * offset;
-			vertices[3] = target_position - target_dir * offset;
+			float offset = widthAnimationCurve.Evaluate(lifePct) / 2;
+			vertices[0] = sourcePosition + sourceDir * offset;
+			vertices[1] = sourcePosition - sourceDir * offset;
+			vertices[2] = targetPosition + targetDir * offset;
+			vertices[3] = targetPosition - targetDir * offset;
 			mesh.vertices = vertices;
 
 			// uv
-			current_tile_id = Mathf.FloorToInt((current_time * fps) % GetTileTotalCount()) + 1;
-			Vector2Int current_tile_index = GetTileRowColumn(current_tile_id);
-			int current_tile_row = current_tile_index.x;
-			int current_tile_column = current_tile_index.y;
-			uv[0] = new Vector2((current_tile_column - 1) / (float)this.tile_column_count,
-			  (current_tile_row - 1) / (float)this.tile_row_count);
-			uv[1] = new Vector2((current_tile_column - 1) / (float)this.tile_column_count,
-			  current_tile_row / (float)this.tile_row_count);
-			uv[2] = new Vector2(current_tile_column / (float)this.tile_column_count,
-			  (current_tile_row - 1) / (float)this.tile_row_count);
-			uv[3] = new Vector2(current_tile_column / (float)this.tile_column_count,
-			  current_tile_row / (float)this.tile_row_count);
+			currentTileId = Mathf.FloorToInt((currentTime * fps) % GetTileTotalCount()) + 1;
+			Vector2Int currentTileIndex = GetTileRowColumn(currentTileId);
+			int currentTileRow = currentTileIndex.x;
+			int currentTileColumn = currentTileIndex.y;
+			uv[0] = new Vector2((currentTileColumn - 1) / (float)this.tileColumnCount,
+			  (currentTileRow - 1) / (float)this.tileRowCount);
+			uv[1] = new Vector2((currentTileColumn - 1) / (float)this.tileColumnCount,
+			  currentTileRow / (float)this.tileRowCount);
+			uv[2] = new Vector2(currentTileColumn / (float)this.tileColumnCount,
+			  (currentTileRow - 1) / (float)this.tileRowCount);
+			uv[3] = new Vector2(currentTileColumn / (float)this.tileColumnCount,
+			  currentTileRow / (float)this.tileRowCount);
 			mesh.uv = uv;
 
 			// color
@@ -157,17 +159,17 @@ namespace CsCat
 				color = colors[0];
 			else
 			{
-				float float_k = life_pct * (colors.Length - 1);
-				int k = Mathf.FloorToInt(float_k);
-				float lerp = float_k % 1;
+				float floatK = lifePct * (colors.Length - 1);
+				int k = Mathf.FloorToInt(floatK);
+				float lerp = floatK % 1;
 				color = Color.Lerp(colors[k], colors[k + 1], lerp);
 			}
 
-			vertex_colors[0] = color;
-			vertex_colors[1] = color;
-			vertex_colors[2] = color;
-			vertex_colors[3] = color;
-			mesh.colors = vertex_colors;
+			vertexColors[0] = color;
+			vertexColors[1] = color;
+			vertexColors[2] = color;
+			vertexColors[3] = color;
+			mesh.colors = vertexColors;
 
 			// draw
 			mesh.SetIndices(indices, MeshTopology.Triangles, 0);
@@ -177,17 +179,17 @@ namespace CsCat
 
 		private int GetTileTotalCount()
 		{
-			return this.tile_column_count * (this.tile_row_count - 1) + tile_last_row_column_count;
+			return this.tileColumnCount * (this.tileRowCount - 1) + tileLastRowColumnCount;
 		}
 
 		// all is base on 1
 		// tileId base on 1
 		// return result row base on 1
 		// return result column base on 1
-		private Vector2Int GetTileRowColumn(int tile_id)
+		private Vector2Int GetTileRowColumn(int tileId)
 		{
-			int row = Mathf.FloorToInt((tile_id - 1) / (float)tile_column_count) + 1;
-			int column = tile_id - ((row - 1) * tile_column_count);
+			int row = Mathf.FloorToInt((tileId - 1) / (float)tileColumnCount) + 1;
+			int column = tileId - ((row - 1) * tileColumnCount);
 			return new Vector2Int(row, column);
 		}
 
@@ -197,7 +199,7 @@ namespace CsCat
 			mesh = null;
 			vertices = null;
 			uv = null;
-			vertex_colors = null;
+			vertexColors = null;
 			indices = null;
 			target = null;
 		}

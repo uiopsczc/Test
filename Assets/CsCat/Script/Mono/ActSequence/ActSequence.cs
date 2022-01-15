@@ -7,10 +7,10 @@ namespace CsCat
 {
 	public class ActSequence : Act
 	{
-		public List<Act> act_list = new List<Act>();
-		public int cur_act_index;
+		public List<Act> actList = new List<Act>();
+		public int curActIndex;
 
-		public Act cur_act => act_list[cur_act_index];
+		public Act curAct => actList[curActIndex];
 
 		public ActSequence()
 		{
@@ -40,50 +40,48 @@ namespace CsCat
 		}
 
 
-
-
 		public override void Start()
 		{
 			status = Status.Starting;
-			var act = act_list.First();
+			var act = actList.First();
 			act.Start();
-			on_start_callback?.Invoke(this);
+			onStartCallback?.Invoke(this);
 			status = Status.Started;
 		}
 
 		public override void Update()
 		{
 			if (status != Status.Started) return;
-			cur_act.Update();
-			on_update_callback?.Invoke(this);
+			curAct.Update();
+			onUpdateCallback?.Invoke(this);
 		}
 
 		public void Next()
 		{
-			cur_act_index++;
-			if (act_list.IsNullOrEmpty() || cur_act_index == act_list.Count)
+			curActIndex++;
+			if (actList.IsNullOrEmpty() || curActIndex == actList.Count)
 				Exit();
 			else
-				cur_act.Start();
+				curAct.Start();
 		}
 
 		public override void Break()
 		{
-			is_break = true;
-			if (!act_list.IsNullOrEmpty())
-				cur_act.Break();
+			isBreak = true;
+			if (!actList.IsNullOrEmpty())
+				curAct.Break();
 			Exit();
 		}
 
 		public void Clear()
 		{
-			act_list.Clear();
+			actList.Clear();
 			Reset();
 		}
 
 		protected override void Reset()
 		{
-			cur_act_index = 0;
+			curActIndex = 0;
 			base.Reset();
 		}
 
@@ -92,54 +90,54 @@ namespace CsCat
 
 		public Act Append(Act act)
 		{
-			act_list.Add(act);
+			actList.Add(act);
 			return act;
 		}
 
 		public Act InsertAt(int index, Act act)
 		{
-			act_list.Insert(index, act);
+			actList.Insert(index, act);
 			return act;
 		}
 
-		public Act InsertAt(int index, List<Act> act_list)
+		public Act InsertAt(int index, List<Act> actList)
 		{
-			this.act_list.InsertRange(index, act_list);
-			return this.act_list[index + act_list.Count - 1];
+			this.actList.InsertRange(index, actList);
+			return this.actList[index + actList.Count - 1];
 		}
 
-		public Act Append(List<Act> act_list)
+		public Act Append(List<Act> actList)
 		{
-			this.act_list.AddRange(act_list);
-			return this.act_list[this.act_list.Count - 1];
+			this.actList.AddRange(actList);
+			return this.actList[this.actList.Count - 1];
 		}
 
-		public Act AppendActStart(Action<Act> start_callback, bool is_exit_at_once = false)
+		public Act AppendActStart(Action<Act> startCallback, bool isExitAtOnce = false)
 		{
 			var act = new Act(this);
 			Append(act);
 			act.OnStart(
-			  thisAct =>
-			  {
-				  start_callback(thisAct);
-				  if (is_exit_at_once)
-					  thisAct.Exit();
-			  }
+				thisAct =>
+				{
+					startCallback(thisAct);
+					if (isExitAtOnce)
+						thisAct.Exit();
+				}
 			);
 			return act;
 		}
 
-		public Act InsertAtActStart(int index, Action<Act> start, bool is_exit_at_once = false)
+		public Act InsertAtActStart(int index, Action<Act> start, bool isExitAtOnce = false)
 		{
 			var act = new Act(this);
 			InsertAt(index, act);
 			act.OnStart(
-			  this_act =>
-			  {
-				  start(this_act);
-				  if (is_exit_at_once)
-					  this_act.Exit();
-			  }
+				thisAct =>
+				{
+					start(thisAct);
+					if (isExitAtOnce)
+						thisAct.Exit();
+				}
 			);
 			return act;
 		}
@@ -154,7 +152,7 @@ namespace CsCat
 			var act = new Act(this);
 			Append(act);
 			act.OnStart(
-			  this_act => { owner.StartCoroutine(_IEnumerator(iEnumerator, this_act.Exit)); }
+				thisAct => { owner.StartCoroutine(_IEnumerator(iEnumerator, thisAct.Exit)); }
 			);
 			return act;
 		}
@@ -175,7 +173,7 @@ namespace CsCat
 			var act = new Act(this);
 			Append(act);
 			act.OnStart(
-			  this_act => { owner.StartCoroutine(_Coroutine(coroutine, this_act.Exit)); }
+				thisAct => { owner.StartCoroutine(_Coroutine(coroutine, thisAct.Exit)); }
 			);
 			return act;
 		}
@@ -203,16 +201,16 @@ namespace CsCat
 		/// <summary>
 		///   等待一定帧数
 		/// </summary>
-		/// <param name="frame_count"></param>
+		/// <param name="frameCount"></param>
 		/// <returns></returns>
-		public Act WaitForFrames(int frame_count)
+		public Act WaitForFrames(int frameCount)
 		{
-			return Coroutine(IEWaitForFrames(frame_count));
+			return Coroutine(IEWaitForFrames(frameCount));
 		}
 
-		private IEnumerator IEWaitForFrames(int frame_count)
+		private IEnumerator IEWaitForFrames(int frameCount)
 		{
-			for (var i = 0; i < frame_count; i++)
+			for (var i = 0; i < frameCount; i++)
 				yield return null;
 		}
 
@@ -257,8 +255,8 @@ namespace CsCat
 		public override void OnDespawn()
 		{
 			base.OnDespawn();
-			act_list.Clear();
-			cur_act_index = 0;
+			actList.Clear();
+			curActIndex = 0;
 		}
 	}
 }

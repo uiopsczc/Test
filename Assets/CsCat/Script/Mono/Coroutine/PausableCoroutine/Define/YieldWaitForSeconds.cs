@@ -2,11 +2,11 @@ namespace CsCat
 {
 	public class YieldWaitForSeconds : YieldBase
 	{
-		public float remain_duration;
+		public float remainDuration;
 
-		public YieldWaitForSeconds(float remain_duration)
+		public YieldWaitForSeconds(float remainDuration)
 		{
-			this.remain_duration = remain_duration;
+			this.remainDuration = remainDuration;
 		}
 
 		public override bool IsDone(float deltaTime)
@@ -14,8 +14,8 @@ namespace CsCat
 			if (!CheckIsStarted())
 				return false;
 
-			remain_duration -= deltaTime;
-			return remain_duration < 0;
+			remainDuration -= deltaTime;
+			return remainDuration < 0;
 		}
 	}
 }

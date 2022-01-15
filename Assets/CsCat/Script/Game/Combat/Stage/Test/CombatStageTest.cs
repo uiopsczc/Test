@@ -4,15 +4,9 @@ namespace CsCat
 {
 	public class CombatStageTest : CombatStageBase
 	{
-		public override bool isShowFade
-		{
-			get { return true; }
-		}
+		public override bool isShowFade => true;
 
-		public override string stageName
-		{
-			get { return "CombatStageTest"; }
-		}
+		public override string stageName => "CombatStageTest";
 
 		public override void LoadPanels()
 		{
@@ -23,10 +17,10 @@ namespace CsCat
 		public override void Show()
 		{
 			base.Show();
-			Hashtable arg_dict = new Hashtable();
-			arg_dict["combat_class_path"] = typeof(CombatTest).ToString();
-			arg_dict["gameLevel_class_path"] = typeof(GameLevelTest).ToString();
-			StartCombat(arg_dict);
+			Hashtable argDict = new Hashtable();
+			argDict["combat_class_path"] = typeof(CombatTest).ToString();
+			argDict["gameLevel_class_path"] = typeof(GameLevelTest).ToString();
+			StartCombat(argDict);
 			this.HideFade();
 		}
 	}

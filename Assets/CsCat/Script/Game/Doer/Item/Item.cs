@@ -4,13 +4,13 @@ namespace CsCat
 {
 	public partial class Item : Thing
 	{
-		private Embeds o_embeds;
+		private Embeds oEmbeds;
 
 		public override void Init()
 		{
 			base.Init();
 			SetCount(1);
-			o_embeds = new Embeds(this, "o_embeds");
+			oEmbeds = new Embeds(this, "o_embeds");
 		}
 
 		public ItemFactory GetItemFactory()
@@ -28,7 +28,7 @@ namespace CsCat
 		public override void DoRelease()
 		{
 			// 销毁镶物
-			this.o_embeds.DoRelease();
+			this.oEmbeds.DoRelease();
 			base.DoRelease();
 		}
 
@@ -37,14 +37,14 @@ namespace CsCat
 		{
 			base.DoSave(dict, dictTmp);
 			// 存储镶物
-			this.o_embeds.DoSave(dict, dictTmp);
+			this.oEmbeds.DoSave(dict, dictTmp);
 		}
 
 		//还原
 		public override void DoRestore(Hashtable dict, Hashtable dictTmp)
 		{
 			// 还原镶物
-			this.o_embeds.DoRestore(dict, dictTmp);
+			this.oEmbeds.DoRestore(dict, dictTmp);
 			base.DoRestore(dict, dictTmp);
 		}
 

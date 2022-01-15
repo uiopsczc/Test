@@ -4,11 +4,11 @@ namespace CsCat
 	{
 		public string faction;
 
-		public void SetFaction(string new_faction)
+		public void SetFaction(string newFaction)
 		{
-			var old_faction = this.faction;
-			this.faction = new_faction;
-			this.OnFactionChange(old_faction, new_faction);
+			var oldFaction = this.faction;
+			this.faction = newFaction;
+			this.OnFactionChange(oldFaction, newFaction);
 		}
 
 		public string GetFaction()
@@ -16,10 +16,10 @@ namespace CsCat
 			return this.faction;
 		}
 
-		private void OnFactionChange(string old_value, string new_value)
+		private void OnFactionChange(string oldValue, string newValue)
 		{
-			if (!new_value.Equals(old_value))
-				this.Broadcast(null, UnitEventNameConst.On_Unit_Faction_Change, this.GetGuid(), old_value, new_value);
+			if (!newValue.Equals(oldValue))
+				this.Broadcast(null, UnitEventNameConst.On_Unit_Faction_Change, this.GetGuid(), oldValue, newValue);
 		}
 	}
 }

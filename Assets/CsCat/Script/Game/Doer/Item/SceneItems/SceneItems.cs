@@ -5,66 +5,67 @@ namespace CsCat
 {
 	public class SceneItems
 	{
-		private Doer parent_doer;
-		private string sub_doer_key;
+		private Doer parentDoer;
+		private string subDoerKey;
 
-		public SceneItems(Doer parent_doer, string sub_doer_key)
+		public SceneItems(Doer parentDoer, string subDoerKey)
 		{
-			this.parent_doer = parent_doer;
-			this.sub_doer_key = sub_doer_key;
+			this.parentDoer = parentDoer;
+			this.subDoerKey = subDoerKey;
 		}
 
 		////////////////////DoXXX/////////////////////////////////
 		//卸载
 		public void DoRelease()
 		{
-			SubDoerUtil3.DoReleaseSubDoer<Item>(this.parent_doer, this.sub_doer_key);
+			SubDoerUtil3.DoReleaseSubDoer<Item>(this.parentDoer, this.subDoerKey);
 		}
 
 		//保存
-		public void DoSave(Hashtable dict, Hashtable dict_tmp, string save_key = null)
+		public void DoSave(Hashtable dict, Hashtable dictTmp, string saveKey = null)
 		{
-			save_key = save_key ?? "scene_items";
+			saveKey = saveKey ?? "scene_items";
 			var items = this.GetItems();
-			var dict_items = new Hashtable();
-			var dict_items_tmp = new Hashtable();
-			foreach (var item in items)
+			var dictItems = new Hashtable();
+			var dictItemsTmp = new Hashtable();
+			for (var i = 0; i < items.Length; i++)
 			{
-				var dict_item = new Hashtable();
-				var dict_item_tmp = new Hashtable();
-				item.PrepareSave(dict_item, dict_item_tmp);
+				var item = items[i];
+				var dictItem = new Hashtable();
+				var dictItemTmp = new Hashtable();
+				item.PrepareSave(dictItem, dictItemTmp);
 				string rid = item.GetRid();
-				dict_items[rid] = dict_item;
-				if (!dict_item_tmp.IsNullOrEmpty())
-					dict_items_tmp[rid] = dict_item_tmp;
+				dictItems[rid] = dictItem;
+				if (!dictItemTmp.IsNullOrEmpty())
+					dictItemsTmp[rid] = dictItemTmp;
 			}
 
-			if (!dict_items.IsNullOrEmpty())
-				dict[save_key] = dict_items;
-			if (!dict_items_tmp.IsNullOrEmpty())
-				dict_tmp[save_key] = dict_items_tmp;
+			if (!dictItems.IsNullOrEmpty())
+				dict[saveKey] = dictItems;
+			if (!dictItemsTmp.IsNullOrEmpty())
+				dictTmp[saveKey] = dictItemsTmp;
 		}
 
 		//还原
-		public void DoRestore(Hashtable dict, Hashtable dict_tmp, string restore_key = null)
+		public void DoRestore(Hashtable dict, Hashtable dictTmp, string restoreKey = null)
 		{
-			restore_key = restore_key ?? "scene_items";
+			restoreKey = restoreKey ?? "scene_items";
 			this.ClearItems();
-			var dict_items = dict.Remove3<Hashtable>(restore_key);
-			var dict_items_tmp = dict_tmp?.Remove3<Hashtable>(restore_key);
-			if (!dict_items.IsNullOrEmpty())
+			var dictItems = dict.Remove3<Hashtable>(restoreKey);
+			var dictItemsTmp = dictTmp?.Remove3<Hashtable>(restoreKey);
+			if (!dictItems.IsNullOrEmpty())
 			{
-				foreach (string rid in dict_items.Keys)
+				foreach (string rid in dictItems.Keys)
 				{
-					var item_dict = this.GetItemDict_ToEdit();
-					Hashtable dict_item = dict_items[rid] as Hashtable;
+					var itemDict = this.GetItemDict_ToEdit();
+					Hashtable dictItem = dictItems[rid] as Hashtable;
 					Item item = Client.instance.itemFactory.NewDoer(rid) as Item;
-					item.SetEnv(this.parent_doer);
-					Hashtable dict_item_tmp = null;
-					if (dict_items_tmp != null && dict_items_tmp.ContainsKey(rid))
-						dict_item_tmp = dict_items_tmp[rid] as Hashtable;
-					item.FinishRestore(dict_item, dict_item_tmp);
-					item_dict[rid] = item;
+					item.SetEnv(this.parentDoer);
+					Hashtable dictItemTmp = null;
+					if (dictItemsTmp != null && dictItemsTmp.ContainsKey(rid))
+						dictItemTmp = dictItemsTmp[rid] as Hashtable;
+					item.FinishRestore(dictItem, dictItemTmp);
+					itemDict[rid] = item;
 				}
 			}
 		}
@@ -72,25 +73,25 @@ namespace CsCat
 
 
 		////////////////////////////////////////////////////////////////////////////
-		public Item[] GetItems(string id = null, Func<Item, bool> filter_func = null)
+		public Item[] GetItems(string id = null, Func<Item, bool> filterFunc = null)
 		{
-			return SubDoerUtil3.GetSubDoers(parent_doer, sub_doer_key, id, filter_func);
+			return SubDoerUtil3.GetSubDoers(parentDoer, subDoerKey, id, filterFunc);
 		}
 
 		public Hashtable GetItemDict_ToEdit() //可以直接插入删除
 		{
-			return SubDoerUtil3.GetSubDoerDict_ToEdit(parent_doer, sub_doer_key);
+			return SubDoerUtil3.GetSubDoerDict_ToEdit(parentDoer, subDoerKey);
 		}
 
 
-		public Item GetItem(string id_or_rid)
+		public Item GetItem(string idOrRid)
 		{
-			return SubDoerUtil3.GetSubDoer<Item>(parent_doer, sub_doer_key, id_or_rid);
+			return SubDoerUtil3.GetSubDoer<Item>(parentDoer, subDoerKey, idOrRid);
 		}
 
 		public void ClearItems()
 		{
-			SubDoerUtil3.ClearSubDoers<Item>(this.parent_doer, this.sub_doer_key, item => { });
+			SubDoerUtil3.ClearSubDoers<Item>(this.parentDoer, this.subDoerKey, item => { });
 		}
 	}
 }

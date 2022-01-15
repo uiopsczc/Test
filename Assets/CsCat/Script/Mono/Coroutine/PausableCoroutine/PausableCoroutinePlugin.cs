@@ -36,13 +36,13 @@ namespace CsCat
 			this.dict.Remove(key);
 			idPool.Despawn(key);
 			mono.StopCachePausableCoroutine(key.ToGuid(this));
-
 		}
 
 		public void StopAllCoroutines()
 		{
-			foreach (var key in dict.Keys)
+			foreach (var keyValue in dict)
 			{
+				var key = keyValue.Key;
 				mono.StopCachePausableCoroutine(key.ToGuid(this));
 			}
 
@@ -50,12 +50,13 @@ namespace CsCat
 			idPool.DespawnAll();
 		}
 
-		public void SetIsPaused(bool is_paused)
+		public void SetIsPaused(bool isPaused)
 		{
 			CleanFinishedCoroutines();
-			foreach (var key in dict.Keys)
+			foreach (var keyValue in dict)
 			{
-				this.dict[key].SetIsPaused(is_paused);
+				var key = keyValue.Key;
+				this.dict[key].SetIsPaused(isPaused);
 			}
 		}
 
@@ -63,14 +64,14 @@ namespace CsCat
 		{
 			dict.RemoveByFunc<string, PausableCoroutine>((key, coroutine) =>
 			{
-				if (coroutine.is_finished)
+				if (coroutine.isFinished)
 				{
 					idPool.Despawn(key);
 					return true;
 				}
+
 				return false;
 			});
 		}
-
 	}
 }

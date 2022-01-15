@@ -9,26 +9,26 @@ namespace CsCat
 		// 暂时没用
 		private bool __LookAt(string mode)
 		{
-			this.unitLookAtInfo.is_rotate_x_arrived = false;
-			this.unitLookAtInfo.is_rotate_y_arrived = false;
+			this.unitLookAtInfo.isRotateXArrived = false;
+			this.unitLookAtInfo.isRotateYArrived = false;
 			if (mode.Equals("stop_look_at"))
 			{
-				this.unitLookAtInfo.look_at_unit = null;
-				this.unitLookAtInfo.look_at_dir = null;
+				this.unitLookAtInfo.lookAtUnit = null;
+				this.unitLookAtInfo.lookAtDir = null;
 				return false;
 			}
 
 			if (mode.Equals("unlock"))
 			{
-				this.unitLookAtInfo.is_locked = false;
+				this.unitLookAtInfo.isLocked = false;
 				return false;
 			}
 
-			if (!mode.Equals("force") && this.unitLookAtInfo.is_locked)
+			if (!mode.Equals("force") && this.unitLookAtInfo.isLocked)
 				return false;
 			this.unitLookAtInfo.mode = mode.IsNullOrWhiteSpace() ? "idle" : mode;
 			if (mode.Equals("lock"))
-				this.unitLookAtInfo.is_locked = true;
+				this.unitLookAtInfo.isLocked = true;
 			return true;
 		}
 
@@ -37,16 +37,16 @@ namespace CsCat
 		{
 			if (__LookAt(mode) == false)
 				return;
-			this.unitLookAtInfo.look_at_unit = unit;
-			this.unitLookAtInfo.look_at_dir = null;
+			this.unitLookAtInfo.lookAtUnit = unit;
+			this.unitLookAtInfo.lookAtDir = null;
 		}
 
 		public void LookAt(Vector3 dir, string mode)
 		{
 			if (__LookAt(mode) == false)
 				return;
-			this.unitLookAtInfo.look_at_unit = null;
-			this.unitLookAtInfo.look_at_dir = dir;
+			this.unitLookAtInfo.lookAtUnit = null;
+			this.unitLookAtInfo.lookAtDir = dir;
 		}
 	}
 }

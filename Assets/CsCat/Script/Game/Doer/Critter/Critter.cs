@@ -4,19 +4,19 @@ namespace CsCat
 {
 	public partial class Critter : Thing
 	{
-		private Equips o_equips;
+		private Equips oEquips;
 
 		public override void Init()
 		{
 			base.Init();
-			this.o_equips = new Equips(this, "o_equips");
+			this.oEquips = new Equips(this, "o_equips");
 		}
 
 		//////////////////////DoXXX/////////////////////////////////////
 		//卸载
 		public override void DoRelease()
 		{
-			this.o_equips.DoRelease();
+			this.oEquips.DoRelease();
 			base.DoRelease();
 		}
 
@@ -25,14 +25,14 @@ namespace CsCat
 		{
 			base.DoSave(dict, dictTmp);
 			//存储装备
-			this.o_equips.DoSave(dict, dictTmp);
+			this.oEquips.DoSave(dict, dictTmp);
 		}
 
 		//还原
 		public override void DoRestore(Hashtable dict, Hashtable dictTmp)
 		{
 			//还原装备
-			this.o_equips.DoRestore(dict, dictTmp);
+			this.oEquips.DoRestore(dict, dictTmp);
 			base.DoRestore(dict, dictTmp);
 		}
 

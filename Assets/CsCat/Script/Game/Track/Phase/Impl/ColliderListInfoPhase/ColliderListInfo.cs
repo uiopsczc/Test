@@ -8,36 +8,36 @@ namespace CsCat
 	{
 		public Vector3 center;
 
-		public List<AABBBox> atk_box_list = new List<AABBBox>();
+		public List<AABBBox> atkBoxList = new List<AABBBox>();
 
-		public List<AABBBox> hit_box_list = new List<AABBBox>();
+		public List<AABBBox> hitBoxList = new List<AABBBox>();
 
 
 		public void DoSave(Hashtable dict)
 		{
 			dict["center"] = center.ToString();
-			ArrayList atk_box_arrayList = atk_box_list.DoSaveList((atk_box, sub_dict) => atk_box.DoSave(sub_dict));
-			ArrayList hit_box_arrayList = hit_box_list.DoSaveList((hit_box, sub_dict) => hit_box.DoSave(sub_dict));
-			dict["atk_box_arrayList"] = atk_box_arrayList;
-			dict["hit_box_arrayList"] = hit_box_arrayList;
+			ArrayList atkBoxArrayList = atkBoxList.DoSaveList((atkBox, subDict) => atkBox.DoSave(subDict));
+			ArrayList hitBoxArrayList = hitBoxList.DoSaveList((hitBox, subDict) => hitBox.DoSave(subDict));
+			dict["atk_box_arrayList"] = atkBoxArrayList;
+			dict["hit_box_arrayList"] = hitBoxArrayList;
 		}
 
 		public void DoRestore(Hashtable dict)
 		{
 			center = dict["center"].ToString().ToVector3();
 
-			atk_box_list.DoRestoreList(dict["atk_box_arrayList"] as ArrayList, (sub_dict) =>
+			atkBoxList.DoRestoreList(dict["atk_box_arrayList"] as ArrayList, (subDict) =>
 			{
-				AABBBox atk_box = new AABBBox();
-				atk_box.DoRestore(sub_dict);
-				return atk_box;
+				AABBBox atkBox = new AABBBox();
+				atkBox.DoRestore(subDict);
+				return atkBox;
 			});
 
-			hit_box_list.DoRestoreList(dict["hit_box_arrayList"] as ArrayList, (sub_dict) =>
+			hitBoxList.DoRestoreList(dict["hit_box_arrayList"] as ArrayList, (subDict) =>
 			{
-				AABBBox hit_box = new AABBBox();
-				hit_box.DoRestore(sub_dict);
-				return hit_box;
+				AABBBox hitBox = new AABBBox();
+				hitBox.DoRestore(subDict);
+				return hitBox;
 			});
 		}
 	}

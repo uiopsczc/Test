@@ -4,7 +4,7 @@ namespace CsCat
 {
 	public class SceneDBase : DBase
 	{
-		public SceneDBase(string id_or_rid, Hashtable db = null, Hashtable db_tmp = null) : base(id_or_rid, db, db_tmp)
+		public SceneDBase(string idOrRid, Hashtable db = null, Hashtable dbTmp = null) : base(idOrRid, db, dbTmp)
 		{
 		}
 	}

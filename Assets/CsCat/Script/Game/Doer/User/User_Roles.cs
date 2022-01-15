@@ -6,24 +6,24 @@ namespace CsCat
 		//获得指定的角色
 		public Role[] GetRoles(string id = null)
 		{
-			return this.o_roles.GetRoles(id);
+			return this.oRoles.GetRoles(id);
 		}
 
 		public int GetRolesCount()
 		{
-			return this.o_roles.GetRolesCount();
+			return this.oRoles.GetRolesCount();
 		}
 
 		//获得指定的角色
-		public Role GetRole(string id_or_rid)
+		public Role GetRole(string idOrRid)
 		{
-			return this.o_roles.GetRole(id_or_rid);
+			return this.oRoles.GetRole(idOrRid);
 		}
 
 		//清除所有角色
 		public void ClearRoles()
 		{
-			this.o_roles.ClearRoles();
+			this.oRoles.ClearRoles();
 		}
 
 		public bool CheckAddRole(Role role)
@@ -40,7 +40,7 @@ namespace CsCat
 				return false;
 			}
 
-			var list = this.o_roles.GetRoles_ToEdit();
+			var list = this.oRoles.GetRoles_ToEdit();
 			if (list.Contains(role))
 			{
 				LogCat.error(string.Format("{0} already has role:{1}", this, role));
@@ -62,7 +62,7 @@ namespace CsCat
 
 		public bool RemoveRole(Role role)
 		{
-			var list = this.o_roles.GetRoles_ToEdit();
+			var list = this.oRoles.GetRoles_ToEdit();
 			if (!list.Contains(role))
 			{
 				LogCat.error(string.Format("{0} not contains role:{1}", this, role));
@@ -99,9 +99,9 @@ namespace CsCat
 		}
 
 		////////////////////////////////Util////////////////////////////
-		public Role AddRole(string id_or_rid)
+		public Role AddRole(string idOrRid)
 		{
-			Role role = Client.instance.roleFactory.NewDoer(id_or_rid) as Role;
+			Role role = Client.instance.roleFactory.NewDoer(idOrRid) as Role;
 			if (!this.CheckAddRole(role))
 				return null;
 			if (!this.AddRole(role))
@@ -113,9 +113,9 @@ namespace CsCat
 			return role;
 		}
 
-		public Role RemoveRole(string id_or_rid, bool is_not_need_destruct = false)
+		public Role RemoveRole(string idOrRid, bool isNotNeedDestruct = false)
 		{
-			Role role = GetRole(id_or_rid);
+			Role role = GetRole(idOrRid);
 			if (role == null)
 			{
 				LogCat.error(string.Format("{0} do not contain role:{1}", this, role));
@@ -126,7 +126,7 @@ namespace CsCat
 				return null;
 			if (!this.RemoveRole(role))
 				return null;
-			if (!is_not_need_destruct)
+			if (!isNotNeedDestruct)
 				role.Destruct();
 			return role;
 		}

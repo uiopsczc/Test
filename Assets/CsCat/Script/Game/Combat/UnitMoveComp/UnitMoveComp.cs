@@ -5,11 +5,11 @@ namespace CsCat
 	public partial class UnitMoveComp : TickObject
 	{
 		private Unit unit;
-		private float walk_step_length;
-		public string move_type; // move, be_throwed
-		private bool is_move_with_move_animation = true;
-		private float adjust_dist_sqr = 3 * 3;
-		public bool is_get_caught;
+		private float walkStepLength;
+		public string moveType; // move, be_throwed
+		private bool isMoveWithMoveAnimation = true;
+		private float adjustDistSqr = 3 * 3;
+		public bool isGetCaught;
 		private UnitMoveInfo unitMoveInfo = new UnitMoveInfo();
 		private UnitLookAtInfo unitLookAtInfo = new UnitLookAtInfo();
 
@@ -17,10 +17,10 @@ namespace CsCat
 		{
 			base.Init();
 			this.unit = unit;
-			this.walk_step_length = this.unit.cfgUnitData.walk_step_length;
+			this.walkStepLength = this.unit.cfgUnitData.walk_step_length;
 			this.unitMoveInfo.speed = this.unit.GetSpeed();
-			this.unitMoveInfo.target_pos = this.unit.GetPosition();
-			this.unitMoveInfo.end_rotation = this.unit.GetRotation();
+			this.unitMoveInfo.targetPos = this.unit.GetPosition();
+			this.unitMoveInfo.endRotation = this.unit.GetRotation();
 		}
 
 		protected override void _Update(float deltaTime = 0, float unscaledDeltaTime = 0)
@@ -46,47 +46,47 @@ namespace CsCat
 		public void OnBuildOk()
 		{
 			Unit unit = this.unit;
-			if ("move".Equals(this.move_type))
+			if ("move".Equals(this.moveType))
 			{
-				if (this.unitMoveInfo.IsHasAnimationName() && this.is_move_with_move_animation)
-					unit.PlayAnimation(this.unitMoveInfo.animation_name, 0, this.unitMoveInfo.animation_speed);
-				unit.__MoveTo(this.unitMoveInfo.target_pos, this.unitMoveInfo.remain_duration);
+				if (this.unitMoveInfo.IsHasAnimationName() && this.isMoveWithMoveAnimation)
+					unit.PlayAnimation(this.unitMoveInfo.animationName, 0, this.unitMoveInfo.animationSpeed);
+				unit.__MoveTo(this.unitMoveInfo.targetPos, this.unitMoveInfo.remainDuration);
 			}
 		}
 
-		public void OnSpeedChange(float old_value, float new_value)
+		public void OnSpeedChange(float oldValue, float newValue)
 		{
 			var unit = this.unit;
-			float factor = new_value / old_value;
+			float factor = newValue / oldValue;
 			this.unitMoveInfo.speed = this.unitMoveInfo.speed * factor;
-			if (this.move_type.Equals("move"))
+			if (this.moveType.Equals("move"))
 			{
-				this.unitMoveInfo.remain_duration = this.unitMoveInfo.remain_duration / factor;
-				var old_move_animation_speed = this.unitMoveInfo.animation_speed;
-				this.unitMoveInfo.animation_speed = this.unitMoveInfo.animation_speed * factor;
+				this.unitMoveInfo.remainDuration = this.unitMoveInfo.remainDuration / factor;
+				var oldMoveAnimationSpeed = this.unitMoveInfo.animationSpeed;
+				this.unitMoveInfo.animationSpeed = this.unitMoveInfo.animationSpeed * factor;
 				if (unit.graphicComponent.transform != null)
 				{
-					unit.__MoveTo(this.unitMoveInfo.target_pos, this.unitMoveInfo.remain_duration);
-					if (this.unitMoveInfo.IsHasAnimationName() && this.is_move_with_move_animation &&
-						Math.Abs(this.unitMoveInfo.animation_speed - old_move_animation_speed) > 0.2f)
-						unit.PlayAnimation(this.unitMoveInfo.animation_name, 0.2f, this.unitMoveInfo.animation_speed);
+					unit.__MoveTo(this.unitMoveInfo.targetPos, this.unitMoveInfo.remainDuration);
+					if (this.unitMoveInfo.IsHasAnimationName() && this.isMoveWithMoveAnimation &&
+						Math.Abs(this.unitMoveInfo.animationSpeed - oldMoveAnimationSpeed) > 0.2f)
+						unit.PlayAnimation(this.unitMoveInfo.animationName, 0.2f, this.unitMoveInfo.animationSpeed);
 				}
 			}
 		}
 
-		public void SetIsMoveWithMoveAnimation(bool is_move_with_move_animation)
+		public void SetIsMoveWithMoveAnimation(bool isMoveWithMoveAnimation)
 		{
 			var unit = this.unit;
-			this.is_move_with_move_animation = is_move_with_move_animation;
-			if (this.move_type.Equals("move"))
+			this.isMoveWithMoveAnimation = isMoveWithMoveAnimation;
+			if (this.moveType.Equals("move"))
 			{
-				if (is_move_with_move_animation)
+				if (isMoveWithMoveAnimation)
 				{
 					if (this.unitMoveInfo.IsHasAnimationName())
-						unit.PlayAnimation(this.unitMoveInfo.animation_name, null, this.unitMoveInfo.animation_speed);
+						unit.PlayAnimation(this.unitMoveInfo.animationName, null, this.unitMoveInfo.animationSpeed);
 				}
 				else
-					unit.StopAnimation(this.unitMoveInfo.animation_name, 0.2f);
+					unit.StopAnimation(this.unitMoveInfo.animationName, 0.2f);
 			}
 		}
 	}

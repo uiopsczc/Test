@@ -6,13 +6,13 @@ namespace CsCat
 		//  private Vector3 min_position = Vector3Const.Default_Min;
 		//  private Vector3 max_position = Vector3Const.Default_Max;
 
-		public void SetMoveRange(object move_range)
+		public void SetMoveRange(object moveRange)
 		{
 			//    this.minPosition = minPosition;
 			//    this.maxPosition = maxPosition;
 		}
 
-		public void ApplyMoveRange(float delta_time)
+		public void ApplyMoveRange(float deltaTime)
 		{
 			//this.transform.position = maxPosition;
 		}

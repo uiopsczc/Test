@@ -4,19 +4,19 @@ namespace CsCat
 {
 	public class AttachEffectComponent : EffectComponent
 	{
-		private Transform attach_entity_transform;
-		private Vector3? force_eulerAngles;
-		private float sector_angle;
-		public bool is_attach;
+		private Transform attachEntityTransform;
+		private Vector3? forceEulerAngles;
+		private float sectorAngle;
+		public bool isAttach;
 
-		public void Init(IPosition attach_entity_iposition,
-		  Vector3? force_eulerAngles = null, float sector_angle = 0)
+		public void Init(IPosition attachEntityIPosition,
+		  Vector3? forceEulerAngles = null, float sectorAngle = 0)
 		{
 			base.Init();
-			attach_entity_iposition.SetSocketName(this.effectEntity.cfgEffectData.socket_name_1);
-			this.attach_entity_transform = attach_entity_iposition.GetTransform();
-			this.force_eulerAngles = force_eulerAngles;
-			this.sector_angle = sector_angle;
+			attachEntityIPosition.SetSocketName(this.effectEntity.cfgEffectData.socket_name_1);
+			this.attachEntityTransform = attachEntityIPosition.GetTransform();
+			this.forceEulerAngles = forceEulerAngles;
+			this.sectorAngle = sectorAngle;
 
 			this.AddListener(this.GetGameEntity().eventDispatchers, ECSEventNameConst.OnAllAssetsLoadDone, OnAllAssetsLoadDone);
 
@@ -37,42 +37,42 @@ namespace CsCat
 			this.ChangeAttach(false);
 		}
 
-		void ChangeAttach(bool is_attach)
+		void ChangeAttach(bool isAttach)
 		{
 			if (this.effectEntity.graphicComponent.gameObject == null)
 				return;
-			if (this.is_attach == is_attach)
+			if (this.isAttach == isAttach)
 				return;
-			if (is_attach)
+			if (isAttach)
 			{
-				var socket_transform = this.attach_entity_transform;
-				this.effectEntity.graphicComponent.SetParentTransform(socket_transform);
+				var socketTransform = this.attachEntityTransform;
+				this.effectEntity.graphicComponent.SetParentTransform(socketTransform);
 				this.effectEntity.graphicComponent.transform.localPosition = new Vector3(0, 0, 0);
 				this.effectEntity.graphicComponent.transform.localRotation = Quaternion.identity;
-				if (this.force_eulerAngles != null)
-					this.effectEntity.graphicComponent.transform.eulerAngles = this.force_eulerAngles.Value;
+				if (this.forceEulerAngles != null)
+					this.effectEntity.graphicComponent.transform.eulerAngles = this.forceEulerAngles.Value;
 				this.SetSector();
-				this.is_attach = true;
+				this.isAttach = true;
 			}
 			else
 			{
 				this.effectEntity.graphicComponent.SetParentTransform(Client.instance.combat.effectManager.graphicComponent.transform);
-				this.is_attach = false;
+				this.isAttach = false;
 				this.effectEntity.graphicComponent.SetIsShow(false);
 			}
 		}
 
 		void SetSector()
 		{
-			if (this.sector_angle != 0)
+			if (this.sectorAngle != 0)
 			{
-				Transform sector_side_left = this.effectEntity.graphicComponent.transform.Find("sector/side_left");
-				Transform sector_side_right = this.effectEntity.graphicComponent.transform.Find("sector/side_right");
-				Transform sector_center = this.effectEntity.graphicComponent.transform.Find("sector/center");
-				Material sector_center_mat = sector_center.GetComponent<MeshRenderer>().material;
-				sector_center_mat.SetFloat("_AngleCos", Mathf.Cos(Mathf.Deg2Rad * (sector_angle / 2))); //扇形的角度大小
-				sector_side_left.localRotation = Quaternion.Euler(0, (this.sector_angle + 2) / 2, 0); // 左边界的位置
-				sector_side_right.localRotation = Quaternion.Euler(0, -(this.sector_angle + 2) / 2, 0); // 右边界的位置
+				Transform sectorSideLeft = this.effectEntity.graphicComponent.transform.Find("sector/side_left");
+				Transform sectorSideRight = this.effectEntity.graphicComponent.transform.Find("sector/side_right");
+				Transform sectorCenter = this.effectEntity.graphicComponent.transform.Find("sector/center");
+				Material sectorCenterMat = sectorCenter.GetComponent<MeshRenderer>().material;
+				sectorCenterMat.SetFloat("_AngleCos", Mathf.Cos(Mathf.Deg2Rad * (sectorAngle / 2))); //扇形的角度大小
+				sectorSideLeft.localRotation = Quaternion.Euler(0, (this.sectorAngle + 2) / 2, 0); // 左边界的位置
+				sectorSideRight.localRotation = Quaternion.Euler(0, -(this.sectorAngle + 2) / 2, 0); // 右边界的位置
 			}
 		}
 	}

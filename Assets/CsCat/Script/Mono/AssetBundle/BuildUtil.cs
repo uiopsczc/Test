@@ -5,35 +5,35 @@ namespace CsCat
 {
 	public class BuildUtil
 	{
-		public static bool CheckResVersionIsNew(string client_res_version, string server_res_version)
+		public static bool CheckResVersionIsNew(string clientResVersion, string serverResVersion)
 		{
-			if (client_res_version == null)
+			if (clientResVersion == null)
 				return true;
-			var client_ver_list = client_res_version.Split('.');
-			var server_ver_list = server_res_version.Split('.');
+			var clientVerList = clientResVersion.Split('.');
+			var serverVerList = serverResVersion.Split('.');
 
-			if (client_res_version.Length >= 3 && server_ver_list.Length >= 3)
+			if (clientResVersion.Length >= 3 && serverVerList.Length >= 3)
 			{
-				var client_v0 = int.Parse(client_ver_list[0]);
-				var client_v1 = int.Parse(client_ver_list[1]);
-				var client_v2 = int.Parse(client_ver_list[2]);
-				var server_v0 = int.Parse(server_ver_list[0]);
-				var server_v1 = int.Parse(server_ver_list[1]);
-				var server_v2 = int.Parse(server_ver_list[2]);
+				var clientV0 = int.Parse(clientVerList[0]);
+				var clientV1 = int.Parse(clientVerList[1]);
+				var clientV2 = int.Parse(clientVerList[2]);
+				var serverV0 = int.Parse(serverVerList[0]);
+				var serverV1 = int.Parse(serverVerList[1]);
+				var serverV2 = int.Parse(serverVerList[2]);
 
-				if (client_v0 < server_v0)
+				if (clientV0 < serverV0)
 					return true;
-				if (client_v0 > server_v0)
+				if (clientV0 > serverV0)
 					return false;
 
-				if (client_v1 < server_v1)
+				if (clientV1 < serverV1)
 					return true;
-				if (client_v1 > server_v1)
+				if (clientV1 > serverV1)
 					return false;
 
-				if (client_v2 < server_v2)
+				if (clientV2 < serverV2)
 					return true;
-				if (client_v2 >= server_v2)
+				if (clientV2 >= serverV2)
 					return false;
 			}
 
@@ -41,29 +41,31 @@ namespace CsCat
 		}
 
 
-		public static List<string> GetManifestDiffAssetBundleList(Manifest client_manifest, Manifest server_manifest)
+		public static List<string> GetManifestDiffAssetBundleList(Manifest clientManifest, Manifest serverManifest)
 		{
-			var different_assetBundle_list = new List<string>();
+			var differentAssetBundleList = new List<string>();
 
-			if (client_manifest.assetBundleManifest == null)
+			if (clientManifest.assetBundleManifest == null)
 			{
-				different_assetBundle_list.AddRange(server_manifest.GetAllAssetBundlePaths());
-				return different_assetBundle_list;
+				differentAssetBundleList.AddRange(serverManifest.GetAllAssetBundlePaths());
+				return differentAssetBundleList;
 			}
 
-			var server_assetBundle_names = server_manifest.GetAllAssetBundlePaths();
-			var client_assetBundle_names = client_manifest.GetAllAssetBundlePaths();
-			foreach (var server_assetBundle_name in server_assetBundle_names)
+			var serverAssetBundleNames = serverManifest.GetAllAssetBundlePaths();
+			var clientAssetBundleNames = clientManifest.GetAllAssetBundlePaths();
+			for (var i = 0; i < serverAssetBundleNames.Length; i++)
 			{
-				var index = Array.FindIndex(client_assetBundle_names, element => element.Equals(server_assetBundle_name));
+				var serverAssetBundleName = serverAssetBundleNames[i];
+				var index = Array.FindIndex(clientAssetBundleNames,
+					element => element.Equals(serverAssetBundleName));
 				if (index == -1)
-					different_assetBundle_list.Add(server_assetBundle_name);
-				else if (!client_manifest.GetAssetBundleHash(client_assetBundle_names[index])
-				  .Equals(server_manifest.GetAssetBundleHash(server_assetBundle_name)))
-					different_assetBundle_list.Add(server_assetBundle_name);
+					differentAssetBundleList.Add(serverAssetBundleName);
+				else if (!clientManifest.GetAssetBundleHash(clientAssetBundleNames[index])
+					.Equals(serverManifest.GetAssetBundleHash(serverAssetBundleName)))
+					differentAssetBundleList.Add(serverAssetBundleName);
 			}
 
-			return different_assetBundle_list;
+			return differentAssetBundleList;
 		}
 	}
 }

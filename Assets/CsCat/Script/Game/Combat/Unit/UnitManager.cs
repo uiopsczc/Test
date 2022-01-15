@@ -6,7 +6,7 @@ namespace CsCat
 {
 	public partial class UnitManager : TickObject
 	{
-		private Dictionary<string, Unit> unit_dict = new Dictionary<string, Unit>();
+		private Dictionary<string, Unit> unitDict = new Dictionary<string, Unit>();
 
 		public override void Init()
 		{
@@ -23,37 +23,38 @@ namespace CsCat
 		protected override void _Update(float deltaTime = 0, float unscaledDeltaTime = 0)
 		{
 			base._Update(deltaTime, unscaledDeltaTime);
-			foreach (var unit in this.unit_dict.Values)
+			foreach (var keyValue in this.unitDict)
 			{
+				var unit = keyValue.Value;
 				if (!unit.IsDead() && !unit.IsDestroyed())
 					unit.ReduceSpellCooldown(deltaTime);
 			}
 		}
 
-		public Unit CreateUnit(Hashtable arg_dict)
+		public Unit CreateUnit(Hashtable argDict)
 		{
-			string guid = arg_dict.Get<string>("guid");
-			var unit_old = this.GetUnit(guid);
-			if (unit_old != null)
-				this.RemoveUnit(unit_old.GetGuid());
+			string guid = argDict.Get<string>("guid");
+			var oldUnit = this.GetUnit(guid);
+			if (oldUnit != null)
+				this.RemoveUnit(oldUnit.GetGuid());
 			Unit unit = this.AddChild<Unit>(guid);
-			unit.Build(arg_dict);
-			this.unit_dict[unit.key] = unit;
-			this.faction_unit_dict[unit.GetFaction()][unit.GetGuid()] = unit;
-			if (!unit.cfgUnitData.ai_class_path_cs.IsNullOrWhiteSpace())
-				unit.RunAI(unit.cfgUnitData.ai_class_path_cs);
+			unit.Build(argDict);
+			this.unitDict[unit.key] = unit;
+			this.factionUnitDict[unit.GetFaction()][unit.GetGuid()] = unit;
+			if (!unit.cfgUnitData.aiClassPathCS.IsNullOrWhiteSpace())
+				unit.RunAI(unit.cfgUnitData.aiClassPathCS);
 			return unit;
 		}
 
-		public void UpdateUnit(Unit unit, Hashtable arg_dict)
+		public void UpdateUnit(Unit unit, Hashtable argDict)
 		{
-			var new_guid = arg_dict.Get<string>("guid");
-			var old_guid = unit.GetGuid();
-			if (!new_guid.IsNullOrWhiteSpace() && !old_guid.IsNullOrWhiteSpace())
-				this.Broadcast(null, UnitEventNameConst.On_Unit_Guid_Change, old_guid, new_guid);
-			if (!new_guid.IsNullOrWhiteSpace())
-				arg_dict.Remove(new_guid);
-			unit.UpdateUnit(arg_dict);
+			var newGuid = argDict.Get<string>("guid");
+			var oldGuid = unit.GetGuid();
+			if (!newGuid.IsNullOrWhiteSpace() && !oldGuid.IsNullOrWhiteSpace())
+				this.Broadcast(null, UnitEventNameConst.On_Unit_Guid_Change, oldGuid, newGuid);
+			if (!newGuid.IsNullOrWhiteSpace())
+				argDict.Remove(newGuid);
+			unit.UpdateUnit(argDict);
 		}
 
 		public Unit GetUnit(string guid)
@@ -63,7 +64,7 @@ namespace CsCat
 
 		public Dictionary<string, Unit> GetUnitDict()
 		{
-			return this.unit_dict;
+			return this.unitDict;
 		}
 
 		public void RemoveUnit(string guid)
@@ -72,24 +73,24 @@ namespace CsCat
 			if (unit != null)
 			{
 				this.RemoveChild(guid);
-				this.unit_dict.Remove(guid);
+				this.unitDict.Remove(guid);
 				if (!unit.GetFaction().IsNullOrWhiteSpace())
-					this.faction_unit_dict[unit.GetFaction()].Remove(guid);
+					this.factionUnitDict[unit.GetFaction()].Remove(guid);
 			}
 		}
 
-		public void OnUnitGuidChange(string old_guid, string new_guid)
+		public void OnUnitGuidChange(string oldGuid, string newGuid)
 		{
-			Unit unit = this.GetUnit(old_guid);
-			if (unit != null && !old_guid.Equals(new_guid))
+			Unit unit = this.GetUnit(oldGuid);
+			if (unit != null && !oldGuid.Equals(newGuid))
 			{
-				this.unit_dict.Remove(old_guid);
-				this.keyToChildDict.Remove(old_guid);
-				int index = this.childKeyList.IndexOf(old_guid);
+				this.unitDict.Remove(oldGuid);
+				this.keyToChildDict.Remove(oldGuid);
+				int index = this.childKeyList.IndexOf(oldGuid);
 
-				this.unit_dict[new_guid] = unit;
-				this.keyToChildDict[new_guid] = unit;
-				this.childKeyList[index] = new_guid;
+				this.unitDict[newGuid] = unit;
+				this.keyToChildDict[newGuid] = unit;
+				this.childKeyList[index] = newGuid;
 			}
 		}
 	}

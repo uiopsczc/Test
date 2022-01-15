@@ -4,64 +4,66 @@ namespace CsCat
 {
 	public class Equips
 	{
-		private Doer parent_doer;
-		private string sub_doer_key;
+		private Doer parentDoer;
+		private string subDoerKey;
 
-		public Equips(Doer parent_doer, string sub_doer_key)
+		public Equips(Doer parentDoer, string subDoerKey)
 		{
-			this.parent_doer = parent_doer;
-			this.sub_doer_key = sub_doer_key;
+			this.parentDoer = parentDoer;
+			this.subDoerKey = subDoerKey;
 		}
 
 		////////////////////DoXXX/////////////////////////////////
 		//卸载
 		public void DoRelease()
 		{
-			SubDoerUtil1.DoReleaseSubDoer<Item>(this.parent_doer, this.sub_doer_key);
+			SubDoerUtil1.DoReleaseSubDoer<Item>(this.parentDoer, this.subDoerKey);
 		}
 
 		//保存
-		public void DoSave(Hashtable dict, Hashtable dict_tmp, string save_key = null)
+		public void DoSave(Hashtable dict, Hashtable dictTmp, string saveKey = null)
 		{
-			save_key = save_key ?? "equips";
+			saveKey = saveKey ?? "equips";
 			var equips = this.GetEquips();
-			var dict_equips = new ArrayList();
-			var dict_equips_tmp = new Hashtable();
-			foreach (var equip in equips)
+			var dictEquips = new ArrayList();
+			var dictEquipsTmp = new Hashtable();
+			for (var i = 0; i < equips.Length; i++)
 			{
+				var equip = equips[i];
 				if (equip.CanFold()) // 可折叠
-					dict_equips.Add(equip.GetId());
+					dictEquips.Add(equip.GetId());
 				else // 不可折叠，需存储数据
 				{
-					var dict_equip = new Hashtable();
-					var dict_equip_tmp = new Hashtable();
+					var dictEquip = new Hashtable();
+					var dictEquipTmp = new Hashtable();
 					var rid = equip.GetRid();
-					equip.PrepareSave(dict_equip, dict_equip_tmp);
-					dict_equip["rid"] = rid;
-					dict_equips.Add(dict_equip);
-					if (!dict_equip_tmp.IsNullOrEmpty())
-						dict_equips_tmp[rid] = dict_equip_tmp;
+					equip.PrepareSave(dictEquip, dictEquipTmp);
+					dictEquip["rid"] = rid;
+					dictEquips.Add(dictEquip);
+					if (!dictEquipTmp.IsNullOrEmpty())
+						dictEquipsTmp[rid] = dictEquipTmp;
 				}
 			}
 
-			if (!dict_equips.IsNullOrEmpty())
-				dict[save_key] = dict_equips;
-			if (!dict_equips_tmp.IsNullOrEmpty())
-				dict_tmp[save_key] = dict_equips_tmp;
+			if (!dictEquips.IsNullOrEmpty())
+				dict[saveKey] = dictEquips;
+			if (!dictEquipsTmp.IsNullOrEmpty())
+				dictTmp[saveKey] = dictEquipsTmp;
 		}
 
 		//还原
-		public void DoRestore(Hashtable dict, Hashtable dict_tmp, string restore_key = null)
+		public void DoRestore(Hashtable dict, Hashtable dictTmp, string restoreKey = null)
 		{
-			restore_key = restore_key ?? "equips";
+			restoreKey = restoreKey ?? "equips";
 			this.ClearEquips();
-			var dict_equips = dict.Remove3<ArrayList>(restore_key);
-			var dict_equips_tmp = dict_tmp?.Remove3<Hashtable>(restore_key);
+			var dictEquips = dict.Remove3<ArrayList>(restoreKey);
+			var dictEquipsTmp = dictTmp?.Remove3<Hashtable>(restoreKey);
 			var equips = this.GetEquips_ToEdit();
-			if (!dict_equips.IsNullOrEmpty())
+			if (!dictEquips.IsNullOrEmpty())
 			{
-				foreach (var value in dict_equips)
+				for (var i = 0; i < dictEquips.Count; i++)
 				{
+					var value = dictEquips[i];
 					Item item;
 					if (value is string) //id情况，可折叠的装备
 					{
@@ -70,17 +72,17 @@ namespace CsCat
 					}
 					else //不可折叠的情况
 					{
-						var dict_equip = value as Hashtable;
-						var rid = dict_equip.Remove3<string>("rid");
+						var dictEquip = value as Hashtable;
+						var rid = dictEquip.Remove3<string>("rid");
 						item = Client.instance.itemFactory.NewDoer(rid) as Item;
-						item.SetEnv(this.parent_doer);
-						Hashtable dict_equip_tmp = null;
-						if (dict_equips_tmp != null && dict_equips_tmp.ContainsKey(rid))
-							dict_equip_tmp = dict_equips_tmp[rid] as Hashtable;
-						item.FinishRestore(dict_equip, dict_equip_tmp);
+						item.SetEnv(this.parentDoer);
+						Hashtable dictEquipTmp = null;
+						if (dictEquipsTmp != null && dictEquipsTmp.ContainsKey(rid))
+							dictEquipTmp = dictEquipsTmp[rid] as Hashtable;
+						item.FinishRestore(dictEquip, dictEquipTmp);
 					}
 
-					item.SetEnv(this.parent_doer);
+					item.SetEnv(this.parentDoer);
 					item.SetIsPutOn(true);
 					equips.Add(item);
 				}
@@ -93,75 +95,70 @@ namespace CsCat
 		//获得指定的装备
 		public Item[] GetEquips(string id = null)
 		{
-			return SubDoerUtil1.GetSubDoers<Item>(this.parent_doer, this.sub_doer_key, id, null);
+			return SubDoerUtil1.GetSubDoers<Item>(this.parentDoer, this.subDoerKey, id, null);
 		}
 
 		public ArrayList GetEquips_ToEdit() //可以直接插入删除
 		{
-			return SubDoerUtil1.GetSubDoers_ToEdit(this.parent_doer, this.sub_doer_key);
+			return SubDoerUtil1.GetSubDoers_ToEdit(this.parentDoer, this.subDoerKey);
 		}
 
 		//是否有装备
 		public bool HasEquips()
 		{
-			return SubDoerUtil1.HasSubDoers<Item>(this.parent_doer, this.sub_doer_key);
+			return SubDoerUtil1.HasSubDoers<Item>(this.parentDoer, this.subDoerKey);
 		}
 
 		public int GetEquipsCount()
 		{
-			return SubDoerUtil1.GetSubDoersCount<Item>(this.parent_doer, this.sub_doer_key);
+			return SubDoerUtil1.GetSubDoersCount<Item>(this.parentDoer, this.subDoerKey);
 		}
 
-		public bool __FilterType(Item equip, string type_1, string type_2 = null)
+		public bool __FilterType(Item equip, string type1, string type2 = null)
 		{
-			if (equip.GetType1() == type_1 && (type_2 == null || type_2.Equals(equip.GetType2())))
-				return true;
-			else
-				return false;
+			return equip.GetType1() == type1 && (type2 == null || type2.Equals(equip.GetType2()));
 		}
 
 		//获得指定种类的装备
-		public Item[] GetEquipsOfTypes(string type_1, string type_2 = null)
+		public Item[] GetEquipsOfTypes(string type1, string type2 = null)
 		{
-			return SubDoerUtil1.GetSubDoers<Item>(this.parent_doer, this.sub_doer_key, null,
-			  (equip) => this.__FilterType(equip, type_1, type_2));
+			return SubDoerUtil1.GetSubDoers<Item>(this.parentDoer, this.subDoerKey, null,
+			  (equip) => this.__FilterType(equip, type1, type2));
 		}
 
 		//是否有指定种类装备
-		public bool HasEquipsOfTypes(string type_1, string type_2 = null)
+		public bool HasEquipsOfTypes(string type1, string type2 = null)
 		{
-			return SubDoerUtil1.HasSubDoers<Item>(this.parent_doer, this.sub_doer_key, null,
-			  (equip) => this.__FilterType(equip, type_1, type_2));
+			return SubDoerUtil1.HasSubDoers<Item>(this.parentDoer, this.subDoerKey, null,
+			  (equip) => this.__FilterType(equip, type1, type2));
 		}
 
 
 		//是否有指定种类装备
-		public int GetEquipsCountOfTypes(string type_1, string type_2 = null)
+		public int GetEquipsCountOfTypes(string type1, string type2 = null)
 		{
-			return SubDoerUtil1.GetSubDoersCount<Item>(this.parent_doer, this.sub_doer_key, null,
-			  (equip) => this.__FilterType(equip, type_1, type_2));
+			return SubDoerUtil1.GetSubDoersCount<Item>(this.parentDoer, this.subDoerKey, null,
+			  (equip) => this.__FilterType(equip, type1, type2));
 		}
 
 		//获得指定的装备
-		public Item GetEquip(string id_or_rid)
+		public Item GetEquip(string idOrRid)
 		{
-			return SubDoerUtil1.GetSubDoer<Item>(this.parent_doer, this.sub_doer_key, id_or_rid);
+			return SubDoerUtil1.GetSubDoer<Item>(this.parentDoer, this.subDoerKey, idOrRid);
 		}
 
 		//获得指定的装备
-		public Item GetEquipOfTypes(string type_1, string type_2 = null)
+		public Item GetEquipOfTypes(string type1, string type2 = null)
 		{
-			var equips = this.GetEquipsOfTypes(type_1, type_2);
-			if (equips.IsNullOrEmpty())
-				return null;
-			return equips[0];
+			var equips = this.GetEquipsOfTypes(type1, type2);
+			return equips.IsNullOrEmpty() ? null : equips[0];
 		}
 
 		//清除所有镶物
 		public void ClearEquips()
 		{
-			SubDoerUtil1.ClearSubDoers<Item>(this.parent_doer, this.sub_doer_key,
-			  (equip) => { ((Critter)this.parent_doer).TakeOffEquip(equip); });
+			SubDoerUtil1.ClearSubDoers<Item>(this.parentDoer, this.subDoerKey,
+			  (equip) => { ((Critter)this.parentDoer).TakeOffEquip(equip); });
 		}
 	}
 }

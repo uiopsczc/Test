@@ -72,7 +72,7 @@ namespace CsCat
 		/*ai实现类(lua)*/
 		public string ai_class_path_lua { get; set; }
 		/*ai实现类(cs)*/
-		public string ai_class_path_cs { get; set; }
+		public string aiClassPathCS { get; set; }
 		/*死亡后是否保留尸体*/
 		public bool is_keep_dead_body { get; set; }
 		/*死亡后多少秒才销毁尸体*/

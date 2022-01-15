@@ -15,77 +15,78 @@ namespace CsCat
 		#region 常驻内存的
 
 		//常驻内存的(游戏中一直存在的)asset
-		public void SetResidentAssets(bool is_resident, params string[] asset_paths)
+		public void SetResidentAssets(bool isResident, params string[] assetPaths)
 		{
-			foreach (var asset_path in asset_paths)
+			for (var i = 0; i < assetPaths.Length; i++)
 			{
-				if (is_resident)
-					asset_resident_dict[asset_path] = true;
+				var assetPath = assetPaths[i];
+				if (isResident)
+					assetResidentDict[assetPath] = true;
 				else
 				{
-					asset_resident_dict.Remove(asset_path);
-					AddAssetCatOfNoRef(this.GetAssetCat(asset_path));
+					assetResidentDict.Remove(assetPath);
+					AddAssetCatOfNoRef(this.GetAssetCat(assetPath));
 				}
 			}
 		}
 
 		//常驻内存的(游戏中一直存在的)asset
-		public void SetResidentAssets(List<string> asset_path_list, bool is_resident = true)
+		public void SetResidentAssets(List<string> assetPathList, bool isResident = true)
 		{
-			SetResidentAssets(is_resident, asset_path_list.ToArray());
+			SetResidentAssets(isResident, assetPathList.ToArray());
 		}
 
 		#endregion
 
-		private AssetCat __GetOrAddAssetCat(string asset_path)
+		private AssetCat __GetOrAddAssetCat(string assetPath)
 		{
-			assetCat_dict.TryGetValue(asset_path, out var target_assetCat);
+			assetCatDict.TryGetValue(assetPath, out var targetAssetCat);
 
 			//编辑器模式下的或者是resouce模式下的,没有找到则创建一个AssetCat
 			if (Application.isEditor && EditorModeConst.IsEditorMode
-				|| asset_path.Contains(FilePathConst.ResourcesFlag)
+				|| assetPath.Contains(FilePathConst.ResourcesFlag)
 			)
 			{
 				Object[] assets = null;
-				if (asset_path.Contains(FilePathConst.ResourcesFlag))
+				if (assetPath.Contains(FilePathConst.ResourcesFlag))
 				{
-					var resource_path = asset_path.Substring(asset_path.IndexEndOf(FilePathConst.ResourcesFlag) + 1)
+					var resourcePath = assetPath.Substring(assetPath.IndexEndOf(FilePathConst.ResourcesFlag) + 1)
 					  .GetMainAssetPath().WithoutSuffix();
-					assets = Resources.LoadAll(resource_path);
+					assets = Resources.LoadAll(resourcePath);
 				}
 				else
 				{
 #if UNITY_EDITOR
-					assets = AssetDatabase.LoadAllAssetsAtPath(asset_path);
+					assets = AssetDatabase.LoadAllAssetsAtPath(assetPath);
 #endif
 				}
 
 				if (!assets.IsNullOrEmpty()) //有该资源
 				{
-					target_assetCat = new AssetCat(asset_path);
-					target_assetCat.SetAssets(assets);
-					assetCat_dict[asset_path] = target_assetCat;
+					targetAssetCat = new AssetCat(assetPath);
+					targetAssetCat.SetAssets(assets);
+					assetCatDict[assetPath] = targetAssetCat;
 				}
 				else
 					return null;
 			}
 
-			return target_assetCat;
+			return targetAssetCat;
 		}
 
-		private bool __UnLoadUnUseAsset(string asset_path)
+		private bool __UnLoadUnUseAsset(string assetPath)
 		{
-			return __UnLoadUnUseAsset(GetAssetCat(asset_path));
+			return __UnLoadUnUseAsset(GetAssetCat(assetPath));
 		}
 
 		private bool __UnLoadUnUseAsset(AssetCat assetCat)
 		{
 			if (assetCat == null)
 				return false;
-			if (!IsAssetLoadSuccess(assetCat.asset_path))
+			if (!IsAssetLoadSuccess(assetCat.assetPath))
 				return false;
 
-			if (assetCat.ref_count == 0)
+			if (assetCat.refCount == 0)
 			{
 				__RemoveAssetCat(assetCat);
 				return true;
@@ -94,59 +95,65 @@ namespace CsCat
 			return false;
 		}
 
-		public AssetCat GetOrLoadAssetCat(string asset_path, Action<AssetCat> on_load_success_callback = null,
-		  Action<AssetCat> on_load_fail_callback = null, Action<AssetCat> on_load_done_callback = null,
-		  object callback_cause = null)
+		public AssetCat GetOrLoadAssetCat(string assetPath, Action<AssetCat> onLoadSuccessCallback = null,
+		  Action<AssetCat> onLoadFailCallback = null, Action<AssetCat> onLoadDoneCallback = null,
+		  object callbackCause = null)
 		{
+			AssetCat assetCat;
 			//编辑器模式下的或者是resouce模式下的
 			if (Application.isEditor && EditorModeConst.IsEditorMode
-				|| asset_path.Contains(FilePathConst.ResourcesFlag)
+				|| assetPath.Contains(FilePathConst.ResourcesFlag)
 			)
 			{
-				var assetCat = __GetOrAddAssetCat(asset_path);
-				on_load_success_callback?.Invoke(assetCat);
-				on_load_done_callback?.Invoke(assetCat);
+				assetCat = __GetOrAddAssetCat(assetPath);
+				onLoadSuccessCallback?.Invoke(assetCat);
+				onLoadDoneCallback?.Invoke(assetCat);
 				return assetCat;
 			}
 
-			if (IsAssetLoadSuccess(asset_path))
+			if (IsAssetLoadSuccess(assetPath))
 			{
-				var assetCat = GetAssetCat(asset_path);
-				on_load_success_callback?.Invoke(assetCat);
-				on_load_done_callback?.Invoke(assetCat);
+				assetCat = GetAssetCat(assetPath);
+				onLoadSuccessCallback?.Invoke(assetCat);
+				onLoadDoneCallback?.Invoke(assetCat);
 				return assetCat;
 			}
 
-			LoadAssetAsync(asset_path, on_load_success_callback, on_load_fail_callback, on_load_done_callback,
-			  callback_cause);
-			var _assetCat = GetAssetCat(asset_path);
-			return _assetCat;
+			LoadAssetAsync(assetPath, onLoadSuccessCallback, onLoadFailCallback, onLoadDoneCallback,
+			  callbackCause);
+			assetCat = GetAssetCat(assetPath);
+			return assetCat;
 		}
 
-		public IEnumerator LoadAssetAsync(List<string> asset_path_list,
-		  Action<AssetCat> on_load_success_callback = null, Action<AssetCat> on_load_fail_callback = null,
-		  Action<AssetCat> on_load_done_callback = null, object callback_cause = null)
+		public IEnumerator LoadAssetAsync(List<string> assetPathList,
+		  Action<AssetCat> onLoadSuccessCallback = null, Action<AssetCat> onLoadFailCallback = null,
+		  Action<AssetCat> onLoadDoneCallback = null, object callbackCause = null)
 		{
 			if (Application.isEditor && EditorModeConst.IsEditorMode)
 			{
-				foreach (var asset_path in asset_path_list)
+				for (var i = 0; i < assetPathList.Count; i++)
 				{
-					on_load_success_callback?.Invoke(__GetOrAddAssetCat(asset_path));
-					on_load_done_callback?.Invoke(__GetOrAddAssetCat(asset_path));
+					var assetPath = assetPathList[i];
+					onLoadSuccessCallback?.Invoke(__GetOrAddAssetCat(assetPath));
+					onLoadDoneCallback?.Invoke(__GetOrAddAssetCat(assetPath));
 				}
 
 				yield break;
 			}
 
-			foreach (var asset_path in asset_path_list)
-				LoadAssetAsync(asset_path, on_load_success_callback, on_load_fail_callback, on_load_done_callback,
-				  callback_cause);
+			for (var i = 0; i < assetPathList.Count; i++)
+			{
+				var assetPath = assetPathList[i];
+				LoadAssetAsync(assetPath, onLoadSuccessCallback, onLoadFailCallback, onLoadDoneCallback,
+					callbackCause);
+			}
 
 			yield return new WaitUntil(() =>
 			{
-				foreach (var asset_path in asset_path_list)
+				for (var i = 0; i < assetPathList.Count; i++)
 				{
-					var assetCat = __GetOrAddAssetCat(asset_path);
+					var assetPath = assetPathList[i];
+					var assetCat = __GetOrAddAssetCat(assetPath);
 					if (!assetCat.IsLoadDone())
 						return false;
 				}
@@ -155,56 +162,55 @@ namespace CsCat
 			});
 		}
 
-		public BaseAssetAsyncLoader LoadAssetAsync(string asset_path, Action<AssetCat> on_load_success_callback = null,
-		  Action<AssetCat> on_load_fail_callback = null, Action<AssetCat> on_load_done_callback = null,
-		  object callback_cause = null)
+		public BaseAssetAsyncLoader LoadAssetAsync(string assetPath, Action<AssetCat> onLoadSuccessCallback = null,
+		  Action<AssetCat> onLoadFailCallback = null, Action<AssetCat> onLoadDoneCallback = null,
+		  object callbackCause = null)
 		{
 			AssetCat assetCat;
 			if (Application.isEditor && EditorModeConst.IsEditorMode
-				|| asset_path.Contains(FilePathConst.ResourcesFlag)
+				|| assetPath.Contains(FilePathConst.ResourcesFlag)
 			)
 			{
-				assetCat = __GetOrAddAssetCat(asset_path);
-				on_load_success_callback?.Invoke(assetCat);
-				on_load_done_callback?.Invoke(assetCat);
+				assetCat = __GetOrAddAssetCat(assetPath);
+				onLoadSuccessCallback?.Invoke(assetCat);
+				onLoadDoneCallback?.Invoke(assetCat);
 				return new EditorAssetAsyncLoader(assetCat);
 			}
 
-			var _asset_path = asset_path;
-			var assetBundle_name = assetPathMap.GetAssetBundleName(_asset_path);
-			if (assetBundle_name == null)
-				LogCat.error(string.Format("{0}没有设置成ab包", _asset_path));
+			var assetBundleName = assetPathMap.GetAssetBundleName(assetPath);
+			if (assetBundleName == null)
+				LogCat.error(string.Format("{0}没有设置成ab包", assetPath));
 
-			if (assetCat_dict.ContainsKey(_asset_path))
+			if (assetCatDict.ContainsKey(assetPath))
 			{
-				assetCat = GetAssetCat(_asset_path);
+				assetCat = GetAssetCat(assetPath);
 				//已经加载成功
 				if (assetCat.IsLoadSuccess())
 				{
-					on_load_success_callback?.Invoke(assetCat);
-					on_load_done_callback?.Invoke(assetCat);
+					onLoadSuccessCallback?.Invoke(assetCat);
+					onLoadDoneCallback?.Invoke(assetCat);
 					return null;
 				}
 
 				//加载中
-				assetCat.AddOnLoadSuccessCallback(on_load_success_callback, callback_cause);
-				assetCat.AddOnLoadFailCallback(on_load_fail_callback, callback_cause);
-				assetCat.AddOnLoadDoneCallback(on_load_done_callback, callback_cause);
-				return assetAsyncloader_prosessing_list.Find(assetAsyncloader =>
-				  assetAsyncloader.assetCat.asset_path.Equals(_asset_path));
+				assetCat.AddOnLoadSuccessCallback(onLoadSuccessCallback, callbackCause);
+				assetCat.AddOnLoadFailCallback(onLoadFailCallback, callbackCause);
+				assetCat.AddOnLoadDoneCallback(onLoadDoneCallback, callbackCause);
+				return assetAsyncloaderProcessingList.Find(assetAsyncloader =>
+				  assetAsyncloader.assetCat.assetPath.Equals(assetPath));
 			}
 
 			//没有加载
 			var assetAsyncLoader = PoolCatManagerUtil.Spawn<AssetAsyncLoader>();
-			assetCat = new AssetCat(_asset_path);
-			__AddAssetCat(_asset_path, assetCat);
+			assetCat = new AssetCat(assetPath);
+			__AddAssetCat(assetPath, assetCat);
 			//添加对assetAsyncLoader的引用
 			assetCat.AddRefCount();
-			assetCat.AddOnLoadSuccessCallback(on_load_success_callback, callback_cause);
-			assetCat.AddOnLoadFailCallback(on_load_fail_callback, callback_cause);
-			assetCat.AddOnLoadDoneCallback(on_load_done_callback, callback_cause);
+			assetCat.AddOnLoadSuccessCallback(onLoadSuccessCallback, callbackCause);
+			assetCat.AddOnLoadFailCallback(onLoadFailCallback, callbackCause);
+			assetCat.AddOnLoadDoneCallback(onLoadDoneCallback, callbackCause);
 
-			var assetBundleLoader = __LoadAssetBundleAsync(assetBundle_name);
+			var assetBundleLoader = __LoadAssetBundleAsync(assetBundleName);
 			assetAsyncLoader.Init(assetCat, assetBundleLoader);
 			//asset拥有对assetBundle的引用
 			var assetBundleCat = assetBundleLoader.assetBundleCat;
@@ -212,18 +218,18 @@ namespace CsCat
 
 			assetCat.assetBundleCat = assetBundleCat;
 
-			assetAsyncloader_prosessing_list.Add(assetAsyncLoader);
+			assetAsyncloaderProcessingList.Add(assetAsyncLoader);
 			return assetAsyncLoader;
 		}
 
 		private void CheckAssetOfNoRefList()
 		{
-			for (var i = assetCat_of_no_ref_list.Count - 1; i >= 0; i--)
+			for (var i = assetCatOfNoRefList.Count - 1; i >= 0; i--)
 			{
-				var assetCat = assetCat_of_no_ref_list[i];
-				if (assetCat.ref_count <= 0)
+				var assetCat = assetCatOfNoRefList[i];
+				if (assetCat.refCount <= 0)
 				{
-					assetCat_of_no_ref_list.Remove(assetCat);
+					assetCatOfNoRefList.Remove(assetCat);
 					__RemoveAssetCat(assetCat);
 				}
 			}
@@ -231,7 +237,7 @@ namespace CsCat
 
 		private void OnAssetAsyncLoaderFail(AssetAsyncLoader assetAsyncLoader)
 		{
-			if (!assetAsyncloader_prosessing_list.Contains(assetAsyncLoader))
+			if (!assetAsyncloaderProcessingList.Contains(assetAsyncLoader))
 				return;
 
 			//失败的时候解除对assetCat的引用
@@ -240,13 +246,13 @@ namespace CsCat
 
 		private void OnAssetAsyncLoaderDone(AssetAsyncLoader assetAsyncLoader)
 		{
-			if (!assetAsyncloader_prosessing_list.Contains(assetAsyncLoader))
+			if (!assetAsyncloaderProcessingList.Contains(assetAsyncLoader))
 				return;
 
 			//解除对assetAsyncLoader的引用
 			assetAsyncLoader.assetCat.SubRefCount();
 
-			assetAsyncloader_prosessing_list.Remove(assetAsyncLoader);
+			assetAsyncloaderProcessingList.Remove(assetAsyncLoader);
 			assetAsyncLoader.Destroy();
 			PoolCatManagerUtil.Despawn(assetAsyncLoader);
 		}
@@ -256,34 +262,34 @@ namespace CsCat
 		{
 			if (assetCat == null)
 				return;
-			if (!assetCat_of_no_ref_list.Contains(assetCat) && !asset_resident_dict.ContainsKey(assetCat.asset_path))
-				assetCat_of_no_ref_list.Add(assetCat);
+			if (!assetCatOfNoRefList.Contains(assetCat) && !assetResidentDict.ContainsKey(assetCat.assetPath))
+				assetCatOfNoRefList.Add(assetCat);
 		}
 
-		public bool IsAssetLoadSuccess(string asset_path)
+		public bool IsAssetLoadSuccess(string assetPath)
 		{
-			return assetCat_dict.ContainsKey(asset_path) && __GetOrAddAssetCat(asset_path).IsLoadSuccess();
+			return assetCatDict.ContainsKey(assetPath) && __GetOrAddAssetCat(assetPath).IsLoadSuccess();
 		}
 
-		public AssetCat GetAssetCat(string asset_path)
+		public AssetCat GetAssetCat(string assetPath)
 		{
-			assetCat_dict.TryGetValue(asset_path, out var target);
+			assetCatDict.TryGetValue(assetPath, out var target);
 			return target;
 		}
 
 
-		public void __RemoveAssetCat(string asset_path)
+		public void __RemoveAssetCat(string assetPath)
 		{
-			__RemoveAssetCat(this.GetAssetCat(asset_path));
+			__RemoveAssetCat(this.GetAssetCat(assetPath));
 		}
 
 		private void __RemoveAssetCat(AssetCat assetCat)
 		{
 			if (assetCat == null)
 				return;
-			assetCat_dict.RemoveByFunc((key, value) => value == assetCat);
+			assetCatDict.RemoveByFunc((key, value) => value == assetCat);
 			if (Application.isEditor && EditorModeConst.IsEditorMode
-				|| assetCat.asset_path.Contains(FilePathConst.ResourcesFlag)
+				|| assetCat.assetPath.Contains(FilePathConst.ResourcesFlag)
 			)
 				return;
 			var assetBundleCat = assetCat.assetBundleCat;
@@ -293,14 +299,14 @@ namespace CsCat
 			assetBundleCat?.SubRefCount();
 		}
 
-		private void __AddAssetCat(string asset_path, AssetCat asset)
+		private void __AddAssetCat(string assetPath, AssetCat asset)
 		{
-			assetCat_dict[asset_path] = asset;
+			assetCatDict[assetPath] = asset;
 		}
 
-		public string GetAssetBundlePath(string asset_path)
+		public string GetAssetBundlePath(string assetPath)
 		{
-			return assetPathMap.GetAssetBundleName(asset_path);
+			return assetPathMap.GetAssetBundleName(assetPath);
 		}
 	}
 }

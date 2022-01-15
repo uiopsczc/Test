@@ -7,54 +7,54 @@ namespace CsCat
 {
 	public class AutoAssetSetImageSprite : AutoAssetRelease<Image, Sprite>
 	{
-		private static void SetImageSprite(Image component, Sprite asset, bool is_set_native_size, Vector2 new_size)
+		private static void SetImageSprite(Image component, Sprite asset, bool isSetNativeSize, Vector2 newSize)
 		{
 			component.sprite = asset;
-			if (is_set_native_size)
+			if (isSetNativeSize)
 				component.SetNativeSize();
 			else
-				component.GetComponent<RectTransform>().sizeDelta = new_size;
+				component.GetComponent<RectTransform>().sizeDelta = newSize;
 		}
 
-		public static void Set(Image image, string asset_path, bool is_set_native_size, Vector2 new_size,
-		  Action<Image, Sprite> on_load_success_callback = null,
-		  Action<Image, Sprite> on_load_fail_callback = null,
-		  Action<Image, Sprite> on_load_done_callback = null)
+		public static void Set(Image image, string assetPath, bool isSetNativeSize, Vector2 newSize,
+		  Action<Image, Sprite> onLoadSuccessCallback = null,
+		  Action<Image, Sprite> onLoadFailCallback = null,
+		  Action<Image, Sprite> onLoadDoneCallback = null)
 		{
-			Set<AutoAssetSetImageSprite>(image, asset_path, (component, asset) =>
+			Set<AutoAssetSetImageSprite>(image, assetPath, (component, asset) =>
 			{
-				SetImageSprite(component, asset, is_set_native_size, new_size);
-				on_load_success_callback?.Invoke(component, asset);
-			}, on_load_fail_callback, on_load_done_callback);
+				SetImageSprite(component, asset, isSetNativeSize, newSize);
+				onLoadSuccessCallback?.Invoke(component, asset);
+			}, onLoadFailCallback, onLoadDoneCallback);
 		}
 
-		public static void Set(Image image, string asset_path, bool is_set_native_size = false,
-		  Action<Image, Sprite> on_load_success_callback = null,
-		  Action<Image, Sprite> on_load_fail_callback = null,
-		  Action<Image, Sprite> on_load_done_callback = null)
+		public static void Set(Image image, string assetPath, bool isSetNativeSize = false,
+		  Action<Image, Sprite> onLoadSuccessCallback = null,
+		  Action<Image, Sprite> onLoadFailCallback = null,
+		  Action<Image, Sprite> onLoadDoneCallback = null)
 		{
-			Set(image, asset_path, is_set_native_size, image.GetComponent<RectTransform>().sizeDelta, on_load_success_callback, on_load_fail_callback, on_load_done_callback);
+			Set(image, assetPath, isSetNativeSize, image.GetComponent<RectTransform>().sizeDelta, onLoadSuccessCallback, onLoadFailCallback, onLoadDoneCallback);
 		}
 
-		public static IEnumerator SetAsync(Image image, string asset_path, bool is_set_native_size, Vector2 new_size,
-		  Action<Image, Sprite> on_load_success_callback = null,
-		  Action<Image, Sprite> on_load_fail_callback = null,
-		  Action<Image, Sprite> on_load_done_callback = null)
+		public static IEnumerator SetAsync(Image image, string assetPath, bool isSetNativeSize, Vector2 newSize,
+		  Action<Image, Sprite> onLoadSuccessCallback = null,
+		  Action<Image, Sprite> onLoadFailCallback = null,
+		  Action<Image, Sprite> onLoadDoneCallback = null)
 		{
 			var is_done = false;
-			Set<AutoAssetSetImageSprite>(image, asset_path, (component, asset) =>
+			Set<AutoAssetSetImageSprite>(image, assetPath, (component, asset) =>
 			{
-				SetImageSprite(component, asset, is_set_native_size, new_size);
-				on_load_success_callback?.Invoke(component, asset);
-			}, on_load_fail_callback, (component, asset) => { is_done = true; });
+				SetImageSprite(component, asset, isSetNativeSize, newSize);
+				onLoadSuccessCallback?.Invoke(component, asset);
+			}, onLoadFailCallback, (component, asset) => { is_done = true; });
 			while (!is_done)
 				yield return 0;
 		}
 
 
-		public static IEnumerator SetAsync(Image image, string asset_path, bool is_set_native_size = false)
+		public static IEnumerator SetAsync(Image image, string assetPath, bool isSetNativeSize = false)
 		{
-			return SetAsync(image, asset_path, is_set_native_size, image.GetComponent<RectTransform>().sizeDelta);
+			return SetAsync(image, assetPath, isSetNativeSize, image.GetComponent<RectTransform>().sizeDelta);
 		}
 	}
 }

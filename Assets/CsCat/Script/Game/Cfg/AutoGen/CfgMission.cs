@@ -46,7 +46,7 @@ namespace CsCat
 		/*完成的条件*/
 		public string finish_condition { get; set; }
 		/*是否是自动检测完成*/
-		public bool is_auto_check_finish { get; set; }
+		public bool isAutoCheckFinish { get; set; }
 		/*接受时触发的事件id*/
 		public string onAccept_doerEvent_id { get; set; }
 		/*完成时触发的事件id*/

@@ -6,7 +6,7 @@ namespace CsCat
 
 		protected override string GetClassPath(string id)
 		{
-			return this.GetCfgRoleData(id).class_path_cs.IsNullOrWhiteSpace() ? base.GetClassPath(id) : GetCfgRoleData(id).class_path_cs;
+			return this.GetCfgRoleData(id).classPathCS.IsNullOrWhiteSpace() ? base.GetClassPath(id) : GetCfgRoleData(id).classPathCS;
 		}
 
 

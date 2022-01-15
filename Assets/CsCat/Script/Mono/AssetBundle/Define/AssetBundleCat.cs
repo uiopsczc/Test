@@ -7,14 +7,14 @@ namespace CsCat
 	public class AssetBundleCat
 	{
 		private AssetBundle _assetBundle;
-		public string assetBundle_name;
+		public string assetBundleName;
 		public ResultInfo _resultInfo;
-		public List<AssetBundleCat> dependence_assetBundleCat_list = new List<AssetBundleCat>();
+		public List<AssetBundleCat> dependenceAssetBundleCatList = new List<AssetBundleCat>();
 		public ResourceWebRequester resourceWebRequester;
 
 
-		public int ref_count { get; private set; }
-		public ResultInfo resultInfo => _resultInfo ?? (_resultInfo = new ResultInfo(() => on_success_callback?.Invoke(this), () => on_fail_callback?.Invoke(this), () => on_done_callback?.Invoke(this)));
+		public int refCount { get; private set; }
+		public ResultInfo resultInfo => _resultInfo ?? (_resultInfo = new ResultInfo(() => onSuccessCallback?.Invoke(this), () => onFailCallback?.Invoke(this), () => onDoneCallback?.Invoke(this)));
 		public AssetBundle assetBundle
 		{
 			set
@@ -23,23 +23,23 @@ namespace CsCat
 				if (assetBundle != null)
 					resultInfo.isSuccess = true;
 			}
-			private get { return _assetBundle; }
+			private get => _assetBundle;
 		}
 
 
-		public Action<AssetBundleCat> on_success_callback;
-		public Action<AssetBundleCat> on_fail_callback;
-		public Action<AssetBundleCat> on_done_callback;
+		public Action<AssetBundleCat> onSuccessCallback;
+		public Action<AssetBundleCat> onFailCallback;
+		public Action<AssetBundleCat> onDoneCallback;
 
-		public AssetBundleCat(string assetBundle_name, AssetBundle assetBundle = null)
+		public AssetBundleCat(string assetBundleName, AssetBundle assetBundle = null)
 		{
-			this.assetBundle_name = assetBundle_name;
+			this.assetBundleName = assetBundleName;
 			this.assetBundle = assetBundle;
 		}
 
-		public void AddDependenceAssetBundleCat(AssetBundleCat dependence_assetBundleCat)
+		public void AddDependenceAssetBundleCat(AssetBundleCat dependenceAssetBundleCat)
 		{
-			this.dependence_assetBundleCat_list.Add(dependence_assetBundleCat);
+			this.dependenceAssetBundleCatList.Add(dependenceAssetBundleCat);
 		}
 
 		public AssetBundle Get()
@@ -64,34 +64,40 @@ namespace CsCat
 
 		public string[] GetAllDependencePaths()
 		{
-			return Client.instance.assetBundleManager.manifest.GetAllDependencies(assetBundle_name);
+			return Client.instance.assetBundleManager.manifest.GetAllDependencies(assetBundleName);
 		}
 
 		public void AddRefCountOfDependencies()
 		{
-			foreach (var dependence_assetBundleCat in this.dependence_assetBundleCat_list)
-				dependence_assetBundleCat.AddRefCount();
+			for (var i = 0; i < this.dependenceAssetBundleCatList.Count; i++)
+			{
+				var dependenceAssetBundleCat = this.dependenceAssetBundleCatList[i];
+				dependenceAssetBundleCat.AddRefCount();
+			}
 		}
 
 		public void AddRefCount()
 		{
-			ref_count++;
+			refCount++;
 		}
 
 		public void SubRefCount()
 		{
-			ref_count--;
-			if (ref_count <= 0)
+			refCount--;
+			if (refCount <= 0)
 			{
-				ref_count = 0;
+				refCount = 0;
 				Client.instance.assetBundleManager.RemoveAssetBundleCat(this);
 			}
 		}
 
 		public void SubRefCountOfDependencies()
 		{
-			foreach (var dependence_assetBundleCat in this.dependence_assetBundleCat_list)
-				dependence_assetBundleCat.SubRefCount();
+			for (var i = 0; i < this.dependenceAssetBundleCatList.Count; i++)
+			{
+				var dependenceAssetBundleCat = this.dependenceAssetBundleCatList[i];
+				dependenceAssetBundleCat.SubRefCount();
+			}
 		}
 
 	}

@@ -37,12 +37,12 @@ namespace CsCat
 		public GameObjectPoolCat GetEffectGameObjectPool(GameObject prefab)
 		{
 			return PoolCatManagerUtil.GetOrAddGameObjectPool(GetEffectGameObjectPoolName(), prefab,
-			  EffectManagerConst.Pool_Name + "/" + effectEntity.effect_id);
+			  EffectManagerConst.Pool_Name + "/" + effectEntity.effectId);
 		}
 
 		public string GetEffectGameObjectPoolName()
 		{
-			return EffectManagerConst.Pool_Name + "_" + effectEntity.effect_id;
+			return EffectManagerConst.Pool_Name + "_" + effectEntity.effectId;
 		}
 
 		public override GameObject InstantiateGameObject(GameObject prefab)

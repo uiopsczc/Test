@@ -20,24 +20,24 @@ namespace CsCat
 			}
 		}
 
-		public static void SafeDoString(this LuaEnv self, string lua_content, string chunk_name = "chunk")
+		public static void SafeDoString(this LuaEnv self, string luaContent, string chunkName = "chunk")
 		{
-			self.SafeDoAction(() => self.DoString(lua_content, chunk_name));
+			self.SafeDoAction(() => self.DoString(luaContent, chunkName));
 		}
 
-		public static T DoString<T>(this LuaEnv self, string chunk, string chunk_name = "chunk", LuaTable env = null,
-		  params object[] args)
+		public static T DoString<T>(this LuaEnv self, string chunk, string chunkName = "chunk", LuaTable env = null,
+			params object[] args)
 		{
-			var results = self.DoString(chunk, chunk_name, env, args);
-			return results == null ? default : (T)results[0];
+			var results = self.DoString(chunk, chunkName, env, args);
+			return results == null ? default : (T) results[0];
 		}
 
-		public static object[] DoString(this LuaEnv self, string chunk, string chunk_name = "chunk", LuaTable env = null,
-		  params object[] args)
+		public static object[] DoString(this LuaEnv self, string chunk, string chunkName = "chunk", LuaTable env = null,
+			params object[] args)
 		{
 			for (var i = 0; i < args.Length; i++) self.Global.Set("arg" + i, args[i]);
 
-			var results = self.DoString(chunk, chunk_name, env);
+			var results = self.DoString(chunk, chunkName, env);
 			for (var i = 0; i < args.Length; i++)
 				self.DoString(string.Format("arg{0}=nil", i));
 			return results;
@@ -52,15 +52,15 @@ namespace CsCat
 			});
 		}
 
-		public static void LoadLua(this LuaEnv self, string lua_name, string chunk_name = "chunk")
+		public static void LoadLua(this LuaEnv self, string luaName, string chunkName = "chunk")
 		{
-			self.SafeDoString(string.Format("require('{0}')", lua_name), chunk_name);
+			self.SafeDoString(string.Format("require('{0}')", luaName), chunkName);
 		}
 
-		public static void ReloadLua(this LuaEnv self, string lua_name, string chunk_name = "chunk")
+		public static void ReloadLua(this LuaEnv self, string luaName, string chunkName = "chunk")
 		{
-			self.SafeDoString(string.Format("package.loaded['{0}'] = nil", lua_name), chunk_name);
-			self.LoadLua(lua_name, chunk_name);
+			self.SafeDoString(string.Format("package.loaded['{0}'] = nil", luaName), chunkName);
+			self.LoadLua(luaName, chunkName);
 		}
 
 
@@ -74,30 +74,30 @@ namespace CsCat
 		}
 
 
-		public static LuaTable NewScriptEnvOfFilePath(this LuaEnv self, object obj, string lua_file_path)
+		public static LuaTable NewScriptEnvOfFilePath(this LuaEnv self, object obj, string luaFilePath)
 		{
-			var file_path = lua_file_path.WithoutAllSuffix().Replace("/", ".");
-			return self.NewScriptEnv(obj, string.Format("require \"{0}\"", file_path));
+			var filePath = luaFilePath.WithoutAllSuffix().Replace("/", ".");
+			return self.NewScriptEnv(obj, string.Format("require \"{0}\"", filePath));
 		}
 
-		public static LuaTable NewScriptEnv(this LuaEnv self, object obj, string lua_file_content)
+		public static LuaTable NewScriptEnv(this LuaEnv self, object obj, string luaFileContent)
 		{
-			var script_env = self.NewTable();
+			var scriptEnv = self.NewTable();
 
 			// 为每个脚本设置一个独立的环境，可一定程度上防止脚本间全局变量、函数冲突
 			var metatable = self.NewTable();
 			metatable.Set("__index", self.Global);
-			script_env.SetMetaTable(metatable);
+			scriptEnv.SetMetaTable(metatable);
 			metatable.Dispose();
 
-			script_env.Set("self", obj);
-			self.DoString(lua_file_content, obj.GetType().Name, script_env);
-			return script_env;
+			scriptEnv.Set("self", obj);
+			self.DoString(luaFileContent, obj.GetType().Name, scriptEnv);
+			return scriptEnv;
 		}
 
-		public static LuaTable NewScriptEnv(this LuaEnv self, object obj, TextAsset lua_file)
+		public static LuaTable NewScriptEnv(this LuaEnv self, object obj, TextAsset luaFile)
 		{
-			return self.NewScriptEnv(obj, lua_file.text);
+			return self.NewScriptEnv(obj, luaFile.text);
 		}
 	}
 }

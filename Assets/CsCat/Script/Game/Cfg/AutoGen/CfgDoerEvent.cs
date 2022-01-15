@@ -48,7 +48,7 @@ namespace CsCat
 		/*class_path_lua*/
 		public string class_path_lua { get; set; }
 		/*class_path_cs*/
-		public string class_path_cs { get; set; }
+		public string classPathCS { get; set; }
 		/*子步骤ids*/
 		public LitJson.JsonData step_ids { get; set; }
 		private string[] __step_ids;

@@ -5,45 +5,45 @@ namespace CsCat
 	public class LineEffectComponent : SourceTargetEffectComponent
 	{
 		private float speed;
-		private float acc_speed;
-		private float stay_source_duration;
+		private float accSpeed;
+		private float staySourceDuration;
 
 
-		public void Init(IPosition source_iposition,
-		  IPosition target_iposition, float stay_source_duration = 0, float speed = 0,
-		  float acc_speed = 0)
+		public void Init(IPosition sourceIPosition,
+		  IPosition targetIPosition, float staySourceDuration = 0, float speed = 0,
+		  float accSpeed = 0)
 		{
 			base.Init();
-			this.source_iposition = source_iposition;
-			this.target_iposition = target_iposition;
+			this.sourceIPosition = sourceIPosition;
+			this.targetIPosition = targetIPosition;
 			SetSocket();
 			this.speed = speed;
-			this.acc_speed = acc_speed;
-			this.stay_source_duration = stay_source_duration;
+			this.accSpeed = accSpeed;
+			this.staySourceDuration = staySourceDuration;
 
 			Calculate(0);
-			this.effectEntity.ApplyToTransformComponent(this.current_position, this.current_eulerAngles);
+			this.effectEntity.ApplyToTransformComponent(this.currentPosition, this.currentEulerAngles);
 		}
 
 
 
 		protected override void Calculate(float deltaTime)
 		{
-			this.stay_source_duration = this.stay_source_duration - deltaTime;
+			this.staySourceDuration = this.staySourceDuration - deltaTime;
 
-			if (this.stay_source_duration >= 0)
+			if (this.staySourceDuration >= 0)
 			{
-				this.source_position = this.source_iposition.GetPosition();
-				this.target_position = this.target_iposition.GetPosition();
-				this.current_position = this.source_position;
+				this.sourcePosition = this.sourceIPosition.GetPosition();
+				this.targetPosition = this.targetIPosition.GetPosition();
+				this.currentPosition = this.sourcePosition;
 				CalculateEulerAngles();
 				return;
 			}
 
-			this.speed += this.acc_speed;
-			float remain_duration = Vector3.Distance(this.current_position, this.target_position) / this.speed;
-			float pct = Mathf.Clamp01(deltaTime / remain_duration);
-			this.current_position = Vector3.Lerp(this.current_position, this.target_position, pct);
+			this.speed += this.accSpeed;
+			float remainDuration = Vector3.Distance(this.currentPosition, this.targetPosition) / this.speed;
+			float pct = Mathf.Clamp01(deltaTime / remainDuration);
+			this.currentPosition = Vector3.Lerp(this.currentPosition, this.targetPosition, pct);
 
 			this.CalculateEulerAngles();
 			if (pct == 1)

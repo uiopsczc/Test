@@ -4,14 +4,12 @@ namespace CsCat
 {
 	public class ActionManager : MonoBehaviour
 	{
-		public void Stop(string animation_name)
+		public void Stop(string animationName)
 		{
-
 		}
 
-		public void Play(string animation_name, float speed, int flag1, bool flag2)
+		public void Play(string animationName, float speed, int flag1, bool flag2)
 		{
-
 		}
 	}
 }

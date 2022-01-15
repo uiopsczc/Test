@@ -5,21 +5,20 @@ namespace CsCat
 {
 	public class AnimatorComp
 	{
-		public string cur_animation_name;
+		public string curAnimationName;
 
-		public Dictionary<Animator, Dictionary<string, AnimatorParameterInfo>> animators_parameterInfo_dict =
-		  new Dictionary<Animator, Dictionary<string, AnimatorParameterInfo>>();
+		public Dictionary<Animator, Dictionary<string, AnimatorParameterInfo>> animatorsParameterInfoDict =
+			new Dictionary<Animator, Dictionary<string, AnimatorParameterInfo>>();
 
 		public void Destroy()
 		{
-			animators_parameterInfo_dict.Clear();
-			cur_animation_name = null;
+			animatorsParameterInfoDict.Clear();
+			curAnimationName = null;
 		}
 
 
 		public void OnBuild()
 		{
-
 		}
 
 		public void OnBuildOk(GameObject gameObject)
@@ -32,36 +31,41 @@ namespace CsCat
 		public void SaveAnimator(Animator animator)
 		{
 			var parameters = animator.parameters;
-			var animatorParameterInfo_dict = new Dictionary<string, AnimatorParameterInfo>();
-			foreach (var parameter in parameters)
-				animatorParameterInfo_dict[parameter.name] = new AnimatorParameterInfo(animator, parameter);
-			this.animators_parameterInfo_dict[animator] = animatorParameterInfo_dict;
+			var animatorParameterInfoDict = new Dictionary<string, AnimatorParameterInfo>();
+			for (var i = 0; i < parameters.Length; i++)
+			{
+				var parameter = parameters[i];
+				animatorParameterInfoDict[parameter.name] = new AnimatorParameterInfo(animator, parameter);
+			}
+
+			this.animatorsParameterInfoDict[animator] = animatorParameterInfoDict;
 		}
 
-		public void PlayAnimation(string animation_name, object parameter_value = null, float speed = 1)
+		public void PlayAnimation(string animationName, object parameterValue = null, float speed = 1)
 		{
-			if ("die".Equals(this.cur_animation_name))
+			if ("die".Equals(this.curAnimationName))
 				return;
-			bool is_changed = false;
-			foreach (var animator in animators_parameterInfo_dict.Keys)
+			bool isChanged = false;
+			foreach (var keyValue in animatorsParameterInfoDict)
 			{
-				var animatorParameterInfo_dict = animators_parameterInfo_dict[animator];
+				var animator = keyValue.Key;
+				var animatorParameterInfoDict = animatorsParameterInfoDict[animator];
 				//停掉上一个动画
-				if (!this.cur_animation_name.IsNullOrWhiteSpace()
-					&& animatorParameterInfo_dict.ContainsKey(cur_animation_name)
-					&& animatorParameterInfo_dict[cur_animation_name].animatorControllerParameterType ==
-					AnimatorControllerParameterType.Bool)
-					animatorParameterInfo_dict[this.cur_animation_name].SetValue(false);
+				if (!this.curAnimationName.IsNullOrWhiteSpace()
+				    && animatorParameterInfoDict.ContainsKey(curAnimationName)
+				    && animatorParameterInfoDict[curAnimationName].animatorControllerParameterType ==
+				    AnimatorControllerParameterType.Bool)
+					animatorParameterInfoDict[this.curAnimationName].SetValue(false);
 				//设置更改的动画
-				if (animatorParameterInfo_dict.ContainsKey(animation_name))
+				if (animatorParameterInfoDict.ContainsKey(animationName))
 				{
 					animator.speed = speed;
-					animatorParameterInfo_dict[animation_name].SetValue(parameter_value);
-					is_changed = true;
+					animatorParameterInfoDict[animationName].SetValue(parameterValue);
+					isChanged = true;
 				}
 
-				if (is_changed)
-					this.cur_animation_name = animation_name;
+				if (isChanged)
+					this.curAnimationName = animationName;
 			}
 		}
 	}

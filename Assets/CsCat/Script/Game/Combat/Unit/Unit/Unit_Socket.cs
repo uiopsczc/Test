@@ -5,50 +5,44 @@ namespace CsCat
 {
 	public partial class Unit
 	{
-		private Dictionary<string, Transform> socket_transform_dict = new Dictionary<string, Transform>();
+		private Dictionary<string, Transform> socketTransformDict = new Dictionary<string, Transform>();
 
-		public Transform GetSocketTransform(string socket_name, bool is_ignore_error = false)
+		public Transform GetSocketTransform(string socketName, bool isIgnoreError = false)
 		{
 			if (graphicComponent.gameObject == null)
 				return null;
-			if (socket_name.IsNullOrWhiteSpace() || "main".Equals(socket_name))
+			if (socketName.IsNullOrWhiteSpace() || "main".Equals(socketName))
 				return graphicComponent.transform;
-			Transform socket_transform = null;
-			if (!this.socket_transform_dict.ContainsKey(socket_name))
+			Transform socketTransform = null;
+			if (!this.socketTransformDict.ContainsKey(socketName))
 			{
-				socket_transform = graphicComponent.transform.FindChildRecursive(socket_name);
-				if (socket_transform != null)
-					this.socket_transform_dict[socket_name] = socket_transform;
+				socketTransform = graphicComponent.transform.FindChildRecursive(socketName);
+				if (socketTransform != null)
+					this.socketTransformDict[socketName] = socketTransform;
 			}
 
-			if (socket_transform == null)
+			if (socketTransform == null)
 			{
-				if (!is_ignore_error)
-					LogCat.LogErrorFormat("Can't find socket({0}) in unit({1})", socket_name, this.unit_id);
+				if (!isIgnoreError)
+					LogCat.LogErrorFormat("Can't find socket({0}) in unit({1})", socketName, this.unitId);
 				else
-					LogCat.LogWarningFormat("Can't find socket({0}) in unit({1})", socket_name, this.unit_id);
+					LogCat.LogWarningFormat("Can't find socket({0}) in unit({1})", socketName, this.unitId);
 				return graphicComponent.transform;
 			}
 
-			return socket_transform;
+			return socketTransform;
 		}
 
-		public Vector3 GetSocketPosition(string socket_name, bool is_ignore_error = false)
+		public Vector3 GetSocketPosition(string socketName, bool isIgnoreError = false)
 		{
-			var socket_transform = this.GetSocketTransform(socket_name, is_ignore_error);
-			if (socket_transform != null)
-				return socket_transform.position;
-			else
-				return this.GetPosition();
+			var socketTransform = this.GetSocketTransform(socketName, isIgnoreError);
+			return socketTransform != null ? socketTransform.position : this.GetPosition();
 		}
 
-		public Quaternion GetSocketRotation(string socket_name, bool is_ignore_error = false)
+		public Quaternion GetSocketRotation(string socketName, bool isIgnoreError = false)
 		{
-			var socket_transform = this.GetSocketTransform(socket_name, is_ignore_error);
-			if (socket_transform != null)
-				return socket_transform.rotation;
-			else
-				return this.GetRotation();
+			var socketTransform = this.GetSocketTransform(socketName, isIgnoreError);
+			return socketTransform != null ? socketTransform.rotation : this.GetRotation();
 		}
 	}
 }

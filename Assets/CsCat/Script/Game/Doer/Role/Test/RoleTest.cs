@@ -10,9 +10,9 @@ namespace CsCat
 			user.AddRole("1");
 
 			var dict = new Hashtable();
-			var dict_tmp = new Hashtable();
-			user.DoSave(dict, dict_tmp);
-			LogCat.log(dict, dict_tmp);
+			var dictTmp = new Hashtable();
+			user.DoSave(dict, dictTmp);
+			LogCat.log(dict, dictTmp);
 		}
 
 	}

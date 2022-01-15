@@ -8,7 +8,7 @@ namespace CsCat
 		public static bool SetAudioMixerOutput(this AudioSource self, string groupName, AudioMixer audioMixer = null)
 		{
 			audioMixer = audioMixer ?? SingletonMaster.instance.audioMixer;
-			AudioMixerGroup[] groups = audioMixer.FindMatchingGroups(AudioMixerConst.Group_Dict[groupName].group_path);
+			AudioMixerGroup[] groups = audioMixer.FindMatchingGroups(AudioMixerConst.Group_Dict[groupName].groupPath);
 			if (groups.Length > 0)
 			{
 				self.outputAudioMixerGroup = groups[0];

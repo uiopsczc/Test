@@ -4,7 +4,7 @@ namespace CsCat
 {
 	public abstract class BaseAssetBundleAsyncLoader : ResourceAsyncOperation
 	{
-		public string assetBundle_name { get; protected set; }
+		public string assetBundleName { get; protected set; }
 
 		public AssetBundleCat assetBundleCat { get; set; }
 
@@ -16,7 +16,7 @@ namespace CsCat
 		protected override void _Destroy()
 		{
 			base._Destroy();
-			assetBundle_name = null;
+			assetBundleName = null;
 			assetBundleCat = null;
 		}
 	}

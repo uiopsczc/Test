@@ -5,40 +5,40 @@ namespace CsCat
 	//电弧
 	public class SpinLineEffectComponent : SourceTargetEffectComponent
 	{
-		private float spin_speed;
-		private Vector3 forward_dir;
-		private float forward_speed;
-		private Vector3 start_position;
-		private Vector3 spin_dir;
-		private float start_spin_angle;
-		private float spin_length;
-		private float elapsed_duration;
+		private float spinSpeed;
+		private Vector3 forwardDir;
+		private float forwardSpeed;
+		private Vector3 startPosition;
+		private Vector3 spinDir;
+		private float startSpinAngle;
+		private float spinLength;
+		private float elapsedDuration;
 
-		public void Init(Vector3 start_position, Vector3 spin_dir, float start_spin_angle,
-		  float spin_speed, float spin_length, Vector3 forward_dir, float forward_speed = 0)
+		public void Init(Vector3 startPosition, Vector3 spinDir, float startSpinAngle,
+		  float spinSpeed, float spinLength, Vector3 forwardDir, float forwardSpeed = 0)
 		{
 			base.Init();
-			this.spin_speed = spin_speed;
-			this.forward_dir = forward_dir;
-			this.forward_speed = forward_speed;
-			this.spin_dir = spin_dir;
-			this.start_position = start_position;
-			this.start_spin_angle = start_spin_angle;
-			this.spin_length = spin_length;
-			this.elapsed_duration = 0;
+			this.spinSpeed = spinSpeed;
+			this.forwardDir = forwardDir;
+			this.forwardSpeed = forwardSpeed;
+			this.spinDir = spinDir;
+			this.startPosition = startPosition;
+			this.startSpinAngle = startSpinAngle;
+			this.spinLength = spinLength;
+			this.elapsedDuration = 0;
 
 			Calculate(0);
-			this.effectEntity.ApplyToTransformComponent(this.current_position, this.current_eulerAngles);
+			this.effectEntity.ApplyToTransformComponent(this.currentPosition, this.currentEulerAngles);
 		}
 
 		protected override void Calculate(float deltaTime)
 		{
-			this.elapsed_duration = this.elapsed_duration + deltaTime;
-			Vector3 forward_distance = this.forward_speed * this.elapsed_duration * forward_dir;
-			Vector3 arc_dir = Quaternion.AngleAxis(this.start_spin_angle + this.spin_speed * this.elapsed_duration, Vector3.up) *
-							  this.spin_dir; //电弧当前朝向
-			this.current_position = this.start_position + forward_distance + arc_dir * this.spin_length; // 电弧当前结束位置。
-			this.current_eulerAngles = Vector3.zero;
+			this.elapsedDuration = this.elapsedDuration + deltaTime;
+			Vector3 forwardDistance = this.forwardSpeed * this.elapsedDuration * forwardDir;
+			Vector3 arcDir = Quaternion.AngleAxis(this.startSpinAngle + this.spinSpeed * this.elapsedDuration, Vector3.up) *
+							  this.spinDir; //电弧当前朝向
+			this.currentPosition = this.startPosition + forwardDistance + arcDir * this.spinLength; // 电弧当前结束位置。
+			this.currentEulerAngles = Vector3.zero;
 		}
 	}
 }

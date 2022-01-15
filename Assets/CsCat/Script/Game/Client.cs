@@ -119,22 +119,22 @@ namespace CsCat
 		}
 
 
-		public void Goto<T>(float fade_hide_duration = 0f, Action on_stage_show_callback = null)
+		public void Goto<T>(float fadeHideDuration = 0f, Action onStageShowCallback = null)
 			where T : StageBase, new()
 		{
-			StartCoroutine(IEGoto<T>(fade_hide_duration, on_stage_show_callback));
+			StartCoroutine(IEGoto<T>(fadeHideDuration, onStageShowCallback));
 		}
 
-		public IEnumerator IEGoto<T>(float fade_hide_duration = 0f, Action on_stage_show_callback = null)
+		public IEnumerator IEGoto<T>(float fadeHideDuration = 0f, Action onStageShowCallback = null)
 			where T : StageBase, new()
 		{
 			if (stage != null)
 			{
-				if (fade_hide_duration > 0)
+				if (fadeHideDuration > 0)
 				{
-					uiManager.FadeTo(0, 1, fade_hide_duration);
+					uiManager.FadeTo(0, 1, fadeHideDuration);
 
-					yield return new WaitForSeconds(fade_hide_duration);
+					yield return new WaitForSeconds(fadeHideDuration);
 				}
 
 				yield return stage.IEPreDestroy();
@@ -143,12 +143,12 @@ namespace CsCat
 			}
 
 			stage = this.AddChild<T>(null);
-			stage.onShowCallback = on_stage_show_callback;
+			stage.onShowCallback = onStageShowCallback;
 			stage.Start();
 		}
 
 		//重启
-		public void Rebort()
+		public void Reboot()
 		{
 			Goto<StageTest>();
 		}
@@ -194,7 +194,7 @@ namespace CsCat
 			GameData2.instance.Save();
 		}
 
-		public void OnApplicationPause(bool is_paused)
+		public void OnApplicationPause(bool isPaused)
 		{
 		}
 

@@ -5,27 +5,27 @@ namespace CsCat
 {
 	public partial class SpellBase
 	{
-		private float __animation_time_pct;
-		private float __animation_start_time;
-		public bool is_past_break_time;
+		private float __animationTimePct;
+		private float __animationStartTime;
+		public bool isPastBreakTime;
 
-		protected void PlaySpellAnimation(Vector3? face_to_position = null)
+		protected void PlaySpellAnimation(Vector3? faceToPosition = null)
 		{
 			if (this.cfgSpellData.animation_duration > 0)
 			{
-				this.__animation_time_pct = 0;
-				this.__animation_start_time = CombatUtil.GetTime();
+				this.__animationTimePct = 0;
+				this.__animationStartTime = CombatUtil.GetTime();
 			}
 
 			if (!this.cfgSpellData.animation_name.IsNullOrWhiteSpace())
 			{
-				if (face_to_position == null && this.target_unit != null)
-					face_to_position = this.target_unit.GetPosition();
+				if (faceToPosition == null && this.targetUnit != null)
+					faceToPosition = this.targetUnit.GetPosition();
 				// 不转向
 				if (this.cfgSpellData.is_not_face_to_target)
-					face_to_position = null;
-				float speed = this.cfgSpellData.type == "普攻" ? this.source_unit.GetCalcPropValue("攻击速度") : 1;
-				this.source_unit.PlayAnimation(this.cfgSpellData.animation_name, null, speed, face_to_position,
+					faceToPosition = null;
+				float speed = this.cfgSpellData.type == "普攻" ? this.sourceUnit.GetCalcPropValue("攻击速度") : 1;
+				this.sourceUnit.PlayAnimation(this.cfgSpellData.animation_name, null, speed, faceToPosition,
 				  this.cfgSpellData.is_can_move_while_cast);
 			}
 		}
@@ -33,63 +33,63 @@ namespace CsCat
 		protected void StopSpellAnimation()
 		{
 			if (!this.cfgSpellData.animation_name.IsNullOrWhiteSpace())
-				this.source_unit.StopAnimation(this.cfgSpellData.animation_name);
+				this.sourceUnit.StopAnimation(this.cfgSpellData.animation_name);
 		}
 
 		//注意：只能在start时调用，不能在事件中调用
-		protected void RegisterAnimationEvent(float? time_pct, string invoke_method_name, Hashtable arg_dict = null)
+		protected void RegisterAnimationEvent(float? timePct, string invokeMethodName, Hashtable argDict = null)
 		{
-			if (this.cfgSpellData.animation_duration == 0 || time_pct == null || time_pct.Value <= 0)
+			if (this.cfgSpellData.animation_duration == 0 || timePct == null || timePct.Value <= 0)
 			{
-				this.InvokeMethod(invoke_method_name, false, arg_dict);
+				this.InvokeMethod(invokeMethodName, false, argDict);
 				return;
 			}
 
-			var new_event = new Hashtable();
-			new_event["time_pct"] = time_pct.Value;
-			new_event["event_name"] = invoke_method_name;
-			new_event["arg_dict"] = arg_dict;
+			var newEvent = new Hashtable();
+			newEvent["time_pct"] = timePct.Value;
+			newEvent["event_name"] = invokeMethodName;
+			newEvent["arg_dict"] = argDict;
 
-			for (int i = 0; i < this.animation_event_list.Count; i++)
+			for (int i = 0; i < this.animationEventList.Count; i++)
 			{
-				var animation_event = this.animation_event_list[i];
-				if (animation_event.Get<float>("time_pct") > time_pct)
+				var animationEvent = this.animationEventList[i];
+				if (animationEvent.Get<float>("time_pct") > timePct)
 				{
-					this.animation_event_list.Insert(i, new_event);
+					this.animationEventList.Insert(i, newEvent);
 					return;
 				}
 			}
 
-			this.animation_event_list.Add(new_event);
+			this.animationEventList.Add(newEvent);
 		}
 
 		private void ProcessAnimationEvent(float deltaTime)
 		{
-			if (this.__animation_time_pct == 0)
+			if (this.__animationTimePct == 0)
 				return;
-			this.__animation_time_pct = this.__animation_time_pct + deltaTime /
+			this.__animationTimePct = this.__animationTimePct + deltaTime /
 										(this.cfgSpellData.animation_duration /
-										 (1 + this.source_unit.GetCalcPropValue("攻击速度")));
+										 (1 + this.sourceUnit.GetCalcPropValue("攻击速度")));
 			while (true)
 			{
 				//没有animation_event了
-				if (animation_event_list.IsNullOrEmpty())
+				if (animationEventList.IsNullOrEmpty())
 					return;
-				var animation_event = this.animation_event_list[0];
+				var animationEvent = this.animationEventList[0];
 				// 还没触发
-				if (animation_event.Get<float>("time_pct") > this.__animation_time_pct)
+				if (animationEvent.Get<float>("time_pct") > this.__animationTimePct)
 					return;
 				// 时间到，可以进行触发
-				this.animation_event_list.RemoveFirst();
-				this.InvokeMethod(animation_event.Get<string>("invoke_method_name"), false,
-				  animation_event.Get<Hashtable>("arg_dict"));
+				this.animationEventList.RemoveFirst();
+				this.InvokeMethod(animationEvent.Get<string>("invoke_method_name"), false,
+				  animationEvent.Get<Hashtable>("arg_dict"));
 			}
 		}
 
 		public void PassBreakTime()
 		{
-			this.is_past_break_time = true;
-			this.source_unit.UpdateMixedStates();
+			this.isPastBreakTime = true;
+			this.sourceUnit.UpdateMixedStates();
 		}
 	}
 }

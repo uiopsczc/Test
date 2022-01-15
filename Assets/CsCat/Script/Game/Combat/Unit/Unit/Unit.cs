@@ -7,36 +7,36 @@ namespace CsCat
 {
 	public partial class Unit : TickObject
 	{
-		private bool is_dead;
-		private bool is_can_attack;
-		private bool is_can_normal_attack;
-		public bool is_can_cast_skill;
-		private bool is_can_move;
-		public bool is_can_control;
+		private bool isDead;
+		private bool isCanAttack;
+		private bool isCanNormalAttack;
+		public bool isCanCastSkill;
+		private bool isCanMove;
+		public bool isCanControl;
 
 		private int level;
 		private Vector3 position;
 		private Quaternion rotation;
 		private int hp;
 		private float radius;
-		private float original_radius;
+		private float originalRadius;
 		private float scale;
-		private Vector3 orginal_transform_sacle;
-		private bool is_not_show_headBlood;
+		private Vector3 orginalTransformScale;
+		private bool isNotShowHeadBlood;
 		public BuffManager buffManager;
-		private bool is_keep_dead_body; //是否需要保持尸体
-		private List<Action> load_ok_listen_list = new List<Action>();
-		public bool is_move_occupy;
+		private bool isKeepDeadBody; //是否需要保持尸体
+		private List<Action> loadOkListenList = new List<Action>();
+		public bool isMoveOccupy;
 
 
 		public CfgUnitData cfgUnitData;
-		public string unit_id;
-		public string player_name;
-		public Vector2 show_name_offset;
+		public string unitId;
+		public string playerName;
+		public Vector2 showNameOffset;
 		public string name;
 		public string type;
-		public Unit owner_unit;
-		public bool is_in_sight = true; //是否在视野内，用于优化，由unitManager设置
+		public Unit ownerUnit;
+		public bool isInSight = true; //是否在视野内，用于优化，由unitManager设置
 		public UnitLockTargetInfo unitLockTargetInfo;
 
 
@@ -44,33 +44,31 @@ namespace CsCat
 		{
 			base._Destroy();
 			this.Broadcast<Unit>(null, UnitEventNameConst.On_Unit_Destroy, this);
-			if (this.animatorComp != null)
-				animatorComp.Destroy();
-			if (this.propertyComp != null)
-				this.propertyComp.Destroy();
-			this.unitModelInfo_dict.Clear();
+			animatorComp?.Destroy();
+			propertyComp?.Destroy();
+			this.unitModelInfoDict.Clear();
 			this.animation = null;
 			this.actionManager = null;
-			this.socket_transform_dict.Clear();
-			this.unitMaterialInfo_list.Clear();
+			this.socketTransformDict.Clear();
+			this.unitMaterialInfoList.Clear();
 		}
 
-		public void UpdateUnit(Hashtable arg_dict)
+		public void UpdateUnit(Hashtable argDict)
 		{
-			foreach (string key in arg_dict.Keys)
+			foreach (string key in argDict.Keys)
 			{
 				if (key.Equals("hp"))
-					this.SetHp(arg_dict.Get<int>(hp));
+					this.SetHp(argDict.Get<int>(hp));
 				else if (key.Equals("faction"))
-					this.SetFaction(arg_dict.Get<string>("faction"));
+					this.SetFaction(argDict.Get<string>("faction"));
 				else if (key.Equals("level"))
-					this.SetLevel(arg_dict.Get<int>("level"));
+					this.SetLevel(argDict.Get<int>("level"));
 				else if (key.Equals("position"))
-					this.SetPosition(arg_dict.Get<Vector3>("position"));
+					this.SetPosition(argDict.Get<Vector3>("position"));
 				else if (key.Equals("scale"))
-					this.SetPosition(arg_dict.Get<Vector3>("scale"));
+					this.SetPosition(argDict.Get<Vector3>("scale"));
 				else
-					this.SetFieldValue(key, arg_dict[key]);
+					this.SetFieldValue(key, argDict[key]);
 			}
 		}
 
@@ -109,9 +107,9 @@ namespace CsCat
 		public void SetScale(float scale)
 		{
 			if (graphicComponent.transform != null)
-				graphicComponent.transform.localScale = this.orginal_transform_sacle * scale;
+				graphicComponent.transform.localScale = this.orginalTransformScale * scale;
 			this.scale = scale;
-			this.radius = this.original_radius * this.scale;
+			this.radius = this.originalRadius * this.scale;
 		}
 
 		public float GetScale()
@@ -201,33 +199,33 @@ namespace CsCat
 		//能否移动
 		public bool IsCanMove()
 		{
-			return this.is_can_move;
+			return this.isCanMove;
 		}
 
 		//能否攻击（包括普攻和技能）
 		public bool IsCanAttack()
 		{
-			return this.is_can_attack;
+			return this.isCanAttack;
 		}
 
 		//能否普攻
 		public bool IsCanNormalAttack()
 		{
-			return this.is_can_normal_attack;
+			return this.isCanNormalAttack;
 		}
 
 
 		//能否释放技能
 		public bool IsCanCastSkill()
 		{
-			return this.is_can_cast_skill;
+			return this.isCanCastSkill;
 		}
 
 
 		//能否被控制
 		public bool IsCanControl()
 		{
-			return this.is_can_control;
+			return this.isCanControl;
 		}
 
 
@@ -296,7 +294,7 @@ namespace CsCat
 		//是否死亡
 		public bool IsDead()
 		{
-			return this.is_dead;
+			return this.isDead;
 		}
 	}
 }

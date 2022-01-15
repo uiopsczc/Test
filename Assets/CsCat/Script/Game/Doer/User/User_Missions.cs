@@ -9,34 +9,34 @@ namespace CsCat
 		//获得指定的Mission
 		public Mission[] GetMissions(string id = null)
 		{
-			return this.o_missions.GetMissions(id);
+			return this.oMissions.GetMissions(id);
 		}
 
 		public bool HasMissions()
 		{
-			return this.o_missions.HasMissions();
+			return this.oMissions.HasMissions();
 		}
 
-		public bool HasMission(string id)
+		public bool IsHasMission(string id)
 		{
-			return this.o_missions.GetMission(id) != null;
+			return this.oMissions.GetMission(id) != null;
 		}
 
 		public int GetMissionsCount()
 		{
-			return this.o_missions.GetMissionsCount();
+			return this.oMissions.GetMissionsCount();
 		}
 
 		//获得指定的任务
-		public Mission GetMission(string id_or_rid)
+		public Mission GetMission(string idOrRid)
 		{
-			return this.o_missions.GetMission(id_or_rid);
+			return this.oMissions.GetMission(idOrRid);
 		}
 
 		//清除所有任务
 		public void ClearMissions()
 		{
-			this.o_missions.ClearMissions();
+			this.oMissions.ClearMissions();
 		}
 
 		public ArrayList GetFinishedMissionIds()
@@ -44,35 +44,35 @@ namespace CsCat
 			return GetOrAdd("finished_mission_ids", () => new ArrayList());
 		}
 
-		public void AddFinishedMissionId(string mission_id)
+		public void AddFinishedMissionId(string missionId)
 		{
-			GetFinishedMissionIds().Add(mission_id);
+			GetFinishedMissionIds().Add(missionId);
 		}
 
-		public void RemoveFinishedMissionId(string mission_id)
+		public void RemoveFinishedMissionId(string missionId)
 		{
-			GetFinishedMissionIds().Remove(mission_id);
+			GetFinishedMissionIds().Remove(missionId);
 		}
 
 		//owner 发放任务的npc
 		public bool AcceptMission(Mission mission, Doer owner)
 		{
-			var org_env = mission.GetEnv();
-			if (org_env != null)
+			var orgEnv = mission.GetEnv();
+			if (orgEnv != null)
 			{
-				LogCat.LogError(string.Format("{0} still belong to {1}", mission, org_env));
+				LogCat.LogError(string.Format("{0} still belong to {1}", mission, orgEnv));
 				mission.Destruct();
 				return false;
 			}
 
-			if (HasMission(mission.GetId()))
+			if (IsHasMission(mission.GetId()))
 			{
 				LogCat.LogError(string.Format("duplicate mission id![{0}]", mission));
 				mission.Destruct();
 				return false;
 			}
 
-			var missions = this.o_missions.GetMissions_ToEdit();
+			var missions = this.oMissions.GetMissions_ToEdit();
 			mission.SetEnv(this);
 			mission.SetOwner(owner);
 			missions.Add(mission);
@@ -104,7 +104,7 @@ namespace CsCat
 				return;
 			}
 
-			var missions = this.o_missions.GetMissions_ToEdit();
+			var missions = this.oMissions.GetMissions_ToEdit();
 			mission.SetEnv(null);
 			mission.SetOwner(owner);
 			missions.Remove(mission);
@@ -128,7 +128,7 @@ namespace CsCat
 				return;
 			}
 
-			var missions = this.o_missions.GetMissions_ToEdit();
+			var missions = this.oMissions.GetMissions_ToEdit();
 			mission.SetEnv(null);
 			mission.SetOwner(owner);
 			missions.Remove(mission);
@@ -139,39 +139,44 @@ namespace CsCat
 		public bool CheckAutoFinishMissions()
 		{
 			Mission[] missions = this.GetMissions();
-			List<Mission> to_finish_mission_list = new List<Mission>();
-			foreach (var mission in missions)
+			List<Mission> toFinishMissionList = new List<Mission>();
+			for (var i = 0; i < missions.Length; i++)
 			{
+				var mission = missions[i];
 				if (mission.IsReady())
 				{
-					if (mission.GetCfgMissionData().is_auto_check_finish)
-						to_finish_mission_list.Add(mission);
+					if (mission.GetCfgMissionData().isAutoCheckFinish)
+						toFinishMissionList.Add(mission);
 				}
 			}
 
-			foreach (var to_finish_mission in to_finish_mission_list)
-				this.FinishMission(to_finish_mission, to_finish_mission.GetOwner());
-			return to_finish_mission_list.Count > 0;
+			for (var i = 0; i < toFinishMissionList.Count; i++)
+			{
+				var toFinishMission = toFinishMissionList[i];
+				this.FinishMission(toFinishMission, toFinishMission.GetOwner());
+			}
+
+			return toFinishMissionList.Count > 0;
 		}
 
 		///////////////////////Util////////////////////////////////
 		//owner 发放任务的npc
-		public bool AcceptMission(string mission_id, Doer owner)
+		public bool AcceptMission(string missionId, Doer owner)
 		{
-			var mission = Client.instance.missionFactory.NewDoer(mission_id) as Mission;
+			var mission = Client.instance.missionFactory.NewDoer(missionId) as Mission;
 			return AcceptMission(mission, owner);
 		}
 
 		//owner 发放任务的npc
-		public void FinishMission(string mission_id, Doer owner)
+		public void FinishMission(string missionId, Doer owner)
 		{
-			FinishMission(this.GetMission(mission_id), owner);
+			FinishMission(this.GetMission(missionId), owner);
 		}
 
 		//owner 发放任务的npc
-		public void GiveUpMission(string mission_id, Doer owner)
+		public void GiveUpMission(string missionId, Doer owner)
 		{
-			GiveUpMission(this.GetMission(mission_id), owner);
+			GiveUpMission(this.GetMission(missionId), owner);
 		}
 	}
 }

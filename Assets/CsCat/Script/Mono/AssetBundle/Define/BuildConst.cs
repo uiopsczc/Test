@@ -15,7 +15,6 @@ namespace CsCat
 		public static string Lua_Root = "Assets/" + "Lua" + "/";
 
 
-
 		#region Mainifest
 
 		public const string ManifestBundle_Path = AssetBundle_Folder_Name;

@@ -4,20 +4,20 @@ namespace CsCat
 {
 	public class UnitLockTargetInfo
 	{
-		public Unit lock_target_unit;
-		public Vector3? lock_target_pos;
+		public Unit lockTargetUnit;
+		public Vector3? lockTargetPos;
 
 		public bool IsHasLockTarget()
 		{
-			return this.lock_target_unit != null || this.lock_target_pos != null;
+			return this.lockTargetUnit != null || this.lockTargetPos != null;
 		}
 
 		public Vector3 GetLockTargetPosition()
 		{
-			if (this.lock_target_unit != null)
-				return this.lock_target_unit.GetPosition();
-			if (this.lock_target_pos != null)
-				return this.lock_target_pos.Value;
+			if (this.lockTargetUnit != null)
+				return this.lockTargetUnit.GetPosition();
+			if (this.lockTargetPos != null)
+				return this.lockTargetPos.Value;
 			return default(Vector3);
 		}
 

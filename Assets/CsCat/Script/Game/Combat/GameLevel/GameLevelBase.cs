@@ -2,13 +2,13 @@ namespace CsCat
 {
 	public partial class GameLevelBase : TickObject
 	{
-		private bool is_started;
-		private bool is_finished;
+		private bool isStarted;
+		private bool isFinished;
 
 		public override void Start()
 		{
 			base.Start();
-			this.is_started = true;
+			this.isStarted = true;
 		}
 
 		public override bool IsCanUpdate()
@@ -31,19 +31,19 @@ namespace CsCat
 			return false;
 		}
 
-		public void SetIsFinished(bool is_finished)
+		public void SetIsFinished(bool isFinished)
 		{
-			this.is_finished = is_finished;
+			this.isFinished = isFinished;
 		}
 
 		public bool IsStarted()
 		{
-			return this.is_started;
+			return this.isStarted;
 		}
 
 		public bool IsFinished()
 		{
-			return this.is_finished;
+			return this.isFinished;
 		}
 	}
 }

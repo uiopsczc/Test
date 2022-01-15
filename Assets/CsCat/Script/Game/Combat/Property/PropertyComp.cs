@@ -5,114 +5,119 @@ namespace CsCat
 {
 	public partial class PropertyComp
 	{
-		private Dictionary<Key, Dictionary<string, float>> prop_set_dict = new Dictionary<Key, Dictionary<string, float>>();
-		private Dictionary<string, float> base_prop_dict = new Dictionary<string, float>();
-		private Dictionary<string, float> calc_prop_dict = new Dictionary<string, float>();
-		private bool is_changing;
-		private Unit unit;
-		private string unit_id;
-		private int level;
-		private Hashtable arg_dict;
+		private Dictionary<Key, Dictionary<string, float>> propSetDict =
+			new Dictionary<Key, Dictionary<string, float>>();
 
-		public PropertyComp(Hashtable arg_dict)
+		private Dictionary<string, float> basePropDict = new Dictionary<string, float>();
+		private Dictionary<string, float> calcPropDict = new Dictionary<string, float>();
+		private bool isChanging;
+		private Unit unit;
+		private string unitId;
+		private int level;
+		private Hashtable argDict;
+
+		public PropertyComp(Hashtable argDict)
 		{
-			this.arg_dict = arg_dict;
-			this.level = arg_dict.Get<int>("level");
-			this.unit_id = arg_dict.Get<string>("unit_id");
-			this.arg_dict = arg_dict;
+			this.argDict = argDict;
+			this.level = argDict.Get<int>("level");
+			this.unitId = argDict.Get<string>("unit_id");
+			this.argDict = argDict;
 		}
 
 		public void OnBuild(Unit unit)
 		{
 			this.unit = unit;
 			this.level = this.unit.GetLevel();
-			this.unit_id = this.unit.unit_id;
-
+			this.unitId = this.unit.unitId;
 		}
 
-		public void AddPropSet(Dictionary<string, float> prop_set, string key, string sub_key = null)
+		public void AddPropSet(Dictionary<string, float> propSet, string key, string subKey = null)
 		{
-			prop_set_dict.Add(new Key(key, sub_key), prop_set);
+			propSetDict.Add(new Key(key, subKey), propSet);
 			__CalculateProp();
 		}
 
-		public void RemovePropSet(string key, string sub_key = null)
+		public void RemovePropSet(string key, string subKey = null)
 		{
-			prop_set_dict.Remove(new Key(key, sub_key));
+			propSetDict.Remove(new Key(key, subKey));
 			__CalculateProp();
 		}
 
 		public void __CalculateProp()
 		{
-			if (is_changing)
+			if (isChanging)
 				return;
-			var old_calc_prop_dict = this.calc_prop_dict.CloneDeep();
-			base_prop_dict.Clear();
+			var oldCalcPropDict = this.calcPropDict.CloneDeep();
+			basePropDict.Clear();
 			//基础属性统计
-			foreach (var cfgPropertyData in CfgProperty.Instance.All())
-				base_prop_dict[cfgPropertyData.id] = 0;
-			foreach (var prop_set in prop_set_dict.Values)
+			var all = CfgProperty.Instance.All();
+			for (var i = 0; i < all.Count; i++)
 			{
-				foreach (var key in prop_set.Keys)
+				var cfgPropertyData = all[i];
+				basePropDict[cfgPropertyData.id] = 0;
+			}
+
+			foreach (var propSet in propSetDict.Values)
+			{
+				foreach (var key in propSet.Keys)
 				{
-					float value = base_prop_dict.GetOrAddDefault(key, () => 0);
-					base_prop_dict[key] = value + prop_set[key];
+					float value = basePropDict.GetOrAddDefault(key, () => 0);
+					basePropDict[key] = value + propSet[key];
 				}
 			}
 
 			//综合属性计算
-			this.calc_prop_dict.Clear();
-			foreach (var key in base_prop_dict.Keys)
-				calc_prop_dict[key] = base_prop_dict[key];
+			this.calcPropDict.Clear();
+			foreach (var key in basePropDict.Keys)
+				calcPropDict[key] = basePropDict[key];
 
 			if (this.unit != null)
 			{
-				var new_clac_prop_dict = this.calc_prop_dict;
-				var clac_prop_dict_diff = IDictionaryExtension.GetDiff(old_calc_prop_dict, this.calc_prop_dict);
-				this.unit.OnPropertyChanged(old_calc_prop_dict, new_clac_prop_dict, clac_prop_dict_diff);
+				var newCalcPropDict = this.calcPropDict;
+				var calcPropDictDiff = IDictionaryExtension.GetDiff(oldCalcPropDict, this.calcPropDict);
+				this.unit.OnPropertyChanged(oldCalcPropDict, newCalcPropDict, calcPropDictDiff);
 			}
 		}
 
 		public void StartChange()
 		{
-			is_changing = true;
+			isChanging = true;
 		}
 
 		public void EndChange()
 		{
-			is_changing = false;
+			isChanging = false;
 			__CalculateProp();
 		}
 
-		public float GetCalcPropValue(string property_key, float default_value = 0)
+		public float GetCalcPropValue(string propertyKey, float defaultValue = 0)
 		{
-			return this.calc_prop_dict.GetOrGetDefault(property_key, () => default_value);
+			return this.calcPropDict.GetOrGetDefault(propertyKey, () => defaultValue);
 		}
 
 
-		public (int damage_value, Hashtable special_effect_dict) CalculateOriginalDamageValue(Hashtable arg_dict)
+		public (int damageValue, Hashtable specialEffectDict) CalculateOriginalDamageValue(Hashtable arg_dict)
 		{
 			return (0, new Hashtable());
 		}
 
-		public int CalculateRealDamageValue(int damage_value, Unit target_unit, Hashtable arg_dict = null)
+		public int CalculateRealDamageValue(int damageValue, Unit targetUnit, Hashtable argDict = null)
 		{
 			return 0;
 		}
 
-		public (int heal_value, Hashtable special_effect_dict) CalculateOriginalHealValue(Hashtable arg_dict)
+		public (int healValue, Hashtable specialEffectDict) CalculateOriginalHealValue(Hashtable arg_dict)
 		{
 			return (0, new Hashtable());
 		}
 
-		public int CalculateRealHealValue(int heal_value, Unit target_unit, Hashtable arg_dict = null)
+		public int CalculateRealHealValue(int healValue, Unit targetUnit, Hashtable argDict = null)
 		{
 			return 0;
 		}
 
 		public void Destroy()
 		{
-
 		}
 	}
 }

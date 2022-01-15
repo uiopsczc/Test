@@ -5,6 +5,6 @@ namespace CsCat
 	public class FollowInfo
 	{
 		public Transform transform;
-		public Transform follow_transform;
+		public Transform followTransform;
 	}
 }

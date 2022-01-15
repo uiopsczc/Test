@@ -38,7 +38,7 @@ namespace CsCat
 		/*class_path_lua*/
 		public string class_path_lua { get; set; }
 		/*class_path_cs*/
-		public string class_path_cs { get; set; }
+		public string classPathCS { get; set; }
 		/*type_1*/
 		public string type_1 { get; set; }
 		/*type_2*/

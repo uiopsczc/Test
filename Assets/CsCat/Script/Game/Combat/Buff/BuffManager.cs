@@ -6,12 +6,12 @@ namespace CsCat
 {
 	public class BuffManager : TickObject
 	{
-		private Dictionary<string, int> state_dict = new Dictionary<string, int>();
-		private Dictionary<string, Buff> buff_dict = new Dictionary<string, Buff>();
+		private Dictionary<string, int> stateDict = new Dictionary<string, int>();
+		private Dictionary<string, Buff> buffDict = new Dictionary<string, Buff>();
 		public Unit unit;
 
 		private Dictionary<string, List<Buff>>
-		  buff_list_dict = new Dictionary<string, List<Buff>>(); //一个buff_id可能有多个相同的buff（不同时长，效果累加）同时存在，（效果不累加的放在buff类中处理）
+		  buffListDict = new Dictionary<string, List<Buff>>(); //一个buff_id可能有多个相同的buff（不同时长，效果累加）同时存在，（效果不累加的放在buff类中处理）
 
 		public void Init(Unit unit)
 		{
@@ -19,14 +19,14 @@ namespace CsCat
 			this.unit = unit;
 		}
 
-		public void AddBuff(string buff_id, Unit source_unit, float? force_duration = null, Hashtable arg_dict = null)
+		public void AddBuff(string buffId, Unit sourceUnit, float? forceDuration = null, Hashtable argDict = null)
 		{
-			var cfgBuffData = CfgBuff.Instance.get_by_id(buff_id);
+			var cfgBuffData = CfgBuff.Instance.get_by_id(buffId);
 			float duration =
-			  force_duration.GetValueOrDefault(cfgBuffData.duration == 0 ? float.MaxValue : cfgBuffData.duration);
-			string type_1 = cfgBuffData.type_1; // buff or debuff
-			var source_spell = arg_dict.Get<SpellBase>("source_spell");
-			if ("debuff".Equals(type_1) && this.unit.IsInvincible())
+			  forceDuration.GetValueOrDefault(cfgBuffData.duration == 0 ? float.MaxValue : cfgBuffData.duration);
+			string type1 = cfgBuffData.type_1; // buff or debuff
+			var sourceSpell = argDict.Get<SpellBase>("source_spell");
+			if ("debuff".Equals(type1) && this.unit.IsInvincible())
 				return;
 			if (this.unit.IsImmuneControl() && ("控制".Equals(cfgBuffData.type_2) ||
 												(cfgBuffData.state.IsNullOrWhiteSpace() &&
@@ -36,62 +36,65 @@ namespace CsCat
 				return;
 			}
 
-			if (cfgBuffData.is_unique && HasBuff(buff_id)) // cfgBuffData.is_unique是指该buff只有一个生效
-				buff_list_dict[buff_id][0].CreateBuffCache(duration, source_unit, source_spell, arg_dict);
+			if (cfgBuffData.is_unique && HasBuff(buffId)) // cfgBuffData.is_unique是指该buff只有一个生效
+				buffListDict[buffId][0].CreateBuffCache(duration, sourceUnit, sourceSpell, argDict);
 			else
 			{
-				var buff = this.AddChild<Buff>(null, this, buff_id);
-				buff.CreateBuffCache(duration, source_unit, source_spell, arg_dict);
-				buff_dict[buff.key] = buff;
-				buff_list_dict.GetOrAddDefault(buff_id, () => new List<Buff>()).Add(buff);
+				var buff = this.AddChild<Buff>(null, this, buffId);
+				buff.CreateBuffCache(duration, sourceUnit, sourceSpell, argDict);
+				buffDict[buff.key] = buff;
+				buffListDict.GetOrAddDefault(buffId, () => new List<Buff>()).Add(buff);
 			}
 		}
 
-		public void RemoveBuff(List<string> buff_id_list, string source_unit_guid = null, string soruce_spell_guid = null)
+		public void RemoveBuff(List<string> buffIdList, string sourceUnitGuid = null, string sourceSpellGuid = null)
 		{
-			foreach (var buff_id in buff_id_list)
-				RemoveBuff(buff_id, source_unit_guid, soruce_spell_guid);
+			for (var i = 0; i < buffIdList.Count; i++)
+			{
+				var buffId = buffIdList[i];
+				RemoveBuff(buffId, sourceUnitGuid, sourceSpellGuid);
+			}
 		}
 
-		public void RemoveBuff(string buff_id, string source_unit_guid = null, string soruce_spell_guid = null)
+		public void RemoveBuff(string buffId, string sourceUnitGuid = null, string sourceSpellGuid = null)
 		{
-			this.__RemoveBuff(buff_id, source_unit_guid, soruce_spell_guid);
+			this.__RemoveBuff(buffId, sourceUnitGuid, sourceSpellGuid);
 		}
 
-		private void __RemoveBuff(string buff_id, string source_unit_guid, string soruce_spell_guid)
+		private void __RemoveBuff(string buffId, string sourceUnitGuid, string sourceSpellGuid)
 		{
-			if (!this.buff_list_dict.ContainsKey(buff_id))
+			if (!this.buffListDict.ContainsKey(buffId))
 				return;
-			for (int i = this.buff_list_dict[buff_id].Count - 1; i >= 0; i--)
-				this.buff_list_dict[buff_id][i].RemoveBuffCache(source_unit_guid, soruce_spell_guid);
+			for (int i = this.buffListDict[buffId].Count - 1; i >= 0; i--)
+				this.buffListDict[buffId][i].RemoveBuffCache(sourceUnitGuid, sourceSpellGuid);
 		}
 
 		public void RemoveBuffByBuff(Buff buff)
 		{
-			buff_dict.Remove(buff.key);
-			buff_list_dict[buff.buff_id].Remove(buff);
+			buffDict.Remove(buff.key);
+			buffListDict[buff.buffId].Remove(buff);
 			this.RemoveChild(buff.key);
 		}
 
-		public bool HasBuff(string buff_id)
+		public bool HasBuff(string buffId)
 		{
-			if (!buff_list_dict.ContainsKey(buff_id))
+			if (!buffListDict.ContainsKey(buffId))
 				return false;
-			if (buff_list_dict[buff_id].IsNullOrEmpty())
+			if (buffListDict[buffId].IsNullOrEmpty())
 				return false;
 			return true;
 		}
 
 		public int GetBuffCount()
 		{
-			return this.buff_dict.Count;
+			return this.buffDict.Count;
 		}
 
 
 		public int GetDebuffCount()
 		{
 			int count = 0;
-			foreach (var buff in this.buff_dict.Values)
+			foreach (var buff in this.buffDict.Values)
 			{
 				if ("debuff".Equals(buff.cfgBuffData))
 					count = count + 1;
@@ -100,56 +103,56 @@ namespace CsCat
 			return count;
 		}
 
-		public void AddState(string state_name)
+		public void AddState(string stateName)
 		{
-			if (state_name.IsNullOrWhiteSpace())
+			if (stateName.IsNullOrWhiteSpace())
 				return;
-			int current_value = this.state_dict.GetOrAddDefault(state_name, () => 0);
-			current_value += 1;
-			this.state_dict[state_name] = current_value;
+			int currentValue = this.stateDict.GetOrAddDefault(stateName, () => 0);
+			currentValue += 1;
+			this.stateDict[stateName] = currentValue;
 
-			if (current_value == 1 && this.unit != null)
+			if (currentValue == 1 && this.unit != null)
 			{
 				//第一次添加
-				if (state_name.Equals(StateConst.ImmuneControl))
+				if (stateName.Equals(StateConst.ImmuneControl))
 					this.RemoveControlBuff();
-				if (state_name.Equals(StateConst.Hide))
+				if (stateName.Equals(StateConst.Hide))
 					this.unit.UpdateHideState();
-				if (state_name.Equals(StateConst.Expose))
+				if (stateName.Equals(StateConst.Expose))
 					this.unit.UpdateHideState();
-				if (state_name.Equals(StateConst.Silent))
+				if (stateName.Equals(StateConst.Silent))
 					this.Broadcast(null, UnitEventNameConst.On_Unit_Is_Silent_Change, this.unit, !this.HasState(StateConst.Silent),
 					  this.HasState(StateConst.Silent));
-				if (state_name.Equals(StateConst.Confused))
+				if (stateName.Equals(StateConst.Confused))
 					this.Broadcast(null, UnitEventNameConst.On_Unit_Is_Confused_Change, this.unit, !this.HasState(StateConst.Confused),
 					  this.HasState(StateConst.Confused));
 				this.unit.UpdateMixedStates();
 			}
 		}
 
-		public void RemoveState(string state_name)
+		public void RemoveState(string stateName)
 		{
-			if (state_name.IsNullOrWhiteSpace())
+			if (stateName.IsNullOrWhiteSpace())
 				return;
 
-			int current_value = this.state_dict.GetOrAddDefault(state_name, () => 0);
-			current_value -= 1;
-			if (current_value < 0)
-				LogCat.LogErrorFormat("{0} state_name = {1}", state_name, current_value);
-			current_value = Mathf.Max(0, current_value);
-			this.state_dict[state_name] = current_value;
+			int currentValue = this.stateDict.GetOrAddDefault(stateName, () => 0);
+			currentValue -= 1;
+			if (currentValue < 0)
+				LogCat.LogErrorFormat("{0} state_name = {1}", stateName, currentValue);
+			currentValue = Mathf.Max(0, currentValue);
+			this.stateDict[stateName] = currentValue;
 
-			if (current_value == 0 && this.unit != null)
+			if (currentValue == 0 && this.unit != null)
 			{
 				//第一次删除
-				if (state_name.Equals(StateConst.Hide))
+				if (stateName.Equals(StateConst.Hide))
 					this.unit.UpdateHideState();
-				if (state_name.Equals(StateConst.Expose))
+				if (stateName.Equals(StateConst.Expose))
 					this.unit.UpdateHideState();
-				if (state_name.Equals(StateConst.Silent))
+				if (stateName.Equals(StateConst.Silent))
 					this.Broadcast(null, UnitEventNameConst.On_Unit_Is_Silent_Change, this.unit, !this.HasState(StateConst.Silent),
 					  this.HasState(StateConst.Silent));
-				if (state_name.Equals(StateConst.Confused))
+				if (stateName.Equals(StateConst.Confused))
 					this.Broadcast(null, UnitEventNameConst.On_Unit_Is_Confused_Change, this.unit, !this.HasState(StateConst.Confused),
 					  this.HasState(StateConst.Confused));
 				this.unit.UpdateMixedStates();
@@ -159,28 +162,31 @@ namespace CsCat
 		//去掉控制类型的buff
 		public void RemoveControlBuff()
 		{
-			foreach (var buff_guid in new List<string>(buff_dict.Keys))
+			var list = new List<string>(buffDict.Keys);
+			for (var i = 0; i < list.Count; i++)
 			{
-				var buff = this.buff_dict[buff_guid];
+				var buffGuid = list[i];
+				var buff = this.buffDict[buffGuid];
 				if (!buff.IsDestroyed() && "控制".Equals(buff.cfgBuffData.type_2))
-					this.RemoveBuff(buff_guid);
+					this.RemoveBuff(buffGuid);
 			}
 		}
 
-		public bool HasState(string state_name)
+		public bool HasState(string stateName)
 		{
-			if (!state_dict.ContainsKey(state_name))
-				return false;
-			return state_dict[state_name] > 0;
+			return stateDict.ContainsKey(stateName) && stateDict[stateName] > 0;
 		}
 
 
 		protected override void _Destroy()
 		{
 			base._Destroy();
-			foreach (var buff_id in new List<string>(buff_dict.Keys))
-				this.RemoveBuff(buff_id);
-
+			var ids = new List<string>(buffDict.Keys);
+			for (var i = 0; i < ids.Count; i++)
+			{
+				var buffId = ids[i];
+				this.RemoveBuff(buffId);
+			}
 		}
 	}
 }

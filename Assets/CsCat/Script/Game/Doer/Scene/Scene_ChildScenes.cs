@@ -13,28 +13,25 @@ namespace CsCat
 		}
 
 		//清除主场景的子场景投影障碍（仅供父级场景调用）
-		public void ClearProjectGrids(Vector2Int base_on_parent_pos, Scene child_scene)
+		public void ClearProjectGrids(Vector2Int baseOnParentPos, Scene childScene)
 		{
 			CheckParentCall();
 
 			AStarMapPath mapPath = GetMapPath();
-			int[][] project_grids;
-			if (child_scene.GetMapType() == 1)
-				project_grids = child_scene.GetGrids();
-			else
-				project_grids = child_scene.GetProjectGrids();
-			if (project_grids != null)
+			int[][] projectGrids;
+			projectGrids = childScene.GetMapType() == 1 ? childScene.GetGrids() : childScene.GetProjectGrids();
+			if (projectGrids != null)
 			{
-				Vector2Int offset_pos = child_scene.GetOffsetPos();
-				for (int x = 0; x < project_grids.Length; x++)
+				Vector2Int offsetPos = childScene.GetOffsetPos();
+				for (int x = 0; x < projectGrids.Length; x++)
 				{
-					for (int y = 0; y < project_grids[x].Length; y++)
+					for (int y = 0; y < projectGrids[x].Length; y++)
 					{
-						int v = project_grids[x][y];
+						int v = projectGrids[x][y];
 						if (v == 0 || !AStarUtil.IsValidObstacleType(v)) // 子场景无效区域不投影
 							continue;
-						int px = ToParentX(base_on_parent_pos, offset_pos, x);
-						int py = ToParentY(base_on_parent_pos, offset_pos, y);
+						int px = ToParentX(baseOnParentPos, offsetPos, x);
+						int py = ToParentY(baseOnParentPos, offsetPos, y);
 						if (mapPath.IsValidPoint(px, py)) // 父场景无效区域不投影
 							mapPath.projectGrids[px][py] = 0;
 					}
@@ -43,30 +40,27 @@ namespace CsCat
 		}
 
 		// 设置子场景投影障碍到主场景（仅供父级场景调用）
-		public void SetProjectGrids(Vector2Int base_on_parent_pos, Scene child_scene)
+		public void SetProjectGrids(Vector2Int baseOnParentPos, Scene child_scene)
 		{
 			CheckParentCall();
 
 			AStarMapPath mapPath = GetMapPath();
 			if (mapPath == null || mapPath.grids == null)
 				return;
-			int[][] project_grids;
-			if (child_scene.GetMapType() == 1)
-				project_grids = child_scene.GetGrids();
-			else
-				project_grids = child_scene.GetProjectGrids();
-			if (project_grids != null)
+			int[][] projectGrids;
+			projectGrids = child_scene.GetMapType() == 1 ? child_scene.GetGrids() : child_scene.GetProjectGrids();
+			if (projectGrids != null)
 			{
-				Vector2Int offset_pos = child_scene.GetOffsetPos();
-				for (int x = 0; x < project_grids.Length; x++)
+				Vector2Int offsetPos = child_scene.GetOffsetPos();
+				for (int x = 0; x < projectGrids.Length; x++)
 				{
-					for (int y = 0; y < project_grids[x].Length; y++)
+					for (int y = 0; y < projectGrids[x].Length; y++)
 					{
-						int v = project_grids[x][y];
+						int v = projectGrids[x][y];
 						if (v == 0 || !AStarUtil.IsValidObstacleType(v)) // 子场景无效区域不投影
 							continue;
-						int px = ToParentX(base_on_parent_pos, offset_pos, x);
-						int py = ToParentY(base_on_parent_pos, offset_pos, y);
+						int px = ToParentX(baseOnParentPos, offsetPos, x);
+						int py = ToParentY(baseOnParentPos, offsetPos, y);
 						if (mapPath.IsValidPoint(px, py)) // 父场景无效区域不投影
 							mapPath.projectGrids[px][py] = v;
 					}
@@ -98,10 +92,12 @@ namespace CsCat
 			CheckParentCall();
 
 			ClearAllProjectGrids();
-			foreach (var child_scene in GetChildScenes())
+			var scenes = GetChildScenes();
+			for (var i = 0; i < scenes.Length; i++)
 			{
-				if (!child_scene.IsInAir())
-					SetProjectGrids(child_scene.GetPos(), child_scene);
+				var childScene = scenes[i];
+				if (!childScene.IsInAir())
+					SetProjectGrids(childScene.GetPos(), childScene);
 			}
 		}
 
@@ -109,35 +105,34 @@ namespace CsCat
 		public Scene[] GetChildScenes(string id = null, string belong = null)
 		{
 			if (belong == null && id == null)
-				return this.o_child_scenes.GetScenes();
-			else
-				return this.o_child_scenes.GetScenes(null, scene =>
-				{
-					if (belong != null && !scene.GetBelong().Equals(belong))
-						return false;
-					if (id != null && !scene.GetId().Equals(id))
-						return false;
-					return true;
-				});
+				return this.oChildScenes.GetScenes();
+			return this.oChildScenes.GetScenes(null, scene =>
+			{
+				if (belong != null && !scene.GetBelong().Equals(belong))
+					return false;
+				if (id != null && !scene.GetId().Equals(id))
+					return false;
+				return true;
+			});
 		}
 
-		public Scene GetChildScene(string id_or_rid, string belong = null)
+		public Scene GetChildScene(string idOrRid, string belong = null)
 		{
-			if (IdUtil.IsRid(id_or_rid)) // rid的情况
+			if (IdUtil.IsRid(idOrRid)) // rid的情况
 			{
-				string rid = id_or_rid;
-				if (!this.o_child_scenes.GetSceneDict_ToEdit().ContainsKey(rid))
+				string rid = idOrRid;
+				if (!this.oChildScenes.GetSceneDict_ToEdit().ContainsKey(rid))
 					return null;
-				Scene child_scene = this.o_child_scenes.GetSceneDict_ToEdit()[rid] as Scene;
-				if (belong != null && !child_scene.GetBelong().Equals(belong))
+				Scene childScene = this.oChildScenes.GetSceneDict_ToEdit()[rid] as Scene;
+				if (belong != null && !childScene.GetBelong().Equals(belong))
 					return null;
-				return child_scene;
+				return childScene;
 			}
 			else // id的情况
 			{
-				string id = id_or_rid;
-				Scene[] child_scenes = GetChildScenes(id, belong);
-				return child_scenes.Length == 0 ? null : child_scenes[0];
+				string id = idOrRid;
+				Scene[] childScenes = GetChildScenes(id, belong);
+				return childScenes.Length == 0 ? null : childScenes[0];
 			}
 		}
 
@@ -150,69 +145,69 @@ namespace CsCat
 
 
 		//添加子场景到指定坐标（仅供父级场景调用）
-		public void AddChildScene(Vector2Int pos, Scene child_scene)
+		public void AddChildScene(Vector2Int pos, Scene childScene)
 		{
 			CheckParentCall();
 
-			child_scene.SetEnv(this);
-			child_scene.SetPos(pos);
+			childScene.SetEnv(this);
+			childScene.SetPos(pos);
 
-			this.o_child_scenes.GetSceneDict_ToEdit()[child_scene.GetRid()] = child_scene;
+			this.oChildScenes.GetSceneDict_ToEdit()[childScene.GetRid()] = childScene;
 
 			// 处理子场景障碍投影
-			if (!child_scene.IsInAir())
-				SetProjectGrids(pos, child_scene);
+			if (!childScene.IsInAir())
+				SetProjectGrids(pos, childScene);
 
 			// 触发进入事件
-			DoEnter(child_scene);
+			DoEnter(childScene);
 		}
 
 		//移除子场景（仅供父级场景调用）
-		public void RemoveChildScene(Scene child_scene)
+		public void RemoveChildScene(Scene childScene)
 		{
 			CheckParentCall();
 
-			bool is_contain = o_child_scenes.GetSceneDict_ToEdit().ContainsKey(child_scene.GetRid());
-			o_child_scenes.GetSceneDict_ToEdit().Remove(child_scene.GetRid());
-			if (is_contain)
+			bool isContain = oChildScenes.GetSceneDict_ToEdit().ContainsKey(childScene.GetRid());
+			oChildScenes.GetSceneDict_ToEdit().Remove(childScene.GetRid());
+			if (isContain)
 			{
 				// 处理子场景障碍投影
-				if (!child_scene.IsInAir())
-					ClearProjectGrids(child_scene.GetPos(), child_scene);
+				if (!childScene.IsInAir())
+					ClearProjectGrids(childScene.GetPos(), childScene);
 
 				// 触发离开事件
-				DoLeave(child_scene);
-				child_scene.SetEnv(null);
+				DoLeave(childScene);
+				childScene.SetEnv(null);
 			}
 		}
 
 		//移除子场景（仅供父级场景调用）
 		public void RemoveChildScene(string rid)
 		{
-			Scene child_scene = this.o_child_scenes.GetScene(rid);
-			RemoveChildScene(child_scene);
+			Scene childScene = this.oChildScenes.GetScene(rid);
+			RemoveChildScene(childScene);
 		}
 
 
 		//将子场景移到指定位置（仅供父级场景调用）
-		public void MoveChildScene(Scene scene, Vector2Int to_pos, List<Vector2Int> track_list, int type)
+		public void MoveChildScene(Scene scene, Vector2Int toPos, List<Vector2Int> trackList, int type)
 		{
 			CheckParentCall();
 
-			Vector2Int from_pos = scene.GetPos();
-			scene.SetPos(to_pos);
+			Vector2Int fromPos = scene.GetPos();
+			scene.SetPos(toPos);
 			scene.SetTmp("last_move_time", DateTimeUtil.NowTicks());
-			scene.SetTmp("last_move_track_list", track_list);
+			scene.SetTmp("last_move_track_list", trackList);
 
 			// 处理子场景障碍投影
 			if (!scene.IsInAir())
 			{
-				ClearProjectGrids(from_pos, scene);
-				SetProjectGrids(to_pos, scene);
+				ClearProjectGrids(fromPos, scene);
+				SetProjectGrids(toPos, scene);
 			}
 
 			// 触发移动事件
-			DoMove(scene, from_pos, to_pos, track_list, type);
+			DoMove(scene, fromPos, toPos, trackList, type);
 		}
 
 		//获得指定范围的子场景（仅供父级场景调用）
@@ -221,10 +216,12 @@ namespace CsCat
 			CheckParentCall();
 
 			List<Scene> list = new List<Scene>();
-			foreach (Scene child_scene in GetChildScenes(null, belong))
+			var scenes = GetChildScenes(null, belong);
+			for (var i = 0; i < scenes.Length; i++)
 			{
-				if (range.IsInRange(child_scene.GetPos()))
-					list.Add(child_scene);
+				Scene childScene = scenes[i];
+				if (range.IsInRange(childScene.GetPos()))
+					list.Add(childScene);
 			}
 
 			return list.ToArray();
@@ -247,10 +244,12 @@ namespace CsCat
 		public Scene GetGroupScene(string group, string belong)
 		{
 			CheckParentCall();
-			foreach (var child_scene in GetChildScenes(null, belong))
+			var scenes = GetChildScenes(null, belong);
+			for (var i = 0; i < scenes.Length; i++)
 			{
-				if (group.Equals(child_scene.GetGroup()))
-					return child_scene;
+				var childScene = scenes[i];
+				if (@group.Equals(childScene.GetGroup()))
+					return childScene;
 			}
 
 			return null;

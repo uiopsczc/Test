@@ -71,7 +71,7 @@ namespace CsCat
 
 			var assetBundleCat = this.assetBundleLoader.assetBundleCat;
 			var assetBundle = assetBundleCat.Get();
-			var assets = assetBundle.LoadAssetWithSubAssets(assetCat.asset_path);
+			var assets = assetBundle.LoadAssetWithSubAssets(assetCat.assetPath);
 			assetCat.SetAssets(assets);
 
 			Broadcast(null, AssetBundleEventNameConst.On_AssetAsyncLoader_Success, this);

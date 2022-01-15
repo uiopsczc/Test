@@ -6,7 +6,7 @@ namespace CsCat
 
 		protected override string GetClassPath(string id)
 		{
-			return this.GetCfgItemData(id).class_path_cs.IsNullOrWhiteSpace() ? base.GetClassPath(id) : GetCfgItemData(id).class_path_cs;
+			return this.GetCfgItemData(id).classPathCS.IsNullOrWhiteSpace() ? base.GetClassPath(id) : GetCfgItemData(id).classPathCS;
 		}
 
 		public CfgItemData GetCfgItemData(string id)

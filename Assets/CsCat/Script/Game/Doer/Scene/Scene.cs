@@ -7,14 +7,14 @@ namespace CsCat
 {
 	public partial class Scene : Thing
 	{
-		private Scenes o_child_scenes;
-		private SceneItems o_sceneItems;
+		private Scenes oChildScenes;
+		private SceneItems oSceneItems;
 
 		public override void Init()
 		{
 			base.Init();
-			this.o_child_scenes = new Scenes(this, "o_child_scenes");
-			this.o_sceneItems = new SceneItems(this, "o_sceneItems");
+			this.oChildScenes = new Scenes(this, "o_child_scenes");
+			this.oSceneItems = new SceneItems(this, "o_sceneItems");
 		}
 
 
@@ -72,40 +72,43 @@ namespace CsCat
 		}
 
 		//物件thing在本场景中移动事件
-		void DoMove(Thing thing, Vector2Int from_pos, Vector2Int to_pos, List<Vector2Int> track_list, int type)
+		void DoMove(Thing thing, Vector2Int fromPos, Vector2Int toPos, List<Vector2Int> trackList, int type)
 		{
 			try
 			{
-				OnMoveThing(thing, from_pos, to_pos, track_list, type);
+				OnMoveThing(thing, fromPos, toPos, trackList, type);
 			}
 			catch (Exception exception)
 			{
-				LogCat.LogError(string.Format("to.OnMoveThing error! [{0},{1}->({2}->{3}]:{4}", this, thing, from_pos, to_pos,
-				  exception));
+				LogCat.LogError(string.Format("to.OnMoveThing error! [{0},{1}->({2}->{3}]:{4}", this, thing, fromPos,
+					toPos,
+					exception));
 			}
 
 			try
 			{
-				thing.OnMove(this, from_pos, to_pos, track_list, type);
+				thing.OnMove(this, fromPos, toPos, trackList, type);
 			}
 			catch (Exception exception)
 			{
-				LogCat.LogError(string.Format("thing.OnMove error! [{0},{1}->({2}->{3}]:{4}", this, thing, from_pos, to_pos,
-				  exception));
+				LogCat.LogError(string.Format("thing.OnMove error! [{0},{1}->({2}->{3}]:{4}", this, thing, fromPos,
+					toPos,
+					exception));
 			}
 		}
 
 		//物件thing本场景转移到另一场景事件
-		void DoShift(Thing thing, Vector2Int from_pos, Scene child_scene, Vector2Int to_pos, int type)
+		void DoShift(Thing thing, Vector2Int fromPos, Scene childScene, Vector2Int toPos, int type)
 		{
 			try
 			{
-				OnShift(thing, from_pos, child_scene, to_pos, type);
+				OnShift(thing, fromPos, childScene, toPos, type);
 			}
 			catch (Exception exception)
 			{
-				LogCat.LogError(string.Format("env.OnShift error! [{0},{1}->({2}->{3}]:{4}", this, thing, from_pos, to_pos,
-				  exception));
+				LogCat.LogError(string.Format("env.OnShift error! [{0},{1}->({2}->{3}]:{4}", this, thing, fromPos,
+					toPos,
+					exception));
 			}
 		}
 
@@ -134,45 +137,45 @@ namespace CsCat
 		}
 
 		//物件thing在本场景中移动事件
-		public void OnMoveThing(Thing thing, Vector2Int from_pos, Vector2Int to_pos, List<Vector2Int> track_list, int type)
+		public void OnMoveThing(Thing thing, Vector2Int fromPos, Vector2Int toPos, List<Vector2Int> trackList, int type)
 		{
 		}
 
 		//物件thing本场景转移到另一场景事件
-		public void OnShift(Thing thing, Vector2Int from_pos, Scene child_scene, Vector2Int to_pos, int type)
+		public void OnShift(Thing thing, Vector2Int fromPos, Scene childScene, Vector2Int toPos, int type)
 		{
 		}
 
 
 		////////////////////////////////////////////Util///////////////////////////////////////////////////
 		//是否子场景
-		public bool IsChildScene(Scene to_top_parent_scene = null)
+		public bool IsChildScene(Scene toTopParentScene = null)
 		{
 			return GetEnv() != null;
 		}
 
-		public bool IsChildSceneOf(Scene to_top_parent_scene = null)
+		public bool IsChildSceneOf(Scene toTopParentScene = null)
 		{
-			if (to_top_parent_scene != null)
+			if (toTopParentScene != null)
 			{
-				var parent_scene = GetEnv();
-				while (parent_scene != null)
+				var parentScene = GetEnv();
+				while (parentScene != null)
 				{
-					if (to_top_parent_scene == parent_scene)
+					if (toTopParentScene == parentScene)
 						return true;
-					parent_scene = parent_scene.GetEnv();
+					parentScene = parentScene.GetEnv();
 				}
 
 				return false;
 			}
 
-			return GetEnv() == null ? true : false;
+			return GetEnv() == null;
 		}
 
 
-		public void SetIsInAir(bool is_in_air)
+		public void SetIsInAir(bool isInAir)
 		{
-			SetTmp("o_is_in_air", is_in_air);
+			SetTmp("o_is_in_air", isInAir);
 		}
 
 		//是否在空中
@@ -193,11 +196,11 @@ namespace CsCat
 
 		public void SetMapType(int map_type)
 		{
-			Scene parent_scene = this.GetEnv<Scene>();
-			if (parent_scene != null)
+			Scene parentScene = this.GetEnv<Scene>();
+			if (parentScene != null)
 			{
-				parent_scene.ClearProjectGrids(GetPos(), this);
-				parent_scene.SetProjectGrids(GetPos(), this);
+				parentScene.ClearProjectGrids(GetPos(), this);
+				parentScene.SetProjectGrids(GetPos(), this);
 			}
 
 			Set("map_type", map_type);
@@ -241,18 +244,14 @@ namespace CsCat
 		public int[][] GetGrids()
 		{
 			SceneMapInfo sceneMapInfo = GetSceneMapInfo();
-			if (sceneMapInfo != null)
-				return sceneMapInfo.grids;
-			return null;
+			return sceneMapInfo?.grids;
 		}
 
 		// 自身投影数据 project_grids[x][y]
 		public int[][] GetProjectGrids()
 		{
 			SceneMapInfo sceneMapInfo = GetSceneMapInfo();
-			if (sceneMapInfo != null)
-				return sceneMapInfo.project_grids;
-			return null;
+			return sceneMapInfo?.projectGrids;
 		}
 
 
@@ -279,7 +278,7 @@ namespace CsCat
 		{
 			SceneMapInfo sceneMapInfo = GetSceneMapInfo();
 			if (sceneMapInfo != null)
-				return sceneMapInfo.offset_pos;
+				return sceneMapInfo.offsetPos;
 			return Vector2Int.zero;
 		}
 
@@ -301,78 +300,82 @@ namespace CsCat
 		}
 
 		//将自身x坐标转换为父级场景x坐标
-		public int ToParentX(Vector2Int base_on_parent_pos, Vector2Int offset_pos, int x)
+		public int ToParentX(Vector2Int baseOnParentPos, Vector2Int offsetPos, int x)
 		{
-			return base_on_parent_pos.x - offset_pos.x + x;
+			return baseOnParentPos.x - offsetPos.x + x;
 		}
 
 		//将自身y坐标转换为父级场景y坐标
-		public int ToParentY(Vector2Int base_on_parent_pos, Vector2Int offset_pos, int y)
+		public int ToParentY(Vector2Int baseOnParentPos, Vector2Int offsetPos, int y)
 		{
-			return base_on_parent_pos.y - offset_pos.y + y;
+			return baseOnParentPos.y - offsetPos.y + y;
 		}
 
-		public Vector2Int ToParentPos(Vector2Int base_on_parent_pos, Vector2Int offset_pos, Vector2Int pos)
+		public Vector2Int ToParentPos(Vector2Int baseOnParentPos, Vector2Int offsetPos, Vector2Int pos)
 		{
-			return new Vector2Int(ToParentX(base_on_parent_pos, offset_pos, pos.x),
-			  ToParentY(base_on_parent_pos, offset_pos, pos.y));
-		}
-
-		//将自身坐标转换为父级场景坐标
-		public Vector2Int ToParentPos(Vector2Int pos, Scene to_top_parent_scene)
-		{
-			bool is_child_scene = IsChildScene();
-			if (is_child_scene)
-			{
-				Vector2Int base_on_parent_pos = GetPos();
-				Vector2Int offset_pos = GetOffsetPos();
-				pos = ToParentPos(base_on_parent_pos, offset_pos, pos);
-			}
-
-			if (to_top_parent_scene != this.GetEnv())
-			{
-				if (is_child_scene)
-					return this.GetEnv<Scene>().ToParentPos(pos, to_top_parent_scene);
-				throw new Exception(string.Format("没有目标的scene:{0}", to_top_parent_scene));
-			}
-			else
-				return pos;
+			return new Vector2Int(ToParentX(baseOnParentPos, offsetPos, pos.x),
+				ToParentY(baseOnParentPos, offsetPos, pos.y));
 		}
 
 		//将自身坐标转换为父级场景坐标
-		public List<Vector2Int> ToParentPosList(List<Vector2Int> pos_list, Scene to_top_parent_scene)
+		public Vector2Int ToParentPos(Vector2Int pos, Scene toTopParentScene)
+		{
+			bool isChildScene = IsChildScene();
+			if (isChildScene)
+			{
+				Vector2Int baseOnParentPos = GetPos();
+				Vector2Int offsetPos = GetOffsetPos();
+				pos = ToParentPos(baseOnParentPos, offsetPos, pos);
+			}
+
+			if (toTopParentScene != this.GetEnv())
+			{
+				if (isChildScene)
+					return this.GetEnv<Scene>().ToParentPos(pos, toTopParentScene);
+				throw new Exception(string.Format("没有目标的scene:{0}", toTopParentScene));
+			}
+
+			return pos;
+		}
+
+		//将自身坐标转换为父级场景坐标
+		public List<Vector2Int> ToParentPosList(List<Vector2Int> posList, Scene toTopParentScene)
 		{
 			List<Vector2Int> result = new List<Vector2Int>();
-			foreach (var pos in pos_list)
-				result.Add(ToParentPos(pos, to_top_parent_scene));
+			for (var i = 0; i < posList.Count; i++)
+			{
+				var pos = posList[i];
+				result.Add(ToParentPos(pos, toTopParentScene));
+			}
+
 			return result;
 		}
 
 		//将自身坐标转换为父级场景坐标
-		public AStarRange ToParentRange(AStarRange range, Scene to_top_parent_scene)
+		public AStarRange ToParentRange(AStarRange range, Scene toTopParentScene)
 		{
-			Vector2Int left_bottom =
-			  ToParentPos(new Vector2Int(range.left_bottom_x, range.left_bottom_y), to_top_parent_scene);
-			Vector2Int right_top = ToParentPos(new Vector2Int(range.right_top_x, range.right_top_y), to_top_parent_scene);
-			return new AStarRange(left_bottom, right_top);
+			Vector2Int leftBottom =
+				ToParentPos(new Vector2Int(range.leftBottomX, range.leftBottomY), toTopParentScene);
+			Vector2Int rightTop = ToParentPos(new Vector2Int(range.rightTopX, range.rightTopY), toTopParentScene);
+			return new AStarRange(leftBottom, rightTop);
 		}
 
 		//将父级场景x坐标转换为自身x坐标
-		public int FromParentX(Vector2Int base_on_parent_pos, Vector2Int offset_pos, int x)
+		public int FromParentX(Vector2Int baseOnParentPos, Vector2Int offsetPos, int x)
 		{
-			return x - base_on_parent_pos.x + offset_pos.x;
+			return x - baseOnParentPos.x + offsetPos.x;
 		}
 
 		//将父级场景y坐标转换为自身y坐标
-		public int FromParentY(Vector2Int base_on_parent_pos, Vector2Int offset_pos, int y)
+		public int FromParentY(Vector2Int baseOnParentPos, Vector2Int offsetPos, int y)
 		{
-			return y - base_on_parent_pos.y + offset_pos.y;
+			return y - baseOnParentPos.y + offsetPos.y;
 		}
 
-		public Vector2Int FromParentPos(Vector2Int base_on_parent_pos, Vector2Int offset_pos, Vector2Int pos)
+		public Vector2Int FromParentPos(Vector2Int baseOnParentPos, Vector2Int offsetPos, Vector2Int pos)
 		{
-			return new Vector2Int(FromParentX(base_on_parent_pos, offset_pos, pos.x),
-			  FromParentY(base_on_parent_pos, offset_pos, pos.y));
+			return new Vector2Int(FromParentX(baseOnParentPos, offsetPos, pos.x),
+				FromParentY(baseOnParentPos, offsetPos, pos.y));
 		}
 
 		//将父级场景坐标转换为自身坐标
@@ -380,20 +383,24 @@ namespace CsCat
 		{
 			if (IsChildScene())
 			{
-				Vector2Int base_on_parent_pos = GetPos();
-				Vector2Int offset_pos = GetOffsetPos();
-				return FromParentPos(base_on_parent_pos, offset_pos, pos);
+				Vector2Int baseOnParentPos = GetPos();
+				Vector2Int offsetPos = GetOffsetPos();
+				return FromParentPos(baseOnParentPos, offsetPos, pos);
 			}
 			else
 				return pos;
 		}
 
 		//将父级场景坐标转换为自身坐标
-		public List<Vector2Int> FromParentPosList(List<Vector2Int> pos_list)
+		public List<Vector2Int> FromParentPosList(List<Vector2Int> posList)
 		{
 			List<Vector2Int> result = new List<Vector2Int>();
-			foreach (var pos in pos_list)
+			for (var i = 0; i < posList.Count; i++)
+			{
+				var pos = posList[i];
 				result.Add(FromParentPos(pos));
+			}
+
 			return result;
 		}
 
@@ -402,9 +409,9 @@ namespace CsCat
 		{
 			if (IsChildScene())
 			{
-				Vector2Int left_bottom = FromParentPos(new Vector2Int(range.left_bottom_x, range.left_bottom_y));
-				Vector2Int right_top = FromParentPos(new Vector2Int(range.right_top_x, range.right_top_y));
-				return new AStarRange(left_bottom, right_top);
+				Vector2Int leftBottom = FromParentPos(new Vector2Int(range.leftBottomX, range.leftBottomY));
+				Vector2Int rightTop = FromParentPos(new Vector2Int(range.rightTopX, range.rightTopY));
+				return new AStarRange(leftBottom, rightTop);
 			}
 			else
 				return range;
@@ -413,16 +420,16 @@ namespace CsCat
 		//检测指定点是否属于该地图内
 		public bool IsInMapRange(Vector2Int pos)
 		{
-			int[][] project_grids = GetProjectGrids();
-			if (project_grids == null || !AStarUtil.IsInRange(project_grids, pos))
+			int[][] projectGrids = GetProjectGrids();
+			if (projectGrids == null || !AStarUtil.IsInRange(projectGrids, pos))
 				return false;
-			return project_grids[pos.x][pos.y] != 0; // 投影层不为空的范围就是图内
+			return projectGrids[pos.x][pos.y] != 0; // 投影层不为空的范围就是图内
 		}
 
 
 		// 随机获取地图上一点
-		public Vector2Int GetRandomPos(int[] can_pass_obstacle_types, int[] can_pass_terrain_types,
-		  RandomManager randomManager = null)
+		public Vector2Int GetRandomPos(int[] canPassObstacleTypes, int[] canPassTerrainTypes,
+			RandomManager randomManager = null)
 		{
 			randomManager = randomManager ?? Client.instance.randomManager;
 			int width = GetWidth();
@@ -431,16 +438,16 @@ namespace CsCat
 			int y = randomManager.RandomInt(0, height);
 
 			Vector2Int result = new Vector2Int(x, y);
-			if (can_pass_obstacle_types != null || can_pass_terrain_types != null)
+			if (canPassObstacleTypes != null || canPassTerrainTypes != null)
 			{
-				if (can_pass_obstacle_types == null)
-					can_pass_obstacle_types = AStarMapPathConst.Air_Can_Pass_Obstacle_Types;
-				if (can_pass_terrain_types == null)
-					can_pass_terrain_types = AStarMapPathConst.Air_Can_Pass_Terrain_Types;
-				Vector2Int? free_point = AStarUtil.FindAroundFreePoint(GetMapPath(), result, null, can_pass_obstacle_types,
-				  can_pass_terrain_types, randomManager);
-				if (free_point != null)
-					result = free_point.Value;
+				if (canPassObstacleTypes == null)
+					canPassObstacleTypes = AStarMapPathConst.Air_Can_Pass_Obstacle_Types;
+				if (canPassTerrainTypes == null)
+					canPassTerrainTypes = AStarMapPathConst.Air_Can_Pass_Terrain_Types;
+				Vector2Int? freePoint = AStarUtil.FindAroundFreePoint(GetMapPath(), result, null, canPassObstacleTypes,
+					canPassTerrainTypes, randomManager);
+				if (freePoint != null)
+					result = freePoint.Value;
 			}
 
 			return result;

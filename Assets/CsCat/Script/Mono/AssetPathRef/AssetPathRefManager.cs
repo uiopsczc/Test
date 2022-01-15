@@ -8,7 +8,7 @@ namespace CsCat
 	public class AssetPathRefManager : ISingleton
 	{
 		private Dictionary<string, AssetPathRef> dict = new Dictionary<string, AssetPathRef>(); //key是guid
-		private long ref_id;
+		private long refId;
 
 
 		public static AssetPathRefManager instance => SingletonFactory.instance.Get<AssetPathRefManager>();
@@ -24,7 +24,7 @@ namespace CsCat
 		public void ClearAll()
 		{
 			dict.Clear();
-			ref_id = 0;
+			refId = 0;
 			StdioUtil.RemoveFile(new FileInfo(AssetPathRefConst.SaveFilePath.WithRootPath(FilePathConst.ProjectPath)));
 		}
 
@@ -34,41 +34,43 @@ namespace CsCat
 				Load(StdioUtil.ReadTextFile(path));
 		}
 
-		public void Load(string content_json)
+		public void Load(string contentJson)
 		{
 			dict.Clear();
-			Hashtable json_dict = MiniJson.JsonDecode(content_json) as Hashtable;
-			ref_id = json_dict.Get<long>("ref_id");
-			ArrayList assetPathRef_list = json_dict.Get<ArrayList>("assetPathRef_list");
-			foreach (Hashtable assetPathRef_dict in assetPathRef_list)
+			Hashtable jsonDict = MiniJson.JsonDecode(contentJson) as Hashtable;
+			refId = jsonDict.Get<long>("ref_id");
+			ArrayList assetPathRefList = jsonDict.Get<ArrayList>("assetPathRef_list");
+			for (var i = 0; i < assetPathRefList.Count; i++)
 			{
-				long ref_id = assetPathRef_dict.Get<long>("ref_id");
-				string assetPath = assetPathRef_dict.Get<string>("assetPath");
-				string guid = assetPathRef_dict.Get<string>("guid");
-				if (ref_id > this.ref_id)
-					this.ref_id = ref_id;
-				dict[guid] = new AssetPathRef(ref_id, assetPath, guid);
+				var assetPathRefDict = (Hashtable) assetPathRefList[i];
+				long refId = assetPathRefDict.Get<long>("ref_id");
+				string assetPath = assetPathRefDict.Get<string>("assetPath");
+				string guid = assetPathRefDict.Get<string>("guid");
+				if (refId > this.refId)
+					this.refId = refId;
+				dict[guid] = new AssetPathRef(refId, assetPath, guid);
 			}
 		}
 
 		public void Save()
 		{
 			Refresh();
-			Hashtable json_dict = new Hashtable();
-			json_dict["ref_id"] = ref_id;
-			ArrayList assetPathRef_list = new ArrayList();
-			foreach (AssetPathRef assetPathRef in dict.Values)
+			Hashtable jsonDict = new Hashtable();
+			jsonDict["ref_id"] = refId;
+			ArrayList assetPathRefList = new ArrayList();
+			foreach (var keyValue in dict)
 			{
-				Hashtable assetPathRef_dict = new Hashtable();
-				assetPathRef_dict["ref_id"] = assetPathRef.ref_id;
-				assetPathRef_dict["assetPath"] = assetPathRef.asset_path;
-				assetPathRef_dict["guid"] = assetPathRef.guid;
-				assetPathRef_list.Add(assetPathRef_dict);
+				var assetPathRef = keyValue.Value;
+				Hashtable assetPathRefDict = new Hashtable();
+				assetPathRefDict["ref_id"] = assetPathRef.refId;
+				assetPathRefDict["assetPath"] = assetPathRef.assetPath;
+				assetPathRefDict["guid"] = assetPathRef.guid;
+				assetPathRefList.Add(assetPathRefDict);
 			}
 
-			json_dict["assetPathRef_list"] = assetPathRef_list;
-			string content_json = MiniJson.JsonEncode(json_dict);
-			StdioUtil.WriteTextFile(AssetPathRefConst.SaveFilePath.WithRootPath(FilePathConst.ProjectPath), content_json);
+			jsonDict["assetPathRef_list"] = assetPathRefList;
+			string contentJson = MiniJson.JsonEncode(jsonDict);
+			StdioUtil.WriteTextFile(AssetPathRefConst.SaveFilePath.WithRootPath(FilePathConst.ProjectPath), contentJson);
 		}
 
 		public void Refresh()
@@ -82,8 +84,8 @@ namespace CsCat
 				dict[guid].Refresh();
 			else
 			{
-				ref_id++;
-				dict[guid] = new AssetPathRef(ref_id, null, guid);
+				refId++;
+				dict[guid] = new AssetPathRef(refId, null, guid);
 			}
 		}
 
@@ -95,24 +97,24 @@ namespace CsCat
 
 		public string GetAssetPathByGuid(string guid)
 		{
-			return dict[guid].asset_path;
+			return dict[guid].assetPath;
 		}
 
 		public long GetRefIdByGuid(string guid)
 		{
-			return dict[guid].ref_id;
+			return dict[guid].refId;
 		}
 
 		/////////////////////////////////////////////////////////////////////////
-		public string GetAssetPathByRefId(long ref_id)
+		public string GetAssetPathByRefId(long refId)
 		{
 			foreach (var assetPathRef in dict.Values)
 			{
-				if (assetPathRef.ref_id == ref_id)
-					return assetPathRef.asset_path;
+				if (assetPathRef.refId == refId)
+					return assetPathRef.assetPath;
 			}
 
-			LogCat.error(string.Format("没有找到ref_id:{0}对应的assetPath", ref_id));
+			LogCat.error(string.Format("没有找到ref_id:{0}对应的assetPath", refId));
 			return null;
 		}
 	}

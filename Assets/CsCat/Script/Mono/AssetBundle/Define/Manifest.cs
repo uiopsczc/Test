@@ -4,64 +4,67 @@ namespace CsCat
 {
 	public class Manifest
 	{
-		private readonly string[] empty_string_array = { };
-		private byte[] manifest_bytes;
+		private readonly string[] emptyStringArray = { };
+		private byte[] manifestBytes;
 
 		public Manifest()
 		{
-			assetBundle_name = BuildConst.ManifestBundle_Path;
+			assetBundleName = BuildConst.ManifestBundle_Path;
 		}
 
 		public AssetBundleManifest assetBundleManifest { get; private set; }
 
-		public string assetBundle_name { get; protected set; }
+		public string assetBundleName { get; protected set; }
 
-		public int assetBundle_count => assetBundleManifest == null ? 0 : assetBundleManifest.GetAllAssetBundles().Length;
+		public int assetBundleCount =>
+			assetBundleManifest == null ? 0 : assetBundleManifest.GetAllAssetBundles().Length;
 
 
-		public void LoadFromAssetbundle(AssetBundle assetBundle)
+		public void LoadFromAssetBundle(AssetBundle assetBundle)
 		{
 			assetBundleManifest = assetBundle.LoadAsset<AssetBundleManifest>(BuildConst.Manifest_Path);
 		}
 
 		public void SaveBytes(byte[] bytes)
 		{
-			manifest_bytes = bytes;
+			manifestBytes = bytes;
 		}
 
 		public void SaveToDisk()
 		{
-			var path = assetBundle_name.WithRootPath(FilePathConst.PersistentAssetBundleRoot);
-			StdioUtil.WriteFile(path, manifest_bytes);
+			var path = assetBundleName.WithRootPath(FilePathConst.PersistentAssetBundleRoot);
+			StdioUtil.WriteFile(path, manifestBytes);
 		}
 
-		public Hash128 GetAssetBundleHash(string assetBundle_name)
+		public Hash128 GetAssetBundleHash(string assetBundleName)
 		{
-			return assetBundleManifest == null ? default : assetBundleManifest.GetAssetBundleHash(assetBundle_name);
+			return assetBundleManifest == null ? default : assetBundleManifest.GetAssetBundleHash(assetBundleName);
 		}
 
 		public string[] GetAllAssetBundlePaths()
 		{
-			return assetBundleManifest == null ? empty_string_array : assetBundleManifest.GetAllAssetBundles();
+			return assetBundleManifest == null ? emptyStringArray : assetBundleManifest.GetAllAssetBundles();
 		}
 
 		public string[] GetAllAssetBundlePathsWithVariant()
 		{
-			return assetBundleManifest == null ? empty_string_array : assetBundleManifest.GetAllAssetBundlesWithVariant();
+			return assetBundleManifest == null
+				? emptyStringArray
+				: assetBundleManifest.GetAllAssetBundlesWithVariant();
 		}
 
-		public string[] GetAllDependencies(string assetBundle_name)
+		public string[] GetAllDependencies(string assetBundleName)
 		{
 			return assetBundleManifest == null
-			  ? empty_string_array
-			  : assetBundleManifest.GetAllDependencies(assetBundle_name);
+				? emptyStringArray
+				: assetBundleManifest.GetAllDependencies(assetBundleName);
 		}
 
-		public string[] GetDirectDependencies(string assetBundle_name)
+		public string[] GetDirectDependencies(string assetBundleName)
 		{
 			return assetBundleManifest == null
-			  ? empty_string_array
-			  : assetBundleManifest.GetDirectDependencies(assetBundle_name);
+				? emptyStringArray
+				: assetBundleManifest.GetDirectDependencies(assetBundleName);
 		}
 	}
 }

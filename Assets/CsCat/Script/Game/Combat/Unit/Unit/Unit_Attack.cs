@@ -6,282 +6,285 @@ namespace CsCat
 {
 	public partial class Unit
 	{
-		private string last_attack_id;
-		private ComboInfo normal_attack_comboInfo;
-		private List<string> normal_attack_id_list;
-		public List<string> skill_id_list;
-		private Dictionary<string, SpellInfo> spellInfo_dict = new Dictionary<string, SpellInfo>();
-		public SpellBase current_attack;
-		public bool is_normal_attacking;
+		private string lastAttackId;
+		private ComboInfo normalAttackComboInfo;
+		private List<string> normalAttackIdList;
+		public List<string> skillIdList;
+		private Dictionary<string, SpellInfo> spellInfoDict = new Dictionary<string, SpellInfo>();
+		public SpellBase currentAttack;
+		public bool isNormalAttacking;
 
 		//////////////////////////////////////////////////////////////////////
 		// 普攻相关
 		//////////////////////////////////////////////////////////////////////
-		public void AddNormalAttack(string normal_attack_id)
+		public void AddNormalAttack(string normalAttackId)
 		{
-			if (normal_attack_id.IsNullOrWhiteSpace())
+			if (normalAttackId.IsNullOrWhiteSpace())
 				return;
-			normal_attack_id_list.Add(normal_attack_id);
-			this.InitSpellInfo(normal_attack_id);
-			this.AddPassiveBuffOfSpell(normal_attack_id);
+			normalAttackIdList.Add(normalAttackId);
+			this.InitSpellInfo(normalAttackId);
+			this.AddPassiveBuffOfSpell(normalAttackId);
 		}
 
 		public string GetNormalAttackId()
 		{
-			var next_index = this.normal_attack_comboInfo.next_index;
-			if (CombatUtil.GetTime() > this.normal_attack_comboInfo.next_time ||
-				!this.normal_attack_id_list.ContainsIndex(this.normal_attack_comboInfo.next_index)
+			var nextIndex = this.normalAttackComboInfo.nextIndex;
+			if (CombatUtil.GetTime() > this.normalAttackComboInfo.nextTime ||
+				!this.normalAttackIdList.ContainsIndex(this.normalAttackComboInfo.nextIndex)
 			)
-				next_index = 0;
+				nextIndex = 0;
 
-			var normal_attack_id = this.normal_attack_id_list[next_index];
-			return normal_attack_id;
+			var normalAttackId = this.normalAttackIdList[nextIndex];
+			return normalAttackId;
 		}
 
 
-		public SpellBase NormalAttack(Unit target_unit)
+		public SpellBase NormalAttack(Unit targetUnit)
 		{
-			var normal_attack_id = this.GetNormalAttackId();
-			var normal_attack =
-			  Client.instance.combat.spellManager.CastSpell(this, normal_attack_id, target_unit, null, true);
-			if (normal_attack != null)
-				this.last_attack_id = normal_attack_id;
-			return normal_attack;
+			var normalAttackId = this.GetNormalAttackId();
+			var normalAttack =
+			  Client.instance.combat.spellManager.CastSpell(this, normalAttackId, targetUnit, null, true);
+			if (normalAttack != null)
+				this.lastAttackId = normalAttackId;
+			return normalAttack;
 		}
 
 		public void NormalAttackStart()
 		{
-			this.normal_attack_comboInfo.next_time =
+			this.normalAttackComboInfo.nextTime =
 			  CombatUtil.GetTime() + ComboConst.Normal_Attack_Combo_Max_Duration; // 1秒间隔触发combo
-			this.normal_attack_comboInfo.next_index = this.normal_attack_comboInfo.next_index + 1;
-			this.is_normal_attacking = true;
+			this.normalAttackComboInfo.nextIndex = this.normalAttackComboInfo.nextIndex + 1;
+			this.isNormalAttacking = true;
 		}
 
 		public void NormalAttackFinish()
 		{
-			this.normal_attack_comboInfo.next_time = CombatUtil.GetTime() + 0.2f;
-			this.is_normal_attacking = true;
+			this.normalAttackComboInfo.nextTime = CombatUtil.GetTime() + 0.2f;
+			this.isNormalAttacking = true;
 		}
 
 		//////////////////////////////////////////////////////////////////////
 		// 技能相关
 		//////////////////////////////////////////////////////////////////////
-		public void AddSkill(string skill_id)
+		public void AddSkill(string skillId)
 		{
-			if (skill_id.IsNullOrWhiteSpace())
+			if (skillId.IsNullOrWhiteSpace())
 				return;
-			this.skill_id_list.Add(skill_id);
-			this.InitSpellInfo(skill_id);
-			this.AddPassiveBuffOfSpell(skill_id);
+			this.skillIdList.Add(skillId);
+			this.InitSpellInfo(skillId);
+			this.AddPassiveBuffOfSpell(skillId);
 		}
 
 		//is_control 是否是控制类技能
-		public SpellBase CastSkillByIndex(int index, Unit target_unit, bool is_control)
+		public SpellBase CastSkillByIndex(int index, Unit targetUnit, bool isControl)
 		{
-			var skill_id = this.skill_id_list[index];
-			if (skill_id.IsNullOrWhiteSpace())
+			var skillId = this.skillIdList[index];
+			if (skillId.IsNullOrWhiteSpace())
 			{
 				LogCat.error("index error ", index);
 				return null;
 			}
 
-			return this.CastSpell(skill_id, target_unit, is_control);
+			return this.CastSpell(skillId, targetUnit, isControl);
 		}
 
 		//////////////////////////////////////////////////////////////////////
 		// spell相关
 		//////////////////////////////////////////////////////////////////////
-		public void InitSpellInfo(string spell_id, float cooldown_pct = 0)
+		public void InitSpellInfo(string spellId, float cooldownPct = 0)
 		{
 			var spellInfo = new SpellInfo();
-			this.spellInfo_dict[spell_id] = spellInfo;
-			spellInfo.cooldown_rate = 1 - (this.GetCalcPropValue("技能冷却减少百分比"));
-			this.SetSpellInfoCooldown(spell_id, cooldown_pct);
+			this.spellInfoDict[spellId] = spellInfo;
+			spellInfo.cooldownRate = 1 - (this.GetCalcPropValue("技能冷却减少百分比"));
+			this.SetSpellInfoCooldown(spellId, cooldownPct);
 		}
 
-		public float GetSpellCooldownRate(string spell_id)
+		public float GetSpellCooldownRate(string spellId)
 		{
-			var cfgSpellData = CfgSpell.Instance.get_by_id(spell_id);
+			var cfgSpellData = CfgSpell.Instance.get_by_id(spellId);
 			if ("普攻".Equals(cfgSpellData.type))
 				return 1 / (1 + this.GetCalcPropValue("攻击速度"));
-			else
-				return 1 - this.GetCalcPropValue("技能冷却减少百分比");
+			return 1 - this.GetCalcPropValue("技能冷却减少百分比");
 		}
 
-		public List<string> GetSpellIdList(string spell_id)
+		public List<string> GetSpellIdList(string spellId)
 		{
-			var cfgSpellData = CfgSpell.Instance.get_by_id(spell_id);
+			var cfgSpellData = CfgSpell.Instance.get_by_id(spellId);
 			if ("普攻".Equals(cfgSpellData.type))
-				return this.normal_attack_id_list;
-			else
-				return this.skill_id_list;
+				return this.normalAttackIdList;
+			return this.skillIdList;
 		}
 
 
-		public void SetSpellInfoCooldown(string spell_id, float cooldown_pct = 0)
+		public void SetSpellInfoCooldown(string spellId, float cooldownPct = 0)
 		{
-			var cfgSpellData = CfgSpell.Instance.get_by_id(spell_id);
-			var spellInfo = this.spellInfo_dict[spell_id];
-			spellInfo.cooldown_rate = this.GetSpellCooldownRate(spell_id);
-			spellInfo.cooldown_remain_duration = cfgSpellData.cooldown_duration * spellInfo.cooldown_rate * cooldown_pct;
+			var cfgSpellData = CfgSpell.Instance.get_by_id(spellId);
+			var spellInfo = this.spellInfoDict[spellId];
+			spellInfo.cooldownRate = this.GetSpellCooldownRate(spellId);
+			spellInfo.cooldownRemainDuration = cfgSpellData.cooldown_duration * spellInfo.cooldownRate * cooldownPct;
 		}
 
-		public void AddPassiveBuffOfSpell(string spell_id)
+		public void AddPassiveBuffOfSpell(string spellId)
 		{
-			var cfgSpellData = CfgSpell.Instance.get_by_id(spell_id);
-			var passive_buff_ids = cfgSpellData._passive_buff_ids;
-			if (!passive_buff_ids.IsNullOrEmpty())
+			var cfgSpellData = CfgSpell.Instance.get_by_id(spellId);
+			var passiveBuffIds = cfgSpellData._passive_buff_ids;
+			if (!passiveBuffIds.IsNullOrEmpty())
 			{
-				foreach (var passive_buff_id in passive_buff_ids)
-					this.buffManager.AddBuff(passive_buff_id, this);
+				for (var i = 0; i < passiveBuffIds.Length; i++)
+				{
+					var passiveBuffId = passiveBuffIds[i];
+					this.buffManager.AddBuff(passiveBuffId, this);
+				}
 			}
 		}
 
-		public void RemoveSpell(string spell_id)
+		public void RemoveSpell(string spellId)
 		{
-			List<string> spell_id_list = this.GetSpellIdList(spell_id);
-			spell_id_list.Remove(spell_id);
-			this.spellInfo_dict.Remove(spell_id);
-			this.RemovePassiveBuffOfSpell(spell_id);
+			List<string> spellIdList = this.GetSpellIdList(spellId);
+			spellIdList.Remove(spellId);
+			this.spellInfoDict.Remove(spellId);
+			this.RemovePassiveBuffOfSpell(spellId);
 		}
 
-		public void RemovePassiveBuffOfSpell(string spell_id)
+		public void RemovePassiveBuffOfSpell(string spellId)
 		{
-			var cfgSpellData = CfgSpell.Instance.get_by_id(spell_id);
-			var passive_buff_ids = cfgSpellData._passive_buff_ids;
-			if (!passive_buff_ids.IsNullOrEmpty())
+			var cfgSpellData = CfgSpell.Instance.get_by_id(spellId);
+			var passiveBuffIds = cfgSpellData._passive_buff_ids;
+			if (!passiveBuffIds.IsNullOrEmpty())
 			{
-				foreach (var passive_buff_id in passive_buff_ids)
-					this.buffManager.RemoveBuff(passive_buff_id, this.GetGuid());
+				for (var i = 0; i < passiveBuffIds.Length; i++)
+				{
+					var passiveBuffId = passiveBuffIds[i];
+					this.buffManager.RemoveBuff(passiveBuffId, this.GetGuid());
+				}
 			}
 		}
 
 		//替换单位技能
-		public void ReplaceSpell(string old_spell_id, string new_spell_id, bool is_reset_cooldown_remain_duration = false)
+		public void ReplaceSpell(string oldSpellId, string newSpellId, bool isResetCooldownRemainDuration = false)
 		{
-			var spell_id_list = this.GetSpellIdList(old_spell_id);
-			int index = spell_id_list.IndexOf(old_spell_id);
-			spell_id_list[index] = new_spell_id;
+			var spellIdList = this.GetSpellIdList(oldSpellId);
+			int index = spellIdList.IndexOf(oldSpellId);
+			spellIdList[index] = newSpellId;
 
 			//更新cooldown
-			float cooldown_cur_pct = 0;
-			if (!is_reset_cooldown_remain_duration)
-				cooldown_cur_pct = this.spellInfo_dict[old_spell_id].GetCooldownPct();
-			this.InitSpellInfo(new_spell_id, cooldown_cur_pct);
-			this.spellInfo_dict.Remove(old_spell_id);
+			float cooldownCurPct = 0;
+			if (!isResetCooldownRemainDuration)
+				cooldownCurPct = this.spellInfoDict[oldSpellId].GetCooldownPct();
+			this.InitSpellInfo(newSpellId, cooldownCurPct);
+			this.spellInfoDict.Remove(oldSpellId);
 
 			//删除原技能被动buff
-			this.RemovePassiveBuffOfSpell(old_spell_id);
+			this.RemovePassiveBuffOfSpell(oldSpellId);
 			// 添加新技能被动buff
-			this.AddPassiveBuffOfSpell(new_spell_id);
+			this.AddPassiveBuffOfSpell(newSpellId);
 		}
 
 		//改变技能CD
 		private void OnSpellCooldownRateChange()
 		{
-			foreach (var spell_id in this.spellInfo_dict.Keys)
+			foreach (var keyValue in this.spellInfoDict)
 			{
-				var spellInfo = spellInfo_dict[spell_id];
-				var cfgSpellData = CfgSpell.Instance.get_by_id(spell_id);
-				var cooldown_old_rate = spellInfo.cooldown_rate;
-				var cooldown_duration = cfgSpellData.cooldown_duration;
-				if (cooldown_duration > 0)
+				var spellId = keyValue.Key;
+				var spellInfo = spellInfoDict[spellId];
+				var cfgSpellData = CfgSpell.Instance.get_by_id(spellId);
+				var cooldownOldRate = spellInfo.cooldownRate;
+				var cooldownDuration = cfgSpellData.cooldown_duration;
+				if (cooldownDuration > 0)
 				{
-					var new_rate = this.GetSpellCooldownRate(spell_id);
-					if (spellInfo.cooldown_remain_duration <= 0)
-						spellInfo.cooldown_remain_duration = 0;
+					var newRate = this.GetSpellCooldownRate(spellId);
+					if (spellInfo.cooldownRemainDuration <= 0)
+						spellInfo.cooldownRemainDuration = 0;
 					else
 					{
 						//var cooldown_cur_pct = spellInfo.cooldown_remain_duration / (cooldown_duration * cooldown_last_rate)
 						//var cooldown_remain_duration = cooldown_cur_pct * (cooldown_duration * new_rate)
-						spellInfo.cooldown_remain_duration = spellInfo.cooldown_remain_duration * new_rate / cooldown_old_rate;
+						spellInfo.cooldownRemainDuration = spellInfo.cooldownRemainDuration * newRate / cooldownOldRate;
 					}
 
-					spellInfo.cooldown_rate = new_rate;
+					spellInfo.cooldownRate = newRate;
 				}
 			}
 		}
 
 		public void ReduceSpellCooldown(float deltaTime)
 		{
-			foreach (var spellInfo in this.spellInfo_dict.Values)
+			foreach (var keyValue in this.spellInfoDict)
 			{
-				if (spellInfo.cooldown_remain_duration > 0)
-					spellInfo.cooldown_remain_duration = Math.Max(0, spellInfo.cooldown_remain_duration - deltaTime);
+				var spellInfo = keyValue.Value;
+				if (spellInfo.cooldownRemainDuration > 0)
+					spellInfo.cooldownRemainDuration = Math.Max(0, spellInfo.cooldownRemainDuration - deltaTime);
 			}
 		}
 
 		public bool IsSpellCooldownOk(string spell_id)
 		{
-			if (this.spellInfo_dict[spell_id].cooldown_remain_duration == 0)
-				return true;
-			return false;
+			return this.spellInfoDict[spell_id].cooldownRemainDuration == 0;
 		}
 
 
 		//is_control 是否是控制类技能
-		public SpellBase CastSpell(string spell_id, Unit target_unit, bool is_control)
+		public SpellBase CastSpell(string spellId, Unit targetUnit, bool isControl)
 		{
-			var spell = Client.instance.combat.spellManager.CastSpell(this, spell_id, target_unit, null, is_control);
+			var spell = Client.instance.combat.spellManager.CastSpell(this, spellId, targetUnit, null, isControl);
 			if (spell != null)
-				this.last_attack_id = spell_id;
+				this.lastAttackId = spellId;
 			return spell;
 		}
 
-		public bool CanBreakCurrentSpell(string new_spell_id, CfgSpellData new_cfgSpellData = null)
+		public bool CanBreakCurrentSpell(string newSpellId, CfgSpellData newCfgSpellData = null)
 		{
-			if (this.current_attack == null)
+			if (this.currentAttack == null)
 				return true;
 
-			new_cfgSpellData = new_cfgSpellData ?? CfgSpell.Instance.get_by_id(new_spell_id);
-			if (("法术".Equals(new_cfgSpellData.type) && "普攻".Equals(this.current_attack.cfgSpellData.type)) //法术可以打断普攻
-				|| "触发".Equals(new_cfgSpellData.cast_type))
+			newCfgSpellData = newCfgSpellData ?? CfgSpell.Instance.get_by_id(newSpellId);
+			if (("法术".Equals(newCfgSpellData.type) && "普攻".Equals(this.currentAttack.cfgSpellData.type)) //法术可以打断普攻
+				|| "触发".Equals(newCfgSpellData.cast_type))
 				return true;
-			else
-				return this.current_attack.is_past_break_time;
+			return this.currentAttack.isPastBreakTime;
 		}
 
 		//检查是否到时间可以放技能1、是否能打断当前技能2、技能cd是否到
-		public bool IsTimeToCastSpell(string spell_id)
+		public bool IsTimeToCastSpell(string spellId)
 		{
-			var cfgSpellData = CfgSpell.Instance.get_by_id(spell_id);
-			if (!this.CanBreakCurrentSpell(spell_id, cfgSpellData))
+			var cfgSpellData = CfgSpell.Instance.get_by_id(spellId);
+			if (!this.CanBreakCurrentSpell(spellId, cfgSpellData))
 				return false;
-			if (!this.IsSpellCooldownOk(spell_id))
+			if (!this.IsSpellCooldownOk(spellId))
 				return false;
 			return true;
 		}
 
-		public bool IsInSpellRange(Unit target, string spell_id)
+		public bool IsInSpellRange(Unit target, string spellId)
 		{
-			var cfgSpellData = CfgSpell.Instance.get_by_id(spell_id);
+			var cfgSpellData = CfgSpell.Instance.get_by_id(spellId);
 			if (cfgSpellData.range == 0)
 				return false;
 			return cfgSpellData.range >= this.Distance(target);
 		}
 
-		public bool IsInSpellRange(Transform target, string spell_id)
+		public bool IsInSpellRange(Transform target, string spellId)
 		{
-			var cfgSpellData = CfgSpell.Instance.get_by_id(spell_id);
+			var cfgSpellData = CfgSpell.Instance.get_by_id(spellId);
 			if (cfgSpellData.range == 0)
 				return false;
 			return cfgSpellData.range >= this.Distance(target);
 		}
 
-		public bool IsInSpellRange(Vector3 target, string spell_id)
+		public bool IsInSpellRange(Vector3 target, string spellId)
 		{
-			var cfgSpellData = CfgSpell.Instance.get_by_id(spell_id);
+			var cfgSpellData = CfgSpell.Instance.get_by_id(spellId);
 			if (cfgSpellData.range == 0)
 				return false;
 			return cfgSpellData.range >= this.Distance(target);
 		}
 
-		public bool IsInSpellRange(IPosition target_iposition, string spell_id)
+		public bool IsInSpellRange(IPosition targetIPosition, string spellId)
 		{
-			var cfgSpellData = CfgSpell.Instance.get_by_id(spell_id);
+			var cfgSpellData = CfgSpell.Instance.get_by_id(spellId);
 			if (cfgSpellData.range == 0)
 				return false;
-			return cfgSpellData.range >= this.Distance(target_iposition);
+			return cfgSpellData.range >= this.Distance(targetIPosition);
 		}
 	}
 }

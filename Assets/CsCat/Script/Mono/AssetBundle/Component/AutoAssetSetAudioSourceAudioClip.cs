@@ -11,36 +11,36 @@ namespace CsCat
 			component.clip = audioClip;
 		}
 
-		public static void Set(AudioSource audioSource, string asset_path,
-		  Action<AudioSource, AudioClip> on_load_success_callback = null,
-		  Action<AudioSource, AudioClip> on_load_fail_callback = null,
-		  Action<AudioSource, AudioClip> on_load_done_callback = null)
+		public static void Set(AudioSource audioSource, string assetPath,
+			Action<AudioSource, AudioClip> onLoadSuccessCallback = null,
+			Action<AudioSource, AudioClip> onLoadFailCallback = null,
+			Action<AudioSource, AudioClip> onLoadDoneCallback = null)
 		{
 			;
-			Set<AutoAssetSetAudioSourceAudioClip>(audioSource, asset_path, (component, asset) =>
+			Set<AutoAssetSetAudioSourceAudioClip>(audioSource, assetPath, (component, asset) =>
 			{
 				SetAudioSourceAudioClip(component, asset);
-				on_load_success_callback?.Invoke(component, asset);
-			}, on_load_fail_callback, on_load_done_callback);
+				onLoadSuccessCallback?.Invoke(component, asset);
+			}, onLoadFailCallback, onLoadDoneCallback);
 		}
 
 
 		public static IEnumerator SetAsync(AudioSource audioSource, string assetPath,
-		  Action<AudioSource, AudioClip> on_load_success_callback = null,
-		  Action<AudioSource, AudioClip> on_load_fail_callback = null,
-		Action<AudioSource, AudioClip> on_load_done_callback = null)
+			Action<AudioSource, AudioClip> onLoadSuccessCallback = null,
+			Action<AudioSource, AudioClip> onLoadFailCallback = null,
+			Action<AudioSource, AudioClip> onLoadDoneCallback = null)
 		{
-			var is_done = false;
+			var isDone = false;
 			Set<AutoAssetSetAudioSourceAudioClip>(audioSource, assetPath, (component, audioClip) =>
 			{
 				SetAudioSourceAudioClip(component, audioClip);
-				on_load_success_callback?.Invoke(component, audioClip);
-			}, on_load_fail_callback, (component, audioClip) =>
+				onLoadSuccessCallback?.Invoke(component, audioClip);
+			}, onLoadFailCallback, (component, audioClip) =>
 			{
-				on_load_done_callback?.Invoke(audioSource, audioClip);
-				is_done = true;
+				onLoadDoneCallback?.Invoke(audioSource, audioClip);
+				isDone = true;
 			});
-			while (!is_done)
+			while (!isDone)
 				yield return 0;
 		}
 	}

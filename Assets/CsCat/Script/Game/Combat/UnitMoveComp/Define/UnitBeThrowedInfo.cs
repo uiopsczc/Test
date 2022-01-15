@@ -5,28 +5,28 @@ namespace CsCat
 {
 	public class UnitBeThrowedInfo
 	{
-		public Vector3 start_pos; //开始位置
-		public Vector3 end_pos; //结束位置
+		public Vector3 startPos; //开始位置
+		public Vector3 endPos; //结束位置
 		public float height;
-		public float max_height;
-		public string animation_name = AnimationNameConst.be_throwed;
-		public float org_height;
+		public float maxHeight;
+		public string animationName = AnimationNameConst.be_throwed;
+		public float orgHeight;
 		public float duration;
-		public float remain_duration;
+		public float remainDuration;
 		public float interp = 1;
 		public float height_speed;
-		public float height_accelerate;
-		public float? rotate_duration;
-		public float? rotate_remain_duration;
-		public Quaternion start_rotation;
-		public Quaternion? end_rotation;
-		public Func<UnitBeThrowedInfo, float> calc_height_func;
-		public bool is_not_stop_animation;
-		public bool is_back_to_ground = true;
+		public float heightAccelerate;
+		public float? rotateDuration;
+		public float? rotateRemainDuration;
+		public Quaternion startRotation;
+		public Quaternion? endRotation;
+		public Func<UnitBeThrowedInfo, float> calcHeightFunc;
+		public bool isNotStopAnimation;
+		public bool isBackToGround = true;
 
 		public bool IsHasAnimationName()
 		{
-			return !this.animation_name.IsNullOrWhiteSpace();
+			return !this.animationName.IsNullOrWhiteSpace();
 		}
 	}
 }

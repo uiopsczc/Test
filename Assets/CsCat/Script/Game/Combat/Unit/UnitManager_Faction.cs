@@ -4,20 +4,23 @@ namespace CsCat
 {
 	public partial class UnitManager
 	{
-		private Dictionary<string, Dictionary<string, Unit>> faction_unit_dict;
-		private Dictionary<string, Dictionary<string, FactionState>> factionState_dict;
+		private Dictionary<string, Dictionary<string, Unit>> factionUnitDict;
+		private Dictionary<string, Dictionary<string, FactionState>> factionStateDict;
 
 		private void InitFactionUnitDict()
 		{
-			this.faction_unit_dict = new Dictionary<string, Dictionary<string, Unit>>();
-			foreach (var faction in FactionConst.Faction_List)
-				faction_unit_dict[faction] = new Dictionary<string, Unit>();
+			this.factionUnitDict = new Dictionary<string, Dictionary<string, Unit>>();
+			for (var i = 0; i < FactionConst.Faction_List.Count; i++)
+			{
+				var faction = FactionConst.Faction_List[i];
+				factionUnitDict[faction] = new Dictionary<string, Unit>();
+			}
 		}
 
 		private void InitFactionStateInfoDict()
 		{
 			//初始化阵营间能否攻击，加血等
-			this.factionState_dict = new Dictionary<string, Dictionary<string, FactionState>>();
+			this.factionStateDict = new Dictionary<string, Dictionary<string, FactionState>>();
 
 			this.SetFactionStateIsCanAttack(FactionConst.A_Faction, FactionConst.A_Faction, false);
 			this.SetFactionStateIsCanHelp(FactionConst.A_Faction, FactionConst.A_Faction, true);
@@ -35,85 +38,81 @@ namespace CsCat
 		// check_state 参数：
 		// 1. enemy 判断是否敌人
 		// 2. friend 判断是否自己人
-		public bool CheckFaction(string faction1, string faction2, string check_state)
+		public bool CheckFaction(string faction1, string faction2, string checkState)
 		{
-			var factionState = this.factionState_dict[faction1][faction2];
+			var factionState = this.factionStateDict[faction1][faction2];
 			//找敌人
-			if (check_state.Equals("enemy"))
-			{
-				if (!faction1.Equals(faction2) && factionState.is_can_attack)
-					return true;
-				else
-					return false;
-			}
-			else if (check_state.Equals("friend")) // 找自己人
-			{
-				if (faction1.Equals(faction2) || factionState.is_can_help)
-					return true;
-				else
-					return false;
-			}
-			else // all
-				return true;
+			if (checkState.Equals("enemy"))
+				return !faction1.Equals(faction2) && factionState.isCanAttack;
+			if (checkState.Equals("friend")) // 找自己人
+				return faction1.Equals(faction2) || factionState.isCanHelp;
+			return true; // all
 		}
 
-		public void SetFactionState(string faction1, string faction2, string state_key, object state_value,
-		  bool is_both_set = false)
+		public void SetFactionState(string faction1, string faction2, string stateKey, object stateValue,
+			bool isBothSet = false)
 		{
 			if (!faction1.IsNullOrWhiteSpace() && !faction2.IsNullOrWhiteSpace())
 			{
-				this.factionState_dict.GetOrAddDefault(faction1, () => new Dictionary<string, FactionState>());
-				this.factionState_dict[faction1].GetOrAddDefault(faction2, () => new FactionState());
+				this.factionStateDict.GetOrAddDefault(faction1, () => new Dictionary<string, FactionState>());
+				this.factionStateDict[faction1].GetOrAddDefault(faction2, () => new FactionState());
 
-				this.factionState_dict[faction1][faction2].SetFieldValue(state_key, state_value);
+				this.factionStateDict[faction1][faction2].SetFieldValue(stateKey, stateValue);
 
-				if (is_both_set)
-					SetFactionState(faction2, faction1, state_key, state_value);
+				if (isBothSet)
+					SetFactionState(faction2, faction1, stateKey, stateValue);
 			}
 		}
 
-		public void SetFactionStateIsCanAttack(string faction1, string faction2, bool is_can_attack,
-		  bool is_both_set = false)
+		public void SetFactionStateIsCanAttack(string faction1, string faction2, bool isCanAttack,
+			bool isBothSet = false)
 		{
-			this.SetFactionState(faction1, faction2, "is_can_attack", is_can_attack, is_both_set);
+			this.SetFactionState(faction1, faction2, "is_can_attack", isCanAttack, isBothSet);
 		}
 
-		public void SetFactionStateIsCanHelp(string faction1, string faction2, bool is_can_help,
-		  bool is_both_set = false)
+		public void SetFactionStateIsCanHelp(string faction1, string faction2, bool isCanHelp,
+			bool isBothSet = false)
 		{
-			this.SetFactionState(faction1, faction2, "is_can_help", is_can_help, is_both_set);
+			this.SetFactionState(faction1, faction2, "is_can_help", isCanHelp, isBothSet);
 		}
 
-		public void OnUnitFactionChange(string unit_guid, string old_faction, string new_faction)
+		public void OnUnitFactionChange(string unitGuid, string oldFaction, string newFaction)
 		{
-			var unit = this.GetUnit(unit_guid);
-			if (unit != null && !old_faction.Equals(new_faction))
+			var unit = this.GetUnit(unitGuid);
+			if (unit != null && !oldFaction.Equals(newFaction))
 			{
-				this.faction_unit_dict[old_faction].Remove(unit_guid);
-				this.faction_unit_dict[new_faction][unit_guid] = unit;
+				this.factionUnitDict[oldFaction].Remove(unitGuid);
+				this.factionUnitDict[newFaction][unitGuid] = unit;
 			}
 		}
 
-		public List<string> GetMatchFactionList(string faction, string check_scope)
+		public List<string> GetMatchFactionList(string faction, string checkScope)
 		{
-			List<string> faction_list = new List<string>();
-			foreach (var _faction in FactionConst.Faction_List)
+			List<string> factionList = new List<string>();
+			for (var i = 0; i < FactionConst.Faction_List.Count; i++)
 			{
-				if (this.CheckFaction(_faction, faction, check_scope))
-					faction_list.Add(_faction);
+				var curFaction = FactionConst.Faction_List[i];
+				if (this.CheckFaction(curFaction, faction, checkScope))
+					factionList.Add(curFaction);
 			}
 
-			return faction_list;
+			return factionList;
 		}
 
-		public List<Unit> GetFactionUnitList(List<string> faction_list)
+		public List<Unit> GetFactionUnitList(List<string> factionList)
 		{
-			var faction_unit_list = new List<Unit>();
-			foreach (var faction in faction_list)
-				foreach (var unit in this.faction_unit_dict[faction].Values)
-					faction_unit_list.Add(unit);
-			return faction_unit_list;
-		}
+			var factionUnitList = new List<Unit>();
+			for (var i = 0; i < factionList.Count; i++)
+			{
+				var faction = factionList[i];
+				foreach (var keyValue in this.factionUnitDict[faction])
+				{
+					var unit = keyValue.Value;
+					factionUnitList.Add(unit);
+				}
+			}
 
+			return factionUnitList;
+		}
 	}
 }

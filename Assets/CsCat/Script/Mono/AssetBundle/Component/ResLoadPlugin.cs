@@ -7,7 +7,7 @@ namespace CsCat
 {
 	public class ResLoadPlugin
 	{
-		public Dictionary<AssetCat, Dictionary<object, bool>> assetCat_dict =
+		public Dictionary<AssetCat, Dictionary<object, bool>> assetCatDict =
 		  new Dictionary<AssetCat, Dictionary<object, bool>>();
 
 		private ResLoad resLoad;
@@ -19,66 +19,71 @@ namespace CsCat
 
 		public bool IsAllLoadDone()
 		{
-			foreach (var assetCat in assetCat_dict.Keys)
+			foreach (var assetCat in assetCatDict.Keys)
 				if (!assetCat.IsLoadDone())
 					return false;
 			return true;
 		}
 
-		public IEnumerator IEIsAllLoadDone(Action on_all_load_done_callback = null)
+		public IEnumerator IEIsAllLoadDone(Action onAllLoadDoneCallback = null)
 		{
 			yield return new WaitUntil(() => { return IsAllLoadDone(); });
-			on_all_load_done_callback?.Invoke();
+			onAllLoadDoneCallback?.Invoke();
 		}
 
 
 		// 加载某个资源
-		public AssetCat GetOrLoadAsset(string asset_path, Action<AssetCat> on_load_success_callback = null,
-		  Action<AssetCat> on_load_fail_callback = null,
-		  Action<AssetCat> on_load_done_callback = null, object callback_cause = null)
+		public AssetCat GetOrLoadAsset(string assetPath, Action<AssetCat> onLoadSuccessCallback = null,
+		  Action<AssetCat> onLoadFailCallback = null,
+		  Action<AssetCat> onLoadDoneCallback = null, object callbackCause = null)
 		{
-			var assetCat = GetOrLoadAsset(asset_path, on_load_success_callback, on_load_fail_callback, on_load_done_callback,
-			  callback_cause);
-			if (!this.assetCat_dict.ContainsKey(assetCat))
-				this.assetCat_dict[assetCat] = new Dictionary<object, bool>();
-			this.assetCat_dict[assetCat][callback_cause.GetNotNullKey()] = true;
+			var assetCat = GetOrLoadAsset(assetPath, onLoadSuccessCallback, onLoadFailCallback, onLoadDoneCallback,
+			  callbackCause);
+			if (!this.assetCatDict.ContainsKey(assetCat))
+				this.assetCatDict[assetCat] = new Dictionary<object, bool>();
+			this.assetCatDict[assetCat][callbackCause.GetNotNullKey()] = true;
 			return assetCat;
 		}
 
 
-		public void CancelLoadCallback(AssetCat assetCat, object callback_cause = null)
+		public void CancelLoadCallback(AssetCat assetCat, object callbackCause = null)
 		{
-			this.assetCat_dict[assetCat].Remove(callback_cause.GetNotNullKey());
-			if (this.assetCat_dict[assetCat].Count == 0)
-				this.assetCat_dict.Remove(assetCat);
-			this.resLoad.CancelLoadCallback(assetCat, callback_cause);
+			this.assetCatDict[assetCat].Remove(callbackCause.GetNotNullKey());
+			if (this.assetCatDict[assetCat].Count == 0)
+				this.assetCatDict.Remove(assetCat);
+			this.resLoad.CancelLoadCallback(assetCat, callbackCause);
 		}
 
 		public void CancelLoadAllCallback(AssetCat assetCat)
 		{
-			foreach (var callback_cause in assetCat_dict[assetCat].Values)
+			foreach (var keyValue in assetCatDict[assetCat])
 			{
-				if (callback_cause.Equals(NullUtil.GetDefaultString()))
+				var callbackCause = keyValue.Value;
+				if (callbackCause.Equals(NullUtil.GetDefaultString()))
 					this.resLoad.CancelLoadCallback(assetCat, null);
 				else
-					this.resLoad.CancelLoadCallback(assetCat, callback_cause);
+					this.resLoad.CancelLoadCallback(assetCat, callbackCause);
 			}
-			assetCat_dict.Remove(assetCat);
+			assetCatDict.Remove(assetCat);
 		}
 
 
 		public void Reset()
 		{
-			foreach (var assetCat in assetCat_dict.Keys)
-				foreach (var callback_cause in assetCat_dict[assetCat].Values)
+			foreach (var keyValue1 in assetCatDict)
+			{
+				var assetCat = keyValue1.Key;
+				foreach (var keyValue2 in assetCatDict[assetCat])
 				{
-					if (callback_cause.Equals(NullUtil.GetDefaultString()))
+					var callbackCause = keyValue2.Value;
+					if (callbackCause.Equals(NullUtil.GetDefaultString()))
 						this.resLoad.CancelLoadCallback(assetCat, null);
 					else
-						this.resLoad.CancelLoadCallback(assetCat, callback_cause);
+						this.resLoad.CancelLoadCallback(assetCat, callbackCause);
 				}
+			}
 
-			assetCat_dict.Clear();
+			assetCatDict.Clear();
 		}
 
 		public void Destroy()

@@ -8,51 +8,54 @@ namespace CsCat
 	/// </summary>
 	public class AssetListDownloadProgress
 	{
-		public List<string> asset_path_list;
-		public Dictionary<string, long> assetBundle_downloaded_bytes_dict = new Dictionary<string, long>();
-		private long need_download_bytes;
+		public List<string> assetPathList;
+		public Dictionary<string, long> assetBundleDownloadedBytesDict = new Dictionary<string, long>();
+		private long needDownloadBytes;
 
-		public AssetListDownloadProgress(List<string> asset_path_list)
+		public AssetListDownloadProgress(List<string> assetPathList)
 		{
-			asset_path_list.Unique();
-			List<string> assetBundle_name_list = new List<string>();
-			foreach (var asset_path in asset_path_list)
+			assetPathList.Unique();
+			List<string> assetBundleNameList = new List<string>();
+			for (var i = 0; i < assetPathList.Count; i++)
 			{
-				var assetAsyncloader = Client.instance.assetBundleManager.assetAsyncloader_prosessing_list.Find(
-				  _assetAsyncloader =>
-					_assetAsyncloader.assetCat.asset_path.Equals(asset_path));
+				var assetPath = assetPathList[i];
+				var assetAsyncloader = Client.instance.assetBundleManager.assetAsyncloaderProcessingList.Find(
+					_assetAsyncloader =>
+						_assetAsyncloader.assetCat.assetPath.Equals(assetPath));
 				if (assetAsyncloader != null && !assetAsyncloader.resultInfo.isDone)
 				{
 					if (!assetAsyncloader.GetAssetBundlePathList().IsNullOrEmpty())
-						assetBundle_name_list.AddRange(assetAsyncloader.GetAssetBundlePathList());
+						assetBundleNameList.AddRange(assetAsyncloader.GetAssetBundlePathList());
 				}
 			}
 
-			assetBundle_name_list.Unique();
-			foreach (var assetBundle_name in assetBundle_name_list)
+			assetBundleNameList.Unique();
+			for (var i = 0; i < assetBundleNameList.Count; i++)
 			{
-				assetBundle_downloaded_bytes_dict[assetBundle_name] = 0;
-				need_download_bytes += Client.instance.assetBundleManager.assetBundleMap.dict[assetBundle_name];
+				var assetBundleName = assetBundleNameList[i];
+				assetBundleDownloadedBytesDict[assetBundleName] = 0;
+				needDownloadBytes += Client.instance.assetBundleManager.assetBundleMap.dict[assetBundleName];
 			}
 		}
 
 		public long GetNeedDownloadBytes()
 		{
-			return this.need_download_bytes;
+			return this.needDownloadBytes;
 		}
 
 		public long GetDownloadedBytes()
 		{
-			long downloaded_bytes = 0;
-			foreach (var assetBundle_name in assetBundle_downloaded_bytes_dict.Keys)
+			long downloadedBytes = 0;
+			foreach (var keyValue in assetBundleDownloadedBytesDict)
 			{
-				var webRequesting = Client.instance.assetBundleManager.GetAssetBundleAsyncWebRequester(assetBundle_name);
-				assetBundle_downloaded_bytes_dict[assetBundle_name] =
+				var assetBundleName = keyValue.Key;
+				var webRequesting = Client.instance.assetBundleManager.GetAssetBundleAsyncWebRequester(assetBundleName);
+				assetBundleDownloadedBytesDict[assetBundleName] =
 				  webRequesting?.GetDownloadedBytes() ??
-				  Client.instance.assetBundleManager.assetBundleMap.dict[assetBundle_name];
-				downloaded_bytes += assetBundle_downloaded_bytes_dict[assetBundle_name];
+				  Client.instance.assetBundleManager.assetBundleMap.dict[assetBundleName];
+				downloadedBytes += assetBundleDownloadedBytesDict[assetBundleName];
 			}
-			return downloaded_bytes;
+			return downloadedBytes;
 		}
 
 		public float GetProgress()

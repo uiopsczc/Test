@@ -55,7 +55,7 @@ namespace CsCat
 				}
 
 				this.spawnUIPosition = CameraUtil.WorldToUIPos(null,
-					Client.instance.combat.cameraManager.main_cameraBase.camera, spawnWorldPosition.Value);
+					Client.instance.combat.cameraManager.mainCameraBase.camera, spawnWorldPosition.Value);
 				this.textComp.text = showString;
 				this.textComp.color = color;
 

@@ -11,7 +11,7 @@ namespace CsCat
 
 		float duration;
 		float delay;
-		bool is_destroy_while_end;
+		bool isDestroyWhileEnd;
 
 		#endregion
 
@@ -20,15 +20,15 @@ namespace CsCat
 		private MonoBehaviourCache _monoBehaviourCache;
 
 		public MonoBehaviourCache monoBehaviourCache =>
-		  _monoBehaviourCache ?? (_monoBehaviourCache = new MonoBehaviourCache(this));
+			_monoBehaviourCache ?? (_monoBehaviourCache = new MonoBehaviourCache(this));
 
 		#endregion
 
 		#region delegate
 
-		Action start_callback;
-		Action update_callback;
-		Action end_callback;
+		Action startCallback;
+		Action updateCallback;
+		Action endCallback;
 
 		#endregion
 
@@ -39,19 +39,19 @@ namespace CsCat
 		/// </summary>
 		/// <param name="duration">时间</param>
 		/// <param name="delay">延迟</param>
-		/// <param name="start_callback">开始时执行</param>
-		/// <param name="update_callback">每帧执行</param>
-		/// <param name="end_callback">结束时执行</param>
-		/// <param name="is_destroy_while_end">结束时是否移除对象</param>
-		public void StartIE(float duration, float delay = 0, Action start_callback = null,
-		  Action update_callback = null, Action end_callback = null, bool is_destroy_while_end = true)
+		/// <param name="startCallback">开始时执行</param>
+		/// <param name="updateCallback">每帧执行</param>
+		/// <param name="endCallback">结束时执行</param>
+		/// <param name="isDestroyWhileEnd">结束时是否移除对象</param>
+		public void StartIE(float duration, float delay = 0, Action startCallback = null,
+			Action updateCallback = null, Action endCallback = null, bool isDestroyWhileEnd = true)
 		{
-			this.start_callback = start_callback;
-			this.update_callback = update_callback;
-			this.end_callback = end_callback;
+			this.startCallback = startCallback;
+			this.updateCallback = updateCallback;
+			this.endCallback = endCallback;
 			this.duration = duration;
 			this.delay = delay;
-			this.is_destroy_while_end = is_destroy_while_end;
+			this.isDestroyWhileEnd = isDestroyWhileEnd;
 			this.StopAndStartCacheIEnumerator("ProcessIE", ProcessIE());
 		}
 
@@ -70,10 +70,10 @@ namespace CsCat
 		IEnumerator ProcessIE()
 		{
 			yield return WaitForDelay();
-			start_callback?.Invoke();
+			startCallback?.Invoke();
 			yield return ExecuteUpdate();
-			end_callback?.Invoke();
-			if (is_destroy_while_end)
+			endCallback?.Invoke();
+			if (isDestroyWhileEnd)
 				this.Destroy();
 
 			yield return 0;
@@ -81,8 +81,8 @@ namespace CsCat
 
 		IEnumerator WaitForDelay()
 		{
-			float delay_remain_duration = delay;
-			while (delay_remain_duration > 0)
+			float delayRemainDuration = delay;
+			while (delayRemainDuration > 0)
 			{
 				if (Pause.instance.isPaused)
 				{
@@ -91,15 +91,14 @@ namespace CsCat
 				}
 
 				yield return null;
-				delay_remain_duration -= Time.deltaTime;
-
+				delayRemainDuration -= Time.deltaTime;
 			}
 		}
 
 		IEnumerator ExecuteUpdate()
 		{
-			float exe_remain_duration = duration;
-			while (exe_remain_duration > 0)
+			float exeRemainDuration = duration;
+			while (exeRemainDuration > 0)
 			{
 				if (Pause.instance.isPaused)
 				{
@@ -108,12 +107,11 @@ namespace CsCat
 				}
 
 				yield return null;
-				update_callback?.Invoke();
-				exe_remain_duration -= Time.deltaTime;
+				updateCallback?.Invoke();
+				exeRemainDuration -= Time.deltaTime;
 			}
 		}
 
 		#endregion
-
 	}
 }

@@ -7,11 +7,13 @@ namespace CsCat
 	{
 		protected override string defaultDoerClassPath => "CsCat.DoerEvent";
 
-		private Dictionary<string, DoerEvent> doerEvent_dict = new Dictionary<string, DoerEvent>();
+		private Dictionary<string, DoerEvent> doerEventDict = new Dictionary<string, DoerEvent>();
 
 		protected override string GetClassPath(string id)
 		{
-			return this.GetCfgDoerEventData(id).class_path_cs.IsNullOrWhiteSpace() ? base.GetClassPath(id) : GetCfgDoerEventData(id).class_path_cs;
+			return this.GetCfgDoerEventData(id).classPathCS.IsNullOrWhiteSpace()
+				? base.GetClassPath(id)
+				: GetCfgDoerEventData(id).classPathCS;
 		}
 
 		public CfgDoerEventData GetCfgDoerEventData(string id)
@@ -34,8 +36,8 @@ namespace CsCat
 
 		private void LoadDoerEvent(string id)
 		{
-			var class_path = GetClassPath(id);
-			Type type = TypeUtil.GetType(class_path);
+			var classPath = GetClassPath(id);
+			Type type = TypeUtil.GetType(classPath);
 			DoerEvent doerEvent = this.AddChildWithoutInit(null, type) as DoerEvent;
 			DBase doerEventDBase = this._NewDBase(id);
 			doerEvent.factory = this;
@@ -44,15 +46,12 @@ namespace CsCat
 			doerEvent.Init();
 			doerEvent.PostInit();
 			doerEvent.SetIsEnabled(true, false);
-			doerEvent_dict[id] = doerEvent;
+			doerEventDict[id] = doerEvent;
 		}
 
 		public DoerEvent GetDoerEvent(string id)
 		{
-			if (doerEvent_dict.ContainsKey(id))
-				return this.doerEvent_dict[id];
-			else
-				return null;
+			return doerEventDict.ContainsKey(id) ? this.doerEventDict[id] : null;
 		}
 	}
 }

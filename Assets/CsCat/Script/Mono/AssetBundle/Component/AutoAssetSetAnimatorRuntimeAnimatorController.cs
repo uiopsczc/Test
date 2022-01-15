@@ -11,33 +11,33 @@ namespace CsCat
 			component.runtimeAnimatorController = asset;
 		}
 
-		public static void Set(Animator animator, string asset_path,
-		  Action<Animator, RuntimeAnimatorController> on_load_success_callback = null, Action<Animator, RuntimeAnimatorController> on_load_fail_callback = null, Action<Animator, RuntimeAnimatorController> on_load_done_callback = null)
+		public static void Set(Animator animator, string assetPath,
+		  Action<Animator, RuntimeAnimatorController> onLoadSuccessCallback = null, Action<Animator, RuntimeAnimatorController> onLoadFailCallback = null, Action<Animator, RuntimeAnimatorController> onLoadDoneCallback = null)
 		{
-			Set<AutoAssetSetAnimatorRuntimeAnimatorController>(animator, asset_path, (component, asset) =>
+			Set<AutoAssetSetAnimatorRuntimeAnimatorController>(animator, assetPath, (component, asset) =>
 			{
 				SetAnimatorRuntimeAnimatorController(component, asset);
-				on_load_success_callback?.Invoke(component, asset);
-			}, on_load_fail_callback, on_load_done_callback);
+				onLoadSuccessCallback?.Invoke(component, asset);
+			}, onLoadFailCallback, onLoadDoneCallback);
 		}
 
 
-		public static IEnumerator SetAsync(Animator animator, string asset_path,
-		  Action<Animator, RuntimeAnimatorController> on_load_success_callback = null,
-		  Action<Animator, RuntimeAnimatorController> on_load_fail_callback = null,
-		  Action<Animator, RuntimeAnimatorController> on_load_done_callback = null)
+		public static IEnumerator SetAsync(Animator animator, string assetPath,
+		  Action<Animator, RuntimeAnimatorController> onLoadSuccessCallback = null,
+		  Action<Animator, RuntimeAnimatorController> onLoadFailCallback = null,
+		  Action<Animator, RuntimeAnimatorController> onLoadDoneCallback = null)
 		{
-			var is_done = false;
-			Set<AutoAssetSetAnimatorRuntimeAnimatorController>(animator, asset_path, (component, asset) =>
+			var isDone = false;
+			Set<AutoAssetSetAnimatorRuntimeAnimatorController>(animator, assetPath, (component, asset) =>
 			{
 				SetAnimatorRuntimeAnimatorController(component, asset);
-				on_load_success_callback?.Invoke(component, asset);
-			}, on_load_fail_callback, (component, asset) =>
+				onLoadSuccessCallback?.Invoke(component, asset);
+			}, onLoadFailCallback, (component, asset) =>
 			{
-				on_load_done_callback?.Invoke(component, asset);
-				is_done = true;
+				onLoadDoneCallback?.Invoke(component, asset);
+				isDone = true;
 			});
-			while (!is_done)
+			while (!isDone)
 				yield return 0;
 		}
 	}

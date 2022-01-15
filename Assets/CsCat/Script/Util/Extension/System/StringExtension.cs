@@ -196,12 +196,12 @@ namespace CsCat
 
 		public static string GetMainAssetPath(this string self)
 		{
-			return self.GetAssetPathInfo().main_asset_path;
+			return self.GetAssetPathInfo().mainAssetPath;
 		}
 
 		public static string GetSubAssetPath(this string self)
 		{
-			return self.GetAssetPathInfo().sub_asset_path;
+			return self.GetAssetPathInfo().subAssetPath;
 		}
 
 		public static AssetPathInfo GetAssetPathInfo(this string self)

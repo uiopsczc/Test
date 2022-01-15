@@ -6,28 +6,28 @@ namespace CsCat
 	public class AssetPathMap
 	{
 		//key是AssetBundlePath,value是AssetPath的list
-		protected ValueListDictionary<string, string> assetBundleName_2_assetPathList_Dict =
+		protected ValueListDictionary<string, string> assetBundleName2AssetPathListDict =
 		  new ValueListDictionary<string, string>();
 
 		//key是AssetPath Value是AssetBundlePath
-		protected Dictionary<string, string> assetPath_2_assetBundleName_Dict = new Dictionary<string, string>();
-		protected List<string> empty_list = new List<string>();
+		protected Dictionary<string, string> assetPath2AssetBundleNameDict = new Dictionary<string, string>();
+		protected List<string> emptyList = new List<string>();
 
-		private string file_content;
+		private string fileContent;
 
 		public AssetPathMap()
 		{
-			asset_path = AssetPackageUtil.AssetsPackagePathToAssetsPath(BuildConst.AssetPathMap_File_Name);
-			assetBundle_name = AssetBundleUtil.AssetBundlePathToAssetBundleName(asset_path);
+			assetPath = AssetPackageUtil.AssetsPackagePathToAssetsPath(BuildConst.AssetPathMap_File_Name);
+			assetBundleName = AssetBundleUtil.AssetBundlePathToAssetBundleName(assetPath);
 		}
 
-		public string assetBundle_name { get; protected set; }
-		public string asset_path { get; protected set; }
+		public string assetBundleName { get; protected set; }
+		public string assetPath { get; protected set; }
 
 		public void SaveToDisk()
 		{
 			var path = BuildConst.AssetPathMap_File_Name.WithRootPath(FilePathConst.PersistentAssetBundleRoot);
-			StdioUtil.WriteTextFile(path, file_content);
+			StdioUtil.WriteTextFile(path, fileContent);
 		}
 
 
@@ -39,15 +39,16 @@ namespace CsCat
 				return;
 			}
 
-			file_content = content;
+			fileContent = content;
 			content = content.Replace("\r\n", "\n");
-			var map_list = content.Split('\n');
-			foreach (var map in map_list)
+			var mapList = content.Split('\n');
+			for (var i = 0; i < mapList.Length; i++)
 			{
+				var map = mapList[i];
 				if (map.IsNullOrWhiteSpace())
 					continue;
 
-				var splits = map.Split(new[] { StringConst.String_Comma }, StringSplitOptions.None);
+				var splits = map.Split(new[] {StringConst.String_Comma}, StringSplitOptions.None);
 				if (splits.Length < 2)
 				{
 					LogCat.LogError("splitArr length < 2 : " + map);
@@ -56,40 +57,44 @@ namespace CsCat
 
 				var item = new AssetPathItem();
 				// 如：UI/Prefab/Login.assetbundle
-				item.assetBundle_name = splits[0];
+				item.assetBundleName = splits[0];
 				// 如：Assets/AssetsPackage/UI/Prefab/Login.prefab
-				item.asset_path = splits[1];
+				item.assetPath = splits[1];
 
-				assetBundleName_2_assetPathList_Dict.Add(item.assetBundle_name, item.asset_path, true);
-				assetPath_2_assetBundleName_Dict.Add(item.asset_path, item.assetBundle_name);
+				assetBundleName2AssetPathListDict.Add(item.assetBundleName, item.assetPath, true);
+				assetPath2AssetBundleNameDict.Add(item.assetPath, item.assetBundleName);
 			}
 		}
 
 		public List<string> GetLuaAssetBundlePathList()
 		{
 			var result = new List<string>();
-			foreach (var assetBundle_name in assetBundleName_2_assetPathList_Dict.Keys)
-				if (assetBundle_name.StartsWith(BuildConst.LuaBundlePrefixName))
-					result.Add(assetBundle_name);
+			foreach (var keyValue in assetBundleName2AssetPathListDict)
+			{
+				var assetBundleName = keyValue.Key;
+				if (assetBundleName.StartsWith(BuildConst.LuaBundlePrefixName))
+					result.Add(assetBundleName);
+			}
+
 			return result;
 		}
 
 
-		public List<string> GetAllAssetPathList(string assetBundle_name)
+		public List<string> GetAllAssetPathList(string assetBundleName)
 		{
-			assetBundleName_2_assetPathList_Dict.TryGetValue(assetBundle_name, out var asset_list);
-			return asset_list ?? empty_list;
+			assetBundleName2AssetPathListDict.TryGetValue(assetBundleName, out var assetList);
+			return assetList ?? emptyList;
 		}
 
-		public string GetAssetBundleName(string asset_path)
+		public string GetAssetBundleName(string assetPath)
 		{
-			assetPath_2_assetBundleName_Dict.TryGetValue(asset_path, out var assetBundle_name);
-			return assetBundle_name;
+			assetPath2AssetBundleNameDict.TryGetValue(assetPath, out var assetBundleName);
+			return assetBundleName;
 		}
 
-		public bool IsContainsAssetPath(string asset_path)
+		public bool IsContainsAssetPath(string assetPath)
 		{
-			return this.GetAssetBundleName(asset_path) != null;
+			return this.GetAssetBundleName(assetPath) != null;
 		}
 	}
 }

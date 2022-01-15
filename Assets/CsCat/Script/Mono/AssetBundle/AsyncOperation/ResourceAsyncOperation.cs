@@ -22,9 +22,9 @@ namespace CsCat
 		public object Current => null;
 
 
-		public Action on_success_callback;
-		public Action on_fail_callback;
-		public Action on_done_callback;
+		public Action onSuccessCallback;
+		public Action onFailCallback;
+		public Action onDoneCallback;
 
 
 
@@ -38,20 +38,20 @@ namespace CsCat
 
 		protected virtual void OnSuccess()
 		{
-			this.on_success_callback?.Invoke();
-			this.on_success_callback = null;
+			this.onSuccessCallback?.Invoke();
+			this.onSuccessCallback = null;
 		}
 
 		protected virtual void OnFail()
 		{
-			this.on_fail_callback?.Invoke();
-			this.on_fail_callback = null;
+			this.onFailCallback?.Invoke();
+			this.onFailCallback = null;
 		}
 
 		protected virtual void OnDone()
 		{
-			this.on_done_callback?.Invoke();
-			this.on_done_callback = null;
+			this.onDoneCallback?.Invoke();
+			this.onDoneCallback = null;
 		}
 
 
@@ -69,9 +69,9 @@ namespace CsCat
 
 		public void Reset()
 		{
-			on_success_callback = null;
-			on_fail_callback = null;
-			on_done_callback = null;
+			onSuccessCallback = null;
+			onFailCallback = null;
+			onDoneCallback = null;
 			if (_resultInfo != null)
 				PoolCatManagerUtil.Despawn(_resultInfo);
 			_resultInfo = null;

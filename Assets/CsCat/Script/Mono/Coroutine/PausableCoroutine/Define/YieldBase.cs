@@ -4,7 +4,7 @@ namespace CsCat
 {
 	public class YieldBase : ICoroutineYield
 	{
-		protected bool is_started;//如果在10s的delta中创建该YieldBase，则会出现误差；所以用这个变量来让当前的帧不计算在内
+		protected bool isStarted; //如果在10s的delta中创建该YieldBase，则会出现误差；所以用这个变量来让当前的帧不计算在内
 
 		public virtual bool IsDone(float deltaTime)
 		{
@@ -13,11 +13,12 @@ namespace CsCat
 
 		protected bool CheckIsStarted()
 		{
-			if (!is_started)
+			if (!isStarted)
 			{
-				is_started = true;
+				isStarted = true;
 				return false;
 			}
+
 			return true;
 		}
 	}

@@ -6,7 +6,7 @@ namespace CsCat
 
 		public void RegisterListener(string type, Unit unit, object obj, string tag, MethodInvoker methodInvoker)
 		{
-			if (!this.listener_dict.ContainsKey(type))
+			if (!this.listenerDict.ContainsKey(type))
 			{
 				LogCat.error("Register Listener with undefine type()!", type);
 				return;
@@ -18,23 +18,23 @@ namespace CsCat
 			spellListenerInfo.obj = obj;
 			spellListenerInfo.tag = tag;
 			spellListenerInfo.methodInvoker = methodInvoker;
-			this.listener_dict[type].Add(spellListenerInfo);
+			this.listenerDict[type].Add(spellListenerInfo);
 		}
 
 		public void UnRegisterListener(string type, Unit unit, object obj, string tag)
 		{
-			if (!this.listener_dict.ContainsKey(type))
+			if (!this.listenerDict.ContainsKey(type))
 			{
 				LogCat.error("Unregister Listener with undefine type()!", type);
 				return;
 			}
 
-			for (int i = this.listener_dict[type].Count - 1; i >= 0; i--)
+			for (int i = this.listenerDict[type].Count - 1; i >= 0; i--)
 			{
-				var listenerInfo = this.listener_dict[type][i];
+				var listenerInfo = this.listenerDict[type][i];
 				if (listenerInfo.unit == unit && listenerInfo.obj == obj && ObjectUtil.Equals(listenerInfo.tag, tag))
 				{
-					this.listener_dict[type].RemoveAt(i);
+					this.listenerDict[type].RemoveAt(i);
 					break;
 				}
 			}
@@ -42,137 +42,138 @@ namespace CsCat
 
 		public void RemoveListenersByObj(object obj)
 		{
-			foreach (var listenerInfo_list in this.listener_dict.Values)
+			foreach (var keyValue in this.listenerDict)
 			{
-				for (int i = listenerInfo_list.Count - 1; i >= 0; i--)
+				var listenerInfoList = keyValue.Value;
+				for (int i = listenerInfoList.Count - 1; i >= 0; i--)
 				{
-					if (ObjectUtil.Equals(listenerInfo_list[i].obj, obj))
-						listenerInfo_list.RemoveAt(i);
+					if (ObjectUtil.Equals(listenerInfoList[i].obj, obj))
+						listenerInfoList.RemoveAt(i);
 				}
 			}
 		}
 
-		public void ListenerCallback(SpellListenerInfo listener, Unit source_unit, params object[] args)
+		public void ListenerCallback(SpellListenerInfo listener, Unit sourceUnit, params object[] args)
 		{
 			listener.methodInvoker.Invoke(args);
 		}
 
-		public void BeforeHit(Unit source_unit, Unit target_unit, params object[] args)
+		public void BeforeHit(Unit sourceUnit, Unit targetUnit, params object[] args)
 		{
-			foreach (var listenerInfo in this.listener_dict["before_hit"])
+			foreach (var listenerInfo in this.listenerDict["before_hit"])
 			{
-				if (listenerInfo.unit == source_unit)
-					this.ListenerCallback(listenerInfo, target_unit, args);
+				if (listenerInfo.unit == sourceUnit)
+					this.ListenerCallback(listenerInfo, targetUnit, args);
 			}
 
-			foreach (var listenerInfo in this.listener_dict["before_be_hit"])
+			foreach (var listenerInfo in this.listenerDict["before_be_hit"])
 			{
-				if (listenerInfo.unit == target_unit)
-					this.ListenerCallback(listenerInfo, target_unit, args);
+				if (listenerInfo.unit == targetUnit)
+					this.ListenerCallback(listenerInfo, targetUnit, args);
 			}
 		}
 
-		public void OnHit(Unit source_unit, Unit target_unit, SpellBase spell, params object[] args)
+		public void OnHit(Unit sourceUnit, Unit targetUnit, SpellBase spell, params object[] args)
 		{
-			foreach (var listenerInfo in this.listener_dict["be_hit"])
+			foreach (var listenerInfo in this.listenerDict["be_hit"])
 			{
-				if (listenerInfo.unit == target_unit)
-					this.ListenerCallback(listenerInfo, target_unit, spell, args);
+				if (listenerInfo.unit == targetUnit)
+					this.ListenerCallback(listenerInfo, targetUnit, spell, args);
 			}
 
 			//!注意：触发回调的过程中可能再次插入或者remove listener
-			foreach (var listenerInfo in this.listener_dict["on_hit"])
+			foreach (var listenerInfo in this.listenerDict["on_hit"])
 			{
-				if (listenerInfo.unit == source_unit)
-					this.ListenerCallback(listenerInfo, target_unit, spell, args);
+				if (listenerInfo.unit == sourceUnit)
+					this.ListenerCallback(listenerInfo, targetUnit, spell, args);
 			}
 
-			foreach (var listenerInfo in this.listener_dict["on_cur_spell_hit"])
+			foreach (var listenerInfo in this.listenerDict["on_cur_spell_hit"])
 			{
-				if (listenerInfo.unit == source_unit && spell == listenerInfo.obj)
-					this.ListenerCallback(listenerInfo, target_unit, spell, args);
+				if (listenerInfo.unit == sourceUnit && spell == listenerInfo.obj)
+					this.ListenerCallback(listenerInfo, targetUnit, spell, args);
 			}
 
 			if ("普攻".Equals(spell.cfgSpellData.type))
 			{
-				foreach (var listenerInfo in this.listener_dict["normal_attack"])
+				foreach (var listenerInfo in this.listenerDict["normal_attack"])
 				{
-					if (listenerInfo.unit == source_unit)
-						this.ListenerCallback(listenerInfo, target_unit, spell, args);
+					if (listenerInfo.unit == sourceUnit)
+						this.ListenerCallback(listenerInfo, targetUnit, spell, args);
 				}
 			}
 		}
 
 
-		public void OnKillTarget(Unit source_unit, Unit target_unit, SpellBase spell, params object[] args)
+		public void OnKillTarget(Unit sourceUnit, Unit targetUnit, SpellBase spell, params object[] args)
 		{
 			if (spell == null)
 				return;
-			foreach (var listenerInfo in this.listener_dict["on_kill_target"])
+			foreach (var listenerInfo in this.listenerDict["on_kill_target"])
 			{
-				if (listenerInfo.unit == source_unit)
-					this.ListenerCallback(listenerInfo, target_unit, spell, args);
+				if (listenerInfo.unit == sourceUnit)
+					this.ListenerCallback(listenerInfo, targetUnit, spell, args);
 			}
 		}
 
-		public void BeforeDead(Unit source_unit, Unit dead_unit, params object[] args)
+		public void BeforeDead(Unit sourceUnit, Unit deadUnit, params object[] args)
 		{
-			foreach (var listenerInfo in this.listener_dict["before_dead"])
+			foreach (var listenerInfo in this.listenerDict["before_dead"])
 			{
-				if (listenerInfo.unit == dead_unit)
-					this.ListenerCallback(listenerInfo, dead_unit, args);
+				if (listenerInfo.unit == deadUnit)
+					this.ListenerCallback(listenerInfo, deadUnit, args);
 			}
 		}
 
-		public void OnHurt(Unit source_unit, Unit target_unit, params object[] args)
+		public void OnHurt(Unit sourceUnit, Unit targetUnit, params object[] args)
 		{
-			foreach (var listenerInfo in this.listener_dict["on_hurt"])
+			foreach (var listenerInfo in this.listenerDict["on_hurt"])
 			{
-				if (listenerInfo.unit == target_unit)
-					this.ListenerCallback(listenerInfo, target_unit, args);
+				if (listenerInfo.unit == targetUnit)
+					this.ListenerCallback(listenerInfo, targetUnit, args);
 			}
 
-			foreach (var listenerInfo in this.listener_dict["on_hurt_target"])
+			foreach (var listenerInfo in this.listenerDict["on_hurt_target"])
 			{
-				if (listenerInfo.unit == source_unit)
-					this.ListenerCallback(listenerInfo, target_unit, args);
-			}
-		}
-
-
-		public void OnHpChange(Unit source_unit, Unit target_unit, params object[] args)
-		{
-			foreach (var listenerInfo in this.listener_dict["on_hp_change"])
-			{
-				if (listenerInfo.unit == target_unit)
-					this.ListenerCallback(listenerInfo, target_unit, args);
+				if (listenerInfo.unit == sourceUnit)
+					this.ListenerCallback(listenerInfo, targetUnit, args);
 			}
 		}
 
-		public void OnSpellStart(Unit source_unit, Unit target_unit, SpellBase spell, params object[] args)
+
+		public void OnHpChange(Unit sourceUnit, Unit targetUnit, params object[] args)
 		{
-			foreach (var listenerInfo in this.listener_dict["on_start"])
+			foreach (var listenerInfo in this.listenerDict["on_hp_change"])
 			{
-				if (listenerInfo.unit == source_unit && listenerInfo.obj == spell)
-					this.ListenerCallback(listenerInfo, target_unit, spell, args);
+				if (listenerInfo.unit == targetUnit)
+					this.ListenerCallback(listenerInfo, targetUnit, args);
 			}
 		}
 
-		public void OnSpellCast(Unit source_unit, Unit target_unit, SpellBase spell, params object[] args)
+		public void OnSpellStart(Unit sourceUnit, Unit targetUnit, SpellBase spell, params object[] args)
 		{
-			foreach (var listenerInfo in this.listener_dict["on_cast"])
+			foreach (var listenerInfo in this.listenerDict["on_start"])
 			{
-				if (listenerInfo.unit == source_unit && listenerInfo.obj == spell)
-					this.ListenerCallback(listenerInfo, target_unit, spell, args);
+				if (listenerInfo.unit == sourceUnit && listenerInfo.obj == spell)
+					this.ListenerCallback(listenerInfo, targetUnit, spell, args);
 			}
 		}
 
-		public void OnMissileReach(Unit source_unit, EffectEntity missileEffect, SpellBase spell, params object[] args)
+		public void OnSpellCast(Unit sourceUnit, Unit targetUnit, SpellBase spell, params object[] args)
 		{
-			foreach (var listenerInfo in this.listener_dict["on_missile_reach"])
+			foreach (var listenerInfo in this.listenerDict["on_cast"])
 			{
-				if (listenerInfo.unit == source_unit && listenerInfo.obj == spell)
-					this.ListenerCallback(listenerInfo, source_unit, missileEffect, spell, args);
+				if (listenerInfo.unit == sourceUnit && listenerInfo.obj == spell)
+					this.ListenerCallback(listenerInfo, targetUnit, spell, args);
+			}
+		}
+
+		public void OnMissileReach(Unit sourceUnit, EffectEntity missileEffect, SpellBase spell, params object[] args)
+		{
+			foreach (var listenerInfo in this.listenerDict["on_missile_reach"])
+			{
+				if (listenerInfo.unit == sourceUnit && listenerInfo.obj == spell)
+					this.ListenerCallback(listenerInfo, sourceUnit, missileEffect, spell, args);
 			}
 		}
 	}

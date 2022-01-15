@@ -5,7 +5,7 @@ namespace CsCat
 	public partial class Unit
 	{
 		public Animation animation;
-		private string cur_animation_name;
+		private string curAnimationName;
 		private ActionManager actionManager;
 		public AnimatorComp animatorComp;
 		private AnimationCullingType? animationCullingType;
@@ -21,89 +21,89 @@ namespace CsCat
 			this.animation.cullingType = animationCullingType;
 		}
 
-		public void PlayAnimation(string animation_name, float? blend_time = null, float? speed = null,
-		  Vector3? face_to_position = null, bool is_not_move_stop = false)
+		public void PlayAnimation(string animationName, float? blendTime = null, float? speed = null,
+		  Vector3? faceToPosition = null, bool isNotMoveStop = false)
 		{
-			float _blend_time = blend_time.GetValueOrDefault(0.1f);
-			float _speed = speed.GetValueOrDefault(1);
+			float blendTimeValue = blendTime.GetValueOrDefault(0.1f);
+			float speedValue = speed.GetValueOrDefault(1);
 			if (this.animation != null)
 			{
-				if (AnimationNameConst.die.Equals(this.cur_animation_name))
+				if (AnimationNameConst.die.Equals(this.curAnimationName))
 					return;
 				if (this.actionManager != null)
 				{
-					if (AnimationNameConst.walk.Equals(animation_name) && !this.cur_animation_name.IsNullOrWhiteSpace())
+					if (AnimationNameConst.walk.Equals(animationName) && !this.curAnimationName.IsNullOrWhiteSpace())
 					{
-						this.actionManager.Stop(this.cur_animation_name);
-						this.cur_animation_name = null;
+						this.actionManager.Stop(this.curAnimationName);
+						this.curAnimationName = null;
 					}
 
-					if (AnimationNameConst.idle.Equals(animation_name) && !this.cur_animation_name.IsNullOrWhiteSpace())
-						this.actionManager.Play(animation_name, _speed, -1, false);
-					else if (AnimationNameConst.walk.Equals(animation_name))
-						this.actionManager.Play(animation_name, _speed, 0, false);
+					if (AnimationNameConst.idle.Equals(animationName) && !this.curAnimationName.IsNullOrWhiteSpace())
+						this.actionManager.Play(animationName, speedValue, -1, false);
+					else if (AnimationNameConst.walk.Equals(animationName))
+						this.actionManager.Play(animationName, speedValue, 0, false);
 					else
 					{
-						this.actionManager.Play(animation_name, _speed, 0, true);
-						this.cur_animation_name = animation_name;
-						if (AnimationNameConst.die.Equals(animation_name))
+						this.actionManager.Play(animationName, speedValue, 0, true);
+						this.curAnimationName = animationName;
+						if (AnimationNameConst.die.Equals(animationName))
 							this.actionManager.Stop(AnimationNameConst.idle);
 					}
 				}
 				else
 				{
-					if (AnimationNameConst.walk.Equals(animation_name) && !this.cur_animation_name.IsNullOrWhiteSpace())
+					if (AnimationNameConst.walk.Equals(animationName) && !this.curAnimationName.IsNullOrWhiteSpace())
 					{
-						this.animation.Blend(this.cur_animation_name, 0, _blend_time);
-						this.cur_animation_name = null;
+						this.animation.Blend(this.curAnimationName, 0, blendTimeValue);
+						this.curAnimationName = null;
 					}
 
-					var animationState = this.animation[animation_name];
+					var animationState = this.animation[animationName];
 					if (animationState != null)
-						LogCat.LogErrorFormat("animation is no exist: {0} , {1}", animation_name, this.unit_id);
+						LogCat.LogErrorFormat("animation is no exist: {0} , {1}", animationName, this.unitId);
 					var speed_threshold = 0.5f;
-					if (AnimationNameConst.walk.Equals(animation_name) && _speed < speed_threshold)
+					if (AnimationNameConst.walk.Equals(animationName) && speedValue < speed_threshold)
 					{
 						animationState.speed = speed_threshold;
-						this.animation.CrossFade(animation_name, _blend_time);
-						this.animation.Blend(animation_name, _speed / speed_threshold, _blend_time);
+						this.animation.CrossFade(animationName, blendTimeValue);
+						this.animation.Blend(animationName, speedValue / speed_threshold, blendTimeValue);
 					}
 					else
 					{
-						animationState.speed = _speed;
-						this.animation.CrossFade(animation_name, _blend_time);
+						animationState.speed = speedValue;
+						this.animation.CrossFade(animationName, blendTimeValue);
 					}
 
-					if (!(AnimationNameConst.idle.Equals(animation_name) || AnimationNameConst.walk.Equals(animation_name)))
+					if (!(AnimationNameConst.idle.Equals(animationName) || AnimationNameConst.walk.Equals(animationName)))
 					{
-						if (this.cur_animation_name.Equals(animation_name))
-							this.animation[animation_name].time = 0;
-						this.cur_animation_name = animation_name;
+						if (this.curAnimationName.Equals(animationName))
+							this.animation[animationName].time = 0;
+						this.curAnimationName = animationName;
 					}
 				}
 			}
 			else
-				this.animatorComp.PlayAnimation(animation_name, true, _speed);
+				this.animatorComp.PlayAnimation(animationName, true, speedValue);
 
-			if (face_to_position != null)
+			if (faceToPosition != null)
 			{
-				var rotation = Quaternion.LookRotation(face_to_position.Value - this.GetPosition());
-				if (!rotation.IsZero() && !is_not_move_stop)
+				var rotation = Quaternion.LookRotation(faceToPosition.Value - this.GetPosition());
+				if (!rotation.IsZero() && !isNotMoveStop)
 					this.MoveStop(rotation);
 			}
 		}
 
-		public void StopAnimation(string animation_name = null, float? blend_time = null)
+		public void StopAnimation(string animationName = null, float? blendTime = null)
 		{
-			float _blend_time = blend_time.GetValueOrDefault(0.1f);
+			float blendTimeValue = blendTime.GetValueOrDefault(0.1f);
 			if (this.animation != null)
 			{
 				if (this.actionManager != null)
-					this.actionManager.Stop(animation_name);
+					this.actionManager.Stop(animationName);
 				else
 				{
-					animation_name = animation_name ?? this.cur_animation_name;
-					this.animation.Blend(animation_name, 0, _blend_time);
+					animationName = animationName ?? this.curAnimationName;
+					this.animation.Blend(animationName, 0, blendTimeValue);
 				}
 			}
 		}

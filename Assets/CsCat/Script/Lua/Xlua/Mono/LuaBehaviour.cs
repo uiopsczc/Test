@@ -14,26 +14,26 @@ namespace CsCat
 {
 	public class LuaBehaviour : MonoBehaviour
 	{
-		public TextAsset lua_file;
+		public TextAsset luaFile;
 		private Action luaAwake;
 		private Action luaOnDestroy;
 		private Action luaStart;
 		private Action luaUpdate;
-		private LuaTable script_env;
+		private LuaTable scriptEnv;
 
 		private void Awake()
 		{
-			script_env = XLuaManager.instance.luaEnv.NewScriptEnv(this, lua_file.text);
+			scriptEnv = XLuaManager.instance.luaEnv.NewScriptEnv(this, luaFile.text);
 			InitScriptEnv();
 			luaAwake?.Invoke();
 		}
 
 		private void InitScriptEnv()
 		{
-			script_env.Get("Awake", out luaAwake);
-			script_env.Get("Start", out luaStart);
-			script_env.Get("Update", out luaUpdate);
-			script_env.Get("OnDestroy", out luaOnDestroy);
+			scriptEnv.Get("Awake", out luaAwake);
+			scriptEnv.Get("Start", out luaStart);
+			scriptEnv.Get("Update", out luaUpdate);
+			scriptEnv.Get("OnDestroy", out luaOnDestroy);
 		}
 
 		private void ResetScriptEnv()
@@ -42,7 +42,7 @@ namespace CsCat
 			luaStart = null;
 			luaUpdate = null;
 			luaOnDestroy = null;
-			script_env.Dispose();
+			scriptEnv.Dispose();
 		}
 
 		private void Start()

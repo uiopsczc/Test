@@ -2,13 +2,13 @@ namespace CsCat
 {
 	public class AudioMixerGroupInfo
 	{
-		public string group_path;
-		public string volume_name;
+		public string groupPath;
+		public string volumeName;
 
-		public AudioMixerGroupInfo(string group_path, string volume_name)
+		public AudioMixerGroupInfo(string groupPath, string volumeName)
 		{
-			this.group_path = group_path;
-			this.volume_name = volume_name;
+			this.groupPath = groupPath;
+			this.volumeName = volumeName;
 		}
 	}
 }

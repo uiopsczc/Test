@@ -5,39 +5,45 @@ namespace CsCat
 {
 	public partial class SpellBase
 	{
-		protected void AddBuff(string buff_id, Unit target_unit, float? force_duration = null, Hashtable arg_dict = null)
+		protected void AddBuff(string buffId, Unit targetUnit, float? forceDuration = null, Hashtable argDict = null)
 		{
-			if (buff_id == null)
+			if (buffId == null)
 				return;
-			if (target_unit == null || target_unit.IsDead())
+			if (targetUnit == null || targetUnit.IsDead())
 				return;
-			arg_dict = arg_dict ?? new Hashtable();
-			arg_dict["source_spell"] = this;
-			target_unit.buffManager.AddBuff(buff_id, this.source_unit, force_duration, arg_dict);
+			argDict = argDict ?? new Hashtable();
+			argDict["source_spell"] = this;
+			targetUnit.buffManager.AddBuff(buffId, this.sourceUnit, forceDuration, argDict);
 		}
 
-		public void RemoveBuff(List<Buff> buff_list, Unit unit)
+		public void RemoveBuff(List<Buff> buffList, Unit unit)
 		{
-			if (buff_list.IsNullOrEmpty())
+			if (buffList.IsNullOrEmpty())
 				return;
-			unit = unit ?? this.source_unit;
-			foreach (var buff in buff_list)
-				unit.buffManager.RemoveBuff(buff.buff_id, null, this.GetGuid());
+			unit = unit ?? this.sourceUnit;
+			for (var i = 0; i < buffList.Count; i++)
+			{
+				var buff = buffList[i];
+				unit.buffManager.RemoveBuff(buff.buffId, null, this.GetGuid());
+			}
 		}
 
-		public void RemoveBuffById(string buff_id, Unit unit, string force_spell_guid = null)
+		public void RemoveBuffById(string buffId, Unit unit, string forceSpellGuid = null)
 		{
 			if (unit == null || unit.IsDead())
 				return;
-			unit.buffManager.RemoveBuff(buff_id, this.source_unit.GetGuid(), force_spell_guid ?? this.GetGuid());
+			unit.buffManager.RemoveBuff(buffId, this.sourceUnit.GetGuid(), forceSpellGuid ?? this.GetGuid());
 		}
 
-		public void RemoveBuffById(List<string> buff_id_list, Unit unit, string force_spell_guid = null)
+		public void RemoveBuffById(List<string> buffIdList, Unit unit, string forceSpellGuid = null)
 		{
 			if (unit == null || unit.IsDead())
 				return;
-			foreach (string buff_id in buff_id_list)
-				RemoveBuffById(buff_id, unit, force_spell_guid);
+			for (var i = 0; i < buffIdList.Count; i++)
+			{
+				string buffId = buffIdList[i];
+				RemoveBuffById(buffId, unit, forceSpellGuid);
+			}
 		}
 	}
 }

@@ -7,85 +7,85 @@ namespace CsCat
 		public AssetPathMap assetPathMap = new AssetPathMap();
 		public AssetBundleMap assetBundleMap = new AssetBundleMap();
 		public Manifest manifest = new Manifest();
-		public ResourceWebRequester manifest_request;
-		public string res_version;
-		public string assetPathRef_content_json;
-		private readonly string url_root;
+		public ResourceWebRequester manifestRequest;
+		public string resVersion;
+		public string assetPathRefContentJson;
+		private readonly string urlRoot;
 
 
-		public BuildInfo(string url_root)
+		public BuildInfo(string urlRoot)
 		{
-			this.url_root = url_root;
+			this.urlRoot = urlRoot;
 		}
 
-		public string WithRootPathOfUrlRoot(string cotent)
+		public string WithRootPathOfUrlRoot(string content)
 		{
-			return cotent.WithRootPath(url_root);
+			return content.WithRootPath(urlRoot);
 		}
 
 		public IEnumerator LoadResVersion()
 		{
-			var res_version_request_url = BuildConst.ResVersionFileName.WithRootPath(url_root);
-			var res_version_request = Client.instance.assetBundleManager.DownloadFileAsyncNoCache(res_version_request_url);
+			var resVersionRequestUrl = BuildConst.ResVersionFileName.WithRootPath(urlRoot);
+			var resVersionRequest = Client.instance.assetBundleManager.DownloadFileAsyncNoCache(resVersionRequestUrl);
 
-			yield return res_version_request;
-			if (res_version_request.error.IsNullOrWhiteSpace())
-				res_version = res_version_request.text;
-			res_version_request.Destroy();
-			PoolCatManagerUtil.Despawn(res_version_request);
+			yield return resVersionRequest;
+			if (resVersionRequest.error.IsNullOrWhiteSpace())
+				resVersion = resVersionRequest.text;
+			resVersionRequest.Destroy();
+			PoolCatManagerUtil.Despawn(resVersionRequest);
 		}
 
 		public IEnumerator LoadAssetPathMap()
 		{
-			var assetPathMap_request_url = BuildConst.AssetPathMap_File_Name.WithRootPath(url_root);
-			var assetPathMap_request = Client.instance.assetBundleManager.DownloadFileAsyncNoCache(assetPathMap_request_url);
-			yield return assetPathMap_request;
-			if (assetPathMap_request.error.IsNullOrWhiteSpace())
-				assetPathMap.Initialize(assetPathMap_request.text);
-			assetPathMap_request.Destroy();
-			PoolCatManagerUtil.Despawn(assetPathMap_request);
+			var assetPathMapRequestUrl = BuildConst.AssetPathMap_File_Name.WithRootPath(urlRoot);
+			var assetPathMapRequest = Client.instance.assetBundleManager.DownloadFileAsyncNoCache(assetPathMapRequestUrl);
+			yield return assetPathMapRequest;
+			if (assetPathMapRequest.error.IsNullOrWhiteSpace())
+				assetPathMap.Initialize(assetPathMapRequest.text);
+			assetPathMapRequest.Destroy();
+			PoolCatManagerUtil.Despawn(assetPathMapRequest);
 		}
 
 
 		public IEnumerator LoadAssetBundleMap()
 		{
-			var assetBundleMap_request_url = BuildConst.AssetBundleMap_File_Name.WithRootPath(url_root);
-			var assetBundleMap_request =
-			  Client.instance.assetBundleManager.DownloadFileAsyncNoCache(assetBundleMap_request_url);
-			yield return assetBundleMap_request;
-			if (assetBundleMap_request.error.IsNullOrWhiteSpace())
-				assetBundleMap.Initialize(assetBundleMap_request.text);
-			assetBundleMap_request.Destroy();
-			PoolCatManagerUtil.Despawn(assetBundleMap_request);
+			var assetBundleMapRequestURL = BuildConst.AssetBundleMap_File_Name.WithRootPath(urlRoot);
+			var assetBundleMapRequest =
+			  Client.instance.assetBundleManager.DownloadFileAsyncNoCache(assetBundleMapRequestURL);
+			yield return assetBundleMapRequest;
+			if (assetBundleMapRequest.error.IsNullOrWhiteSpace())
+				assetBundleMap.Initialize(assetBundleMapRequest.text);
+			assetBundleMapRequest.Destroy();
+			PoolCatManagerUtil.Despawn(assetBundleMapRequest);
 		}
 
 
-		public IEnumerator LoadMainfest()
+		public IEnumerator LoadManifest()
 		{
-			var manifest_request_url = BuildConst.ManifestBundle_Path.WithRootPath(url_root);
-			manifest_request = Client.instance.assetBundleManager.DownloadFileAsyncNoCache(manifest_request_url);
-			yield return manifest_request;
-			if (manifest_request.error.IsNullOrWhiteSpace())
+			var manifestRequestURL = BuildConst.ManifestBundle_Path.WithRootPath(urlRoot);
+			manifestRequest = Client.instance.assetBundleManager.DownloadFileAsyncNoCache(manifestRequestURL);
+			yield return manifestRequest;
+			if (manifestRequest.error.IsNullOrWhiteSpace())
 			{
-				manifest.LoadFromAssetbundle(manifest_request.assetBundle);
-				manifest.SaveBytes(manifest_request.bytes);
-				manifest_request.assetBundle.Unload(false);
+				manifest.LoadFromAssetBundle(manifestRequest.assetBundle);
+				manifest.SaveBytes(manifestRequest.bytes);
+				manifestRequest.assetBundle.Unload(false);
 			}
 
-			manifest_request.Destroy();
-			PoolCatManagerUtil.Despawn(manifest_request);
+			manifestRequest.Destroy();
+			PoolCatManagerUtil.Despawn(manifestRequest);
 		}
 
 		public IEnumerator LoadAssetPathRefContentJson()
 		{
-			var assetPathRef_content_json_request_url = AssetPathRefConst.SaveFileName.WithRootPath(url_root);
-			var assetPathRef_content_json_request_url_request =
-			  Client.instance.assetBundleManager.DownloadFileAsyncNoCache(assetPathRef_content_json_request_url);
-			yield return assetPathRef_content_json_request_url_request;
-			if (assetPathRef_content_json_request_url_request.error.IsNullOrWhiteSpace())
-				assetPathRef_content_json = assetPathRef_content_json_request_url_request.text;
-			assetPathRef_content_json_request_url_request.Destroy();
-			PoolCatManagerUtil.Despawn(assetPathRef_content_json_request_url_request);
+			var assetPathRefContentJsonRequestURL = AssetPathRefConst.SaveFileName.WithRootPath(urlRoot);
+			var assetPathRefContentJsonRequestURLRequest =
+			  Client.instance.assetBundleManager.DownloadFileAsyncNoCache(assetPathRefContentJsonRequestURL);
+			yield return assetPathRefContentJsonRequestURLRequest;
+			if (assetPathRefContentJsonRequestURLRequest.error.IsNullOrWhiteSpace())
+				assetPathRefContentJson = assetPathRefContentJsonRequestURLRequest.text;
+			assetPathRefContentJsonRequestURLRequest.Destroy();
+			PoolCatManagerUtil.Despawn(assetPathRefContentJsonRequestURLRequest);
 		}
 
 		public void Dispose()

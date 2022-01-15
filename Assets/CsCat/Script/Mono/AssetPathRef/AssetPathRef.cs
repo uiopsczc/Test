@@ -6,26 +6,26 @@ namespace CsCat
 {
 	public class AssetPathRef
 	{
-		public string asset_path;
+		public string assetPath;
 		public string guid;
-		public long ref_id;
+		public long refId;
 
-		public AssetPathRef(long ref_id, string asset_path = null, string guid = null)
+		public AssetPathRef(long refId, string assetPath = null, string guid = null)
 		{
-			this.ref_id = ref_id;
-			this.asset_path = asset_path;
-			if (this.asset_path == null && guid != null)
+			this.refId = refId;
+			this.assetPath = assetPath;
+			if (this.assetPath == null && guid != null)
 			{
 #if UNITY_EDITOR
-				this.asset_path = AssetDatabase.GUIDToAssetPath(guid);
+				this.assetPath = AssetDatabase.GUIDToAssetPath(guid);
 #endif
 			}
 
 			this.guid = guid;
-			if (this.guid == null && asset_path != null)
+			if (this.guid == null && assetPath != null)
 			{
 #if UNITY_EDITOR
-				this.guid = AssetDatabase.AssetPathToGUID(asset_path);
+				this.guid = AssetDatabase.AssetPathToGUID(assetPath);
 				;
 #endif
 			}
@@ -34,8 +34,8 @@ namespace CsCat
 		public bool Refresh()
 		{
 #if UNITY_EDITOR
-			this.asset_path = AssetDatabase.GUIDToAssetPath(guid);
-			if (AssetDatabase.LoadAssetAtPath(asset_path, typeof(object)) == null)
+			this.assetPath = AssetDatabase.GUIDToAssetPath(guid);
+			if (AssetDatabase.LoadAssetAtPath(assetPath, typeof(object)) == null)
 				return false;
 
 #endif

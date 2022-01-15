@@ -6,12 +6,12 @@ namespace CsCat
 	{
 		public AIBaseComp aiComp;
 
-		public void RunAI(string ai_class_path)
+		public void RunAI(string aiClassPath)
 		{
-			Type ai_class = !ai_class_path.IsNullOrWhiteSpace() ? TypeUtil.GetType(ai_class_path) : typeof(AIBaseComp);
+			Type aiClass = !aiClassPath.IsNullOrWhiteSpace() ? TypeUtil.GetType(aiClassPath) : typeof(AIBaseComp);
 			if (this.aiComp != null)
 				this.RemoveChild(this.aiComp.key);
-			this.aiComp = this.AddChild(null, ai_class, this) as AIBaseComp;
+			this.aiComp = this.AddChild(null, aiClass, this) as AIBaseComp;
 		}
 	}
 }

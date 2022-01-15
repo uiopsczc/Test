@@ -4,52 +4,54 @@ namespace CsCat
 {
 	public class Embeds
 	{
-		private Doer parent_doer;
-		private string sub_doer_key;
+		private Doer parentDoer;
+		private string subDoerKey;
 
-		public Embeds(Doer parent_doer, string sub_doer_key)
+		public Embeds(Doer parentDoer, string subDoerKey)
 		{
-			this.parent_doer = parent_doer;
-			this.sub_doer_key = sub_doer_key;
+			this.parentDoer = parentDoer;
+			this.subDoerKey = subDoerKey;
 		}
 
 		////////////////////DoXXX/////////////////////////////////
 		//卸载
 		public void DoRelease()
 		{
-			SubDoerUtil1.DoReleaseSubDoer<Item>(this.parent_doer, this.sub_doer_key);
+			SubDoerUtil1.DoReleaseSubDoer<Item>(this.parentDoer, this.subDoerKey);
 		}
 
 		//保存
-		public void DoSave(Hashtable dict, Hashtable dict_tmp, string save_key = null)
+		public void DoSave(Hashtable dict, Hashtable dictTmp, string saveKey = null)
 		{
-			save_key = save_key ?? "embed_ids";
+			saveKey = saveKey ?? "embed_ids";
 			var embeds = this.GetEmbeds();
 
-			var dict_embed_ids = new ArrayList();
-			foreach (var embed in embeds)
+			var dictEmbedIds = new ArrayList();
+			for (var i = 0; i < embeds.Length; i++)
 			{
-				dict_embed_ids.Add(embed.GetId());
+				var embed = embeds[i];
+				dictEmbedIds.Add(embed.GetId());
 			}
 
-			if (!dict_embed_ids.IsNullOrEmpty())
-				dict[save_key] = dict_embed_ids;
+			if (!dictEmbedIds.IsNullOrEmpty())
+				dict[saveKey] = dictEmbedIds;
 		}
 
 		//还原
-		public void DoRestore(Hashtable dict, Hashtable dict_tmp, string restore_key = null)
+		public void DoRestore(Hashtable dict, Hashtable dictTmp, string restoreKey = null)
 		{
-			restore_key = restore_key ?? "embed_ids";
+			restoreKey = restoreKey ?? "embed_ids";
 			this.ClearEmbeds();
-			var dict_embed_ids = dict.Remove3<ArrayList>(restore_key);
-			if (!dict_embed_ids.IsNullOrEmpty())
+			var dictEmbedIds = dict.Remove3<ArrayList>(restoreKey);
+			if (!dictEmbedIds.IsNullOrEmpty())
 			{
 				var embeds = this.GetEmbeds_ToEdit();
-				foreach (var _embed_id in dict_embed_ids)
+				for (var i = 0; i < dictEmbedIds.Count; i++)
 				{
-					var embed_id = _embed_id as string;
-					var embed = this.parent_doer.factory.NewDoer(embed_id) as Item;
-					embed.SetEnv(this.parent_doer);
+					var curEmbedId = dictEmbedIds[i];
+					var embedId = curEmbedId as string;
+					var embed = this.parentDoer.factory.NewDoer(embedId) as Item;
+					embed.SetEnv(this.parentDoer);
 					embeds.Add(embed);
 				}
 			}
@@ -61,35 +63,35 @@ namespace CsCat
 		//获得指定的镶物
 		public Item[] GetEmbeds(string id = null)
 		{
-			return SubDoerUtil1.GetSubDoers<Item>(this.parent_doer, this.sub_doer_key, id, null);
+			return SubDoerUtil1.GetSubDoers<Item>(this.parentDoer, this.subDoerKey, id, null);
 		}
 
 		public ArrayList GetEmbeds_ToEdit() //可以直接插入删除
 		{
-			return SubDoerUtil1.GetSubDoers_ToEdit(this.parent_doer, this.sub_doer_key);
+			return SubDoerUtil1.GetSubDoers_ToEdit(this.parentDoer, this.subDoerKey);
 		}
 
 		public bool HasEmbeds()
 		{
-			return SubDoerUtil1.HasSubDoers<Item>(this.parent_doer, this.sub_doer_key);
+			return SubDoerUtil1.HasSubDoers<Item>(this.parentDoer, this.subDoerKey);
 		}
 
 		public int GetEmbedsCount()
 		{
-			return SubDoerUtil1.GetSubDoersCount<Item>(this.parent_doer, this.sub_doer_key);
+			return SubDoerUtil1.GetSubDoersCount<Item>(this.parentDoer, this.subDoerKey);
 		}
 
 		//获得指定的镶物
-		public Item GetEmbed(string id_or_rid)
+		public Item GetEmbed(string idOrRid)
 		{
-			return SubDoerUtil1.GetSubDoer<Item>(this.parent_doer, this.sub_doer_key, id_or_rid);
+			return SubDoerUtil1.GetSubDoer<Item>(this.parentDoer, this.subDoerKey, idOrRid);
 		}
 
 		//清除所有镶物
 		public void ClearEmbeds()
 		{
-			SubDoerUtil1.ClearSubDoers<Item>(this.parent_doer, this.sub_doer_key,
-			  (embed) => { ((Item)this.parent_doer).EmbedOff(embed); });
+			SubDoerUtil1.ClearSubDoers<Item>(this.parentDoer, this.subDoerKey,
+			  (embed) => { ((Item)this.parentDoer).EmbedOff(embed); });
 		}
 	}
 }

@@ -14,7 +14,7 @@ namespace CsCat
 		{
 			if (this.counter.count < 0)
 				LogCat.error("counter.count < 0");
-			if (this.counter.count == 0 && this.is_spell_animation_finished && !this.IsDestroyed())
+			if (this.counter.count == 0 && this.isSpellAnimationFinished && !this.IsDestroyed())
 				this.RemoveSelf();
 		}
 

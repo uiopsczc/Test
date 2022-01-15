@@ -5,12 +5,12 @@ namespace CsCat
 		public class Key
 		{
 			public string key;
-			public string sub_key;
+			public string subKey;
 
-			public Key(string key, string sub_key)
+			public Key(string key, string subKey)
 			{
 				this.key = key;
-				this.sub_key = sub_key;
+				this.subKey = subKey;
 			}
 
 			public override bool Equals(object obj)
@@ -18,14 +18,14 @@ namespace CsCat
 				Key other = obj as Key;
 				if (other == null)
 					return false;
-				if (ObjectUtil.Equals(other.key, key) && ObjectUtil.Equals(other.sub_key, sub_key))
+				if (ObjectUtil.Equals(other.key, key) && ObjectUtil.Equals(other.subKey, subKey))
 					return true;
 				return false;
 			}
 
 			public override int GetHashCode()
 			{
-				return ObjectUtil.GetHashCode(key, sub_key);
+				return ObjectUtil.GetHashCode(key, subKey);
 			}
 		}
 	}

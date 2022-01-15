@@ -13,7 +13,7 @@ namespace CsCat
 		public int owner_hash;
 		public string owner_type;
 
-		public bool is_finished = false;
+		public bool isFinished = false;
 		public bool is_paused = false;
 
 		public PausableCoroutine(IEnumerator routine, int owner_hash, string owner_type)

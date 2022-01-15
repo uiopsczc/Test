@@ -4,12 +4,12 @@ namespace CsCat
 {
 	public partial class CameraBase
 	{
-		private Transform lock_to_transform;
+		private Transform lockToTransform;
 
 		// 锁定
-		public void SetLockTo(Transform lock_to_transform)
+		public void SetLockTo(Transform lockToTransform)
 		{
-			this.lock_to_transform = lock_to_transform;
+			this.lockToTransform = lockToTransform;
 		}
 
 		public void SetLockTo(GameObject gameObject)
@@ -19,7 +19,7 @@ namespace CsCat
 
 		public void ApplyLockTo(float deltaTime)
 		{
-			Vector3 position = this.lock_to_transform.position;
+			Vector3 position = this.lockToTransform.position;
 			graphicComponent.transform.position = Vector3.Lerp(graphicComponent.transform.position, position, deltaTime);
 		}
 

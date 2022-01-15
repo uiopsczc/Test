@@ -7,49 +7,52 @@ namespace CsCat
 {
 	public partial class UnitManager
 	{
-		public List<Unit> SelectUnit(Hashtable condition_dict)
+		public List<Unit> SelectUnit(Hashtable conditionDict)
 		{
-			var range_info = condition_dict.Get<Hashtable>("range_info");
-			IPosition origin_iposition = condition_dict.Get<IPosition>("origin_iposition");
-			var start_position = origin_iposition.GetPosition();
-			var scope = condition_dict.Get<string>("scope");
-			float max_distance = range_info.Get<float>("radius");
-			if (range_info.Get<string>("mode").Equals("rect"))
+			var rangeInfo = conditionDict.Get<Hashtable>("range_info");
+			IPosition originIPosition = conditionDict.Get<IPosition>("origin_iposition");
+			var startPosition = originIPosition.GetPosition();
+			var scope = conditionDict.Get<string>("scope");
+			float maxDistance = rangeInfo.Get<float>("radius");
+			if (rangeInfo.Get<string>("mode").Equals("rect"))
 			{
-				max_distance = Math.Max(max_distance, range_info.Get<float>("height"));
-				max_distance = Math.Max(max_distance, range_info.Get<float>("width"));
+				maxDistance = Math.Max(maxDistance, rangeInfo.Get<float>("height"));
+				maxDistance = Math.Max(maxDistance, rangeInfo.Get<float>("width"));
 			}
 
-			string order = condition_dict.Get<string>("order");
-			string faction = condition_dict.Get<string>("faction");
-			var candidate_list = condition_dict.Get<List<Unit>>("candidate_list");
-			var is_only_attackable = condition_dict.Get<bool>("is_only_attackable");
-			var is_can_select_hide_unit = condition_dict.Get<bool>("is_can_select_hide_unit");
+			string order = conditionDict.Get<string>("order");
+			string faction = conditionDict.Get<string>("faction");
+			var candidateList = conditionDict.Get<List<Unit>>("candidate_list");
+			var isOnlyAttackable = conditionDict.Get<bool>("is_only_attackable");
+			var isCanSelectHideUnit = conditionDict.Get<bool>("is_can_select_hide_unit");
 
-			var target_unit_list = new List<Unit>();
-			var match_faction_list = this.GetMatchFactionList(faction, scope);
+			var targetUnitList = new List<Unit>();
+			var matchFactionList = this.GetMatchFactionList(faction, scope);
 
 			//有候选目标时，则在候选目标里选择，不考虑忽略阵营
-			var check_unit_list = candidate_list != null ? candidate_list : this.GetFactionUnitList(match_faction_list);
-			foreach (var unit in check_unit_list)
+			var checkUnitList = candidateList ?? this.GetFactionUnitList(matchFactionList);
+
+			for (var i = 0; i < checkUnitList.Count; i++)
 			{
-				if (!unit.IsDestroyed() && !unit.IsDead() && this.__CheckUnit(unit, origin_iposition, range_info, faction, scope,
-					  is_only_attackable, is_can_select_hide_unit))
-					target_unit_list.Add(unit);
+				var unit = checkUnitList[i];
+				if (!unit.IsDestroyed() && !unit.IsDead() && this.__CheckUnit(unit, originIPosition, rangeInfo, faction,
+					scope,
+					isOnlyAttackable, isCanSelectHideUnit))
+					targetUnitList.Add(unit);
 			}
 
-			if ("distance".Equals(order) && !target_unit_list.IsNullOrEmpty())
-				target_unit_list.QuickSort((a, b) => { return a.Distance(origin_iposition) <= b.Distance(origin_iposition); });
-			return target_unit_list;
+			if ("distance".Equals(order) && !targetUnitList.IsNullOrEmpty())
+				targetUnitList.QuickSort((a, b) => a.Distance(originIPosition) <= b.Distance(originIPosition));
+			return targetUnitList;
 		}
 
 
-		public bool __CheckUnit(Unit unit, IPosition origin_iposition, Hashtable range_info, string faction, string scope,
-		  bool is_only_attackable, bool is_can_select_hide_unit = false)
+		public bool __CheckUnit(Unit unit, IPosition originIPosition, Hashtable rangeInfo, string faction, string scope,
+		  bool isOnlyAttackable, bool isCanSelectHideUnit = false)
 		{
 			if ("技能物体".Equals(unit.cfgUnitData.type))
 				return false;
-			if (is_only_attackable)
+			if (isOnlyAttackable)
 				if (unit.IsInvincible())
 					return false;
 
@@ -67,49 +70,49 @@ namespace CsCat
 				}
 			}
 
-			if (!is_can_select_hide_unit)
+			if (!isCanSelectHideUnit)
 				if (unit.IsHide() && !unit.IsExpose())
 					return false;
 
-			if (origin_iposition == null || range_info == null)
+			if (originIPosition == null || rangeInfo == null)
 				return false;
 
-			if ("circle".Equals(range_info.Get<string>("mode")))
+			if ("circle".Equals(rangeInfo.Get<string>("mode")))
 			{
-				float radius = range_info.Get<float>("radius");
-				if (!range_info.ContainsKey("radius") || radius < 0)
+				float radius = rangeInfo.Get<float>("radius");
+				if (!rangeInfo.ContainsKey("radius") || radius < 0)
 					return false;
-				if (unit.Distance(origin_iposition) > radius)
+				if (unit.Distance(originIPosition) > radius)
 					return false;
-				var angle = range_info.Get<float>("angle");
-				if (!range_info.ContainsKey("angle"))
+				var angle = rangeInfo.Get<float>("angle");
+				if (!rangeInfo.ContainsKey("angle"))
 					return true;
-				var forward = range_info.Get<Quaternion>("rotation").Forward();
-				var orgin_position = origin_iposition.GetPosition();
+				var forward = rangeInfo.Get<Quaternion>("rotation").Forward();
+				var orgPosition = originIPosition.GetPosition();
 				var right = Quaternion.AngleAxis(90, Vector3.up) * forward;
-				var dir_r = (unit.GetPosition() + (right * radius)) - orgin_position;
-				var dir_l = (unit.GetPosition() + (-right * radius)) - orgin_position;
-				return (Vector3.Angle(forward, dir_l) < angle / 2) || (Vector3.Angle(forward, dir_r) < angle / 2);
+				var dirR = (unit.GetPosition() + (right * radius)) - orgPosition;
+				var dirL = (unit.GetPosition() + (-right * radius)) - orgPosition;
+				return (Vector3.Angle(forward, dirL) < angle / 2) || (Vector3.Angle(forward, dirR) < angle / 2);
 			}
-			else if ("rect".Equals(range_info.Get<string>("mode")))
-			{
-				if (!range_info.ContainsKey("height") || !range_info.ContainsKey("width") ||
-					range_info.Get<float>("height") < 0 || range_info.Get<float>("width") < 0)
-					return false;
-				if (!range_info.ContainsKey("rotation"))
-					range_info["rotation"] = default(Quaternion);
-				var pos = unit.GetPosition();
-				var orgin_position = origin_iposition.GetPosition();
-				pos = pos - orgin_position;
-				pos = (range_info.Get<Quaternion>("rotation").Inverse()) * pos;
-				var unit_radius = unit.GetRadius();
 
-				if (range_info.Get<bool>("is_use_center"))
-					return Math.Abs(pos.x) < range_info.Get<float>("width") / 2 + unit_radius &&
-						   Math.Abs(pos.z) < range_info.Get<float>("height") / 2 + unit_radius;
-				else
-					return Math.Abs(pos.x) < range_info.Get<float>("width") + unit_radius &&
-						   Math.Abs(pos.z) < range_info.Get<float>("height") + unit_radius;
+			if ("rect".Equals(rangeInfo.Get<string>("mode")))
+			{
+				if (!rangeInfo.ContainsKey("height") || !rangeInfo.ContainsKey("width") ||
+				    rangeInfo.Get<float>("height") < 0 || rangeInfo.Get<float>("width") < 0)
+					return false;
+				if (!rangeInfo.ContainsKey("rotation"))
+					rangeInfo["rotation"] = default(Quaternion);
+				var pos = unit.GetPosition();
+				var orgPosition = originIPosition.GetPosition();
+				pos = pos - orgPosition;
+				pos = (rangeInfo.Get<Quaternion>("rotation").Inverse()) * pos;
+				var unitRadius = unit.GetRadius();
+
+				if (rangeInfo.Get<bool>("is_use_center"))
+					return Math.Abs(pos.x) < rangeInfo.Get<float>("width") / 2 + unitRadius &&
+					       Math.Abs(pos.z) < rangeInfo.Get<float>("height") / 2 + unitRadius;
+				return Math.Abs(pos.x) < rangeInfo.Get<float>("width") + unitRadius &&
+				       Math.Abs(pos.z) < rangeInfo.Get<float>("height") + unitRadius;
 			}
 
 			return false;

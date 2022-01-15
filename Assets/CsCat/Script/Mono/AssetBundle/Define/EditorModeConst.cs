@@ -11,13 +11,7 @@ namespace CsCat
 			get
 			{
 				if (!PlayerPrefs.HasKey(_Is_Simulation_Mode))
-				{
-					if (Application.isEditor)
-						PlayerPrefs.SetInt(_Is_Simulation_Mode, 0);
-					else
-						PlayerPrefs.SetInt(_Is_Simulation_Mode, 1);
-				}
-
+					PlayerPrefs.SetInt(_Is_Simulation_Mode, Application.isEditor ? 0 : 1);
 				return PlayerPrefs.GetInt(_Is_Simulation_Mode) == 1;
 			}
 			set
@@ -29,7 +23,7 @@ namespace CsCat
 
 		public static bool IsEditorMode
 		{
-			get { return !Is_Simulation_Mode; }
+			get => !Is_Simulation_Mode;
 			set { Is_Simulation_Mode = !value; }
 		}
 	}

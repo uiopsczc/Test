@@ -24,17 +24,17 @@ namespace CsCat
 	/// </example>
 	public class CoroutineSequence
 	{
-		private Queue<Action<Action>> callback_queue;
-		private bool is_can_next;
+		private Queue<Action<Action>> callbackQueue;
+		private bool isCanNext;
 		private readonly MonoBehaviour owner;
 
 		private CoroutineSequence(MonoBehaviour owner)
 		{
 			this.owner = owner;
-			is_can_next = true;
+			isCanNext = true;
 		}
 
-		public bool is_finished { get; private set; }
+		public bool isFinished { get; private set; }
 
 		public Coroutine WaitFinish()
 		{
@@ -43,7 +43,7 @@ namespace CsCat
 
 		private IEnumerator IEWaitFinish()
 		{
-			while (!is_finished)
+			while (!isFinished)
 				yield return null;
 		}
 
@@ -82,34 +82,34 @@ namespace CsCat
 			return this;
 		}
 
-		public CoroutineSequence Then(Action<Action, Action> then_callback)
+		public CoroutineSequence Then(Action<Action, Action> thenCallback)
 		{
-			WaitNext(next => { then_callback(next, () => { LogCat.LogError("TODO: kill!"); }); });
+			WaitNext(next => { thenCallback(next, () => { LogCat.LogError("TODO: kill!"); }); });
 			return this;
 		}
 
 		private void WaitNext(Action<Action> callback)
 		{
-			if (!is_can_next)
+			if (!isCanNext)
 			{
-				if (callback_queue == null)
-					callback_queue = new Queue<Action<Action>>();
-				callback_queue.Enqueue(callback);
+				if (callbackQueue == null)
+					callbackQueue = new Queue<Action<Action>>();
+				callbackQueue.Enqueue(callback);
 			}
 			else
 			{
-				is_can_next = false;
+				isCanNext = false;
 				callback(Next);
 			}
 		}
 
 		private void Next()
 		{
-			is_can_next = true;
-			if (callback_queue != null && callback_queue.Count > 0)
-				WaitNext(callback_queue.Dequeue());
+			isCanNext = true;
+			if (callbackQueue != null && callbackQueue.Count > 0)
+				WaitNext(callbackQueue.Dequeue());
 			else
-				is_finished = true;
+				isFinished = true;
 		}
 
 		#region Util
@@ -151,16 +151,16 @@ namespace CsCat
 		/// <summary>
 		///   等待一定帧数
 		/// </summary>
-		/// <param name="frame_count"></param>
+		/// <param name="frameCount"></param>
 		/// <returns></returns>
-		public CoroutineSequence WaitForFrames(int frame_count)
+		public CoroutineSequence WaitForFrames(int frameCount)
 		{
-			return Coroutine(IEWaitForFrames(frame_count));
+			return Coroutine(IEWaitForFrames(frameCount));
 		}
 
-		private IEnumerator IEWaitForFrames(int frame_count)
+		private IEnumerator IEWaitForFrames(int frameCount)
 		{
-			for (var i = 0; i < frame_count; i++)
+			for (var i = 0; i < frameCount; i++)
 				yield return null;
 		}
 

@@ -5,9 +5,9 @@ namespace CsCat
 		//////////////////////////////////////////////////
 		// Buff
 		//////////////////////////////////////////////////
-		public bool HasBuff(string buff_id)
+		public bool HasBuff(string buffId)
 		{
-			return this.buffManager.HasBuff(buff_id);
+			return this.buffManager.HasBuff(buffId);
 		}
 
 		public int GetBuffCount()
@@ -23,84 +23,84 @@ namespace CsCat
 		//////////////////////////////////////////////////
 		// State
 		//////////////////////////////////////////////////
-		public bool HasState(string state_name)
+		public bool HasState(string stateName)
 		{
-			return this.buffManager.HasState(state_name);
+			return this.buffManager.HasState(stateName);
 		}
 
 		private void InitMixedStates()
 		{
-			this.is_dead = false;
+			this.isDead = false;
 
-			this.is_can_move = true;
-			this.is_can_attack = true;
-			this.is_can_cast_skill = true;
-			this.is_can_normal_attack = true;
-			this.is_can_control = true;
+			this.isCanMove = true;
+			this.isCanAttack = true;
+			this.isCanCastSkill = true;
+			this.isCanNormalAttack = true;
+			this.isCanControl = true;
 		}
 
 		// 混合状态
 		public void UpdateMixedStates()
 		{
 			//是否是正常状态
-			bool is_common_state = !this.IsDead() &&
+			bool isCommonState = !this.IsDead() &&
 								   !this.IsStun() &&
 								   !this.IsFreeze() &&
 								   this.unitMoveComp.unitBeThrowedInfo == null &&
-								   !this.unitMoveComp.is_get_caught;
-			bool new_is_can_move = is_common_state &&
+								   !this.unitMoveComp.isGetCaught;
+			bool newIsCanMove = isCommonState &&
 								   !this.HasState(StateConst.CanNotMove) &&
-								   (this.current_attack == null ||
-									this.current_attack.is_past_break_time ||
-									this.current_attack.cfgSpellData.is_can_move_while_cast);
-			bool new_is_can_attack = is_common_state &&
+								   (this.currentAttack == null ||
+									this.currentAttack.isPastBreakTime ||
+									this.currentAttack.cfgSpellData.is_can_move_while_cast);
+			bool newIsCanAttack = isCommonState &&
 									 (!this.HasState(StateConst.CanNotAttack)) &&
-									 (this.current_attack == null || this.current_attack.is_past_break_time);
-			bool new_is_silent = this.IsSilent();
-			bool new_is_can_cast_skill = new_is_can_attack && !new_is_silent;
-			bool new_is_can_normal_attack = new_is_can_attack;
+									 (this.currentAttack == null || this.currentAttack.isPastBreakTime);
+			bool newIsSilent = this.IsSilent();
+			bool newIsCanCastSkill = newIsCanAttack && !newIsSilent;
+			bool newIsCanNormalAttack = newIsCanAttack;
 
-			bool new_is_confused = this.IsConfused();
-			bool new_is_can_operate = is_common_state && !new_is_confused;
-			bool new_is_can_control = (new_is_can_move || new_is_can_attack) && new_is_can_operate;
+			bool newIsConfused = this.IsConfused();
+			bool newIsCanOperate = isCommonState && !newIsConfused;
+			bool newIsCanControl = (newIsCanMove || newIsCanAttack) && newIsCanOperate;
 
 			//检查混合状态变化
-			if (this.is_can_move != new_is_can_move)
+			if (this.isCanMove != newIsCanMove)
 			{
-				this.is_can_move = new_is_can_move;
-				this.Broadcast(null, UnitEventNameConst.On_Unit_Is_Can_Move_Change, this, !this.is_can_move, this.is_can_move);
-				if (!this.is_can_move)
+				this.isCanMove = newIsCanMove;
+				this.Broadcast(null, UnitEventNameConst.On_Unit_Is_Can_Move_Change, this, !this.isCanMove, this.isCanMove);
+				if (!this.isCanMove)
 					this.MoveStop();
 			}
 
-			if (this.is_can_attack != new_is_can_attack)
+			if (this.isCanAttack != newIsCanAttack)
 			{
-				this.is_can_attack = new_is_can_attack;
-				this.Broadcast(null, UnitEventNameConst.On_Unit_Is_Can_Attack_Change, this, !this.is_can_attack, this.is_can_attack);
+				this.isCanAttack = newIsCanAttack;
+				this.Broadcast(null, UnitEventNameConst.On_Unit_Is_Can_Attack_Change, this, !this.isCanAttack, this.isCanAttack);
 			}
 
-			if (this.is_can_cast_skill != new_is_can_cast_skill)
+			if (this.isCanCastSkill != newIsCanCastSkill)
 			{
-				this.is_can_cast_skill = new_is_can_cast_skill;
-				this.Broadcast(null, UnitEventNameConst.On_Unit_Is_Can_Cast_Skill_Change, this, !this.is_can_cast_skill, this.is_can_cast_skill);
-				if (!this.is_can_cast_skill &&
-					(this.current_attack != null && this.skill_id_list.Contains(this.current_attack.spell_id)))
-					Client.instance.combat.spellManager.BreakSpell(this.current_attack.GetGuid());
+				this.isCanCastSkill = newIsCanCastSkill;
+				this.Broadcast(null, UnitEventNameConst.On_Unit_Is_Can_Cast_Skill_Change, this, !this.isCanCastSkill, this.isCanCastSkill);
+				if (!this.isCanCastSkill &&
+					(this.currentAttack != null && this.skillIdList.Contains(this.currentAttack.spellId)))
+					Client.instance.combat.spellManager.BreakSpell(this.currentAttack.GetGuid());
 			}
 
-			if (this.is_can_normal_attack != new_is_can_normal_attack)
+			if (this.isCanNormalAttack != newIsCanNormalAttack)
 			{
-				this.is_can_normal_attack = new_is_can_normal_attack;
-				this.Broadcast(null, UnitEventNameConst.On_Unit_Is_Can_Normal_Attack_Change, this, !this.is_can_normal_attack, this.is_can_normal_attack);
-				if (!this.is_can_normal_attack && (this.current_attack != null &&
-												   this.normal_attack_id_list.Contains(this.current_attack.spell_id)))
-					Client.instance.combat.spellManager.BreakSpell(this.current_attack.GetGuid());
+				this.isCanNormalAttack = newIsCanNormalAttack;
+				this.Broadcast(null, UnitEventNameConst.On_Unit_Is_Can_Normal_Attack_Change, this, !this.isCanNormalAttack, this.isCanNormalAttack);
+				if (!this.isCanNormalAttack && (this.currentAttack != null &&
+												   this.normalAttackIdList.Contains(this.currentAttack.spellId)))
+					Client.instance.combat.spellManager.BreakSpell(this.currentAttack.GetGuid());
 			}
 
-			if (this.is_can_control != new_is_can_control)
+			if (this.isCanControl != newIsCanControl)
 			{
-				this.is_can_control = new_is_can_control;
-				this.Broadcast(null, UnitEventNameConst.On_Unit_Is_Can_Control_Change, this, !this.is_can_control, this.is_can_control);
+				this.isCanControl = newIsCanControl;
+				this.Broadcast(null, UnitEventNameConst.On_Unit_Is_Can_Control_Change, this, !this.isCanControl, this.isCanControl);
 			}
 		}
 	}

@@ -5,13 +5,13 @@ namespace CsCat
 {
 	public partial class CombatBase : TickObject
 	{
-		private bool is_started;
-		private bool is_finished;
-		private Hashtable arg_dict;
-		private bool is_fixed_duration_update = true;
+		private bool isStarted;
+		private bool isFinished;
+		private Hashtable argDict;
+		private bool isFixedDurationUpdate = true;
 		public float time;
 		public int frame;
-		private float fixed_update_remain_duration;
+		private float fixedUpdateRemainDuration;
 		public GameLevelBase gameLevel;
 		public EffectManager effectManager;
 		public CameraManager cameraManager;
@@ -20,17 +20,14 @@ namespace CsCat
 		public SpellManager spellManager;
 		public RandomManager randomManager = new RandomManager();
 
-		public override TimerManager timerManager
-		{
-			get { return cache.GetOrAddDefault(() => { return new TimerManager(); }); }
-		}
+		public override TimerManager timerManager => cache.GetOrAddDefault(() => new TimerManager());
 
 		public void Init(Hashtable arg_dict)
 		{
 			base.Init();
-			this.arg_dict = arg_dict;
+			this.argDict = arg_dict;
 
-			randomManager.SetSeed(this.arg_dict.GetOrGetDefault2<int>("random_seed", () => (int)DateTime.Now.Ticks));
+			randomManager.SetSeed(this.argDict.GetOrGetDefault2<int>("random_seed", () => (int)DateTime.Now.Ticks));
 			effectManager = AddChild<EffectManager>("EffectManager");
 			cameraManager = AddChild<CameraManager>("CameraManager");
 			unitManager = AddChild<UnitManager>("UnitManager");
@@ -43,13 +40,13 @@ namespace CsCat
 			base.Start();
 			LogCat.log("=============== Combat:Start ===============");
 			this.time = 0;
-			this.is_finished = false;
-			this.fixed_update_remain_duration = CombatConst.Fixed_Update_Duration;
-			this.is_started = true;
-			var gameLevel_class =
-			  TypeUtil.GetType(arg_dict.GetOrGetDefault2<string>("gameLevel_class_path",
+			this.isFinished = false;
+			this.fixedUpdateRemainDuration = CombatConst.Fixed_Update_Duration;
+			this.isStarted = true;
+			var gameLevelClass =
+			  TypeUtil.GetType(argDict.GetOrGetDefault2<string>("gameLevel_class_path",
 				() => typeof(GameLevelBase).ToString()));
-			this.gameLevel = this.AddChild(null, gameLevel_class) as GameLevelBase;
+			this.gameLevel = this.AddChild(null, gameLevelClass) as GameLevelBase;
 			this.gameLevel.Start();
 		}
 
@@ -60,7 +57,7 @@ namespace CsCat
 
 		public override void Update(float deltaTime = 0, float unscaledDeltaTime = 0)
 		{
-			if (!this.is_fixed_duration_update)
+			if (!this.isFixedDurationUpdate)
 			{
 				this.frame = this.frame + 1;
 				this.time = this.time + deltaTime;
@@ -70,17 +67,17 @@ namespace CsCat
 			}
 			else
 			{
-				this.fixed_update_remain_duration = this.fixed_update_remain_duration - deltaTime;
-				var _deltaTime = CombatConst.Fixed_Update_Duration;
-				var _unscaledDeltaTime = CombatConst.Fixed_Update_Duration;
-				while (this.fixed_update_remain_duration <= 0)
+				this.fixedUpdateRemainDuration = this.fixedUpdateRemainDuration - deltaTime;
+				var deltaTimeValue = CombatConst.Fixed_Update_Duration;
+				var unscaledDeltaTimeValue = CombatConst.Fixed_Update_Duration;
+				while (this.fixedUpdateRemainDuration <= 0)
 				{
 					this.frame = this.frame + 1;
 					this.time = this.time + deltaTime;
-					this.fixed_update_remain_duration = this.fixed_update_remain_duration + _deltaTime;
+					this.fixedUpdateRemainDuration = this.fixedUpdateRemainDuration + deltaTimeValue;
 					if (!this.IsCanUpdate())
 						return;
-					base.Update(_deltaTime, _unscaledDeltaTime);
+					base.Update(deltaTimeValue, unscaledDeltaTimeValue);
 				}
 			}
 		}
@@ -104,19 +101,19 @@ namespace CsCat
 		}
 
 
-		public void SetIsFinished(bool is_finished)
+		public void SetIsFinished(bool isFinished)
 		{
-			this.is_finished = is_finished;
+			this.isFinished = isFinished;
 		}
 
 		public bool IsStarted()
 		{
-			return this.is_started;
+			return this.isStarted;
 		}
 
 		public bool IsFinished()
 		{
-			return this.is_finished;
+			return this.isFinished;
 		}
 
 	}

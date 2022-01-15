@@ -7,14 +7,14 @@ namespace CsCat
 	{
 		public UnitMoveComp unitMoveComp;
 
-		public void __MoveTo(Vector3 move_to_target_pos, float duration)
+		public void __MoveTo(Vector3 moveToTargetPos, float duration)
 		{
 			if (graphicComponent.transform == null)
 				return;
-			move_to_target_pos = this.cfgUnitData.offset_y > 0
-			  ? (move_to_target_pos + new Vector3(0, this.cfgUnitData.offset_y, 0))
-			  : move_to_target_pos;
-			Client.instance.moveManager.MoveTo(graphicComponent.transform, move_to_target_pos, duration);
+			moveToTargetPos = this.cfgUnitData.offset_y > 0
+			  ? (moveToTargetPos + new Vector3(0, this.cfgUnitData.offset_y, 0))
+			  : moveToTargetPos;
+			Client.instance.moveManager.MoveTo(graphicComponent.transform, moveToTargetPos, duration);
 		}
 
 		public void StopMoveTo()
@@ -24,11 +24,11 @@ namespace CsCat
 			Client.instance.moveManager.StopMoveTo(graphicComponent.transform);
 		}
 
-		public void Move(Vector3 target_pos, float? speed = null)
+		public void Move(Vector3 targetPos, float? speed = null)
 		{
 			if (!this.IsCanMove())
 				return;
-			this.unitMoveComp.Move(target_pos, speed);
+			this.unitMoveComp.Move(targetPos, speed);
 		}
 
 		public void MoveByPath(List<Vector3> path, float? speed = null)
@@ -50,14 +50,14 @@ namespace CsCat
 			this.unitMoveComp.BeThrowed(unitBeThrowedInfo);
 		}
 
-		public void StopBeThrowed(bool is_end)
+		public void StopBeThrowed(bool isEnd)
 		{
-			this.unitMoveComp.StopBeThrowed(is_end);
+			this.unitMoveComp.StopBeThrowed(isEnd);
 		}
 
-		public void SetIsMoveWithMoveAnimation(bool is_move_with_move_animation)
+		public void SetIsMoveWithMoveAnimation(bool isMoveWithMoveAnimation)
 		{
-			this.unitMoveComp.SetIsMoveWithMoveAnimation(is_move_with_move_animation);
+			this.unitMoveComp.SetIsMoveWithMoveAnimation(isMoveWithMoveAnimation);
 		}
 
 		public void FaceTo(Quaternion rotation)

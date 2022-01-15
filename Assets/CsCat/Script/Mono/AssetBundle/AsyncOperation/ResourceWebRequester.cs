@@ -7,10 +7,10 @@ namespace CsCat
 	{
 		protected WWW www;
 		public AssetBundleCat assetBundleCat;
-		private long? _need_download_bytes;
+		private long? _needDownloadBytes;
 
 
-		public bool is_not_cache { get; protected set; }
+		public bool isNotCache { get; protected set; }
 		public string url { get; protected set; }
 		public AssetBundle assetBundle => www.assetBundle;
 		public byte[] bytes => www.bytes;
@@ -19,16 +19,16 @@ namespace CsCat
 
 
 
-		public void Init(string url, bool is_not_cache = false)
+		public void Init(string url, bool isNotCache = false)
 		{
 			this.url = url.WWWURLHandle();
-			this.is_not_cache = is_not_cache;
+			this.isNotCache = isNotCache;
 		}
 
 
-		public void Init(AssetBundleCat assetBundleCat, string url, bool is_not_cache = false)
+		public void Init(AssetBundleCat assetBundleCat, string url, bool isNotCache = false)
 		{
-			Init(url, is_not_cache);
+			Init(url, isNotCache);
 			this.assetBundleCat = assetBundleCat;
 			this.assetBundleCat.resourceWebRequester = this;
 		}
@@ -55,23 +55,23 @@ namespace CsCat
 
 		public override long GetNeedDownloadBytes()
 		{
-			if (_need_download_bytes != null)
-				return _need_download_bytes.Value;
-			var assetBundle_name = assetBundleCat?.assetBundle_name;
+			if (_needDownloadBytes != null)
+				return _needDownloadBytes.Value;
+			var assetBundleName = assetBundleCat?.assetBundleName;
 			//配置中有记录该assetBundle_name的大小
-			if (assetBundle_name != null && Client.instance.assetBundleManager.assetBundleMap != null &&
-				Client.instance.assetBundleManager.assetBundleMap.dict.ContainsKey(assetBundle_name))
-				return Client.instance.assetBundleManager.assetBundleMap.dict[assetBundle_name];
+			if (assetBundleName != null && Client.instance.assetBundleManager.assetBundleMap != null &&
+				Client.instance.assetBundleManager.assetBundleMap.dict.ContainsKey(assetBundleName))
+				return Client.instance.assetBundleManager.assetBundleMap.dict[assetBundleName];
 			//配置中没有记录该assetBundle_name的大小，且未Start
 			if (www == null)
 				return base.GetNeedDownloadBytes();
 			//配置中没有记录该assetBundle_name的大小，开始了Start
-			if (_need_download_bytes != null)
-				return _need_download_bytes.Value;
-			var content_length = www.GetFieldValue<UnityWebRequest>("_uwr").GetResponseHeader("Content-Length");
-			if (content_length.IsNullOrEmpty()) return base.GetNeedDownloadBytes();
-			_need_download_bytes = long.Parse(content_length);
-			return _need_download_bytes.Value;
+			if (_needDownloadBytes != null)
+				return _needDownloadBytes.Value;
+			var contentLength = www.GetFieldValue<UnityWebRequest>("_uwr").GetResponseHeader("Content-Length");
+			if (contentLength.IsNullOrEmpty()) return base.GetNeedDownloadBytes();
+			_needDownloadBytes = long.Parse(contentLength);
+			return _needDownloadBytes.Value;
 		}
 
 		public override void Update()
@@ -91,7 +91,7 @@ namespace CsCat
 		{
 			base.OnSuccess();
 			// 无缓存，不计引用计数、Creater使用后由上层回收，所以这里不需要做任何处理
-			if (assetBundleCat != null && !is_not_cache)
+			if (assetBundleCat != null && !isNotCache)
 			{
 				// AB缓存
 				// 说明：有错误也缓存下来，只不过资源为空
@@ -124,7 +124,7 @@ namespace CsCat
 		{
 			base._Destroy();
 			assetBundleCat = null;
-			_need_download_bytes = null;
+			_needDownloadBytes = null;
 			if (www != null)
 			{
 				www.Dispose();

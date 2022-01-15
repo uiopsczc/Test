@@ -4,13 +4,14 @@ namespace CsCat
 {
 	public partial class CameraBase
 	{
-		public Vector3 move_by_delta_target_position;
+		public Vector3 moveByDeltaTargetPosition;
 
 		public void MoveByDelta(float dx, float dy, float dz)
 		{
-			this.current_operation = CameraOperation.Delta_Move;
-			this.move_by_delta_target_position = this.current_position + graphicComponent.transform.right * dx + graphicComponent.transform.up * dy +
-												 graphicComponent.transform.forward * dz;
+			this.currentOperation = CameraOperation.Delta_Move;
+			this.moveByDeltaTargetPosition = this.currentPosition + graphicComponent.transform.right * dx +
+			                                 graphicComponent.transform.up * dy +
+			                                 graphicComponent.transform.forward * dz;
 			//    if (Math.Abs(dy) > 0.15f)
 			//      this.move_by_delta_target_position = new Vector3(this.current_position.x, this.current_position.y + dy,
 			//        this.current_position.z);
@@ -20,19 +21,16 @@ namespace CsCat
 
 		public void ApplyMoveByDelta(float deltaTime)
 		{
-			graphicComponent.transform.position = Vector3.Lerp(this.current_position, this.move_by_delta_target_position,
-			  this.lerp_speed * deltaTime);
-			if (Vector3.SqrMagnitude(graphicComponent.transform.position - this.move_by_delta_target_position) < 0.2)
+			graphicComponent.transform.position = Vector3.Lerp(this.currentPosition, this.moveByDeltaTargetPosition,
+				this.lerpSpeed * deltaTime);
+			if (Vector3.SqrMagnitude(graphicComponent.transform.position - this.moveByDeltaTargetPosition) < 0.2)
 				MoveByDeltaReset();
 		}
 
 		public void MoveByDeltaReset()
 		{
-			graphicComponent.transform.position = this.move_by_delta_target_position;
-			this.current_operation = CameraOperation.None;
+			graphicComponent.transform.position = this.moveByDeltaTargetPosition;
+			this.currentOperation = CameraOperation.None;
 		}
 	}
 }
-
-
-

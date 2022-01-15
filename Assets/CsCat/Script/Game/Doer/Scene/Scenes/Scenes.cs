@@ -5,66 +5,67 @@ namespace CsCat
 {
 	public class Scenes
 	{
-		private Doer parent_doer;
-		private string sub_doer_key;
+		private Doer parentDoer;
+		private string subDoerKey;
 
-		public Scenes(Doer parent_doer, string sub_doer_key)
+		public Scenes(Doer parentDoer, string subDoerKey)
 		{
-			this.parent_doer = parent_doer;
-			this.sub_doer_key = sub_doer_key;
+			this.parentDoer = parentDoer;
+			this.subDoerKey = subDoerKey;
 		}
 
 		////////////////////DoXXX/////////////////////////////////
 		//卸载
 		public void DoRelease()
 		{
-			SubDoerUtil3.DoReleaseSubDoer<Scene>(this.parent_doer, this.sub_doer_key);
+			SubDoerUtil3.DoReleaseSubDoer<Scene>(this.parentDoer, this.subDoerKey);
 		}
 
 		//保存
-		public void DoSave(Hashtable dict, Hashtable dict_tmp, string save_key = null)
+		public void DoSave(Hashtable dict, Hashtable dictTmp, string saveKey = null)
 		{
-			save_key = save_key ?? "scenes";
+			saveKey = saveKey ?? "scenes";
 			var scenes = this.GetScenes();
-			var dict_scenes = new Hashtable();
-			var dict_scenes_tmp = new Hashtable();
-			foreach (var scene in scenes)
+			var dictScenes = new Hashtable();
+			var dictScenesTmp = new Hashtable();
+			for (var i = 0; i < scenes.Length; i++)
 			{
-				var dict_scene = new Hashtable();
-				var dict_scene_tmp = new Hashtable();
-				scene.PrepareSave(dict_scene, dict_scene_tmp);
+				var scene = scenes[i];
+				var dictScene = new Hashtable();
+				var dictSceneTmp = new Hashtable();
+				scene.PrepareSave(dictScene, dictSceneTmp);
 				string rid = scene.GetRid();
-				dict_scenes[rid] = dict_scene;
-				if (!dict_scene_tmp.IsNullOrEmpty())
-					dict_scenes_tmp[rid] = dict_scene_tmp;
+				dictScenes[rid] = dictScene;
+				if (!dictSceneTmp.IsNullOrEmpty())
+					dictScenesTmp[rid] = dictSceneTmp;
 			}
 
-			if (!dict_scenes.IsNullOrEmpty())
-				dict[save_key] = dict_scenes;
-			if (!dict_scenes_tmp.IsNullOrEmpty())
-				dict_tmp[save_key] = dict_scenes_tmp;
+			if (!dictScenes.IsNullOrEmpty())
+				dict[saveKey] = dictScenes;
+			if (!dictScenesTmp.IsNullOrEmpty())
+				dictTmp[saveKey] = dictScenesTmp;
 		}
 
 		//还原
-		public void DoRestore(Hashtable dict, Hashtable dict_tmp, string restore_key = null)
+		public void DoRestore(Hashtable dict, Hashtable dictTmp, string restoreKey = null)
 		{
-			restore_key = restore_key ?? "scenes";
+			restoreKey = restoreKey ?? "scenes";
 			this.ClearScenes();
-			var dict_scenes = dict.Remove3<Hashtable>(restore_key);
-			var dict_scenes_tmp = dict_tmp?.Remove3<Hashtable>(restore_key);
-			if (!dict_scenes.IsNullOrEmpty())
+			var dictScenes = dict.Remove3<Hashtable>(restoreKey);
+			var dictScenesTmp = dictTmp?.Remove3<Hashtable>(restoreKey);
+			if (!dictScenes.IsNullOrEmpty())
 			{
-				foreach (string rid in dict_scenes.Keys)
+				foreach (string rid in dictScenes.Keys)
 				{
-					var scene_dict = this.GetSceneDict_ToEdit();
-					Hashtable dict_scene = dict_scenes[rid] as Hashtable;
+					var sceneDict = this.GetSceneDict_ToEdit();
+					Hashtable dictScene = dictScenes[rid] as Hashtable;
 					Scene scene = Client.instance.sceneFactory.NewDoer(rid) as Scene;
-					scene.SetEnv(this.parent_doer);
-					Hashtable dict_scene_tmp = null;
-					if (dict_scenes_tmp != null && dict_scenes_tmp.ContainsKey(rid))
-						dict_scene_tmp = dict_scenes_tmp[rid] as Hashtable;
-					scene.FinishRestore(dict_scene, dict_scene_tmp);
-					scene_dict[rid] = scene;
+					scene.SetEnv(this.parentDoer);
+					Hashtable dictSceneTmp = null;
+					if (dictScenesTmp != null && dictScenesTmp.ContainsKey(rid))
+						dictSceneTmp = dictScenesTmp[rid] as Hashtable;
+					scene.FinishRestore(dictScene, dictSceneTmp);
+					sceneDict[rid] = scene;
 				}
 			}
 		}
@@ -72,25 +73,25 @@ namespace CsCat
 
 
 		////////////////////////////////////////////////////////////////////////////
-		public Scene[] GetScenes(string id = null, Func<Scene, bool> filter_func = null)
+		public Scene[] GetScenes(string id = null, Func<Scene, bool> filterFunc = null)
 		{
-			return SubDoerUtil3.GetSubDoers(parent_doer, sub_doer_key, id, filter_func);
+			return SubDoerUtil3.GetSubDoers(parentDoer, subDoerKey, id, filterFunc);
 		}
 
 		public Hashtable GetSceneDict_ToEdit() //可以直接插入删除
 		{
-			return SubDoerUtil3.GetSubDoerDict_ToEdit(parent_doer, sub_doer_key);
+			return SubDoerUtil3.GetSubDoerDict_ToEdit(parentDoer, subDoerKey);
 		}
 
 
-		public Scene GetScene(string id_or_rid)
+		public Scene GetScene(string idOrRid)
 		{
-			return SubDoerUtil3.GetSubDoer<Scene>(parent_doer, sub_doer_key, id_or_rid);
+			return SubDoerUtil3.GetSubDoer<Scene>(parentDoer, subDoerKey, idOrRid);
 		}
 
 		public void ClearScenes()
 		{
-			SubDoerUtil3.ClearSubDoers<Scene>(this.parent_doer, this.sub_doer_key, scene => { });
+			SubDoerUtil3.ClearSubDoers<Scene>(this.parentDoer, this.subDoerKey, scene => { });
 		}
 	}
 }

@@ -4,12 +4,12 @@ namespace CsCat
 {
 	public class UnitLookAtInfo
 	{
-		public bool is_rotate_x_arrived;
-		public bool is_rotate_y_arrived;
-		public Unit look_at_unit;
-		public Vector3? look_at_dir;
+		public bool isRotateXArrived;
+		public bool isRotateYArrived;
+		public Unit lookAtUnit;
+		public Vector3? lookAtDir;
 		public string mode = "idle";
-		public bool is_locked;
+		public bool isLocked;
 
 
 		public bool HasLookAt()
@@ -19,12 +19,12 @@ namespace CsCat
 
 		public bool IsLookAtDir()
 		{
-			return this.look_at_dir != null;
+			return this.lookAtDir != null;
 		}
 
 		public bool IsLookAtUnit()
 		{
-			return this.look_at_unit != null;
+			return this.lookAtUnit != null;
 		}
 	}
 }

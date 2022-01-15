@@ -23,7 +23,7 @@ namespace CsCat
 
 		public static XLuaManager instance => SingletonFactory.instance.GetMono<XLuaManager>();
 
-		public bool is_game_started { get; protected set; }
+		public bool isGameStarted { get; protected set; }
 
 
 		public LuaEnv luaEnv { get; private set; }
@@ -46,7 +46,7 @@ namespace CsCat
 		{
 			luaEnv = new LuaEnv();
 			AddLibs();
-			is_game_started = false;
+			isGameStarted = false;
 			luaEnv.AddLoader(LuaRequireLoader.GetLoader);
 		}
 
@@ -122,26 +122,26 @@ namespace CsCat
 				luaEnv.Global.Get<Action>("OnGUI");
 
 			luaEnv.SafeDoString(string.Format("{0}.StartUp()", XLuaConst.Main_Lua_Name));
-			is_game_started = true;
+			isGameStarted = true;
 		}
 
 		void OnApplicationQuit()
 		{
-			if (luaEnv == null || !is_game_started)
+			if (luaEnv == null || !isGameStarted)
 				return;
 			luaOnApplicationQuite();
 		}
 
-		private void OnApplicationPause(bool is_paused)
+		private void OnApplicationPause(bool isPaused)
 		{
-			if (luaEnv == null || !is_game_started)
+			if (luaEnv == null || !isGameStarted)
 				return;
-			luaOnApplicationPause(is_paused);
+			luaOnApplicationPause(isPaused);
 		}
 
 		private void OnGUI()
 		{
-			if (luaEnv == null || !is_game_started)
+			if (luaEnv == null || !isGameStarted)
 				return;
 			luaOnGUI();
 		}
@@ -173,31 +173,26 @@ namespace CsCat
 				list.Add(splits[i]);
 			}
 
-			string lua_function_string;
-			bool is_static = key.IndexOf(":") == -1 ? true : false;
-			if (!is_static)
+			string luaFunctionString;
+			bool isStatic = key.IndexOf(":") == -1 ? true : false;
+			if (!isStatic)
 			{
-				string[] last_splits = splits[splits.Length - 1].Split(":");
-				list.Add(last_splits[0]);
-				lua_function_string = last_splits[1];
+				string[] lastSplits = splits[splits.Length - 1].Split(":");
+				list.Add(lastSplits[0]);
+				luaFunctionString = lastSplits[1];
 			}
 			else
-				lua_function_string = splits[splits.Length - 1];
+				luaFunctionString = splits[splits.Length - 1];
 
-			string table_key = list.Concat(".");
-			LuaTable luatable;
-			if (table_key.IsNullOrWhiteSpace())
-				luatable = luaEnv.Global;
-			else
-				luatable = Get<LuaTable>(table_key);
-			LuaFunction luaFunction = luatable.Get<LuaFunction>(lua_function_string);
-			List<object> arg_list = new List<object>();
+			string tableKey = list.Concat(".");
+			LuaTable luaTable = tableKey.IsNullOrWhiteSpace() ? luaEnv.Global : Get<LuaTable>(tableKey);
+			LuaFunction luaFunction = luaTable.Get<LuaFunction>(luaFunctionString);
+			List<object> argList = new List<object>();
 			if (args.Length > 0)
-				arg_list.AddRange(args);
-			if (!is_static)
-				arg_list.AddFirst(luatable);
-			object[] result;
-			result = luaFunction.Call(arg_list.ToArray());
+				argList.AddRange(args);
+			if (!isStatic)
+				argList.AddFirst(luaTable);
+			object[] result = luaFunction.Call(argList.ToArray());
 			luaFunction.Dispose();
 			return result;
 		}

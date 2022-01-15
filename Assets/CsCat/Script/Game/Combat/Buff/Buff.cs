@@ -6,28 +6,28 @@ namespace CsCat
 	public class Buff : TickObject
 	{
 		//因为有些buff可以同时存在多个，但效果只有一个生效
-		private List<BuffCache> buffCache_list = new List<BuffCache>(); //效果不累加
+		private List<BuffCache> buffCacheList = new List<BuffCache>(); //效果不累加
 		private BuffManager buffManager;
 		public CfgBuffData cfgBuffData;
-		private List<EffectEntity> effect_list = new List<EffectEntity>(); // 一个buff可能有多个特效
-		public string buff_id;
-		private string trigger_spell_guid;
+		private List<EffectEntity> effectList = new List<EffectEntity>(); // 一个buff可能有多个特效
+		public string buffId;
+		private string triggerSpellGuid;
 
-		public void Init(BuffManager buffManager, string buff_id)
+		public void Init(BuffManager buffManager, string buffId)
 		{
 			base.Init();
 			this.buffManager = buffManager;
-			this.buff_id = buff_id;
+			this.buffId = buffId;
 
-			cfgBuffData = CfgBuff.Instance.get_by_id(this.buff_id);
+			cfgBuffData = CfgBuff.Instance.get_by_id(this.buffId);
 
 		}
 
-		public Buff CreateBuffCache(float duration, Unit source_unit, SpellBase source_spell, Hashtable arg_dict)
+		public Buff CreateBuffCache(float duration, Unit sourceUnit, SpellBase sourceSpell, Hashtable argDict)
 		{
-			var buffCache = new BuffCache(duration, source_unit, source_spell, arg_dict);
-			buffCache_list.Add(buffCache);
-			if (buffCache_list.Count == 1) //第一个的时候才添加
+			var buffCache = new BuffCache(duration, sourceUnit, sourceSpell, argDict);
+			buffCacheList.Add(buffCache);
+			if (buffCacheList.Count == 1) //第一个的时候才添加
 			{
 				this.AddEffects();
 				this.AddPropertyDict();
@@ -38,21 +38,21 @@ namespace CsCat
 			return this;
 		}
 
-		public void RemoveBuffCache(string source_unit_guid, string soruce_spell_guid)
+		public void RemoveBuffCache(string sourceUnitGuid, string sourceSpellGuid)
 		{
-			for (int i = this.buffCache_list.Count - 1; i >= 0; i--)
+			for (int i = this.buffCacheList.Count - 1; i >= 0; i--)
 			{
-				var buffCache = this.buffCache_list[i];
-				var is_this_unit = source_unit_guid.IsNullOrWhiteSpace() ||
-								   (buffCache.source_unit != null && buffCache.source_unit.GetGuid().Equals(source_unit_guid));
-				var is_this_spell = soruce_spell_guid.IsNullOrWhiteSpace() ||
-									(buffCache.source_spell != null &&
-									 buffCache.source_spell.GetGuid().Equals(soruce_spell_guid));
-				if (is_this_unit && is_this_spell)
-					this.buffCache_list.RemoveAt(i);
+				var buffCache = this.buffCacheList[i];
+				var isThisUnit = sourceUnitGuid.IsNullOrWhiteSpace() ||
+								   (buffCache.sourceUnit != null && buffCache.sourceUnit.GetGuid().Equals(sourceUnitGuid));
+				var isThisSpell = sourceSpellGuid.IsNullOrWhiteSpace() ||
+									(buffCache.sourceSpell != null &&
+									 buffCache.sourceSpell.GetGuid().Equals(sourceSpellGuid));
+				if (isThisUnit && isThisSpell)
+					this.buffCacheList.RemoveAt(i);
 			}
 
-			if (this.buffCache_list.IsNullOrEmpty())
+			if (this.buffCacheList.IsNullOrEmpty())
 				this.buffManager.RemoveBuffByBuff(this);
 		}
 
@@ -60,56 +60,60 @@ namespace CsCat
 		protected override void _Update(float deltaTime = 0, float unscaledDeltaTime = 0)
 		{
 			base._Update(deltaTime, unscaledDeltaTime);
-			for (var i = buffCache_list.Count - 1; i >= 0; i--)
+			for (var i = buffCacheList.Count - 1; i >= 0; i--)
 			{
-				var buffCache = buffCache_list[i];
-				buffCache.remain_duration -= deltaTime;
-				if (buffCache.remain_duration <= 0)
-					buffCache_list.RemoveAt(i);
+				var buffCache = buffCacheList[i];
+				buffCache.remainDuration -= deltaTime;
+				if (buffCache.remainDuration <= 0)
+					buffCacheList.RemoveAt(i);
 			}
 
-			if (buffCache_list.Count == 0)
+			if (buffCacheList.Count == 0)
 				buffManager.RemoveBuffByBuff(this);
 		}
 
 
 		private void AddEffects()
 		{
-			var effect_ids = cfgBuffData._effect_ids;
-			if (effect_ids.IsNullOrEmpty())
+			var effectIds = cfgBuffData._effect_ids;
+			if (effectIds.IsNullOrEmpty())
 				return;
-			foreach (var effect_id in effect_ids)
+			for (var i = 0; i < effectIds.Length; i++)
 			{
-				var cfgEffectData = CfgEffect.Instance.get_by_id(effect_id);
+				var effectId = effectIds[i];
+				var cfgEffectData = CfgEffect.Instance.get_by_id(effectId);
 				var effect =
-				  Client.instance.combat.effectManager.CreateAttachEffectEntity(effect_id, this.buffManager.unit,
-					cfgEffectData.duration); //TODO 如何初始化effectBase
-				effect_list.Add(effect);
+					Client.instance.combat.effectManager.CreateAttachEffectEntity(effectId, this.buffManager.unit,
+						cfgEffectData.duration); //TODO 如何初始化effectBase
+				effectList.Add(effect);
 			}
 		}
 
 		private void RemoveEffects()
 		{
-			foreach (var effect in effect_list)
+			for (var i = 0; i < effectList.Count; i++)
+			{
+				var effect = effectList[i];
 				Client.instance.combat.effectManager.RemoveEffectEntity(effect.key);
+			}
 		}
 
 		private void AddPropertyDict()
 		{
-			var new_property_dict = DoerAttrParserUtil.ConvertTableWithTypeString(this.cfgBuffData._property_dict).ToDict<string, float>();
-			if (!new_property_dict.IsNullOrEmpty())
+			var newPropertyDict = DoerAttrParserUtil.ConvertTableWithTypeString(this.cfgBuffData._property_dict).ToDict<string, float>();
+			if (!newPropertyDict.IsNullOrEmpty())
 			{
 				var propertyComp = this.buffManager.unit.propertyComp;
 				propertyComp.StartChange();
-				propertyComp.AddPropSet(new_property_dict, "buff", this.GetGuid());
+				propertyComp.AddPropSet(newPropertyDict, "buff", this.GetGuid());
 				propertyComp.EndChange();
 			}
 		}
 
 		private void RemovePropertyDict()
 		{
-			var new_property_dict = DoerAttrParserUtil.ConvertTableWithTypeString(this.cfgBuffData._property_dict).ToDict<string, float>();
-			if (!new_property_dict.IsNullOrEmpty())
+			var newPropertyDict = DoerAttrParserUtil.ConvertTableWithTypeString(this.cfgBuffData._property_dict).ToDict<string, float>();
+			if (!newPropertyDict.IsNullOrEmpty())
 			{
 				var propertyComp = this.buffManager.unit.propertyComp;
 				propertyComp.StartChange();
@@ -120,20 +124,20 @@ namespace CsCat
 
 		private void AddTriggerSpell()
 		{
-			var trigger_spell_id = this.cfgBuffData.trigger_spell_id;
-			if (trigger_spell_id.IsNullOrWhiteSpace())
+			var triggerSpellId = this.cfgBuffData.trigger_spell_id;
+			if (triggerSpellId.IsNullOrWhiteSpace())
 				return;
 			var spell = Client.instance.combat.spellManager.CastSpell(
-			  this.buffCache_list[0].source_unit ?? this.buffManager.unit,
-			  trigger_spell_id, this.buffManager.unit);
-			this.trigger_spell_guid = spell.GetGuid();
+			  this.buffCacheList[0].sourceUnit ?? this.buffManager.unit,
+			  triggerSpellId, this.buffManager.unit);
+			this.triggerSpellGuid = spell.GetGuid();
 		}
 
 		private void RemoveTriggerSpell()
 		{
-			if (!this.trigger_spell_guid.IsNullOrWhiteSpace())
+			if (!this.triggerSpellGuid.IsNullOrWhiteSpace())
 			{
-				var spell = Client.instance.combat.spellManager.GetSpell(this.trigger_spell_guid);
+				var spell = Client.instance.combat.spellManager.GetSpell(this.triggerSpellGuid);
 				if (spell == null)
 					return;
 				if (spell.IsHasMethod("OnBuffRemove"))
@@ -142,7 +146,7 @@ namespace CsCat
 					return;
 				}
 
-				Client.instance.combat.spellManager.RemoveSpell(this.trigger_spell_guid);
+				Client.instance.combat.spellManager.RemoveSpell(this.triggerSpellGuid);
 			}
 		}
 

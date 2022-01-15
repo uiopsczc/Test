@@ -7,49 +7,55 @@ namespace CsCat
 	/// </summary>
 	public class AssetBundleAsyncLoader : BaseAssetBundleAsyncLoader
 	{
-		protected int total_waiting_assetBundleCat_count;
-		protected Dictionary<string, AssetBundleCat> waiting_assetBundleCat_dict = new Dictionary<string, AssetBundleCat>();
-		protected Dictionary<string, long> assetBundle_downloaded_bytes_dict = new Dictionary<string, long>();
-		protected long need_download_bytes;
+		protected int totalWaitingAssetBundleCatCount;
 
+		protected Dictionary<string, AssetBundleCat> waitingAssetBundleCatDict =
+			new Dictionary<string, AssetBundleCat>();
+
+		protected Dictionary<string, long> assetBundleDownloadedBytesDict = new Dictionary<string, long>();
+		protected long needDownloadBytes;
 
 
 		public void Init(AssetBundleCat assetBundleCat)
 		{
-			this.assetBundle_name = assetBundle_name;
+			this.assetBundleName = assetBundleName;
 			this.assetBundleCat = assetBundleCat;
 			// 只添加没有被加载过的
 			if (!assetBundleCat.IsLoadDone())
 			{
-				waiting_assetBundleCat_dict[assetBundleCat.assetBundle_name] = assetBundleCat;
-				assetBundle_downloaded_bytes_dict[assetBundleCat.assetBundle_name] = 0;
+				waitingAssetBundleCatDict[assetBundleCat.assetBundleName] = assetBundleCat;
+				assetBundleDownloadedBytesDict[assetBundleCat.assetBundleName] = 0;
 			}
 
-			foreach (var dependence_assetBundleCat in assetBundleCat.dependence_assetBundleCat_list)
+			for (var i = 0; i < assetBundleCat.dependenceAssetBundleCatList.Count; i++)
 			{
-				if (dependence_assetBundleCat.IsLoadDone())
+				var dependenceAssetBundleCat = assetBundleCat.dependenceAssetBundleCatList[i];
+				if (dependenceAssetBundleCat.IsLoadDone())
 					continue;
-				waiting_assetBundleCat_dict[dependence_assetBundleCat.assetBundle_name] = dependence_assetBundleCat;
-				assetBundle_downloaded_bytes_dict[dependence_assetBundleCat.assetBundle_name] = 0;
+				waitingAssetBundleCatDict[dependenceAssetBundleCat.assetBundleName] = dependenceAssetBundleCat;
+				assetBundleDownloadedBytesDict[dependenceAssetBundleCat.assetBundleName] = 0;
 			}
 
-			total_waiting_assetBundleCat_count = waiting_assetBundleCat_dict.Count;
+			totalWaitingAssetBundleCatCount = waitingAssetBundleCatDict.Count;
 
 
-			need_download_bytes = 0;
-			foreach (var _assetBundle_name in assetBundle_downloaded_bytes_dict.Keys)
-				need_download_bytes += Client.instance.assetBundleManager.assetBundleMap.dict[_assetBundle_name];
+			needDownloadBytes = 0;
+			foreach (var keyValue in assetBundleDownloadedBytesDict)
+			{
+				var curAssetBundleName = keyValue.Key;
+				needDownloadBytes += Client.instance.assetBundleManager.assetBundleMap.dict[curAssetBundleName];
+			}
 
-			if (total_waiting_assetBundleCat_count == 0)
+			if (totalWaitingAssetBundleCatCount == 0)
 			{
 				resultInfo.isSuccess = true;
 				return;
 			}
 
 			AddListener<ResourceWebRequester>(null, AssetBundleEventNameConst.On_ResourceWebRequester_Fail,
-			  OnResourceWebRequesterFail);
+				OnResourceWebRequesterFail);
 			AddListener<ResourceWebRequester>(null, AssetBundleEventNameConst.On_ResourceWebRequester_Success,
-			  OnResourceWebRequesterSuccess);
+				OnResourceWebRequesterSuccess);
 		}
 
 
@@ -58,45 +64,51 @@ namespace CsCat
 			if (resultInfo.isDone)
 				return 1.0f;
 
-			var progress_value = (float)GetDownloadedBytes() / GetNeedDownloadBytes();
-			return progress_value;
+			var progressValue = (float) GetDownloadedBytes() / GetNeedDownloadBytes();
+			return progressValue;
 		}
 
 		public override List<string> GetAssetBundlePathList()
 		{
 			List<string> result = new List<string>();
-			foreach (var assetBundle_name in assetBundle_downloaded_bytes_dict.Keys)
-				result.Add(assetBundle_name);
+			foreach (var keyValue in assetBundleDownloadedBytesDict)
+			{
+				var assetBundleName = keyValue.Key;
+				result.Add(assetBundleName);
+			}
 			return result;
 		}
 
 
 		public override long GetNeedDownloadBytes()
 		{
-			return need_download_bytes;
+			return needDownloadBytes;
 		}
 
 		public override long GetDownloadedBytes()
 		{
 			if (resultInfo.isDone)
 				return GetNeedDownloadBytes();
-			long downloaded_bytes = 0;
-			foreach (var assetBundle_name in assetBundle_downloaded_bytes_dict.Keys)
+			long downloadedBytes = 0;
+			foreach (var keyValue in assetBundleDownloadedBytesDict)
 			{
-				bool is_load_done = !waiting_assetBundleCat_dict.ContainsKey(assetBundle_name);
-				if (is_load_done) //已经下载完的assetBundle_name
-					assetBundle_downloaded_bytes_dict[assetBundle_name] =
-					  Client.instance.assetBundleManager.assetBundleMap.GetAssetBundleBytes(assetBundle_name);
+				var assetBundleName = keyValue.Key;
+				bool isLoadDone = !waitingAssetBundleCatDict.ContainsKey(assetBundleName);
+				if (isLoadDone) //已经下载完的assetBundle_name
+					assetBundleDownloadedBytesDict[assetBundleName] =
+						Client.instance.assetBundleManager.assetBundleMap.GetAssetBundleBytes(assetBundleName);
 				else
 				{
-					var resourceWebRequester = this.waiting_assetBundleCat_dict[assetBundle_name].resourceWebRequester;
-					assetBundle_downloaded_bytes_dict[assetBundle_name] =
-					  resourceWebRequester?.GetDownloadedBytes() ??
-					  Client.instance.assetBundleManager.assetBundleMap.GetAssetBundleBytes(assetBundle_name);
+					var resourceWebRequester = this.waitingAssetBundleCatDict[assetBundleName].resourceWebRequester;
+					assetBundleDownloadedBytesDict[assetBundleName] =
+						resourceWebRequester?.GetDownloadedBytes() ??
+						Client.instance.assetBundleManager.assetBundleMap.GetAssetBundleBytes(assetBundleName);
 				}
-				downloaded_bytes += assetBundle_downloaded_bytes_dict[assetBundle_name];
+
+				downloadedBytes += assetBundleDownloadedBytesDict[assetBundleName];
 			}
-			return downloaded_bytes;
+
+			return downloadedBytes;
 		}
 
 		public override void Update()
@@ -107,10 +119,10 @@ namespace CsCat
 		{
 			if (resultInfo.isDone)
 				return;
-			if (!waiting_assetBundleCat_dict.ContainsValue(resourceWebRequester.assetBundleCat) ||
-				resourceWebRequester.is_not_cache) return;
-			waiting_assetBundleCat_dict.Remove(resourceWebRequester.assetBundleCat.assetBundle_name);
-			if (waiting_assetBundleCat_dict.Count == 0)
+			if (!waitingAssetBundleCatDict.ContainsValue(resourceWebRequester.assetBundleCat) ||
+			    resourceWebRequester.isNotCache) return;
+			waitingAssetBundleCatDict.Remove(resourceWebRequester.assetBundleCat.assetBundleName);
+			if (waitingAssetBundleCatDict.Count == 0)
 				resultInfo.isSuccess = true;
 		}
 
@@ -118,11 +130,11 @@ namespace CsCat
 		{
 			if (resultInfo.isDone)
 				return;
-			if (!waiting_assetBundleCat_dict.ContainsValue(resourceWebRequester.assetBundleCat) ||
-				resourceWebRequester.is_not_cache) return;
+			if (!waitingAssetBundleCatDict.ContainsValue(resourceWebRequester.assetBundleCat) ||
+			    resourceWebRequester.isNotCache) return;
 			resultInfo.isFail = true;
 			RemoveListener<ResourceWebRequester>(null, AssetBundleEventNameConst.On_ResourceWebRequester_Fail,
-			  OnResourceWebRequesterFail);
+				OnResourceWebRequesterFail);
 		}
 
 
@@ -131,6 +143,7 @@ namespace CsCat
 			base.OnSuccess();
 			Broadcast(null, AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Success, this);
 		}
+
 		protected override void OnFail()
 		{
 			base.OnFail();
@@ -148,10 +161,10 @@ namespace CsCat
 		protected override void _Destroy()
 		{
 			base._Destroy();
-			total_waiting_assetBundleCat_count = 0;
-			waiting_assetBundleCat_dict.Clear();
-			assetBundle_downloaded_bytes_dict.Clear();
-			need_download_bytes = 0;
+			totalWaitingAssetBundleCatCount = 0;
+			waitingAssetBundleCatDict.Clear();
+			assetBundleDownloadedBytesDict.Clear();
+			needDownloadBytes = 0;
 		}
 	}
 }

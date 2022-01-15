@@ -5,7 +5,7 @@ namespace CsCat
 	public class ResLoadData
 	{
 		public AssetCat assetCat;
-		public int ref_count;
+		public int refCount;
 
 		public ResLoadData(AssetCat assetCat)
 		{
@@ -15,18 +15,18 @@ namespace CsCat
 
 		public void AddRefCount()
 		{
-			ref_count++;
+			refCount++;
 		}
 
-		public void SubRefCount(int sub_value = 1)
+		public void SubRefCount(int subValue = 1)
 		{
-			sub_value = Math.Abs(sub_value);
-			ref_count = ref_count - sub_value;
+			subValue = Math.Abs(subValue);
+			refCount = refCount - subValue;
 		}
 
 		public void Destroy()
 		{
-			ref_count = 0;
+			refCount = 0;
 			assetCat.SubRefCount(1, true);
 		}
 	}

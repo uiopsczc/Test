@@ -6,17 +6,17 @@ namespace CsCat
 	public class AssetBundleMap
 	{
 		public Dictionary<string, long> dict = new Dictionary<string, long>();
-		private string file_content;
+		private string fileContent;
 
 		public void SaveToDisk()
 		{
 			var path = BuildConst.AssetBundleMap_File_Name.WithRootPath(FilePathConst.PersistentAssetBundleRoot);
-			StdioUtil.WriteTextFile(path, file_content);
+			StdioUtil.WriteTextFile(path, fileContent);
 		}
 
-		public long GetAssetBundleBytes(string assetBundle_name)
+		public long GetAssetBundleBytes(string assetBundleName)
 		{
-			return this.dict[assetBundle_name];
+			return this.dict[assetBundleName];
 		}
 
 
@@ -28,24 +28,25 @@ namespace CsCat
 				return;
 			}
 
-			file_content = content;
+			fileContent = content;
 			content = content.Replace("\r\n", "\n");
-			var map_list = content.Split('\n');
-			foreach (var map in map_list)
+			var mapList = content.Split('\n');
+			for (var i = 0; i < mapList.Length; i++)
 			{
+				var map = mapList[i];
 				if (map.IsNullOrWhiteSpace())
 					continue;
 
-				var splits = map.Split(new[] { StringConst.String_Comma }, StringSplitOptions.None);
+				var splits = map.Split(new[] {StringConst.String_Comma}, StringSplitOptions.None);
 				if (splits.Length < 2)
 				{
 					LogCat.LogError("splitArr length < 2 : " + map);
 					continue;
 				}
 
-				string assetBundle_name = splits[0];
+				string assetBundleName = splits[0];
 				long bytes = splits[1].To<long>();
-				dict[assetBundle_name] = bytes;
+				dict[assetBundleName] = bytes;
 			}
 		}
 

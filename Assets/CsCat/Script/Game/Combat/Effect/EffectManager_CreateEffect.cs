@@ -5,13 +5,13 @@ namespace CsCat
 {
 	public partial class EffectManager
 	{
-		private HashSet<string> gameObject_pool_name_list = new HashSet<string>(); //用于销毁的时候，清理对应的gameObjectPool
+		private HashSet<string> gameObjectPoolNameList = new HashSet<string>(); //用于销毁的时候，清理对应的gameObjectPool
 
-		public EffectEntity CreateEffectEntity(string effect_id, Unit unit, Vector3? pos = null,
+		public EffectEntity CreateEffectEntity(string effectId, Unit unit, Vector3? pos = null,
 		  Vector3? eulerAngles = null)
 		{
-			var effectEntity = AddChild<EffectEntity>(null, effect_id, unit);
-			gameObject_pool_name_list.Add((effectEntity.graphicComponent as EffectGraphicComponent)
+			var effectEntity = AddChild<EffectEntity>(null, effectId, unit);
+			gameObjectPoolNameList.Add((effectEntity.graphicComponent as EffectGraphicComponent)
 			  .GetEffectGameObjectPoolName());
 			if (pos != null)
 				effectEntity.transformComponent.position = pos.Value;
@@ -20,52 +20,52 @@ namespace CsCat
 			return effectEntity;
 		}
 
-		public EffectEntity CreateAttachEffectEntity(string effect_id, Unit unit, float? duration,
-		  Vector3? force_eulerAngles = null, float sector_angle = 0)
+		public EffectEntity CreateAttachEffectEntity(string effectId, Unit unit, float? duration,
+		  Vector3? forceEulerAngles = null, float sectorAngle = 0)
 		{
-			var effectEntity = this.CreateEffectEntity(effect_id, unit);
-			effectEntity.AddComponent<AttachEffectComponent>(null, unit.ToUnitPosition(), force_eulerAngles,
-			  sector_angle);
+			var effectEntity = this.CreateEffectEntity(effectId, unit);
+			effectEntity.AddComponent<AttachEffectComponent>(null, unit.ToUnitPosition(), forceEulerAngles,
+			  sectorAngle);
 			if (duration != null)
 				effectEntity.AddComponent<DurationEffectComponent>(null, duration.Value);
 			return effectEntity;
 		}
 
-		public EffectEntity CreateGroundEffectEntity(string effect_id, Unit unit, Vector3 position, Vector3 eulerAngles,
-		  float duration, bool is_hide = false)
+		public EffectEntity CreateGroundEffectEntity(string effectId, Unit unit, Vector3 position, Vector3 eulerAngles,
+		  float duration, bool isHide = false)
 		{
-			var effectEntity = this.CreateEffectEntity(effect_id, unit, position, eulerAngles);
+			var effectEntity = this.CreateEffectEntity(effectId, unit, position, eulerAngles);
 			effectEntity.AddComponent<DurationEffectComponent>(null, duration);
-			effectEntity.graphicComponent.SetIsShow(!is_hide);
+			effectEntity.graphicComponent.SetIsShow(!isHide);
 			return effectEntity;
 		}
 
-		public EffectEntity CreateLineEffectEntity(string effect_id, Unit unit, IPosition source_iposition,
-		  IPosition target_iposition, float speed, float acc_speed)
+		public EffectEntity CreateLineEffectEntity(string effectId, Unit unit, IPosition sourceIPosition,
+		  IPosition targetIPosition, float speed, float accSpeed)
 		{
-			var effectEntity = this.CreateEffectEntity(effect_id, unit);
-			effectEntity.AddComponent<LineEffectComponent>(null, source_iposition, target_iposition, 0, speed, acc_speed);
-			return effectEntity;
-		}
-
-
-		public EffectEntity CreateSpinLineEffectEntity(string effect_id, Unit unit, Vector3 start_position,
-		  Vector3 spin_dir,
-		  float start_spin_angle, float spin_speed, float spin_length, Vector3 forward_dir, float forward_speed)
-		{
-			var effectEntity = this.CreateEffectEntity(effect_id, unit);
-			effectEntity.AddComponent<SpinLineEffectComponent>(null, start_position, spin_dir, start_spin_angle, spin_speed,
-			  spin_length, forward_dir,
-			  forward_speed);
+			var effectEntity = this.CreateEffectEntity(effectId, unit);
+			effectEntity.AddComponent<LineEffectComponent>(null, sourceIPosition, targetIPosition, 0, speed, accSpeed);
 			return effectEntity;
 		}
 
 
-		public EffectEntity CreateMortarMissileEffectEntity(string effect_id, Unit unit, IPosition source_iposition,
-		  IPosition target_iposition, Vector3 gravity, float start_angle)
+		public EffectEntity CreateSpinLineEffectEntity(string effectId, Unit unit, Vector3 startPosition,
+		  Vector3 spinDir,
+		  float startSpinAngle, float spinSpeed, float spinLength, Vector3 forwardDir, float forwardSpeed)
 		{
-			var effect = this.CreateEffectEntity(effect_id, unit);
-			effect.AddComponent<MortarEffectComponent>(null, source_iposition, target_iposition, gravity, start_angle);
+			var effectEntity = this.CreateEffectEntity(effectId, unit);
+			effectEntity.AddComponent<SpinLineEffectComponent>(null, startPosition, spinDir, startSpinAngle, spinSpeed,
+			  spinLength, forwardDir,
+			  forwardSpeed);
+			return effectEntity;
+		}
+
+
+		public EffectEntity CreateMortarMissileEffectEntity(string effectId, Unit unit, IPosition sourceIPosition,
+		  IPosition targetIPosition, Vector3 gravity, float startAngle)
+		{
+			var effect = this.CreateEffectEntity(effectId, unit);
+			effect.AddComponent<MortarEffectComponent>(null, sourceIPosition, targetIPosition, gravity, startAngle);
 			return effect;
 		}
 	}

@@ -5,77 +5,77 @@ namespace CsCat
 	//迫击炮弹道
 	public class MortarEffectComponent : SourceTargetEffectComponent
 	{
-		private float all_duration;
-		private float start_angle;
+		private float allDuration;
+		private float startAngle;
 		private Vector3 direction;
 		private Vector3 gravity;
 		private float height;
-		private float remain_duration;
-		private Vector3 start_position;
+		private float remainDuration;
+		private Vector3 startPosition;
 		private Vector3 velocity;
 		private float vertical;
 
-		public void Init(IPosition source_iposition,
-		  IPosition target_iposition
-		  , Vector3 gravity, float start_angle)
+		public void Init(IPosition sourceIPosition,
+		  IPosition targetIPosition
+		  , Vector3 gravity, float startAngle)
 		{
 			base.Init();
-			this.source_iposition = source_iposition;
-			this.target_iposition = target_iposition;
+			this.sourceIPosition = sourceIPosition;
+			this.targetIPosition = targetIPosition;
 			SetSocket();
 			this.gravity = gravity;
-			this.start_angle = start_angle;
+			this.startAngle = startAngle;
 
 			__InitFields();
 
 			Calculate(0);
-			this.effectEntity.ApplyToTransformComponent(this.current_position, this.current_eulerAngles);
+			this.effectEntity.ApplyToTransformComponent(this.currentPosition, this.currentEulerAngles);
 		}
 
 		void __InitFields()
 		{
-			this.source_position = source_iposition.GetPosition();
-			this.target_position = target_iposition.GetPosition();
-			this.current_eulerAngles = Quaternion.LookRotation(target_position - source_position, Vector3.up).eulerAngles;
-			var target_position_xz = target_position.SetZeroY();
-			var source_position_xz = source_position.SetZeroY();
-			var distance = Vector3.Distance(target_position_xz, source_position_xz);
-			var rad = Mathf.Atan2(start_angle, distance);
-			var dir_horizon = (target_position_xz - source_position_xz).normalized / Mathf.Tan(rad);
-			var dir = dir_horizon + new Vector3(0, 1, 0);
-			var gravity_y = Mathf.Abs(this.gravity.y);
-			var height = source_position.y - target_position.y;
-			var rate = Mathf.Tan(rad) * gravity_y * distance /
-					   Mathf.Sqrt(2 * gravity_y * (height + distance * Mathf.Tan(rad)));
+			this.sourcePosition = sourceIPosition.GetPosition();
+			this.targetPosition = targetIPosition.GetPosition();
+			this.currentEulerAngles = Quaternion.LookRotation(targetPosition - sourcePosition, Vector3.up).eulerAngles;
+			var targetPositionXZ = targetPosition.SetZeroY();
+			var sourcePositionXZ = sourcePosition.SetZeroY();
+			var distance = Vector3.Distance(targetPositionXZ, sourcePositionXZ);
+			var rad = Mathf.Atan2(startAngle, distance);
+			var dirHorizon = (targetPositionXZ - sourcePositionXZ).normalized / Mathf.Tan(rad);
+			var dir = dirHorizon + new Vector3(0, 1, 0);
+			var gravityY = Mathf.Abs(this.gravity.y);
+			var height = sourcePosition.y - targetPosition.y;
+			var rate = Mathf.Tan(rad) * gravityY * distance /
+					   Mathf.Sqrt(2 * gravityY * (height + distance * Mathf.Tan(rad)));
 
 			this.velocity = dir * rate;
-			this.remain_duration = distance / (dir_horizon.magnitude * rate);
-			this.all_duration = remain_duration;
-			this.start_position = source_position;
+			this.remainDuration = distance / (dirHorizon.magnitude * rate);
+			this.allDuration = remainDuration;
+			this.startPosition = sourcePosition;
 			this.vertical = rate;
 			this.direction = velocity;
-			this.height = start_position.y;
+			this.height = startPosition.y;
 
-			this.current_position = start_position;
+			this.currentPosition = startPosition;
 		}
 
 
 		protected override void Calculate(float deltaTime)
 		{
-			remain_duration = remain_duration - deltaTime;
-			if (remain_duration <= 0)
+			remainDuration = remainDuration - deltaTime;
+			if (remainDuration <= 0)
 			{
 				OnEffectReach();
 				return;
 			}
 			direction = direction + gravity * deltaTime;
-			this.current_eulerAngles = Quaternion.LookRotation(direction).eulerAngles;
-			var pass_duration = all_duration - remain_duration;
-			var interp = remain_duration / all_duration;
-			var position_new = start_position * interp + target_position * (1 - interp);
-			var height = this.height + vertical * pass_duration + gravity.y * pass_duration * pass_duration * 0.5f;
-			position_new.y = height;
-			this.current_position = position_new;
+			this.currentEulerAngles = Quaternion.LookRotation(direction).eulerAngles;
+			var passDuration = allDuration - remainDuration;
+			var interp = remainDuration / allDuration;
+			var newPosition = startPosition * interp + targetPosition * (1 - interp);
+			var height = this.height + vertical * passDuration + gravity.y * passDuration * passDuration * 0.5f;
+			newPosition.y = height;
+			this.currentPosition = newPosition;
 		}
 	}
 }

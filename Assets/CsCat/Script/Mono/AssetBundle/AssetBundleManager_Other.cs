@@ -10,29 +10,29 @@ namespace CsCat
 		{
 			var resourceWebRequester = PoolCatManagerUtil.Spawn<ResourceWebRequester>();
 			resourceWebRequester.Init(url, true);
-			resourceWebRequester_all_dict[url] = resourceWebRequester;
-			resourceWebRequester_waiting_queue.Enqueue(resourceWebRequester);
+			resourceWebRequesterAllDict[url] = resourceWebRequester;
+			resourceWebRequesterWaitingQueue.Enqueue(resourceWebRequester);
 			return resourceWebRequester;
 		}
 
 		// 从资源服务器下载非Assetbundle资源，非AB（不计引用计数、不缓存），Creater使用后记得回收
-		public ResourceWebRequester DownloadFileAsyncNoCache(string download_url, string file_path)
+		public ResourceWebRequester DownloadFileAsyncNoCache(string downloadURL, string filePath)
 		{
 			var resourceWebRequester = PoolCatManagerUtil.Spawn<ResourceWebRequester>();
-			var url = download_url + file_path;
+			var url = downloadURL + filePath;
 			resourceWebRequester.Init(url, true);
-			resourceWebRequester_all_dict[url] = resourceWebRequester;
-			resourceWebRequester_waiting_queue.Enqueue(resourceWebRequester);
+			resourceWebRequesterAllDict[url] = resourceWebRequester;
+			resourceWebRequesterWaitingQueue.Enqueue(resourceWebRequester);
 			return resourceWebRequester;
 		}
 
 		//max_reload_count 失败的重新load的最大次数
-		public IEnumerator DownloadFileAsync(string url, int max_reload_count, int cur_reload_count = 0)
+		public IEnumerator DownloadFileAsync(string url, int maxReloadCount, int curReloadCount = 0)
 		{
 			var resourceWebRequester = DownloadFileAsyncNoCache(url);
-			cur_reload_count++;
+			curReloadCount++;
 			yield return resourceWebRequester;
-			while (cur_reload_count < max_reload_count)
+			while (curReloadCount < maxReloadCount)
 			{
 				if (!resourceWebRequester.error.IsNullOrWhiteSpace())
 				{
@@ -42,27 +42,27 @@ namespace CsCat
 					resourceWebRequester = DownloadFileAsyncNoCache(url);
 					yield return resourceWebRequester;
 				}
-				cur_reload_count++;
+				curReloadCount++;
 			}
 		}
 
 		//max_reload_count 失败的重新load的最大次数
-		public IEnumerator DownloadFileAsync(string download_url, string file_path, int max_reload_count, int cur_reload_count = 0)
+		public IEnumerator DownloadFileAsync(string downloadURL, string filePath, int maxReloadCount, int curReloadCount = 0)
 		{
-			var resourceWebRequester = DownloadFileAsyncNoCache(download_url, file_path);
-			cur_reload_count++;
+			var resourceWebRequester = DownloadFileAsyncNoCache(downloadURL, filePath);
+			curReloadCount++;
 			yield return resourceWebRequester;
-			while (cur_reload_count < max_reload_count)
+			while (curReloadCount < maxReloadCount)
 			{
 				if (!resourceWebRequester.error.IsNullOrWhiteSpace())
 				{
 					LogCat.LogError(resourceWebRequester.error);
 					resourceWebRequester.Destroy();
 					PoolCatManagerUtil.Despawn(resourceWebRequester);
-					resourceWebRequester = DownloadFileAsyncNoCache(download_url, file_path);
+					resourceWebRequester = DownloadFileAsyncNoCache(downloadURL, filePath);
 					yield return resourceWebRequester;
 				}
-				cur_reload_count++;
+				curReloadCount++;
 			}
 		}
 	}

@@ -11,107 +11,116 @@ namespace CsCat
 {
 	public class ResLoad
 	{
-		private readonly Dictionary<string, ResLoadDataInfo> resLoadDataInfo_dict = new Dictionary<string, ResLoadDataInfo>();
-		public bool is_not_check_destroy;
-		public ResLoad(bool is_not_check_destroy = false)
+		private readonly Dictionary<string, ResLoadDataInfo> resLoadDataInfoDict = new Dictionary<string, ResLoadDataInfo>();
+		public bool isNotCheckDestroy;
+		public ResLoad(bool isNotCheckDestroy = false)
 		{
-			this.is_not_check_destroy = is_not_check_destroy;
+			this.isNotCheckDestroy = isNotCheckDestroy;
 		}
 		public bool IsAllLoadDone()
 		{
-			foreach (var resLoadDataInfo in resLoadDataInfo_dict.Values)
+			foreach (var keyValue in resLoadDataInfoDict)
+			{
+				var resLoadDataInfo = keyValue.Value;
 				if (!resLoadDataInfo.resLoadData.assetCat.IsLoadDone())
 					return false;
+			}
+
 			return true;
 		}
 
-		public IEnumerator IEIsAllLoadDone(Action on_all_load_done_callback = null)
+		public IEnumerator IEIsAllLoadDone(Action onAllLoadDoneCallback = null)
 		{
 			yield return new WaitUntil(() => { return IsAllLoadDone(); });
-			on_all_load_done_callback?.Invoke();
+			onAllLoadDoneCallback?.Invoke();
 		}
 
 
 		// 加载某个资源
-		public AssetCat GetOrLoadAsset(string asset_path, Action<AssetCat> on_load_success_callback = null,
-		  Action<AssetCat> on_load_fail_callback = null,
-		  Action<AssetCat> on_load_done_callback = null, object callback_cause = null)
+		public AssetCat GetOrLoadAsset(string assetPath, Action<AssetCat> onLoadSuccessCallback = null,
+		  Action<AssetCat> onLoadFailCallback = null,
+		  Action<AssetCat> onLoadDoneCallback = null, object callbackCause = null)
 		{
+			AssetCat assetCat;
 			if (!Application.isPlaying)
 			{
 #if UNITY_EDITOR
-				Object obj = AssetDatabase.LoadAssetAtPath<Object>(asset_path);
-				if (!resLoadDataInfo_dict.ContainsKey(asset_path.GetMainAssetPath()))
+				Object obj = AssetDatabase.LoadAssetAtPath<Object>(assetPath);
+				if (!resLoadDataInfoDict.ContainsKey(assetPath.GetMainAssetPath()))
 				{
-					AssetCat _assetCat = new AssetCat(asset_path);
-					resLoadDataInfo_dict[asset_path.GetMainAssetPath()] = new ResLoadDataInfo(new ResLoadData(_assetCat), is_not_check_destroy);
+					assetCat = new AssetCat(assetPath);
+					resLoadDataInfoDict[assetPath.GetMainAssetPath()] = new ResLoadDataInfo(new ResLoadData(assetCat), isNotCheckDestroy);
 				}
 
-				var resLoadDataInfo = resLoadDataInfo_dict[asset_path.GetMainAssetPath()];
-				if (!resLoadDataInfo.resLoadData.assetCat.asset_dict.ContainsKey(obj.name))
-					resLoadDataInfo.resLoadData.assetCat.asset_dict[obj.name] = new Dictionary<Type, Object>();
-				if (!resLoadDataInfo.resLoadData.assetCat.asset_dict[obj.name].ContainsKey(obj.GetType()))
-					resLoadDataInfo.resLoadData.assetCat.asset_dict[obj.name][obj.GetType()] = obj;
-				on_load_success_callback?.Invoke(resLoadDataInfo.resLoadData.assetCat);
-				on_load_done_callback?.Invoke(resLoadDataInfo.resLoadData.assetCat);
+				var resLoadDataInfo = resLoadDataInfoDict[assetPath.GetMainAssetPath()];
+				if (!resLoadDataInfo.resLoadData.assetCat.assetDict.ContainsKey(obj.name))
+					resLoadDataInfo.resLoadData.assetCat.assetDict[obj.name] = new Dictionary<Type, Object>();
+				if (!resLoadDataInfo.resLoadData.assetCat.assetDict[obj.name].ContainsKey(obj.GetType()))
+					resLoadDataInfo.resLoadData.assetCat.assetDict[obj.name][obj.GetType()] = obj;
+				onLoadSuccessCallback?.Invoke(resLoadDataInfo.resLoadData.assetCat);
+				onLoadDoneCallback?.Invoke(resLoadDataInfo.resLoadData.assetCat);
 				return resLoadDataInfo.resLoadData.assetCat;
 #endif
 			}
-			callback_cause = callback_cause ?? this;
-			var assetCat =
-			  Client.instance.assetBundleManager.GetOrLoadAssetCat(asset_path.GetMainAssetPath(), on_load_success_callback,
-				on_load_fail_callback, on_load_done_callback, callback_cause);
-			if (!resLoadDataInfo_dict.ContainsKey(asset_path.GetMainAssetPath()))
-				resLoadDataInfo_dict[asset_path.GetMainAssetPath()] = new ResLoadDataInfo(new ResLoadData(assetCat), is_not_check_destroy);
-			resLoadDataInfo_dict[asset_path.GetMainAssetPath()].AddCallbackCause(callback_cause);
+			callbackCause = callbackCause ?? this;
+			assetCat =
+			  Client.instance.assetBundleManager.GetOrLoadAssetCat(assetPath.GetMainAssetPath(), onLoadSuccessCallback,
+				onLoadFailCallback, onLoadDoneCallback, callbackCause);
+			if (!resLoadDataInfoDict.ContainsKey(assetPath.GetMainAssetPath()))
+				resLoadDataInfoDict[assetPath.GetMainAssetPath()] = new ResLoadDataInfo(new ResLoadData(assetCat), isNotCheckDestroy);
+			resLoadDataInfoDict[assetPath.GetMainAssetPath()].AddCallbackCause(callbackCause);
 			return assetCat;
 		}
 
 
-		public void CancelLoadCallback(AssetCat assetCat, object callback_cause = null)
+		public void CancelLoadCallback(AssetCat assetCat, object callbackCause = null)
 		{
-			string to_remove_key = null;
-			foreach (var key in resLoadDataInfo_dict.Keys)
+			string toRemoveKey = null;
+			foreach (var keyValue in resLoadDataInfoDict)
 			{
-				var resLoadDataInfo = resLoadDataInfo_dict[key];
+				var key = keyValue.Key;
+				var resLoadDataInfo = resLoadDataInfoDict[key];
 				if (resLoadDataInfo.resLoadData.assetCat == assetCat)
 				{
-					resLoadDataInfo.RemoveCallbackCause(callback_cause);
-					if (resLoadDataInfo.callback_cause_dict.Count == 0 && !is_not_check_destroy)//is_not_check_destroy的时候不删除，因为要在destroy的时候作为删除的asset的依据
-						to_remove_key = key;
+					resLoadDataInfo.RemoveCallbackCause(callbackCause);
+					if (resLoadDataInfo.callbackCauseDict.Count == 0 && !isNotCheckDestroy)//is_not_check_destroy的时候不删除，因为要在destroy的时候作为删除的asset的依据
+						toRemoveKey = key;
 					break;
 				}
 			}
 
-			if (to_remove_key != null)
-				resLoadDataInfo_dict.Remove(to_remove_key);
+			if (toRemoveKey != null)
+				resLoadDataInfoDict.Remove(toRemoveKey);
 		}
 
 		public void CancelLoadAllCallbacks(AssetCat assetCat)
 		{
-			string to_remove_key = null;
-			foreach (var key in resLoadDataInfo_dict.Keys)
+			string toRemoveKey = null;
+			foreach (var keyValue in resLoadDataInfoDict)
 			{
-				var resLoadDataInfo = resLoadDataInfo_dict[key];
+				var key = keyValue.Key;
+				var resLoadDataInfo = resLoadDataInfoDict[key];
 				if (resLoadDataInfo.resLoadData.assetCat == assetCat)
 				{
 					resLoadDataInfo.RemoveAllCallbackCauses();
-					if (resLoadDataInfo.callback_cause_dict.Count == 0 && !is_not_check_destroy)//is_not_check_destroy的时候不删除，因为要在destroy的时候作为删除的asset的依据
-						to_remove_key = key;
+					if (resLoadDataInfo.callbackCauseDict.Count == 0 && !isNotCheckDestroy)//is_not_check_destroy的时候不删除，因为要在destroy的时候作为删除的asset的依据
+						toRemoveKey = key;
 					break;
 				}
 			}
-			if (to_remove_key != null)
-				resLoadDataInfo_dict.Remove(to_remove_key);
+			if (toRemoveKey != null)
+				resLoadDataInfoDict.Remove(toRemoveKey);
 		}
 
 
 		public void Reset()
 		{
-			foreach (var resLoadDataInfo in resLoadDataInfo_dict.Values)
+			foreach (var keyValue in resLoadDataInfoDict)
+			{
+				var resLoadDataInfo = keyValue.Value;
 				resLoadDataInfo.Destroy();
-
-			resLoadDataInfo_dict.Clear();
+			}
+			resLoadDataInfoDict.Clear();
 		}
 
 		public void Destroy()

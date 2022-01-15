@@ -35,21 +35,18 @@ namespace CsCat
 			this.dict.Remove(key);
 			idPool.Despawn(key);
 			mono.StopCacheIEnumerator(key.ToGuid(this));
-
 		}
 
 		public void StopAllCoroutines()
 		{
-			foreach (var key in dict.Keys)
+			foreach (var keyValue in dict)
 			{
+				var key = keyValue.Key;
 				mono.StopCacheIEnumerator(key.ToGuid(this));
 			}
 
 			dict.Clear();
 			idPool.DespawnAll();
 		}
-
-
-
 	}
 }

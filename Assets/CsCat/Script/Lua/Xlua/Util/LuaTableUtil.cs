@@ -6,47 +6,47 @@ namespace CsCat
 	{
 		private static LuaFunction luaFunction;
 
-		static (LuaTable, string) GetTargetLuaTableAndMethodName(LuaTable luaTable, string method_path)
+		static (LuaTable, string) GetTargetLuaTableAndMethodName(LuaTable luaTable, string methodPath)
 		{
-			int index = method_path.LastIndexOf('.');
+			int index = methodPath.LastIndexOf('.');
 			if (index == -1)
-				index = method_path.LastIndexOf(':');
-			LuaTable target_luaTable = index == -1 ? luaTable : luaTable.GetInPath<LuaTable>(method_path.Substring(0, index));
-			string method_name = index == -1 ? method_path : method_path.Substring(index + 1);
-			return (target_luaTable, method_name);
+				index = methodPath.LastIndexOf(':');
+			LuaTable targetLuaTable = index == -1 ? luaTable : luaTable.GetInPath<LuaTable>(methodPath.Substring(0, index));
+			string methodName = index == -1 ? methodPath : methodPath.Substring(index + 1);
+			return (targetLuaTable, methodName);
 		}
 
-		public static void InvokeAction(LuaTable luaTable, string method_path)
+		public static void InvokeAction(LuaTable luaTable, string methodPath)
 		{
-			var (target_luaTable, method_name) = GetTargetLuaTableAndMethodName(luaTable, method_path);
-			target_luaTable.Get(method_name, out luaFunction);
-			luaFunction.Action(target_luaTable);
+			var (targetLuaTable, methodName) = GetTargetLuaTableAndMethodName(luaTable, methodPath);
+			targetLuaTable.Get(methodName, out luaFunction);
+			luaFunction.Action(targetLuaTable);
 			luaFunction.Dispose();
 		}
 
-		public static void InvokeAction<T0>(LuaTable luaTable, string method_path, T0 arg0)
+		public static void InvokeAction<T0>(LuaTable luaTable, string methodPath, T0 arg0)
 		{
-			var (target_luaTable, method_name) = GetTargetLuaTableAndMethodName(luaTable, method_path);
-			target_luaTable.Get(method_name, out luaFunction);
-			luaFunction.Action(target_luaTable, arg0);
+			var (targetLuaTable, methodName) = GetTargetLuaTableAndMethodName(luaTable, methodPath);
+			targetLuaTable.Get(methodName, out luaFunction);
+			luaFunction.Action(targetLuaTable, arg0);
 			luaFunction.Dispose();
 		}
 
-		public static TResult InvokeFunc<TResult>(LuaTable luaTable, string method_path)
+		public static TResult InvokeFunc<TResult>(LuaTable luaTable, string methodPath)
 		{
-			var (target_luaTable, method_name) = GetTargetLuaTableAndMethodName(luaTable, method_path);
-			target_luaTable.Get(method_name, out luaFunction);
-			TResult result = luaFunction.Func<LuaTable, TResult>(target_luaTable);
+			var (targetLuaTable, methodName) = GetTargetLuaTableAndMethodName(luaTable, methodPath);
+			targetLuaTable.Get(methodName, out luaFunction);
+			TResult result = luaFunction.Func<LuaTable, TResult>(targetLuaTable);
 			luaFunction.Dispose();
 			return result;
 		}
 
 
-		public static TResult InvokeFunc<T0, TResult>(LuaTable luaTable, string method_path, T0 arg0)
+		public static TResult InvokeFunc<T0, TResult>(LuaTable luaTable, string methodPath, T0 arg0)
 		{
-			var (target_luaTable, method_name) = GetTargetLuaTableAndMethodName(luaTable, method_path);
-			target_luaTable.Get(method_name, out luaFunction);
-			TResult result = luaFunction.Func<LuaTable, T0, TResult>(target_luaTable, arg0);
+			var (targetLuaTable, methodName) = GetTargetLuaTableAndMethodName(luaTable, methodPath);
+			targetLuaTable.Get(methodName, out luaFunction);
+			TResult result = luaFunction.Func<LuaTable, T0, TResult>(targetLuaTable, arg0);
 			luaFunction.Dispose();
 			return result;
 		}

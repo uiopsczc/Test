@@ -7,94 +7,98 @@ namespace CsCat
 	//里面的结构是  List<Doer>
 	public class SubDoerUtil1
 	{
-		public static void DoReleaseSubDoer<T>(Doer parent_doer, string sub_doer_key, Action<T> relase_sub_doer_func = null)
+		public static void DoReleaseSubDoer<T>(Doer parentDoer, string subDoerKey, Action<T> releaseSubDoerFunc = null)
 		  where T : Doer
 		{
 			//销毁
-			var sub_doers = GetSubDoers<T>(parent_doer, sub_doer_key, null, null);
-			for (int i = sub_doers.Length - 1; i >= 0; i--)
+			var subDoers = GetSubDoers<T>(parentDoer, subDoerKey, null, null);
+			for (int i = subDoers.Length - 1; i >= 0; i--)
 			{
-				var sub_doer = sub_doers[i];
-				relase_sub_doer_func?.Invoke(sub_doer);
-				sub_doer.SetEnv(null);
-				sub_doer.Destruct();
+				var subDoer = subDoers[i];
+				releaseSubDoerFunc?.Invoke(subDoer);
+				subDoer.SetEnv(null);
+				subDoer.Destruct();
 			}
 
-			GetSubDoers_ToEdit(parent_doer, sub_doer_key).Clear();
+			GetSubDoers_ToEdit(parentDoer, subDoerKey).Clear();
 		}
 
 		/////////////////////////////////容器/////////////////////////////////
-		public static T[] GetSubDoers<T>(Doer parent_doer, string sub_doer_key, string id = null,
-		  Func<T, bool> filter_func = null) where T : Doer
+		public static T[] GetSubDoers<T>(Doer parentDoer, string subDoerKey, string id = null,
+		  Func<T, bool> filterFunc = null) where T : Doer
 		{
-			var list = GetSubDoers_ToEdit(parent_doer, sub_doer_key);
+			var list = GetSubDoers_ToEdit(parentDoer, subDoerKey);
 			List<T> result = new List<T>();
 			if (id == null)
 			{
-				foreach (var sub_doer in list)
+				for (var i = 0; i < list.Count; i++)
 				{
-					if (filter_func == null || filter_func(sub_doer as T))
-						result.Add(sub_doer as T);
+					var subDoer = list[i];
+					if (filterFunc == null || filterFunc(subDoer as T))
+						result.Add(subDoer as T);
 				}
 
 				return result.ToArray();
 			}
 
-			foreach (T sub_doer in list)
+			for (var i = 0; i < list.Count; i++)
 			{
-				if (sub_doer.GetId().Equals(id))
+				var subDoer = (T) list[i];
+				if (subDoer.GetId().Equals(id))
 				{
-					if (filter_func == null || filter_func(sub_doer))
-						result.Add(sub_doer);
+					if (filterFunc == null || filterFunc(subDoer))
+						result.Add(subDoer);
 				}
 			}
 
 			return result.ToArray();
 		}
 
-		public static ArrayList GetSubDoers_ToEdit(Doer parent_doer, string sub_doer_key) //可以直接插入删除
+		public static ArrayList GetSubDoers_ToEdit(Doer parentDoer, string subDoerKey) //可以直接插入删除
 		{
-			return parent_doer.GetOrAddTmp(sub_doer_key, () => new ArrayList());
+			return parentDoer.GetOrAddTmp(subDoerKey, () => new ArrayList());
 		}
 
 
-		public static bool HasSubDoers<T>(Doer parent_doer, string sub_doer_key, string id = null,
-		  Func<T, bool> filter_func = null) where T : Doer
+		public static bool HasSubDoers<T>(Doer parentDoer, string subDoerKey, string id = null,
+		  Func<T, bool> filterFunc = null) where T : Doer
 		{
-			return !GetSubDoers<T>(parent_doer, sub_doer_key, id, filter_func).IsNullOrEmpty();
+			return !GetSubDoers<T>(parentDoer, subDoerKey, id, filterFunc).IsNullOrEmpty();
 		}
 
 		//获取doer中的sub_doer_key的子doer数量
-		public static int GetSubDoersCount<T>(Doer parent_doer, string sub_doer_key, string id = null,
-		  Func<T, bool> filter_func = null) where T : Doer
+		public static int GetSubDoersCount<T>(Doer parentDoer, string subDoerKey, string id = null,
+		  Func<T, bool> filterFunc = null) where T : Doer
 		{
-			return GetSubDoers<T>(parent_doer, sub_doer_key, id, filter_func).Length;
+			return GetSubDoers<T>(parentDoer, subDoerKey, id, filterFunc).Length;
 		}
 
-		public static T GetSubDoer<T>(Doer parent_doer, string sub_doer_key, string id_or_rid) where T : Doer
+		public static T GetSubDoer<T>(Doer parentDoer, string subDoerKey, string idOrRid) where T : Doer
 		{
-			foreach (var sub_doer in GetSubDoers<T>(parent_doer, sub_doer_key, null, null))
+			var ts = GetSubDoers<T>(parentDoer, subDoerKey, null, null);
+			for (var i = 0; i < ts.Length; i++)
 			{
-				if (IdUtil.IsIdOrRidEquals(id_or_rid, sub_doer.GetId(), sub_doer.GetRid()))
-					return sub_doer;
+				var subDoer = ts[i];
+				if (IdUtil.IsIdOrRidEquals(idOrRid, subDoer.GetId(), subDoer.GetRid()))
+					return subDoer;
 			}
 
 			return null;
 		}
 
-		public static void ClearSubDoers<T>(Doer parent_doer, string sub_doer_key, Action<T> clear_sub_doer_func = null)
+		public static void ClearSubDoers<T>(Doer parentDoer, string subDoerKey, Action<T> clearSubDoerFunc = null)
 		  where T : Doer
 		{
-			var list = GetSubDoers<T>(parent_doer, sub_doer_key, null, null);
+			var list = GetSubDoers<T>(parentDoer, subDoerKey, null, null);
 			for (int i = list.Length - 1; i >= 0; i--)
 			{
-				var sub_doer = list[i];
-				clear_sub_doer_func?.Invoke(sub_doer);
-				sub_doer.SetEnv(null);
-				sub_doer.Destruct();
+				var subDoer = list[i];
+				clearSubDoerFunc?.Invoke(subDoer);
+				subDoer.SetEnv(null);
+				subDoer.Destruct();
 			}
 
-			GetSubDoers_ToEdit(parent_doer, sub_doer_key).Clear();
+			GetSubDoers_ToEdit(parentDoer, subDoerKey).Clear();
 		}
 
 	}

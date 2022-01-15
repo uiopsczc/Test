@@ -6,27 +6,27 @@ namespace CsCat
 	//弹道
 	public class SourceTargetEffectComponent : EffectComponent
 	{
-		protected string source_socket_name;
-		protected string target_socket_name;
-		public Vector3 source_position;
-		public Vector3 target_position;
-		public IPosition source_iposition;
-		public IPosition target_iposition;
-		public Vector3 current_position;
-		public Vector3 current_eulerAngles;
+		protected string sourceSocketName;
+		protected string targetSocketName;
+		public Vector3 sourcePosition;
+		public Vector3 targetPosition;
+		public IPosition sourceIPosition;
+		public IPosition targetIPosition;
+		public Vector3 currentPosition;
+		public Vector3 currentEulerAngles;
 
 
-		public Action on_reach_callback;
+		public Action onReachCallback;
 
 
 
 		public void SetSocket()
 		{
-			this.source_socket_name = this.effectEntity.cfgEffectData.socket_name_1 ?? "missile";
-			this.target_socket_name = this.effectEntity.cfgEffectData.socket_name_2 ?? "chest";
+			this.sourceSocketName = this.effectEntity.cfgEffectData.socket_name_1 ?? "missile";
+			this.targetSocketName = this.effectEntity.cfgEffectData.socket_name_2 ?? "chest";
 
-			source_iposition?.SetSocketName(this.source_socket_name);
-			target_iposition?.SetSocketName(this.target_socket_name);
+			sourceIPosition?.SetSocketName(this.sourceSocketName);
+			targetIPosition?.SetSocketName(this.targetSocketName);
 		}
 
 
@@ -35,24 +35,21 @@ namespace CsCat
 		// 计算sourcePosition,targetPosition,eulerAngles
 		protected virtual void Calculate(float deltaTime)
 		{
-			this.source_position = this.source_iposition.GetPosition();
-			this.target_position = this.target_iposition.GetPosition();
-			this.current_position = this.source_position;
+			this.sourcePosition = this.sourceIPosition.GetPosition();
+			this.targetPosition = this.targetIPosition.GetPosition();
+			this.currentPosition = this.sourcePosition;
 			CalculateEulerAngles();
 		}
 
 		public void CalculateEulerAngles()
 		{
-			Vector3 diff = this.target_position - this.current_position;
-			if (diff.Equals(Vector3.zero))
-				this.current_eulerAngles = Vector3.zero;
-			else
-				this.current_eulerAngles = Quaternion.LookRotation(diff, Vector3.up).eulerAngles;
+			Vector3 diff = this.targetPosition - this.currentPosition;
+			this.currentEulerAngles = diff.Equals(Vector3.zero) ? Vector3.zero : Quaternion.LookRotation(diff, Vector3.up).eulerAngles;
 		}
 
 		public virtual void OnEffectReach()
 		{
-			on_reach_callback?.Invoke();
+			onReachCallback?.Invoke();
 			this.effectEntity.OnEffectReach();
 		}
 
@@ -60,13 +57,13 @@ namespace CsCat
 		{
 			base._Update(deltaTime, unscaledDeltaTime);
 			Calculate(deltaTime);
-			this.effectEntity.ApplyToTransformComponent(this.current_position, this.current_eulerAngles);
+			this.effectEntity.ApplyToTransformComponent(this.currentPosition, this.currentEulerAngles);
 		}
 
 		protected override void _Destroy()
 		{
 			base._Destroy();
-			this.on_reach_callback = null;
+			this.onReachCallback = null;
 		}
 	}
 }

@@ -4,30 +4,21 @@ namespace CsCat
 {
 	public class CombatStageBase : StageBase
 	{
-		public override bool isShowFade
-		{
-			get { return true; }
-		}
+		public override bool isShowFade => true;
 
-		public override bool isShowLoading
-		{
-			get { return true; }
-		}
+		public override bool isShowLoading => true;
 
-		public override string stageName
-		{
-			get { return "CombatStageBase"; }
-		}
+		public override string stageName => "CombatStageBase";
 
 		public CombatBase combat;
 
-		public void StartCombat(Hashtable arg_dict = null)
+		public void StartCombat(Hashtable argDict = null)
 		{
 			if (this.combat != null)
 				this.RemoveChild(this.combat.key);
-			var combat_class =
-			  TypeUtil.GetType(arg_dict.GetOrGetDefault2<string>("combat_class_path", () => typeof(CombatBase).ToString()));
-			this.combat = this.AddChild(null, combat_class, arg_dict) as CombatBase;
+			var combatClass =
+			  TypeUtil.GetType(argDict.GetOrGetDefault2<string>("combat_class_path", () => typeof(CombatBase).ToString()));
+			this.combat = this.AddChild(null, combatClass, argDict) as CombatBase;
 			Client.instance.combat = this.combat;
 			this.combat.Start();
 		}

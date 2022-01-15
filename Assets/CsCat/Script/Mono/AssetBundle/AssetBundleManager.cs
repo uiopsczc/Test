@@ -29,35 +29,38 @@ namespace CsCat
 		private const int Max_AssetBundle_Create_Num = 20;
 
 		private readonly List<AssetCat>
-		  assetCat_of_no_ref_list = new List<AssetCat>(); //这里使用延迟删除处理，和GameObject.Destroy类似,检查因为没有ref而需要删除的asset（如果有ref则不会删除）
+			assetCatOfNoRefList =
+				new List<AssetCat>(); //这里使用延迟删除处理，和GameObject.Destroy类似,检查因为没有ref而需要删除的asset（如果有ref则不会删除）
 
 		// 逻辑层正在等待的asset加载异步句柄
-		public readonly List<AssetAsyncLoader> assetAsyncloader_prosessing_list = new List<AssetAsyncLoader>();
+		public readonly List<AssetAsyncLoader> assetAsyncloaderProcessingList = new List<AssetAsyncLoader>();
 
 
 		// 逻辑层正在等待的ab加载异步句柄
-		public readonly List<AssetBundleAsyncLoader> assetBundleAsyncLoader_prosessing_list =
-		  new List<AssetBundleAsyncLoader>();
+		public readonly List<AssetBundleAsyncLoader> assetBundleAsyncLoaderProcessingList =
+			new List<AssetBundleAsyncLoader>();
 
 		// 加载数据请求：正在prosessing或者等待prosessing的资源请求
-		public readonly Dictionary<string, ResourceWebRequester> resourceWebRequester_all_dict =
-		  new Dictionary<string, ResourceWebRequester>();
+		public readonly Dictionary<string, ResourceWebRequester> resourceWebRequesterAllDict =
+			new Dictionary<string, ResourceWebRequester>();
 
 		// 正在处理的资源请求
-		private readonly List<ResourceWebRequester> resourceWebRequester_prosessing_list = new List<ResourceWebRequester>();
+		private readonly List<ResourceWebRequester> resourceWebRequesterProcessingList =
+			new List<ResourceWebRequester>();
 
 
 		// 等待处理的资源请求
-		private readonly Queue<ResourceWebRequester> resourceWebRequester_waiting_queue = new Queue<ResourceWebRequester>();
+		private readonly Queue<ResourceWebRequester> resourceWebRequesterWaitingQueue =
+			new Queue<ResourceWebRequester>();
 
 		// 常驻内存的(游戏中一直存在的)asset
-		public Dictionary<string, bool> asset_resident_dict = new Dictionary<string, bool>();
+		public Dictionary<string, bool> assetResidentDict = new Dictionary<string, bool>();
 
 		// AssetBundle缓存包
-		public Dictionary<string, AssetBundleCat> assetBundleCat_dict = new Dictionary<string, AssetBundleCat>();
+		public Dictionary<string, AssetBundleCat> assetBundleCatDict = new Dictionary<string, AssetBundleCat>();
 
 		// asset缓存
-		public Dictionary<string, AssetCat> assetCat_dict = new Dictionary<string, AssetCat>();
+		public Dictionary<string, AssetCat> assetCatDict = new Dictionary<string, AssetCat>();
 
 		// 资源路径相关的映射表
 		public AssetPathMap assetPathMap;
@@ -67,24 +70,24 @@ namespace CsCat
 		public Manifest manifest;
 
 
-		public string download_url => URLSetting.Server_Resource_URL;
+		public string downloadURL => URLSetting.Server_Resource_URL;
 
 		public override void Init()
 		{
 			base.Init();
 
 			AddListener<ResourceWebRequester>(null, AssetBundleEventNameConst.On_ResourceWebRequester_Done,
-			  OnResourceWebRequesterDone);
+				OnResourceWebRequesterDone);
 
 			AddListener<AssetBundleAsyncLoader>(null, AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Fail,
-			  OnAssetBundleAsyncLoaderFail);
+				OnAssetBundleAsyncLoaderFail);
 			AddListener<AssetBundleAsyncLoader>(null, AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Done,
-			  OnAssetBundleAsyncLoaderDone);
+				OnAssetBundleAsyncLoaderDone);
 
 			AddListener<AssetAsyncLoader>(null, AssetBundleEventNameConst.On_AssetAsyncLoader_Fail,
-			  OnAssetAsyncLoaderFail);
+				OnAssetAsyncLoaderFail);
 			AddListener<AssetAsyncLoader>(null, AssetBundleEventNameConst.On_AssetAsyncLoader_Done,
-			  OnAssetAsyncLoaderDone);
+				OnAssetAsyncLoaderDone);
 		}
 
 
@@ -98,93 +101,88 @@ namespace CsCat
 			assetBundleMap = new AssetBundleMap();
 
 			// 说明：同时请求资源可以提高加载速度
-			var manifest_request =
-			  DownloadFileAsyncNoCache(manifest.assetBundle_name.WithRootPath(FilePathConst.PersistentAssetBundleRoot));
-			var assetPathMap_request =
-			  DownloadFileAsyncNoCache(
-				BuildConst.AssetPathMap_File_Name.WithRootPath(FilePathConst.PersistentAssetBundleRoot));
-			var assetBundleMap_request =
-			  DownloadFileAsyncNoCache(
-				BuildConst.AssetBundleMap_File_Name.WithRootPath(FilePathConst.PersistentAssetBundleRoot));
+			var manifestRequest =
+				DownloadFileAsyncNoCache(
+					manifest.assetBundleName.WithRootPath(FilePathConst.PersistentAssetBundleRoot));
+			var assetPathMapRequest =
+				DownloadFileAsyncNoCache(
+					BuildConst.AssetPathMap_File_Name.WithRootPath(FilePathConst.PersistentAssetBundleRoot));
+			var assetBundleMapRequest =
+				DownloadFileAsyncNoCache(
+					BuildConst.AssetBundleMap_File_Name.WithRootPath(FilePathConst.PersistentAssetBundleRoot));
 
-			yield return manifest_request;
-			if (manifest_request.error.IsNullOrWhiteSpace())
+			yield return manifestRequest;
+			if (manifestRequest.error.IsNullOrWhiteSpace())
 			{
-				var assetBundle = manifest_request.assetBundle;
-				manifest.LoadFromAssetbundle(assetBundle);
+				var assetBundle = manifestRequest.assetBundle;
+				manifest.LoadFromAssetBundle(assetBundle);
 				assetBundle.Unload(false);
-				manifest_request.Destroy();
-				PoolCatManagerUtil.Despawn(manifest_request);
+				manifestRequest.Destroy();
+				PoolCatManagerUtil.Despawn(manifestRequest);
 			}
 
 
-			yield return assetPathMap_request;
-			if (assetPathMap_request.error.IsNullOrWhiteSpace())
+			yield return assetPathMapRequest;
+			if (assetPathMapRequest.error.IsNullOrWhiteSpace())
 			{
-				assetPathMap.Initialize(assetPathMap_request.text);
-				assetPathMap_request.Destroy();
-				PoolCatManagerUtil.Despawn(assetPathMap_request);
+				assetPathMap.Initialize(assetPathMapRequest.text);
+				assetPathMapRequest.Destroy();
+				PoolCatManagerUtil.Despawn(assetPathMapRequest);
 			}
 
-			yield return assetBundleMap_request;
-			if (assetBundleMap_request.error.IsNullOrWhiteSpace())
+			yield return assetBundleMapRequest;
+			if (assetBundleMapRequest.error.IsNullOrWhiteSpace())
 			{
-				assetBundleMap.Initialize(assetBundleMap_request.text);
-				assetBundleMap_request.Destroy();
-				PoolCatManagerUtil.Despawn(assetBundleMap_request);
+				assetBundleMap.Initialize(assetBundleMapRequest.text);
+				assetBundleMapRequest.Destroy();
+				PoolCatManagerUtil.Despawn(assetBundleMapRequest);
 			}
 
 			LogCat.Log("AssetMananger init finished");
 		}
 
 
-
-
-
-
-
-
-
 		public override void Update(float deltaTime = 0, float unscaledDeltaTime = 0)
 		{
 			base.Update(deltaTime, unscaledDeltaTime);
-			OnProsessingResourceWebRequester();
-			OnProsessingAssetBundleAsyncLoader();
-			OnProsessingAssetAsyncLoader();
+			OnProcessingResourceWebRequester();
+			OnProcessingAssetBundleAsyncLoader();
+			OnProcessingAssetAsyncLoader();
 			CheckAssetOfNoRefList();
 		}
 
-		private void OnProsessingResourceWebRequester()
+		private void OnProcessingResourceWebRequester()
 		{
-			var slot_count = resourceWebRequester_prosessing_list.Count;
-			while (slot_count < Max_AssetBundle_Create_Num && resourceWebRequester_waiting_queue.Count > 0)
+			var slot_count = resourceWebRequesterProcessingList.Count;
+			while (slot_count < Max_AssetBundle_Create_Num && resourceWebRequesterWaitingQueue.Count > 0)
 			{
-				var resourceWebRequester = resourceWebRequester_waiting_queue.Dequeue();
+				var resourceWebRequester = resourceWebRequesterWaitingQueue.Dequeue();
 				resourceWebRequester.Start();
-				resourceWebRequester_prosessing_list.Add(resourceWebRequester);
+				resourceWebRequesterProcessingList.Add(resourceWebRequester);
 				slot_count++;
 			}
-			for (var i = resourceWebRequester_prosessing_list.Count - 1; i >= 0; i--)
-				resourceWebRequester_prosessing_list[i].Update();
+
+			for (var i = resourceWebRequesterProcessingList.Count - 1; i >= 0; i--)
+				resourceWebRequesterProcessingList[i].Update();
 		}
 
-		private void OnProsessingAssetBundleAsyncLoader()
+		private void OnProcessingAssetBundleAsyncLoader()
 		{
 		}
 
-		private void OnProsessingAssetAsyncLoader()
+		private void OnProcessingAssetAsyncLoader()
 		{
 		}
 
 
 		private void OnResourceWebRequesterDone(ResourceWebRequester resourceWebRequester)
 		{
-			if (!resourceWebRequester_prosessing_list.Contains(resourceWebRequester))
+			if (!resourceWebRequesterProcessingList.Contains(resourceWebRequester))
 				return;
-			resourceWebRequester_prosessing_list.Remove(resourceWebRequester);
-			resourceWebRequester_all_dict.RemoveByFunc((k, v) => v == resourceWebRequester);
+			resourceWebRequesterProcessingList.Remove(resourceWebRequester);
+			resourceWebRequesterAllDict.RemoveByFunc((k, v) => v == resourceWebRequester);
 			// 无缓存，不计引用计数、Creater使用后由上层回收，所以这里不需要做任何处理
-			if (!resourceWebRequester.is_not_cache)
+			if (!resourceWebRequester.isNotCache)
 			{
 				var assetBundleCat = resourceWebRequester.assetBundleCat;
 				// 解除webRequester对AB持有的引用
@@ -195,28 +193,6 @@ namespace CsCat
 		}
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 		//  public AssetCat GetAssetCat(Object asset)
 		//  {
 		//    foreach (var asset_path in assetCatDict.Keys)
@@ -225,10 +201,5 @@ namespace CsCat
 		//        return assetCatDict[asset_path];
 		//    return null;
 		//  }
-
-
-
-
-
 	}
 }

@@ -7,85 +7,88 @@ namespace CsCat
 	public class AssetBundleUpdater : TickObject
 	{
 		private static readonly int Max_DownLoad_Num = 5;
-		private readonly List<ResourceWebRequester> downloading_request_list = new List<ResourceWebRequester>();
+		private readonly List<ResourceWebRequester> downloadingRequestList = new List<ResourceWebRequester>();
 
-		private BuildInfo client_buildInfo;
+		private BuildInfo clientBuildInfo;
 
 		//is_finish,total_bytes,downloded_bytes,
-		public Dictionary<string, Hashtable> need_download_dict = new Dictionary<string, Hashtable>();
-		private long total_need_download_bytes;
+		public Dictionary<string, Hashtable> needDownloadDict = new Dictionary<string, Hashtable>();
+		private long totalNeedDownloadBytes;
 
-		public bool is_update_finish;
+		public bool isUpdateFinish;
 
-		private bool is_updating_res;
-		private List<string> need_download_list = new List<string>();
-		private BuildInfo server_buildInfo;
+		private bool isUpdatingRes;
+		private List<string> needDownloadList = new List<string>();
+		private BuildInfo serverBuildInfo;
 
 		public override void Init()
 		{
 			base.Init();
 			AddListener<ResourceWebRequester>(null, AssetBundleEventNameConst.On_ResourceWebRequester_Done,
-			  OnResourceWebRequesterDone);
+				OnResourceWebRequesterDone);
 		}
 
 		public IEnumerator CheckUpdate()
 		{
 			if (Application.isEditor && EditorModeConst.IsEditorMode)
 			{
-				is_update_finish = true;
+				isUpdateFinish = true;
 				yield break;
 			}
 
-			downloading_request_list.Clear();
-			client_buildInfo = new BuildInfo(FilePathConst.PersistentAssetBundleRoot);
-			server_buildInfo = new BuildInfo(URLSetting.Server_Resource_URL);
+			downloadingRequestList.Clear();
+			clientBuildInfo = new BuildInfo(FilePathConst.PersistentAssetBundleRoot);
+			serverBuildInfo = new BuildInfo(URLSetting.Server_Resource_URL);
 			//    LogCat.LogWarning("fffffffffffffff1:"+ FilePathConst.GetPersistentAssetBundleRoot());
 			//    LogCat.LogWarning("fffffffffffffff2:"+ URLSetting.SERVER_RESOURCE_URL);
 
 			//Update  AssetPathRefContentJson
-			yield return client_buildInfo.LoadAssetPathRefContentJson();
-			yield return server_buildInfo.LoadAssetPathRefContentJson();
-			if (!ObjectUtil.Equals(client_buildInfo.assetPathRef_content_json, server_buildInfo.assetPathRef_content_json))
-				StdioUtil.WriteTextFile(client_buildInfo.WithRootPathOfUrlRoot(AssetPathRefConst.SaveFileName).Trim(),
-				  server_buildInfo.assetPathRef_content_json);
-			AssetPathRefManager.instance.Load(server_buildInfo.assetPathRef_content_json);
+			yield return clientBuildInfo.LoadAssetPathRefContentJson();
+			yield return serverBuildInfo.LoadAssetPathRefContentJson();
+			if (!ObjectUtil.Equals(clientBuildInfo.assetPathRefContentJson,
+				serverBuildInfo.assetPathRefContentJson))
+				StdioUtil.WriteTextFile(clientBuildInfo.WithRootPathOfUrlRoot(AssetPathRefConst.SaveFileName).Trim(),
+					serverBuildInfo.assetPathRefContentJson);
+			AssetPathRefManager.instance.Load(serverBuildInfo.assetPathRefContentJson);
 
 
 			//Update ResVersion
-			yield return client_buildInfo.LoadResVersion();
-			yield return server_buildInfo.LoadResVersion();
-			if (!BuildUtil.CheckResVersionIsNew(client_buildInfo.res_version, server_buildInfo.res_version))
+			yield return clientBuildInfo.LoadResVersion();
+			yield return serverBuildInfo.LoadResVersion();
+			if (!BuildUtil.CheckResVersionIsNew(clientBuildInfo.resVersion, serverBuildInfo.resVersion))
 			{
 				UpdateResFinish();
 				yield break;
 			}
 
 			//Update Mainfest
-			yield return client_buildInfo.LoadMainfest();
-			yield return server_buildInfo.LoadMainfest();
+			yield return clientBuildInfo.LoadManifest();
+			yield return serverBuildInfo.LoadManifest();
 
-			yield return server_buildInfo.LoadAssetBundleMap();
+			yield return serverBuildInfo.LoadAssetBundleMap();
 
-			need_download_list.Clear();
-			need_download_list =
-			  BuildUtil.GetManifestDiffAssetBundleList(client_buildInfo.manifest, server_buildInfo.manifest);
-			if (!need_download_list.IsNullOrEmpty())
+			needDownloadList.Clear();
+			needDownloadList =
+				BuildUtil.GetManifestDiffAssetBundleList(clientBuildInfo.manifest, serverBuildInfo.manifest);
+			if (!needDownloadList.IsNullOrEmpty())
 			{
-				foreach (var assetBundle_name in need_download_list)
+				for (var i = 0; i < needDownloadList.Count; i++)
 				{
-					need_download_dict[assetBundle_name] = new Hashtable();
-					need_download_dict[assetBundle_name]["is_finished"] = false;
-					need_download_dict[assetBundle_name]["total_bytes"] = server_buildInfo.assetBundleMap.dict[assetBundle_name];
-					need_download_dict[assetBundle_name]["downloded_bytes"] = (long)0;
-					total_need_download_bytes += server_buildInfo.assetBundleMap.dict[assetBundle_name];
+					var assetBundleName = needDownloadList[i];
+					needDownloadDict[assetBundleName] = new Hashtable();
+					needDownloadDict[assetBundleName]["is_finished"] = false;
+					needDownloadDict[assetBundleName]["total_bytes"] =
+						serverBuildInfo.assetBundleMap.dict[assetBundleName];
+					needDownloadDict[assetBundleName]["downloded_bytes"] = (long) 0;
+					totalNeedDownloadBytes += serverBuildInfo.assetBundleMap.dict[assetBundleName];
 				}
 
-				yield return server_buildInfo.LoadAssetPathMap();
+				yield return serverBuildInfo.LoadAssetPathMap();
 
 				yield return UpdateRes();
-				server_buildInfo.manifest.SaveToDisk();
-				server_buildInfo.assetPathMap.SaveToDisk();
-				server_buildInfo.assetBundleMap.SaveToDisk();
+				serverBuildInfo.manifest.SaveToDisk();
+				serverBuildInfo.assetPathMap.SaveToDisk();
+				serverBuildInfo.assetBundleMap.SaveToDisk();
 			}
 
 			UpdateResFinish();
@@ -94,17 +97,17 @@ namespace CsCat
 
 		private IEnumerator UpdateRes()
 		{
-			is_updating_res = true;
-			yield return new WaitUntil(() => is_updating_res == false);
+			isUpdatingRes = true;
+			yield return new WaitUntil(() => isUpdatingRes == false);
 		}
 
 		private void UpdateResFinish()
 		{
 			StdioUtil.WriteTextFile(BuildConst.ResVersionFileName.WithRootPath(FilePathConst.PersistentAssetBundleRoot),
-			  server_buildInfo.res_version);
-			client_buildInfo.Dispose();
-			server_buildInfo.Dispose();
-			is_update_finish = true;
+				serverBuildInfo.resVersion);
+			clientBuildInfo.Dispose();
+			serverBuildInfo.Dispose();
+			isUpdateFinish = true;
 			Debug.LogWarning("Update Resource Finish");
 		}
 
@@ -113,49 +116,60 @@ namespace CsCat
 		{
 			base.Update(deltaTime, unscaledDeltaTime);
 			//LogCat.LogWarning(isUpdatingRes);
-			if (!is_updating_res)
+			if (!isUpdatingRes)
 				return;
 
-			while (downloading_request_list.Count < Max_DownLoad_Num && need_download_list.Count > 0)
+			while (downloadingRequestList.Count < Max_DownLoad_Num && needDownloadList.Count > 0)
 			{
-				var file_path = need_download_list[need_download_list.Count - 1];
-				need_download_list.RemoveAt(need_download_list.Count - 1);
+				var filePath = needDownloadList[needDownloadList.Count - 1];
+				needDownloadList.RemoveAt(needDownloadList.Count - 1);
 				var resourceWebRequester =
-				  Client.instance.assetBundleManager.DownloadFileAsyncNoCache(URLSetting.Server_Resource_URL, file_path);
-				resourceWebRequester.cache["file_path"] = file_path;
-				downloading_request_list.Add(resourceWebRequester);
+					Client.instance.assetBundleManager.DownloadFileAsyncNoCache(URLSetting.Server_Resource_URL,
+						filePath);
+				resourceWebRequester.cache["file_path"] = filePath;
+				downloadingRequestList.Add(resourceWebRequester);
 			}
 
-			foreach (var downloading_request in downloading_request_list)
-				need_download_dict[downloading_request.cache.Get<string>("file_path")]["downloded_bytes"] = downloading_request.GetDownloadedBytes();
+			for (var i = 0; i < downloadingRequestList.Count; i++)
+			{
+				var downloadingRequest = downloadingRequestList[i];
+				needDownloadDict[downloadingRequest.cache.Get<string>("file_path")]["downloded_bytes"] =
+					downloadingRequest.GetDownloadedBytes();
+			}
 
-			long current_downloaded_bytes = 0;
-			foreach (var download in need_download_dict.Values)
-				current_downloaded_bytes += download.GetOrGetDefault2<long>("downloded_bytes", () => (long)0);
+			long currentDownloadedBytes = 0;
+			foreach (var keyValue in needDownloadDict)
+			{
+				var download = keyValue.Value;
+				currentDownloadedBytes += download.GetOrGetDefault2<long>("downloded_bytes", () => (long) 0);
+			}
+
 			Client.instance.uiManager.uiLoadingPanel.SetDesc(string.Format("{0}/{1}",
-			  NumberUnitUtil.GetString(current_downloaded_bytes, 2, 1000),
-			  NumberUnitUtil.GetString(total_need_download_bytes, 1, 1000)));
+				NumberUnitUtil.GetString(currentDownloadedBytes, 2, 1000),
+				NumberUnitUtil.GetString(totalNeedDownloadBytes, 1, 1000)));
 		}
 
 		private void OnResourceWebRequesterDone(ResourceWebRequester resourceWebRequester)
 		{
 			//    LogCat.LogError("kkkkkkkkkkkkkkk:"+resourceWebRequester.url);
-			if (!downloading_request_list.Contains(resourceWebRequester))
+			if (!downloadingRequestList.Contains(resourceWebRequester))
 				return;
 
 			if (!resourceWebRequester.error.IsNullOrWhiteSpace())
 			{
-				LogCat.LogError("Error when downloading file : " + resourceWebRequester.cache.Get<string>("file_path") + "\n from url : " +
-								resourceWebRequester.url + "\n err : " + resourceWebRequester.error);
-				need_download_list.Add(resourceWebRequester.cache.Get<string>("file_path"));
+				LogCat.LogError("Error when downloading file : " + resourceWebRequester.cache.Get<string>("file_path") +
+				                "\n from url : " +
+				                resourceWebRequester.url + "\n err : " + resourceWebRequester.error);
+				needDownloadList.Add(resourceWebRequester.cache.Get<string>("file_path"));
 			}
 			else
 			{
-				downloading_request_list.Remove(resourceWebRequester);
-				need_download_dict[resourceWebRequester.cache.Get<string>("file_path")]["is_finished"] = true;
-				need_download_dict[resourceWebRequester.cache.Get<string>("file_path")]["downloded_bytes"] =
-				  need_download_dict[resourceWebRequester.cache.Get<string>("file_path")]["total_bytes"];
-				var filePath = resourceWebRequester.cache.Get<string>("file_path").WithRootPath(FilePathConst.PersistentAssetBundleRoot);
+				downloadingRequestList.Remove(resourceWebRequester);
+				needDownloadDict[resourceWebRequester.cache.Get<string>("file_path")]["is_finished"] = true;
+				needDownloadDict[resourceWebRequester.cache.Get<string>("file_path")]["downloded_bytes"] =
+					needDownloadDict[resourceWebRequester.cache.Get<string>("file_path")]["total_bytes"];
+				var filePath = resourceWebRequester.cache.Get<string>("file_path")
+					.WithRootPath(FilePathConst.PersistentAssetBundleRoot);
 				StdioUtil.WriteFile(filePath, resourceWebRequester.bytes);
 			}
 
@@ -164,8 +178,8 @@ namespace CsCat
 
 			//    LogCat.LogError("ffffffffffffaaaaaaa:"+downloadingRequest.Count);
 			//    LogCat.LogError("ffffffffffffbbbbbbb:" + needDownloadList.Count);
-			if (downloading_request_list.Count == 0 && need_download_list.Count == 0)
-				is_updating_res = false;
+			if (downloadingRequestList.Count == 0 && needDownloadList.Count == 0)
+				isUpdatingRes = false;
 		}
 	}
 }
