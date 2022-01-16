@@ -1,38 +1,37 @@
-
 ---@class NumberUtil
 NumberUtil = {}
 
 function NumberUtil.GetPercent(value, minValue, maxValue, isClamp)
-  if isClamp == nil then
-    isClamp = true
-  end
-  if isClamp then
-    if value < minValue then
-      value = minValue
-    elseif value > maxValue then
-      value = maxValue
-    end
-  end
-  local offset = value - minValue
-  return offset / (maxValue - minValue)
+	if isClamp == nil then
+		isClamp = true
+	end
+	if isClamp then
+		if value < minValue then
+			value = minValue
+		elseif value > maxValue then
+			value = maxValue
+		end
+	end
+	local offset = value - minValue
+	return offset / (maxValue - minValue)
 end
 
-function NumberUtil.IsInRange(value, minValue, maxValue, isMinValueInclude,isMaxValueInclude)
-  if value < minValue or value > maxValue then
-    return false
-  end
-  if value == minValue or not isMinValueInclude then
-    return false
-  end
-  if value == maxValue or not isMaxValueInclude then
-    return false
-  end
-  return true
+function NumberUtil.IsInRange(value, minValue, maxValue, isMinValueInclude, isMaxValueInclude)
+	if value < minValue or value > maxValue then
+		return false
+	end
+	if value == minValue or not isMinValueInclude then
+		return false
+	end
+	if value == maxValue or not isMaxValueInclude then
+		return false
+	end
+	return true
 end
 
 -- 百分比  输入0.1,输出10%
 function NumberUtil.ToPctString(pct)
-  return string.format("%s%%", pct * 100)
+	return string.format("%s%%", pct * 100)
 end
 
 

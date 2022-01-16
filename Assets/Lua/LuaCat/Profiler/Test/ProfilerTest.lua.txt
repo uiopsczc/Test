@@ -1,13 +1,11 @@
 local ProfilerTest = {}
 
-
 function ProfilerTest.Test1()
-  Profiler:Start()
+	Profiler:Start()
 end
 
 function ProfilerTest.Test2()
-  Profiler:Stop()
+	Profiler:Stop()
 end
-
 
 return ProfilerTest

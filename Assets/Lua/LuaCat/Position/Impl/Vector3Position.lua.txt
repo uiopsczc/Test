@@ -2,16 +2,14 @@
 local Vector3Position = Class("Vector3Position", IPosition)
 
 ---@param vector3 Vector3
----@param socket_name string
+---@param socketName string
 function Vector3Position:Init(vector3)
-  self.vector3 = vector3
+	self.vector3 = vector3
 end
 
 ---@return Vector3
 function Vector3Position:GetPosition()
-  return self.vector3
+	return self.vector3
 end
-
-
 
 return Vector3Position

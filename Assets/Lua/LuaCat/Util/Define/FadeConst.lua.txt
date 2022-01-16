@@ -1,6 +1,6 @@
 local FadeConst = {}
 
-FadeConst.Stage_Fade_Default_Hide_Duration =  0.1
-FadeConst.Stage_Fade_Default_Appear_Duration =  0.1
+FadeConst.Stage_Fade_Default_Hide_Duration = 0.1
+FadeConst.Stage_Fade_Default_Appear_Duration = 0.1
 
 return FadeConst

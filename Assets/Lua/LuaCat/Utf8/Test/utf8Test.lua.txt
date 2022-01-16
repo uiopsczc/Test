@@ -1,9 +1,9 @@
----@class utf8Test
-local utf8Test = {}
+---@class Utf8Test
+local Utf8Test = {}
 
 local utf8 = require("common.utf8")
 
-function utf8Test.Test()
+function Utf8Test.Test()
   local s = "啊ok行不是uf"
   for i = 1, utf8.len(s) do
     local world = utf8.sub(s, i, i + 1)
@@ -11,4 +11,4 @@ function utf8Test.Test()
   end
 end
 
-return utf8Test
+return Utf8Test

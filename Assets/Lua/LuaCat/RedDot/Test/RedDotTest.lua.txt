@@ -1,52 +1,52 @@
 local RedDotTest = {}
 
 function RedDotTest.ShowRedDotTest0()
-  return true
+	return true
 end
 
 function RedDotTest.ShowRedDotTest1(arg1)
-  if arg1 == "show_red_dot" then
-    return true
-  end
+	if arg1 == "show_red_dot" then
+		return true
+	end
 end
 
-function RedDotTest.ShowRedDotTest2(arg1,arg2)
-  if arg1 == "show_red_dot" and arg2 == "show_red_dot" then
-    return true
-  end
+function RedDotTest.ShowRedDotTest2(arg1, arg2)
+	if arg1 == "show_red_dot" and arg2 == "show_red_dot" then
+		return true
+	end
 end
 -----------------------------------------------------------------
 function RedDotTest.ShowRedDotTest1AllParmasListFunc()
-  return {
-    {"show_red_dot"},
-    {"not_show_red_dot"}
-  }
+	return {
+		{ "show_red_dot" },
+		{ "not_show_red_dot" }
+	}
 end
 
 function RedDotTest.ShowRedDotTest2AllParmasListFunc()
-  return {
-    {"show_red_dot","show_red_dot"},
-    {"not_show_red_dot","show_red_dot"}
-  }
+	return {
+		{ "show_red_dot", "show_red_dot" },
+		{ "not_show_red_dot", "show_red_dot" }
+	}
 end
 -----------------------------------------------------------------
 
 
 function RedDotTest.Test()
-  local gm_btn_gameObject = GameObject.Find("gm_btn")
-  local test_btn_gameObject = GameObject.Find("test_btn")
-  local icon_gameObject = GameObject.Find("icon")
-  local UITestPanel_gameObject = GameObject.Find("UITestPanel")
+	local gmBtnGameObject = GameObject.Find("gm_btn")
+	local testBtnGameObject = GameObject.Find("test_btn")
+	local iconGameObject = GameObject.Find("icon")
+	local UITestPanelGameObject = GameObject.Find("UITestPanel")
 
-  global.client.redDotManager:AddRedDot(gm_btn_gameObject, "Test0任务")
-  global.client.redDotManager:AddRedDot(test_btn_gameObject, "Test1任务",nil, "show_red_dot")
-  global.client.redDotManager:AddRedDot(icon_gameObject, "Test2任务",nil, "show_red_dot","show_red_dot")
-  global.client.redDotManager:AddRedDot(UITestPanel_gameObject, "Test任务")
+	global.client.redDotManager:AddRedDot(gmBtnGameObject, "Test0任务")
+	global.client.redDotManager:AddRedDot(testBtnGameObject, "Test1任务", nil, "show_red_dot")
+	global.client.redDotManager:AddRedDot(iconGameObject, "Test2任务", nil, "show_red_dot", "show_red_dot")
+	global.client.redDotManager:AddRedDot(UITestPanelGameObject, "Test任务")
 
-  --global.client:Broadcast("OnShowRedDotTest0")
-  --global.client:Broadcast("OnShowRedDotTest1")
-  --global.client:Broadcast("OnShowRedDotTest2")
-  --global.client.redDotLogic:TagBtnOnClick("Test任务")
+	--global.client:Broadcast("OnShowRedDotTest0")
+	--global.client:Broadcast("OnShowRedDotTest1")
+	--global.client:Broadcast("OnShowRedDotTest2")
+	--global.client.redDotLogic:TagBtnOnClick("Test任务")
 end
 
 return RedDotTest

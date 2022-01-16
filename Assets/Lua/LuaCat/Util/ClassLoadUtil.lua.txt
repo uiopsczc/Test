@@ -1,29 +1,29 @@
 ---@class ClassLoadUtil
 local ClassLoadUtil = {}
 
-ClassLoadUtil.class_cache_dict = {}
-function ClassLoadUtil.Load(class_path, class_cache_dict, tag)
-  tag = tag or class_path
-  class_cache_dict = class_cache_dict or ClassLoadUtil.class_cache_dict
-  if not class_path then
-    return
-  end
+ClassLoadUtil.classCacheDict = {}
+function ClassLoadUtil.Load(classPath, classCacheDict, tag)
+	tag = tag or classPath
+	classCacheDict = classCacheDict or ClassLoadUtil.classCacheDict
+	if not classPath then
+		return
+	end
 
-  if class_cache_dict[tag] then
-    return class_cache_dict[tag]
-  end
-  local stat, result = pcall(function()
-    return require(class_path)
-  end)
-  if stat and result then
-    if class_cache_dict then
-      class_cache_dict[class_path] = result
-    end
-    return result
-  else
-    Error("Load Class Error", class_path, result)
-    return
-  end
+	if classCacheDict[tag] then
+		return classCacheDict[tag]
+	end
+	local stat, result = pcall(function()
+		return require(classPath)
+	end)
+	if stat and result then
+		if classCacheDict then
+			classCacheDict[classPath] = result
+		end
+		return result
+	else
+		Error("Load Class Error", classPath, result)
+		return
+	end
 end
 
 return ClassLoadUtil

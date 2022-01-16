@@ -155,7 +155,7 @@ function PhysicsManager:__Update(deltaTime, unscaledDeltaTime)
       return
     end
     self.is_click_down = true
-    global.client.cs_client.physicsManager:Raycast(Input.mousePosition, self.raycast_layerMask)
+    global.client.csClient.physicsManager:Raycast(Input.mousePosition, self.raycast_layerMask)
     self:__OnPointerDown()
   elseif Input.GetMouseButtonUp(0) then
     self.is_click_down = false

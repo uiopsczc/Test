@@ -1,49 +1,48 @@
 ---@class UIItemBase:UIObject
 local UIItemBase = Class("UIItemBase", UIObject)
 
-function UIItemBase:Init(parent_transform)
-  UIItemBase.super.Init(self)
-  self.graphicComponent:SetParentTransform(parent_transform)
-  self.graphicComponent:SetPrefabPath("Assets/Resources/common/ui/prefab/UIItemBase.prefab")
+function UIItemBase:Init(parentTransform)
+	UIItemBase.super.Init(self)
+	self.graphicComponent:SetParentTransform(parentTransform)
+	self.graphicComponent:SetPrefabPath("Assets/Resources/Common/UI/Prefab/UIItemBase.prefab")
 end
 
 function UIItemBase:InitGameObjectChildren()
-  UIItemBase.super.InitGameObjectChildren(self)
-  self.content_transform = self.graphicComponent.transform:Find("content")
-  self.content_bg_image = self.content_transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Image),"bg")
-  self.content_bg_gameObject = self.content_bg_image.gameObject
-  self.content_quality_image = self.content_transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Image),"quality")
-  self.content_icon_image = self.content_transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Image),"icon")
-  self.content_count_text = self.content_transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Text),"count")
-  self.name_transform = self.graphicComponent.transform:Find("name")
-  self.name_bg_image = self.name_transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Image),"bg")
-  self.name_text = self.name_transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Text),"text")
+	UIItemBase.super.InitGameObjectChildren(self)
+	self.contentTransform = self.graphicComponent.transform:Find("content")
+	self.contentBgImage = self.contentTransform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Image), "bg")
+	self.contentBgGameObject = self.contentBgImage.gameObject
+	self.contentQualityImage = self.contentTransform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Image), "quality")
+	self.contentIconImage = self.contentTransform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Image), "icon")
+	self.contentCountText = self.contentTransform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Text), "count")
+	self.nameTransform = self.graphicComponent.transform:Find("name")
+	self.nameBgImage = self.nameTransform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Image), "bg")
+	self.nameText = self.nameTransform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Text), "text")
 end
 
----@param is_show_name @不填为true
-function UIItemBase:Show(item_id, item_count, is_show_name)
-  if is_show_name == nil then
-    is_show_name = true
-  end
+---@param isShowName @不填为true
+function UIItemBase:Show(itemId, itemCount, isShowName)
+	if isShowName == nil then
+		isShowName = true
+	end
 
-  self.item_id = item_id
-  self.item_count = item_count
+	self.itemId = itemId
+	self.itemCount = itemCount
 
-  self.cfgItemData = CfgItem.get_by_id(item_id)
-  self.cfgQualityData = self.cfgItemData.quality_id == nil and nil or CfgProperty.get_by_id(self.cfgItemData.quality_id)
+	self.cfgItemData = CfgItem.get_by_id(itemId)
+	self.cfgQualityData = self.cfgItemData.quality_id == nil and nil or CfgProperty.get_by_id(self.cfgItemData.quality_id)
 
-  if not string.IsNilOrWhiteSpace(self.cfgItemData.bg_path) then
-    self:SetImageAsync(self.content_bg_image, self.cfgItemData.bg_path,nil, false)
-  end
-  if self.cfgQualityData and not string.IsNilOrWhiteSpace(self.cfgQualityData.icon_path) then
-    self:SetImageAsync(self.content_quality_image, self.cfgQualityData.icon_path,nil, false)
-  else
-    self.content_bg_gameObject:SetActive(false)
-  end
-  self:SetImageAsync(self.content_icon_image, self.cfgItemData.icon_path,nil ,false)
-  self.content_count_text.text = (self.item_count == 0 or self.item_count == 1) and "" or string.format("x%s", self.item_count)
-  self.name_text.text = self.cfgItemData.name
+	if not string.IsNilOrWhiteSpace(self.cfgItemData.bg_path) then
+		self:SetImageAsync(self.contentBgImage, self.cfgItemData.bg_path, nil, false)
+	end
+	if self.cfgQualityData and not string.IsNilOrWhiteSpace(self.cfgQualityData.icon_path) then
+		self:SetImageAsync(self.contentQualityImage, self.cfgQualityData.icon_path, nil, false)
+	else
+		self.contentBgGameObject:SetActive(false)
+	end
+	self:SetImageAsync(self.contentIconImage, self.cfgItemData.icon_path, nil, false)
+	self.contentCountText.text = (self.itemCount == 0 or self.itemCount == 1) and "" or string.format("x%s", self.itemCount)
+	self.nameText.text = self.cfgItemData.name
 end
-
 
 return UIItemBase

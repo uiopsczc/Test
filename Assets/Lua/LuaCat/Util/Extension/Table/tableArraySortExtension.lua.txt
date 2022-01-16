@@ -11,23 +11,23 @@
 ---@param array T[]
 ---@param func fun(value1:T,value2:T):boolean
 function table.BubbleSort_Array(array, func)
-  local count = #array
-  for i = 1, count do
-    for j = 1, count - i do
-      if not func(array[j], array[j + 1]) then
-        array[j], array[j + 1] = array[j + 1], array[j]
-      end
-    end
-  end
+	local count = #array
+	for i = 1, count do
+		for j = 1, count - i do
+			if not func(array[j], array[j + 1]) then
+				array[j], array[j + 1] = array[j + 1], array[j]
+			end
+		end
+	end
 end
 
 ---@generic T
 ---@param array T[]
----@param compare_rule_func_list (fun(value1:T,value2:T):number)[]  @大小比较和c#的sort一样
-function table.BubbleSortWithCompareRules_Array(array, compare_rule_func_list)
-  table.BubbleSort_Array(array, function(a, b)
-    return CompareUtil.CompareWhitRules(a,b, compare_rule_func_list)<0
-  end)
+---@param compareRuleFuncList (fun(value1:T,value2:T):number)[]  @大小比较和c#的sort一样
+function table.BubbleSortWithCompareRules_Array(array, compareRuleFuncList)
+	table.BubbleSort_Array(array, function(a, b)
+		return CompareUtil.CompareWhitRules(a, b, compareRuleFuncList) < 0
+	end)
 end
 
 ----------------------------------------------------------------------
@@ -37,48 +37,48 @@ end
 -- 需要另外的N空间来进行排序处理，但稳定 最好的情况需要时间为N*logN,最坏的情况需要时间为N*logN
 ----------------------------------------------------------------------
 local function __Merge(array, left, middle, right, func)
-  local new_array = {} --新的数组(用于存放排序后的元素)
-  local left_array_cur_index = left --左边的数组的当前index
-  local right_array_cur_index = middle + 1 --右边的数组的当前index
-  local new_array_cur_index = 0 -- 新的数组(用于存放排序后的元素)的当前index
-  local is_new_array_cur_index_Use_left_array_cur_index -- 新的数组(用于存放排序后的元素)的当前index是否使用左边的数组的当前index
-  while left_array_cur_index <= middle and right_array_cur_index <= right do
-    new_array_cur_index = new_array_cur_index + 1
-    is_new_array_cur_index_Use_left_array_cur_index = func(array[left_array_cur_index], array[right_array_cur_index])
-    if is_new_array_cur_index_Use_left_array_cur_index then
-      new_array[new_array_cur_index] = array[left_array_cur_index]
-      left_array_cur_index = left_array_cur_index + 1
-    else
-      new_array[new_array_cur_index] = array[right_array_cur_index]
-      right_array_cur_index = right_array_cur_index + 1
-    end
-  end
-  -- left_array_cur_index <= mid and right_array_cur_index <= right 其中之一不成立的情况
-  -- 处理没有被完全处理的数组
-  for i = left_array_cur_index, middle do
-    new_array_cur_index = new_array_cur_index + 1
-    new_array[new_array_cur_index] = array[i]
-  end
-  for i = right_array_cur_index, right do
-    new_array_cur_index = new_array_cur_index + 1
-    new_array[new_array_cur_index] = array[i]
-  end
-  -- 重新赋值给array
-  for i, v in ipairs(new_array) do
-    -- lua中i从1开始
-    array[left + i - 1] = v
-  end
+	local newArray = {} --新的数组(用于存放排序后的元素)
+	local leftArrayCurIndex = left --左边的数组的当前index
+	local rightArrayCurIndex = middle + 1 --右边的数组的当前index
+	local newArrayCurIndex = 0 -- 新的数组(用于存放排序后的元素)的当前index
+	local isNewArrayCurIndexUseLeftArrayCurIndex -- 新的数组(用于存放排序后的元素)的当前index是否使用左边的数组的当前index
+	while leftArrayCurIndex <= middle and rightArrayCurIndex <= right do
+		newArrayCurIndex = newArrayCurIndex + 1
+		isNewArrayCurIndexUseLeftArrayCurIndex = func(array[leftArrayCurIndex], array[rightArrayCurIndex])
+		if isNewArrayCurIndexUseLeftArrayCurIndex then
+			newArray[newArrayCurIndex] = array[leftArrayCurIndex]
+			leftArrayCurIndex = leftArrayCurIndex + 1
+		else
+			newArray[newArrayCurIndex] = array[rightArrayCurIndex]
+			rightArrayCurIndex = rightArrayCurIndex + 1
+		end
+	end
+	-- left_array_cur_index <= mid and right_array_cur_index <= right 其中之一不成立的情况
+	-- 处理没有被完全处理的数组
+	for i = leftArrayCurIndex, middle do
+		newArrayCurIndex = newArrayCurIndex + 1
+		newArray[newArrayCurIndex] = array[i]
+	end
+	for i = rightArrayCurIndex, right do
+		newArrayCurIndex = newArrayCurIndex + 1
+		newArray[newArrayCurIndex] = array[i]
+	end
+	-- 重新赋值给array
+	for i, v in ipairs(newArray) do
+		-- lua中i从1开始
+		array[left + i - 1] = v
+	end
 end
 
 local function __MergeSort(array, left, right, func)
-  if left >= right then
-    -- 只剩下1个元素的情况，递归结束
-    return
-  end
-  local middle = math.floor((left + right) / 2)
-  __MergeSort(array, left, middle, func) -- 分离左边的数组
-  __MergeSort(array, middle + 1, right, func) -- 分离右边的数组
-  __Merge(array, left, middle, right, func)
+	if left >= right then
+		-- 只剩下1个元素的情况，递归结束
+		return
+	end
+	local middle = math.floor((left + right) / 2)
+	__MergeSort(array, left, middle, func) -- 分离左边的数组
+	__MergeSort(array, middle + 1, right, func) -- 分离右边的数组
+	__Merge(array, left, middle, right, func)
 end
 
 --归并排序
@@ -91,16 +91,16 @@ end
 ---@param array T[]
 ---@param func fun(value1:T,value2:T):boolean
 function table.MergeSort_Array(array, func)
-  __MergeSort(array, 1, #array, func)
+	__MergeSort(array, 1, #array, func)
 end
 
 ---@generic T
 ---@param array T[]
----@param compare_rule_func_list (fun(value1:T,value2:T):number)[]  @大小比较和c#的sort一样
-function table.MergeSortWithCompareRules_Array(array, compare_rule_func_list)
-  table.MergeSort_Array(array, function(a, b)
-    return CompareUtil.CompareWhitRules(a,b, compare_rule_func_list)<0
-  end)
+---@param compareRuleFuncList (fun(value1:T,value2:T):number)[]  @大小比较和c#的sort一样
+function table.MergeSortWithCompareRules_Array(array, compareRuleFuncList)
+	table.MergeSort_Array(array, function(a, b)
+		return CompareUtil.CompareWhitRules(a, b, compareRuleFuncList) < 0
+	end)
 end
 
 ----------------------------------------------------------------------
@@ -111,16 +111,16 @@ end
 ----------------------------------------------------------------------
 ---c#部分修改而来
 local function Partition(array, func, low, high)
-  local privot_value = array[high] --基点的值，比基点小的放在
-  local partition_index = low
-  for i = partition_index, high-1, 1 do
-    if func(array[i],privot_value) then
-      array[i], array[partition_index] = array[partition_index], array[i]
-      partition_index = partition_index + 1
-    end
-  end
-  array[partition_index], array[high] = array[high], array[partition_index]
-  return partition_index
+	local pivotValue = array[high] --基点的值，比基点小的放在
+	local partitionIndex = low
+	for i = partitionIndex, high - 1, 1 do
+		if func(array[i], pivotValue) then
+			array[i], array[partitionIndex] = array[partitionIndex], array[i]
+			partitionIndex = partitionIndex + 1
+		end
+	end
+	array[partitionIndex], array[high] = array[high], array[partitionIndex]
+	return partitionIndex
 end
 
 --func(a, b)返回true时 a在b前面
@@ -132,25 +132,25 @@ end
 ---@param array T[]
 ---@param func fun(value1:T,value2:T):boolean
 function table.QuickSort_Array(array, func, low, high)
-  low = low or 1
-  high = high or #array
-  if low >= high then
-    return
-  end
-  --在partition_index左边的都比index的value小，右边的都比index的value大
-  local partition_index = Partition(array, func, low, high)
-  -- 对左边数组进行排序
-  table.QuickSort_Array(array, func, low, partition_index - 1)
-  -- 对右边数组进行排序
-  table.QuickSort_Array(array, func, partition_index + 1, high)
+	low = low or 1
+	high = high or #array
+	if low >= high then
+		return
+	end
+	--在partition_index左边的都比index的value小，右边的都比index的value大
+	local partitionIndex = Partition(array, func, low, high)
+	-- 对左边数组进行排序
+	table.QuickSort_Array(array, func, low, partitionIndex - 1)
+	-- 对右边数组进行排序
+	table.QuickSort_Array(array, func, partitionIndex + 1, high)
 end
 
 ---@generic T
 ---@param array T[]
----@param compare_rule_func_list (fun(value1:T,value2:T):number)[]  @大小比较和c#的sort一样
-function table.QuickSortWithCompareRules_Array(array, compare_rule_func_list)
-  table.QuickSort_Array(array, function(a, b)
-    return CompareUtil.CompareWhitRules(a,b, compare_rule_func_list)<0
-  end)
+---@param compareRuleFuncList (fun(value1:T,value2:T):number)[]  @大小比较和c#的sort一样
+function table.QuickSortWithCompareRules_Array(array, compareRuleFuncList)
+	table.QuickSort_Array(array, function(a, b)
+		return CompareUtil.CompareWhitRules(a, b, compareRuleFuncList) < 0
+	end)
 end
 

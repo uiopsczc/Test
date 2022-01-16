@@ -1,18 +1,18 @@
 function StartCoroutine(func, ...)
-  local co = coroutine.create(func)
-  local is_ok, result = coroutine.resume(co, ...)
-  if is_ok then
-    return result
-  else
-    LogError(result)
-  end
+	local co = coroutine.create(func)
+	local isOk, result = coroutine.resume(co, ...)
+	if isOk then
+		return result
+	else
+		LogError(result)
+	end
 end
 
 function ResumeCoroutine(co, ...)
-  local is_ok, result = coroutine.resume(co, ...)
-  if is_ok then
-    return result
-  else
-    LogError(result)
-  end
+	local isOk, result = coroutine.resume(co, ...)
+	if isOk then
+		return result
+	else
+		LogError(result)
+	end
 end

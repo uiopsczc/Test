@@ -1,163 +1,162 @@
 local Timer = require("luacat.timer.Timer")
 
 ---@class TimerManager:Class
----@field __update_timer_list Timer[]
----@field __lateUpdate_timer_list Timer[]
----@field __fixedUpdate_timer_list Timer[]
----@field __to_add_timer_list Timer[]
----@field __to_remove_timer_list Timer[]
+---@field _updateTimerList Timer[]
+---@field _lateUpdateTimerList Timer[]
+---@field _fixedUpdateTimerList Timer[]
+---@field _toAddTimerList Timer[]
+---@field _toRemoveTimerList Timer[]
 ---
----@field __co_update_timer_list Timer[]
----@field __co_lateUpdate_timer_list Timer[]
----@field __co_fixedUpdate_timer_list Timer[]
----@field __co_to_add_timer_list Timer[]
----@field __co_to_remove_timer_list Timer[]
+---@field _coUpdateTimerList Timer[]
+---@field _coLateUpdateTimerList Timer[]
+---@field _coFixedUpdateTimerList Timer[]
+---@field _coToAddTimerList Timer[]
+---@field _coToRemoveTimerList Timer[]
 local TimerManager = Class("TimerManager")
 
 function TimerManager:Init()
-  -- 成员变量
+	-- 成员变量
 
-  self.__update_timer_list = {}
-  self.__lateUpdate_timer_list = {}
-  self.__fixedUpdate_timer_list = {}
+	self._updateTimerList = {}
+	self._lateUpdateTimerList = {}
+	self._fixedUpdateTimerList = {}
 
-  self.__co_update_timer_list = {}
-  self.__co_lateUpdate_timer_list = {}
-  self.__co_fixedUpdate_timer_list = {}
+	self._coUpdateTimerList = {}
+	self._coLateUpdateTimerList = {}
+	self._coFixedUpdateTimerList = {}
 end
 
-local function __Add(timer_list, timer)
-  table.insert(timer_list, timer)
-  timer:Start()
+local function __Add(timerList, timer)
+	table.insert(timerList, timer)
+	timer:Start()
 end
 
-function TimerManager:GetTimerList(update_mode, is_coroutine_timer)
-  if update_mode == Timer.UpdateMode.Update then
-    return not is_coroutine_timer and self.__update_timer_list or self.__co_update_timer_list
-  end
+function TimerManager:GetTimerList(updateMode, isCoroutineTimer)
+	if updateMode == Timer.UpdateMode.Update then
+		return not isCoroutineTimer and self._updateTimerList or self._coUpdateTimerList
+	end
 
-  if update_mode == Timer.UpdateMode.LateUpdate then
-    return not is_coroutine_timer and self.__lateUpdate_timer_list or self.__co_lateUpdate_timer_list
-  end
+	if updateMode == Timer.UpdateMode.LateUpdate then
+		return not isCoroutineTimer and self._lateUpdateTimerList or self._coLateUpdateTimerList
+	end
 
-  if update_mode == Timer.UpdateMode.FixedUpdate then
-    return not is_coroutine_timer and self.__fixedUpdate_timer_list or self.__co_fixedUpdate_timer_list
-  end
+	if updateMode == Timer.UpdateMode.FixedUpdate then
+		return not isCoroutineTimer and self._fixedUpdateTimerList or self._coFixedUpdateTimerList
+	end
 end
-
 
 ---@param timer Timer
 function TimerManager:AddTimer2(timer)
-  __Add(self:GetTimerList(timer.update_mode, timer.is_coroutine_timer), timer)
+	__Add(self:GetTimerList(timer.updateMode, timer.isCoroutineTimer), timer)
 end
 
 ---@param timer Timer
-function TimerManager:RemoveTimer(timer , index)
-  local timer_list = self:GetTimerList(timer.update_mode, timer.is_coroutine_timer)
-  if index then
-    table.remove(timer_list, index)
-  else
-    table.RemoveByValue_Array(timer_list,timer)
-  end
-  timer:Finish()
-  PoolCatManagerUtil.Despawn(timer)
+function TimerManager:RemoveTimer(timer, index)
+	local timerList = self:GetTimerList(timer.updateMode, timer.isCoroutineTimer)
+	if index then
+		table.remove(timerList, index)
+	else
+		table.RemoveByValue_Array(timerList, timer)
+	end
+	timer:Finish()
+	PoolCatManagerUtil.Despawn(timer)
 end
 
 -------------------------------------------------------------------------------------------------------
 -- 获取Update定时器
 ---@return Timer
-function TimerManager:AddTimer(target_func, target_func_args, delay, interval, update_mode, is_use_unscaledDeltaTime, is_coroutine_timer, is_use_frame)
-  ---@type Timer
-  local timer = PoolCatManagerUtil.Spawn(Timer)
-  timer:Init(target_func, target_func_args, delay, interval, update_mode, is_use_unscaledDeltaTime, is_coroutine_timer, is_use_frame)
-  self:AddTimer2(timer)
-  return timer
+function TimerManager:AddTimer(targetFunc, targetFuncArgs, delay, interval, updateMode, isUseUnscaledDeltaTime, isCoroutineTimer, isUseFrame)
+	---@type Timer
+	local timer = PoolCatManagerUtil.Spawn(Timer)
+	timer:Init(targetFunc, targetFuncArgs, delay, interval, updateMode, isUseUnscaledDeltaTime, isCoroutineTimer, isUseFrame)
+	self:AddTimer2(timer)
+	return timer
 end
 
 ---@return Timer
-function TimerManager:AddCoTimer(target_func, target_func_args, delay, interval, update_mode, is_use_unscaledDeltaTime, is_use_frame)
-  return self:AddTimer(target_func, target_func_args, delay, interval, update_mode, is_use_unscaledDeltaTime, true, is_use_frame)
+function TimerManager:AddCoTimer(targetFunc, targetFuncArgs, delay, interval, updateMode, isUseUnscaledDeltaTime, isUseFrame)
+	return self:AddTimer(targetFunc, targetFuncArgs, delay, interval, updateMode, isUseUnscaledDeltaTime, true, isUseFrame)
 end
 
-function TimerManager:AddUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
-  return self:AddTimer(target_func, target_func_args, delay, interval, Timer.UpdateMode.Update, is_use_unscaledDeltaTime,nil,is_use_frame)
+function TimerManager:AddUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
+	return self:AddTimer(targetFunc, targetFuncArgs, delay, interval, Timer.UpdateMode.Update, isUseUnscaledDeltaTime, nil, isUseFrame)
 end
-function TimerManager:AddFixedUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
-  return self:AddTimer(target_func, target_func_args, delay, interval, Timer.UpdateMode.FixedUpdate, is_use_unscaledDeltaTime, nil,is_use_frame)
+function TimerManager:AddFixedUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
+	return self:AddTimer(targetFunc, targetFuncArgs, delay, interval, Timer.UpdateMode.FixedUpdate, isUseUnscaledDeltaTime, nil, isUseFrame)
 end
-function TimerManager:AddLateUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
-  return self:AddTimer(target_func, target_func_args, delay, interval, Timer.UpdateMode.LateUpdate, is_use_unscaledDeltaTime, nil,is_use_frame)
+function TimerManager:AddLateUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
+	return self:AddTimer(targetFunc, targetFuncArgs, delay, interval, Timer.UpdateMode.LateUpdate, isUseUnscaledDeltaTime, nil, isUseFrame)
 end
 
-function TimerManager:AddCoUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
-  return self:AddTimer(target_func, target_func_args, delay, interval, Timer.UpdateMode.Update, is_use_unscaledDeltaTime, true, is_use_frame)
+function TimerManager:AddCoUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
+	return self:AddTimer(targetFunc, targetFuncArgs, delay, interval, Timer.UpdateMode.Update, isUseUnscaledDeltaTime, true, isUseFrame)
 end
-function TimerManager:AddCoFixedUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
-  return self:AddTimer(target_func, target_func_args, delay, interval, Timer.UpdateMode.FixedUpdate, is_use_unscaledDeltaTime, true, is_use_frame)
+function TimerManager:AddCoFixedUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
+	return self:AddTimer(targetFunc, targetFuncArgs, delay, interval, Timer.UpdateMode.FixedUpdate, isUseUnscaledDeltaTime, true, isUseFrame)
 end
-function TimerManager:AddCoLateUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
-  return self:AddTimer(target_func, target_func_args, delay, interval, Timer.UpdateMode.LateUpdate, is_use_unscaledDeltaTime, true, is_use_frame)
+function TimerManager:AddCoLateUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
+	return self:AddTimer(targetFunc, targetFuncArgs, delay, interval, Timer.UpdateMode.LateUpdate, isUseUnscaledDeltaTime, true, isUseFrame)
 end
 
 -------------------------------------------------------------------------------------------------------
 ---@param self TimerManager
----@param timer_list Timer[]
-local function __DoUpdate(self, timer_list, deltaTime, unscaledDeltaTime)
-  self.is_updating = true
-  for i = 1, #timer_list do
-    local timer = timer_list[i]
-    if timer and  not timer:IsFinished() then
-      timer:DoUpdate(deltaTime, unscaledDeltaTime)
-    end
-  end
-  --check remvoe
-  for i = #timer_list, 1 ,-1 do
-    local timer = timer_list[i]
-    if timer:IsFinished() then
-      self:RemoveTimer(timer,i)
-    end
-  end
-  self.is_updating = false
+---@param timerList Timer[]
+local function __DoUpdate(self, timerList, deltaTime, unscaledDeltaTime)
+	self.is_updating = true
+	for i = 1, #timerList do
+		local timer = timerList[i]
+		if timer and not timer:IsFinished() then
+			timer:DoUpdate(deltaTime, unscaledDeltaTime)
+		end
+	end
+	--check remvoe
+	for i = #timerList, 1, -1 do
+		local timer = timerList[i]
+		if timer:IsFinished() then
+			self:RemoveTimer(timer, i)
+		end
+	end
+	self.is_updating = false
 end
 
 function TimerManager:Update(deltaTime, unscaledDeltaTime)
-  __DoUpdate(self, self.__update_timer_list, deltaTime, unscaledDeltaTime)
+	__DoUpdate(self, self._updateTimerList, deltaTime, unscaledDeltaTime)
 end
 
 function TimerManager:FixedUpdate(deltaTime, unscaledDeltaTime)
-  __DoUpdate(self, self.__fixedUpdate_timer_list, deltaTime, unscaledDeltaTime)
+	__DoUpdate(self, self._fixedUpdateTimerList, deltaTime, unscaledDeltaTime)
 end
 
 function TimerManager:LateUpdate(deltaTime, unscaledDeltaTime)
-  __DoUpdate(self, self.__lateUpdate_timer_list, deltaTime, unscaledDeltaTime)
+	__DoUpdate(self, self._lateUpdateTimerList, deltaTime, unscaledDeltaTime)
 end
 
 function TimerManager:CoUpdate(deltaTime, unscaledDeltaTime)
-  __DoUpdate(self, self.__co_update_timer_list, deltaTime, unscaledDeltaTime)
+	__DoUpdate(self, self._coUpdateTimerList, deltaTime, unscaledDeltaTime)
 end
 
 function TimerManager:CoFixedUpdate(deltaTime, unscaledDeltaTime)
-  __DoUpdate(self, self.__co_fixedUpdate_timer_list, deltaTime, unscaledDeltaTime)
+	__DoUpdate(self, self._coFixedUpdateTimerList, deltaTime, unscaledDeltaTime)
 end
 
 function TimerManager:CoLateUpdate(deltaTime, unscaledDeltaTime)
-  __DoUpdate(self, self.__co_lateUpdate_timer_list, deltaTime, unscaledDeltaTime)
+	__DoUpdate(self, self._coLateUpdateTimerList, deltaTime, unscaledDeltaTime)
 end
 
 function TimerManager:Destroy()
-  self.__to_add_timer_list = {}
-  self.__to_remove_timer_list = {}
+	self._toAddTimerList = {}
+	self._toRemoveTimerList = {}
 
-  self.__update_timer_list = {}
-  self.__lateUpdate_timer_list = {}
-  self.__fixedUpdate_timer_list = {}
+	self._updateTimerList = {}
+	self._lateUpdateTimerList = {}
+	self._fixedUpdateTimerList = {}
 
-  self.__co_to_add_timer_list = {}
-  self.__co_to_remove_timer_list = {}
+	self._coToAddTimerList = {}
+	self._coToRemoveTimerList = {}
 
-  self.__co_update_timer_list = {}
-  self.__co_lateUpdate_timer_list = {}
-  self.__co_fixedUpdate_timer_list = {}
+	self._coUpdateTimerList = {}
+	self._coLateUpdateTimerList = {}
+	self._coFixedUpdateTimerList = {}
 end
 
 return TimerManager

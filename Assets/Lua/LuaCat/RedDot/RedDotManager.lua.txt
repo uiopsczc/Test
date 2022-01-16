@@ -3,164 +3,162 @@ require("luacat.redDot.define.RedDotConst")
 local RedDotManager = Class("RedDotManager", GameEntity)
 
 function RedDotManager:Init()
-  RedDotManager.super.Init(self)
-  self.listen_dict = {} --dict<tag, dict<"listener" = a_listener, "red_dot_info_dict" = dict<gameObject = red_dot_info>>>
-  self.red_dot_info_dict = {}  --dict<gameObject = red_dot_info>
+	RedDotManager.super.Init(self)
+	self.listenDict = {} --dict<tag, dict<"listener" = a_listener, "red_dot_info_dict" = dict<gameObject = red_dot_info>>>
+	self.redDotInfoDict = {}  --dict<gameObject = red_dot_info>
 end
 
 function RedDotManager:PostInit()
-  RedDotManager.super.PostInit(self)
-  self:AddUpdateTimer(function()
-    self:__CheckCleanRedDotInfoDict()
-    return true
-  end, nil, 0, 5)
+	RedDotManager.super.PostInit(self)
+	self:AddUpdateTimer(function()
+		self:__CheckCleanRedDotInfoDict()
+		return true
+	end, nil, 0, 5)
 end
 
-
-
-function RedDotManager:__ListenEvent(tag, red_dot_info)
-  if not tag then
-    return
-  end
-  if not self.listen_dict[tag] then
-    self.listen_dict[tag] = { listener = nil, red_dot_info_dict = {} }
-    self.listen_dict[tag].listener = self:AddListener(tag, function()
-      for gameObject, red_dot_info in pairs(self.listen_dict[tag].red_dot_info_dict) do
-        self:__RefreshRedDot(red_dot_info)
-      end
-    end)
-  end
-  self.listen_dict[tag].red_dot_info_dict[red_dot_info.gameObject] = red_dot_info
+function RedDotManager:__ListenEvent(tag, redDotInfo)
+	if not tag then
+		return
+	end
+	if not self.listenDict[tag] then
+		self.listenDict[tag] = { listener = nil, redDotInfoDict = {} }
+		self.listenDict[tag].listener = self:AddListener(tag, function()
+			for gameObject, redDotInfo in pairs(self.listenDict[tag].redDotInfoDict) do
+				self:__RefreshRedDot(redDotInfo)
+			end
+		end)
+	end
+	self.listenDict[tag].redDotInfoDict[redDotInfo.gameObject] = redDotInfo
 end
 
 function RedDotManager:__CheckCleanRedDotInfoDict()
-  for gameObject, red_dot_info in pairs(self.red_dot_info_dict) do
-    if IsNil(gameObject) then
-      local tag = red_dot_info.tag
-      if tag then
-        local listenInnerDict = self.listen_dict[tag]
-        listenInnerDict.red_dot_info_dict[gameObject] = nil
-        if next(listenInnerDict.red_dot_info_dict) == nil then
-          self:RemoveListener(listenInnerDict.listener)
-          self.listen_dict[tag] = nil
-        end
-      end
-      self.red_dot_info_dict[gameObject] = nil
-    end
-  end
+	for gameObject, redDotInfo in pairs(self.redDotInfoDict) do
+		if IsNil(gameObject) then
+			local tag = redDotInfo.tag
+			if tag then
+				local listenInnerDict = self.listenDict[tag]
+				listenInnerDict.redDotInfoDict[gameObject] = nil
+				if next(listenInnerDict.redDotInfoDict) == nil then
+					self:RemoveListener(listenInnerDict.listener)
+					self.listenDict[tag] = nil
+				end
+			end
+			self.redDotInfoDict[gameObject] = nil
+		end
+	end
 end
 
-function RedDotManager:__RefreshRedDot(red_dot_info)
-  local gameObject = red_dot_info.gameObject
-  if IsNil(gameObject) then
-    return
-  end
-  local check_func = red_dot_info.check_func
-  local check_func_params = red_dot_info.check_func_params or {}
-  local is_active = check_func(table.SafeUnpack(check_func_params)) and true or false
-  local image_params = red_dot_info.image_params
-  self:__AddRedDotImage(gameObject, is_active, image_params)
+function RedDotManager:__RefreshRedDot(redDotInfo)
+	local gameObject = redDotInfo.gameObject
+	if IsNil(gameObject) then
+		return
+	end
+	local checkFunc = redDotInfo.check_func
+	local checkFuncParams = redDotInfo.check_func_params or {}
+	local isActive = checkFunc(table.SafeUnpack(checkFuncParams)) and true or false
+	local imageParams = redDotInfo.imageParams
+	self:__AddRedDotImage(gameObject, isActive, imageParams)
 end
 
----@param item_gameObject CS.UnityEngine.GameObject
+---@param itemGameObject CS.UnityEngine.GameObject
 ---@return CS.UnityEngine.UI.Image
-function RedDotManager:__AddRedDotImage(item_gameObject, is_active, image_params)
+function RedDotManager:__AddRedDotImage(itemGameObject, isActive, imageParams)
 
-  local red_dot_transform = item_gameObject.transform:Find(RedDotConst.Red_Dot_Name)
-  if red_dot_transform then
-    red_dot_transform.gameObject:SetActive(is_active)
-    return red_dot_transform:GetComponent(typeof(CS.UnityEngine.UI.Image))
-  else
-    -- 设置位置
-    local x_offset = image_params.x_offset or 0
-    local y_offset = image_params.y_offset or 0
-    ---@type CS.UnityEngine.UI.Image
-    local red_dot_image = item_gameObject:NewChildWithImage(RedDotConst.Red_Dot_Name)
-    red_dot_image.raycastTarget = false
-    ---@type CS.UnityEngine.RectTransform
-    local red_dot_rectTransform = red_dot_image:GetComponent(typeof(CS.UnityEngine.RectTransform))
-    --设置red_dot_rectTransform的(0,0)为基于父节点的右上角
-    red_dot_rectTransform.anchorMax = Vector2(1, 1)
-    red_dot_rectTransform.anchorMin = Vector2(1, 1)
-    red_dot_rectTransform.pivot = Vector2(1, 1)
-    local is_setNativeSize = not image_params.width or not image_params.height
-    red_dot_rectTransform.gameObject:SetActive(false)
-    CS.CsCat.AutoAssetSetImageSprite.Set(red_dot_image, RedDotConst.Red_Dot_Image_AssetPath, is_setNativeSize, is_setNativeSize and Vector2(0, 0) or Vector2(image_params.width, image_params.height), function(image, sprite)
-      if IsNil(red_dot_rectTransform.gameObject) then
-        return
-      end
-      red_dot_rectTransform.gameObject:SetActive(is_active)
-      local sizeDelta = red_dot_rectTransform.sizeDelta
-      red_dot_rectTransform.anchoredPosition = Vector2(x_offset, y_offset)
-      --red_dot_rectTransform.anchoredPosition = Vector2(sizeDelta.x/2+x_offset,sizeDelta.y/2+y_offset)
-    end)
-    return red_dot_image
-  end
+	local redDotTransform = itemGameObject.transform:Find(RedDotConst.Red_Dot_Name)
+	if redDotTransform then
+		redDotTransform.gameObject:SetActive(isActive)
+		return redDotTransform:GetComponent(typeof(CS.UnityEngine.UI.Image))
+	else
+		-- 设置位置
+		local xOffset = imageParams.xOffset or 0
+		local yOffset = imageParams.yOffset or 0
+		---@type CS.UnityEngine.UI.Image
+		local redDotImage = itemGameObject:NewChildWithImage(RedDotConst.Red_Dot_Name)
+		redDotImage.raycastTarget = false
+		---@type CS.UnityEngine.RectTransform
+		local redDotRectTransform = redDotImage:GetComponent(typeof(CS.UnityEngine.RectTransform))
+		--设置red_dot_rectTransform的(0,0)为基于父节点的右上角
+		redDotRectTransform.anchorMax = Vector2(1, 1)
+		redDotRectTransform.anchorMin = Vector2(1, 1)
+		redDotRectTransform.pivot = Vector2(1, 1)
+		local isSetNativeSize = not imageParams.width or not imageParams.height
+		redDotRectTransform.gameObject:SetActive(false)
+		CS.CsCat.AutoAssetSetImageSprite.Set(redDotImage, RedDotConst.Red_Dot_Image_AssetPath, isSetNativeSize, isSetNativeSize and Vector2(0, 0) or Vector2(imageParams.width, imageParams.height), function(image, sprite)
+			if IsNil(redDotRectTransform.gameObject) then
+				return
+			end
+			redDotRectTransform.gameObject:SetActive(isActive)
+			local sizeDelta = redDotRectTransform.sizeDelta
+			redDotRectTransform.anchoredPosition = Vector2(xOffset, yOffset)
+			--red_dot_rectTransform.anchoredPosition = Vector2(sizeDelta.x/2+x_offset,sizeDelta.y/2+y_offset)
+		end)
+		return redDotImage
+	end
 end
 
 function RedDotManager:__CleanListenEventByTag(tag)
-  local listenInnerDict = self.listen_dict[tag]
-  if listenInnerDict then
-    for gameObject, red_dot_info in pairs(listenInnerDict.red_dot_info_dict) do
-      if not IsNil(gameObject) then
-        self.red_dot_info_dict[gameObject] = nil
+	local listenInnerDict = self.listenDict[tag]
+	if listenInnerDict then
+		for gameObject, red_dot_info in pairs(listenInnerDict.redDotInfoDict) do
+			if not IsNil(gameObject) then
+				self.redDotInfoDict[gameObject] = nil
 
-        local red_dot_transform = gameObject.transform:Find(RedDotConst.Red_Dot_Name)
-        if not IsNil(red_dot_transform) then
-          red_dot_transform.gameObject:SetActive(false)
-        end
-      end
-    end
-    self:RemoveListener(listenInnerDict.listener)
-  end
-  self.listen_dict[tag] = nil
+				local redDotTransform = gameObject.transform:Find(RedDotConst.Red_Dot_Name)
+				if not IsNil(redDotTransform) then
+					redDotTransform.gameObject:SetActive(false)
+				end
+			end
+		end
+		self:RemoveListener(listenInnerDict.listener)
+	end
+	self.listenDict[tag] = nil
 end
 
 ---@param gameObject CS.UnityEngine.GameObject
 function RedDotManager:__CleanListenEventByGameObject(gameObject)
-  local red_dot_info = self.red_dot_info_dict[gameObject]
-  if red_dot_info then
-    local tag = red_dot_info.tag
-    local listenInnerDict = self.listen_dict[tag]
-    listenInnerDict.red_dot_info_dict[gameObject] = nil
-    if next(listenInnerDict.red_dot_info_dict) == nil then
-      self.listen_dict[tag] = nil
-      self:RemoveListener(listenInnerDict.listener)
-    end
-  end
-  self.red_dot_info_dict[gameObject] = nil
+	local redDotInfo = self.redDotInfoDict[gameObject]
+	if redDotInfo then
+		local tag = redDotInfo.tag
+		local listenInnerDict = self.listenDict[tag]
+		listenInnerDict.redDotInfoDict[gameObject] = nil
+		if next(listenInnerDict.redDotInfoDict) == nil then
+			self.listenDict[tag] = nil
+			self:RemoveListener(listenInnerDict.listener)
+		end
+	end
+	self.redDotInfoDict[gameObject] = nil
 
-  if not IsNil(gameObject) then
-    local red_dot_transform = gameObject.transform:Find(RedDotConst.Red_Dot_Name)
-    if not IsNil(red_dot_transform) then
-      red_dot_transform.gameObject:SetActive(false)
-    end
-  end
+	if not IsNil(gameObject) then
+		local redDotTransform = gameObject.transform:Find(RedDotConst.Red_Dot_Name)
+		if not IsNil(redDotTransform) then
+			redDotTransform.gameObject:SetActive(false)
+		end
+	end
 end
 
 --------------------------------------Util-------------------------------
-function RedDotManager:AddRedDot(gameObject, tag, image_params, ...)
-  if self.red_dot_info_dict[gameObject] then
-    return
-  end
-  local info = global.client.redDotLogic:GetRedDotInfoByTag(tag)
-  local red_dot_info = {
-    gameObject = gameObject,
-    tag = tag,
-    check_func = info.check_func,
-    image_params = image_params or {},
-    check_func_params = table.SafePack(...)
-  }
-  self:__ListenEvent(tag, red_dot_info)
-  self.red_dot_info_dict[gameObject] = red_dot_info
+function RedDotManager:AddRedDot(gameObject, tag, imageParams, ...)
+	if self.redDotInfoDict[gameObject] then
+		return
+	end
+	local info = global.client.redDotLogic:GetRedDotInfoByTag(tag)
+	local redDotInfo = {
+		gameObject = gameObject,
+		tag = tag,
+		checkFunc = info.check_func,
+		imageParams = imageParams or {},
+		checkFuncParams = table.SafePack(...)
+	}
+	self:__ListenEvent(tag, redDotInfo)
+	self.redDotInfoDict[gameObject] = redDotInfo
 end
 
-function RedDotManager:CleanListenEvent(tag_or_gameObject)
-  if IsString(tag_or_gameObject) then
-    self:__CleanListenEventByTag(tag_or_gameObject)
-  else
-    self:__CleanListenEventByGameObject(tag_or_gameObject)
-  end
+function RedDotManager:CleanListenEvent(tagOrGameObject)
+	if IsString(tagOrGameObject) then
+		self:__CleanListenEventByTag(tagOrGameObject)
+	else
+		self:__CleanListenEventByGameObject(tagOrGameObject)
+	end
 end
 
 return RedDotManager

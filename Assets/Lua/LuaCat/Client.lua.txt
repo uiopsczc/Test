@@ -6,151 +6,142 @@
 local Client = Class("Client", TickObject)
 
 function Client:Init()
-  Client.super.Init(self)
+	Client.super.Init(self)
 
-  ---@type CS.CsCat.Client
-  self.cs_client = CS.CsCat.Client.instance
-  self.moveManager = self.cs_client.moveManager
+	---@type CS.CsCat.Client
+	self.csClient = CS.CsCat.Client.instance
+	self.moveManager = self.csClient.moveManager
 
-  ---@type RandomManager
-  self.randomManager = RandomManager.New()
-  ---@type TimerManager
-  self.timerManager = TimerManager.New()
-  ---@type EventDispatcher
-  self.eventDispatcher = EventDispatcher.New()
-  ---@type GuidManager
-  self.guidManager = GuidManager.New()
+	---@type RandomManager
+	self.randomManager = RandomManager.New()
+	---@type TimerManager
+	self.timerManager = TimerManager.New()
+	---@type EventDispatcher
+	self.eventDispatcher = EventDispatcher.New()
+	---@type GuidManager
+	self.guidManager = GuidManager.New()
 end
 
-
 function Client:GetTimerManager()
-  return self.timerManager
+	return self.timerManager
 end
 
 function Client:Start()
-  Client.super.Start(self)
+	Client.super.Start(self)
 
-  self.gameHotKeyManager = self:AddChild("GameHotKeyManager", require("luacat.gameHotKeyManager.GameHotKeyManager"))
-  ---@type AudioManager
-  self.audioManager = self:AddChild("AudioManager", require("luacat.audio.AudioManager"))
-  ---@type UIManager
-  self.uiManager = self:AddChild("UIManager", require("luacat.ui.UIManager"))
-  ---@type RedDotManager
-  self.redDotManager = self:AddChild("RedDotManager", RedDotManager)
-  ---@type PhysicsManager
-  self.physicsManager = self:AddChild("PhysicsManager", PhysicsManager)
+	self.gameHotKeyManager = self:AddChild("GameHotKeyManager", require("LuaCat.GameHotKeyManager.GameHotKeyManager"))
+	---@type AudioManager
+	self.audioManager = self:AddChild("AudioManager", require("LuaCat.Audio.AudioManager"))
+	---@type UIManager
+	self.uiManager = self:AddChild("UIManager", require("LuaCat.UI.UIManager"))
+	---@type RedDotManager
+	self.redDotManager = self:AddChild("RedDotManager", RedDotManager)
+	---@type PhysicsManager
+	self.physicsManager = self:AddChild("PhysicsManager", PhysicsManager)
 
+	---@type UserFactory
+	self.userFactory = self:AddChild("UserFactory", UserFactory)
+	---@type RoleFactory
+	self.roleFactory = self:AddChild("RoleFactory", RoleFactory)
+	---@type ItemFactory
+	self.itemFactory = self:AddChild("ItemFactory", require("Game.Doer.Item.ItemFactory"))
+	---@type DoerEventFactory
+	self.doerEventFactory = self:AddChild("DoerEventFactory", DoerEventFactory)
+	---@type MissionFactory
+	self.missionFactory = self:AddChild("MissionFactory", MissionFactory)
+	---@type SceneFactory
+	self.sceneFactory = self:AddChild("SceneFactory", SceneFactory)
 
+	---@type RedDotLogic
+	self.redDotLogic = self:AddChild("RedDotLogic", require("LuaCat.RedDot.Logic.RedDotLogic"))
 
-
-
-  ---@type UserFactory
-  self.userFactory = self:AddChild("UserFactory", UserFactory)
-  ---@type RoleFactory
-  self.roleFactory = self:AddChild("RoleFactory", RoleFactory)
-  ---@type ItemFactory
-  self.itemFactory = self:AddChild("ItemFactory", require("game.doer.item.ItemFactory"))
-  ---@type DoerEventFactory
-  self.doerEventFactory = self:AddChild("DoerEventFactory", DoerEventFactory)
-  ---@type MissionFactory
-  self.missionFactory = self:AddChild("MissionFactory", MissionFactory)
-  ---@type SceneFactory
-  self.sceneFactory = self:AddChild("SceneFactory", SceneFactory)
-
-  ---@type RedDotLogic
-  self.redDotLogic = self:AddChild("RedDotLogic", require("luacat.redDot.logic.RedDotLogic"))
-
-  global.gameData:RestoreUser()
-  self:TestUser()
-  self:Test()
+	global.gameData:RestoreUser()
+	self:TestUser()
+	self:Test()
 end
-
-
 
 function Client:TestUser()
-  --require("game.doer.item.test.ItemTest").Test()
+	--require("game.doer.item.test.ItemTest").Test()
 end
-
 
 function Client:Test()
-    --log(CfgSummonbeastguardskillDataUtil.GetRid(CfgSummonbeastguardskill.get_by_id(3)))
-  --log(CfgItem.get_by_id(2).name)
-  --log(self:IsInstanceOf(ResLoad))
-  ---@type IdPool
-  --require("luacat.timer.test.TimerManagerTest")
-  --require("luacat.coroutine.test.CoroutineTest")
-  --require("luacat.timer.test.TimerManagerTest")
-  --require("luacat.delegate.test.DelegateTest")
-  --warn(self.transform2,self.position2)
-  --log(tonumber("1.3E5"))
-  --require("luacat.doer.doerAttrParser.test.DoerAttrParserTest").Test()
-  --local model_path = "Assets/Resources/Common/Effect/1/200603110.prefab"
-  -- self.resLoad:LoadAssetAsync(model_path,function(assetCat)
-  --   log(assetCat:Get(string.GetSubAssetPath(model_path),typeof(CS.UnityEngine.GameObject)))
-  --   --local o = assetCat:Get(model_path)
-  --   --log(o)
-  -- end)
-  -----@type CS.UnityEngine.Animation
-  --  local animation1 = GameObject.Find("animation1"):GetComponent(typeof(CS.UnityEngine.Animation))
-  --  log(animation1:get_Item("finger"))
-  --local pb = require 'pb'
-  --local protoc = require("protoc")
-  --
-  --assert(protoc:load [[
-  --      message Phone {
-  --          optional string name        = 1;
-  --          optional int64  phonenumber = 2;
-  --      }
-  --      message Person {
-  --          optional string name     = 1;
-  --          optional int32  age      = 2;
-  --          optional string address  = 3;
-  --          repeated Phone  contacts = 4;
-  --      } ]])
-  --
-  --local data = {
-  --  name = 'ilse',
-  --  age  = 18,
-  --  contacts = {
-  --    { name = 'alice', phonenumber = 12312341234 },
-  --    { name = 'bob',   phonenumber = 45645674567 }
-  --  }
-  --}
-  --
-  --local bytes = assert(pb.encode('Person', data))
-  --print(pb.tohex(bytes))
-  --
-  --local data2 = assert(pb.decode('Person', bytes))
-  --print(data2.name)
-  --print(data2.age)
-  --print(data2.address)
-  --print(data2.contacts[1].name)
-  --print(data2.contacts[1].phonenumber)
-  --print(data2.contacts[2].name)
-  --print(data2.contacts[2].phonenumber)
+	--log(CfgSummonbeastguardskillDataUtil.GetRid(CfgSummonbeastguardskill.get_by_id(3)))
+	--log(CfgItem.get_by_id(2).name)
+	--log(self:IsInstanceOf(ResLoad))
+	---@type IdPool
+	--require("luacat.timer.test.TimerManagerTest")
+	--require("luacat.coroutine.test.CoroutineTest")
+	--require("luacat.timer.test.TimerManagerTest")
+	--require("luacat.delegate.test.DelegateTest")
+	--warn(self.transform2,self.position2)
+	--log(tonumber("1.3E5"))
+	--require("luacat.doer.doerAttrParser.test.DoerAttrParserTest").Test()
+	--local model_path = "Assets/Resources/Common/Effect/1/200603110.prefab"
+	-- self.resLoad:LoadAssetAsync(model_path,function(assetCat)
+	--   log(assetCat:Get(string.GetSubAssetPath(model_path),typeof(CS.UnityEngine.GameObject)))
+	--   --local o = assetCat:Get(model_path)
+	--   --log(o)
+	-- end)
+	-----@type CS.UnityEngine.Animation
+	--  local animation1 = GameObject.Find("animation1"):GetComponent(typeof(CS.UnityEngine.Animation))
+	--  log(animation1:get_Item("finger"))
+	--local pb = require 'pb'
+	--local protoc = require("protoc")
+	--
+	--assert(protoc:load [[
+	--      message Phone {
+	--          optional string name        = 1;
+	--          optional int64  phonenumber = 2;
+	--      }
+	--      message Person {
+	--          optional string name     = 1;
+	--          optional int32  age      = 2;
+	--          optional string address  = 3;
+	--          repeated Phone  contacts = 4;
+	--      } ]])
+	--
+	--local data = {
+	--  name = 'ilse',
+	--  age  = 18,
+	--  contacts = {
+	--    { name = 'alice', phonenumber = 12312341234 },
+	--    { name = 'bob',   phonenumber = 45645674567 }
+	--  }
+	--}
+	--
+	--local bytes = assert(pb.encode('Person', data))
+	--print(pb.tohex(bytes))
+	--
+	--local data2 = assert(pb.decode('Person', bytes))
+	--print(data2.name)
+	--print(data2.age)
+	--print(data2.address)
+	--print(data2.contacts[1].name)
+	--print(data2.contacts[1].phonenumber)
+	--print(data2.contacts[2].name)
+	--print(data2.contacts[2].phonenumber)
 end
 
-
-function Client:GoTo(stage_class_type, fade_hide_duration, on_stage_show_callback)
-  self:StartCoroutine(nil, function()
-    if self.stage then
-      if fade_hide_duration then
-        self.uiManager:FadeTo(nil, 1, fade_hide_duration)
-        self:WaitForSeconds(fade_hide_duration)
-      end
-      self:YieldStart(function()
-        self.stage:IEPreDestroy()
-        self:YieldBreak()
-      end)
-      self:RemoveChild(self.stage.key)
-      self.stage = nil
-    end
-    self.stage = self:AddChild(nil, stage_class_type)
-    if on_stage_show_callback then
-      self.stage.on_show_callback = { on_stage_show_callback }
-    end
-    self.stage:Start()
-  end)
+function Client:GoTo(stageClassType, fadeHideDuration, onStageShowCallback)
+	self:StartCoroutine(nil, function()
+		if self.stage then
+			if fadeHideDuration then
+				self.uiManager:FadeTo(nil, 1, fadeHideDuration)
+				self:WaitForSeconds(fadeHideDuration)
+			end
+			self:YieldStart(function()
+				self.stage:IEPreDestroy()
+				self:YieldBreak()
+			end)
+			self:RemoveChild(self.stage.key)
+			self.stage = nil
+		end
+		self.stage = self:AddChild(nil, stageClassType)
+		if onStageShowCallback then
+			self.stage.onShowCallback = { onStageShowCallback }
+		end
+		self.stage:Start()
+	end)
 end
 
 
@@ -164,44 +155,44 @@ function Client:Rebort()
 end
 
 function Client:__Update(deltaTime, unscaledDeltaTime)
-  Client.super.__Update(self, deltaTime, unscaledDeltaTime)
-  self.timerManagerPluginComponent:Update(deltaTime, unscaledDeltaTime)
-  self.eventDispatcher:Broadcast(GlobalEventNameConst.Update, deltaTime, unscaledDeltaTime)
-  self.timerManager:Update(deltaTime, unscaledDeltaTime)
-  self.timerManager:CoUpdate(deltaTime, unscaledDeltaTime)
-  LogUpdate()
+	Client.super.__Update(self, deltaTime, unscaledDeltaTime)
+	self.timerManagerPluginComponent:Update(deltaTime, unscaledDeltaTime)
+	self.eventDispatcher:Broadcast(GlobalEventNameConst.Update, deltaTime, unscaledDeltaTime)
+	self.timerManager:Update(deltaTime, unscaledDeltaTime)
+	self.timerManager:CoUpdate(deltaTime, unscaledDeltaTime)
+	LogUpdate()
 end
 
 function Client:__LateUpdate(deltaTime, unscaledDeltaTime)
-  Client.super.__LateUpdate(self, deltaTime, unscaledDeltaTime)
-  self.timerManager:LateUpdate(deltaTime, unscaledDeltaTime)
-  self.eventDispatcher:Broadcast(GlobalEventNameConst.LateUpdate, deltaTime, unscaledDeltaTime)
-  self.timerManager:LateUpdate(deltaTime, unscaledDeltaTime)
-  self.timerManager:CoLateUpdate(deltaTime, unscaledDeltaTime)
+	Client.super.__LateUpdate(self, deltaTime, unscaledDeltaTime)
+	self.timerManager:LateUpdate(deltaTime, unscaledDeltaTime)
+	self.eventDispatcher:Broadcast(GlobalEventNameConst.LateUpdate, deltaTime, unscaledDeltaTime)
+	self.timerManager:LateUpdate(deltaTime, unscaledDeltaTime)
+	self.timerManager:CoLateUpdate(deltaTime, unscaledDeltaTime)
 end
 
 function Client:__FixedUpdate(deltaTime, unscaledDeltaTime)
-  Client.super.__FixedUpdate(self, deltaTime, unscaledDeltaTime)
-  self.timerManager:FixedUpdate(deltaTime, unscaledDeltaTime)
-  self.eventDispatcher:Broadcast(GlobalEventNameConst.FixedUpdate, deltaTime, unscaledDeltaTime)
-  self.timerManager:FixedUpdate(deltaTime, unscaledDeltaTime)
-  self.timerManager:CoFixedUpdate(deltaTime, unscaledDeltaTime)
+	Client.super.__FixedUpdate(self, deltaTime, unscaledDeltaTime)
+	self.timerManager:FixedUpdate(deltaTime, unscaledDeltaTime)
+	self.eventDispatcher:Broadcast(GlobalEventNameConst.FixedUpdate, deltaTime, unscaledDeltaTime)
+	self.timerManager:FixedUpdate(deltaTime, unscaledDeltaTime)
+	self.timerManager:CoFixedUpdate(deltaTime, unscaledDeltaTime)
 end
 
 function Client:OnApplicationPause(is_paused)
-  if self.eventDispatcher then
-    self.eventDispatcher:Broadcast(GlobalEventNameConst.OnApplicationPause, is_paused)
-  end
+	if self.eventDispatcher then
+		self.eventDispatcher:Broadcast(GlobalEventNameConst.OnApplicationPause, is_paused)
+	end
 end
 
 function Client:OnApplicationQuit()
-  global.gameData:Save()
+	global.gameData:Save()
 end
 
 function Client:OnGUI()
-  if self.gameHotKeyManager and self.gameHotKeyManager.GUIAction then
-    self.gameHotKeyManager.GUIAction()
-  end
+	if self.gameHotKeyManager and self.gameHotKeyManager.GUIAction then
+		self.gameHotKeyManager.GUIAction()
+	end
 end
 
 return Client

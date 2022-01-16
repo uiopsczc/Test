@@ -1,14 +1,14 @@
 ---@class RangeCat
 local RangeCat = Class("RangeCat")
-function RangeCat:Init( min,  max)
-  self.min = min
-  self.max = max
+function RangeCat:Init(min, max)
+	self.min = min
+	self.max = max
 end
 
-function RangeCat:IsContains(value, is_not_include_min,is_not_include_max)
-  local left_result = not is_not_include_min and value >= self.min or value > self.min
-  local right_result = not is_not_include_max and value <= self.max or value < self.min
-  return left_result and right_result
+function RangeCat:IsContains(value, isNotIncludeMin, isNotIncludeMax)
+	local leftResult = not isNotIncludeMin and value >= self.min or value > self.min
+	local rightResult = not isNotIncludeMax and value <= self.max or value < self.min
+	return leftResult and rightResult
 end
 
 return RangeCat

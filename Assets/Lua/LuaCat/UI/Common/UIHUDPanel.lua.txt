@@ -2,8 +2,8 @@
 local UIHUDPanel = Class("UIHUDPanel", UIPanel)
 
 function UIHUDPanel:Init(...)
-  self.layerName = "HUDUILayer"
-  UIHUDPanel.super.Init(self,...)
+	self.layerName = "HUDUILayer"
+	UIHUDPanel.super.Init(self, ...)
 end
 
 return UIHUDPanel

@@ -2,33 +2,33 @@
 local TransformPosition = Class("TransformPosition", IPosition)
 
 ---@param transform CS.UnityEngine.Transform
----@param socket_name string
-function TransformPosition:Init(transform, socket_name)
-  self.transform = transform
-  self.socket_name = socket_name
+---@param socketName string
+function TransformPosition:Init(transform, socketName)
+	self.transform = transform
+	self.socketName = socketName
 end
 
 ---@return Vector3
 function TransformPosition:GetPosition()
-  return self:GetTransform().position
+	return self:GetTransform().position
 end
 
 ---@return CS.UnityEngine.Transform
 function TransformPosition:GetTransform()
-  if string.IsNilOrWhiteSpace(self.socket_name) then
-    return self.transform
-  else
-    return self.transform:GetSocketTransform(self.socket_name)
-  end
+	if string.IsNilOrWhiteSpace(self.socketName) then
+		return self.transform
+	else
+		return self.transform:GetSocketTransform(self.socketName)
+	end
 end
 
----@param socket_name string
-function TransformPosition:SetSocketName(socket_name)
-  self.socket_name = socket_name
+---@param socketName string
+function TransformPosition:SetSocketName(socketName)
+	self.socketName = socketName
 end
 
 function TransformPosition:IsValid()
-  return IsNotNil(self:GetTransform())
+	return IsNotNil(self:GetTransform())
 end
 
 return TransformPosition

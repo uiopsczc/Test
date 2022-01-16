@@ -3,58 +3,52 @@ local ResLoadComponent = Class("ResLoadComponent", GameComponent)
 
 ---@param resLoad ResLoad
 function ResLoadComponent:Init(resLoad)
-  ResLoadComponent.super.Init(self)
-  self.resLoad = resLoad
+	ResLoadComponent.super.Init(self)
+	self.resLoad = resLoad
 end
 
 function ResLoadComponent:IsAllLoadDone()
-  return self.resLoad:IsAllLoadDone()
+	return self.resLoad:IsAllLoadDone()
 end
 
----@param on_all_load_done_callback fun()
-function ResLoadComponent:CheckIsAllLoadDone(on_all_load_done_callback)
-  self:StartCoroutine(nil, function ()
-    self:WaitUntil(function()
-      return self:IsAllLoadDone()
-    end)
-    if on_all_load_done_callback then
-      on_all_load_done_callback()
-    end
-  end)
+---@param onAllLoadDoneCallback fun()
+function ResLoadComponent:CheckIsAllLoadDone(onAllLoadDoneCallback)
+	self:StartCoroutine(nil, function()
+		self:WaitUntil(function()
+			return self:IsAllLoadDone()
+		end)
+		if onAllLoadDoneCallback then
+			onAllLoadDoneCallback()
+		end
+	end)
 end
 
-
-
----@param on_load_success_callback fun(assetCat:CS.CsCat.AssetCat)
----@param on_load_fail_callback fun(assetCat:CS.CsCat.AssetCat)
----@param on_load_done_callback fun(assetCat:CS.CsCat.AssetCat)
----@param callback_cause any
-function ResLoadComponent:GetOrLoadAsset(asset_path, on_load_success_callback, on_load_fail_callback, on_load_done_callback,callback_cause)
-  return self.resLoad:GetOrLoadAsset(asset_path, on_load_success_callback,on_load_fail_callback,on_load_done_callback,callback_cause)
+---@param onLoadSuccessCallback fun(assetCat:CS.CsCat.AssetCat)
+---@param onLoadFailCallback fun(assetCat:CS.CsCat.AssetCat)
+---@param onLoadDoneCallback fun(assetCat:CS.CsCat.AssetCat)
+---@param callbackCause any
+function ResLoadComponent:GetOrLoadAsset(assetPath, onLoadSuccessCallback, onLoadFailCallback, onLoadDoneCallback, callbackCause)
+	return self.resLoad:GetOrLoadAsset(assetPath, onLoadSuccessCallback, onLoadFailCallback, onLoadDoneCallback, callbackCause)
 end
-
-
 
 ---@param assetCat CS.CsCat.AssetCat
-function ResLoadComponent:CancelLoadCallback(assetCat, callback_cause)
-  self.resLoad:CancelLoadCallback(assetCat, callback_cause)
+function ResLoadComponent:CancelLoadCallback(assetCat, callbackCause)
+	self.resLoad:CancelLoadCallback(assetCat, callbackCause)
 end
 
 ---@param assetCat CS.CsCat.AssetCat
 function ResLoadComponent:CancelLoadAllCallbacks(assetCat)
-  self.resLoad:CancelLoadAllCallbacks(assetCat)
+	self.resLoad:CancelLoadAllCallbacks(assetCat)
 end
-
 
 function ResLoadComponent:__Reset()
-  ResLoadComponent.super.__Reset(self)
-  self.resLoad:Reset()
+	ResLoadComponent.super.__Reset(self)
+	self.resLoad:Reset()
 end
 
-
 function ResLoadComponent:__Destroy()
-  ResLoadComponent.super.__Destroy(self)
-  self.resLoad:Destroy()
+	ResLoadComponent.super.__Destroy(self)
+	self.resLoad:Destroy()
 end
 
 return ResLoadComponent

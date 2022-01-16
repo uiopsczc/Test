@@ -2,38 +2,35 @@
 local EaseCat_Circ = {}
 
 function EaseCat_Circ.EaseIn(t, b, c, d)
-  t = t/d
-  return -c * (math.sqrt(1 - t * t) - 1) + b
+	t = t / d
+	return -c * (math.sqrt(1 - t * t) - 1) + b
 end
 
 function EaseCat_Circ.EaseOut(t, b, c, d)
-  t = t / d - 1
-  return c * math.sqrt(1 - t * t) + b
+	t = t / d - 1
+	return c * math.sqrt(1 - t * t) + b
 end
 
-
 function EaseCat_Circ.EaseInOut(t, b, c, d)
-  t = t/(d / 2)
-  if t < 1 then
-    return -c / 2 * (math.sqrt(1 - t * t) - 1) + b
-  end
-  t = t-2
-  return c / 2 * (math.sqrt(1 - t * t) + 1) + b
+	t = t / (d / 2)
+	if t < 1 then
+		return -c / 2 * (math.sqrt(1 - t * t) - 1) + b
+	end
+	t = t - 2
+	return c / 2 * (math.sqrt(1 - t * t) + 1) + b
 end
 
 -------------------------------------------------------------------------
-function EaseCat_Circ.EaseIn2(start_value, end_value, pct)
-  return EaseCat_Circ.EaseIn(pct, start_value, end_value - start_value, 1)
+function EaseCat_Circ.EaseIn2(startValue, endValue, pct)
+	return EaseCat_Circ.EaseIn(pct, startValue, endValue - startValue, 1)
 end
 
-
-function EaseCat_Circ.EaseOut2(start_value, end_value, pct)
-  return EaseCat_Circ.EaseOut(pct, start_value, end_value - start_value, 1)
+function EaseCat_Circ.EaseOut2(startValue, endValue, pct)
+	return EaseCat_Circ.EaseOut(pct, startValue, endValue - startValue, 1)
 end
 
-
-function EaseCat_Circ.EaseInOut2(start_value, end_value, pct)
-  return EaseCat_Circ.EaseInOut(pct, start_value, end_value - start_value, 1)
+function EaseCat_Circ.EaseInOut2(startValue, endValue, pct)
+	return EaseCat_Circ.EaseInOut(pct, startValue, endValue - startValue, 1)
 end
 
 return EaseCat_Circ

@@ -118,13 +118,13 @@ function AudioManager:PlayBGMSound(sound_path, is_paused)
     is_paused = true
   end
   --跟cs端统一
-  if sound_path == global.client.cs_client.audioManager.last_bgm_path then
+  if sound_path == global.client.csClient.audioManager.last_bgm_path then
     return
   end
 
   self.resLoadComponent:GetOrLoadAsset(sound_path, function(assetCat)
     self:OnBGMLoadSuccess(assetCat:Get(),is_paused)
-    global.client.cs_client.audioManager.last_bgm_path = sound_path
+    global.client.csClient.audioManager.last_bgm_path = sound_path
   end)
 end
 

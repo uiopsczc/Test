@@ -1,9 +1,9 @@
 ---@class UIBackgroundPanel:UIPanel
-local UIBackgroundPanel = Class("UIBackgroundPanel",UIPanel)
+local UIBackgroundPanel = Class("UIBackgroundPanel", UIPanel)
 
 function UIBackgroundPanel:Init(...)
-  self.layerName = "BackgroundUILayer"
-  UIBackgroundPanel.super.Init(self,...)
+	self.layerName = "BackgroundUILayer"
+	UIBackgroundPanel.super.Init(self, ...)
 end
 
 return UIBackgroundPanel

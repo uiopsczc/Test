@@ -265,7 +265,7 @@ function Coroutine.WaitForFixedUpdate(timerManager)
   local timer = PoolCatManagerUtil.Spawn(Timer)
   timer:Init(__DoAction,nil,0,0,Timer.UpdateMode.FixedUpdate,nil,true,true)
   local action = __GetAction(co, timer)
-  timer.target_func_args = {action}
+  timer.targetFuncArgs = { action}
   action.timerManager = timerManager or global.client.timerManager
   action.timerManager:AddTimer2(timer)
   action_dict[co] = action
@@ -280,7 +280,7 @@ function Coroutine.WaitForFrames(frames, timerManager)
   local timer = PoolCatManagerUtil.Spawn(Timer)
   timer:Init(__DoAction,nil,frames,0,Timer.UpdateMode.Update,nil,true,true)
   local action = __GetAction(co, timer)
-  timer.target_func_args = {action}
+  timer.targetFuncArgs = { action}
   action.timerManager = timerManager or global.client.timerManager
   action.timerManager:AddTimer2(timer)
   action_dict[co] = action
@@ -296,7 +296,7 @@ function Coroutine.WaitForSeconds(seconds,timerManager)
   local timer = PoolCatManagerUtil.Spawn(Timer)
   timer:Init(__DoAction,nil,seconds,nil,Timer.UpdateMode.Update,nil,true,false)
   local action = __GetAction(co, timer)
-  timer.target_func_args = {action}
+  timer.targetFuncArgs = { action}
   action.timerManager = timerManager or global.client.timerManager
   action.timerManager:AddTimer2(timer)
   action_dict[co] = action
@@ -329,7 +329,7 @@ function Coroutine.WaitForAsyncOp(async_operation, callback,timerManager)
   local timer = PoolCatManagerUtil.Spawn(Timer)
   timer:Init(__DoActionLoop,nil,1,1,Timer.UpdateMode.Update,nil,true,true)--每帧都检测
   local action = __GetAction(co, timer, __AsyncOpCheck, table.SafePack(co, async_operation, callback), true)
-  timer.target_func_args = {action}
+  timer.targetFuncArgs = { action}
   action.timerManager = timerManager or global.client.timerManager
   action.timerManager:AddTimer2(timer)
   action_dict[co] = action
@@ -346,7 +346,7 @@ function Coroutine.WaitUntil(timerManager, func, ...)
   local timer = PoolCatManagerUtil.Spawn(Timer)
   timer:Init(__DoActionLoop,nil,1,1,Timer.UpdateMode.Update,nil,true,true)--每帧都检测
   local action = __GetAction(co, timer, func, func_args, true)
-  timer.target_func_args = {action}
+  timer.targetFuncArgs = { action}
   action.timerManager = timerManager or global.client.timerManager
   action.timerManager:AddTimer2(timer)
   action_dict[co] = action
@@ -363,7 +363,7 @@ function Coroutine.WaitWhile(timerManager,func, ...)
   timer:Init(__DoActionLoop,nil,1,1,Timer.UpdateMode.Update,nil,true,true)--每帧都检测
   local func_args = table.SafePack(...)
   local action = __GetAction(co, timer, func, func_args, false)
-  timer.target_func_args = {action}
+  timer.targetFuncArgs = { action}
   action.timerManager = timerManager or global.client.timerManager
   action.timerManager:AddTimer2(timer)
   action_dict[co] = action
@@ -378,7 +378,7 @@ function Coroutine.WaitForEndOfFrame(timerManager)
   local timer = PoolCatManagerUtil.Spawn(Timer)
   timer:Init(__DoActionLoop,nil,1,1,Timer.UpdateMode.LateUpdate,nil,true,true)--每帧都检测
   local action = __GetAction(co, timer)
-  timer.target_func_args = {action}
+  timer.targetFuncArgs = { action}
   action.timerManager = timerManager or global.client.timerManager
   action.timerManager:AddTimer2(timer)
   action_dict[co] = action

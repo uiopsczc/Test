@@ -5,146 +5,148 @@
 ---@field delay number
 ---@field target
 ---@field interval  @等于0的时候，每帧都会调用
----@field is_use_unscaledDeltaTime boolean
----@field remain_duration number
+---@field isUseUnscaledDeltaTime boolean
+---@field remainDuration number
 ---@field state @idle,running,paused,finished
 ---@field is_finished boolean
 local Timer = Class("Timer")
 
 Timer.State = {
-  Idle = "Idle",
-  Running = "Running",
-  Paused = "Paused",
-  Finished = "Finished"
+	Idle = "Idle",
+	Running = "Running",
+	Paused = "Paused",
+	Finished = "Finished"
 }
 
 Timer.UpdateMode = {
-  Update = "Update",
-  FixedUpdate = "FixedUpdate",
-  LateUpdate = "LateUpdate",
+	Update = "Update",
+	FixedUpdate = "FixedUpdate",
+	LateUpdate = "LateUpdate",
 }
 
 -- target_func  返回false表示不继续执行，结束
----@param target_func_args table
-function Timer:Init(target_func, target_func_args, delay, interval, update_mode, is_use_unscaledDeltaTime,is_coroutine_timer, is_use_frame)
-  -- 时长，秒或者帧
-  self.delay = delay or 0
-  -- 回调函数
-  self.target_func = target_func
-  -- targetFunc的参数
-  self.target_func_args = target_func_args
-  -- 间隔
-  self.interval = interval or 0
-  -- 使用deltaTime计时，还是采用unscaledDeltaTime计时
-  self.is_use_unscaledDeltaTime = is_use_unscaledDeltaTime
-  -- update_mode: update,lateUpdate,fixedUpdate
-  self.update_mode = update_mode or Timer.UpdateMode.Update
-  -- 是否是coroutine模式
-  self.is_coroutine_timer = is_coroutine_timer
-  -- 是否使用frame模式
-  self.is_use_frame = is_use_frame
-  --  下次触发剩余时间
-  self.remain_duration = delay
-  -- 当前状态
-  self.state = Timer.State.Idle
+---@param targetFuncArgs table
+function Timer:Init(targetFunc, targetFuncArgs, delay, interval, updateMode, isUseUnscaledDeltaTime, isCoroutineTimer, isUseFrame)
+	-- 时长，秒或者帧
+	self.delay = delay or 0
+	-- 回调函数
+	self.targetFunc = targetFunc
+	-- targetFunc的参数
+	self.targetFuncArgs = targetFuncArgs
+	-- 间隔
+	self.interval = interval or 0
+	-- 使用deltaTime计时，还是采用unscaledDeltaTime计时
+	self.isUseUnscaledDeltaTime = isUseUnscaledDeltaTime
+	-- update_mode: update,lateUpdate,fixedUpdate
+	self.updateMode = updateMode or Timer.UpdateMode.Update
+	-- 是否是coroutine模式
+	self.isCoroutineTimer = isCoroutineTimer
+	-- 是否使用frame模式
+	self.isUseFrame = isUseFrame
+	--  下次触发剩余时间
+	self.remainDuration = delay
+	-- 当前状态
+	self.state = Timer.State.Idle
 end
 
 -- 启动计时
 function Timer:Start()
-  self.state = Timer.State.Running
+	self.state = Timer.State.Running
 end
 
 -- 暂停/恢复计时
-function Timer:SetIsPaused(is_paused)
-  if is_paused and self.state == Timer.State.Paused then
-    return
-  end
-  if not is_paused and not self.state == Timer.State.Paused then
-    return
-  end
-  if is_paused then
-    self.state_pre = self.state
-  end
-  self.state = is_paused and Timer.State.Paused or self.state_pre
+function Timer:SetIsPaused(isPaused)
+	if isPaused and self.state == Timer.State.Paused then
+		return
+	end
+	if not isPaused and not self.state == Timer.State.Paused then
+		return
+	end
+	if isPaused then
+		self.preState = self.state
+	end
+	self.state = isPaused and Timer.State.Paused or self.preState
 end
 
 function Timer:DoUpdate(deltaTime, unscaledDeltaTime)
-  if self.state ~= Timer.State.Running then
-    return
-  end
-  local target_deltaTime = self.is_use_unscaledDeltaTime and unscaledDeltaTime or deltaTime
-  if self.is_use_frame then
-    self.remain_duration = self.remain_duration - 1
-  else
-    self.remain_duration = self.remain_duration - target_deltaTime
-  end
-  --if self.a =="a" then
-  --  log(self.remain_duration)
-  --end
-  if self.remain_duration > 0 then
-    return
-  end
-  while self.remain_duration <= 0 do
-    --运行状态
-    local status, ret
-    if self.target_func_args then
-      table.SafePackArray(self.target_func_args)
-      status, ret = pcall(self.target_func, table.SafeUnpack(self.target_func_args))
-    else
-      status, ret = pcall(self.target_func)
-    end
-    if not status then -- 调用出错
-      local err = ret
-      self:Finish()
-      Error(err)
-      return
-    else
-      local is_not_finished = ret
-      if not is_not_finished then
-        self:Finish()
-        return
-      end
-    end
-    if self.interval > 0 then
-      self.remain_duration = self.remain_duration + self.interval
-      if self.remain_duration == 0 then  -- == 0的情况下跳出循环不处理
-        break
-      end
-    else
-      break
-    end
-  end
+	if self.state ~= Timer.State.Running then
+		return
+	end
+	local targetDeltaTime = self.isUseUnscaledDeltaTime and unscaledDeltaTime or deltaTime
+	if self.isUseFrame then
+		self.remainDuration = self.remainDuration - 1
+	else
+		self.remainDuration = self.remainDuration - targetDeltaTime
+	end
+	--if self.a =="a" then
+	--  log(self.remain_duration)
+	--end
+	if self.remainDuration > 0 then
+		return
+	end
+	while self.remainDuration <= 0 do
+		--运行状态
+		local status, ret
+		if self.targetFuncArgs then
+			table.SafePackArray(self.targetFuncArgs)
+			status, ret = pcall(self.targetFunc, table.SafeUnpack(self.targetFuncArgs))
+		else
+			status, ret = pcall(self.targetFunc)
+		end
+		if not status then
+			-- 调用出错
+			local err = ret
+			self:Finish()
+			Error(err)
+			return
+		else
+			local isNotFinished = ret
+			if not isNotFinished then
+				self:Finish()
+				return
+			end
+		end
+		if self.interval > 0 then
+			self.remainDuration = self.remainDuration + self.interval
+			if self.remainDuration == 0 then
+				-- == 0的情况下跳出循环不处理
+				break
+			end
+		else
+			break
+		end
+	end
 end
 
 
 
 -- 停止计时
 function Timer:Stop()
-  self:Finish()
+	self:Finish()
 end
 
 function Timer:Finish()
-  self.state = Timer.State.Finished
+	self.state = Timer.State.Finished
 end
 
 
 
 -- 是否已经完成计时
 function Timer:IsFinished()
-  return self.state == Timer.State.Finished
+	return self.state == Timer.State.Finished
 end
 
 function Timer:OnDespawn()
-  self.delay = 0
-  self.target_func = nil
-  self.target_func_args = nil
-  self.interval = 0
-  self.is_use_unscaledDeltaTime = nil
-  self.update_mode = Timer.UpdateMode.Update
-  self.is_coroutine_timer = nil
-  self.is_use_frame = nil
-  self.remain_duration = nil
-  self.state = Timer.State.Idle
+	self.delay = 0
+	self.targetFunc = nil
+	self.targetFuncArgs = nil
+	self.interval = 0
+	self.isUseUnscaledDeltaTime = nil
+	self.updateMode = Timer.UpdateMode.Update
+	self.isCoroutineTimer = nil
+	self.isUseFrame = nil
+	self.remainDuration = nil
+	self.state = Timer.State.Idle
 end
 
 return Timer

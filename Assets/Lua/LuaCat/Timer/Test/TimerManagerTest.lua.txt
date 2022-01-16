@@ -1,10 +1,10 @@
-local TimerManager = require("luacat.timer.TimerManager")
+local TimerManager = require("LuaCat.Timer.TimerManager")
 local function testFunc(arg1, arg2)
-  log(arg1, arg2)
-  return true
+	log(arg1, arg2)
+	return true
 end
 
 log("begin")
 --调用self的方法的情况
 --global.client.timerManager:AddTimer(self.testFunc, {self,"hello","timer_test"}, 2)
-global.client.timerManager:AddTimer(testFunc, {"hello","timer_test"}, 2)
+global.client.timerManager:AddTimer(testFunc, { "hello", "timer_test" }, 2)

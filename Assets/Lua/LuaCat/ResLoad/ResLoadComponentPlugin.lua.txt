@@ -3,91 +3,89 @@ local ResLoadComponentPlugin = Class("ResLoadComponentPlugin")
 
 ---@param resLoadComponent ResLoadComponent
 function ResLoadComponentPlugin:Init(resLoadComponent)
-  self.resLoadComponent = resLoadComponent
-  ---@type table<CS.CsCat.AssetCat,table<any,boolean>>
-  self.assetCat_dict = {}
+	self.resLoadComponent = resLoadComponent
+	---@type table<CS.CsCat.AssetCat,table<any,boolean>>
+	self.assetCatDict = {}
 end
 
 function ResLoadComponentPlugin:IsAllLoadDone()
-  for assetCat,_ in pairs(self.assetCat_dict) do
-    if not assetCat:IsLoadDone() then
-      return false
-    end
-  end
-  return true
+	for assetCat, _ in pairs(self.assetCatDict) do
+		if not assetCat:IsLoadDone() then
+			return false
+		end
+	end
+	return true
 end
 
----@param on_all_load_done_callback fun()
-function ResLoadComponentPlugin:CheckIsAllLoadDone(on_all_load_done_callback)
-  self.resLoadComponent:StartCoroutine(nil, function ()
-    self.resLoadComponent:WaitUntil(function()
-      return self:IsAllLoadDone()
-    end)
-    if on_all_load_done_callback then
-      on_all_load_done_callback()
-    end
-  end)
+---@param onAllLoadDoneCallback fun()
+function ResLoadComponentPlugin:CheckIsAllLoadDone(onAllLoadDoneCallback)
+	self.resLoadComponent:StartCoroutine(nil, function()
+		self.resLoadComponent:WaitUntil(function()
+			return self:IsAllLoadDone()
+		end)
+		if onAllLoadDoneCallback then
+			onAllLoadDoneCallback()
+		end
+	end)
 end
 
----@param on_load_success_callback fun(assetCat:CS.CsCat.AssetCat)
----@param on_load_fail_callback fun(assetCat:CS.CsCat.AssetCat)
----@param on_load_done_callback fun(assetCat:CS.CsCat.AssetCat)
----@param callback_cause any
-function ResLoadComponentPlugin:GetOrLoadAsset(asset_path, on_load_success_callback, on_load_fail_callback, on_load_done_callback,callback_cause)
-  local assetCat = self.resLoadComponent:GetOrLoadAsset(asset_path, on_load_success_callback,on_load_fail_callback,on_load_done_callback,callback_cause)
-  self:__AddToAssetCatDict(assetCat, callback_cause)
-  return assetCat
+---@param onLoadSuccessCallback fun(assetCat:CS.CsCat.AssetCat)
+---@param onLoadFailCallback fun(assetCat:CS.CsCat.AssetCat)
+---@param onLoadDoneCallback fun(assetCat:CS.CsCat.AssetCat)
+---@param callbackCause any
+function ResLoadComponentPlugin:GetOrLoadAsset(assetPath, onLoadSuccessCallback, onLoadFailCallback, onLoadDoneCallback, callbackCause)
+	local assetCat = self.resLoadComponent:GetOrLoadAsset(assetPath, onLoadSuccessCallback, onLoadFailCallback, onLoadDoneCallback, callbackCause)
+	self:__AddToAssetCatDict(assetCat, callbackCause)
+	return assetCat
 end
 
 ---@param assetCat CS.CsCat.AssetCat
-function ResLoadComponentPlugin:CancelLoadCallback(assetCat, callback_cause)
-  self.resLoadComponent:CancelLoadCallback(assetCat, callback_cause)
-  self:__RemoveFromAssetCatDict(assetCat, callback_cause)
+function ResLoadComponentPlugin:CancelLoadCallback(assetCat, callbackCause)
+	self.resLoadComponent:CancelLoadCallback(assetCat, callbackCause)
+	self:__RemoveFromAssetCatDict(assetCat, callbackCause)
 end
 
 ---@param assetCat CS.CsCat.AssetCat
 function ResLoadComponentPlugin:CancelLoadAllCallback(assetCat)
-  if not self.assetCat_dict[assetCat] then
-    return
-  end
-  for _,callback_cause_dict in pairs(self.assetCat_dict) do
-    for callback_cause,_ in pairs(callback_cause_dict) do
-      self.resLoadComponent:CancelLoadCallback(assetCat,ObjectUtil.GetNilableKey(callback_cause))
-    end
-  end
-  self.assetCat_dict[assetCat] = nil
+	if not self.assetCatDict[assetCat] then
+		return
+	end
+	for _, callbackCauseDict in pairs(self.assetCatDict) do
+		for callbackCause, _ in pairs(callbackCauseDict) do
+			self.resLoadComponent:CancelLoadCallback(assetCat, ObjectUtil.GetNilableKey(callbackCause))
+		end
+	end
+	self.assetCatDict[assetCat] = nil
 end
 
 ---@param assetCat CS.CsCat.AssetCat
-function ResLoadComponentPlugin:__AddToAssetCatDict(assetCat, callback_cause)
-  table.GetOrAddDefault_Dict(self.assetCat_dict, assetCat, function()
-    return {}
-  end)[ObjectUtil.GetNotNilKey(callback_cause)] = true
+function ResLoadComponentPlugin:__AddToAssetCatDict(assetCat, callbackCause)
+	table          .GetOrAddDefault_Dict(self.assetCatDict, assetCat, function()
+		return {}
+	end)[ObjectUtil.GetNotNilKey(callbackCause)] = true
 end
 
 ---@param assetCat CS.CsCat.AssetCat
-function ResLoadComponentPlugin:__RemoveFromAssetCatDict(assetCat, callback_cause)
-  if not self.assetCat_dict[assetCat] then
-    return
-  end
-  self.assetCat_dict[assetCat][ObjectUtil.GetNotNilKey(callback_cause)] = nil
+function ResLoadComponentPlugin:__RemoveFromAssetCatDict(assetCat, callbackCause)
+	if not self.assetCatDict[assetCat] then
+		return
+	end
+	self.assetCatDict[assetCat][ObjectUtil.GetNotNilKey(callbackCause)] = nil
 end
-
 
 function ResLoadComponentPlugin:Destroy()
-  for assetCat,_ in pairs(self.assetCat_dict) do
-    for callback_cause,_ in pairs(self.assetCat_dict[assetCat]) do
-      self.resLoadComponent:CancelLoadCallback(assetCat,ObjectUtil.GetNilableKey(callback_cause))
-    end
-  end
-  table.Clear(self.assetCat_dict)
-  self.resLoadComponent = nil
+	for assetCat, _ in pairs(self.assetCatDict) do
+		for callbackCause, _ in pairs(self.assetCatDict[assetCat]) do
+			self.resLoadComponent:CancelLoadCallback(assetCat, ObjectUtil.GetNilableKey(callbackCause))
+		end
+	end
+	table.Clear(self.assetCatDict)
+	self.resLoadComponent = nil
 end
 
-
 function ResLoadComponentPlugin:__Destroy()
-  ResLoadComponentPlugin.super.__Destroy(self)
-  self.resLoad:Destroy()
+	ResLoadComponentPlugin.super.__Destroy(self)
+	self.resLoad:Destroy()
 end
 
 return ResLoadComponentPlugin

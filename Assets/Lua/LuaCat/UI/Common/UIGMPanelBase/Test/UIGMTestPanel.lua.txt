@@ -1,28 +1,30 @@
-local UIGMPanelBase = require("luacat.ui.common.UIGMPanelBase.UIGMPanelBase")
+local UIGMPanelBase = require("LuaCat.UI.Common.UIGMPanelBase.UIGMPanelBase")
 
 ---@class UIGMTestPanel:UIGMPanelBase
-local UIGMTestPanel = Class("UIGMTestPanel",UIGMPanelBase)
+local UIGMTestPanel = Class("UIGMTestPanel", UIGMPanelBase)
 
 function UIGMTestPanel:Init()
-  UIGMTestPanel.super.Init(self)
+	UIGMTestPanel.super.Init(self)
 end
 
 function UIGMTestPanel:InitGameObjectChildren()
-  UIGMTestPanel.super.InitGameObjectChildren(self)
-  --self:AddChild(nil, UIHUDText, self.transform):SetText("ddf")
+	UIGMTestPanel.super.InitGameObjectChildren(self)
+	--self:AddChild(nil, UIHUDText, self.transform):SetText("ddf")
 end
 
 function UIGMTestPanel:InitConfigList()
-  UIGMTestPanel.super.InitConfigList(self)
-  table.insert(self.config_list,{
-    type = "switch_item",
-    desc = "GMTest",
-    yes_callback = function() self:GMTest() end
-  })
+	UIGMTestPanel.super.InitConfigList(self)
+	table.insert(self.configList, {
+		type = "switch_item",
+		desc = "GMTest",
+		yes_callback = function()
+			self:GMTest()
+		end
+	})
 end
 
 function UIGMTestPanel:GMTest()
-  log("Hello,lua GM Test")
+	log("Hello,lua GM Test")
 end
 
 return UIGMTestPanel

@@ -5,15 +5,15 @@ local IPositionUtil = {}
 ---@param socket_name string
 ---@return IPosition
 function IPositionUtil.NewIPosition(value)
-  if IsVector3(value) then
-    return Vector3Position.New(value)
-  elseif IsTransform(value) then
-    return TransformPosition.New(value)
-  elseif IsUnit(value) then
-    return UnitPosition(value)
-  else
-    error("not support type:",value.__class_name)
-  end
+	if IsVector3(value) then
+		return Vector3Position.New(value)
+	elseif IsTransform(value) then
+		return TransformPosition.New(value)
+	elseif IsUnit(value) then
+		return UnitPosition(value)
+	else
+		error("not support type:", value._className)
+	end
 end
 
 return IPositionUtil

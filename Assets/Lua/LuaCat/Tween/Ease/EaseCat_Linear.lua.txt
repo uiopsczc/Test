@@ -2,39 +2,36 @@
 local EaseCat_Linear = {}
 
 function EaseCat_Linear.EaseNone(t, b, c, d)
-  return c * t / d + b
+	return c * t / d + b
 end
 
 function EaseCat_Linear.EaseIn(t, b, c, d)
-  return c * t / d + b
+	return c * t / d + b
 end
 
 function EaseCat_Linear.EaseOut(t, b, c, d)
-  return c * t / d + b
+	return c * t / d + b
 end
 
-
 function EaseCat_Linear.EaseInOut(t, b, c, d)
-  return c * t / d + b
+	return c * t / d + b
 end
 
 -------------------------------------------------------------------------
-function EaseCat_Linear.EaseNone2(start_value, end_value, pct)
-  return EaseCat_Linear.EaseNone(pct, start_value, end_value - start_value, 1)
+function EaseCat_Linear.EaseNone2(startValue, endValue, pct)
+	return EaseCat_Linear.EaseNone(pct, startValue, endValue - startValue, 1)
 end
 
-function EaseCat_Linear.EaseIn2(start_value, end_value, pct)
-  return EaseCat_Linear.EaseIn(pct, start_value, end_value - start_value, 1)
+function EaseCat_Linear.EaseIn2(startValue, endValue, pct)
+	return EaseCat_Linear.EaseIn(pct, startValue, endValue - startValue, 1)
 end
 
-
-function EaseCat_Linear.EaseOut2(start_value, end_value, pct)
-  return EaseCat_Linear.EaseOut(pct, start_value, end_value - start_value, 1)
+function EaseCat_Linear.EaseOut2(startValue, endValue, pct)
+	return EaseCat_Linear.EaseOut(pct, startValue, endValue - startValue, 1)
 end
 
-
-function EaseCat_Linear.EaseInOut2(start_value, end_value, pct)
-  return EaseCat_Linear.EaseInOut(pct, start_value, end_value - start_value, 1)
+function EaseCat_Linear.EaseInOut2(startValue, endValue, pct)
+	return EaseCat_Linear.EaseInOut(pct, startValue, endValue - startValue, 1)
 end
 
 return EaseCat_Linear

@@ -2,39 +2,36 @@
 local EaseCat_Quint = {}
 
 function EaseCat_Quint.EaseIn(t, b, c, d)
-  t = t / d
-  return c * t * t * t * t * t + b
+	t = t / d
+	return c * t * t * t * t * t + b
 end
 
 function EaseCat_Quint.EaseOut(t, b, c, d)
-  t = t / d - 1
-  return c * (t * t * t * t * t + 1) + b
+	t = t / d - 1
+	return c * (t * t * t * t * t + 1) + b
 end
 
-
 function EaseCat_Quint.EaseInOut(t, b, c, d)
-  t = t/(d / 2)
-  if t < 1 then
-    return c / 2 * t * t * t * t * t + b
-  end
-  t = t - 2
-  return c / 2 * (t * t * t * t * t + 2) + b
+	t = t / (d / 2)
+	if t < 1 then
+		return c / 2 * t * t * t * t * t + b
+	end
+	t = t - 2
+	return c / 2 * (t * t * t * t * t + 2) + b
 end
 
 -------------------------------------------------------------------------
 
-function EaseCat_Quint.EaseIn2(start_value, end_value, pct)
-  return EaseCat_Quint.EaseIn(pct, start_value, end_value - start_value, 1)
+function EaseCat_Quint.EaseIn2(startValue, endValue, pct)
+	return EaseCat_Quint.EaseIn(pct, startValue, endValue - startValue, 1)
 end
 
-
-function EaseCat_Quint.EaseOut2(start_value, end_value, pct)
-  return EaseCat_Quint.EaseOut(pct, start_value, end_value - start_value, 1)
+function EaseCat_Quint.EaseOut2(startValue, endValue, pct)
+	return EaseCat_Quint.EaseOut(pct, startValue, endValue - startValue, 1)
 end
 
-
-function EaseCat_Quint.EaseInOut2(start_value, end_value, pct)
-  return EaseCat_Quint.EaseInOut(pct, start_value, end_value - start_value, 1)
+function EaseCat_Quint.EaseInOut2(startValue, endValue, pct)
+	return EaseCat_Quint.EaseInOut(pct, startValue, endValue - startValue, 1)
 end
 
 return EaseCat_Quint

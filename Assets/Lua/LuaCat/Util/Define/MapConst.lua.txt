@@ -1,5 +1,5 @@
 local MapConst = {}
 
-MapConst.Common_Pattren = ","
+MapConst.Common_Pattern = ","
 
 return MapConst

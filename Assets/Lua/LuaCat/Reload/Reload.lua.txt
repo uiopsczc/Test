@@ -5,39 +5,39 @@
 -- 主代码块中的local变量和local函数无法重载，变量和函数都要写在类或函数中
 -- 运行中的协程无法更新，所以协程不适合长时间运行
 
-local function __ReloadFile(file_name)
-  local old = package.loaded[file_name]
-  package.loaded[file_name] = nil
-  local new = require(file_name)
-  if not old or type(old) ~= "table" or
-      not new or type(new) ~= "table" then
-    return
-  end
-  for k, v in pairs(new) do
-    old[k] = v
-  end
-  setmetatable(old, getmetatable(new))
-  package.loaded[file_name] = old
+local function __ReloadFile(fileName)
+	local old = package.loaded[fileName]
+	package.loaded[fileName] = nil
+	local new = require(fileName)
+	if not old or type(old) ~= "table" or
+		not new or type(new) ~= "table" then
+		return
+	end
+	for k, v in pairs(new) do
+		old[k] = v
+	end
+	setmetatable(old, getmetatable(new))
+	package.loaded[fileName] = old
 end
 
 function Reload()
-  if EnableGlobal and DisableGlobal then
-    EnableGlobal()
-  end
-  ClearClassNameRelationShipDict()
-  local file_list = {}
-  for k, v in pairs(package.loaded) do
-    if string.match(k, "^luacat%.") or
-        string.match(k, "^game%.") then
-      file_list[k] = true
-    end
-  end
-  for k, v in pairs(file_list) do
-    __ReloadFile(k)
-  end
-  if EnableGlobal and DisableGlobal then
-    DisableGlobal()
-  end
-  log("Reload finished")
+	if EnableGlobal and DisableGlobal then
+		EnableGlobal()
+	end
+	ClearClassNameRelationShipDict()
+	local fileList = {}
+	for k, v in pairs(package.loaded) do
+		if string.match(k, "^luacat%.") or
+			string.match(k, "^game%.") then
+			fileList[k] = true
+		end
+	end
+	for k, v in pairs(fileList) do
+		__ReloadFile(k)
+	end
+	if EnableGlobal and DisableGlobal then
+		DisableGlobal()
+	end
+	log("Reload finished")
 end
 

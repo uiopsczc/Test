@@ -1,37 +1,36 @@
-
 function table.IsNilOrEmpty(t)
-  if not t then
-    return true
-  end
-  for _,_ in pairs(t) do
-    return false
-  end
-  return true
+	if not t then
+		return true
+	end
+	for _, _ in pairs(t) do
+		return false
+	end
+	return true
 end
 
 function table.GetNilIfEmpty(t)
-  if table.IsNilOrEmpty(t) then
-    return nil
-  else
-    return t
-  end
+	if table.IsNilOrEmpty(t) then
+		return nil
+	else
+		return t
+	end
 end
 
 -- 向table【t1】 合并table【t2】,合并方式为替换，结果会修改t1
 function table.CombineByReplace(t1, t2)
-  for k, v in pairs(t2) do
-    t1[k] = v
-  end
-  return t1
+	for k, v in pairs(t2) do
+		t1[k] = v
+	end
+	return t1
 end
 
 -- 向table【t1】 合并table【t2】,合并方式为相加，结果会修改t1
 function table.CombineByAdd(t1, t2)
-  for k, v in pairs(t2) do
-    local n1 = t1[k] or 0
-    t1[k] = v + n1
-  end
-  return t1
+	for k, v in pairs(t2) do
+		local n1 = t1[k] or 0
+		t1[k] = v + n1
+	end
+	return t1
 end
 
 
@@ -44,22 +43,22 @@ end
 ---@generic K,V
 ---@param t V[]|table<K,V>
 ---@param func fun(key:K,value:V):void
----@param sort_func fun(key:K,value:K):number
-function table.ForEach(t, func, sort_func)
-  if not sort_func then
-    for k, v in pairs(t) do
-      func(k, v)
-    end
-    return
-  end
+---@param sortFunc fun(key:K,value:K):number
+function table.ForEach(t, func, sortFunc)
+	if not sortFunc then
+		for k, v in pairs(t) do
+			func(k, v)
+		end
+		return
+	end
 
-  local keys = table.Keys_Dict(t)
-  table.sort(keys, function(key1, key2)
-    return sort_func(key1, key2)
-  end)
-  for _, key in ipairs(keys) do
-    func(key, t[key])
-  end
+	local keys = table.Keys_Dict(t)
+	table.sort(keys, function(key1, key2)
+		return sortFunc(key1, key2)
+	end)
+	for _, key in ipairs(keys) do
+		func(key, t[key])
+	end
 end
 
 -- t是否包含键值key
@@ -67,12 +66,12 @@ end
 ---@param key any
 ---@retun boolean
 function table.ContainsKey(t, key)
-  for k, _ in pairs(t) do
-    if k == key then
-      return true
-    end
-  end
-  return false
+	for k, _ in pairs(t) do
+		if k == key then
+			return true
+		end
+	end
+	return false
 end
 
 -- t是否包含Value value
@@ -80,12 +79,12 @@ end
 ---@param value any
 ---@retun boolean
 function table.ContainsValue(t, value)
-  for _, v in pairs(t) do
-    if v == value then
-      return true
-    end
-  end
-  return false
+	for _, v in pairs(t) do
+		if v == value then
+			return true
+		end
+	end
+	return false
 end
 
 -- 清空table
@@ -93,9 +92,9 @@ end
 ---@param value any
 ---@retun boolean
 function table.Clear(t)
-  for k in pairs(t) do
-    t[k] = nil
-  end
+	for k in pairs(t) do
+		t[k] = nil
+	end
 end
 
 
@@ -104,7 +103,7 @@ end
 -- 如果t为array，则删除值在...中的数据
 -- 如果t为dict，则删除key在...中的数据
 function table.Remove(t, ...)
-  table.__Remove(t, false, ...)
+	table.__Remove(t, false, ...)
 end
 
 
@@ -113,192 +112,192 @@ end
 -- 如果t为array，则删除值在...中的数据
 -- 如果t为dict，则删除key在...中的数据
 function table.RemoveRepeat(t, ...)
-  table.__Remove(t, true, ...)
+	table.__Remove(t, true, ...)
 end
 
 
 -- 删除多个值
 -- 如果t为array，则删除值在...中的数据
 -- 如果t为dict，则删除key在...中的数据
----@param is_repeat_remove @是否重复删除
-function table.__Remove(t, is_repeat_remove, ...)
-  local to_remove_array = table.GetArgs(...)
-  -- 如果t为array，则删除值在...中的数据
-  local cur_t_index = 1
-  while cur_t_index <= #t do
-    local to_remove_index = table.FindKeyByValue_Array(to_remove_array, t[cur_t_index])
-    if to_remove_index then
-      -- 从t中删除
-      table.remove(t, cur_t_index)
-      if not is_repeat_remove then
-        -- 从to_remove_array中移除
-        table.remove(to_remove_array, to_remove_index)
-      end
-    else
-      cur_t_index = cur_t_index + 1
-    end
-  end
+---@param isRepeatRemove @是否重复删除
+function table.__Remove(t, isRepeatRemove, ...)
+	local toRemoveArray = table.GetArgs(...)
+	-- 如果t为array，则删除值在...中的数据
+	local curTIndex = 1
+	while curTIndex <= #t do
+		local toRemoveIndex = table.FindKeyByValue_Array(toRemoveArray, t[curTIndex])
+		if toRemoveIndex then
+			-- 从t中删除
+			table.remove(t, curTIndex)
+			if not isRepeatRemove then
+				-- 从to_remove_array中移除
+				table.remove(toRemoveArray, toRemoveIndex)
+			end
+		else
+			curTIndex = curTIndex + 1
+		end
+	end
 
-  -- 如果t为dict，则删除key在...中的数据
-  for index = #to_remove_array, 1, -1 do
-    local to_remove_key = to_remove_array[index]
-    t[to_remove_key] = nil
-  end
+	-- 如果t为dict，则删除key在...中的数据
+	for index = #toRemoveArray, 1, -1 do
+		local toRemoveKey = toRemoveArray[index]
+		t[toRemoveKey] = nil
+	end
 end
 
-
-
 function table.Count(t)
-  local count = 0
-  if not t then
-    return count
-  end
-  for k, v in pairs(t) do
-    count = count + 1
-  end
-  return count
+	local count = 0
+	if not t then
+		return count
+	end
+	for k, v in pairs(t) do
+		count = count + 1
+	end
+	return count
 end
 
 function table.IsArray(self)
-  if not next(self) then
-    return true
-  end
-  local i = #self
-  return i ~= 0 and not next(self, i)
+	if not next(self) then
+		return true
+	end
+	local i = #self
+	return i ~= 0 and not next(self, i)
 end
 
 -- 递归比较表是否一致
 function table.Equals(old, new)
-  local old_type, new_type = type(old), type(new)
-  if old_type ~= new_type then
-    return false
-  end
-  if old_type == "table" then
-    if table.Count(old) ~= table.Count(new) then
-      return false
-    end
-    for old_k, old_v in pairs(old) do
-      if not table.Equals(old_v, new[old_k]) then
-        return false
-      end
-    end
-    return true
-  else
-    return old == new
-  end
+	local oldType, newType = type(old), type(new)
+	if oldType ~= newType then
+		return false
+	end
+	if oldType == "table" then
+		if table.Count(old) ~= table.Count(new) then
+			return false
+		end
+		for oldK, oldV in pairs(old) do
+			if not table.Equals(oldV, new[oldK]) then
+				return false
+			end
+		end
+		return true
+	else
+		return old == new
+	end
 end
 
 -- 浅克隆
 function table.Clone(t)
-  local u = setmetatable({}, getmetatable(t))
-  for i, v in pairs(t) do
-    u[i] = v
-  end
-  return u
+	local u = setmetatable({}, getmetatable(t))
+	for i, v in pairs(t) do
+		u[i] = v
+	end
+	return u
 end
 
 -- 深克隆
 function table.CloneDeep(t)
-  local function _Clone(dst, src)
-    for i, v in pairs(src) do
-      if type(v) == "table" then
-        dst[i] = _Clone({}, v)
-      else
-        dst[i] = v
-      end
-    end
-    setmetatable(dst, getmetatable(src))
-    return dst
-  end
+	local function _Clone(dst, src)
+		for i, v in pairs(src) do
+			if type(v) == "table" then
+				dst[i] = _Clone({}, v)
+			else
+				dst[i] = v
+			end
+		end
+		setmetatable(dst, getmetatable(src))
+		return dst
+	end
 
-  return _Clone({}, t)
+	return _Clone({}, t)
 end
 
 local function __Dump(self, depth, pre)
-  depth = depth or 1
-  pre = pre or ""
-  local next_pre = pre .. "  "
-  local self_type = type(self)
-  if self_type == "table" and depth > 0 then
-    local pieces = {}
-    if table.IsArray(self) then
-      for i = 1, #self do
-        local value_str = __Dump(self[i], depth - 1, next_pre)
-        table.insert(pieces, value_str)
-      end
-    else
-      for k, v in pairs(self) do
-        local key_str = __Dump(k, depth - 1, next_pre)
-        local value_str = __Dump(v, depth - 1, next_pre)
-        table.insert(pieces, string.format("\n%s[%s]=%s", next_pre, key_str, value_str))
-      end
-    end
-    return "{" .. table.concat(pieces, ", ") .. "}"
-  elseif self_type == "string" then
-    return '"' .. self .. '"'
-  else
-    return tostring(self)
-  end
+	depth = depth or 1
+	pre = pre or ""
+	local nextPre = pre .. "  "
+	local selfType = type(self)
+	if selfType == "table" and depth > 0 then
+		local pieces = {}
+		if table.IsArray(self) then
+			for i = 1, #self do
+				local valueStr = __Dump(self[i], depth - 1, nextPre)
+				table.insert(pieces, valueStr)
+			end
+		else
+			for k, v in pairs(self) do
+				local keyStr = __Dump(k, depth - 1, nextPre)
+				local valueStr = __Dump(v, depth - 1, nextPre)
+				table.insert(pieces, string.format("\n%s[%s]=%s", nextPre, keyStr, valueStr))
+			end
+		end
+		return "{" .. table.concat(pieces, ", ") .. "}"
+	elseif selfType == "string" then
+		return '"' .. self .. '"'
+	else
+		return tostring(self)
+	end
 end
 
 function table.Dump(self, depth)
-  depth = depth or 7
-  local str
-  return setmetatable({}, {__tostring = function()
-    if not str then str = __Dump(self, depth) end
-    return str
-  end})
+	depth = depth or 7
+	local str
+	return setmetatable({}, { __tostring = function()
+		if not str then
+			str = __Dump(self, depth)
+		end
+		return str
+	end })
 end
 
 -- .... 位置
 function table.SetValue(self, value, ...)
-  local poses = {...}
-  local curTable = self
-  for i = 1, #poses do
-    local pos = poses[i]
-    if i == #poses then
-      curTable[pos] = value
-      break
-    end
-    if curTable[pos] == nil then
-      curTable[pos] = {}
-    end
-    curTable = curTable[pos]
-  end
+	local poses = { ... }
+	local curTable = self
+	for i = 1, #poses do
+		local pos = poses[i]
+		if i == #poses then
+			curTable[pos] = value
+			break
+		end
+		if curTable[pos] == nil then
+			curTable[pos] = {}
+		end
+		curTable = curTable[pos]
+	end
 end
 
 -- .... 位置
 function table.GetValue(self, ...)
-  local poses = {...}
-  local curTable = self
-  for i = 1, #poses do
-    local pos = poses[i]
-    if i == #poses then
-      return curTable[pos]
-    end
-    curTable = curTable[pos]
-  end
+	local poses = { ... }
+	local curTable = self
+	for i = 1, #poses do
+		local pos = poses[i]
+		if i == #poses then
+			return curTable[pos]
+		end
+		curTable = curTable[pos]
+	end
 end
 
 -------------------------------------------------------------
 -- table.ApplyDiff(old,diff)
 -- 将diff中的东西应用到old中
-function table.ApplyDiff(old_dict, diff_dict)
-  if diff_dict == nil then
-    old_dict = nil
-    return
-  end
-  for k, v in pairs(diff_dict) do
-    if v == "__nil__" then
-      old_dict[k] = nil
-    elseif v == "__{}__" then
-      old_dict[k] = {}
-    elseif old_dict[k] and type(old_dict[k]) == "table" and type(v) == "table" then
-      table.ApplyDiff(old_dict[k], v)
-    else
-      old_dict[k] = v
-    end
-  end
+function table.ApplyDiff(oldDict, diffDict)
+	if diffDict == nil then
+		oldDict = nil
+		return
+	end
+	for k, v in pairs(diffDict) do
+		if v == "__nil__" then
+			oldDict[k] = nil
+		elseif v == "__{}__" then
+			oldDict[k] = {}
+		elseif oldDict[k] and type(oldDict[k]) == "table" and type(v) == "table" then
+			table.ApplyDiff(oldDict[k], v)
+		else
+			oldDict[k] = v
+		end
+	end
 end
 
 -- 必须和ApplyDiff使用
@@ -306,32 +305,32 @@ end
 -- local diff = table.GetDiff(old, new)
 -- table.ApplyDiff(old,diff)
 -- 这样old的就变成和new一模一样的数据
-function table.GetDiff(old_dict, new_dict)
-  local diff = {}
-  for k, new_v in pairs(new_dict) do
-    local old_v = old_dict[k]
-    if type(new_v) == "table" then
-      local old_v_type = type(old_v)
-      if next(new_v) == nil and (old_v_type ~= "table" or next(old_v) ~= nil) then
-        diff[k] = "__{}__"
-      elseif old_v_type == "table" then
-        diff[k] = table.GetDiff(old_v, new_v)
-      elseif new_v ~= old_v then
-        diff[k] = table.CloneDeep(new_v)
-      end
-    elseif new_v ~= old_v then
-      diff[k] = new_v
-    end
-  end
-  for k, _ in pairs(old_dict) do
-    if new_dict[k] == nil then
-      diff[k] = "__nil__"
-    end
-  end
-  if next(diff) == nil then
-    diff = nil
-  end
-  return diff
+function table.GetDiff(oldDict, newDict)
+	local diff = {}
+	for k, newV in pairs(newDict) do
+		local oldV = oldDict[k]
+		if type(newV) == "table" then
+			local oldVType = type(oldV)
+			if next(newV) == nil and (oldVType ~= "table" or next(oldV) ~= nil) then
+				diff[k] = "__{}__"
+			elseif oldVType == "table" then
+				diff[k] = table.GetDiff(oldV, newV)
+			elseif newV ~= oldV then
+				diff[k] = table.CloneDeep(newV)
+			end
+		elseif newV ~= oldV then
+			diff[k] = newV
+		end
+	end
+	for k, _ in pairs(oldDict) do
+		if newDict[k] == nil then
+			diff[k] = "__nil__"
+		end
+	end
+	if next(diff) == nil then
+		diff = nil
+	end
+	return diff
 end
 
 -- 必须和ApplyDiff使用
@@ -339,86 +338,86 @@ end
 -- local diff = table.GetNotExist(old, new)
 -- table.ApplyDiff(old,diff)
 -- 这样old就有new中的字段
-function table.GetNotExist(old_dict, new_dict)
-  local diff = {}
-  for new_k, new_v in pairs(new_dict) do
-    local old_v = old_dict[new_k]
-    if old_v == nil then
-      diff[new_k] = new_v
-    else
-      if type(old_v) == "table" and type(new_v) == "table" then
-        diff[new_k] = table.GetNotExist(old_v, new_v)
-      end
-      -- 其他不同情况不用处理
-    end
-  end
-  return diff
+function table.GetNotExist(oldDict, newDict)
+	local diff = {}
+	for newK, newV in pairs(newDict) do
+		local oldV = oldDict[newK]
+		if oldV == nil then
+			diff[newK] = newV
+		else
+			if type(oldV) == "table" and type(newV) == "table" then
+				diff[newK] = table.GetNotExist(oldV, newV)
+			end
+			-- 其他不同情况不用处理
+		end
+	end
+	return diff
 end
 
 
 -- 两个table是否不一样
-function table.IsDiff(old_dict, new_dict)
-  for k, _ in pairs(old_dict) do
-    if new_dict[k] == nil then
-      return true
-    end
-  end
-  for k, v in pairs(new_dict) do
-    if type(v) == "table" then
-      if type(old_dict[k]) ~= "table" then
-        return true
-      end
-      if table.IsDiff(old_dict[k], v) then
-        return true
-      end
-    elseif v ~= old_dict[k] then
-      return true
-    end
-  end
-  return false
+function table.IsDiff(oldDict, newDict)
+	for k, _ in pairs(oldDict) do
+		if newDict[k] == nil then
+			return true
+		end
+	end
+	for k, v in pairs(newDict) do
+		if type(v) == "table" then
+			if type(oldDict[k]) ~= "table" then
+				return true
+			end
+			if table.IsDiff(oldDict[k], v) then
+				return true
+			end
+		elseif v ~= oldDict[k] then
+			return true
+		end
+	end
+	return false
 end
 
 
 -----------------------------CS端相关处理-----------------------------------------------
 -- 将CS端的数组转为lua table
 -- index base on 1
-function table.ConvertCSArray2LuaTable(cs_array, element_convert_func)
-  local result = {}
-  for i = 0,cs_array.Length - 1 do
-    local element = cs_array[i]
-    if element_convert_func then
-      element = element_convert_func(element)
-    end
-    table.insert(result, element)
-  end
-  return result
+function table.ConvertCSArray2LuaTable(csArray, elementConvertFunc)
+	local result = {}
+	for i = 0, csArray.Length - 1 do
+		local element = csArray[i]
+		if elementConvertFunc then
+			element = elementConvertFunc(element)
+		end
+		table.insert(result, element)
+	end
+	return result
 end
 
 -- 将CS端的List转为lua table
 -- index base on 1
-function table.ConvertCSList2LuaTable(cs_list, element_convert_func)
-  local result = {}
-  for i = 0,cs_list.Count - 1 do
-    local element = cs_list[i]
-    if element_convert_func then
-      element = element_convert_func(element)
-    end
-    table.insert(result, element)
-  end
-  return result
+function table.ConvertCSList2LuaTable(csList, elementConvertFunc)
+	local result = {}
+	for i = 0, csList.Count - 1 do
+		local element = csList[i]
+		if elementConvertFunc then
+			element = elementConvertFunc(element)
+		end
+		table.insert(result, element)
+	end
+	return result
 end
 
 -- 将CS端的Dictionary转为lua table
 -- 如果直接从CS端的dict获取元素用 cs_dict:get_Item(key)
-function table.ConvertCSDict2LuaTable(cs_dict,element_convert_func)
-  local result = {}
-  for key,value in pairs(cs_dict) do
-    local _key = key
-    local _value = value
-    if element_convert_func then
-      _key, _value = element_convert_func(key, value)
-    end
-    result[_key] = _value
-  end
-  return result
+function table.ConvertCSDict2LuaTable(csDict, elementConvertFunc)
+	local result = {}
+	for key, value in pairs(csDict) do
+		local curKey = key
+		local curValue = value
+		if elementConvertFunc then
+			curKey, curValue = elementConvertFunc(key, value)
+		end
+		result[curKey] = curValue
+	end
+	return result
 end

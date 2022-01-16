@@ -2,15 +2,15 @@
 local UIObject = Class("UIObject", GameEntity)
 
 function UIObject:Init()
-  UIObject.super.Init(self)
-  ---@type table<string,UIPanel>
-  self.child_panel_dict = self.child_panel_dict or {}
-  ---@type CS.CsCat.UGUIEventListener
-  self.registered_uguiEventListener_list = self.registered_uguiEventListener_list or {}
+	UIObject.super.Init(self)
+	---@type table<string,UIPanel>
+	self.childPanelDict = self.childPanelDict or {}
+	---@type CS.CsCat.UGUIEventListener
+	self.registeredUGUIEventListenerList = self.registeredUGUIEventListenerList or {}
 end
 
 function UIObject:CreateGraphicComponent()
-  return self:AddComponent(nil, UIGraphicComponent, self.resLoadComponent)
+	return self:AddComponent(nil, UIGraphicComponent, self.resLoadComponent)
 end
 
 ----------------------------------------------------------------------
@@ -18,77 +18,77 @@ end
 ----------------------------------------------------------------------
 ---@param uguiEventListener CS.CsCat.UGUIEventListener
 function UIObject:SaveRegisteredUGUIEventListener(uguiEventListener)
-  if table.ContainsValue(self.registered_uguiEventListener_list , uguiEventListener) then
-    return
-  end
-  table.insert(self.registered_uguiEventListener_list, uguiEventListener)
+	if table.ContainsValue(self.registeredUGUIEventListenerList, uguiEventListener) then
+		return
+	end
+	table.insert(self.registeredUGUIEventListenerList, uguiEventListener)
 end
 
 -- OnClick
-function UIObject:RegisterOnClick(target, func, sound_path)
-  local result = function(go, eventData)
-    if sound_path then
-      global.client.audioManager:PlayUISound(sound_path)
-    end
-    func()
-  end
-  local gameObject = target.gameObject
-  UGUIEventListener.Get(gameObject).onClick = DelegateUtil.Add(UGUIEventListener.Get(gameObject).onClick, result)
-  self:SaveRegisteredUGUIEventListener(gameObject:GetComponent(typeof(CS.CsCat.UGUIEventListener)))
-  return result
+function UIObject:RegisterOnClick(target, func, soundPath)
+	local result = function(go, eventData)
+		if soundPath then
+			global.client.audioManager:PlayUISound(soundPath)
+		end
+		func()
+	end
+	local gameObject = target.gameObject
+	UGUIEventListener.Get(gameObject).onClick = DelegateUtil.Add(UGUIEventListener.Get(gameObject).onClick, result)
+	self:SaveRegisteredUGUIEventListener(gameObject:GetComponent(typeof(CS.CsCat.UGUIEventListener)))
+	return result
 end
 
 function UIObject:UnRegisterOnClick(target, func)
-  UGUIEventListener.RemoveListener(target.gameObject, func, "onClick")
+	UGUIEventListener.RemoveListener(target.gameObject, func, "onClick")
 end
 
 -- OnDrag
 function UIObject:RegisterOnDrag(target, func)
-  local result = function(go, eventData)
-    func(eventData)
-  end
-  local gameObject = target.gameObject
-  UGUIEventListener.Get(gameObject).onDrag = DelegateUtil.Add(UGUIEventListener.Get(gameObject).onDrag, result)
-  self:SaveRegisteredUGUIEventListener(gameObject:GetComponent(typeof(CS.CsCat.UGUIEventListener)))
-  return result
+	local result = function(go, eventData)
+		func(eventData)
+	end
+	local gameObject = target.gameObject
+	UGUIEventListener.Get(gameObject).onDrag = DelegateUtil.Add(UGUIEventListener.Get(gameObject).onDrag, result)
+	self:SaveRegisteredUGUIEventListener(gameObject:GetComponent(typeof(CS.CsCat.UGUIEventListener)))
+	return result
 end
 
 function UIObject:UnRegisterOnDrag(target, func)
-  UGUIEventListener.RemoveListener(target.gameObject, func, "onDrag")
+	UGUIEventListener.RemoveListener(target.gameObject, func, "onDrag")
 end
 
 -- OnPointerDown
 function UIObject:RegisterOnPointerDown(target, func)
-  local result = function(go, eventData)
-    func(eventData)
-  end
-  local gameObject = target.gameObject
-  UGUIEventListener.Get(gameObject).onPointerDown = DelegateUtil.Add(UGUIEventListener.Get(gameObject).onPointerDown, result)
-  self:SaveRegisteredUGUIEventListener(gameObject:GetComponent(typeof(CS.CsCat.UGUIEventListener)))
-  return result
+	local result = function(go, eventData)
+		func(eventData)
+	end
+	local gameObject = target.gameObject
+	UGUIEventListener.Get(gameObject).onPointerDown = DelegateUtil.Add(UGUIEventListener.Get(gameObject).onPointerDown, result)
+	self:SaveRegisteredUGUIEventListener(gameObject:GetComponent(typeof(CS.CsCat.UGUIEventListener)))
+	return result
 end
 
 function UIObject:UnRegisterOnPointerDown(target, func)
-  UGUIEventListener.RemoveListener(target.gameObject, func, "onPointerDown")
+	UGUIEventListener.RemoveListener(target.gameObject, func, "onPointerDown")
 end
 
 -- OnPointerUp
 function UIObject:RegisterOnPointerUp(target, func)
-  local result = function(go, eventData)
-    func(eventData)
-  end
-  local gameObject = target.gameObject
-  UGUIEventListener.Get(gameObject).onPointerUp = DelegateUtil.Add(UGUIEventListener.Get(gameObject).onPointerUp, result)
-  self:SaveRegisteredUGUIEventListener(gameObject:GetComponent(typeof(CS.CsCat.UGUIEventListener)))
-  return result
+	local result = function(go, eventData)
+		func(eventData)
+	end
+	local gameObject = target.gameObject
+	UGUIEventListener.Get(gameObject).onPointerUp = DelegateUtil.Add(UGUIEventListener.Get(gameObject).onPointerUp, result)
+	self:SaveRegisteredUGUIEventListener(gameObject:GetComponent(typeof(CS.CsCat.UGUIEventListener)))
+	return result
 end
 
 function UIObject:UnRegisterOnPointerUp(target, func)
-  UGUIEventListener.RemoveListener(target.gameObject, func, "onPointerUp")
+	UGUIEventListener.RemoveListener(target.gameObject, func, "onPointerUp")
 end
 
 function UIObject:UnRegister(target)
-  UGUIEventListener.RemoveAllListener(target)
+	UGUIEventListener.RemoveAllListener(target)
 end
 
 
@@ -96,33 +96,32 @@ end
 -- Panel相关
 ----------------------------------------------------------------------
 ---@generic T
----@param parent_transform CS.UnityEngine.Transform
----@param class_type T
+---@param parentTransform CS.UnityEngine.Transform
+---@param classType T
 ---@return T
-function UIObject:CreateChildPanel(key, class_type, parent_transform, ...)
-  ---@type UIPanel
-  local child_panel
-  if key then
-    child_panel = self:GetChild(key)
-  end
-  if child_panel then
-    error2("duplicate child_panel:%s", key)
-    return nil
-  end
-  child_panel = self:AddChildWithoutInit(key, class_type)
-  child_panel:Init(...)
-  child_panel:OnInitPanel(parent_transform)
-  child_panel:PostInit()
-  child_panel:SetIsEnabled(true, false)
-  self.child_panel_dict[child_panel.key] = child_panel
-  return child_panel
+function UIObject:CreateChildPanel(key, classType, parentTransform, ...)
+	---@type UIPanel
+	local childPanel
+	if key then
+		childPanel = self:GetChild(key)
+	end
+	if childPanel then
+		error2("duplicate child_panel:%s", key)
+		return nil
+	end
+	childPanel = self:AddChildWithoutInit(key, classType)
+	childPanel:Init(...)
+	childPanel:OnInitPanel(parentTransform)
+	childPanel:PostInit()
+	childPanel:SetIsEnabled(true, false)
+	self.childPanelDict[childPanel.key] = childPanel
+	return childPanel
 end
 
 function UIObject:Open()
-  self:AddUnityEvents()
-  self:AddGameEvents()
+	self:AddUnityEvents()
+	self:AddGameEvents()
 end
-
 
 function UIObject:AddUnityEvents()
 end
@@ -130,104 +129,102 @@ end
 function UIObject:AddGameEvents()
 end
 
-
 ---@return UIPanel
 function UIObject:GetChildPanel(key)
-  return self:GetChild(key)
+	return self:GetChild(key)
 end
 
 
 -- 从Panle中Close，再调到这里来，不要直接使用这个
 function UIObject:CloseChildPanel(key)
-  local child_panel = self:GetChildPanel(key)
-  if not child_panel then
-    return
-  end
-  if self.child_panel_dict[key] then
-    self.child_panel_dict[key] = nil
-  end
-  self:RemoveChild(key)
+	local childPanel = self:GetChildPanel(key)
+	if not childPanel then
+		return
+	end
+	if self.childPanelDict[key] then
+		self.childPanelDict[key] = nil
+	end
+	self:RemoveChild(key)
 end
 
-
-function UIObject:CloseAllChildPanels(is_reamin_resident_panels)
-  local panel_name_list = table.Keys_Dict(self.child_panel_dict)
-  for _, panel_name in ipairs(panel_name_list) do
-    local child_panel = self.child_panel_dict[panel_name]
-    if not child_panel.is_resident or not is_reamin_resident_panels then
-      child_panel:Close()
-    end
-  end
+function UIObject:CloseAllChildPanels(isRemainResidentPanels)
+	local panelNameList = table.Keys_Dict(self.childPanelDict)
+	for _, panelName in ipairs(panelNameList) do
+		local childPanel = self.childPanelDict[panelName]
+		if not childPanel.is_resident or not isRemainResidentPanels then
+			childPanel:Close()
+		end
+	end
 end
 
 
 ----------------------------------------------------------------------
 -- Util
 ----------------------------------------------------------------------
----@param callbak fun(image:CS.UnityEngine.UI.Image)
----@param is_setNativeSize @不填为true
----@param asset_path string
+---@param callback fun(image:CS.UnityEngine.UI.Image)
+---@param isSetNativeSize @不填为true
+---@param assetPath string
 ---@param image CS.UnityEngine.UI.Image
-function UIObject:SetImageAsync(image, asset_path, callbak, is_setNativeSize)
-  if is_setNativeSize == nil then
-    is_setNativeSize = true
-  end
-  self.resLoadComponent:GetOrLoadAsset(string.GetMainAssetPath(asset_path), function(assetCat)
-    if IsNil(image) then
-      return
-    end
-    image.sprite = assetCat:Get(string.GetSubAssetPath(asset_path),typeof(CS.UnityEngine.Sprite))
-    if is_setNativeSize then
-      image:SetNativeSize()
-    end
-    if callbak then
-      callbak(image)
-    end
-  end)
+function UIObject:SetImageAsync(image, assetPath, callback, isSetNativeSize)
+	if isSetNativeSize == nil then
+		isSetNativeSize = true
+	end
+	self.resLoadComponent:GetOrLoadAsset(string.GetMainAssetPath(assetPath), function(assetCat)
+		if IsNil(image) then
+			return
+		end
+		image.sprite = assetCat:Get(string.GetSubAssetPath(assetPath), typeof(CS.UnityEngine.Sprite))
+		if isSetNativeSize then
+			image:SetNativeSize()
+		end
+		if callback then
+			callback(image)
+		end
+	end)
 end
 
----@param callbak fun(image:CS.UnityEngine.UI.RawImage)
----@param is_setNativeSize @不填为true
----@param asset_path string
+---@param callback fun(image:CS.UnityEngine.UI.RawImage)
+---@param isSetNativeSize @不填为true
+---@param assetPath string
 ---@param image CS.UnityEngine.UI.RawImage
-function UIObject:SetRawImageAsync(image, asset_path, callbak , is_setNativeSize)
-  if is_setNativeSize == nil then
-    is_setNativeSize = true
-  end
-  self.resLoadComponent:GetOrLoadAsset(string.GetMainAssetPath(asset_path), function(assetCat)
-    if IsNil(image) then
-      return
-    end
-    image.texture = assetCat:Get(string.GetSubAssetPath(asset_path),typeof(CS.UnityEngine.Texture))
-    if is_setNativeSize then
-      image:SetNativeSize()
-    end
-    if callbak then
-      callbak(image)
-    end
-  end)
+function UIObject:SetRawImageAsync(image, assetPath, callback, isSetNativeSize)
+	if isSetNativeSize == nil then
+		isSetNativeSize = true
+	end
+	self.resLoadComponent:GetOrLoadAsset(string.GetMainAssetPath(assetPath), function(assetCat)
+		if IsNil(image) then
+			return
+		end
+		image.texture = assetCat:Get(string.GetSubAssetPath(assetPath), typeof(CS.UnityEngine.Texture))
+		if isSetNativeSize then
+			image:SetNativeSize()
+		end
+		if callback then
+			callback(image)
+		end
+	end)
 end
 
 ----------------------------------------------------------------------
 -- __Reset
 ----------------------------------------------------------------------
 function UIObject:__Reset()
-  UIObject.super.__Reset(self)
-  for _, registered_uguiEventListener in ipairs(self.registered_uguiEventListener_list)  do
-    registered_uguiEventListener:Destroy()
-  end
-  self.registered_uguiEventListener_list={}
+	UIObject.super.__Reset(self)
+	for _, registeredUGUIEventListener in ipairs(self.registeredUGUIEventListenerList) do
+		registeredUGUIEventListener:Destroy()
+	end
+	self.registeredUGUIEventListenerList = {}
 end
 
 ----------------------------------------------------------------------
 -- __Destroy
 ----------------------------------------------------------------------
 function UIObject:__Destroy()
-  UIObject.super.__Destroy(self)
-  for _, registered_uguiEventListener in ipairs(self.registered_uguiEventListener_list)  do
-    registered_uguiEventListener:Destroy()
-  end
-  self.registered_uguiEventListener_list={}
+	UIObject.super.__Destroy(self)
+	for _, registeredUGUIEventListener in ipairs(self.registeredUGUIEventListenerList) do
+		registeredUGUIEventListener:Destroy()
+	end
+	self.registeredUGUIEventListenerList = {}
 end
 
 return UIObject

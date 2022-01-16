@@ -3,7 +3,7 @@ local EffectManager = Class("EffectManager", TickObject)
 
 function EffectManager:Init()
   EffectManager.super.Init(self)
-  self.resLoadComponent.resLoad.is_not_check_destroy = true --effectManager销毁的时候才去把assetBundle销毁
+  self.resLoadComponent.resLoad.isNotCheckDestroy = true --effectManager销毁的时候才去把assetBundle销毁
   self:AddListener(UnitEventNameConst.On_Unit_Destroy, function(...)
     self:DestroyByUnit(...)
   end)

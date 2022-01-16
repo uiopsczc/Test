@@ -1,77 +1,70 @@
-require("luacat.util.LogUtil")
-require("global.GlobalVars")
+require("LuaCat.Util.LogUtil")
+require("Global.GlobalVars")
 Main = {}
 
 function Main.StartUp()
-  ---@type UpdateManager
-  global.updateManager = UpdateManager.New()
-  ---@type DataCenterManager
-  global.dataCenterManager = require("luacat.dataCenterManager.DataCenterManager").New()
-  ---@type PoolCatManager
-  global.poolCatManager = PoolCatManager.New()
-  ---@type CacheManager
-  global.cacheManager = CacheManager.New()
+	---@type UpdateManager
+	global.updateManager = UpdateManager.New()
+	---@type DataCenterManager
+	global.dataCenterManager = require("LuaCat.DataCenterManager.DataCenterManager").New()
+	---@type PoolCatManager
+	global.poolCatManager = PoolCatManager.New()
+	---@type CacheManager
+	global.cacheManager = CacheManager.New()
 
+	global.Lang = require("LuaCat.Lang.Lang")
+	---@type GameData
+	global.gameData = require("LuaCat.GameData.GameData").New(SerializeDataConst.Save_File_Path_lua)
+	---@type SingletonMaster
+	global.singletonMaster = require("LuaCat.Singleton.SingletonMaster").New()
 
-  global.Lang =  require("luacat.lang.Lang")
-  ---@type GameData
-  global.gameData = require("luacat.gameData.GameData").New(SerializeDataConst.Save_File_Path_lua)
-  ---@type SingletonMaster
-  global.singletonMaster = require("luacat.singleton.SingletonMaster").New()
+	---@type Client
+	global.client = require("LuaCat.Client").New()
+	global.client:PostInit()
+	global.client:SetIsEnabled(true, false)
+	global.client:Start()
 
-
-
-
-
-  ---@type Client
-  global.client = require("luacat.Client").New()
-  global.client:PostInit()
-  global.client:SetIsEnabled(true, false)
-  global.client:Start()
-
-
-  global.updateManager:AddUpdate(Main.Update)
-  global.updateManager:AddLateUpdate(Main.LateUpdate)
-  global.updateManager:AddFixedUpdate(Main.FixedUpdate)
-
+	global.updateManager:AddUpdate(Main.Update)
+	global.updateManager:AddLateUpdate(Main.LateUpdate)
+	global.updateManager:AddFixedUpdate(Main.FixedUpdate)
 
 
 end
 
-function Main.Update(deltatime, unscaled_deltatime)
-  xpcall(function()
-    global.client:Update(deltatime, unscaled_deltatime)
-    global.client:CheckDestroyed()
-  end, error2)
+function Main.Update(deltaTime, unscaledDeltaTime)
+	xpcall(function()
+		global.client:Update(deltaTime, unscaledDeltaTime)
+		global.client:CheckDestroyed()
+	end, error2)
 end
 
-function Main.LateUpdate(deltatime, unscaled_deltatime)
-  xpcall(function()
-    global.client:LateUpdate(deltatime, unscaled_deltatime)
-  end, error2)
+function Main.LateUpdate(deltaTime, unscaledDeltaTime)
+	xpcall(function()
+		global.client:LateUpdate(deltaTime, unscaledDeltaTime)
+	end, error2)
 end
 
-function Main.FixedUpdate(deltatime, unscaled_deltatime)
-  xpcall(function()
-    global.client:FixedUpdate(deltatime, unscaled_deltatime)
-  end, error2)
+function Main.FixedUpdate(deltaTime, unscaledDeltaTime)
+	xpcall(function()
+		global.client:FixedUpdate(deltaTime, unscaledDeltaTime)
+	end, error2)
 end
 
-function OnApplicationPause(is_paused)
-  xpcall(function()
-    return global.client:OnApplicationPause(is_paused)
-  end, error2)
+function OnApplicationPause(isPaused)
+	xpcall(function()
+		return global.client:OnApplicationPause(isPaused)
+	end, error2)
 end
 
 function OnApplicationQuit()
-  xpcall(function()
-    return global.client:OnApplicationQuit()
-  end, error2)
+	xpcall(function()
+		return global.client:OnApplicationQuit()
+	end, error2)
 end
 
 function OnGUI()
-  xpcall(function()
-    return global.client:OnGUI()
-  end, error2)
+	xpcall(function()
+		return global.client:OnGUI()
+	end, error2)
 end
 

@@ -2,24 +2,24 @@
 local UIHUDTextBase = Class("UIHUDTextBase", UIObject)
 
 function UIHUDTextBase:Init(parent_transform)
-  UIHUDTextBase.super.Init(self)
-  self.graphicComponent:SetPrefabPath("Assets/Resources/common/ui/prefab/UIHUDText.prefab")
-  self.graphicComponent:SetParentTransform(parent_transform)
+	UIHUDTextBase.super.Init(self)
+	self.graphicComponent:SetPrefabPath("Assets/Resources/common/ui/prefab/UIHUDText.prefab")
+	self.graphicComponent:SetParentTransform(parent_transform)
 end
 
 function UIHUDTextBase:InitGameObjectChildren()
-  UIHUDTextBase.super.InitGameObjectChildren(self)
-  ---@type CS.UnityEngine.UI.Text
-  self.text_comp = self.graphicComponent.gameObject:GetComponent(typeof(CS.UnityEngine.UI.Text))
-  self.text_alpha = self.text_comp.color.a
-  ---@type CS.UnityEngine.Animation
-  self.text_animation = self.graphicComponent.gameObject:GetComponent(typeof(CS.UnityEngine.Animation))
+	UIHUDTextBase.super.InitGameObjectChildren(self)
+	---@type CS.UnityEngine.UI.Text
+	self.textComp = self.graphicComponent.gameObject:GetComponent(typeof(CS.UnityEngine.UI.Text))
+	self.textAlpha = self.textComp.color.a
+	---@type CS.UnityEngine.Animation
+	self.textAnimation = self.graphicComponent.gameObject:GetComponent(typeof(CS.UnityEngine.Animation))
 end
 
 function UIHUDTextBase:__Reset()
-  UIHUDTextBase.super.__Reset(self)
-  local color = self.text_comp.color
-  self.text_comp.color = Color.New(color.r, color.g, color.b, self.text_alpha)
+	UIHUDTextBase.super.__Reset(self)
+	local color = self.textComp.color
+	self.textComp.color = Color.New(color.r, color.g, color.b, self.textAlpha)
 
 end
 

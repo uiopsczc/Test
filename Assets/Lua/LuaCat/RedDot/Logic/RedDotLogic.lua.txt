@@ -3,138 +3,130 @@ require("luacat.redDot.define.RedDotConst")
 local RedDotLogic = Class("RedDotLogic", GameEntity)
 
 function RedDotLogic:Init()
-  RedDotLogic.super.Init(self)
-  self.red_dot_info_dict = {} -- dict<tag = red_dot_info>
-  for _, red_dot_info in ipairs(RedDotConst.Red_Dot_Info_List) do
-    self:AddRedDotInfo(red_dot_info.tag, red_dot_info.check_func, red_dot_info.listen_name_list, red_dot_info.child_tag_list, red_dot_info.child_tag_all_params_func_dict)
-  end
+	RedDotLogic.super.Init(self)
+	self.redDotInfoDict = {} -- dict<tag = red_dot_info>
+	for _, redDotInfo in ipairs(RedDotConst.Red_Dot_Info_List) do
+		self:AddRedDotInfo(redDotInfo.tag, redDotInfo.check_func, redDotInfo.listen_name_list, redDotInfo.child_tag_list, redDotInfo.child_tag_all_params_func_dict)
+	end
 
-  self.listen_trigger_name_dict = {} --dict<listen_name = dict<trigger_name(self_or_parent_tag) = true>>
-  self.tag_trigger_name_dict = {}  --  dict<tag = dict<trigger_name(self_or_parent_tag) = true>>
-  self.listener_dict = {} -- dict<listen_name = listener> listener触发listen_trigger_name_dict中对应的trigger_name
-  self:__ListenAllEvent()
+	self.listenTriggerNameDict = {} --dict<listen_name = dict<trigger_name(self_or_parent_tag) = true>>
+	self.tagTriggerNameDict = {}  --  dict<tag = dict<trigger_name(self_or_parent_tag) = true>>
+	self.listenerDict = {} -- dict<listen_name = listener> listener触发listen_trigger_name_dict中对应的trigger_name
+	self:__ListenAllEvent()
 end
 
-
-function RedDotLogic:AddRedDotInfo(tag, check_func, listen_name_list, child_tag_list, child_tag_all_params_func_dict)
-  if self.red_dot_info_dict[tag] then
-    error(string.format("重复的tag %s", tag))
-  end
-  if child_tag_list then
-    self.red_dot_info_dict[tag]= self:__CreateRedDotInfoContiansChildTagList(tag, check_func, listen_name_list, child_tag_list, child_tag_all_params_func_dict)
-  else
-    self.red_dot_info_dict[tag] = {tag = tag, check_func = check_func,listen_name_list = listen_name_list,child_tag_list = child_tag_list}
-  end
+function RedDotLogic:AddRedDotInfo(tag, checkFunc, listenNameList, childTagList, childTagAllParamsFuncDict)
+	if self.redDotInfoDict[tag] then
+		error(string.format("重复的tag %s", tag))
+	end
+	if childTagList then
+		self.redDotInfoDict[tag] = self:__CreateRedDotInfoContainsChildTagList(tag, checkFunc, listenNameList, childTagList, childTagAllParamsFuncDict)
+	else
+		self.redDotInfoDict[tag] = { tag = tag, checkFunc = checkFunc, listenNameList = listenNameList, childTagList = childTagList }
+	end
 end
 
-function RedDotLogic:__CreateRedDotInfoContiansChildTagList(tag, check_func, listen_name_list, child_tag_list, child_tag_all_params_func_dict)
-  local warp_check_func = function(...)
-    for _, child_tag in ipairs(child_tag_list) do
-      local child_red_dot_info = self.red_dot_info_dict[child_tag]
-      if child_tag_all_params_func_dict and child_tag_all_params_func_dict[child_tag] then
-        local child_tag_all_params = child_tag_all_params_func_dict[child_tag]()
-        for _, child_tag_params in ipairs(child_tag_all_params) do
-          if child_red_dot_info.check_func(table.SafeUnpack(child_tag_params)) then -- 一般是这里调用
-            return true
-          end
-        end
-      else
-        if child_red_dot_info.check_func() then -- 一般是这里调用
-          return true
-        end
-      end
-    end
-    if check_func then
-      return check_func(...)
-    end
-  end
-  return {
-    tag = tag,
-    check_func = warp_check_func,
-    listen_name_list = listen_name_list,
-    child_tag_list = child_tag_list
-  }
+function RedDotLogic:__CreateRedDotInfoContainsChildTagList(tag, checkFunc, listenNameList, childTagList, childTagAllParamsFuncDict)
+	local warpCheckFunc = function(...)
+		for _, childTag in ipairs(childTagList) do
+			local childRedDotInfo = self.redDotInfoDict[childTag]
+			if childTagAllParamsFuncDict and childTagAllParamsFuncDict[childTag] then
+				local childTagAllParams = childTagAllParamsFuncDict[childTag]()
+				for _, childTagParams in ipairs(childTagAllParams) do
+					if childRedDotInfo.checkFunc(table.SafeUnpack(childTagParams)) then
+						-- 一般是这里调用
+						return true
+					end
+				end
+			else
+				if childRedDotInfo.checkFunc() then
+					-- 一般是这里调用
+					return true
+				end
+			end
+		end
+		if checkFunc then
+			return checkFunc(...)
+		end
+	end
+	return {
+		tag = tag,
+		checkFunc = warpCheckFunc,
+		listenNameList = listenNameList,
+		childTagList = childTagList
+	}
 end
-
 
 function RedDotLogic:__ListenAllEvent()
-  for tag, red_dot_info in pairs(self.red_dot_info_dict) do
-    local listen_name_list = red_dot_info.listen_name_list or {}
-    -- child_tag触发的时候连带触发其父tag,构建child_tag对应的父tag引用
-    self:__RecordAllTrigger(nil, tag, red_dot_info) -- 因为可能没有child_red_dot_info.listen_name_list
-    for _, listen_name in ipairs(listen_name_list) do
-      self:__RecordAllTrigger(listen_name, tag, red_dot_info)
-      if not self.listener_dict[listen_name] then
-        self.listener_dict[listen_name] = self:AddListener(listen_name, function()
-          -- 这里再转触发给red_dot_mgr
-          local dict = self.listen_trigger_name_dict[listen_name]
-          for trigger_name, _ in pairs(dict) do
-            self:Broadcast(trigger_name)
-          end
-        end)
-      end
-    end
-  end
+	for tag, redDotInfo in pairs(self.redDotInfoDict) do
+		local listenNameList = redDotInfo.listenNameList or {}
+		-- child_tag触发的时候连带触发其父tag,构建child_tag对应的父tag引用
+		self:__RecordAllTrigger(nil, tag, redDotInfo) -- 因为可能没有child_red_dot_info.listen_name_list
+		for _, listenName in ipairs(listenNameList) do
+			self:__RecordAllTrigger(listenName, tag, redDotInfo)
+			if not self.listenerDict[listenName] then
+				self.listenerDict[listenName] = self:AddListener(listenName, function()
+					-- 这里再转触发给red_dot_mgr
+					local dict = self.listenTriggerNameDict[listenName]
+					for triggerName, _ in pairs(dict) do
+						self:Broadcast(triggerName)
+					end
+				end)
+			end
+		end
+	end
 end
 
-function RedDotLogic:__RecordAllTrigger(listen_name, trigger_name, red_dot_info)
-  local tag = red_dot_info.tag
-  self:__RecordTagTrigger(tag, trigger_name)
-  self:__RecordListenTrigger(listen_name, trigger_name)
-  if red_dot_info.child_tag_list then
-    for _, child_tag in ipairs(red_dot_info.child_tag_list) do
-      local child_red_dot_info = self.red_dot_info_dict[child_tag]
-      -- child_tag触发的时候连带触发其父tag,构建child_tag对应的父tag引用
-      self:__RecordAllTrigger(nil, trigger_name, child_red_dot_info) -- 因为可能没有child_red_dot_info.listen_name_list
-      for _, listen_name in ipairs(child_red_dot_info.listen_name_list) do
-        self:__RecordAllTrigger(listen_name, trigger_name, child_red_dot_info)
-      end
-    end
-  end
+function RedDotLogic:__RecordAllTrigger(listenName, triggerName, redDotInfo)
+	local tag = redDotInfo.tag
+	self:__RecordTagTrigger(tag, triggerName)
+	self:__RecordListenTrigger(listenName, triggerName)
+	if redDotInfo.childTagList then
+		for _, childTag in ipairs(redDotInfo.childTagList) do
+			local childRedDotInfo = self.redDotInfoDict[childTag]
+			-- child_tag触发的时候连带触发其父tag,构建child_tag对应的父tag引用
+			self:__RecordAllTrigger(nil, triggerName, childRedDotInfo) -- 因为可能没有child_red_dot_info.listen_name_list
+			for _, listenName in ipairs(childRedDotInfo.listen_name_list) do
+				self:__RecordAllTrigger(listenName, triggerName, childRedDotInfo)
+			end
+		end
+	end
 end
 
-
-function RedDotLogic:__RecordListenTrigger(listen_name, trigger_name)
-  if not listen_name then
-    return
-  end
-  self.listen_trigger_name_dict[listen_name] = self.listen_trigger_name_dict[listen_name] or {}
-  self.listen_trigger_name_dict[listen_name][trigger_name] = true
+function RedDotLogic:__RecordListenTrigger(listenName, triggerName)
+	if not listenName then
+		return
+	end
+	self.listenTriggerNameDict[listenName] = self.listenTriggerNameDict[listenName] or {}
+	self.listenTriggerNameDict[listenName][triggerName] = true
 end
 
-function RedDotLogic:__RecordTagTrigger(tag, trigger_name)
-  if not tag then
-    return
-  end
-  self.tag_trigger_name_dict[tag] = self.tag_trigger_name_dict[tag] or {}
-  self.tag_trigger_name_dict[tag][trigger_name] = true
+function RedDotLogic:__RecordTagTrigger(tag, triggerName)
+	if not tag then
+		return
+	end
+	self.tagTriggerNameDict[tag] = self.tagTriggerNameDict[tag] or {}
+	self.tagTriggerNameDict[tag][triggerName] = true
 end
 
 -------------------------------------------------------Util----------------------------------------------------
 
 function RedDotLogic:GetRedDotInfoByTag(tag)
-  local red_dot_info = self.red_dot_info_dict[tag]
-  if not red_dot_info then
-    error(string.format("不存在的tag  %s", tag))
-  end
-  return red_dot_info
+	local redDotInfo = self.redDotInfoDict[tag]
+	if not redDotInfo then
+		error(string.format("不存在的tag  %s", tag))
+	end
+	return redDotInfo
 end
 
 function RedDotLogic:TriggerTag(tag)
-  local dict = self.tag_trigger_name_dict[tag]
-  if not dict then
-    error("不存在的TagBtnOnClick tag %s", tag)
-  end
-  for trigger_name, _ in pairs(dict) do
-    self:Broadcast(trigger_name)
-  end
+	local dict = self.tagTriggerNameDict[tag]
+	if not dict then
+		error("不存在的TagBtnOnClick tag %s", tag)
+	end
+	for triggerName, _ in pairs(dict) do
+		self:Broadcast(triggerName)
+	end
 end
-
-
-
-
-
-
-
 
 return RedDotLogic

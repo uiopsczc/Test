@@ -3,31 +3,31 @@
 -- 1、成员函数、私有函数绑定：BindCallback(obj, callback, ...)
 -- 2、闭包绑定：BindCallback(callback, ...)
 function BindCallback(...)
-  local bind_func = nil
-  local params = table.SafePack(...)
-  assert(params.n >= 1, "BindCallback : error params count!")
-  if type(params[1]) == "table" and type(params[2]) == "function" then
-    bind_func = Bind(...)
-  elseif type(params[1]) == "function" then
-    bind_func = Bind(nil, ...)
-  else
-    error("BindCallback : error params list!")
-  end
-  return bind_func
+	local bindFunc = nil
+	local params = table.SafePack(...)
+	assert(params.n >= 1, "BindCallback : error params count!")
+	if type(params[1]) == "table" and type(params[2]) == "function" then
+		bindFunc = Bind(...)
+	elseif type(params[1]) == "function" then
+		bindFunc = Bind(nil, ...)
+	else
+		error("BindCallback : error params list!")
+	end
+	return bindFunc
 end
 
 -- 闭包绑定   将self作为第一个参数放入func中调用，后面的...参数作为第二个以后的参数
 function Bind(self, func, ...)
-  assert(self == nil or type(self) == "table")
-  assert(func ~= nil and type(func) == "function")
-  local params = nil
-  if self == nil then
-    params = table.SafePack(...)
-  else
-    params = table.SafePack(self, ...)
-  end
-  return function(...)
-    local args = table.ConcatSafePack(params, table.SafePack(...))
-    func(table.SafeUnpack(args))
-  end
+	assert(self == nil or type(self) == "table")
+	assert(func ~= nil and type(func) == "function")
+	local params = nil
+	if self == nil then
+		params = table.SafePack(...)
+	else
+		params = table.SafePack(self, ...)
+	end
+	return function(...)
+		local args = table.ConcatSafePack(params, table.SafePack(...))
+		func(table.SafeUnpack(args))
+	end
 end

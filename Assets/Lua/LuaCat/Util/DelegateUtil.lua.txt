@@ -1,49 +1,46 @@
 ---@class DelegateUtil
 DelegateUtil = {}
 
-
 function DelegateUtil.Add(source, func)
-  if not source then
-    if func then
-      return func
-    else
-      return nil
-    end
-  else
-    if func then
-      return source + func
-    else
-      return source
-    end
-  end
+	if not source then
+		if func then
+			return func
+		else
+			return nil
+		end
+	else
+		if func then
+			return source + func
+		else
+			return source
+		end
+	end
 end
-
 
 function DelegateUtil.Remove(source, func)
-  if not source then
-    return nil
-  else
-    if func then
-      return source - func
-    else
-      return source
-    end
-  end
+	if not source then
+		return nil
+	else
+		if func then
+			return source - func
+		else
+			return source
+		end
+	end
 end
 
-
-function DelegateUtil.InvokeCallback(callback_list,...)
-  for _, callback in ipairs(callback_list) do
-    callback(...)
-  end
+function DelegateUtil.InvokeCallback(callbackList, ...)
+	for _, callback in ipairs(callbackList) do
+		callback(...)
+	end
 end
 
-function DelegateUtil.AddCallback(callback_list,func)
-  table.insert(callback_list,func)
+function DelegateUtil.AddCallback(callbackList, func)
+	table.insert(callbackList, func)
 end
 
-function DelegateUtil.RemoveCallback(callback_list,func)
-  table.RemoveByValue_Array(callback_list, func)
+function DelegateUtil.RemoveCallback(callbackList, func)
+	table.RemoveByValue_Array(callbackList, func)
 end
 
 

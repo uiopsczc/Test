@@ -1,87 +1,86 @@
-
 ---@class TimerManagerPlugin:Class
 local TimerManagerPlugin = Class("TimerManagerPlugin")
 
 function TimerManagerPlugin:Init(timerManager)
-  ---@type TimerManager
-  self.timerManager = timerManager
-  ---@type table<Timer,boolean>
-  self.timer_dict = {}
+	---@type TimerManager
+	self.timerManager = timerManager
+	---@type table<Timer,boolean>
+	self.timerDict = {}
 end
 
 ---@param timer Timer
 function TimerManagerPlugin:RemoveTimer(timer)
-  self.timerManager:RemoveTimer(timer)
-  self.timer_dict[timer] = nil
+	self.timerManager:RemoveTimer(timer)
+	self.timerDict[timer] = nil
 end
 
 function TimerManagerPlugin:RemoveAllTimers()
-  for timer,_  in pairs(self.timer_dict) do
-    self.timerManager:RemoveTimer(timer)
-  end
-  self.timer_dict = {}
+	for timer, _ in pairs(self.timerDict) do
+		self.timerManager:RemoveTimer(timer)
+	end
+	self.timerDict = {}
 end
 
 -------------------------------------------------------------------------------------------------------
 -- 获取Update定时器
 ---@return Timer
-function TimerManagerPlugin:AddTimer(target_func, target_func_args, delay, interval, update_mode, is_use_unscaledDeltaTime, is_coroutine_timer, is_use_frame)
-  ---@type Timer
-  local timer = self.timerManager:AddTimer(target_func, target_func_args, delay, interval, update_mode, is_use_unscaledDeltaTime, is_coroutine_timer, is_use_frame)
-  self.timer_dict[timer] = true
-  return timer
+function TimerManagerPlugin:AddTimer(targetFunc, targetFuncArgs, delay, interval, updateMode, isUseUnscaledDeltaTime, isCoroutineTimer, isUseFrame)
+	---@type Timer
+	local timer = self.timerManager:AddTimer(targetFunc, targetFuncArgs, delay, interval, updateMode, isUseUnscaledDeltaTime, isCoroutineTimer, isUseFrame)
+	self.timerDict[timer] = true
+	return timer
 end
 
 ---@return Timer
-function TimerManagerPlugin:AddCoTimer(target_func, target_func_args, delay, interval, update_mode, is_use_unscaledDeltaTime, is_use_frame)
-  ---@type Timer
-  local timer = self.timerManager:AddCoTimer(target_func, target_func_args, delay, interval, update_mode, is_use_unscaledDeltaTime, is_use_frame)
-  self.timer_dict[timer] = true
-  return timer
+function TimerManagerPlugin:AddCoTimer(targetFunc, targetFuncArgs, delay, interval, updateMode, isUseUnscaledDeltaTime, isUseFrame)
+	---@type Timer
+	local timer = self.timerManager:AddCoTimer(targetFunc, targetFuncArgs, delay, interval, updateMode, isUseUnscaledDeltaTime, isUseFrame)
+	self.timerDict[timer] = true
+	return timer
 end
 
-function TimerManagerPlugin:AddUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
-  local timer = self.timerManager:AddUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
-  self.timer_dict[timer] = true
-  return timer
+function TimerManagerPlugin:AddUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
+	local timer = self.timerManager:AddUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
+	self.timerDict[timer] = true
+	return timer
 end
-function TimerManagerPlugin:AddFixedUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
-  local timer = self.timerManager:AddFixedUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
-  self.timer_dict[timer] = true
-  return timer
+function TimerManagerPlugin:AddFixedUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
+	local timer = self.timerManager:AddFixedUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
+	self.timerDict[timer] = true
+	return timer
 end
-function TimerManagerPlugin:AddLateUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
-  local timer = self.timerManager:AddLateUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
-  self.timer_dict[timer] = true
-  return timer
+function TimerManagerPlugin:AddLateUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
+	local timer = self.timerManager:AddLateUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
+	self.timerDict[timer] = true
+	return timer
 end
 
-function TimerManagerPlugin:AddCoUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
-  local timer = self.timerManager:AddCoUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
-  self.timer_dict[timer] = true
-  return timer
+function TimerManagerPlugin:AddCoUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
+	local timer = self.timerManager:AddCoUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
+	self.timerDict[timer] = true
+	return timer
 end
-function TimerManagerPlugin:AddCoFixedUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
-  local timer = self.timerManager:AddCoFixedUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
-  self.timer_dict[timer] = true
-  return timer
+function TimerManagerPlugin:AddCoFixedUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
+	local timer = self.timerManager:AddCoFixedUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
+	self.timerDict[timer] = true
+	return timer
 end
-function TimerManagerPlugin:AddCoLateUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
-  local timer = self.timerManager:AddCoLateUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
-  self.timer_dict[timer] = true
-  return timer
+function TimerManagerPlugin:AddCoLateUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
+	local timer = self.timerManager:AddCoLateUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
+	self.timerDict[timer] = true
+	return timer
 end
 
 function TimerManagerPlugin:SetIsPaused(is_paused)
-  for timer,_  in pairs(self.timer_dict) do
-    timer:SetIsPaused(is_paused)
-  end
-  self.timer_dict = {}
+	for timer, _ in pairs(self.timerDict) do
+		timer:SetIsPaused(is_paused)
+	end
+	self.timerDict = {}
 end
 
 -------------------------------------------------------------------------------------------------------
 function TimerManagerPlugin:Destroy()
-  self:RemoveAllTimers()
+	self:RemoveAllTimers()
 end
 
 return TimerManagerPlugin

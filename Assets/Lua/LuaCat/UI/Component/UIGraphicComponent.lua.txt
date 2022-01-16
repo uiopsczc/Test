@@ -1,11 +1,9 @@
 ---@class UIGraphicComponent:GraphicComponent
 local UIGraphicComponent = Class("UIGraphicComponent", GraphicComponent)
 
-
-function UIGraphicComponent:SetGameObject(gameObject, is_not_destroy_gameObject)
-  UIGraphicComponent.super.SetGameObject(self, gameObject, is_not_destroy_gameObject)
-  self.entity:Open()
+function UIGraphicComponent:SetGameObject(gameObject, isNotDestroyGameObject)
+	UIGraphicComponent.super.SetGameObject(self, gameObject, isNotDestroyGameObject)
+	self.entity:Open()
 end
-
 
 return UIGraphicComponent

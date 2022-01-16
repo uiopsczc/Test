@@ -1,70 +1,68 @@
 -- 寻找t中value对应的key
 function table.FindKeyByValue_Dict(t, value)
-  for k, v in pairs(t) do
-    if v == value then
-      return k
-    end
-  end
-  return nil
+	for k, v in pairs(t) do
+		if v == value then
+			return k
+		end
+	end
+	return nil
 end
 
-function table.FindKey_Dict(t,key)
-  for _key, _ in pairs(t) do
-    if _key == key then
-      return _key
-    end
-  end
+function table.FindKey_Dict(t, key)
+	for _key, _ in pairs(t) do
+		if _key == key then
+			return _key
+		end
+	end
 end
 
-function table.Remove_Dict(dict,key)
-  if dict == nil then
-    return nil
-  end
-  local result,to_remove_key
-  for _key,_ in pairs(dict) do
-    if _key == key then
-      to_remove_key = _key
-      break
-    end
-  end
-  if to_remove_key~=nil then
-    result = dict[to_remove_key]
-    dict[to_remove_key] = nil
-  end
-  return result
+function table.Remove_Dict(dict, key)
+	if dict == nil then
+		return nil
+	end
+	local result, toRemoveKey
+	for _key, _ in pairs(dict) do
+		if _key == key then
+			toRemoveKey = _key
+			break
+		end
+	end
+	if toRemoveKey ~= nil then
+		result = dict[toRemoveKey]
+		dict[toRemoveKey] = nil
+	end
+	return result
 end
 
 ---@param t table<any,any>
----@param remove_func fun(key:any,value:any):boolean
-function table.RemoveByFunc_Dict(t, remove_func)
-  for key, value in pairs(t) do
-    if remove_func(key,value) then
-      t[key] = nil
-    end
-  end
+---@param removeFunc fun(key:any,value:any):boolean
+function table.RemoveByFunc_Dict(t, removeFunc)
+	for key, value in pairs(t) do
+		if removeFunc(key, value) then
+			t[key] = nil
+		end
+	end
 end
 
-
-
-function table.Set_Dict(dict,key,value)
-  table.Remove_Dict(dict, key)
-  dict[key] = value
+function table.Set_Dict(dict, key, value)
+	table.Remove_Dict(dict, key)
+	dict[key] = value
 end
 
 function table.Keys_Dict(dict)
-  local result = {}
-  for k,v in pairs(dict) do
-    table.insert(result,k)
-  end
-  return result
+	local result = {}
+	for k, v in pairs(dict) do
+		table.insert(result, k)
+	end
+	return result
 end
 
 function table.Values_Dict(dict)
-  local result = {}
-  for k,v in pairs(dict) do
-    table.insert(result,v)
-  end
-  return result
+	local result = {}
+	for k, v in pairs(dict) do
+		table.insert(result, v)
+	end
+	return result
 end
 
 -- 向dict1 合并dict2,合并方式为替换，结果会修改dict1
@@ -73,7 +71,7 @@ end
 ---@param dict2 table<K,V>
 ---@return table<K,V>
 function table.CombineByReplace_Dict(dict1, dict2)
-  return table.CombineByReplace(dict1, dict2)
+	return table.CombineByReplace(dict1, dict2)
 end
 
 -- 向dict1 合并dict2,合并方式为相加，结果会修改dict1
@@ -82,39 +80,39 @@ end
 ---@param dict2 table<K,V>
 ---@return table<K,V>
 function table.CombineByAdd_Dict(dict1, dict2)
-  return table.CombineByAdd(dict1, dict2)
+	return table.CombineByAdd(dict1, dict2)
 end
 
 -- 查找符合条件的所有T
 ---@generic K,V
 ---@param dict table<K,V>
----@param match_func fun(key:K,value:V):boolean
+---@param matchFunc fun(key:K,value:V):boolean
 ---@return table<K,V>
-function table.FindAll_Dict(dict, match_func)
-  local result = {}
-  for k, v in pairs(dict) do
-    if match_func(k, v) then
-      result[k] = v
-    end
-  end
-  return result
+function table.FindAll_Dict(dict, matchFunc)
+	local result = {}
+	for k, v in pairs(dict) do
+		if matchFunc(k, v) then
+			result[k] = v
+		end
+	end
+	return result
 end
 
 -- 删除符合条件的集合
 ---@generic K,V
 ---@param dict table<K,V>
----@param match_func fun(key:K,value:V):boolean
-function table.RemoveAll_Dict(dict, match_func)
-  for k, v in pairs(dict) do
-    if match_func then
-      if match_func(k, v) then
-        dict[k] = nil
-      end
-    else
-      dict[k] = nil
-    end
+---@param matchFunc fun(key:K,value:V):boolean
+function table.RemoveAll_Dict(dict, matchFunc)
+	for k, v in pairs(dict) do
+		if matchFunc then
+			if matchFunc(k, v) then
+				dict[k] = nil
+			end
+		else
+			dict[k] = nil
+		end
 
-  end
+	end
 end
 
 -- 结果会修改dict1中的所有元素
@@ -122,51 +120,50 @@ end
 ---@param dict table<K,V>
 ---@param func fun(key:K,value:V):R
 function table.ConvertAll_Dict(dict, func)
-  for k, v in pairs(dict) do
-    dict[k] = func(k, v)
-  end
+	for k, v in pairs(dict) do
+		dict[k] = func(k, v)
+	end
 end
 
 -- table中是否存在符合条件的元素
 ---@generic K,V
 ---@param dict table<K,V>
----@param match_func fun(key:K,value:V):boolean
+---@param matchFunc fun(key:K,value:V):boolean
 ---@return boolean
-function table.Exists_Dict(dict, match_func)
-  for k, v in pairs(dict) do
-    if match_func(k, v) then
-      return true
-    end
-  end
-  return false
+function table.Exists_Dict(dict, matchFunc)
+	for k, v in pairs(dict) do
+		if matchFunc(k, v) then
+			return true
+		end
+	end
+	return false
 end
 
 -- table中是否都符合条件
 ---@generic K,V
 ---@param dict table<K,V>
----@param match_func fun(key:K,value:V):boolean
+---@param matchFunc fun(key:K,value:V):boolean
 ---@return boolean
-function table.TrueForAll_Dict(dict, match_func)
-  for k, v in pairs(dict) do
-    if match_func(k, v) == false then
-      return false
-    end
-  end
-  return true
+function table.TrueForAll_Dict(dict, matchFunc)
+	for k, v in pairs(dict) do
+		if matchFunc(k, v) == false then
+			return false
+		end
+	end
+	return true
 end
 
 ---@generic T,K
 ---@param dict table<T,K>
 ---@param key T
----@param add_func fun(...):K
+---@param addFunc fun(...):K
 ---@return K
-function table.GetOrAddDefault_Dict(dict, key, add_func)
-  if dict[key] == nil then
-    dict[key] = add_func()
-  end
-  return dict[key]
+function table.GetOrAddDefault_Dict(dict, key, addFunc)
+	if dict[key] == nil then
+		dict[key] = addFunc()
+	end
+	return dict[key]
 end
-
 
 ---@generic T,K
 ---@param dict table<T,K>
@@ -174,190 +171,191 @@ end
 ---@param dvFunc fun(...):K
 ---@return K
 function table.GetOrGetDefault_Dict(dict, key, dvFunc)
-  if dict == nil or self[key] == nil then
-    return dvFunc()
-  end
-  return dict[key]
+	if dict == nil or self[key] == nil then
+		return dvFunc()
+	end
+	return dict[key]
 end
 
 -- 删除值为null值、0数值、false逻辑值、空字符串、空集合等数据项
 function table.Trim_Dict(t)
-  for key,value in pairs(t) do
-    local _type = type(value)
-    if _type == "number" and value == 0 then -- 删除值为0的数值
-      t[key] = nil
-    elseif _type == "boolean" and value == false then -- 删除值为false的逻辑值
-      t[key] = nil
-    elseif _type == "string" and string.IsNilOrWhiteSpace(value) then -- 删除值为空的字符串
-      t[key] = nil
-    elseif _type == "table" then
-      if table.Count(value) == 0 and table.IsArray(value) then
-        t[key] = nil
-      else
-        table.Trim_Dict(value)
-      end
-    end
-  end
+	for key, value in pairs(t) do
+		local curType = type(value)
+		if curType == "number" and value == 0 then
+			-- 删除值为0的数值
+			t[key] = nil
+		elseif curType == "boolean" and value == false then
+			-- 删除值为false的逻辑值
+			t[key] = nil
+		elseif curType == "string" and string.IsNilOrWhiteSpace(value) then
+			-- 删除值为空的字符串
+			t[key] = nil
+		elseif curType == "table" then
+			if table.Count(value) == 0 and table.IsArray(value) then
+				t[key] = nil
+			else
+				table.Trim_Dict(value)
+			end
+		end
+	end
 end
-
 
 ----------------------------------------------------------------------------------
 ---ValueListDict
 ----------------------------------------------------------------------------------
 function table.Add_ValueListDict(valueListDict, key, value)
-  local value_list = table.GetOrAddDefault_Dict(valueListDict, key, function()
-    return {}
-  end)
-  table.Append_Array(value_list, value)
+	local valueList = table.GetOrAddDefault_Dict(valueListDict, key, function()
+		return {}
+	end)
+	table.Append_Array(valueList, value)
 end
 
 -- 将valueListDict2上的值加到valueListDict1
 function table.AddValueListDict_ValueListDict(valueListDict1, valueListDict2)
-  table.ForeachKeyValue_ValueListDict(valueListDict2, function(key, value)
-    table.Add_ValueListDict(valueListDict1, key, value)
-  end)
+	table.ForeachKeyValue_ValueListDict(valueListDict2, function(key, value)
+		table.Add_ValueListDict(valueListDict1, key, value)
+	end)
 end
 
 function table.Remove_ValueListDict(valueListDict, key, value)
-  if not valueListDict[key] then
-    return
-  end
-  if value then
-    table.RemoveByValue_Array(valueListDict[key], value)
-    table.Check_ValueListDict(valueListDict, key)
-  else
-    valueListDict[key] = nil
-  end
+	if not valueListDict[key] then
+		return
+	end
+	if value then
+		table.RemoveByValue_Array(valueListDict[key], value)
+		table.Check_ValueListDict(valueListDict, key)
+	else
+		valueListDict[key] = nil
+	end
 end
 
 -- valueListDict1上去掉valueListDict2的值
 function table.RemoveValueListDict_ValueListDict(valueListDict1, valueListDict2)
-  table.ForeachKeyValue_ValueListDict(valueListDict2, function(key, value)
-    table.Remove_ValueListDict(valueListDict1, key, value)
-  end)
+	table.ForeachKeyValue_ValueListDict(valueListDict2, function(key, value)
+		table.Remove_ValueListDict(valueListDict1, key, value)
+	end)
 end
 
 -- 去重
-function table.Unique_ValueListDict(valueListDict, value_func)
-  for key, valueList in pairs(valueListDict) do
-    table.Unique_Array(valueList, value_func)
-  end
+function table.Unique_ValueListDict(valueListDict, valueFunc)
+	for key, valueList in pairs(valueListDict) do
+		table.Unique_Array(valueList, valueFunc)
+	end
 end
 
 function table.ForeachKeyValue_ValueListDict(valueListDict, handle, key)
-  if key == nil then
-    --所有值进行处理
-    for _key, _valueList in pairs(valueListDict) do
-      for _, _value in ipairs(_valueList) do
-        handle(_key, _value)
-      end
-    end
-    table.CheckAll_ValueListDict(valueListDict)
-    return
-  end
+	if key == nil then
+		--所有值进行处理
+		for curKey, curValueList in pairs(valueListDict) do
+			for _, curValue in ipairs(curValueList) do
+				handle(curKey, curValue)
+			end
+		end
+		table.CheckAll_ValueListDict(valueListDict)
+		return
+	end
 
-  if not valueListDict[key] then
-    return
-  end
+	if not valueListDict[key] then
+		return
+	end
 
-  for _key, _value in ipairs(valueListDict[key]) do
-    handle(_key, _value)
-  end
-  table.CheckAll_ValueListDict(valueListDict)
+	for curKey, curValue in ipairs(valueListDict[key]) do
+		handle(curKey, curValue)
+	end
+	table.CheckAll_ValueListDict(valueListDict)
 end
 
 function table.Check_ValueListDict(valueListDict, key)
-  if valueListDict[key] and table.IsNilOrEmpty(valueListDict[key]) then
-    valueListDict[key] = nil
-  end
+	if valueListDict[key] and table.IsNilOrEmpty(valueListDict[key]) then
+		valueListDict[key] = nil
+	end
 end
 
 function table.CheckAll_ValueListDict(valueListDict)
-  local to_remove_key_list = {}
-  for key, value_list in pairs(valueListDict) do
-    if table.IsNilOrEmpty(value_list) then
-      table.insert(to_remove_key_list,key)
-    end
-  end
-  for _, to_remove_key in ipairs(to_remove_key_list) do
-    valueListDict[to_remove_key] = nil
-  end
+	local toRemoveKeyList = {}
+	for key, valueList in pairs(valueListDict) do
+		if table.IsNilOrEmpty(valueList) then
+			table.insert(toRemoveKeyList, key)
+		end
+	end
+	for _, toRemoveKey in ipairs(toRemoveKeyList) do
+		valueListDict[toRemoveKey] = nil
+	end
 end
 
 ----------------------------------------------------------------------------------
 ---ValueDictDict
 ----------------------------------------------------------------------------------
 function table.Add_ValueDictDict(valueDictDict, key1, key2, value)
-  local value_dict = table.GetOrAddDefault_Dict(valueDictDict, key1, function()
-    return {}
-  end)
-  value_dict[key2] = value
+	local valueDict = table.GetOrAddDefault_Dict(valueDictDict, key1, function()
+		return {}
+	end)
+	valueDict[key2] = value
 end
 
 -- 将valueDictDict2上的值加到valueDictDict1
 function table.AddValueDictDict_ValueDictDict(valueDictDict1, valueDictDict2)
-  table.ForeachKeyValue_ValueDictDict(valueDictDict2, function(key1,key2,value)
-    table.Add_ValueDictDict(valueDictDict1, key1,key2, value)
-  end)
+	table.ForeachKeyValue_ValueDictDict(valueDictDict2, function(key1, key2, value)
+		table.Add_ValueDictDict(valueDictDict1, key1, key2, value)
+	end)
 end
 
-function table.Remove_ValueDictDict(valueDictDict,key1, key2)
-  if not valueDictDict[key1] then
-    return
-  end
-  if not key2 then  -- 删除全部key下的东西
-    valueDictDict[key1] = nil
-  else
-    valueDictDict[key1][key2] = nil
-    table.Check_ValueDictDict(valueDictDict, key1)
-  end
+function table.Remove_ValueDictDict(valueDictDict, key1, key2)
+	if not valueDictDict[key1] then
+		return
+	end
+	if not key2 then
+		-- 删除全部key下的东西
+		valueDictDict[key1] = nil
+	else
+		valueDictDict[key1][key2] = nil
+		table.Check_ValueDictDict(valueDictDict, key1)
+	end
 end
 
 -- valueDictDict1上去掉valueDictDict2的值
 function table.RemoveValueDictDict_ValueDictDict(valueDictDict1, valueDictDict2)
-  table.ForeachKeyValue_ValueDictDict(valueDictDict2, function(key1,key2,value)
-    table.Remove_ValueDictDict(valueDictDict1, key1,key2)
-  end)
+	table.ForeachKeyValue_ValueDictDict(valueDictDict2, function(key1, key2, value)
+		table.Remove_ValueDictDict(valueDictDict1, key1, key2)
+	end)
 end
-
 
 function table.ForeachKeyValue_ValueDictDict(valueDictDict, handle, key1)
-  if key1 == nil then
-    --所有值进行处理
-    for _key1, _valueDict in pairs(valueDictDict) do
-      for _key2, _value2 in pairs(_valueDict) do
-        handle(_key1, _key2, _value2)
-      end
-    end
-    table.CheckAll_ValueDictDict(valueDictDict)
-    return
-  end
+	if key1 == nil then
+		--所有值进行处理
+		for curKey1, curValueDict in pairs(valueDictDict) do
+			for curKey2, curValue2 in pairs(curValueDict) do
+				handle(curKey1, curKey2, curValue2)
+			end
+		end
+		table.CheckAll_ValueDictDict(valueDictDict)
+		return
+	end
 
-  if not valueDictDict[key1] then
-    return
-  end
+	if not valueDictDict[key1] then
+		return
+	end
 
-  for _key2, _value2 in valueDictDict[key1] do
-    handle(key1, _key2, _value2)
-  end
-  table.CheckAll_ValueDictDict(valueDictDict)
+	for curKey2, curValue2 in valueDictDict[key1] do
+		handle(key1, curKey2, curValue2)
+	end
+	table.CheckAll_ValueDictDict(valueDictDict)
 end
 
-
 function table.Check_ValueDictDict(valueDictDict, key1)
-  if valueDictDict[key1] and table.IsNilOrEmpty(valueDictDict[key1]) then
-    valueDictDict[key1] = nil
-  end
+	if valueDictDict[key1] and table.IsNilOrEmpty(valueDictDict[key1]) then
+		valueDictDict[key1] = nil
+	end
 end
 
 function table.CheckAll_ValueDictDict(valueDictDict)
-  local to_remove_key1_list = {}
-  for key1, value_dict in pairs(valueDictDict) do
-    if table.IsNilOrEmpty(value_dict) then
-      table.insert(to_remove_key1_list,key1)
-    end
-  end
-  for _, to_remove_key1 in ipairs(to_remove_key1_list) do
-    valueDictDict[to_remove_key1] = nil
-  end
+	local toRemoveKey1List = {}
+	for key1, valueDict in pairs(valueDictDict) do
+		if table.IsNilOrEmpty(valueDict) then
+			table.insert(toRemoveKey1List, key1)
+		end
+	end
+	for _, to_remove_key1 in ipairs(toRemoveKey1List) do
+		valueDictDict[to_remove_key1] = nil
+	end
 end

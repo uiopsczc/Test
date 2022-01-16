@@ -1,98 +1,98 @@
 local UIHUDTextBase = require("luacat.ui.common.UIHUD.UIHUDTextBase.UIHUDTextBase")
 ---@class UIHUDNumber:UIHUDTextBase
-local UIHUDNumber = Class("UIHUDNumber",UIHUDTextBase)
+local UIHUDNumber = Class("UIHUDNumber", UIHUDTextBase)
 
 function UIHUDNumber:Init(parent_transform)
-  UIHUDNumber.super.Init(self,parent_transform)
-  self.default_show_duration = 1
-  self.duration_half = self.default_show_duration * 0.5
-  self:AddListener(GlobalEventNameConst.Update, self.Update)
+	UIHUDNumber.super.Init(self, parent_transform)
+	self.defaultShowDuration = 1
+	self.durationHalf = self.defaultShowDuration * 0.5
+	self:AddListener(GlobalEventNameConst.Update, self.Update)
 end
 
 ---@param randomManager RandomManager
 function UIHUDNumber:SetRandomManager(randomManager)
-  self.randomManager = randomManager
+	self.randomManager = randomManager
 end
 
 ---@return RandomManager
 function UIHUDNumber:GetRandomManager()
-  return self.randomManager
+	return self.randomManager
 end
 
-function UIHUDNumber:Show(spawn_worldPosition, show_string, color)
-  self:InvokeAfterAllAssetsLoadDone(function()
-    self.duration = self.default_show_duration
-    local _spawn_worldPosition
-    if IsFunction(spawn_worldPosition) then
-      _spawn_worldPosition = spawn_worldPosition()
-    elseif IsInstanceOf(spawn_worldPosition, "Vector3") then
-      _spawn_worldPosition = spawn_worldPosition
-    else  -- transform
-      if not spawn_worldPosition then
-        self:Reset()
-        return
-      end
-      _spawn_worldPosition = spawn_worldPosition.position
-    end
+function UIHUDNumber:Show(spawnWorldPosition, showString, color)
+	self:InvokeAfterAllAssetsLoadDone(function()
+		self.duration = self.defaultShowDuration
+		local curSpawnWorldPosition
+		if IsFunction(spawnWorldPosition) then
+			curSpawnWorldPosition = spawnWorldPosition()
+		elseif IsInstanceOf(spawnWorldPosition, "Vector3") then
+			curSpawnWorldPosition = spawnWorldPosition
+		else
+			-- transform
+			if not spawnWorldPosition then
+				self:Reset()
+				return
+			end
+			curSpawnWorldPosition = spawnWorldPosition.position
+		end
 
-    self.spawn_uiPosition = CameraUtil.WorldToUIPos(nil,global.client.combat.cameraManager.main_cameraBase.camera, _spawn_worldPosition)
-    self.text_comp.text = show_string
-    self.text_comp.color = color
+		self.spawnUIPosition = CameraUtil.WorldToUIPos(nil, global.client.combat.cameraManager.main_cameraBase.camera, curSpawnWorldPosition)
+		self.textComp.text = showString
+		self.textComp.color = color
 
-    if self:GetRandomManager():RandomBoolean() then
-      self.pos_diff_x = self:GetRandomManager():RandomFloat(30, 100)
-    else
-      self.pos_diff_x = self:GetRandomManager():RandomFloat(-100, -30)
-    end
-    self.pos_diff_y = self:GetRandomManager():RandomFloat(50, 100)
-    self.is_showing = true
-    self.graphicComponent:SetIsShow(true)
-    self:UpdatePos(0)
-  end)
+		if self:GetRandomManager():RandomBoolean() then
+			self.posDiffX = self:GetRandomManager():RandomFloat(30, 100)
+		else
+			self.posDiffX = self:GetRandomManager():RandomFloat(-100, -30)
+		end
+		self.posDiffY = self:GetRandomManager():RandomFloat(50, 100)
+		self.isShowing = true
+		self.graphicComponent:SetIsShow(true)
+		self:UpdatePos(0)
+	end)
 end
 
 function UIHUDNumber:Update(deltaTime, unscaledDeltaTime)
-  if not self:IsCanUpdate() then
-    return
-  end
-  self:UpdatePos(deltaTime)
+	if not self:IsCanUpdate() then
+		return
+	end
+	self:UpdatePos(deltaTime)
 end
 
 function UIHUDNumber:UpdatePos(deltaTime)
-  if not self.is_showing then
-    return
-  end
-  self.duration = self.duration - deltaTime
-  if self.duration <= 0 then
-    self:Reset()
-    return
-  end
+	if not self.isShowing then
+		return
+	end
+	self.duration = self.duration - deltaTime
+	if self.duration <= 0 then
+		self:Reset()
+		return
+	end
 
-  if self.duration > self.duration_half then
-    self.__pos_diff_y = EaseCat.Cubic.EaseOut2(0, self.pos_diff_y, (self.default_show_duration - self.duration) / self.duration_half)
-  else
-    self.__pos_diff_y = EaseCat.Cubic.EaseIn2(self.pos_diff_y, 0, (self.duration_half - self.duration) / self.duration_half)
-  end
+	if self.duration > self.durationHalf then
+		self.__posDiffY = EaseCat.Cubic.EaseOut2(0, self.posDiffY, (self.defaultShowDuration - self.duration) / self.durationHalf)
+	else
+		self.__posDiffY = EaseCat.Cubic.EaseIn2(self.posDiffY, 0, (self.durationHalf - self.duration) / self.durationHalf)
+	end
 
-  local pct = (self.default_show_duration - self.duration) / self.default_show_duration
-  self.__pos_diff_x = EaseCat.Linear.EaseNone2(0, self.pos_diff_x, pct)
+	local pct = (self.defaultShowDuration - self.duration) / self.defaultShowDuration
+	self.__posDiffX = EaseCat.Linear.EaseNone2(0, self.posDiffX, pct)
 
-  if not self.is_fading and pct >= 0.8 then
-    self.is_fading = true
-    self.text_comp:DOFade(0.2, self.duration)
-  end
+	if not self.isFading and pct >= 0.8 then
+		self.isFading = true
+		self.textComp:DOFade(0.2, self.duration)
+	end
 
-  local pos = self.spawn_uiPosition + Vector2(self.__pos_diff_x, self.__pos_diff_y)
-  self.graphicComponent.rectTransform.anchoredPosition = pos
+	local pos = self.spawnUIPosition + Vector2(self.__posDiffX, self.__posDiffY)
+	self.graphicComponent.rectTransform.anchoredPosition = pos
 end
 
 function UIHUDNumber:__Reset()
-  UIHUDNumber.super.__Reset(self)
-  self.graphicComponent:SetIsShow(false)
-  self.duration = self.default_show_duration
-  self.is_showing = false
-  self.is_fading = false
+	UIHUDNumber.super.__Reset(self)
+	self.graphicComponent:SetIsShow(false)
+	self.duration = self.defaultShowDuration
+	self.isShowing = false
+	self.isFading = false
 end
-
 
 return UIHUDNumber

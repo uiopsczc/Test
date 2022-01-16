@@ -1,10 +1,10 @@
 ---@class FileUtil
 FileUtil = {}
 
-function FileUtil.GetDirName(full_path)
-  return string.match(full_path, "(.*)/")
+function FileUtil.GetDirName(fullPath)
+	return string.match(fullPath, "(.*)/")
 end
 
 function FileUtil.GetFileName(full_path)
-  return string.match(full_path, "(.*)/")
+	return string.match(full_path, "(.*)/")
 end

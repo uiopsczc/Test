@@ -2,9 +2,9 @@
 local SingletonMaster = Class("SingletonMaster")
 
 function SingletonMaster:Init()
-  local csSingletonMaster = CS.CsCat.SingletonMaster.instance
-  self.audioMixer = csSingletonMaster.audioMixer
-  self.inActive_gameObjects = table.ConvertCSArray2LuaTable(csSingletonMaster.inActiveGameObjects)
+	local csSingletonMaster = CS.CsCat.SingletonMaster.instance
+	self.audioMixer = csSingletonMaster.audioMixer
+	self.inActiveGameObjects = table.ConvertCSArray2LuaTable(csSingletonMaster.inActiveGameObjects)
 end
 
 return SingletonMaster

@@ -2,47 +2,44 @@
 local EaseCat_Bounce = {}
 
 function EaseCat_Bounce.EaseIn(t, b, c, d)
-  return c - EaseCat_Bounce.EaseOut(d - t, 0, c, d) + b
+	return c - EaseCat_Bounce.EaseOut(d - t, 0, c, d) + b
 end
 
 function EaseCat_Bounce.EaseOut(t, b, c, d)
-  t = t /d
-  if t < 1 / 2.75 then
-    return c * (7.5625 * t * t) + b
-  end
-  if t < 2 / 2.75 then
-    t = t - 1.5 / 2.75
-    return c * (7.5625 * t * t + 0.75) + b
-  end
-  if t < 2.5 / 2.75 then
-    t = t - 2.25 / 2.75
-    return c * (7.5625 * t * t + .9375) + b
-  end
-  t = t - 2.625 / 2.75
-  return c * (7.5625 * t * t + .984375) + b
+	t = t / d
+	if t < 1 / 2.75 then
+		return c * (7.5625 * t * t) + b
+	end
+	if t < 2 / 2.75 then
+		t = t - 1.5 / 2.75
+		return c * (7.5625 * t * t + 0.75) + b
+	end
+	if t < 2.5 / 2.75 then
+		t = t - 2.25 / 2.75
+		return c * (7.5625 * t * t + .9375) + b
+	end
+	t = t - 2.625 / 2.75
+	return c * (7.5625 * t * t + .984375) + b
 end
 
-
 function EaseCat_Bounce.EaseInOut(t, b, c, d)
-  if t < d / 2 then
-    return EaseCat_Bounce.EaseIn(t * 2, 0, c, d) * .5 + b
-  end
-  return EaseCat_Bounce.EaseOut(t * 2 - d, 0, c, d) * .5 + c * .5 + b
+	if t < d / 2 then
+		return EaseCat_Bounce.EaseIn(t * 2, 0, c, d) * .5 + b
+	end
+	return EaseCat_Bounce.EaseOut(t * 2 - d, 0, c, d) * .5 + c * .5 + b
 end
 
 -------------------------------------------------------------------------
-function EaseCat_Bounce.EaseIn2(start_value, end_value, pct)
-  return EaseCat_Bounce.EaseIn(pct, start_value, end_value - start_value, 1)
+function EaseCat_Bounce.EaseIn2(startValue, endValue, pct)
+	return EaseCat_Bounce.EaseIn(pct, startValue, endValue - startValue, 1)
 end
 
-
-function EaseCat_Bounce.EaseOut2(start_value, end_value, pct)
-  return EaseCat_Bounce.EaseOut(pct, start_value, end_value - start_value, 1)
+function EaseCat_Bounce.EaseOut2(startValue, endValue, pct)
+	return EaseCat_Bounce.EaseOut(pct, startValue, endValue - startValue, 1)
 end
 
-
-function EaseCat_Bounce.EaseInOut2(start_value, end_value, pct)
-  return EaseCat_Bounce.EaseInOut(pct, start_value, end_value - start_value, 1)
+function EaseCat_Bounce.EaseInOut2(startValue, endValue, pct)
+	return EaseCat_Bounce.EaseInOut(pct, startValue, endValue - startValue, 1)
 end
 
 return EaseCat_Bounce

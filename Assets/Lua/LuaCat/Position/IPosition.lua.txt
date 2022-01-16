@@ -9,12 +9,12 @@ end
 function IPosition:GetTransform()
 end
 
----@param socket_name string
-function IPosition:SetSocketName(socket_name)
+---@param socketName string
+function IPosition:SetSocketName(socketName)
 end
 
 function IPosition:IsValid()
-  return true
+	return true
 end
 
 return IPosition

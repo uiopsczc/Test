@@ -9,7 +9,7 @@ end
 
 function CombatStageTest:LoadPanels()
   CombatStageTest.super.LoadPanels(self)
-  table.insert(self.panel_list, global.client.uiManager:CreateChildPanel("UICombatTestPanel", UICombatTestPanel))
+  table.insert(self.panelList, global.client.uiManager:CreateChildPanel("UICombatTestPanel", UICombatTestPanel))
 end
 
 function CombatStageTest:Show()

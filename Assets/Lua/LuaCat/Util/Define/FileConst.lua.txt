@@ -54,14 +54,14 @@ table.insert(FilePathConst.RootPaths, FilePathConst.ResourcesPath)
 FilePathConst.PersistentAssetBundleRoot = FilePathConst.PersistentDataPath .. BuildConst.AssetBundle_Folder_Name .. "/"
 
 local function GetExternalPath()
-  local platform = Application.platform
-  if platform == CS.UnityEngine.RuntimePlatform.WindowsEditor then
-    return FilePathConst.AssetsPath .. "Patch/"
-  elseif platform == CS.UnityEngine.RuntimePlatform.IPhonePlayer or platform == CS.UnityEngine.RuntimePlatform.Android then
-    return FilePathConst.PersistentDataPath
-  else
-    return FilePathConst.AssetsPath .. "Patch/"
-  end
+	local platform = Application.platform
+	if platform == CS.UnityEngine.RuntimePlatform.WindowsEditor then
+		return FilePathConst.AssetsPath .. "Patch/"
+	elseif platform == CS.UnityEngine.RuntimePlatform.IPhonePlayer or platform == CS.UnityEngine.RuntimePlatform.Android then
+		return FilePathConst.PersistentDataPath
+	else
+		return FilePathConst.AssetsPath .. "Patch/"
+	end
 end
 FilePathConst.ExternalPath = GetExternalPath()
 

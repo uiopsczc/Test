@@ -1,56 +1,54 @@
 ---@class ResLoadDataInfo
 local ResLoadDataInfo = Class("ResLoadDataInfo")
 
----@param is_not_check_destroy boolean
+---@param isNotCheckDestroy boolean
 ---@param resLoadData ResLoadData
-function ResLoadDataInfo:Init(resLoadData, is_not_check_destroy)
-  ---@type ResLoadData
-  self.resLoadData = resLoadData
-  self.is_not_check_destroy = is_not_check_destroy
-  ---@type table<any,boolean>
-  self.callback_cause_dict = {}
+function ResLoadDataInfo:Init(resLoadData, isNotCheckDestroy)
+	---@type ResLoadData
+	self.resLoadData = resLoadData
+	self.isNotCheckDestroy = isNotCheckDestroy
+	---@type table<any,boolean>
+	self.callbackCauseDict = {}
 end
 
-
-function ResLoadDataInfo:AddCallbackCause(callback_cause)
-  if self.callback_cause_dict[ObjectUtil.GetNotNilKey(callback_cause)] then
-    return
-  end
-  self.callback_cause_dict[ObjectUtil.GetNotNilKey(callback_cause)] = true
+function ResLoadDataInfo:AddCallbackCause(callbackCause)
+	if self.callbackCauseDict[ObjectUtil.GetNotNilKey(callbackCause)] then
+		return
+	end
+	self.callbackCauseDict[ObjectUtil.GetNotNilKey(callbackCause)] = true
 end
 
 --callback_cause==nil时是全部删除
-function ResLoadDataInfo:RemoveCallbackCause(callback_cause)
-  self.callback_cause_dict[ObjectUtil.GetNotNilKey(callback_cause)] = nil
-  self.resLoadData.assetCat:RemoveCallback(ObjectUtil.GetNilableKey(callback_cause))
-  if not self.is_not_check_destroy then
-    self:CheckDestroy()
-  end
+function ResLoadDataInfo:RemoveCallbackCause(callbackCause)
+	self.callbackCauseDict[ObjectUtil.GetNotNilKey(callbackCause)] = nil
+	self.resLoadData.assetCat:RemoveCallback(ObjectUtil.GetNilableKey(callbackCause))
+	if not self.isNotCheckDestroy then
+		self:CheckDestroy()
+	end
 end
 
-
 function ResLoadDataInfo:RemoveAllCallbackCauses()
-  for callback_cause,_ in pairs(self.callback_cause_dict) do
-    self.resLoadData.assetCat:RemoveCallback(ObjectUtil.GetNilableKey(callback_cause))
-  end
-  table.Clear(self.callback_cause_dict)
-  if not self.is_not_check_destroy then
-    self:CheckDestroy()
-  end
+	for callbackCause, _ in pairs(self.callbackCauseDict) do
+		self.resLoadData.assetCat:RemoveCallback(ObjectUtil.GetNilableKey(callbackCause))
+	end
+	table.Clear(self.callbackCauseDict)
+	if not self.isNotCheckDestroy then
+		self:CheckDestroy()
+	end
 end
 
 function ResLoadDataInfo:CheckDestroy()
-  if table.Count(self.callback_cause_dict) == 0 then
-    self.resLoadData:Destroy()
-  end
+	if table.Count(self.callbackCauseDict) == 0 then
+		self.resLoadData:Destroy()
+	end
 end
 
 function ResLoadDataInfo:Destroy()
-  for callback_cause, _ in pairs(self.callback_cause_dict) do
-    self.resLoadData.assetCat:RemoveCallback(ObjectUtil.GetNilableKey(callback_cause))
-  end
-  table.Clear(self.callback_cause_dict)
-  self.resLoadData:Destroy()
+	for callbackCause, _ in pairs(self.callbackCauseDict) do
+		self.resLoadData.assetCat:RemoveCallback(ObjectUtil.GetNilableKey(callbackCause))
+	end
+	table.Clear(self.callbackCauseDict)
+	self.resLoadData:Destroy()
 end
 
 return ResLoadDataInfo

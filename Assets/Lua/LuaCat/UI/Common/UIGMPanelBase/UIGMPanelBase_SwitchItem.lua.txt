@@ -1,37 +1,36 @@
 ---@class UIGMPanelBase_SwitchItem:UIObject
 local UIGMPanelBase_SwitchItem = Class("UIGMPanelBase_SwitchItem", UIObject)
 
-function UIGMPanelBase_SwitchItem:Init(gameObject, desc, yes_callback, no_callback)
-  UIGMPanelBase_SwitchItem.super.Init(self)
-  self.desc = desc
-  self.yes_callback = yes_callback
-  self.no_callback = no_callback
-  self.graphicComponent:SetGameObject(gameObject, true)
+function UIGMPanelBase_SwitchItem:Init(gameObject, desc, yesCallback, noCallback)
+	UIGMPanelBase_SwitchItem.super.Init(self)
+	self.desc = desc
+	self.yesCallback = yesCallback
+	self.noCallback = noCallback
+	self.graphicComponent:SetGameObject(gameObject, true)
 end
 
 function UIGMPanelBase_SwitchItem:InitGameObjectChildren()
-  UIGMPanelBase_SwitchItem.super.InitGameObjectChildren(self)
-  ---@type CS.UnityEngine.UI.Text
-  self.desc_text = self.graphicComponent.transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Text),"desc",true,true)
-  ---@type CS.UnityEngine.UI.Button
-  self.no_btn = self.graphicComponent.transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Button),"no_btn",true, true)
-  ---@type CS.UnityEngine.UI.Button
-  self.yes_btn = self.graphicComponent.transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Button),"yes_btn",true,true)
+	UIGMPanelBase_SwitchItem.super.InitGameObjectChildren(self)
+	---@type CS.UnityEngine.UI.Text
+	self.descText = self.graphicComponent.transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Text), "desc", true, true)
+	---@type CS.UnityEngine.UI.Button
+	self.noBtn = self.graphicComponent.transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Button), "no_btn", true, true)
+	---@type CS.UnityEngine.UI.Button
+	self.yesBtn = self.graphicComponent.transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Button), "yes_btn", true, true)
 
-  self.desc_text.text = self.desc
+	self.descText.text = self.desc
 
 
 end
 
 function UIGMPanelBase_SwitchItem:AddUnityEvents()
-  UIGMPanelBase_SwitchItem.super.AddUnityEvents(self)
-  if self.yes_callback then
-    self:RegisterOnClick(self.yes_btn, self.yes_callback)
-  end
-  if self.no_callback then
-    self:RegisterOnClick(self.no_btn, self.no_callback)
-  end
+	UIGMPanelBase_SwitchItem.super.AddUnityEvents(self)
+	if self.yesCallback then
+		self:RegisterOnClick(self.yesBtn, self.yesCallback)
+	end
+	if self.noCallback then
+		self:RegisterOnClick(self.noBtn, self.noCallback)
+	end
 end
-
 
 return UIGMPanelBase_SwitchItem

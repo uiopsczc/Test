@@ -2,56 +2,56 @@ local unpack = table.unpack
 
 -- 解决原生pack的nil截断问题，SafePack与SafeUnpack要成对使用
 -- 传递参数列表时，如果中间某个参数为nil，则后续的参数都会作废的问题
-function table.SafeUnpack(safe_pack)
-  return unpack(safe_pack, 1, safe_pack.n)
+function table.SafeUnpack(safePack)
+	return unpack(safePack, 1, safePack.n)
 end
 
 -- 解决原生unpack的nil截断问题，SafePack与SafeUnpack要成对使用
 --传递参数列表时，如果中间某个参数为nil，则后续的参数都会作废的问题
 function table.SafePack(...)
-  local args = table.pack(...)
-  args.n = select('#', ...)
-  return args
+	local args = table.pack(...)
+	args.n = select('#', ...)
+	return args
 end
 
 function table.SafePackArray(array)
-  if not array.n then
-    array.n = #array
-  end
+	if not array.n then
+		array.n = #array
+	end
 end
 
 -- 对两个SafePack的表执行连接
-function table.ConcatSafePack(safe_pack_l, safe_pack_2)
-  local concat = {}
-  for i = 1, safe_pack_l.n do
-    concat[i] = safe_pack_l[i]
-  end
-  for i = 1, safe_pack_2.n do
-    concat[safe_pack_l.n + i] = safe_pack_2[i]
-  end
-  concat.n = safe_pack_l.n + safe_pack_2.n
-  return concat
+function table.ConcatSafePack(safePackl, safePack2)
+	local concat = {}
+	for i = 1, safePackl.n do
+		concat[i] = safePackl[i]
+	end
+	for i = 1, safePack2.n do
+		concat[safePackl.n + i] = safePack2[i]
+	end
+	concat.n = safePackl.n + safePack2.n
+	return concat
 end
 
-
-function table.WalkArgs(func,...)
-  local args = table.pack(...)
-  for index = 1, args.n do
-    local arg = args[index]
-    if func(index,arg) then -- 返回true的话则break
-      break
-    end
-  end
+function table.WalkArgs(func, ...)
+	local args = table.pack(...)
+	for index = 1, args.n do
+		local arg = args[index]
+		if func(index, arg) then
+			-- 返回true的话则break
+			break
+		end
+	end
 end
 
 function table.GetArgs(...)
-  local result = {}
-  local args = table.pack(...)
-  for index = 1, args.n do
-    local arg = args[index]
-    result[index] = arg
-  end
-  return result
+	local result = {}
+	local args = table.pack(...)
+	for index = 1, args.n do
+		local arg = args[index]
+		result[index] = arg
+	end
+	return result
 end
 
 

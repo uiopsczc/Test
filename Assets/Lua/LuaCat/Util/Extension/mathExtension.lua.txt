@@ -143,35 +143,35 @@ end
 
 -- 2d 两条直线相交
 -- line1_A, line1_B, line2_A, line2_B都是Vector2
-function math.LineIntersection(line1_A, line1_B, line2_A, line2_B)
-  local num1 = line1_B.x - line1_A.x
-  local num2 = line1_B.y - line1_A.y
-  local num3 = line2_B.x - line2_A.x
-  local num4 = line2_B.y - line2_A.y
+function math.LineIntersection(line1A, line1B, line2A, line2B)
+  local num1 = line1B.x - line1A.x
+  local num2 = line1B.y - line1A.y
+  local num3 = line2B.x - line2A.x
+  local num4 = line2B.y - line2A.y
   local num5 = num1 * num4 - num2 * num3
   if num5 == 0.0 then
     return false
   end
-  local num6 = line2_A.x - line1_A.x
-  local num7 = line2_A.y - line1_A.y
+  local num6 = line2A.x - line1A.x
+  local num7 = line2A.y - line1A.y
   local num8 = (num6 * num4 - num7 * num3) / num5
-  local intersect_point = Vector2(line1_A.x + num8 * num1, line1_A.y + num8 * num2)
-  return true, intersect_point
+  local intersectPoint = Vector2(line1A.x + num8 * num1, line1A.y + num8 * num2)
+  return true, intersectPoint
 end
 
 -- 2d 两条线段相交
 -- line1_A, line1_B, line2_A, line2_B都是Vector2
-function math.LineSegmentIntersection(line1_A, line1_B, line2_A, line2_B)
-  local num1 = line1_B.x - line1_A.x
-  local num2 = line1_B.y - line1_A.y
-  local num3 = line2_B.x - line2_A.x
-  local num4 = line2_B.y - line2_A.y
+function math.LineSegmentIntersection(line1A, line1B, line2A, line2B)
+  local num1 = line1B.x - line1A.x
+  local num2 = line1B.y - line1A.y
+  local num3 = line2B.x - line2A.x
+  local num4 = line2B.y - line2A.y
   local num5 = num1 * num4 - num2 * num3
   if num5 == 0.0 then
     return false
   end
-  local num6 = line2_A.x - line1_A.x
-  local num7 = line2_A.y - line1_A.y
+  local num6 = line2A.x - line1A.x
+  local num7 = line2A.y - line1A.y
   local num8 = (num6 * num4 - num7 * num3) / num5
   if num8 < 0.0 or num8 > 1.0 then
     return false
@@ -180,8 +180,8 @@ function math.LineSegmentIntersection(line1_A, line1_B, line2_A, line2_B)
   if num9 < 0.0 or num9 > 1.0 then
     return false
   end
-  local intersect_point = Vector2(line1_A.x + num8 * num1, line1_A.y + num8 * num2)
-  return true, intersect_point
+  local intersectPoint = Vector2(line1A.x + num8 * num1, line1A.y + num8 * num2)
+  return true, intersectPoint
 end
 
 --百分比  输入0.1,输出10%
@@ -190,13 +190,13 @@ function math.ToPctString(pct)
 end
 
 -- 二进制转Int
-function math.BinaryToInt(binary_str)
-  local num_int = 0
+function math.BinaryToInt(binaryStr)
+  local numInt = 0
   local j = 0
-  for i = string.len(binary_str), 1, -1 do
-    local single_number = tonumber(string.sub(binary_str, i, i))
-    num_int = num_int + single_number * 2 ^ j
+  for i = string.len(binaryStr), 1, -1 do
+    local singleNumber = tonumber(string.sub(binaryStr, i, i))
+    numInt = numInt + singleNumber * 2 ^ j
     j = j + 1
   end
-  return num_int
+  return numInt
 end

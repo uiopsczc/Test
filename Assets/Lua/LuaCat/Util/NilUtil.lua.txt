@@ -1,8 +1,6 @@
 NilUtil = {}
 
-
-
 function NilUtil.GetDefaultString()
-  return "__nil__"
+	return "__nil__"
 end
 

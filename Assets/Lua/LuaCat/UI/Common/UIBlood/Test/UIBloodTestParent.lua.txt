@@ -1,27 +1,26 @@
 ---@class UIBloodTestParent:GameEntity
 local UIBloodTestParent = Class("UIBloodTestParent", GameEntity)
 
-function UIBloodTestParent:Init(name, slider_count)
-  UIBloodTestParent.super.Init(self)
-  local rectTransform = GameObject.Find("UITestPanel"):NewChildWithRectTransform(name)
-  rectTransform.anchorMin = Vector2.zero
-  rectTransform.anchorMax = Vector2.one
-  rectTransform.sizeDelta = Vector2.zero
-  self.graphicComponent:SetGameObject(rectTransform.gameObject)
-  self.uiBlood = global.client.uiManager:AddUIBlood(self.graphicComponent.transform, 150, slider_count)
+function UIBloodTestParent:Init(name, sliderCount)
+	UIBloodTestParent.super.Init(self)
+	local rectTransform = GameObject.Find("UITestPanel"):NewChildWithRectTransform(name)
+	rectTransform.anchorMin = Vector2.zero
+	rectTransform.anchorMax = Vector2.one
+	rectTransform.sizeDelta = Vector2.zero
+	self.graphicComponent:SetGameObject(rectTransform.gameObject)
+	self.uiBlood = global.client.uiManager:AddUIBlood(self.graphicComponent.transform, 150, sliderCount)
 end
 
 ---@param callback fun(value:number,next_tween:CS.DG.Tweening.Tween)
 ---@return CS.DG.Tweening.Tween
-function UIBloodTestParent:SlideTo(to_value,callback)
-  return self.uiBlood:SlideTo(to_value,callback)
+function UIBloodTestParent:SlideTo(toValue, callback)
+	return self.uiBlood:SlideTo(toValue, callback)
 end
 
 function UIBloodTestParent:__Reset()
-  UIBloodTestParent.super.__Reset(self)
-  global.client.uiManager:RemoveUIBlood(self.uiBlood)
-  self.uiBlood = nil
+	UIBloodTestParent.super.__Reset(self)
+	global.client.uiManager:RemoveUIBlood(self.uiBlood)
+	self.uiBlood = nil
 end
-
 
 return UIBloodTestParent

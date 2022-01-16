@@ -1,39 +1,39 @@
-local UIGMPanelBase_InputItem = require("luacat.ui.common.UIGMPanelBase.UIGMPanelBase_InputItem")
-local UIGMPanelBase_InputItem2 = require("luacat.ui.common.UIGMPanelBase.UIGMPanelBase_InputItem2")
-local UIGMPanelBase_SwitchItem = require("luacat.ui.common.UIGMPanelBase.UIGMPanelBase_SwitchItem")
+local UIGMPanelBase_InputItem = require("LuaCat.UI.Common.UIGMPanelBase.UIGMPanelBase_InputItem")
+local UIGMPanelBase_InputItem2 = require("LuaCat.UI.Common.UIGMPanelBase.UIGMPanelBase_InputItem2")
+local UIGMPanelBase_SwitchItem = require("LuaCat.UI.Common.UIGMPanelBase.UIGMPanelBase_SwitchItem")
 
 ---@class UIGMPanelBase:UIPopUpPanel
 local UIGMPanelBase = Class("UIGMPanelBase", UIPopUpPanel)
 
 function UIGMPanelBase:Init()
-  UIGMPanelBase.super.Init(self)
-  self.graphicComponent:SetPrefabPath("Assets/Resources/common/ui/prefab/UIGMPanelBase.prefab")
-  ---@type table<string,string>[]
-  self.config_list = {}
+	UIGMPanelBase.super.Init(self)
+	self.graphicComponent:SetPrefabPath("Assets/Resources/common/ui/prefab/UIGMPanelBase.prefab")
+	---@type table<string,string>[]
+	self.configList = {}
 end
 
 function UIGMPanelBase:InitGameObjectChildren()
-  UIGMPanelBase.super.InitGameObjectChildren(self)
-  self.inner_content_transform = self.frame_transform:Find("content/Scroll View/Viewport/Content")
-  self.switch_item_prefab = self.inner_content_transform:Find("switch_item").gameObject
-  self.input_item_prefab = self.inner_content_transform:Find("input_item").gameObject
-  self.input_item2_prefab = self.inner_content_transform:Find("input_item_2").gameObject
-  self.close_btn_gameObject = self.frame_transform:Find("content/close_btn").gameObject
+	UIGMPanelBase.super.InitGameObjectChildren(self)
+	self.innerContentTransform = self.frameTransform:Find("content/Scroll View/Viewport/Content")
+	self.switchItemPrefab = self.innerContentTransform:Find("switch_item").gameObject
+	self.inputItemPrefab = self.innerContentTransform:Find("input_item").gameObject
+	self.inputItem2Prefab = self.innerContentTransform:Find("input_item_2").gameObject
+	self.closeBtnGameObject = self.frameTransform:Find("content/close_btn").gameObject
 
 
 end
 
 function UIGMPanelBase:AddUnityEvents()
-  UIGMPanelBase.super.AddUnityEvents(self)
-  self:RegisterOnClick(self.close_btn_gameObject, function()
-    self:Close()
-  end)
+	UIGMPanelBase.super.AddUnityEvents(self)
+	self:RegisterOnClick(self.closeBtnGameObject, function()
+		self:Close()
+	end)
 end
 
 function UIGMPanelBase:OnAllAssetsLoadDone()
-  UIGMPanelBase.super.OnAllAssetsLoadDone(self)
-  self:InitConfigList()
-  self:InitItems()
+	UIGMPanelBase.super.OnAllAssetsLoadDone(self)
+	self:InitConfigList()
+	self:InitItems()
 end
 
 function UIGMPanelBase:InitConfigList()
@@ -41,42 +41,42 @@ function UIGMPanelBase:InitConfigList()
 end
 
 function UIGMPanelBase:InitItems()
-  for _,config in ipairs(self.config_list) do
-    local _type = config["type"]
-    if _type == "switch_item" then
-      self:InitSwitchItem(config)
-    elseif _type == "input_item" then
-      self:InitInputItem(config)
-    elseif _type == "input_item_2" then
-      self:InitInputItem2(config)
-    end
-  end
+	for _, config in ipairs(self.configList) do
+		local curType = config["type"]
+		if curType == "switch_item" then
+			self:InitSwitchItem(config)
+		elseif curType == "input_item" then
+			self:InitInputItem(config)
+		elseif curType == "input_item_2" then
+			self:InitInputItem2(config)
+		end
+	end
 end
 
 function UIGMPanelBase:CreateClone(prefab)
-  local clone = GameObject.Instantiate(prefab, self.inner_content_transform)
-  clone:SetActive(true)
-  return clone
+	local clone = GameObject.Instantiate(prefab, self.innerContentTransform)
+	clone:SetActive(true)
+	return clone
 end
 
 function UIGMPanelBase:InitSwitchItem(config)
-  local clone = self:CreateClone(self.switch_item_prefab)
-  self:AddChild(nil,UIGMPanelBase_SwitchItem, clone, config["desc"], config["yes_callback"], config["no_callback"])
+	local clone = self:CreateClone(self.switchItemPrefab)
+	self:AddChild(nil, UIGMPanelBase_SwitchItem, clone, config["desc"], config["yes_callback"], config["no_callback"])
 end
 
 function UIGMPanelBase:InitInputItem(config)
-  local clone = self:CreateClone(self.input_item_prefab)
-  self:AddChild(nil,UIGMPanelBase_InputItem, clone, config["desc"], config["yes_callback"])
+	local clone = self:CreateClone(self.inputItemPrefab)
+	self:AddChild(nil, UIGMPanelBase_InputItem, clone, config["desc"], config["yes_callback"])
 end
 
 function UIGMPanelBase:InitInputItem2(config)
-  local clone = self:CreateClone(self.input_item2_prefab)
-  self:AddChild(nil,UIGMPanelBase_InputItem2, clone, config["desc"], config["yes_callback"])
+	local clone = self:CreateClone(self.inputItem2Prefab)
+	self:AddChild(nil, UIGMPanelBase_InputItem2, clone, config["desc"], config["yes_callback"])
 end
 
 function UIGMPanelBase:__Destroy()
-  UIGMPanelBase.super.__Destroy(self)
-  self.config_list = {}
+	UIGMPanelBase.super.__Destroy(self)
+	self.configList = {}
 end
 
 return UIGMPanelBase

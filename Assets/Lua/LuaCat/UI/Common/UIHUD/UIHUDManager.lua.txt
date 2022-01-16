@@ -1,5 +1,4 @@
 ---@class UIHudManager:UIObject
 local UIHUDManager = Class("UIHUDManager", UIObject)
 
-
 return UIHUDManager

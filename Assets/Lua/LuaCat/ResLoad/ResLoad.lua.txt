@@ -1,81 +1,81 @@
 ---@class ResLoad
 local ResLoad = Class("ResLoad")
 
-function ResLoad:Init(is_not_check_destroy)
-  ---@type table<string, ResLoadDataInfo>
-  self.resLoadDataInfo_dict = {}
-  self.is_not_check_destroy = is_not_check_destroy
+function ResLoad:Init(isNotCheckDestroy)
+	---@type table<string, ResLoadDataInfo>
+	self.resLoadDataInfoDict = {}
+	self.isNotCheckDestroy = isNotCheckDestroy
 end
 
 function ResLoad:IsAllLoadDone()
-  for _, resLoadDataInfo in pairs(self.resLoadDataInfo_dict) do
-    if not resLoadDataInfo.resLoadData:IsLoadDone() then
-      return false
-    end
-  end
-  return true
+	for _, resLoadDataInfo in pairs(self.resLoadDataInfoDict) do
+		if not resLoadDataInfo.resLoadData:IsLoadDone() then
+			return false
+		end
+	end
+	return true
 end
 
----@param on_load_success_callback fun(assetCat:CS.CsCat.AssetCat)
----@param on_load_fail_callback fun(assetCat:CS.CsCat.AssetCat)
----@param on_load_done_callback fun(assetCat:CS.CsCat.AssetCat)
----@param callback_cause any
-function ResLoad:GetOrLoadAsset(asset_path, on_load_success_callback, on_load_fail_callback, on_load_done_callback, callback_cause)
-  local callback_cause = callback_cause == nil and self or callback_cause
-  local assetCat = global.client.cs_client.assetBundleManager:GetOrLoadAssetCat(string.GetMainAssetPath(asset_path), on_load_success_callback, on_load_fail_callback, on_load_done_callback, callback_cause)
-  local main_asset_path = string.GetMainAssetPath(asset_path)
-  if not self.resLoadDataInfo_dict[main_asset_path] then
-    self.resLoadDataInfo_dict[main_asset_path] = ResLoadDataInfo.New(ResLoadData.New(assetCat), self.is_not_check_destroy)
-  end
-  self.resLoadDataInfo_dict[main_asset_path]:AddCallbackCause(callback_cause)
-  return assetCat
+---@param onLoadSuccessCallback fun(assetCat:CS.CsCat.AssetCat)
+---@param onLoadFailCallback fun(assetCat:CS.CsCat.AssetCat)
+---@param onLoadDoneCallback fun(assetCat:CS.CsCat.AssetCat)
+---@param callbackCause any
+function ResLoad:GetOrLoadAsset(assetPath, onLoadSuccessCallback, onLoadFailCallback, onLoadDoneCallback, callbackCause)
+	local callbackCause = callbackCause == nil and self or callbackCause
+	local assetCat = global.client.csClient.assetBundleManager:GetOrLoadAssetCat(string.GetMainAssetPath(assetPath), onLoadSuccessCallback, onLoadFailCallback, onLoadDoneCallback, callbackCause)
+	local mainAssetPath = string.GetMainAssetPath(assetPath)
+	if not self.resLoadDataInfoDict[mainAssetPath] then
+		self.resLoadDataInfoDict[mainAssetPath] = ResLoadDataInfo.New(ResLoadData.New(assetCat), self.isNotCheckDestroy)
+	end
+	self.resLoadDataInfoDict[mainAssetPath]:AddCallbackCause(callbackCause)
+	return assetCat
 end
 
 ---@param assetCat CS.CsCat.AssetCat
-function ResLoad:CancelLoadCallback(assetCat, callback_cause)
-  local to_remove_key
-  for key, resLoadDataInfo in pairs(self.resLoadDataInfo_dict) do
-    if resLoadDataInfo.resLoadData.assetCat == assetCat then
-      resLoadDataInfo:RemoveCallbackCause(callback_cause)
-      if table.Count(resLoadDataInfo.callback_cause_dict) == 0 and not self.is_not_check_destroy then
-        --is_not_check_destroy的时候不删除，因为要在destroy的时候作为删除的asset的依据
-        to_remove_key = key
-      end
-      break
-    end
-  end
-  if to_remove_key then
-    self.resLoadDataInfo_dict[to_remove_key] = nil
-  end
+function ResLoad:CancelLoadCallback(assetCat, callbackCause)
+	local toRemoveKey
+	for key, resLoadDataInfo in pairs(self.resLoadDataInfoDict) do
+		if resLoadDataInfo.resLoadData.assetCat == assetCat then
+			resLoadDataInfo:RemoveCallbackCause(callbackCause)
+			if table.Count(resLoadDataInfo.callbackCauseDict) == 0 and not self.isNotCheckDestroy then
+				--is_not_check_destroy的时候不删除，因为要在destroy的时候作为删除的asset的依据
+				toRemoveKey = key
+			end
+			break
+		end
+	end
+	if toRemoveKey then
+		self.resLoadDataInfoDict[toRemoveKey] = nil
+	end
 end
 
 ---@param assetCat CS.CsCat.AssetCat
 function ResLoad:CancelLoadAllCallbacks(assetCat)
-  local to_remove_key
-  for key, resLoadDataInfo in pairs(self.resLoadDataInfo_dict) do
-    if resLoadDataInfo.resLoadData.assetCat == assetCat then
-      resLoadDataInfo:RemoveAllCallbackCauses()
-      if table.Count(resLoadDataInfo.callback_cause_dict) == 0 and not self.is_not_check_destroy then
-        --is_not_check_destroy的时候不删除，因为要在destroy的时候作为删除的asset的依据
-        to_remove_key = key
-      end
-      break
-    end
-  end
-  if to_remove_key then
-    self.resLoadDataInfo_dict[to_remove_key] = nil
-  end
+	local toRemoveKey
+	for key, resLoadDataInfo in pairs(self.resLoadDataInfoDict) do
+		if resLoadDataInfo.resLoadData.assetCat == assetCat then
+			resLoadDataInfo:RemoveAllCallbackCauses()
+			if table.Count(resLoadDataInfo.callbackCauseDict) == 0 and not self.isNotCheckDestroy then
+				--is_not_check_destroy的时候不删除，因为要在destroy的时候作为删除的asset的依据
+				toRemoveKey = key
+			end
+			break
+		end
+	end
+	if toRemoveKey then
+		self.resLoadDataInfoDict[toRemoveKey] = nil
+	end
 end
 
 function ResLoad:Reset()
-  for _, resLoadDataInfo in pairs(self.resLoadDataInfo_dict) do
-    resLoadDataInfo:Destroy()
-  end
-  self.resLoadDataInfo_dict = {}
+	for _, resLoadDataInfo in pairs(self.resLoadDataInfoDict) do
+		resLoadDataInfo:Destroy()
+	end
+	self.resLoadDataInfoDict = {}
 end
 
 function ResLoad:Destroy()
-  self:Reset()
+	self:Reset()
 end
 
 return ResLoad

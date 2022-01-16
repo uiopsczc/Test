@@ -204,7 +204,7 @@ end
 ----------------------------------------------------------------------
 --- 只会被触发一次
 function GameEntity:InvokeAfterAllAssetsLoadDone(callback)
-  if self.is_all_assets_load_done then
+  if self.isAllAssetsLoadDone then
     callback()
   else
     table.insert(self.all_assets_load_done_callback, callback)
@@ -232,7 +232,7 @@ end
 
 function GameEntity:OnAllAssetsLoadDone()
   self:Broadcast(string.ToEventName(ECSEventNameConst.OnAllAssetsLoadDone,self))
-  self.is_all_assets_load_done = true
+  self.isAllAssetsLoadDone = true
   DelegateUtil.InvokeCallback(self.all_assets_load_done_callback)
   self.all_assets_load_done_callback = nil
 end
@@ -279,7 +279,7 @@ function GameEntity:__Destroy()
   self.timerManagerPluginComponent = nil
   self.graphicComponent = nil
 
-  self.is_all_assets_load_done = false
+  self.isAllAssetsLoadDone = false
   self.all_assets_load_done_callback = {}
 end
 

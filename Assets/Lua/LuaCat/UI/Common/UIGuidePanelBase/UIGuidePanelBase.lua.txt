@@ -1,63 +1,63 @@
-local UIGuidePanelBase_ArrowItem = require("luacat.ui.common.UIGuidePanelBase.UIGuidePanelBase_ArrowItem")
-local UIGuidePanelBase_BgItem = require("luacat.ui.common.UIGuidePanelBase.UIGuidePanelBase_BgItem")
-local UIGuidePanelBase_DescItem = require("luacat.ui.common.UIGuidePanelBase.UIGuidePanelBase_DescItem")
-local UIGuidePanelBase_DialogItem = require("luacat.ui.common.UIGuidePanelBase.UIGuidePanelBase_DialogItem")
-local UIGuidePanelBase_FingerItem = require("luacat.ui.common.UIGuidePanelBase.UIGuidePanelBase_FingerItem")
+local UIGuidePanelBase_ArrowItem = require("LuaCat.UI.Common.UIGuidePanelBase.UIGuidePanelBase_ArrowItem")
+local UIGuidePanelBase_BgItem = require("LuaCat.UI.Common.UIGuidePanelBase.UIGuidePanelBase_BgItem")
+local UIGuidePanelBase_DescItem = require("LuaCat.UI.Common.UIGuidePanelBase.UIGuidePanelBase_DescItem")
+local UIGuidePanelBase_DialogItem = require("LuaCat.UI.Common.UIGuidePanelBase.UIGuidePanelBase_DialogItem")
+local UIGuidePanelBase_FingerItem = require("LuaCat.UI.Common.UIGuidePanelBase.UIGuidePanelBase_FingerItem")
 
 ---@class UIGuidePanelBase:UIPopUpPanel
 local UIGuidePanelBase = Class("UIGuidePanelBase", UIPopUpPanel)
 
 function UIGuidePanelBase:Init()
-  UIGuidePanelBase.super.Init(self)
-  self.graphicComponent:SetPrefabPath("Assets/Resources/common/ui/prefab/UIGuidePanelBase.prefab")
+	UIGuidePanelBase.super.Init(self)
+	self.graphicComponent:SetPrefabPath("Assets/Resources/Common/UI/Prefab/UIGuidePanelBase.prefab")
 end
 
 function UIGuidePanelBase:InitGameObjectChildren()
-  UIGuidePanelBase.super.InitGameObjectChildren(self)
-  self.bg_prefab = self.frame_transform:Find("bg").gameObject
-  self.dialog_right_prefab = self.frame_transform:Find("dialog_right").gameObject
-  self.dialog_left_prefab = self.frame_transform:Find("dialog_left").gameObject
-  self.finger_prefab = self.frame_transform:Find("finger").gameObject
-  self.arrow_prefab = self.frame_transform:Find("arrow").gameObject
-  self.desc_prefab = self.frame_transform:Find("desc").gameObject
+	UIGuidePanelBase.super.InitGameObjectChildren(self)
+	self.bgPrefab = self.frameTransform:Find("bg").gameObject
+	self.dialogRightPrefab = self.frameTransform:Find("dialog_right").gameObject
+	self.dialogLeftPrefab = self.frameTransform:Find("dialog_left").gameObject
+	self.fingerPrefab = self.frameTransform:Find("finger").gameObject
+	self.arrowPrefab = self.frameTransform:Find("arrow").gameObject
+	self.descPrefab = self.frameTransform:Find("desc").gameObject
 
-  ---@type UIGuidePanelBase_BgItem
-  self.bgItem = self:AddChild(nil, UIGuidePanelBase_BgItem, self.bg_prefab)
+	---@type UIGuidePanelBase_BgItem
+	self.bgItem = self:AddChild(nil, UIGuidePanelBase_BgItem, self.bgPrefab)
 end
 
 ---@return UIGuidePanelBase_DialogItem
 function UIGuidePanelBase:CreateDialogLeftItem()
-  local clone = GameObject.Instantiate(self.dialog_left_prefab, self.graphicComponent.transform)
-  clone:SetActive(true)
-  return self:AddChild(nil, UIGuidePanelBase_DialogItem, clone)
+	local clone = GameObject.Instantiate(self.dialogLeftPrefab, self.graphicComponent.transform)
+	clone:SetActive(true)
+	return self:AddChild(nil, UIGuidePanelBase_DialogItem, clone)
 end
 
 ---@return UIGuidePanelBase_DialogItem
 function UIGuidePanelBase:CreateDialogRightItem()
-  local clone = GameObject.Instantiate(self.dialog_right_prefab, self.graphicComponent.transform)
-  clone:SetActive(true)
-  return self:AddChild(nil, UIGuidePanelBase_DialogItem, clone)
+	local clone = GameObject.Instantiate(self.dialogRightPrefab, self.graphicComponent.transform)
+	clone:SetActive(true)
+	return self:AddChild(nil, UIGuidePanelBase_DialogItem, clone)
 end
 
 ---@return UIGuidePanelBase_FingerItem
 function UIGuidePanelBase:CreateFingerItem()
-  local clone = GameObject.Instantiate(self.finger_prefab, self.graphicComponent.transform)
-  clone:SetActive(true)
-  return self:AddChild(nil, UIGuidePanelBase_FingerItem, clone)
+	local clone = GameObject.Instantiate(self.fingerPrefab, self.graphicComponent.transform)
+	clone:SetActive(true)
+	return self:AddChild(nil, UIGuidePanelBase_FingerItem, clone)
 end
 
 ---@return UIGuidePanelBase_ArrowItem
 function UIGuidePanelBase:CreateArrowItem()
-  local clone = GameObject.Instantiate(self.arrow_prefab, self.graphicComponent.transform)
-  clone:SetActive(true)
-  return self:AddChild(nil, UIGuidePanelBase_ArrowItem, clone)
+	local clone = GameObject.Instantiate(self.arrowPrefab, self.graphicComponent.transform)
+	clone:SetActive(true)
+	return self:AddChild(nil, UIGuidePanelBase_ArrowItem, clone)
 end
 
 ---@return UIGuidePanelBase_DescItem
 function UIGuidePanelBase:CreateDescItem()
-  local clone = GameObject.Instantiate(self.desc_prefab, self.graphicComponent.transform)
-  clone:SetActive(true)
-  return self:AddChild(nil, UIGuidePanelBase_DescItem, clone)
+	local clone = GameObject.Instantiate(self.descPrefab, self.graphicComponent.transform)
+	clone:SetActive(true)
+	return self:AddChild(nil, UIGuidePanelBase_DescItem, clone)
 end
 
 return UIGuidePanelBase
