@@ -1,30 +1,28 @@
 --坐标是x增加是向右，y增加是向上（与unity的坐标系一致），数组用table.ToLeftBottomBaseArrays转换
 ---@class AStarImpl:AStar
-local AStarImpl = Class("AStarImpl",AStar)
+local AStarImpl = Class("AStarImpl", AStar)
 ---@param astarMapPath AStarMapPath
 ---@param astarType
----@param can_pass_obstacle_types number[]
----@param can_pass_terrain_types number[]
-function AStarImpl:Init(astarMapPath,astarType,can_pass_obstacle_types,can_pass_terrain_types)
-  AStarImpl.super.Init(self, astarType)
-  ---@type AStarMapPath
-  self.astarMapPath = astarMapPath
-  self.can_pass_obstacle_types = can_pass_obstacle_types
-  self.can_pass_terrain_types = can_pass_terrain_types
-  self:SetRange(1,1, self.astarMapPath:Height(), self.astarMapPath:Width())
+---@param canPassObstacleTypes number[]
+---@param canPassTerrainTypes number[]
+function AStarImpl:Init(astarMapPath, astarType, canPassObstacleTypes, canPassTerrainTypes)
+	AStarImpl.super.Init(self, astarType)
+	---@type AStarMapPath
+	self.astarMapPath = astarMapPath
+	self.canPassObstacleTypes = canPassObstacleTypes
+	self.canPassTerrainTypes = canPassTerrainTypes
+	self:SetRange(1, 1, self.astarMapPath:Height(), self.astarMapPath:Width())
 end
 
 ---@param x number
 ---@param y number
 ---@return boolean
-function AStarImpl:CanPass(x,y)
-  if not AStarUtil.CanPass(self.astarMapPath:GetFinalGrids(), x, y, self.can_pass_obstacle_types, self.can_pass_terrain_types) then
-    return false
-  end
-  return true
+function AStarImpl:CanPass(x, y)
+	if not AStarUtil.CanPass(self.astarMapPath:GetFinalGrids(), x, y, self.canPassObstacleTypes, self.canPassTerrainTypes) then
+		return false
+	end
+	return true
 end
-
-
 
 return AStarImpl
 

@@ -1,137 +1,138 @@
 --坐标是x增加是向右，y增加是向上（与unity的坐标系一致），数组用table.ToLeftBottomBaseArrays转换
 local AStarMapPathUtil = {}
 -- 直角寻路(先横向再纵向寻路)
-function AStarMapPathUtil.BorderFindPath( astarMapPath,  point_a,  point_b,  can_pass_obstacle_types,  can_pass_terrain_types)
-  if not AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), point_a.x, point_a.y) or not AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), point_b.x, point_b.y) then
-    return nil
-  end
-  local list = {}
-  table.insert(list,point_a)
-  local dv = point_b.x > point_a.x and 1 or -1
-  for x = point_a.x + dv,  point_b.x ,  dv do
-    if not AStarUtil.CanPass(astarMapPath, x, point_a.y, can_pass_obstacle_types, can_pass_terrain_types) then
-      return nil
-    end
-    table.insert(list, Vector2(x, point_a.y))
-  end
-  dv = point_b.y > point_a.y and 1 or -1
-  for  y = point_a.y + dv, point_b.y ,  dv do
-    if not AStarUtil.CanPass(astarMapPath, point_b.x, y, can_pass_obstacle_types, can_pass_terrain_types) then
-      return nil
-    end
-    table.insert(list,Vector2(point_b.x, y))
-  end
-  table.insert(list, point_b)
-  return list
+function AStarMapPathUtil.BorderFindPath(astarMapPath, pointA, pointB, canPassObstacleTypes, canPassTerrainTypes)
+	if not AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), pointA.x, pointA.y) or not AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), pointB.x, pointB.y) then
+		return nil
+	end
+	local list = {}
+	table.insert(list, pointA)
+	local dv = pointB.x > pointA.x and 1 or -1
+	for x = pointA.x + dv, pointB.x, dv do
+		if not AStarUtil.CanPass(astarMapPath, x, pointA.y, canPassObstacleTypes, canPassTerrainTypes) then
+			return nil
+		end
+		table.insert(list, Vector2(x, pointA.y))
+	end
+	dv = pointB.y > pointA.y and 1 or -1
+	for y = pointA.y + dv, pointB.y, dv do
+		if not AStarUtil.CanPass(astarMapPath, pointB.x, y, canPassObstacleTypes, canPassTerrainTypes) then
+			return nil
+		end
+		table.insert(list, Vector2(pointB.x, y))
+	end
+	table.insert(list, pointB)
+	return list
 end
 
 
 -- 对角线寻路
-function AStarMapPathUtil.DiagonallyFindPath( astarMapPath,  point_a,  point_b,  can_pass_obstacle_types,  can_pass_terrain_types)
-  if not AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), point_a.x, point_a.y) or not AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), point_b.x, point_b.y) then
-    return nil
-  end
-  local list = {}
-  local dx = point_b.x - point_a.x
-  local dy = point_b.y - point_a.y
-  if math.abs(dx) > math.abs(dy) then
-    local x1
-    if dx > 0 then
-      x1 = point_a.x + math.abs(dy)
-    else
-      x1 = point_a.x - math.abs(dy)
-    end
-    local p = Vector2(x1, point_b.y)
-    if not AStarUtil.CanPass(astarMapPath, p.x, p.y, can_pass_obstacle_types, can_pass_terrain_types) then
-      return nil
-    end
-    local list1 = AStarUtil.GetLinePointList(point_a, p)
-    if not AStarUtil.CanTrackListPass(astarMapPath, list1, can_pass_obstacle_types, can_pass_terrain_types) then
-      return nil
-    end
-    local list2 = AStarUtil.GetLinePointList(p, point_b)
-    if not AStarUtil.CanTrackListPass(astarMapPath, list2, can_pass_obstacle_types, can_pass_terrain_types) then
-      return nil
-    end
-    table.AddRange_Array(list, list1)
-    table.remove(list) -- 删掉p
-    table.AddRange_Array(list, list2)
-  else
-    local y1
-    if dy > 0 then
-      y1 = point_a.y + math.abs(dx)
-    else
-      y1 = point_a.y - math.abs(dx)
-    end
-    local p = Vector2(point_b.x, y1)
-    if not AStarUtil.CanPass(astarMapPath, p.x, p.y, can_pass_obstacle_types, can_pass_terrain_types) then
-      return nil
-    end
-    local list1 = AStarUtil.GetLinePointList(point_a, p)
-    if not AStarUtil.CanTrackListPass(astarMapPath, list1, can_pass_obstacle_types, can_pass_terrain_types) then
-      return nil
-    end
-    local list2 = AStarUtil.GetLinePointList(p, point_b)
-    if not AStarUtil.CanTrackListPass(astarMapPath, list2, can_pass_obstacle_types, can_pass_terrain_types) then
-      return nil
-    end
-    table.AddRange_Array(list, list1)
-    table.remove(list) -- 删掉p
-    table.AddRange_Array(list, list2)
-  end
-  return list
+function AStarMapPathUtil.DiagonallyFindPath(astarMapPath, pointA, pointB, canPassObstacleTypes, canPassTerrainTypes)
+	if not AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), pointA.x, pointA.y) or not AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), pointB.x, pointB.y) then
+		return nil
+	end
+	local list = {}
+	local dx = pointB.x - pointA.x
+	local dy = pointB.y - pointA.y
+	if math.abs(dx) > math.abs(dy) then
+		local x1
+		if dx > 0 then
+			x1 = pointA.x + math.abs(dy)
+		else
+			x1 = pointA.x - math.abs(dy)
+		end
+		local p = Vector2(x1, pointB.y)
+		if not AStarUtil.CanPass(astarMapPath, p.x, p.y, canPassObstacleTypes, canPassTerrainTypes) then
+			return nil
+		end
+		local list1 = AStarUtil.GetLinePointList(pointA, p)
+		if not AStarUtil.CanTrackListPass(astarMapPath, list1, canPassObstacleTypes, canPassTerrainTypes) then
+			return nil
+		end
+		local list2 = AStarUtil.GetLinePointList(p, pointB)
+		if not AStarUtil.CanTrackListPass(astarMapPath, list2, canPassObstacleTypes, canPassTerrainTypes) then
+			return nil
+		end
+		table.AddRange_Array(list, list1)
+		table.remove(list) -- 删掉p
+		table.AddRange_Array(list, list2)
+	else
+		local y1
+		if dy > 0 then
+			y1 = pointA.y + math.abs(dx)
+		else
+			y1 = pointA.y - math.abs(dx)
+		end
+		local p = Vector2(pointB.x, y1)
+		if not AStarUtil.CanPass(astarMapPath, p.x, p.y, canPassObstacleTypes, canPassTerrainTypes) then
+			return nil
+		end
+		local list1 = AStarUtil.GetLinePointList(pointA, p)
+		if not AStarUtil.CanTrackListPass(astarMapPath, list1, canPassObstacleTypes, canPassTerrainTypes) then
+			return nil
+		end
+		local list2 = AStarUtil.GetLinePointList(p, pointB)
+		if not AStarUtil.CanTrackListPass(astarMapPath, list2, canPassObstacleTypes, canPassTerrainTypes) then
+			return nil
+		end
+		table.AddRange_Array(list, list1)
+		table.remove(list) -- 删掉p
+		table.AddRange_Array(list, list2)
+	end
+	return list
 end
 
 -- 先对角线查找，再直角查找
-function AStarMapPathUtil.DirectFindPath( astarMapPath,  point_a,  point_b,  can_pass_obstacle_types,  can_pass_terrain_types)
-  if not AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), point_a.x, point_a.y) or not AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), point_b.x, point_b.y) then
-    return nil
-  end
-  local list
-  if point_a == point_b then -- 同一点
-    list = {}
-    table.insert(list, point_a)
-  elseif point_a.x == point_b.x then
-    list = {}
-    table.insert(list, point_a)
-    local dv = point_b.y > point_a.y and 1 or -1
-    for  y = point_a.y + dv, point_b.y ,  dv do
-      if not AStarUtil.CanPass(astarMapPath, point_a.x, y, can_pass_obstacle_types, can_pass_terrain_types) then
-        return nil
-      end
-      table.insert(list, Vector2(point_a.x, y))
-    end
-    table.insert(list, point_b)
-  elseif point_a.y == point_b.y then
-    list = {}
-    table.insert(list, point_a)
-    local dv = point_b.x > point_a.x and 1 or -1
-    for x = point_a.x + dv, point_b.x ,  dv do
-      if not AStarUtil.CanPass(astarMapPath, x, point_a.y, can_pass_obstacle_types, can_pass_terrain_types) then
-        return nil
-      end
-      table.insert(list, Vector2(x, point_a.y))
-    end
-    table.insert(list, point_b)
-  else
-  -- 先对角线查找，再直角查找
-    list = AStarMapPathUtil.DiagonallyFindPath(astarMapPath, point_a, point_b, can_pass_obstacle_types, can_pass_terrain_types)
-    if not list then
-      list = AStarMapPathUtil.DiagonallyFindPath(astarMapPath, point_b, point_a, can_pass_obstacle_types, can_pass_terrain_types)
-      if not list then
-        list = AStarMapPathUtil.BorderFindPath(astarMapPath, point_a, point_b, can_pass_obstacle_types, can_pass_terrain_types)
-        if not list then
-          list = AStarMapPathUtil.BorderFindPath(astarMapPath, point_b, point_a, can_pass_obstacle_types, can_pass_terrain_types)
-          if list then
-            list = table.Reverse_Array(list)
-          end
-        end
-      else
-        list = table.Reverse_Array(list)
-      end
-    end
-  end
-  return list
+function AStarMapPathUtil.DirectFindPath(astarMapPath, pointA, pointB, canPassObstacleTypes, canPassTerrainTypes)
+	if not AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), pointA.x, pointA.y) or not AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), pointB.x, pointB.y) then
+		return nil
+	end
+	local list
+	if pointA == pointB then
+		-- 同一点
+		list = {}
+		table.insert(list, pointA)
+	elseif pointA.x == pointB.x then
+		list = {}
+		table.insert(list, pointA)
+		local dv = pointB.y > pointA.y and 1 or -1
+		for y = pointA.y + dv, pointB.y, dv do
+			if not AStarUtil.CanPass(astarMapPath, pointA.x, y, canPassObstacleTypes, canPassTerrainTypes) then
+				return nil
+			end
+			table.insert(list, Vector2(pointA.x, y))
+		end
+		table.insert(list, pointB)
+	elseif pointA.y == pointB.y then
+		list = {}
+		table.insert(list, pointA)
+		local dv = pointB.x > pointA.x and 1 or -1
+		for x = pointA.x + dv, pointB.x, dv do
+			if not AStarUtil.CanPass(astarMapPath, x, pointA.y, canPassObstacleTypes, canPassTerrainTypes) then
+				return nil
+			end
+			table.insert(list, Vector2(x, pointA.y))
+		end
+		table.insert(list, pointB)
+	else
+		-- 先对角线查找，再直角查找
+		list = AStarMapPathUtil.DiagonallyFindPath(astarMapPath, pointA, pointB, canPassObstacleTypes, canPassTerrainTypes)
+		if not list then
+			list = AStarMapPathUtil.DiagonallyFindPath(astarMapPath, pointB, pointA, canPassObstacleTypes, canPassTerrainTypes)
+			if not list then
+				list = AStarMapPathUtil.BorderFindPath(astarMapPath, pointA, pointB, canPassObstacleTypes, canPassTerrainTypes)
+				if not list then
+					list = AStarMapPathUtil.BorderFindPath(astarMapPath, pointB, pointA, canPassObstacleTypes, canPassTerrainTypes)
+					if list then
+						list = table.Reverse_Array(list)
+					end
+				end
+			else
+				list = table.Reverse_Array(list)
+			end
+		end
+	end
+	return list
 end
 
 return AStarMapPathUtil

@@ -4,20 +4,19 @@ local B_CoroutineHFSMState = require("luacat.dataStruct.hfsm.test.CoroutineHFSM.
 ----@class TestCoroutineHFSM:CoroutineHFSM
 local TestCoroutineHFSM = Class("TestCoroutineHFSM", CoroutineHFSM)
 
-
 function TestCoroutineHFSM:InitStates()
-  TestCoroutineHFSM.super.InitStates(self)
-  self:AddSubDirectState("a",A_CoroutineHFSMState)
-  self:AddSubDirectState("b",B_CoroutineHFSMState)
-  self:SetDefaultSubDirectState("a")
+	TestCoroutineHFSM.super.InitStates(self)
+	self:AddSubDirectState("a", A_CoroutineHFSMState)
+	self:AddSubDirectState("b", B_CoroutineHFSMState)
+	self:SetDefaultSubDirectState("a")
 end
 
 function TestCoroutineHFSM:Test1()
-  self:ChangeToState("a")
+	self:ChangeToState("a")
 end
 
 function TestCoroutineHFSM:Test2()
-  self:ChangeToState("b")
+	self:ChangeToState("b")
 end
 
 return TestCoroutineHFSM

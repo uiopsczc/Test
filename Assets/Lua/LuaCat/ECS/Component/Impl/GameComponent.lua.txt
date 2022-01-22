@@ -1,13 +1,12 @@
 ---@class GameComponent:AbstractComponent
 -----注意创建后记得设置key和entity
-local GameComponent = Class("GameComponent",AbstractComponent)
-
+local GameComponent = Class("GameComponent", AbstractComponent)
 
 -----注意创建后记得设置key和entity
 function GameComponent:Init(...)
-  GameComponent.super.Init(self,...)
-  ---@type DOTweenPlugin
-  self.dotweenPlugin = DOTweenPlugin.New()
+	GameComponent.super.Init(self, ...)
+	---@type DOTweenPlugin
+	self.dotweenPlugin = DOTweenPlugin.New()
 end
 
 ----------------------------------------------------------------------
@@ -15,55 +14,54 @@ end
 ----------------------------------------------------------------------
 ---@return CoroutinePlugin
 function GameComponent:GetCoroutinePlugin()
-  if not self.coroutinePlugin then
-    self.coroutinePlugin = CoroutinePlugin.New(self:GetTimerManager())
-  end
-  return self.coroutinePlugin
+	if not self.coroutinePlugin then
+		self.coroutinePlugin = CoroutinePlugin.New(self:GetTimerManager())
+	end
+	return self.coroutinePlugin
 end
 
 function GameComponent:StartCoroutine(key, func, ...)
-  self:GetCoroutinePlugin():StartCoroutine(key, func, ...)
+	self:GetCoroutinePlugin():StartCoroutine(key, func, ...)
 end
 
-function GameComponent:StopCoroutine(key_or_co)
-  self:GetCoroutinePlugin():StopCoroutine(key_or_co)
+function GameComponent:StopCoroutine(keyOrCo)
+	self:GetCoroutinePlugin():StopCoroutine(keyOrCo)
 end
 
 function GameComponent:StopAllCoroutines()
-  self:GetCoroutinePlugin():StopAllCoroutines()
+	self:GetCoroutinePlugin():StopAllCoroutines()
 end
 
-function GameComponent:SetIsPaused_Coroutines(is_paused)
-  self:GetCoroutinePlugin():SetIsPaused(is_paused)
+function GameComponent:SetIsPaused_Coroutines(isPaused)
+	self:GetCoroutinePlugin():SetIsPaused(isPaused)
 end
-
 
 function GameComponent:WaitForFixedUpdate()
-  return CoroutinePlugin:WaitForFixedUpdate()
+	return CoroutinePlugin:WaitForFixedUpdate()
 end
 
 function GameComponent:WaitForFrames(frames)
-  return CoroutinePlugin:WaitForFrames(frames)
+	return CoroutinePlugin:WaitForFrames(frames)
 end
 
 function GameComponent:WaitForSeconds(seconds)
-  return CoroutinePlugin:WaitForSeconds(seconds)
+	return CoroutinePlugin:WaitForSeconds(seconds)
 end
 
-function GameComponent:WaitForAsyncOp(async_operation, callback)
-  return CoroutinePlugin:WaitForSeconds(async_operation, callback)
+function GameComponent:WaitForAsyncOp(asyncOperation, callback)
+	return CoroutinePlugin:WaitForSeconds(asyncOperation, callback)
 end
 
 function GameComponent:WaitUntil(func, ...)
-  return CoroutinePlugin:WaitUntil(func, ...)
+	return CoroutinePlugin:WaitUntil(func, ...)
 end
 
 function GameComponent:WaitWhile(func, ...)
-  return CoroutinePlugin:WaitWhile(func, ...)
+	return CoroutinePlugin:WaitWhile(func, ...)
 end
 
 function GameComponent:WaitForEndOfFrame()
-  return CoroutinePlugin:WaitForEndOfFrame()
+	return CoroutinePlugin:WaitForEndOfFrame()
 end
 
 ----------------------------------------------------------------------
@@ -72,27 +70,27 @@ end
 ---@param key string
 ---@return CS.DG.Tweening.Sequence
 function GameComponent:AddDOTweenSequence(key)
-  return self.dotweenPlugin:AddDOTweenSequence(key)
+	return self.dotweenPlugin:AddDOTweenSequence(key)
 end
 
 ---@param key string
 ---@param tween CS.DG.Tweening.Tween
 ---@return CS.DG.Tweening.Tween
 function GameComponent:AddDOTween(key, tween)
-  return self.dotweenPlugin:AddDOTween(key, tween)
+	return self.dotweenPlugin:AddDOTween(key, tween)
 end
 
----@param key_or_tween CS.DG.Tweening.Tween||string
-function GameComponent:RemoveDOTween(key_or_tween)
-  self.dotweenPlugin:RemoveDOTween(key_or_tween)
+---@param keyOrTween CS.DG.Tweening.Tween||string
+function GameComponent:RemoveDOTween(keyOrTween)
+	self.dotweenPlugin:RemoveDOTween(keyOrTween)
 end
 
 function GameComponent:RemoveAllDOTweens()
-  self.dotweenPlugin:RemoveAllDOTweens()
+	self.dotweenPlugin:RemoveAllDOTweens()
 end
 
-function GameComponent:SetIsPaused_DOTweens(is_paused)
-  self.dotweenPlugin:SetIsPaused(is_paused)
+function GameComponent:SetIsPaused_DOTweens(isPaused)
+	self.dotweenPlugin:SetIsPaused(isPaused)
 end
 
 ----------------------------------------------------------------------
@@ -100,15 +98,15 @@ end
 ----------------------------------------------------------------------
 ---@return EventDispatcherPlugin
 function GameComponent:GetEventDispatcherPlugin()
-  if not self.eventDispatcherPlugin then
-    self.eventDispatcherPlugin = EventDispatcherPlugin.New(global.client.eventDispatcher)
-  end
-  return self.eventDispatcherPlugin
+	if not self.eventDispatcherPlugin then
+		self.eventDispatcherPlugin = EventDispatcherPlugin.New(global.client.eventDispatcher)
+	end
+	return self.eventDispatcherPlugin
 end
 
 ---@return EventListener
 function GameComponent:AddListener(eventName, handler)
-  return self:GetEventDispatcherPlugin():AddListener(eventName, handler)
+	return self:GetEventDispatcherPlugin():AddListener(eventName, handler)
 end
 
 ---@return EventListener
@@ -117,107 +115,106 @@ end
 -- 情况2 只有一个handler
 -- 情况3 有一个eventName和一个handler
 function GameComponent:RemoveListener(...)
-  return self:GetEventDispatcherPlugin():RemoveListener(...)
+	return self:GetEventDispatcherPlugin():RemoveListener(...)
 end
 
 function GameComponent:RemoveAllListeners()
-  self:GetEventDispatcherPlugin():RemoveAllListeners()
+	self:GetEventDispatcherPlugin():RemoveAllListeners()
 end
 
 function GameComponent:Broadcast(eventName, ...)
-  self:GetEventDispatcherPlugin():Broadcast(eventName, ...)
+	self:GetEventDispatcherPlugin():Broadcast(eventName, ...)
 end
 
 ----------------------------------------------------------------------
 -- TimerManagerPlugin
 ----------------------------------------------------------------------
 function GameComponent:GetTimerManager()
-  return self.entity:GetTimerManager()
+	return self.entity:GetTimerManager()
 end
 
 ---@return TimerManagerPlugin
 function GameComponent:GetTimerManagerPlugin()
-  if not self.timerManagerPlugin then
-    self.timerManagerPlugin = TimerManagerPlugin.New(self:GetTimerManager())
-  end
-  return self.timerManagerPlugin
+	if not self.timerManagerPlugin then
+		self.timerManagerPlugin = TimerManagerPlugin.New(self:GetTimerManager())
+	end
+	return self.timerManagerPlugin
 end
 
-function GameComponent:AddTimer(target_func, target_func_args, delay, interval, update_mode, is_use_unscaledDeltaTime, is_coroutine_timer, is_use_frame)
-  return self:GetTimerManagerPlugin():AddTimer(target_func, target_func_args, delay, interval, update_mode, is_use_unscaledDeltaTime, is_coroutine_timer, is_use_frame)
+function GameComponent:AddTimer(targetFunc, targetFuncArgs, delay, interval, updateMode, isUseUnscaledDeltaTime, isCoroutineTimer, isUseFrame)
+	return self:GetTimerManagerPlugin():AddTimer(targetFunc, targetFuncArgs, delay, interval, updateMode, isUseUnscaledDeltaTime, isCoroutineTimer, isUseFrame)
 end
 
-function GameComponent:AddCoTimer(target_func, target_func_args, delay, interval, update_mode, is_use_unscaledDeltaTime, is_use_frame)
-  return self:GetTimerManagerPlugin():AddCoTimer(target_func, target_func_args, delay, interval, update_mode, is_use_unscaledDeltaTime, is_use_frame)
+function GameComponent:AddCoTimer(targetFunc, targetFuncArgs, delay, interval, updateMode, isUseUnscaledDeltaTime, isUseFrame)
+	return self:GetTimerManagerPlugin():AddCoTimer(targetFunc, targetFuncArgs, delay, interval, updateMode, isUseUnscaledDeltaTime, isUseFrame)
 end
 
-function GameComponent:AddUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
-  return self:GetTimerManagerPlugin():AddUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
+function GameComponent:AddUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
+	return self:GetTimerManagerPlugin():AddUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
 end
-function GameComponent:AddFixedUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
-  return self:GetTimerManagerPlugin():AddFixedUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
+function GameComponent:AddFixedUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
+	return self:GetTimerManagerPlugin():AddFixedUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
 end
-function GameComponent:AddLateUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
-  return self:GetTimerManagerPlugin():AddLateUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
+function GameComponent:AddLateUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
+	return self:GetTimerManagerPlugin():AddLateUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
 end
 
-function GameComponent:AddCoUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
-  return self:GetTimerManagerPlugin():AddCoUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
+function GameComponent:AddCoUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
+	return self:GetTimerManagerPlugin():AddCoUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
 end
-function GameComponent:AddCoFixedUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
-  return self:GetTimerManagerPlugin():AddCoFixedUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
+function GameComponent:AddCoFixedUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
+	return self:GetTimerManagerPlugin():AddCoFixedUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
 end
-function GameComponent:AddCoLateUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
-  return self:GetTimerManagerPlugin():AddCoLateUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
+function GameComponent:AddCoLateUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
+	return self:GetTimerManagerPlugin():AddCoLateUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
 end
 
 function GameComponent:RemoveTimer(timer)
-  return self:GetTimerManagerPlugin():RemoveTimer(timer)
+	return self:GetTimerManagerPlugin():RemoveTimer(timer)
 end
 
 function GameComponent:RemoveAllTimers()
-  self:GetTimerManagerPlugin():RemoveAllTimers()
+	self:GetTimerManagerPlugin():RemoveAllTimers()
 end
 
-function GameComponent:SetIsPaused_Timers(is_paused)
-  self:GetTimerManagerPlugin():SetIsPaused(is_paused)
+function GameComponent:SetIsPaused_Timers(isPaused)
+	self:GetTimerManagerPlugin():SetIsPaused(isPaused)
 end
 
 ----------------------------------------------------------------------
 -- Pause
 ----------------------------------------------------------------------
-function GameComponent:__SetIsPaused(is_paused)
-  GameComponent.super.__SetIsPaused(self, is_paused)
-  self:SetIsPaused_Timers(is_paused)
-  self:SetIsPaused_DOTweens(is_paused)
-  self:SetIsPaused_Coroutines(is_paused)
+function GameComponent:__SetIsPaused(isPaused)
+	GameComponent.super.__SetIsPaused(self, isPaused)
+	self:SetIsPaused_Timers(isPaused)
+	self:SetIsPaused_DOTweens(isPaused)
+	self:SetIsPaused_Coroutines(isPaused)
 end
 
 ----------------------------------------------------------------------
 -- __Reset
 ----------------------------------------------------------------------
 function GameComponent:__Reset()
-  GameComponent.super.__Reset(self)
-  self:StopAllCoroutines()
-  self:RemoveAllDOTweens()
-  self:RemoveAllTimers()
+	GameComponent.super.__Reset(self)
+	self:StopAllCoroutines()
+	self:RemoveAllDOTweens()
+	self:RemoveAllTimers()
 
-  self:RemoveAllListeners()
+	self:RemoveAllListeners()
 end
 
 ----------------------------------------------------------------------
 -- __Destroy
 ----------------------------------------------------------------------
 function GameComponent:__Destroy()
-  GameComponent.super.__Destroy(self)
-  self:StopAllCoroutines()
-  self:RemoveAllDOTweens()
-  self:RemoveAllTimers()
+	GameComponent.super.__Destroy(self)
+	self:StopAllCoroutines()
+	self:RemoveAllDOTweens()
+	self:RemoveAllTimers()
 
-  self:RemoveAllListeners()
+	self:RemoveAllListeners()
 
-  self.timerManagerPlugin = nil
+	self.timerManagerPlugin = nil
 end
-
 
 return GameComponent

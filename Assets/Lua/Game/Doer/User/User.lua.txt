@@ -1,5 +1,5 @@
 ---@class User:Critter
----@field main_role Role
+---@field mainRole Role
 local User = Class("User", Thing)
 
 function User:Init()
@@ -30,8 +30,8 @@ function User:DoSave(dict, dict_tmp)
   self.o_item_bag:DoSave(dict, dict_tmp)
   -- 存储任务
   self.o_missions:DoSave(dict, dict_tmp)
-  if self.main_role then
-    dict["main_role_rid"] = self.main_role:GetRid()
+  if self.mainRole then
+    dict["main_role_rid"] = self.mainRole:GetRid()
   end
 end
 
@@ -45,7 +45,7 @@ function User:DoRestore(dict, dict_tmp)
   self.o_missions:DoRestore(dict, dict_tmp)
 
   local main_role_rid = table.Remove_Dict(dict, "main_role_rid")
-  self.main_role = self:GetRole(main_role_rid)
+  self.mainRole = self:GetRole(main_role_rid)
 
   User.super.DoRestore(self,dict, dict_tmp)
 end

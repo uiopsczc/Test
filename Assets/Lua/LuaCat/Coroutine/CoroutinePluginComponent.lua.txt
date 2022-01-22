@@ -3,81 +3,79 @@ local CoroutinePluginComponent = Class("CoroutinePluginComponent", AbstractCompo
 
 ---@param coroutinePlugin CoroutinePlugin
 function CoroutinePluginComponent:Init(coroutinePlugin)
-  CoroutinePluginComponent.super.Init(self)
-  self.coroutinePlugin = coroutinePlugin
+	CoroutinePluginComponent.super.Init(self)
+	self.coroutinePlugin = coroutinePlugin
 end
 
-function CoroutinePluginComponent:StartCoroutine(key,func, ...)
-  self.coroutinePlugin:StartCoroutine(key,func, ...)
+function CoroutinePluginComponent:StartCoroutine(key, func, ...)
+	self.coroutinePlugin:StartCoroutine(key, func, ...)
 end
 
-function CoroutinePluginComponent:StopCoroutine(co_or_key)
-  self.coroutinePlugin:StopCoroutine(co_or_key)
+function CoroutinePluginComponent:StopCoroutine(coOrKey)
+	self.coroutinePlugin:StopCoroutine(coOrKey)
 end
-
 
 function CoroutinePluginComponent:StopAllCoroutines()
-  self.coroutinePlugin:StopAllCoroutines()
+	self.coroutinePlugin:StopAllCoroutines()
 end
 
-
 function CoroutinePluginComponent:WaitForFixedUpdate()
-  return self.coroutinePlugin:WaitForFixedUpdate()
+	return self.coroutinePlugin:WaitForFixedUpdate()
 end
 
 function CoroutinePluginComponent:WaitForFrames(frames)
-  return self.coroutinePlugin:WaitForFrames(frames)
+	return self.coroutinePlugin:WaitForFrames(frames)
 end
 
 function CoroutinePluginComponent:WaitForSeconds(seconds)
-  return self.coroutinePlugin:WaitForSeconds(seconds)
+	return self.coroutinePlugin:WaitForSeconds(seconds)
 end
 
-function CoroutinePluginComponent:WaitForAsyncOp(async_operation, callback)
-  return self.coroutinePlugin:WaitForAsyncOp(async_operation, callback)
+function CoroutinePluginComponent:WaitForAsyncOp(asyncOperation, callback)
+	return self.coroutinePlugin:WaitForAsyncOp(asyncOperation, callback)
 end
 
-function CoroutinePluginComponent:WaitUntil( func, ...)
-  return self.coroutinePlugin:WaitUntil(func, ...)
+function CoroutinePluginComponent:WaitUntil(func, ...)
+	return self.coroutinePlugin:WaitUntil(func, ...)
 end
 
-function CoroutinePluginComponent:WaitWhile( func, ...)
-  return self.coroutinePlugin:WaitWhile(func, ...)
+function CoroutinePluginComponent:WaitWhile(func, ...)
+	return self.coroutinePlugin:WaitWhile(func, ...)
 end
 
 function CoroutinePluginComponent:WaitForEndOfFrame()
-  return self.coroutinePlugin:WaitForEndOfFrame()
+	return self.coroutinePlugin:WaitForEndOfFrame()
 end
 
 function CoroutinePluginComponent:YieldBreak(...)
-  return self.coroutinePlugin:YieldBreak(...)
+	return self.coroutinePlugin:YieldBreak(...)
 end
 
-function CoroutinePluginComponent:YieldStart(func,callback, ...)
-  return self.coroutinePlugin:YieldStart(func,callback, ...)
+function CoroutinePluginComponent:YieldStart(func, callback, ...)
+	return self.coroutinePlugin:YieldStart(func, callback, ...)
 end
 
-function CoroutinePluginComponent:YieldCallback(child_co, ...)
-  return self.coroutinePlugin:YieldCallback(child_co, ...)
+function CoroutinePluginComponent:YieldCallback(childCo, ...)
+	return self.coroutinePlugin:YieldCallback(childCo, ...)
 end
 
 function CoroutinePluginComponent:YieldReturn(...)
-  return self.coroutinePlugin:YieldReturn(...)
+	return self.coroutinePlugin:YieldReturn(...)
 end
 
-function CoroutinePluginComponent:__SetIsPaused(is_paused)
-  CoroutinePluginComponent.super.__SetIsPaused(self, is_paused)
-  self.coroutinePlugin:SetIsPaused(is_paused)
+function CoroutinePluginComponent:__SetIsPaused(isPaused)
+	CoroutinePluginComponent.super.__SetIsPaused(self, isPaused)
+	self.coroutinePlugin:SetIsPaused(isPaused)
 end
 
 function CoroutinePluginComponent:__Reset()
-  CoroutinePluginComponent.super.__Reset(self)
-  self:StopAllCoroutines()
+	CoroutinePluginComponent.super.__Reset(self)
+	self:StopAllCoroutines()
 end
 
 function CoroutinePluginComponent:__Destroy()
-  CoroutinePluginComponent.super.__Destroy(self)
-  self:StopAllCoroutines()
+	CoroutinePluginComponent.super.__Destroy(self)
+	self:StopAllCoroutines()
 end
 
 return CoroutinePluginComponent

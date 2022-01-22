@@ -1,5 +1,5 @@
 ---@class HFSMState:TickObject
----@field parent_hfsm HFSM
+---@field parentHFSM HFSM
 local HFSMState = Class("HFSMState",TickObject)
 
 function HFSMState:Init()
@@ -9,13 +9,13 @@ end
 
 function HFSMState:Enter(...)
   self:SetIsEnabled(true, false)
-  self.parent_hfsm.current_sub_direct_state = self
+  self.parentHFSM.currentSubDirectState = self
 end
 
 
 function HFSMState:Exit(...)
   self:SetIsEnabled(false, false)
-  self.parent_hfsm.current_sub_direct_state = nil
+  self.parentHFSM.currentSubDirectState = nil
 end
 
 ---@param to_state HFSMState
@@ -23,12 +23,12 @@ function HFSMState:IsCanChangeToState(to_state, ...)
   return true
 end
 
-function HFSMState:ExitLoopTo(to_hfsm, ...)
+function HFSMState:ExitLoopTo(toHFSM, ...)
   self:Exit(...)
-  local _hfsm = self.parent_hfsm
-  while _hfsm ~= to_hfsm do
-    _hfsm:Exit(...)
-    _hfsm = _hfsm.parent_hfsm
+  local curHFSM = self.parentHFSM
+  while curHFSM ~= toHFSM do
+    curHFSM:Exit(...)
+    curHFSM = curHFSM.parentHFSM
   end
 end
 
@@ -42,16 +42,16 @@ end
 
 ---@return HFSM
 function HFSMState:GetRootHFSM()
-  return self.parent_hfsm:GetRootHFSM()
+  return self.parentHFSM:GetRootHFSM()
 end
 
 ---@return HFSM[]
 function HFSMState:GetParentHFSMList()
   ---@type HFSM[]
   local list = {}
-  local _hfsm = self.parent_hfsm
-  table.insert(list, _hfsm)
-  table.AddRange_Array(list, _hfsm:GetParentHFSMList())
+  local curHFSM = self.parentHFSM
+  table.insert(list, curHFSM)
+  table.AddRange_Array(list, curHFSM:GetParentHFSMList())
   return list
 end
 
@@ -62,24 +62,24 @@ function HFSMState:GetNearestSameParentHFSM(state2)
     return self:GetRootHFSM()
   end
 
- local hfsm_list1 = self:GetParentHFSMList()
- local hfsm_list2 = state2:GetParentHFSMList()
+ local hfsmList1 = self:GetParentHFSMList()
+ local hfsmList2 = state2:GetParentHFSMList()
 
-  local hfsm_deeper_list
-  local hfsm_dict = {}
-  if #hfsm_list1 > #hfsm_list2 then
-    hfsm_deeper_list = hfsm_list1
+  local hfsmDeeperList
+  local hfsmDict = {}
+  if #hfsmList1 > #hfsmList2 then
+    hfsmDeeperList = hfsmList1
   else
-    hfsm_deeper_list = hfsm_list2
+    hfsmDeeperList = hfsmList2
   end
 
-  local hfsm_lower_list = hfsm_deeper_list == hfsm_list1 and hfsm_list2 or hfsm_list1
-  for _, hfsm in ipairs(hfsm_lower_list) do
-    hfsm_dict[hfsm] = true
+  local hfsmLowerList = hfsmDeeperList == hfsmList1 and hfsmList2 or hfsmList1
+  for _, hfsm in ipairs(hfsmLowerList) do
+    hfsmDict[hfsm] = true
   end
 
-  for _,hfsm in ipairs(hfsm_deeper_list) do
-    if hfsm_dict[hfsm] then
+  for _,hfsm in ipairs(hfsmDeeperList) do
+    if hfsmDict[hfsm] then
       return hfsm
     end
   end
@@ -88,12 +88,12 @@ function HFSMState:GetNearestSameParentHFSM(state2)
 end
 
 
-function HFSMState:ChangeToState(key_or_state, is_force, ...)
-  self:GetRootHFSM():ChangeToState(key_or_state, is_force, ...)
+function HFSMState:ChangeToState(keyOrState, isForce, ...)
+  self:GetRootHFSM():ChangeToState(keyOrState, isForce, ...)
 end
 
-function HFSMState:ChangeToHFSM(key, is_force, ...)
-  self.GetRootHFSM():ChangeToHFSM(key, is_force, ...)
+function HFSMState:ChangeToHFSM(key, isForce, ...)
+  self.GetRootHFSM():ChangeToHFSM(key, isForce, ...)
 end
 
 function HFSMState:RevertToPreviousState()

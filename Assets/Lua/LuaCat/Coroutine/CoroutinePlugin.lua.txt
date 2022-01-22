@@ -2,109 +2,105 @@
 local CoroutinePlugin = Class("CoroutinePlugin")
 
 function CoroutinePlugin:Init(timerManager)
-  ---@type table<string,thread>
-  self.coroutine_dict = {}
-  ---@type IdPool
-  self.idPool = IdPool.New()
-  self.timerManager = timerManager
+	---@type table<string,thread>
+	self.coroutineDict = {}
+	---@type IdPool
+	self.idPool = IdPool.New()
+	self.timerManager = timerManager
 end
 
-function CoroutinePlugin:StartCoroutine(key,func, ...)
-  if not key then
-    key = tostring(self.idPool:Get())
-  end
-  -- 如果有的话，先停再启动
-  if self.coroutine_dict[key] then
-    Coroutine.Stop(self.coroutine_dict[key])
-    self.coroutine_dict[key] = nil
-  end
-  local co = Coroutine.Start(func, ...)
-  self.coroutine_dict[key] = co
+function CoroutinePlugin:StartCoroutine(key, func, ...)
+	if not key then
+		key = tostring(self.idPool:Get())
+	end
+	-- 如果有的话，先停再启动
+	if self.coroutineDict[key] then
+		Coroutine.Stop(self.coroutineDict[key])
+		self.coroutineDict[key] = nil
+	end
+	local co = Coroutine.Start(func, ...)
+	self.coroutineDict[key] = co
 end
 
-function CoroutinePlugin:StopCoroutine(co_or_key)
-  local key
-  if IsThread(co_or_key) then
-    local _co = co_or_key
-    for co_key, co in pairs(self.coroutine_dict) do
-      if _co == co then
-        key = co_key
-        break
-      end
-    end
-  else
-    key = co_or_key
-  end
-  local co = self.coroutine_dict[key]
-  Coroutine.Stop(co)
-  self.coroutine_dict[key] = nil
-  self.idPool:Despawn(key)
+function CoroutinePlugin:StopCoroutine(coOrKey)
+	local key
+	if IsThread(coOrKey) then
+		local _co = coOrKey
+		for coKey, co in pairs(self.coroutineDict) do
+			if _co == co then
+				key = coKey
+				break
+			end
+		end
+	else
+		key = coOrKey
+	end
+	local co = self.coroutineDict[key]
+	Coroutine.Stop(co)
+	self.coroutineDict[key] = nil
+	self.idPool:Despawn(key)
 end
 
-
-function CoroutinePlugin:SetIsPaused(is_paused)
-  for co_key, co in pairs(self.coroutine_dict) do
-    Coroutine.SetIsPaused(co, is_paused)
-  end
+function CoroutinePlugin:SetIsPaused(isPaused)
+	for _, co in pairs(self.coroutineDict) do
+		Coroutine.SetIsPaused(co, isPaused)
+	end
 end
 
 function CoroutinePlugin:StopAllCoroutines()
-  for _, co in pairs(self.coroutine_dict) do
-    Coroutine.Stop(co)
-  end
-  self.coroutine_dict = {}
-  self.idPool:DespawnAll()
+	for _, co in pairs(self.coroutineDict) do
+		Coroutine.Stop(co)
+	end
+	self.coroutineDict = {}
+	self.idPool:DespawnAll()
 end
 
-
 function CoroutinePlugin:WaitForFixedUpdate()
-  return Coroutine.WaitForFixedUpdate(self.timerManager)
+	return Coroutine.WaitForFixedUpdate(self.timerManager)
 end
 
 function CoroutinePlugin:WaitForFrames(frames)
-  return Coroutine.WaitForFrames(frames, self.timerManager)
+	return Coroutine.WaitForFrames(frames, self.timerManager)
 end
 
 function CoroutinePlugin:WaitForSeconds(seconds)
-  return Coroutine.WaitForSeconds(seconds, self.timerManager)
+	return Coroutine.WaitForSeconds(seconds, self.timerManager)
 end
 
-function CoroutinePlugin:WaitForAsyncOp(async_operation, callback)
-  return Coroutine.WaitForAsyncOp(async_operation, callback, self.timerManager)
+function CoroutinePlugin:WaitForAsyncOp(asyncOperation, callback)
+	return Coroutine.WaitForAsyncOp(asyncOperation, callback, self.timerManager)
 end
 
-function CoroutinePlugin:WaitUntil( func, ...)
-  return Coroutine.WaitUntil( self.timerManager,func, ...)
+function CoroutinePlugin:WaitUntil(func, ...)
+	return Coroutine.WaitUntil(self.timerManager, func, ...)
 end
 
-function CoroutinePlugin:WaitWhile( func, ...)
-  return Coroutine.WaitWhile(self.timerManager,func, ...)
+function CoroutinePlugin:WaitWhile(func, ...)
+	return Coroutine.WaitWhile(self.timerManager, func, ...)
 end
 
 function CoroutinePlugin:WaitForEndOfFrame()
-  return Coroutine.WaitForEndOfFrame(self.timerManager)
+	return Coroutine.WaitForEndOfFrame(self.timerManager)
 end
 
 function CoroutinePlugin:YieldBreak(...)
-  return Coroutine.YieldBreak(...)
+	return Coroutine.YieldBreak(...)
 end
 
-function CoroutinePlugin:YieldStart(func,callback, ...)
-  return Coroutine.YieldStart(func,callback, ...)
+function CoroutinePlugin:YieldStart(func, callback, ...)
+	return Coroutine.YieldStart(func, callback, ...)
 end
 
-function CoroutinePlugin:YieldCallback(child_co, ...)
-  return Coroutine.YieldCallback(child_co, ...)
+function CoroutinePlugin:YieldCallback(childCo, ...)
+	return Coroutine.YieldCallback(childCo, ...)
 end
 
 function CoroutinePlugin:YieldReturn(...)
-  return Coroutine.YieldReturn(...)
+	return Coroutine.YieldReturn(...)
 end
 
-
-
 function CoroutinePlugin:Destroy()
-  self:StopAllCoroutines()
+	self:StopAllCoroutines()
 end
 
 return CoroutinePlugin

@@ -8,7 +8,7 @@ local class_name_relationShip_dict = {}
 function Class(class_name, super)
   local superType = type(super)
   ---@class Class
-  ---@field __class_name
+  ---@field _className
   ---@field __class_inner_type
   local cls
   if superType ~= "function" and superType ~= "table" then
@@ -33,7 +33,7 @@ function Class(class_name, super)
       end
     end
 
-    cls.__class_name = class_name
+    cls._className = class_name
     cls.__class_inner_type = 1 -- inherited from native C++ Object
 
     function cls.New(...)
@@ -62,7 +62,7 @@ function Class(class_name, super)
       end }
     end
 
-    cls.__class_name = class_name
+    cls._className = class_name
     cls.__class_inner_type = 2 -- lua
     cls.__index = cls
 
@@ -88,7 +88,7 @@ function Class(class_name, super)
     function cls.IsSubTypeOf(super_type)
       local sub_type = cls
       while sub_type do
-        if sub_type.__class_name == super_type.__class_name then
+        if sub_type._className == super_type.__class_name then
           return true
         end
         sub_type = sub_type.super
@@ -98,7 +98,7 @@ function Class(class_name, super)
 
     function cls.IsSuperTypeOf(sub_type)
       while sub_type do
-        if sub_type.__class_name == cls.__class_name then
+        if sub_type.__class_name == cls._className then
           return true
         end
         sub_type = sub_type.super

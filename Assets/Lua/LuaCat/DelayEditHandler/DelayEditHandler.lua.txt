@@ -2,65 +2,65 @@
 ---@class DelayEditHandler:Class
 local DelayEditHandler = Class("DelayEditHandler")
 
-function DelayEditHandler:Init(edit_target)
-  self.to_callback_array = {}
-  self.edit_target = edit_target
+function DelayEditHandler:Init(editTarget)
+	self.toCallbackArray = {}
+	self.editTarget = editTarget
 end
 
 function DelayEditHandler:ToSet(key, value)
-  self:ToCallback(function()
-    self.edit_target[key] = value
-  end)
+	self:ToCallback(function()
+		self.editTarget[key] = value
+	end)
 end
 
 -- 如果edit_target为array，则删除值在to_remove中的数据
 -- 如果edit_target为dict，则删除key在to_remove中的数据
----@param to_remove @如果edit_target是array，则to_remove参数值是value;如果edit_target是dict,则to_remove参数值是key
-function DelayEditHandler:ToRemove(to_remove)
-  self:ToCallback( function()
-    table.Remove(self.edit_target, to_remove)
-  end)
+---@param toRemove @如果edit_target是array，则to_remove参数值是value;如果edit_target是dict,则to_remove参数值是key
+function DelayEditHandler:ToRemove(toRemove)
+	self:ToCallback(function()
+		table.Remove(self.editTarget, toRemove)
+	end)
 end
 
 -- edit_target 只能为array
-function DelayEditHandler:ToRemoveAt(to_remove_index)
-  self:ToCallback( function()
-    table.remove(self.edit_target, to_remove_index)
-  end)
+function DelayEditHandler:ToRemoveAt(toRemoveIndex)
+	self:ToCallback(function()
+		table.remove(self.editTarget, toRemoveIndex)
+	end)
 end
 
-function DelayEditHandler:ToRemoveAt_Stack(to_remove_index)
-  self:ToCallback_Stack( function()
-    table.remove(self.edit_target, to_remove_index)
-  end)
+function DelayEditHandler:ToRemoveAt_Stack(toRemoveIndex)
+	self:ToCallback_Stack(function()
+		table.remove(self.editTarget, toRemoveIndex)
+	end)
 end
 
-function DelayEditHandler:ToAdd(to_add_value)
-  self:ToCallback( function()
-    table.Append_Array(self.edit_target, to_add_value)
-  end)
+function DelayEditHandler:ToAdd(toAddValue)
+	self:ToCallback(function()
+		table.Append_Array(self.editTarget, toAddValue)
+	end)
 end
 
----@param to_callback fun():void
-function DelayEditHandler:ToCallback(to_callback)
-  table.insert(self.to_callback_array, to_callback)
+---@param toCallback fun():void
+function DelayEditHandler:ToCallback(toCallback)
+	table.insert(self.toCallbackArray, toCallback)
 end
 
 -- 后入先出
----@param to_callback fun():void
-function DelayEditHandler:ToCallback_Stack(to_callback)
-  table.insert(self.to_callback_array,1, to_callback)
+---@param toCallback fun():void
+function DelayEditHandler:ToCallback_Stack(toCallback)
+	table.insert(self.toCallbackArray, 1, toCallback)
 end
 
 function DelayEditHandler:Handle()
-  for _, v in ipairs(self.to_callback_array) do
-    v()
-  end
-  self:Clear()
+	for _, v in ipairs(self.toCallbackArray) do
+		v()
+	end
+	self:Clear()
 end
 
 function DelayEditHandler:Clear()
-  table.Clear(self.to_callback_array)
+	table.Clear(self.toCallbackArray)
 end
 
 return DelayEditHandler

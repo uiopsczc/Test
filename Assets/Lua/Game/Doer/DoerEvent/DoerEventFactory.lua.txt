@@ -3,7 +3,7 @@ local DoerEventFactory = Class("DoerEventFactory",DoerFactory)
 
 function DoerEventFactory:Init()
   DoerEventFactory.super.Init(self)
-  self.default_doer_class_path = "game.doer.doerEvent.DoerEvent"
+  self.defaultDoerClassPath = "game.doer.doerEvent.DoerEvent"
   ---@type table<string,DoerEvent>
   self.doerEvent_dict = {}
   for _, cfgDoerEventData in ipairs(CfgDoerEvent.All()) do
@@ -12,7 +12,7 @@ function DoerEventFactory:Init()
 end
 
 function DoerEventFactory:GetClassPath(id)
-  return string.IsNilOrEmpty(self:GetCfgDoerEventData(id).class_path_lua) and self.default_doer_class_path or self:GetCfgDoerEventData(id).class_path_lua
+  return string.IsNilOrEmpty(self:GetCfgDoerEventData(id).class_path_lua) and self.defaultDoerClassPath or self:GetCfgDoerEventData(id).class_path_lua
 end
 
 function DoerEventFactory:GetCfgDoerEventData(id)

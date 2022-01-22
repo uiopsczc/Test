@@ -1,29 +1,28 @@
 local UnityObjectPoolCat = require("luacat.poolCat.UnityObjectPoolCat")
 ---@class GameObjectPoolCat:UnityObjectPoolCat
-local GameObjectPoolCat = Class("GameObjectPoolCat",UnityObjectPoolCat)
+local GameObjectPoolCat = Class("GameObjectPoolCat", UnityObjectPoolCat)
 
----@param pool_name string
+---@param poolName string
 ---@param prefab CS.UnityEngine.Object
 ---@param category string
-function GameObjectPoolCat:Init(pool_name, prefab, category)
-  GameObjectPoolCat.super.Init(self, pool_name, prefab,category)
+function GameObjectPoolCat:Init(poolName, prefab, category)
+	GameObjectPoolCat.super.Init(self, poolName, prefab, category)
 end
 
----@param on_spawn_callback fun(spawn:any)
-function GameObjectPoolCat:Spawn(on_spawn_callback)
-  ---@type CS.UnityEngine.GameObject
-  local clone_gameObject = GameObjectPoolCat.super.Spawn(self, on_spawn_callback)
-  CacheUtil.CacheSet(clone_gameObject,PoolCatConst.Pool_Name,self)
-  clone_gameObject:SetCache(CS.CsCat.PoolCatConst.Lua_Pool_Name, self)
-  clone_gameObject:SetActive(true)
-  clone_gameObject.transform:CopyFrom(self:GetPrefab().transform)
-  return clone_gameObject
+---@param onSpawnCallback fun(spawn:any)
+function GameObjectPoolCat:Spawn(onSpawnCallback)
+	---@type CS.UnityEngine.GameObject
+	local cloneGameObject = GameObjectPoolCat.super.Spawn(self, onSpawnCallback)
+	CacheUtil.CacheSet(cloneGameObject, PoolCatConst.Pool_Name, self)
+	cloneGameObject:SetCache(CS.CsCat.PoolCatConst.Lua_Pool_Name, self)
+	cloneGameObject:SetActive(true)
+	cloneGameObject.transform:CopyFrom(self:GetPrefab().transform)
+	return cloneGameObject
 end
 
----@param on_spawn_callback fun(spawn:CS.UnityEngine.GameObject)
-function GameObjectPoolCat:SpawnGameObject(on_spawn_callback)
-  return self:Spawn(on_spawn_callback)
+---@param onSpawnCallback fun(spawn:CS.UnityEngine.GameObject)
+function GameObjectPoolCat:SpawnGameObject(onSpawnCallback)
+	return self:Spawn(onSpawnCallback)
 end
-
 
 return GameObjectPoolCat

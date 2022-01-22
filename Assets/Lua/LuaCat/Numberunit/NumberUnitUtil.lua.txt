@@ -1,74 +1,76 @@
 local NumberUnitConst = require("luacat.numberunit.define.NumberUnitConst")
 local NumberUnitUtil = {}
 
-NumberUnitUtil.max_integer_count = 3 -- 有单位时最多显示多少为整数
-NumberUnitUtil.max_decimals_count = 1 -- 最多显示多少位小数
-NumberUnitUtil.init_max_integer_count = 3 -- 不使用单位时最多显示多少位
+NumberUnitUtil.Max_Integer_Count = 3 -- 有单位时最多显示多少为整数
+NumberUnitUtil.Max_Decimals_Count = 1 -- 最多显示多少位小数
+NumberUnitUtil.Init_Max_Integer_Count = 3 -- 不使用单位时最多显示多少位
 
 --根据num和number_unit获取数量
-function NumberUnitUtil.GetNumber(num,number_unit, Number_Unit_Dict)
-  Number_Unit_Dict = Number_Unit_Dict or NumberUnitConst.Number_Unit_Dict
-  local zhi_shu = 0 -- 指数
-  if number_unit then
-    local number_unit_info = Number_Unit_Dict[number_unit]
-    assert(number_unit_info)
-    zhi_shu = number_unit_info.zhi_shu
-  end
-  return num * (10 ^ zhi_shu)
+function NumberUnitUtil.GetNumber(num, numberUnit, numberUnitDict)
+	numberUnitDict = numberUnitDict or NumberUnitConst.Number_Unit_Dict
+	local zhiShu = 0 -- 指数
+	if numberUnit then
+		local numberUnitInfo = numberUnitDict[numberUnit]
+		assert(numberUnitInfo)
+		zhiShu = numberUnitInfo.zhi_shu
+	end
+	return num * (10 ^ zhiShu)
 end
 
 -- 获取zhi_shu指数对应的单位
 ---@param zhi_shu number @指数
-function NumberUnitUtil.GetNumberUnitInfoByZhiShu(zhi_shu, Number_Unit_List, Number_Unit_List)
-  Number_Unit_List = Number_Unit_List or NumberUnitConst.Number_Unit_List
-  for _, number_unit_info in ipairs(Number_Unit_List) do
-    if number_unit_info.zhi_shu == zhi_shu then --指数
-      return number_unit_info.number_unit
-    end
-  end
-  error(string.format("没有该指数的单位信息 指数:%s",zhi_shu))--指数
+function NumberUnitUtil.GetNumberUnitInfoByZhiShu(zhi_shu, numberUnitList)
+	numberUnitList = numberUnitList or NumberUnitConst.Number_Unit_List
+	for _, numberUnitInfo in ipairs(numberUnitList) do
+		if numberUnitInfo.zhiShu == zhi_shu then
+			--指数
+			return numberUnitInfo.numberUnit
+		end
+	end
+	error(string.format("没有该指数的单位信息 指数:%s", zhi_shu))--指数
 end
 
 -- when_show_unit传入的是大于多少开始显示单位
-function NumberUnitUtil.GetString(num, max_decimals_count, when_show_unit, Number_Unit_List)
-  if not when_show_unit or num >= when_show_unit then
-    max_decimals_count = max_decimals_count or NumberUnitUtil.max_decimals_count
-    local is_fu_shu = num < 0  -- 是否是负数
-    num = math.abs(num)
-    local zhi_shu = 0 -- 指数
-    num = math.floor(num)
-    local get_num = num
-    while true do
-      if get_num < 10 then
-        break
-      end
-      get_num = math.floor(get_num / 10)
-      zhi_shu = zhi_shu + 1
-    end
-    local show_num, show_unit
-    if (zhi_shu + 1) <= NumberUnitUtil.init_max_integer_count then
-      show_num = num
-      show_unit = ""
-    else
-      local out_zhi_shu = zhi_shu - NumberUnitUtil.init_max_integer_count
-      local show_wei_shu = out_zhi_shu % NumberUnitUtil.max_integer_count
-      show_num = math.floor(num / (10 ^ (zhi_shu - show_wei_shu - max_decimals_count - 1)))
-      show_num = math.floor((show_num + 5) / 10)
-      show_num = show_num / (10 ^ max_decimals_count)
-      local integral_part,fractional_part = math.modf(show_num)
-      if fractional_part == 0 then
-        show_num = integral_part
-      end
-      show_unit = NumberUnitUtil.GetNumberUnitInfoByZhiShu(math.floor(zhi_shu / 3) * 3, Number_Unit_List)
-    end
-    local result = string.format("%s%s", show_num, show_unit)
-    if is_fu_shu then -- 如果是负数
-      result = string.format("-%s", result)
-    end
-    return result
-  else
-    return tostring(math.floor(num))
-  end
+function NumberUnitUtil.GetString(num, maxDecimalsCount, whenShowUnit, numberUnitList)
+	if not whenShowUnit or num >= whenShowUnit then
+		maxDecimalsCount = maxDecimalsCount or NumberUnitUtil.Max_Decimals_Count
+		local isNegative = num < 0  -- 是否是负数
+		num = math.abs(num)
+		local zhiShu = 0 -- 指数
+		num = math.floor(num)
+		local getNum = num
+		while true do
+			if getNum < 10 then
+				break
+			end
+			getNum = math.floor(getNum / 10)
+			zhiShu = zhiShu + 1
+		end
+		local showNum, showUnit
+		if (zhiShu + 1) <= NumberUnitUtil.Init_Max_Integer_Count then
+			showNum = num
+			showUnit = ""
+		else
+			local outZhiShu = zhiShu - NumberUnitUtil.Init_Max_Integer_Count
+			local showWeiShu = outZhiShu % NumberUnitUtil.Max_Integer_Count
+			showNum = math.floor(num / (10 ^ (zhiShu - showWeiShu - maxDecimalsCount - 1)))
+			showNum = math.floor((showNum + 5) / 10)
+			showNum = showNum / (10 ^ maxDecimalsCount)
+			local integralPart, fractionalPart = math.modf(showNum)
+			if fractionalPart == 0 then
+				showNum = integralPart
+			end
+			showUnit = NumberUnitUtil.GetNumberUnitInfoByZhiShu(math.floor(zhiShu / 3) * 3, numberUnitList)
+		end
+		local result = string.format("%s%s", showNum, showUnit)
+		if isNegative then
+			-- 如果是负数
+			result = string.format("-%s", result)
+		end
+		return result
+	else
+		return tostring(math.floor(num))
+	end
 end
 
 return NumberUnitUtil

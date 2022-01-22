@@ -1,27 +1,27 @@
 local EventListener = require("luacat.eventDispatcher.EventListener")
 ---@class EventDispatcher
 local EventDispatcher = Class("EventDispatcher")
-EventDispatcher.max_count = 10
+EventDispatcher.Max_Count = 10
 
 function EventDispatcher:Init()
-  ---@type table<any,table<EventListener,boolean>>
-  self.event_listener_dict = {}
+	---@type table<any,table<EventListener,boolean>>
+	self.eventListenerDict = {}
 end
 
 ---@return EventListener
 function EventDispatcher:AddListener(eventName, handler)
-  assert(eventName)
-  local group_listener_dict = table.GetOrAddDefault_Dict(self.event_listener_dict, eventName, function()
-    return {}
-  end)
-  ---@type EventListener
-  local listener = EventListener.New(eventName, handler)
-  group_listener_dict[listener] = true
-  -- 数量检错
-  if #group_listener_dict > EventDispatcher.max_count then
-    ErrorFormat("EventMgr count > %s", EventMgr.max_count)
-  end
-  return listener
+	assert(eventName)
+	local groupListenerDict = table.GetOrAddDefault_Dict(self.eventListenerDict, eventName, function()
+		return {}
+	end)
+	---@type EventListener
+	local listener = EventListener.New(eventName, handler)
+	groupListenerDict[listener] = true
+	-- 数量检错
+	if #groupListenerDict > EventDispatcher.Max_Count then
+		ErrorFormat("EventMgr count > %s", EventMgr.max_count)
+	end
+	return listener
 end
 
 ---@return EventListener
@@ -30,77 +30,77 @@ end
 -- 情况2 只有一个handler
 -- 情况3 有一个eventName和一个handler
 function EventDispatcher:RemoveListener(...)
-  local args = table.SafePack(...)
-  if args.n == 2 then
-    return self:__RemoveListener2(args[1], args[2])
-  elseif IsInstanceOf(args[1], EventListener.__class_name) then
-    return  self:__RemoveListener1(args[1])
-  elseif args.n == 1 then
-    return self:__RemoveListener3(args[1])
-  end
+	local args = table.SafePack(...)
+	if args.n == 2 then
+		return self:__RemoveListener2(args[1], args[2])
+	elseif IsInstanceOf(args[1], EventListener._className) then
+		return self:__RemoveListener1(args[1])
+	elseif args.n == 1 then
+		return self:__RemoveListener3(args[1])
+	end
 end
 
 function EventDispatcher:RemoveAllListeners()
-  self.event_listener_dict = {}
+	self.eventListenerDict = {}
 end
 
 ---@param listener EventListener
 ---@return EventListener
 function EventDispatcher:__RemoveListener1(listener)
-  local eventName = listener.eventName
-  local group_listener_dict = self.event_listener_dict[eventName]
-  if not group_listener_dict then
-    return
-  end
-  group_listener_dict[listener] = false
-  return listener
+	local eventName = listener.eventName
+	local groupListenerDict = self.eventListenerDict[eventName]
+	if not groupListenerDict then
+		return
+	end
+	groupListenerDict[listener] = false
+	return listener
 end
 
 ---@return EventListener
 function EventDispatcher:__RemoveListener2(eventName, handler)
-  local group_listener_dict = self.event_listener_dict[eventName]
-  if not group_listener_dict then
-    return
-  end
-  for listener, is_active in pairs(group_listener_dict) do
-    if is_active and listener.handler == handler then
-      return self:__RemoveListener1(listener)
-    end
-  end
+	local groupListenerDict = self.eventListenerDict[eventName]
+	if not groupListenerDict then
+		return
+	end
+	for listener, isActive in pairs(groupListenerDict) do
+		if isActive and listener.handler == handler then
+			return self:__RemoveListener1(listener)
+		end
+	end
 end
 
 ---@return EventListener
 function EventDispatcher:__RemoveListener3(handler)
-  for eventName, group_listener_dict in pairs(self.event_listener_dict) do
-    for listener, is_active in pairs(group_listener_dict) do
-      if is_active and listener.handler == handler then
-        return self:__RemoveListener1(listener)
-      end
-    end
-  end
+	for eventName, groupListenerDict in pairs(self.eventListenerDict) do
+		for listener, isActive in pairs(groupListenerDict) do
+			if isActive and listener.handler == handler then
+				return self:__RemoveListener1(listener)
+			end
+		end
+	end
 end
 
 function EventDispatcher:Broadcast(eventName, ...)
-  assert(eventName)
-  local group_listener_dict = self.event_listener_dict[eventName]
-  if not group_listener_dict then
-    return
-  end
-  for listener, is_active in pairs(group_listener_dict) do
-    if is_active == true then
-      local handler = listener.handler
-      handler(...)
-    else
-      group_listener_dict[listener] = nil
-    end
-  end
-  if not next(group_listener_dict) then
-    self.event_listener_dict[eventName] = nil
-  end
+	assert(eventName)
+	local groupListenerDict = self.eventListenerDict[eventName]
+	if not groupListenerDict then
+		return
+	end
+	for listener, isActive in pairs(groupListenerDict) do
+		if isActive == true then
+			local handler = listener.handler
+			handler(...)
+		else
+			groupListenerDict[listener] = nil
+		end
+	end
+	if not next(groupListenerDict) then
+		self.eventListenerDict[eventName] = nil
+	end
 end
 
 function EventDispatcher:Destroy()
-  self:RemoveAllListeners()
+	self:RemoveAllListeners()
 end
 
 return EventDispatcher

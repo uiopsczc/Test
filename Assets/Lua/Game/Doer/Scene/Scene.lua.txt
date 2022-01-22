@@ -143,7 +143,7 @@ function Scene:ClearProjectGrids(base_on_parent_pos, child_scene)
           local py = self:ToParentY(base_on_parent_pos, offset_pos, y)
           if mapPath:IsValidPoint(px, py) then
             -- 父场景无效区域不投影
-            mapPath.project_grids[px][py] = 0
+            mapPath.projectGrids[px][py] = 0
           end
         end
       end
@@ -178,7 +178,7 @@ function Scene:SetProjectGrids(base_on_parent_pos, child_scene)
           local py = self:ToParentY(base_on_parent_pos, offset_pos, y)
           if mapPath:IsValidPoint(px, py) then
             -- 父场景无效区域不投影
-            mapPath.project_grids[px][py] = v
+            mapPath.projectGrids[px][py] = v
           end
         end
       end
@@ -190,12 +190,12 @@ end
 function Scene:ClearAllProjectGrids()
   self:CheckParentCall()
   local mapPath = self:GetMapPath()
-  if mapPath == nil or mapPath.project_grids == nil then
+  if mapPath == nil or mapPath.projectGrids == nil then
     return
   end
-  for x = 1, #mapPath.project_grids do
-    for y = 1, #mapPath.project_grids[x] do
-      mapPath.project_grids[x][y] = 0
+  for x = 1, #mapPath.projectGrids do
+    for y = 1, #mapPath.projectGrids[x] do
+      mapPath.projectGrids[x][y] = 0
     end
   end
 end

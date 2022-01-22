@@ -1,11 +1,11 @@
 ---@class TickObject:GameEntity
----@field is_can_not_update boolean
+---@field isCanNotUpdate boolean
 local TickObject = Class("TickObject", GameEntity)
 
 function TickObject:Init()
-  TickObject.super.Init(self)
-  self.is_not_delete_child_relationShip_immediately = true
-  self.is_not_delete_component_relationShip_immediately = true
+	TickObject.super.Init(self)
+	self.isNotDeleteChildRelationShipImmediately = true
+	self.isNotDeleteComponentRelationShipImmediately = true
 end
 
 --function TickObject:IsCanUpdate()
@@ -13,42 +13,42 @@ end
 --end
 
 function TickObject:Update(deltaTime, unscaledDeltaTime)
-  if not self:IsCanUpdate() then
-    return
-  end
-  for _, child in self:ForeachChildOfType(TickObject) do
-    child:Update(deltaTime, unscaledDeltaTime)
-  end
-  for _, component in self:ForeachComponent() do
-    component:Update(deltaTime, unscaledDeltaTime)
-  end
-  self:__Update(deltaTime, unscaledDeltaTime)
+	if not self:IsCanUpdate() then
+		return
+	end
+	for _, child in self:ForeachChildOfType(TickObject) do
+		child:Update(deltaTime, unscaledDeltaTime)
+	end
+	for _, component in self:ForeachComponent() do
+		component:Update(deltaTime, unscaledDeltaTime)
+	end
+	self:__Update(deltaTime, unscaledDeltaTime)
 end
 
 function TickObject:FixedUpdate(deltaTime, unscaledDeltaTime)
-  if not self:IsCanUpdate() then
-    return
-  end
-  for _, child in self:ForeachChildOfType(TickObject) do
-    child:FixedUpdate(deltaTime, unscaledDeltaTime)
-  end
-  for _, component in self:ForeachComponent() do
-    component:FixedUpdate(deltaTime, unscaledDeltaTime)
-  end
-  self:__FixedUpdate(deltaTime, unscaledDeltaTime)
+	if not self:IsCanUpdate() then
+		return
+	end
+	for _, child in self:ForeachChildOfType(TickObject) do
+		child:FixedUpdate(deltaTime, unscaledDeltaTime)
+	end
+	for _, component in self:ForeachComponent() do
+		component:FixedUpdate(deltaTime, unscaledDeltaTime)
+	end
+	self:__FixedUpdate(deltaTime, unscaledDeltaTime)
 end
 
 function TickObject:LateUpdate(deltaTime, unscaledDeltaTime)
-  if not self:IsCanUpdate() then
-    return
-  end
-  for _, child in self:ForeachChildOfType(TickObject) do
-    child:LateUpdate(deltaTime, unscaledDeltaTime)
-  end
-  for _, component in self:ForeachComponent() do
-    component:LateUpdate(deltaTime, unscaledDeltaTime)
-  end
-  self:__LateUpdate(deltaTime, unscaledDeltaTime)
+	if not self:IsCanUpdate() then
+		return
+	end
+	for _, child in self:ForeachChildOfType(TickObject) do
+		child:LateUpdate(deltaTime, unscaledDeltaTime)
+	end
+	for _, component in self:ForeachComponent() do
+		component:LateUpdate(deltaTime, unscaledDeltaTime)
+	end
+	self:__LateUpdate(deltaTime, unscaledDeltaTime)
 end
 
 function TickObject:__Update(deltaTime, unscaledDeltaTime)
@@ -61,8 +61,8 @@ function TickObject:__LateUpdate(deltaTime, unscaledDeltaTime)
 end
 
 function TickObject:__Destroy()
-  TickObject.super.__Destroy(self)
-  self.is_can_not_update = false
+	TickObject.super.__Destroy(self)
+	self.isCanNotUpdate = false
 end
 
 return TickObject

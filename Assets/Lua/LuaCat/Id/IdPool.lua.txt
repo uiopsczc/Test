@@ -1,26 +1,26 @@
 ---@class IdPool:CustomPoolCat
-local IdPool = Class("IdPool",CustomPoolCat)
+local IdPool = Class("IdPool", CustomPoolCat)
 
-function IdPool:Init(pool_name)
-  self.current_number = 0
-  pool_name = pool_name or ""
-  IdPool.super.Init(self,pool_name, function()
-    self.current_number = self.current_number + 1
-    return self.current_number
-  end)
+function IdPool:Init(poolName)
+	self.currentNumber = 0
+	poolName = poolName or ""
+	IdPool.super.Init(self, poolName, function()
+		self.currentNumber = self.currentNumber + 1
+		return self.currentNumber
+	end)
 end
 
 ---@return number
 function IdPool:Get()
-  return self:Spawn()
+	return self:Spawn()
 end
 
 ---@param n number|string
 function IdPool:Despawn(n)
-  local id = tonumber(n)
-  if id then
-    IdPool.super.Despawn(self,id)
-  end
+	local id = tonumber(n)
+	if id then
+		IdPool.super.Despawn(self, id)
+	end
 end
 
 return IdPool

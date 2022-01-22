@@ -1,8 +1,6 @@
 ---@class PoolCatConst
 local PoolCatConst = {}
 
-
 PoolCatConst.Pool_Name = "PoolName"
-
 
 return PoolCatConst

@@ -1,39 +1,38 @@
 ---@class UIGameObjectPoolCat:GameObjectPoolCat
-local UIGameObjectPoolCat = Class("UIGameObjectPoolCat",GameObjectPoolCat)
+local UIGameObjectPoolCat = Class("UIGameObjectPoolCat", GameObjectPoolCat)
 
----@param pool_name string
+---@param poolName string
 ---@param prefab CS.UnityEngine.Object
 ---@param category string
-function UIGameObjectPoolCat:Init(pool_name, prefab, category)
-  UIGameObjectPoolCat.super.Init(self, pool_name, prefab,category)
-  self.prefab_rectTransform = prefab:GetComponent(typeof(RectTransform))
+function UIGameObjectPoolCat:Init(poolName, prefab, category)
+	UIGameObjectPoolCat.super.Init(self, poolName, prefab, category)
+	self.prefabRectTransform = prefab:GetComponent(typeof(RectTransform))
 end
 
 ---@param prefab CS.UnityEngine.Object
 ---@param category string
 function UIGameObjectPoolCat:InitParent(prefab, category)
-  UIGameObjectPoolCat.super.InitParent(self, prefab, category)
-  local root_gameObject = CS.CsCat.GameObjectUtil.GetOrNewGameObject("UIPools",nil)
-  ---@type CS.UnityEngine.Transform
-  self.root_transform = root_gameObject.transform
-  self.category_transform = self.root_transform:GetOrNewGameObject(category).transform
+	UIGameObjectPoolCat.super.InitParent(self, prefab, category)
+	local rootGameObject = CS.CsCat.GameObjectUtil.GetOrNewGameObject("UIPools", nil)
+	---@type CS.UnityEngine.Transform
+	self.rootTransform = rootGameObject.transform
+	self.categoryTransform = self.rootTransform:GetOrNewGameObject(category).transform
 end
 
 function UIGameObjectPoolCat:Despawn(obj)
-  ---@type CS.UnityEngine.GameObject
-  local clone = obj
-  --local component_list = table.ConvertCSArray2LuaTable(clone:GetComponents(typeof(CS.UnityEngine.Component)))
-  --for _, clone_component in ipairs(component_list) do
-  --  if IsISpawnable(clone_component) then
-  --    clone_component:OnDespawn()
-  --  end
-  --end
-  clone:SetActive(false)
-  clone.transform:SetParent(self.category_transform)
-  clone:GetComponent(typeof(RectTransform)):CopyFrom(self.prefab_rectTransform)
-  CacheUtil.RemoveCache(clone)
-  UIGameObjectPoolCat.super.Despawn(self, obj)
+	---@type CS.UnityEngine.GameObject
+	local clone = obj
+	--local component_list = table.ConvertCSArray2LuaTable(clone:GetComponents(typeof(CS.UnityEngine.Component)))
+	--for _, clone_component in ipairs(component_list) do
+	--  if IsISpawnable(clone_component) then
+	--    clone_component:OnDespawn()
+	--  end
+	--end
+	clone:SetActive(false)
+	clone.transform:SetParent(self.categoryTransform)
+	clone:GetComponent(typeof(RectTransform)):CopyFrom(self.prefabRectTransform)
+	CacheUtil.RemoveCache(clone)
+	UIGameObjectPoolCat.super.Despawn(self, obj)
 end
-
 
 return UIGameObjectPoolCat

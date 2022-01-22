@@ -1,86 +1,85 @@
 ---@class AStarRange
 local AStarRange = Class("AStarRange")
-function AStarRange:Init( left_bottom_x,  left_bottom_y,  right_top_x,  right_top_y)
-  self:SetRange( left_bottom_x, left_bottom_y,  right_top_x,  right_top_y)
+function AStarRange:Init(leftBottomX, leftBottomY, rightTopX, rightTopY)
+	self:SetRange(leftBottomX, leftBottomY, rightTopX, rightTopY)
 end
 
-function AStarRange:SetRange( left_bottom_x, left_bottom_y,  right_top_x,  right_top_y)
-  self.left_bottom_x = math.min(left_bottom_x, right_top_x)
-  self.left_bottom_y = math.min(left_bottom_y, right_top_y)
-  self.right_top_x = math.max(left_bottom_x, right_top_x)
-  self.right_top_y = math.max(left_bottom_y, right_top_y)
+function AStarRange:SetRange(leftBottomX, leftBottomY, rightTopX, rightTopY)
+	self.leftBottomX = math.min(leftBottomX, rightTopX)
+	self.leftBottomY = math.min(leftBottomY, rightTopY)
+	self.rightTopX = math.max(leftBottomX, rightTopX)
+	self.rightTopY = math.max(leftBottomY, rightTopY)
 end
 
 ---@return Vector2
 function AStarRange:GetCenter()
-  return Vector2.New((self.left_bottom_x + self.right_top_x)/2,(self.left_bottom_y + self.right_top_y) / 2)
+	return Vector2.New((self.leftBottomX + self.rightTopX) / 2, (self.leftBottomY + self.rightTopY) / 2)
 end
 
 ---@return Vector2
 function AStarRange:GetLeftBottom()
-  return Vector2.New(self.left_bottom_x,self.left_bottom_y)
+	return Vector2.New(self.leftBottomX, self.leftBottomY)
 end
 
 ---@return Vector2
 function AStarRange:GetRightTop()
-  return Vector2.New(self.right_top_x,self.right_top_y)
+	return Vector2.New(self.rightTopX, self.rightTopY)
 end
 
 ---@return Vector2
 function AStarRange:GetRandomPos(randomManager)
-  randomManager = randomManager or global.client.randomManager
-  local dx = self.right_top_x - self.left_bottom_x
-  local dy = self.right_top_y - self.left_bottom_y
-  local x, y
-  if dx > 0 then
-    x = self.left_bottom_x + randomManager:RandomInt(0,math.abs(dx)+1)
-  elseif dx < 0 then
-    x = self.left_bottom_x - randomManager:RandomInt(0, math.abs(dx) + 1)
-  else
-    x = self.left_bottom_x
-  end
-  if dy > 0 then
-    y = self.left_bottom_y + randomManager:RandomInt(0, math.abs(dy) + 1)
-  elseif dy < 0 then
-    y = self.left_bottom_y - randomManager:RandomInt(0, math.abs(dy) + 1)
-  else
-    y = self.left_bottom_y
-  end
-  return Vector2.New(x, y)
+	randomManager = randomManager or global.client.randomManager
+	local dx = self.rightTopX - self.leftBottomX
+	local dy = self.rightTopY - self.leftBottomY
+	local x, y
+	if dx > 0 then
+		x = self.leftBottomX + randomManager:RandomInt(0, math.abs(dx) + 1)
+	elseif dx < 0 then
+		x = self.leftBottomX - randomManager:RandomInt(0, math.abs(dx) + 1)
+	else
+		x = self.leftBottomX
+	end
+	if dy > 0 then
+		y = self.leftBottomY + randomManager:RandomInt(0, math.abs(dy) + 1)
+	elseif dy < 0 then
+		y = self.leftBottomY - randomManager:RandomInt(0, math.abs(dy) + 1)
+	else
+		y = self.leftBottomY
+	end
+	return Vector2.New(x, y)
 end
 
 function AStarRange:GetWidth()
-  return self.right_top_x - self.left_bottom_x
+	return self.rightTopX - self.leftBottomX
 end
 
 function AStarRange:GetHeight()
-  return self.right_top_y - self.left_bottom_y
+	return self.rightTopY - self.leftBottomY
 end
 
 ---@param pos Vector2
 ---@return boolean
 function AStarRange:IsInRange(pos)
-  return self:IsInRangeX(pos.x) and self:IsInRangeY(pos.y)
+	return self:IsInRangeX(pos.x) and self:IsInRangeY(pos.y)
 end
 
 ---@return boolean
 function AStarRange:IsInRangeX(x)
-  ---@type RangeCat
-  local range_x = RangeCat.New(self.left_bottom_x, self.right_top_x)
-  return range_x:IsContains(x)
+	---@type RangeCat
+	local rangeX = RangeCat.New(self.leftBottomX, self.rightTopX)
+	return rangeX:IsContains(x)
 end
 
 ---@return boolean
 function AStarRange:IsInRangeY(y)
-  ---@type RangeCat
-  local range_y = RangeCat.New(self.left_bottom_y, self.right_top_y)
-  return range_y:IsContains(y)
+	---@type RangeCat
+	local range_y = RangeCat.New(self.leftBottomY, self.rightTopY)
+	return range_y:IsContains(y)
 end
 
 function AStarRange:__tostring ()
-  return string.format("[%s,%s]-[%s,%s]",self.left_bottom_x, self.left_bottom_y, self.right_top_x, self.right_top_y)
+	return string.format("[%s,%s]-[%s,%s]", self.leftBottomX, self.leftBottomY, self.rightTopX, self.rightTopY)
 end
-
 
 return AStarRange
 

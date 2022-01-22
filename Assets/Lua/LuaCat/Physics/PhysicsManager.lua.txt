@@ -1,227 +1,226 @@
 ---@class PhysicsManager:TickObject
 local PhysicsManager = Class("PhysicsManager", TickObject)
 
-
 function PhysicsManager:Init()
-  PhysicsManager.super.Init(self)
-  self.raycast_key_int = 0
-  ---@type table<string,fun()[]>
-  self.on_click_dict = {}
-  ---@type table<string,fun()[]>
-  self.on_pointer_down_dict = {}
-  ---@type table<string,fun()[]>
-  self.on_pointer_up_dict = {}
-  self.raycast_layerMask = nil
+	PhysicsManager.super.Init(self)
+	self.raycastKeyInt = 0
+	---@type table<string,fun()[]>
+	self.onClickDict = {}
+	---@type table<string,fun()[]>
+	self.onPointerDownDict = {}
+	---@type table<string,fun()[]>
+	self.onPointerUpDict = {}
+	self.raycastLayerMask = nil
 end
 
 ---@param ... string[]
 function PhysicsManager:SetRaycastLayer(...)
-  if not ... then
-    self.raycast_layerMask = nil
-  else
-    self.raycast_layerMask = CS.UnityEngine.LayerMask.GetMask(...)
-  end
+	if not ... then
+		self.raycastLayerMask = nil
+	else
+		self.raycastLayerMask = CS.UnityEngine.LayerMask.GetMask(...)
+	end
 end
 
-function PhysicsManager:__SetIsCanRaycast(is_can_raycast)
-  self.is_can_raycast = is_can_raycast
+function PhysicsManager:__SetIsCanRaycast(isCanRaycast)
+	self.isCanRaycast = isCanRaycast
 end
 
 function PhysicsManager:__UpdateRaycastState()
-  if table.Count(self.on_pointer_down_dict) == 0 and
-      table.Count(self.on_pointer_up_dict) == 0 and
-      table.Count(self.on_click_dict) == 0
-  then
-    self:__SetIsCanRaycast(false)
-  else
-    self:__SetIsCanRaycast(true)
-  end
+	if table.Count(self.onPointerDownDict) == 0 and
+			table.Count(self.onPointerUpDict) == 0 and
+			table.Count(self.onClickDict) == 0
+	then
+		self:__SetIsCanRaycast(false)
+	else
+		self:__SetIsCanRaycast(true)
+	end
 end
 
 ---@param gameObject CS.UnityEngine.GameObject
 function PhysicsManager:__GetOrAddRaycastId(gameObject)
-  return gameObject:GetOrAddCache("raycast_id_lua", function()
-    self.raycast_key_int = self.raycast_key_int + 1
-    return tostring(self.raycast_key_int)
-  end)
+	return gameObject:GetOrAddCache("raycast_id_lua", function()
+		self.raycastKeyInt = self.raycastKeyInt + 1
+		return tostring(self.raycastKeyInt)
+	end)
 end
 
 function PhysicsManager:RegisterOnPointerDown(gameObject, callback)
-  local raycast_id = self:__GetOrAddRaycastId(gameObject)
-  local callback_list = table.GetOrAddDefault_Dict(self.on_pointer_down_dict, raycast_id, function()
-    return {}
-  end)
-  table.insert(callback_list, callback)
-  self:__UpdateRaycastState()
-  return callback_list
+	local raycastId = self:__GetOrAddRaycastId(gameObject)
+	local callbackList = table.GetOrAddDefault_Dict(self.onPointerDownDict, raycastId, function()
+		return {}
+	end)
+	table.insert(callbackList, callback)
+	self:__UpdateRaycastState()
+	return callbackList
 end
 
 function PhysicsManager:RegisterOnPointerUp(gameObject, callback)
-  local raycast_id = self:__GetOrAddRaycastId(gameObject)
-  local callback_list = table.GetOrAddDefault_Dict(self.on_pointer_up_dict, raycast_id, function()
-    return {}
-  end)
-  table.insert(callback_list, callback)
-  self:__UpdateRaycastState()
-  return callback_list
+	local raycastId = self:__GetOrAddRaycastId(gameObject)
+	local callbackList = table.GetOrAddDefault_Dict(self.onPointerUpDict, raycastId, function()
+		return {}
+	end)
+	table.insert(callbackList, callback)
+	self:__UpdateRaycastState()
+	return callbackList
 end
 
 function PhysicsManager:RegisterOnClick(gameObject, callback)
-  local raycast_id = self:__GetOrAddRaycastId(gameObject)
-  local callback_list = table.GetOrAddDefault_Dict(self.on_click_dict, raycast_id, function()
-    return {}
-  end)
-  table.insert(callback_list, callback)
-  self:__UpdateRaycastState()
-  return callback_list
+	local raycastId = self:__GetOrAddRaycastId(gameObject)
+	local callbackList = table.GetOrAddDefault_Dict(self.onClickDict, raycastId, function()
+		return {}
+	end)
+	table.insert(callbackList, callback)
+	self:__UpdateRaycastState()
+	return callbackList
 end
 
 function PhysicsManager:UnRegisterOnPointerDown(gameObject, callback)
-  local raycast_id = self:__GetOrAddRaycastId(gameObject)
-  local callback_list = table.GetOrAddDefault_Dict(self.on_pointer_down_dict, raycast_id, function()
-    return {}
-  end)
-  if callback then
-    table.RemoveByValue_Array(callback_list, callback)
-  else
-    callback_list = {}
-  end
-  if #callback_list == 0 then
-    self.on_pointer_down_dict[raycast_id] = nil
-  end
-  self:__UpdateRaycastState()
+	local raycastId = self:__GetOrAddRaycastId(gameObject)
+	local callbackList = table.GetOrAddDefault_Dict(self.onPointerDownDict, raycastId, function()
+		return {}
+	end)
+	if callback then
+		table.RemoveByValue_Array(callbackList, callback)
+	else
+		callbackList = {}
+	end
+	if #callbackList == 0 then
+		self.onPointerDownDict[raycastId] = nil
+	end
+	self:__UpdateRaycastState()
 end
 
 function PhysicsManager:UnRegisterOnPointerUp(gameObject, callback)
-  local raycast_id = self:__GetOrAddRaycastId(gameObject)
-  local callback_list = table.GetOrAddDefault_Dict(self.on_pointer_up_dict, raycast_id, function()
-    return {}
-  end)
-  if callback then
-    table.RemoveByValue_Array(callback_list, callback)
-  else
-    callback_list = {}
-  end
-  if #callback_list == 0 then
-    self.on_pointer_up_dict[raycast_id] = nil
-  end
-  self:__UpdateRaycastState()
+	local raycastId = self:__GetOrAddRaycastId(gameObject)
+	local callbackList = table.GetOrAddDefault_Dict(self.onPointerUpDict, raycastId, function()
+		return {}
+	end)
+	if callback then
+		table.RemoveByValue_Array(callbackList, callback)
+	else
+		callbackList = {}
+	end
+	if #callbackList == 0 then
+		self.onPointerUpDict[raycastId] = nil
+	end
+	self:__UpdateRaycastState()
 end
 
 function PhysicsManager:UnRegisterOnClick(gameObject, callback)
-  local raycast_id = self:__GetOrAddRaycastId(gameObject)
-  local callback_list = table.GetOrAddDefault_Dict(self.on_click_dict, raycast_id, function()
-    return {}
-  end)
-  if callback then
-    table.RemoveByValue_Array(callback_list, callback)
-  else
-    callback_list = {}
-  end
-  if #callback_list == 0 then
-    self.on_click_dict[raycast_id] = nil
-  end
-  self:__UpdateRaycastState()
+	local raycastId = self:__GetOrAddRaycastId(gameObject)
+	local callbackList = table.GetOrAddDefault_Dict(self.onClickDict, raycastId, function()
+		return {}
+	end)
+	if callback then
+		table.RemoveByValue_Array(callbackList, callback)
+	else
+		callbackList = {}
+	end
+	if #callbackList == 0 then
+		self.onClickDict[raycastId] = nil
+	end
+	self:__UpdateRaycastState()
 end
 
 function PhysicsManager:OnRaycast(hit)
-  ---@type CS.UnityEngine.RaycastHit
-  self.last_hit = hit
-  self:Broadcast(PhysicsEventNameConst.OnRaycast, hit.transform.gameObject)
+	---@type CS.UnityEngine.RaycastHit
+	self.lastHit = hit
+	self:Broadcast(PhysicsEventNameConst.OnRaycast, hit.transform.gameObject)
 end
 
-function PhysicsManager:__Callback(dict_name, raycast_id)
-  if not raycast_id then
-    return
-  end
-  local dict = self[dict_name]
-  if not dict[raycast_id] then
-    return
-  end
-  for _, callback in ipairs(dict[raycast_id]) do
-    callback()
-  end
+function PhysicsManager:__Callback(dictName, raycastId)
+	if not raycastId then
+		return
+	end
+	local dict = self[dictName]
+	if not dict[raycastId] then
+		return
+	end
+	for _, callback in ipairs(dict[raycastId]) do
+		callback()
+	end
 end
 
 function PhysicsManager:IsCanUpdate()
-  return self.is_can_raycast and PhysicsManager.super.IsCanUpdate(self)
+	return self.isCanRaycast and PhysicsManager.super.IsCanUpdate(self)
 end
 
 function PhysicsManager:__Update(deltaTime, unscaledDeltaTime)
-  PhysicsManager.super.__Update(self, deltaTime, unscaledDeltaTime)
-  if Input.GetMouseButtonDown(0) and not self.is_click_down then
-    if UIUtil.IsOverUI(Input.mousePosition) then
-      -- 点击在UI上的不用处理
-      return
-    end
-    self.is_click_down = true
-    global.client.csClient.physicsManager:Raycast(Input.mousePosition, self.raycast_layerMask)
-    self:__OnPointerDown()
-  elseif Input.GetMouseButtonUp(0) then
-    self.is_click_down = false
-    self:__OnPointerUp()
-  end
+	PhysicsManager.super.__Update(self, deltaTime, unscaledDeltaTime)
+	if Input.GetMouseButtonDown(0) and not self.isClickDown then
+		if UIUtil.IsOverUI(Input.mousePosition) then
+			-- 点击在UI上的不用处理
+			return
+		end
+		self.isClickDown = true
+		global.client.csClient.physicsManager:Raycast(Input.mousePosition, self.raycastLayerMask)
+		self:__OnPointerDown()
+	elseif Input.GetMouseButtonUp(0) then
+		self.isClickDown = false
+		self:__OnPointerUp()
+	end
 end
 
 ---@param hit CS.UnityEngine.RaycastHit
 function PhysicsManager:__GetRaycastIdByHit(hit)
-  local gameObject = hit.transform.gameObject
-  return self:__GetOrAddRaycastId(gameObject)
+	local gameObject = hit.transform.gameObject
+	return self:__GetOrAddRaycastId(gameObject)
 end
 
 function PhysicsManager:__OnPointerDown()
-  if self.last_hit then
-    local raycast_id = self:__GetRaycastIdByHit(self.last_hit)
-    self:__Callback("on_pointer_down_dict", raycast_id)
-  end
+	if self.lastHit then
+		local raycast_id = self:__GetRaycastIdByHit(self.lastHit)
+		self:__Callback("on_pointer_down_dict", raycast_id)
+	end
 end
 
 function PhysicsManager:__OnPointerUp()
-  if self.last_hit then
-    local raycast_id = self:__GetRaycastIdByHit(self.last_hit)
-    self:__Callback("on_pointer_up_dict", raycast_id)
-    self:__Callback("on_click_dict", raycast_id)
-    self.last_hit = nil
-  end
+	if self.lastHit then
+		local raycastId = self:__GetRaycastIdByHit(self.lastHit)
+		self:__Callback("on_pointer_up_dict", raycastId)
+		self:__Callback("on_click_dict", raycastId)
+		self.lastHit = nil
+	end
 end
 
 ---------------------------------------2D---------------------------------------
-function PhysicsManager:OnCollisionEnter2D(gameObject, other_collision)
-  self:Broadcast(PhysicsEventNameConst.OnCollisionEnter2D, gameObject, other_collision)
+function PhysicsManager:OnCollisionEnter2D(gameObject, otherCollision)
+	self:Broadcast(PhysicsEventNameConst.OnCollisionEnter2D, gameObject, otherCollision)
 end
-function PhysicsManager:OnCollisionExit2D(gameObject, other_collision)
-  self:Broadcast(PhysicsEventNameConst.OnCollisionExit2D, gameObject, other_collision)
+function PhysicsManager:OnCollisionExit2D(gameObject, otherCollision)
+	self:Broadcast(PhysicsEventNameConst.OnCollisionExit2D, gameObject, otherCollision)
 end
-function PhysicsManager:OnCollisionStay2D(gameObject, other_collision)
-  self:Broadcast(PhysicsEventNameConst.OnCollisionStay2D, gameObject, other_collision)
+function PhysicsManager:OnCollisionStay2D(gameObject, otherCollision)
+	self:Broadcast(PhysicsEventNameConst.OnCollisionStay2D, gameObject, otherCollision)
 end
-function PhysicsManager:OnTriggerEnter2D(gameObject, other_collider)
-  self:Broadcast(PhysicsEventNameConst.OnTriggerEnter2D, gameObject, other_collider)
+function PhysicsManager:OnTriggerEnter2D(gameObject, otherCollider)
+	self:Broadcast(PhysicsEventNameConst.OnTriggerEnter2D, gameObject, otherCollider)
 end
-function PhysicsManager:OnTriggerStay2D(gameObject, other_collider)
-  self:Broadcast(PhysicsEventNameConst.OnTriggerStay2D, gameObject, other_collider)
+function PhysicsManager:OnTriggerStay2D(gameObject, otherCollider)
+	self:Broadcast(PhysicsEventNameConst.OnTriggerStay2D, gameObject, otherCollider)
 end
-function PhysicsManager:OnTriggerExit2D(gameObject, other_collider)
-  self:Broadcast(PhysicsEventNameConst.OnTriggerExit2D, gameObject, other_collider)
+function PhysicsManager:OnTriggerExit2D(gameObject, otherCollider)
+	self:Broadcast(PhysicsEventNameConst.OnTriggerExit2D, gameObject, otherCollider)
 end
 ---------------------------------------3D---------------------------------------
-function PhysicsManager:OnCollisionEnter(gameObject, other_collision)
-  self:Broadcast(PhysicsEventNameConst.OnCollisionEnter, gameObject, other_collision)
+function PhysicsManager:OnCollisionEnter(gameObject, otherCollision)
+	self:Broadcast(PhysicsEventNameConst.OnCollisionEnter, gameObject, otherCollision)
 end
-function PhysicsManager:OnCollisionExit(gameObject, other_collision)
-  self:Broadcast(PhysicsEventNameConst.OnCollisionExit, gameObject, other_collision)
+function PhysicsManager:OnCollisionExit(gameObject, otherCollision)
+	self:Broadcast(PhysicsEventNameConst.OnCollisionExit, gameObject, otherCollision)
 end
-function PhysicsManager:OnCollisionStay(gameObject, other_collision)
-  self:Broadcast(PhysicsEventNameConst.OnCollisionStay, gameObject, other_collision)
+function PhysicsManager:OnCollisionStay(gameObject, otherCollision)
+	self:Broadcast(PhysicsEventNameConst.OnCollisionStay, gameObject, otherCollision)
 end
-function PhysicsManager:OnTriggerEnter(gameObject, other_collider)
-  self:Broadcast(PhysicsEventNameConst.OnTriggerEnter, gameObject, other_collider)
+function PhysicsManager:OnTriggerEnter(gameObject, otherCollider)
+	self:Broadcast(PhysicsEventNameConst.OnTriggerEnter, gameObject, otherCollider)
 end
-function PhysicsManager:OnTriggerStay(gameObject, other_collider)
-  self:Broadcast(PhysicsEventNameConst.OnTriggerStay, gameObject, other_collider)
+function PhysicsManager:OnTriggerStay(gameObject, otherCollider)
+	self:Broadcast(PhysicsEventNameConst.OnTriggerStay, gameObject, otherCollider)
 end
-function PhysicsManager:OnTriggerExit(gameObject, other_collider)
-  self:Broadcast(PhysicsEventNameConst.OnTriggerExit, gameObject, other_collider)
+function PhysicsManager:OnTriggerExit(gameObject, otherCollider)
+	self:Broadcast(PhysicsEventNameConst.OnTriggerExit, gameObject, otherCollider)
 end
 
 return PhysicsManager

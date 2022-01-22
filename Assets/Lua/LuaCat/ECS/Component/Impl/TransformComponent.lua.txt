@@ -1,59 +1,56 @@
 ---@class TransformComponent:AbstractComponent
 -----注意创建后记得设置key和entity
-local TransformComponent = Class("TransformComponent",AbstractComponent)
-
+local TransformComponent = Class("TransformComponent", AbstractComponent)
 
 -----注意创建后记得设置key和entity
 function TransformComponent:Init(...)
-  TransformComponent.super.Init(self,...)
-  self.localPosition = Vector3.zero
-  self.localEulerAngles = Vector3.zero
-  self.localRotation = Quaternion.identity
-  self.localScale = Vector3.one
+	TransformComponent.super.Init(self, ...)
+	self.localPosition = Vector3.zero
+	self.localEulerAngles = Vector3.zero
+	self.localRotation = Quaternion.identity
+	self.localScale = Vector3.one
 end
 
 ---@param localPosition Vector3
 function TransformComponent:SetLocalPosition(localPosition)
-  self.localPosition = localPosition
+	self.localPosition = localPosition
 end
 
 ---@return Vector3
 function TransformComponent:GetLocalPosition()
-  return self.localPosition
+	return self.localPosition
 end
 
 ---@param localPosition Vector3
 function TransformComponent:SetLocalEulerAngles(localEulerAngles)
-  self.localEulerAngles = localEulerAngles
-  self.localRotation = Quaternion.Euler(localEulerAngles.x, localEulerAngles.y,localEulerAngles.z)
+	self.localEulerAngles = localEulerAngles
+	self.localRotation = Quaternion.Euler(localEulerAngles.x, localEulerAngles.y, localEulerAngles.z)
 end
 
 ---@return Vector3
 function TransformComponent:GetLocalEulerAngles()
-  return self.localEulerAngles
+	return self.localEulerAngles
 end
-
 
 ---@param localRotation Quaternion
 function TransformComponent:SetLocalRotation(localRotation)
-  self.localRotation = localRotation
-  self.localEulerAngles = localRotation:ToEulerAngles()
+	self.localRotation = localRotation
+	self.localEulerAngles = localRotation:ToEulerAngles()
 end
 
 ---@return Vector3
 function TransformComponent:GetLocalEulerAngles()
-  return self.localEulerAngles
+	return self.localEulerAngles
 end
-
 
 ---@param localScale Vector3
 function TransformComponent:SetLocalScale(localScale)
-  self.localScale = localScale
+	self.localScale = localScale
 end
 
 ---@return Vector3
 function TransformComponent:GetLocalScale()
-  return self.localScale
+	return self.localScale
 end
 
 ----------------------------------------------------------------------
@@ -62,44 +59,42 @@ end
 
 ---@param localPosition Vector3
 function TransformComponent:SetPosition(position)
-  self:SetLocalPosition(position)
+	self:SetLocalPosition(position)
 end
 
 ---@return Vector3
 function TransformComponent:GetPosition()
-  return self:GetLocalPosition()
+	return self:GetLocalPosition()
 end
 
 ---@param localPosition Vector3
 function TransformComponent:SetEulerAngles(eulerAngles)
-  self:SetLocalEulerAngles(eulerAngles)
+	self:SetLocalEulerAngles(eulerAngles)
 end
 
 ---@return Vector3
 function TransformComponent:GetEulerAngles()
-  return self:GetLocalEulerAngles()
+	return self:GetLocalEulerAngles()
 end
-
 
 ---@param localRotation Quaternion
 function TransformComponent:SetRotation(rotation)
-  self:SetLocalEulerAngles(rotation)
+	self:SetLocalEulerAngles(rotation)
 end
 
 ---@return Vector3
 function TransformComponent:GetEulerAngles()
-  return self:GetLocalEulerAngles()
+	return self:GetLocalEulerAngles()
 end
-
 
 ---@param localScale Vector3
 function TransformComponent:SetScale(scale)
-  self:SetLocalScale(scale)
+	self:SetLocalScale(scale)
 end
 
 ---@return Vector3
 function TransformComponent:GetScale()
-  return self:GetLocalScale()
+	return self:GetLocalScale()
 end
 
 return TransformComponent

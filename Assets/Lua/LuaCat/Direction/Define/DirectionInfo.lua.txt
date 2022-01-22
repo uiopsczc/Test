@@ -3,10 +3,10 @@ local DirectionInfo = Class("DirectionInfo")
 ---@param x number
 ---@param y number
 ---@param name string
-function DirectionInfo:Init( x,  y,name)
-  self.x = x
-  self.y = y
-  self.name = name
+function DirectionInfo:Init(x, y, name)
+	self.x = x
+	self.y = y
+	self.name = name
 end
 
 return DirectionInfo

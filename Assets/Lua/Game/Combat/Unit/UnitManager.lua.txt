@@ -78,11 +78,11 @@ function UnitManager:OnUnitGuidChange(old_guid, new_guid)
   local unit = self:GetUnit(old_guid)
   if unit and old_guid ~= new_guid then
     self.unit_dict[old_guid] = nil
-    self.key_to_child_dict[old_guid] = nil
+    self.keyToChildDict[old_guid] = nil
     local index = table.IndexOf_Array(self.children_key_list, old_guid)
 
     self.unit_dict[new_guid] = unit
-    self.key_to_child_dict[new_guid] = unit
+    self.keyToChildDict[new_guid] = unit
     self.children_key_list[index] = new_guid
   end
 end

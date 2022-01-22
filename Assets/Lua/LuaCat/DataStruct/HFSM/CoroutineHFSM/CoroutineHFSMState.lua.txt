@@ -2,27 +2,27 @@
 local CoroutineHFSMState = Class("CoroutineHFSMState", HFSMState)
 
 function CoroutineHFSMState:IEEnter(...)
-  CoroutineHFSMState.super.Enter(self, ...)
-  self:YieldBreak()
+	CoroutineHFSMState.super.Enter(self, ...)
+	self:YieldBreak()
 end
 
 function CoroutineHFSMState:IEExit(...)
-  CoroutineHFSMState.super.Exit(self, ...)
-  self:YieldBreak()
+	CoroutineHFSMState.super.Exit(self, ...)
+	self:YieldBreak()
 end
 
-function CoroutineHFSMState:IEExitLoopTo(to_hfsm, ...)
-  self:YieldStart(function()
-    self:IEExit()
-  end)
-  local _hfsm = self.parent_hfsm
-  while _hfsm ~= to_hfsm do
-    self:YieldStart(function()
-      _hfsm:IEExit()
-    end)
-    _hfsm = _hfsm.parent_hfsm
-  end
-  self:YieldBreak()
+function CoroutineHFSMState:IEExitLoopTo(toHFSM, ...)
+	self:YieldStart(function()
+		self:IEExit()
+	end)
+	local curHFSM = self.parentHFSM
+	while curHFSM ~= toHFSM do
+		self:YieldStart(function()
+			curHFSM:IEExit()
+		end)
+		curHFSM = curHFSM.parentHFSM
+	end
+	self:YieldBreak()
 end
 
 return CoroutineHFSMState

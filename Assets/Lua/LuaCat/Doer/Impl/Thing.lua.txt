@@ -3,12 +3,12 @@ local Thing = Class("Thing", Doer)
 
 ---@param pos Vector2
 function Thing:SetPos(pos)
-  self:SetTmp("o_pos", pos)
+	self:SetTmp("o_pos", pos)
 end
 
 ---@return  Vector2
 function Thing:GetPos()
-  return self:GetTmp("o_pos")
+	return self:GetTmp("o_pos")
 end
 
 ---------------------OnXXX------------------------
@@ -16,26 +16,26 @@ function Thing:OnUpgrade(key)
 end
 
 function Thing:OnCheckUse(critter)
-  return true
+	return true
 end
 
 --本物件进入场景to_scene事件
-function Thing:OnEnterScene(to_scene)
+function Thing:OnEnterScene(toScene)
 
 end
 
 --本物件离开场景from_scene事件
-function Thing:OnLeaveScene(from_scene)
+function Thing:OnLeaveScene(fromScene)
 
 end
 
 --本物件在场景中移动事件
 ---@param scene Scene
----@param from_pos Vector2
+---@param fromPos Vector2
 ---@param to_pos Vector2
----@param track_list Vector2[]
+---@param trackList Vector2[]
 ---@param type number
-function Thing:OnMove(scene, from_pos, track_list, type)
+function Thing:OnMove(scene, fromPos, trackList, type)
 
 end
 
@@ -48,31 +48,31 @@ end
 
 -----------------升级------------------------
 function Thing:CheckUpgrade(key)
-  return self:OnCheckUpgrade(key)
+	return self:OnCheckUpgrade(key)
 end
 
 function Thing:Upgrade(key)
-  return self:OnUpgrade(key)
+	return self:OnUpgrade(key)
 end
 -----------------------------------------------------------
----@param compare_pos Vector2
+---@param comparePos Vector2
 ---@param radius number
-function Thing:IsInAround(compare_pos, radius)
-  if AStarUtil.GetMapDistance(self:GetPos(), compare_pos) <= radius then
-    return true
-  end
-  return false
+function Thing:IsInAround(comparePos, radius)
+	if AStarUtil.GetMapDistance(self:GetPos(), comparePos) <= radius then
+		return true
+	end
+	return false
 end
 
----@param sector_center_pos Vector2
----@param sector_dir Vector2
----@param sector_radius number
----@param sector_half_degrees number
-function Thing:IsInSector(sector_center_pos, sector_dir, sector_radius, sector_half_degrees)
-  if AStarUtil.IsInSector(self:GetPos(), sector_center_pos, sector_dir, sector_radius, sector_half_degrees) then
-    return true
-  end
-  return false
+---@param sectorCenterPos Vector2
+---@param sectorDir Vector2
+---@param sectorRadius number
+---@param sectorHalfDegrees number
+function Thing:IsInSector(sectorCenterPos, sectorDir, sectorRadius, sectorHalfDegrees)
+	if AStarUtil.IsInSector(self:GetPos(), sectorCenterPos, sectorDir, sectorRadius, sectorHalfDegrees) then
+		return true
+	end
+	return false
 end
 
 return Thing

@@ -2,23 +2,23 @@
 ---@field parent AStarNode
 local AStarNode = Class("AStarNode")
 function AStarNode:Init(x, y)
-  self.pos = Vector2(x, y)
-  self.g = 0 --当前消耗值
-  self.h = 0-- 预估还需的消耗值
-  self.f = 0-- 当前消耗值 + 预估还需的消耗值
+	self.pos = Vector2(x, y)
+	self.g = 0 --当前消耗值
+	self.h = 0-- 预估还需的消耗值
+	self.f = 0-- 当前消耗值 + 预估还需的消耗值
 end
 
 AStarNode.__eq = function(a, b)
-  if a == nil and b == nil then
-    return true
-  end
-  if a == nil and b ~= nil then
-    return false
-  end
-  if a ~= nil and b == nil then
-    return false
-  end
-  return a.pos.x == b.pos.x and a.pos.y == b.pos.y
+	if a == nil and b == nil then
+		return true
+	end
+	if a == nil and b ~= nil then
+		return false
+	end
+	if a ~= nil and b == nil then
+		return false
+	end
+	return a.pos.x == b.pos.x and a.pos.y == b.pos.y
 end
 
 return AStarNode

@@ -5,38 +5,34 @@ local TestSubHFSM1 = require("luacat.dataStruct.hfsm.test.HFSM.TestSubHFSM1")
 local TestHFSM = Class("TestHFSM", HFSM)
 
 function TestHFSM:InitStates()
-  TestHFSM.super.InitStates(self)
-  self:AddSubDirectState("a",A_HFSMState)
-  self:AddSubDirectState("b",B_HFSMState)
-  self:AddSubDirectHFSM("sub_hfsm1",TestSubHFSM1)
-  self:SetDefaultSubDirectState("a")
+	TestHFSM.super.InitStates(self)
+	self:AddSubDirectState("a", A_HFSMState)
+	self:AddSubDirectState("b", B_HFSMState)
+	self:AddSubDirectHFSM("sub_hfsm1", TestSubHFSM1)
+	self:SetDefaultSubDirectState("a")
 
-  self:AddListener(string.ToEventName("hello",self:GetRootHFSM()), function()
-    warn("quan")
-  end)
+	self:AddListener(string.ToEventName("hello", self:GetRootHFSM()), function()
+		warn("quan")
+	end)
 end
-
 
 function TestHFSM:Test1()
-  self:ChangeToState("a")
+	self:ChangeToState("a")
 end
 function TestHFSM:Test2()
-  self:ChangeToState("b")
+	self:ChangeToState("b")
 end
 
 function TestHFSM:Test3()
-  self:ChangeToState("a1")
+	self:ChangeToState("a1")
 end
 
-
 function TestHFSM:Test4()
-  self:ChangeToState("a11")
+	self:ChangeToState("a11")
 end
 
 function TestHFSM:Test5()
-  self:ChangeToState("a111")
+	self:ChangeToState("a111")
 end
-
-
 
 return TestHFSM

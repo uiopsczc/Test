@@ -3,11 +3,11 @@ local MissionFactory = Class("MissionFactory",DoerFactory)
 
 function MissionFactory:Init()
   MissionFactory.super.Init(self)
-  self.default_doer_class_path = "game.doer.mission.Mission"
+  self.defaultDoerClassPath = "game.doer.mission.Mission"
 end
 
 function MissionFactory:GetClassPath(id)
-  return string.IsNilOrEmpty(CfgMission.get_by_id(id).class_path_lua) and self.default_doer_class_path or CfgMission.get_by_id(id).class_path_lua
+  return string.IsNilOrEmpty(CfgMission.get_by_id(id).class_path_lua) and self.defaultDoerClassPath or CfgMission.get_by_id(id).class_path_lua
 end
 
 function MissionFactory:GetCfgMissionData(id)

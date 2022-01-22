@@ -3,56 +3,55 @@ local TestData = require("luacat.gameData.data.TestData")
 local GameData = Class("GameData")
 
 function GameData:Init(file_path)
-  self.file_path = file_path
-  -- 刚开始的默认数值
-  local org_data = {
-    test_data = {
-      test = 4,
-    },
-    user_id = "user1",
-    dict_user = {},
-    dict_tmp_user = {},
-  }
-  if CS.System.IO.File.Exists(file_path) then
-    local content = StdioUtil.ReadFile(file_path)
-    self.data = json:decode(content)
-  else
-    self.data = org_data
-  end
-  table.ApplyDiff(self.data ,table.GetNotExist(self.data, org_data)) --将org_data中有，但self.data中没有的,应用到self.data中
+	self.file_path = file_path
+	-- 刚开始的默认数值
+	local orgData = {
+		testData = {
+			test = 4,
+		},
+		userId = "user1",
+		dictUser = {},
+		dictTmpUser = {},
+	}
+	if CS.System.IO.File.Exists(file_path) then
+		local content = StdioUtil.ReadFile(file_path)
+		self.data = json:decode(content)
+	else
+		self.data = orgData
+	end
+	table.ApplyDiff(self.data, table.GetNotExist(self.data, orgData)) --将org_data中有，但self.data中没有的,应用到self.data中
 end
 
 function GameData:Save()
-  self:SaveUser()
-  local content = json:encode(self.data)
-  StdioUtil.WriteFile(self.file_path, content)
+	self:SaveUser()
+	local content = json:encode(self.data)
+	StdioUtil.WriteFile(self.file_path, content)
 end
 
 function GameData:SaveUser()
-  local dict_user = {}
-  local dict_tmp_user = {}
-  local user = global.client.user
-  user:DoSave(dict_user,dict_tmp_user)
-  self.data.dict_user = dict_user
-  self.data.dict_tmp_user = dict_tmp_user
-  self.data.user_id = user:GetId()
+	local dictUser = {}
+	local dictTmpUser = {}
+	local user = global.client.user
+	user:DoSave(dictUser, dictTmpUser)
+	self.data.dictUser = dictUser
+	self.data.dictTmpUser = dictTmpUser
+	self.data.userId = user:GetId()
 end
 
 function GameData:RestoreUser()
-  local user_id = self.data.user_id
-  local dict_user = self.data.dict_user
-  local dict_tmp_user = self.data.dict_tmp_user
-  ---@type User
-  local user = global.client.userFactory:NewDoer(user_id)
-  user:DoRestore(dict_user,dict_tmp_user)
-  if not user.main_role then
-    user.main_role = user:AddRole("1")
-  end
-  ---@type User
-  global.client.user = user
-  ---@type Role
-  global.client.main_role = user.main_role
+	local userId = self.data.userId
+	local dictUser = self.data.dictUser
+	local dictTmpUser = self.data.dictTmpUser
+	---@type User
+	local user = global.client.userFactory:NewDoer(userId)
+	user:DoRestore(dictUser, dictTmpUser)
+	if not user.mainRole then
+		user.mainRole = user:AddRole("1")
+	end
+	---@type User
+	global.client.user = user
+	---@type Role
+	global.client.mainRole = user.mainRole
 end
-
 
 return GameData

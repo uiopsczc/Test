@@ -1,116 +1,117 @@
 ---@class DoerFactory:TickObject
----@field default_doer_class_path string
+---@field defaultDoerClassPath string
 local DoerFactory = Class("ObjectFactory", TickObject)
 
 function DoerFactory:Init()
-  DoerFactory.super.Init(self)
-  ---@type table<string,table<string,DBase>>
-  self.id_dict = {} -- key是id,sub_key是rid
+	DoerFactory.super.Init(self)
+	---@type table<string,table<string,DBase>>
+	self.idDict = {} -- key是id,sub_key是rid
 end
 
 function DoerFactory:GetClassPath(id)
-  return self.default_doer_class_path
+	return self.defaultDoerClassPath
 end
 
 -- 需子类重写
 ---@return DBase
-function DoerFactory:__NewDBase(id_or_rid)
-  return DBase.New(id_or_rid)
+function DoerFactory:__NewDBase(idOrRid)
+	return DBase.New(idOrRid)
 end
 
 ---@return Doer
 function DoerFactory:__NewDoer(id)
-  local class_path = self:GetClassPath(id)
-  local class_type = ClassLoadUtil.Load(class_path)
-  local doer = self:AddChildWithoutInit(nil, class_type)
-  return doer
+	local classPath = self:GetClassPath(id)
+	local classType = ClassLoadUtil.Load(classPath)
+	local doer = self:AddChildWithoutInit(nil, classType)
+	return doer
 end
 
 -- 获得所有逻辑对象数量
 function DoerFactory:GetDoerCount(id)
-  local count = 0
-  if not id then
-    for id, dbase_dict in pairs(self.id_dict) do
-      count = count + table.Count(dbase_dict)
-    end
-  else
-    if self.id_dict[id] then
-      count = table.Count(self.id_dict[id])
-    end
-  end
-  return count
+	local count = 0
+	if not id then
+		for id, dbaseDict in pairs(self.idDict) do
+			count = count + table.Count(dbaseDict)
+		end
+	else
+		if self.idDict[id] then
+			count = table.Count(self.idDict[id])
+		end
+	end
+	return count
 end
 
 
 -- 获得所有逻辑对象
 ---@return Doer[]
 function DoerFactory:GetDoers(id)
-  local result = {}
-  if not id then
-    for id, dbase_dict in pairs(self.id_dict) do
-      for rid, dbase in pairs(dbase_dict) do
-        table.insert(result, dbase.doer)
-      end
-    end
-  else
-    if self.id_dict[id] then
-      for rid, dbase in pairs(self.id_dict[id]) do
-        table.insert(result, dbase.doer)
-      end
-    end
-  end
-  return result
+	local result = {}
+	if not id then
+		for id, dbaseDict in pairs(self.idDict) do
+			for rid, dbase in pairs(dbaseDict) do
+				table.insert(result, dbase.doer)
+			end
+		end
+	else
+		if self.idDict[id] then
+			for rid, dbase in pairs(self.idDict[id]) do
+				table.insert(result, dbase.doer)
+			end
+		end
+	end
+	return result
 end
 
 -- 查找指定逻辑对象
 ---@return Doer
-function DoerFactory:FindDoer(id_or_rid)
-  local id = IdUtil.RidToId(id_or_rid)
-  local is_id = IdUtil.IsId(id_or_rid)
-  if not table.IsNilOrEmpty(self.id_dict[id]) then
-    for rid, dbase in pairs(self.id_dict[id]) do
-      if is_id then  -- id的情况
-        return dbase.doer
-      else
-        if rid == id_or_rid then
-          return dbase.doer
-        end
-      end
-    end
-  end
+function DoerFactory:FindDoer(idOrRid)
+	local id = IdUtil.RidToId(idOrRid)
+	local isId = IdUtil.IsId(idOrRid)
+	if not table.IsNilOrEmpty(self.idDict[id]) then
+		for rid, dbase in pairs(self.idDict[id]) do
+			if isId then
+				-- id的情况
+				return dbase.doer
+			else
+				if rid == idOrRid then
+					return dbase.doer
+				end
+			end
+		end
+	end
 end
 
 -- 创建逻辑对象
 ---@return Doer
-function DoerFactory:NewDoer(id_or_rid)
-  local id = IdUtil.RidToId(id_or_rid)
-  local doer = self:__NewDoer(id)
-  local dbase = self:__NewDBase(id_or_rid)
-  doer:SetDBase(dbase)
-  dbase:SetDoer(doer)
-  doer.factory = self
-  local rid = dbase.rid
-  local dbase_dict = table.GetOrAddDefault_Dict(self.id_dict, id, function()
-    return {}
-  end)
-  dbase_dict[rid] = dbase
-  doer:Init()
-  doer:PostInit()
-  doer:SetIsEnabled(true, false)
-  return doer
+function DoerFactory:NewDoer(idOrRid)
+	local id = IdUtil.RidToId(idOrRid)
+	local doer = self:__NewDoer(id)
+	local dbase = self:__NewDBase(idOrRid)
+	doer:SetDBase(dbase)
+	dbase:SetDoer(doer)
+	doer.factory = self
+	local rid = dbase.rid
+	local dbaseDict = table.GetOrAddDefault_Dict(self.idDict, id, function()
+		return {}
+	end)
+	dbaseDict[rid] = dbase
+	doer:Init()
+	doer:PostInit()
+	doer:SetIsEnabled(true, false)
+	return doer
 end
 
 
 -- 释放逻辑对象
 ---@param doer Doer
 function DoerFactory:ReleaseDoer(doer)
-  local id = doer:GetId()
-  local rid = doer:GetRid()
-  if self.id_dict[id] then
-    self.id_dict[id][rid] = nil
-  end
-  doer:DoRelease()
-  self:RemoveChild(doer.key)
+	local id = doer:GetId()
+	local rid = doer:GetRid()
+	if self.idDict[id] then
+		self.idDict[id][rid] = nil
+	end
+	doer:DoRelease()
+	self:RemoveChild(doer.key)
 end
 
 return DoerFactory

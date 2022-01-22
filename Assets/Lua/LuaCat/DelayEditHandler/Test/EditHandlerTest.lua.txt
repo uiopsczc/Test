@@ -1,17 +1,17 @@
 local DelayEditHandler = require("luacat.delayEditHandler.DelayEditHandler")
 
-local test={"a1","a2",f="a4","a3","d"}
+local test = { "a1", "a2", f = "a4", "a3", "d" }
 ---@type DelayEditHandler
-local delayEditHandler =DelayEditHandler.New(test)
+local delayEditHandler = DelayEditHandler.New(test)
 for i, v in pairs(test) do
-    if string.StartsWith(v,"a") then
-        delayEditHandler:ToRemove(i)
-    end
+	if string.StartsWith(v, "a") then
+		delayEditHandler:ToRemove(i)
+	end
 end
 delayEditHandler:Handle()
 log(test)
 
 delayEditHandler:ToAdd("aa")
-delayEditHandler:ToSet("t","k")
+delayEditHandler:ToSet("t", "k")
 delayEditHandler:Handle()
 log(test)

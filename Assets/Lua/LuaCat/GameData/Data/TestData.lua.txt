@@ -2,16 +2,16 @@
 local TestData = Class("TestData")
 
 function TestData:Init(gameData)
-  if not gameData.TestData then
-    gameData.TestData = {}
-  end
-  self.data = gameData.TestData
+	if not gameData.TestData then
+		gameData.TestData = {}
+	end
+	self.data = gameData.TestData
 
-  self.test = self.data.test or 0
+	self.test = self.data.test or 0
 end
 
 function TestData:Save()
-  self.data.test = self.test
+	self.data.test = self.test
 end
 
 return TestData

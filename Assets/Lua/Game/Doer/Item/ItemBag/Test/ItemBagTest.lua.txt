@@ -2,7 +2,7 @@ local ItemBagTest = {}
 function ItemBagTest.Test()
   local user = global.client.user
   user:AddItems("4",4)
-  user:UseItem("4",user.main_role)
+  user:UseItem("4",user.mainRole)
 
   local dict = {}
   local dict_tmp = {}

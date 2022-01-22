@@ -1,13 +1,10 @@
 ---@class GameObjectEntity:TickObject
-local GameObjectEntity = Class("GameObjectEntity",TickObject)
-
+local GameObjectEntity = Class("GameObjectEntity", TickObject)
 
 function GameObjectEntity:Init(...)
-  GameObjectEntity.super.Init(self,...)
-  ---@type TransformComponent
-  self.transformComponent = self:AddComponent(nil, TransformComponent)
+	GameObjectEntity.super.Init(self, ...)
+	---@type TransformComponent
+	self.transformComponent = self:AddComponent(nil, TransformComponent)
 end
-
-
 
 return GameObjectEntity

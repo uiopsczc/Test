@@ -2,27 +2,28 @@
 local Lang = {}
 
 function Lang.InitIfNotInit()
-  if Lang.inited then
-    return
-  end
-  Lang.language = CS.CsCat.Client.instance.language
+	if Lang.isInited then
+		return
+	end
+	Lang.isInited = true
+	Lang.language = CS.CsCat.Client.instance.language
 end
 
 function Lang.GetText(content, ...)
-  Lang.InitIfNotInit()
-  local language = Lang.language
-  if not language then
-    return string.format(content, ...)
-  end
-  if content == nil then
-    return nil
-  end
-  local content_wiht_escape = string.gsub(string.gsub(content,"\r\n","\n"),"\r", "\n")
-  local cfgLangData = CfgLang.get_by_id(content_wiht_escape)
-  if cfgLangData and cfgLangData[language] then
-    return string.format(cfgLangData[language],...)
-  end
-  return string.format(content,...)
+	Lang.InitIfNotInit()
+	local language = Lang.language
+	if not language then
+		return string.format(content, ...)
+	end
+	if content == nil then
+		return nil
+	end
+	local contentWithEscape = string.gsub(string.gsub(content, "\r\n", "\n"), "\r", "\n")
+	local cfgLangData = CfgLang.get_by_id(contentWithEscape)
+	if cfgLangData and cfgLangData[language] then
+		return string.format(cfgLangData[language], ...)
+	end
+	return string.format(content, ...)
 end
 
 return Lang

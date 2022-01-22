@@ -32,7 +32,7 @@ function CameraBase:Init(camera, is_not_destroy_gameObject)
 end
 
 function CameraBase:IsCanUpdate()
-  return not self.is_can_not_update and CameraBase.super.IsCanUpdate(self)
+  return not self.isCanNotUpdate and CameraBase.super.IsCanUpdate(self)
 end
 
 function CameraBase:__LateUpdate(deltaTime, unscaledDeltaTime)

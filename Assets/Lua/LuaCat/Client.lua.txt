@@ -1,7 +1,7 @@
 ---@class Client:TickObject
 ---@field stage StageBase
 ---@field user User
----@field main_role Role
+---@field mainRole Role
 ---@field combat CombatBase
 local Client = Class("Client", TickObject)
 

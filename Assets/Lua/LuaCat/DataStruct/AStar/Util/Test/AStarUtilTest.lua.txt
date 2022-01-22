@@ -2,228 +2,227 @@
 local AStarUtilTest = {}
 
 local __grids = {
-  { 1, 1, 3, 1, 1, 1 },
-  { 3, 1, 1, 1, 3, 1 },
-  { 3, 1, 1, 3, 1, 1 },
-  { 1, 1, 1, 1, 3, 1 },
-  { 1, 1, 1, 1, 1, 1 },
+	{ 1, 1, 3, 1, 1, 1 },
+	{ 3, 1, 1, 1, 3, 1 },
+	{ 3, 1, 1, 3, 1, 1 },
+	{ 1, 1, 1, 1, 3, 1 },
+	{ 1, 1, 1, 1, 1, 1 },
 }
 local grids = table.ToLeftBottomBaseArrays(__grids)
 
 function AStarUtilTest.Test_GetArcPointList()
-  local center_point = Vector2.zero
-  local radius = 3
-  local point_list = AStarUtil.GetArcPointList(center_point, radius)
-  return function()
-    AStarUtil.GUIShowPointList(-5, -5, 5, 5, point_list)
-  end
+	local centerPoint = Vector2.zero
+	local radius = 3
+	local pointList = AStarUtil.GetArcPointList(centerPoint, radius)
+	return function()
+		AStarUtil.GUIShowPointList(-5, -5, 5, 5, pointList)
+	end
 end
 
 function AStarUtilTest.Test_GetArcPointList2()
-  local center_point = Vector2.zero
-  local radius = 3
-  local point_list = AStarUtil.GetArcPointList2(center_point, radius)
-  return function()
-    AStarUtil.GUIShowPointList(-5, -5, 5, 5, point_list)
-  end
+	local centerPoint = Vector2.zero
+	local radius = 3
+	local pointList = AStarUtil.GetArcPointList2(centerPoint, radius)
+	return function()
+		AStarUtil.GUIShowPointList(-5, -5, 5, 5, pointList)
+	end
 end
 
 function AStarUtilTest.Test_GetLinePointList()
-  local a_point = Vector2(-4, -4)
-  local b_point = Vector2(3, 2)
-  local point_list = AStarUtil.GetLinePointList(a_point, b_point)
-  return function()
-    AStarUtil.GUIShowPointList(-5, -5, 5, 5, point_list)
-  end
+	local aPoint = Vector2(-4, -4)
+	local bPoint = Vector2(3, 2)
+	local pointList = AStarUtil.GetLinePointList(aPoint, bPoint)
+	return function()
+		AStarUtil.GUIShowPointList(-5, -5, 5, 5, pointList)
+	end
 end
 
 function AStarUtilTest.Test_GetExtendPoint()
-  local a_point = Vector2(-4, -4)
-  local b_point = Vector2(3, 2)
-  local target_point = AStarUtil.GetExtendPoint(a_point, b_point, 2)
-  return function()
-    AStarUtil.GUIShowPointList(-5, -5, 5, 5, { target_point })
-  end
+	local aPoint = Vector2(-4, -4)
+	local bPoint = Vector2(3, 2)
+	local targetPoint = AStarUtil.GetExtendPoint(aPoint, bPoint, 2)
+	return function()
+		AStarUtil.GUIShowPointList(-5, -5, 5, 5, { targetPoint })
+	end
 end
 
 function AStarUtilTest.Test_GetExtendPoint()
-  log(AStarUtil.GetNearestDistance(Vector2(0, 0), Vector2(2, 2), Vector2(2, 3)))
+	log(AStarUtil.GetNearestDistance(Vector2(0, 0), Vector2(2, 2), Vector2(2, 3)))
 end
 
 function AStarUtilTest.Test_IsValidObstacleType()
-  log(AStarUtil.IsValidObstacleType(255))
+	log(AStarUtil.IsValidObstacleType(255))
 end
 
 function AStarUtilTest.Test_ToGridType()
-  log(AStarUtil.GetObstacleType(AStarUtil.ToGridType(3,1,2)))
+	log(AStarUtil.GetObstacleType(AStarUtil.ToGridType(3, 1, 2)))
 end
 
 function AStarUtilTest.Test_GetObstacleType()
-  log(AStarUtil.GetObstacleType(9))
+	log(AStarUtil.GetObstacleType(9))
 end
 
 function AStarUtilTest.Test_GetTerrainType()
-  log(AStarUtil.GetTerrainType(24))
+	log(AStarUtil.GetTerrainType(24))
 end
 
 function AStarUtilTest.Test_GetField()
-  log(AStarUtil.GetField(2 ^ 9))
+	log(AStarUtil.GetField(2 ^ 9))
 end
 
 function AStarUtilTest.Test_IsSameField()
-  log(AStarUtil.IsSameField(2 ^ 9, 2 ^ 9))
+	log(AStarUtil.IsSameField(2 ^ 9, 2 ^ 9))
 end
 
 function AStarUtilTest.Test_GetBlockPoint()
-  log(AStarUtil.GetBlockPoint(Vector2(4, 7)))
+	log(AStarUtil.GetBlockPoint(Vector2(4, 7)))
 end
 
 function AStarUtilTest.Test_IsSameBlock()
-  log(AStarUtil.IsSameBlock(Vector2(2, 2), Vector2(2, 4)))
+	log(AStarUtil.IsSameBlock(Vector2(2, 2), Vector2(2, 4)))
 end
 
 function AStarUtilTest.Test_IsNeighborBlock()
-  log(AStarUtil.IsNeighborBlock(2, 2, 2, 4))
+	log(AStarUtil.IsNeighborBlock(2, 2, 2, 4))
 end
 
 function AStarUtilTest.Test_IsInRangeX()
-  log(AStarUtil.IsInRangeX(grids, 7))
+	log(AStarUtil.IsInRangeX(grids, 7))
 end
 
 function AStarUtilTest.Test_IsInRangeY()
-  log(AStarUtil.IsInRangeY(grids, 5))
+	log(AStarUtil.IsInRangeY(grids, 5))
 end
 
 function AStarUtilTest.Test_IsInRangeY()
-  log(AStarUtil.IsInRange(grids, 6, 5))
+	log(AStarUtil.IsInRange(grids, 6, 5))
 end
 
 function AStarUtilTest.Test_GetNeighborList()
-  local point_list = AStarUtil.GetNeighborList(Vector2(2, 2))
-  return function()
-    AStarUtil.GUIShowPointList(1, 1, 9, 9, point_list)
-  end
+	local pointList = AStarUtil.GetNeighborList(Vector2(2, 2))
+	return function()
+		AStarUtil.GUIShowPointList(1, 1, 9, 9, pointList)
+	end
 end
 
 function AStarUtilTest.Test_GetLeftTopNeighborList()
-  local point_list = AStarUtil.GetLeftTopNeighborList(Vector2(2, 2))
-  return function()
-    AStarUtil.GUIShowPointList(1, 1, 9, 9, point_list)
-  end
+	local pointList = AStarUtil.GetLeftTopNeighborList(Vector2(2, 2))
+	return function()
+		AStarUtil.GUIShowPointList(1, 1, 9, 9, pointList)
+	end
 end
 
 function AStarUtilTest.Test_GetLeftBottomNeighborList()
-  local point_list = AStarUtil.GetLeftBottomNeighborList(Vector2(2, 2))
-  return function()
-    AStarUtil.GUIShowPointList(1, 1, 9, 9, point_list)
-  end
+	local pointList = AStarUtil.GetLeftBottomNeighborList(Vector2(2, 2))
+	return function()
+		AStarUtil.GUIShowPointList(1, 1, 9, 9, pointList)
+	end
 end
 
 function AStarUtilTest.Test_GetRightTopNeighborList()
-  local point_list = AStarUtil.GetRightTopNeighborList(Vector2(2, 2))
-  return function()
-    AStarUtil.GUIShowPointList(1, 1, 9, 9, point_list)
-  end
+	local pointList = AStarUtil.GetRightTopNeighborList(Vector2(2, 2))
+	return function()
+		AStarUtil.GUIShowPointList(1, 1, 9, 9, pointList)
+	end
 end
 
 function AStarUtilTest.Test_GetRightBottomNeighborList()
-  local point_list = AStarUtil.GetRightBottomNeighborList(Vector2(2, 2))
-  return function()
-    AStarUtil.GUIShowPointList(1, 1, 9, 9, point_list)
-  end
+	local pointList = AStarUtil.GetRightBottomNeighborList(Vector2(2, 2))
+	return function()
+		AStarUtil.GUIShowPointList(1, 1, 9, 9, pointList)
+	end
 end
 
 function AStarUtilTest.Test_GetViewingRange()
-  log(tostring(AStarUtil.GetViewingRange(Vector2(2, 2))))
+	log(tostring(AStarUtil.GetViewingRange(Vector2(2, 2))))
 end
 
 function AStarUtilTest.Test_GetViewingRange()
-  log(tostring(AStarUtil.IsInViewingRange(Vector2(2, 2), Vector2(2, 4))))
+	log(tostring(AStarUtil.IsInViewingRange(Vector2(2, 2), Vector2(2, 4))))
 end
 
 function AStarUtilTest.Test_CanPass()
-  log(AStarUtil.CanPass(grids, 2, 2, AStarMapPathConst.Critter_Can_Pass_Obstacle_Types, AStarMapPathConst.User_Can_Pass_Terrain_Types))
+	log(AStarUtil.CanPass(grids, 2, 2, AStarMapPathConst.Critter_Can_Pass_Obstacle_Types, AStarMapPathConst.User_Can_Pass_Terrain_Types))
 end
 
 function AStarUtilTest.Test_CanTrackListPass()
-  log(AStarUtil.CanTrackListPass(AStarMapPath.New(grids), {
-    Vector2(1, 1),
-    Vector2(2, 2),
-    Vector2(3, 3),
-    Vector2(4, 4),
-  }, AStarMapPathConst.Critter_Can_Pass_Obstacle_Types, AStarMapPathConst.User_Can_Pass_Terrain_Types))
+	log(AStarUtil.CanTrackListPass(AStarMapPath.New(grids), {
+		Vector2(1, 1),
+		Vector2(2, 2),
+		Vector2(3, 3),
+		Vector2(4, 4),
+	}, AStarMapPathConst.Critter_Can_Pass_Obstacle_Types, AStarMapPathConst.User_Can_Pass_Terrain_Types))
 end
 
 function AStarUtilTest.Test_CanLinePass()
-  log(AStarUtil.CanLinePass(AStarMapPath.New(grids), Vector2(1, 1), Vector2(3, 3), AStarMapPathConst.Critter_Can_Pass_Obstacle_Types, AStarMapPathConst.User_Can_Pass_Terrain_Types))
+	log(AStarUtil.CanLinePass(AStarMapPath.New(grids), Vector2(1, 1), Vector2(3, 3), AStarMapPathConst.Critter_Can_Pass_Obstacle_Types, AStarMapPathConst.User_Can_Pass_Terrain_Types))
 end
 
 function AStarUtilTest.Test_GetAroundFreePointList()
-  local point_list = AStarUtil.GetAroundFreePointList(AStarMapPath.New(grids), Vector2(3, 3), 2, AStarMapPathConst.Critter_Can_Pass_Obstacle_Types, AStarMapPathConst.User_Can_Pass_Terrain_Types)
-  return function()
-    AStarUtil.GUIShowPointList(1, 1, 9, 9, point_list)
-  end
+	local pointList = AStarUtil.GetAroundFreePointList(AStarMapPath.New(grids), Vector2(3, 3), 2, AStarMapPathConst.Critter_Can_Pass_Obstacle_Types, AStarMapPathConst.User_Can_Pass_Terrain_Types)
+	return function()
+		AStarUtil.GUIShowPointList(1, 1, 9, 9, pointList)
+	end
 end
 
 function AStarUtilTest.Test_FindAroundFreePoint()
-  local point = AStarUtil.FindAroundFreePoint(AStarMapPath.New(grids), Vector2(3, 3), 2, nil, AStarMapPathConst.Critter_Can_Pass_Obstacle_Types, AStarMapPathConst.User_Can_Pass_Terrain_Types)
-  return function()
-    AStarUtil.GUIShowPointList(1, 1, 9, 9, point)
-  end
+	local point = AStarUtil.FindAroundFreePoint(AStarMapPath.New(grids), Vector2(3, 3), 2, nil, AStarMapPathConst.Critter_Can_Pass_Obstacle_Types, AStarMapPathConst.User_Can_Pass_Terrain_Types)
+	return function()
+		AStarUtil.GUIShowPointList(1, 1, 9, 9, point)
+	end
 end
 
 function AStarUtilTest.Test_GetMostPassPoint()
-  local point = AStarUtil.GetMostPassPoint(AStarMapPath.New(grids),
-      {
-        Vector2(1, 1),
-        Vector2(2, 2),
-        Vector2(3, 3),
-        Vector2(4, 4),
-        Vector2(5, 5),
-      }, AStarMapPathConst.Critter_Can_Pass_Obstacle_Types, AStarMapPathConst.User_Can_Pass_Terrain_Types)
-  return function()
-    AStarUtil.GUIShowPointList(1, 1, 9, 9, point)
-  end
+	local point = AStarUtil.GetMostPassPoint(AStarMapPath.New(grids),
+			{
+				Vector2(1, 1),
+				Vector2(2, 2),
+				Vector2(3, 3),
+				Vector2(4, 4),
+				Vector2(5, 5),
+			}, AStarMapPathConst.Critter_Can_Pass_Obstacle_Types, AStarMapPathConst.User_Can_Pass_Terrain_Types)
+	return function()
+		AStarUtil.GUIShowPointList(1, 1, 9, 9, point)
+	end
 end
 
 function AStarUtilTest.Test_GetMostLinePassPoint()
-  local point = AStarUtil.GetMostLinePassPoint(AStarMapPath.New(grids),
-      Vector2(1, 1),
-      Vector2(5, 5), AStarMapPathConst.Critter_Can_Pass_Obstacle_Types, AStarMapPathConst.User_Can_Pass_Terrain_Types)
-  return function()
-    AStarUtil.GUIShowPointList(1, 1, 9, 9, point)
-  end
+	local point = AStarUtil.GetMostLinePassPoint(AStarMapPath.New(grids),
+			Vector2(1, 1),
+			Vector2(5, 5), AStarMapPathConst.Critter_Can_Pass_Obstacle_Types, AStarMapPathConst.User_Can_Pass_Terrain_Types)
+	return function()
+		AStarUtil.GUIShowPointList(1, 1, 9, 9, point)
+	end
 end
 
 function AStarUtilTest.Test_GetRangeFreePointList()
-  local point_list = AStarUtil.GetRangeFreePointList(AStarMapPath.New(grids), 1,1,5,5, nil,AStarMapPathConst.Critter_Can_Pass_Obstacle_Types, AStarMapPathConst.User_Can_Pass_Terrain_Types)
-  return function()
-    AStarUtil.GUIShowPointList(1, 1, 9, 9, point_list)
-  end
+	local pointList = AStarUtil.GetRangeFreePointList(AStarMapPath.New(grids), 1, 1, 5, 5, nil, AStarMapPathConst.Critter_Can_Pass_Obstacle_Types, AStarMapPathConst.User_Can_Pass_Terrain_Types)
+	return function()
+		AStarUtil.GUIShowPointList(1, 1, 9, 9, pointList)
+	end
 end
 
 function AStarUtilTest.Test_FindRangeFreePoint()
-  local point = AStarUtil.FindRangeFreePoint(AStarMapPath.New(grids), 1,1,5,5, nil,AStarMapPathConst.Critter_Can_Pass_Obstacle_Types, AStarMapPathConst.User_Can_Pass_Terrain_Types)
-  return function()
-    AStarUtil.GUIShowPointList(1, 1, 9, 9, point)
-  end
+	local point = AStarUtil.FindRangeFreePoint(AStarMapPath.New(grids), 1, 1, 5, 5, nil, AStarMapPathConst.Critter_Can_Pass_Obstacle_Types, AStarMapPathConst.User_Can_Pass_Terrain_Types)
+	return function()
+		AStarUtil.GUIShowPointList(1, 1, 9, 9, point)
+	end
 end
 
 function AStarUtilTest.Test_GetRandomMovePoint()
-  local point = AStarUtil.GetRandomMovePoint(AStarMapPath.New(grids), Vector2(1, 1), Vector2(3, 3)
-  , 2, AStarMapPathConst.Critter_Can_Pass_Obstacle_Types, AStarMapPathConst.User_Can_Pass_Terrain_Types)
-  return function()
-    AStarUtil.GUIShowPointList(1, 1, 9, 9, point)
-  end
+	local point = AStarUtil.GetRandomMovePoint(AStarMapPath.New(grids), Vector2(1, 1), Vector2(3, 3)
+	, 2, AStarMapPathConst.Critter_Can_Pass_Obstacle_Types, AStarMapPathConst.User_Can_Pass_Terrain_Types)
+	return function()
+		AStarUtil.GUIShowPointList(1, 1, 9, 9, point)
+	end
 end
 
-
 function AStarUtilTest.Test_GetNearestPoint()
-  local point = AStarUtil.GetNearestPoint(AStarMapPath.New(grids), Vector2(1, 1), Vector2(4, 4)
-  , AStarMapPathConst.Critter_Can_Pass_Obstacle_Types, AStarMapPathConst.User_Can_Pass_Terrain_Types)
-  return function()
-    AStarUtil.GUIShowPointList(1, 1, 9, 9, point)
-  end
+	local point = AStarUtil.GetNearestPoint(AStarMapPath.New(grids), Vector2(1, 1), Vector2(4, 4)
+	, AStarMapPathConst.Critter_Can_Pass_Obstacle_Types, AStarMapPathConst.User_Can_Pass_Terrain_Types)
+	return function()
+		AStarUtil.GUIShowPointList(1, 1, 9, 9, point)
+	end
 end
 
 return AStarUtilTest

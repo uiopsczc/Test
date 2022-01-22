@@ -1,99 +1,96 @@
 ---@class GameEntity:AbstractEntity
-local GameEntity = Class("GameEntity",AbstractEntity)
-
+local GameEntity = Class("GameEntity", AbstractEntity)
 
 function GameEntity:Init(...)
-  GameEntity.super.Init(self,...)
-  self.all_assets_load_done_callback = {}
+	GameEntity.super.Init(self, ...)
+	self.allAssetsLoadDoneCallback = {}
 
-  ---@type ResLoadComponent
-  self.resLoadComponent = self:AddComponent(nil, ResLoadComponent, ResLoad.New())
-  ---@type TimerManagerPluginComponent
-  self.timerManagerPluginComponent = self:AddComponent(nil, TimerManagerPluginComponent, TimerManagerPlugin.New(self:GetTimerManager()))
-  ---@type CoroutinePluginComponent
-  self.coroutinePluginComponent = self:AddComponent(nil, CoroutinePluginComponent, CoroutinePlugin.New(self:GetTimerManager()))
-  ---@type DOTweenPluginComponent
-  self.dotweenPluginComponent = self:AddComponent(nil, DOTweenPluginComponent, DOTweenPlugin.New())
+	---@type ResLoadComponent
+	self.resLoadComponent = self:AddComponent(nil, ResLoadComponent, ResLoad.New())
+	---@type TimerManagerPluginComponent
+	self.timerManagerPluginComponent = self:AddComponent(nil, TimerManagerPluginComponent, TimerManagerPlugin.New(self:GetTimerManager()))
+	---@type CoroutinePluginComponent
+	self.coroutinePluginComponent = self:AddComponent(nil, CoroutinePluginComponent, CoroutinePlugin.New(self:GetTimerManager()))
+	---@type DOTweenPluginComponent
+	self.dotweenPluginComponent = self:AddComponent(nil, DOTweenPluginComponent, DOTweenPlugin.New())
 
-  ---@type GraphicComponent
-  self.graphicComponent = self:CreateGraphicComponent()
+	---@type GraphicComponent
+	self.graphicComponent = self:CreateGraphicComponent()
 end
 
 ---@return GraphicComponent
 function GameEntity:CreateGraphicComponent()
-  return self:AddComponent(nil, GraphicComponent, self.resLoadComponent)
+	return self:AddComponent(nil, GraphicComponent, self.resLoadComponent)
 end
 
-
 function GameEntity:PostInit()
-  GameEntity.super.PostInit(self)
-  self.graphicComponent:LoadPrefabPath()
-  self:PreLoadAssets()
-  self:CheckIsAllAssetsLoadDone()
+	GameEntity.super.PostInit(self)
+	self.graphicComponent:LoadPrefabPath()
+	self:PreLoadAssets()
+	self:CheckIsAllAssetsLoadDone()
 end
 
 function GameEntity:GetGuid()
-  return self.key
+	return self.key
 end
 
 ----------------------------------------------------------------------
 -- CoroutinePluginComponent
 ----------------------------------------------------------------------
 function GameEntity:StartCoroutine(key, func, ...)
-  self.coroutinePluginComponent:StartCoroutine(key, func, ...)
+	self.coroutinePluginComponent:StartCoroutine(key, func, ...)
 end
 
-function GameEntity:StopCoroutine(key_or_co)
-  self.coroutinePluginComponent:StopCoroutine(key_or_co)
+function GameEntity:StopCoroutine(keyOrCo)
+	self.coroutinePluginComponent:StopCoroutine(keyOrCo)
 end
 
 function GameEntity:StopAllCoroutines()
-  self.coroutinePluginComponent:StopAllCoroutines()
+	self.coroutinePluginComponent:StopAllCoroutines()
 end
 
-
 function GameEntity:WaitForFixedUpdate()
-  return self.coroutinePluginComponent:WaitForFixedUpdate()
+	return self.coroutinePluginComponent:WaitForFixedUpdate()
 end
 
 function GameEntity:WaitForFrames(frames)
-  return self.coroutinePluginComponent:WaitForFrames(frames)
+	return self.coroutinePluginComponent:WaitForFrames(frames)
 end
 
 function GameEntity:WaitForSeconds(seconds)
-  return self.coroutinePluginComponent:WaitForSeconds(seconds)
+	return self.coroutinePluginComponent:WaitForSeconds(seconds)
 end
 
-function GameEntity:WaitForAsyncOp(async_operation, callback)
-  return self.coroutinePluginComponent:WaitForSeconds(async_operation, callback)
+function GameEntity:WaitForAsyncOp(asyncOperation, callback)
+	return self.coroutinePluginComponent:WaitForSeconds(asyncOperation, callback)
 end
 
 function GameEntity:WaitUntil(func, ...)
-  return self.coroutinePluginComponent:WaitUntil(func, ...)
+	return self.coroutinePluginComponent:WaitUntil(func, ...)
 end
 
 function GameEntity:WaitWhile(func, ...)
-  return self.coroutinePluginComponent:WaitWhile(func, ...)
+	return self.coroutinePluginComponent:WaitWhile(func, ...)
 end
 
 function GameEntity:WaitForEndOfFrame()
-  return self.coroutinePluginComponent:WaitForEndOfFrame()
+	return self.coroutinePluginComponent:WaitForEndOfFrame()
 end
 
 function GameEntity:YieldBreak(...)
-  return self.coroutinePluginComponent:YieldBreak(...)
+	return self.coroutinePluginComponent:YieldBreak(...)
 end
 
 function GameEntity:YieldStart(func, callback, ...)
-  return self.coroutinePluginComponent:YieldStart(func,callback, ...)
+	return self.coroutinePluginComponent:YieldStart(func, callback, ...)
 end
 
 function GameEntity:YieldCallback(child_co, ...)
-  return self.coroutinePluginComponent:YieldCallback(child_co, ...)
+	return self.coroutinePluginComponent:YieldCallback(child_co, ...)
 end
 
 function GameEntity:YieldReturn(...)
-  return self.coroutinePluginComponent:YieldReturn(...)
+	return self.coroutinePluginComponent:YieldReturn(...)
 end
 
 ----------------------------------------------------------------------
@@ -102,23 +99,23 @@ end
 ---@param key string
 ---@return CS.DG.Tweening.Sequence
 function GameEntity:AddDOTweenSequence(key)
-  return self.dotweenPluginComponent:AddDOTweenSequence(key)
+	return self.dotweenPluginComponent:AddDOTweenSequence(key)
 end
 
 ---@param key string
 ---@param tween CS.DG.Tweening.Tween
 ---@return CS.DG.Tweening.Tween
 function GameEntity:AddDOTween(key, tween)
-  return self.dotweenPluginComponent:AddDOTween(key, tween)
+	return self.dotweenPluginComponent:AddDOTween(key, tween)
 end
 
----@param key_or_tween CS.DG.Tweening.Tween||string
-function GameEntity:RemoveDOTween(key_or_tween)
-  self.dotweenPluginComponent:RemoveDOTween(key_or_tween)
+---@param keyOrTween CS.DG.Tweening.Tween||string
+function GameEntity:RemoveDOTween(keyOrTween)
+	self.dotweenPluginComponent:RemoveDOTween(keyOrTween)
 end
 
 function GameEntity:RemoveAllDOTweens()
-  self.dotweenPluginComponent:RemoveAllDOTweens()
+	self.dotweenPluginComponent:RemoveAllDOTweens()
 end
 
 
@@ -127,15 +124,15 @@ end
 ----------------------------------------------------------------------
 ---@return EventDispatcherPlugin
 function GameEntity:GetEventDispatcherPlugin()
-  if not self.eventDispatcherPlugin then
-    self.eventDispatcherPlugin = EventDispatcherPlugin.New(global.client.eventDispatcher)
-  end
-  return self.eventDispatcherPlugin
+	if not self.eventDispatcherPlugin then
+		self.eventDispatcherPlugin = EventDispatcherPlugin.New(global.client.eventDispatcher)
+	end
+	return self.eventDispatcherPlugin
 end
 
 ---@return EventListener
 function GameEntity:AddListener(eventName, handler)
-  return self:GetEventDispatcherPlugin():AddListener(eventName, handler)
+	return self:GetEventDispatcherPlugin():AddListener(eventName, handler)
 end
 
 ---@return EventListener
@@ -144,59 +141,58 @@ end
 -- 情况2 只有一个handler
 -- 情况3 有一个eventName和一个handler
 function GameEntity:RemoveListener(...)
-  return self:GetEventDispatcherPlugin():RemoveListener(...)
+	return self:GetEventDispatcherPlugin():RemoveListener(...)
 end
 
 function GameEntity:RemoveAllListeners()
-  self:GetEventDispatcherPlugin():RemoveAllListeners()
+	self:GetEventDispatcherPlugin():RemoveAllListeners()
 end
 
 function GameEntity:Broadcast(eventName, ...)
-  self:GetEventDispatcherPlugin():Broadcast(eventName, ...)
+	self:GetEventDispatcherPlugin():Broadcast(eventName, ...)
 end
 
 ----------------------------------------------------------------------
 -- timerManagerPluginComponent
 ----------------------------------------------------------------------
 function GameEntity:GetTimerManager()
-  return self.parent:GetTimerManager()
+	return self.parent:GetTimerManager()
 end
 
-
-function GameEntity:AddTimer(target_func, target_func_args, delay, interval, update_mode, is_use_unscaledDeltaTime, is_coroutine_timer, is_use_frame)
-  return self.timerManagerPluginComponent:AddTimer(target_func, target_func_args, delay, interval, update_mode, is_use_unscaledDeltaTime, is_coroutine_timer, is_use_frame)
+function GameEntity:AddTimer(targetFunc, targetFuncArgs, delay, interval, updateMode, isUseUnscaledDeltaTime, isCoroutineTimer, isUseFrame)
+	return self.timerManagerPluginComponent:AddTimer(targetFunc, targetFuncArgs, delay, interval, updateMode, isUseUnscaledDeltaTime, isCoroutineTimer, isUseFrame)
 end
 
-function GameEntity:AddCoTimer(target_func, target_func_args, delay, interval, update_mode, is_use_unscaledDeltaTime, is_use_frame)
-  return self.timerManagerPluginComponent:AddCoTimer(target_func, target_func_args, delay, interval, update_mode, is_use_unscaledDeltaTime, is_use_frame)
+function GameEntity:AddCoTimer(targetFunc, targetFuncArgs, delay, interval, updateMode, isUseUnscaledDeltaTime, isUseFrame)
+	return self.timerManagerPluginComponent:AddCoTimer(targetFunc, targetFuncArgs, delay, interval, updateMode, isUseUnscaledDeltaTime, isUseFrame)
 end
 
-function GameEntity:AddUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
-  return self.timerManagerPluginComponent:AddUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
+function GameEntity:AddUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
+	return self.timerManagerPluginComponent:AddUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
 end
-function GameEntity:AddFixedUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
-  return self.timerManagerPluginComponent:AddFixedUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
+function GameEntity:AddFixedUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
+	return self.timerManagerPluginComponent:AddFixedUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
 end
-function GameEntity:AddLateUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
-  return self.timerManagerPluginComponent:AddLateUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
+function GameEntity:AddLateUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
+	return self.timerManagerPluginComponent:AddLateUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
 end
 
-function GameEntity:AddCoUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
-  return self.timerManagerPluginComponent:AddCoUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
+function GameEntity:AddCoUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
+	return self.timerManagerPluginComponent:AddCoUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
 end
-function GameEntity:AddCoFixedUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
-  return self.timerManagerPluginComponent:AddCoFixedUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
+function GameEntity:AddCoFixedUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
+	return self.timerManagerPluginComponent:AddCoFixedUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
 end
-function GameEntity:AddCoLateUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
-  return self.timerManagerPluginComponent:AddCoLateUpdateTimer(target_func, target_func_args, delay, interval, is_use_unscaledDeltaTime, is_use_frame)
+function GameEntity:AddCoLateUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
+	return self.timerManagerPluginComponent:AddCoLateUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
 end
 
 function GameEntity:RemoveTimer(timer)
-  return self.timerManagerPluginComponent:RemoveTimer(timer)
+	return self.timerManagerPluginComponent:RemoveTimer(timer)
 end
 
 function GameEntity:RemoveAllTimers()
-  self.timerManagerPluginComponent:RemoveAllTimers()
+	self.timerManagerPluginComponent:RemoveAllTimers()
 end
 
 ----------------------------------------------------------------------
@@ -204,46 +200,44 @@ end
 ----------------------------------------------------------------------
 --- 只会被触发一次
 function GameEntity:InvokeAfterAllAssetsLoadDone(callback)
-  if self.isAllAssetsLoadDone then
-    callback()
-  else
-    table.insert(self.all_assets_load_done_callback, callback)
-  end
+	if self.isAllAssetsLoadDone then
+		callback()
+	else
+		table.insert(self.allAssetsLoadDoneCallback, callback)
+	end
 end
 
-
 function GameEntity:PreLoadAssets()
-  --self.resLoadComponent.LoadAssetAsync("resPath")
+	--self.resLoadComponent.LoadAssetAsync("resPath")
 end
 
 function GameEntity:CheckIsAllAssetsLoadDone()
-  self:StartCoroutine(nil, function()
-    self:WaitUntil(function()
-      return self.resLoadComponent:IsAllLoadDone()
-    end)
-    if not string.IsNilOrEmpty(self.graphicComponent.prefab_path) then
-      self:WaitUntil(function()
-        return self.graphicComponent:IsLoadDone()
-      end)
-    end
-    self:OnAllAssetsLoadDone()
-  end)
+	self:StartCoroutine(nil, function()
+		self:WaitUntil(function()
+			return self.resLoadComponent:IsAllLoadDone()
+		end)
+		if not string.IsNilOrEmpty(self.graphicComponent.prefabPath) then
+			self:WaitUntil(function()
+				return self.graphicComponent:IsLoadDone()
+			end)
+		end
+		self:OnAllAssetsLoadDone()
+	end)
 end
 
 function GameEntity:OnAllAssetsLoadDone()
-  self:Broadcast(string.ToEventName(ECSEventNameConst.OnAllAssetsLoadDone,self))
-  self.isAllAssetsLoadDone = true
-  DelegateUtil.InvokeCallback(self.all_assets_load_done_callback)
-  self.all_assets_load_done_callback = nil
+	self:Broadcast(string.ToEventName(ECSEventNameConst.OnAllAssetsLoadDone, self))
+	self.isAllAssetsLoadDone = true
+	DelegateUtil.InvokeCallback(self.allAssetsLoadDoneCallback)
+	self.allAssetsLoadDoneCallback = nil
 end
 
 ----------------------------------------------------------------------
 -- gameObject
 ----------------------------------------------------------------------
 function GameEntity:InstantiateGameObject(prefab)
-  return GameObject.Instantiate(prefab)
+	return GameObject.Instantiate(prefab)
 end
-
 
 function GameEntity:InitGameObjectChildren()
 end
@@ -252,35 +246,35 @@ end
 ----------------------------------------------------------------------
 -- Pause
 ----------------------------------------------------------------------
----@param is_paused boolean
-function GameEntity:__SetIsPaused(is_paused)
-  GameEntity.super.__SetIsPaused(self, is_paused)
+---@param isPaused boolean
+function GameEntity:__SetIsPaused(isPaused)
+	GameEntity.super.__SetIsPaused(self, isPaused)
 end
 
 ----------------------------------------------------------------------
 -- __Reset
 ----------------------------------------------------------------------
 function GameEntity:__Reset()
-  GameEntity.super.__Reset(self)
-  self:RemoveAllListeners()
-  self.all_assets_load_done_callback = {}
+	GameEntity.super.__Reset(self)
+	self:RemoveAllListeners()
+	self.allAssetsLoadDoneCallback = {}
 end
 
 ----------------------------------------------------------------------
 -- __Destroy
 ----------------------------------------------------------------------
 function GameEntity:__Destroy()
-  GameEntity.super.__Destroy(self)
-  self:RemoveAllListeners()
+	GameEntity.super.__Destroy(self)
+	self:RemoveAllListeners()
 
-  self.parent = nil
-  self.resLoadComponent = nil
-  self.coroutinePluginComponent = nil
-  self.timerManagerPluginComponent = nil
-  self.graphicComponent = nil
+	self.parent = nil
+	self.resLoadComponent = nil
+	self.coroutinePluginComponent = nil
+	self.timerManagerPluginComponent = nil
+	self.graphicComponent = nil
 
-  self.isAllAssetsLoadDone = false
-  self.all_assets_load_done_callback = {}
+	self.isAllAssetsLoadDone = false
+	self.allAssetsLoadDoneCallback = {}
 end
 
 return GameEntity
