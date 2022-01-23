@@ -1,98 +1,96 @@
 ---@class PropertyComp:Class
----@field is_changing boolean
+---@field isChanging boolean
 ---@field unit Unit
 local PropertyComp = Class("PropertyComp")
 
 PropertyComp.split = "@"
-function PropertyComp:Init(arg_dict)
-  ---@type table<string,any>
-  self.arg_dict = arg_dict
-  self.unit_id = arg_dict.unit_id
-  self.level = arg_dict.level
-  ---@type table<string,table<string,number>>
-  self.prop_set_dict = {}
-  ---@type table<string,number>
-  self.base_prop_dict = {}
-  ---@type table<string,number>
-  self.calc_prop_dict = {}
+function PropertyComp:Init(argDict)
+	---@type table<string,any>
+	self.argDict = argDict
+	self.unitId = argDict.unitId
+	self.level = argDict.level
+	---@type table<string,table<string,number>>
+	self.propSetDict = {}
+	---@type table<string,number>
+	self.basePropDict = {}
+	---@type table<string,number>
+	self.calcPropDict = {}
 end
 
 ---@param unit Unit
 function PropertyComp:OnBuild(unit)
-  self.unit = unit
-  self.level = self.unit:GetLevel()
-  self.unit_id = self.unit_id
+	self.unit = unit
+	self.level = self.unit:GetLevel()
+	self.unitId = self.unitId
 end
 
----@param prop_set table<string,number>
+---@param propSet table<string,number>
 ---@param key string
----@param sub_key string
-function PropertyComp:AddPropSet(prop_set, key, sub_key)
-  local property_key = string.Combine(PropertyComp.split ,key ,sub_key)
-  self.prop_set_dict[property_key] = prop_set
-  self:__CalculateProp()
+---@param subKey string
+function PropertyComp:AddPropSet(propSet, key, subKey)
+	local propertyKey = string.Combine(PropertyComp.split, key, subKey)
+	self.propSetDict[propertyKey] = propSet
+	self:__CalculateProp()
 end
 
-
 ---@param key string
----@param sub_key string
-function PropertyComp:RemovePropSet(key, sub_key)
-  local property_key = string.Combine(PropertyComp.split ,key ,sub_key)
-  self.prop_set_dict[property_key] = nil
-  self:__CalculateProp()
+---@param subKey string
+function PropertyComp:RemovePropSet(key, subKey)
+	local propertyKey = string.Combine(PropertyComp.split, key, subKey)
+	self.propSetDict[propertyKey] = nil
+	self:__CalculateProp()
 end
 
 function PropertyComp:__CalculateProp()
-  if self.is_changing then
-    return
-  end
-  local old_calc_prop_dict = clone(self.calc_prop_dict)
-  self.base_prop_dict = {}
-  -- 基础属性统计
-  for _,cfgPropertyData in ipairs(CfgProperty.All()) do
-    self.base_prop_dict[cfgPropertyData.id] = 0
-  end
-  for _, prop_set in pairs(self.prop_set_dict) do
-    for key,_ in pairs(prop_set) do
-      local value = table.GetOrAddDefault_Dict(self.base_prop_dict,key,function() return 0 end)
-      self.base_prop_dict[key] = value + prop_set[key]
-    end
-  end
-  --综合属性计算
-  self.calc_prop_dict = {}
-  for key,_ in pairs(self.base_prop_dict) do
-    self.calc_prop_dict[key] = self.base_prop_dict[key]
-  end
+	if self.isChanging then
+		return
+	end
+	local oldCalcPropDict = clone(self.calcPropDict)
+	self.basePropDict = {}
+	-- 基础属性统计
+	for _, cfgPropertyData in ipairs(CfgProperty.All()) do
+		self.basePropDict[cfgPropertyData.id] = 0
+	end
+	for _, propSet in pairs(self.propSetDict) do
+		for key, _ in pairs(propSet) do
+			local value = table.GetOrAddDefault_Dict(self.basePropDict, key, function()
+				return 0
+			end)
+			self.basePropDict[key] = value + propSet[key]
+		end
+	end
+	--综合属性计算
+	self.calcPropDict = {}
+	for key, _ in pairs(self.basePropDict) do
+		self.calcPropDict[key] = self.basePropDict[key]
+	end
 
-  if self.unit then
-    local new_clac_prop_dict = self.calc_prop_dict
-    local clac_prop_dict_diff = table.GetDiff( old_calc_prop_dict,self.calc_prop_dict)
-    self.unit:OnPropertyChanged(old_calc_prop_dict, new_clac_prop_dict, clac_prop_dict_diff)
-  end
+	if self.unit then
+		local newCalcPropDict = self.calcPropDict
+		local calcPropDictDiff = table.GetDiff(oldCalcPropDict, self.calcPropDict)
+		self.unit:OnPropertyChanged(oldCalcPropDict, newCalcPropDict, calcPropDictDiff)
+	end
 end
 
-
-
 function PropertyComp:StartChange()
-  self.is_changing = true
+	self.isChanging = true
 end
 
 function PropertyComp:EndChange()
-  self.is_changing = false
-  self:__CalculateProp()
+	self.isChanging = false
+	self:__CalculateProp()
 end
 
-
-function PropertyComp:CalculateOriginalDamageValue(arg_dict)
+function PropertyComp:CalculateOriginalDamageValue(argDict)
 end
 
-function PropertyComp:CalculateRealDamageValue(damage_value, target_unit, arg_dict)
+function PropertyComp:CalculateRealDamageValue(damageValue, targetUnit, argDict)
 end
 
-function PropertyComp:CalculateOriginalHealValue(arg_dict)
+function PropertyComp:CalculateOriginalHealValue(argDict)
 end
 
-function PropertyComp:CalculateRealHealValue(heal_value, target_unit,arg_dict)
+function PropertyComp:CalculateRealHealValue(healValue, targetUnit, argDict)
 end
 
 function PropertyComp:Destroy()

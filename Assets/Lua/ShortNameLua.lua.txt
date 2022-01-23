@@ -145,7 +145,7 @@ AnimatorCompConst = require("LuaCat.AnimatorComp.Define.AnimatorCompConst")
 AnimatorParameterInfo = require("LuaCat.AnimatorComp.AnimatorParameterInfo")
 AnimatorComp = require("LuaCat.AnimatorComp.AnimatorComp")
 ------------------------------Game--------------------------------------------------
-require("Game.Cfg.AutoGen.RequireCfgPathes")
+require("Game.Cfg.AutoGen.RequireCfgPaths")
 require("Game.Cfg.Util.RequireCfgDataUtil")
 CombatUtil = require("Game.Combat.Combat.Util.CombatUtil")
 CombatConst = require("Game.Combat.Combat.Define.CombatConst")
@@ -214,7 +214,7 @@ AIBaseComp = require("Game.Combat.AIComp.AIBaseComp")
 UnitEventNameConst = require("Game.Combat.Unit.Define.UnitEventNameConst")
 Unit = require("Game.Combat.Unit.Unit")
 UnitManager = require("Game.Combat.Unit.UnitManager")
-UnitBeThrowedInfo = require("Game.Combat.UnitMoveComp.Define.UnitBeThrowedInfo")
+UnitBeThrownInfo = require("Game.Combat.UnitMoveComp.Define.UnitBeThrownInfo")
 UnitMoveInfo = require("Game.Combat.UnitMoveComp.Define.UnitMoveInfo")
 UnitMoveComp = require("Game.Combat.UnitMoveComp.UnitMoveComp")
 PathManager = require("Game.Combat.PathManager.PathManager")
@@ -225,16 +225,16 @@ SpellBase = require("Game.Combat.Spell.SpellBase")
 SpellManager = require("Game.Combat.Spell.SpellManager")
 UICombatTestPanel = require("Game.Combat.UI.Test.UICombatTestPanel")
 ---------------------------Common包相关-----------------------------------------------
-Bounds.__Class_name = "Bounds"
-Color.__Class_name = "Color"
-LayerMask.__Class_name = "LayerMask"
-Plane.__Class_name = "Plane"
-Quaternion.__Class_name = "Quaternion"
-Ray.__Class_name = "Ray"
-RaycastHit.__Class_name = "RaycastHit"
-Touch.__Class_name = "Touch"
-Vector2.__Class_name = "Vector2"
-Vector3.__Class_name = "Vector3"
-Vector4.__Class_name = "Vector4"
+Bounds._className = "Bounds"
+Color._className = "Color"
+LayerMask._className = "LayerMask"
+Plane._className = "Plane"
+Quaternion._className = "Quaternion"
+Ray._className = "Ray"
+RaycastHit._className = "RaycastHit"
+Touch._className = "Touch"
+Vector2._className = "Vector2"
+Vector3._className = "Vector3"
+Vector4._className = "Vector4"
 ----------------------------------------------------------------------------------------
 

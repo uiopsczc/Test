@@ -1,100 +1,96 @@
 ---@class UIPanel:UIObject
 ---@field is_add_to_child_panel_stack
----@field layerName string
+---@field _layerName string
 ---@field is_resident boolean
----@field isHideBlackMaskBehind boolean
+---@field _isHideBlackMaskBehind boolean
 local UIPanel = Class("UIPanel", UIObject)
 
 function UIPanel:Init()
-  UIPanel.super.Init(self)
-  self.sortingOrder = math.mininteger
-  self.isHideBlackMaskBehind = false
+	UIPanel.super.Init(self)
+	self._sortingOrder = math.mininteger
+	self._isHideBlackMaskBehind = false
 end
-
 
 function UIPanel:OnAllAssetsLoadDone()
-  UIPanel.super.OnAllAssetsLoadDone(self)
-  local canvas = self:GetCanvas()
-  canvas.overrideSorting = true
-  canvas.sortingLayerName = "UI"
-  self.graphicComponent.gameObject:GetOrAddComponent(typeof(CS.UnityEngine.UI.GraphicRaycaster))
-  self:OnSortingOrderChange()
-end
-
-function UIPanel:InitGameObjectChildren()
-  self.frameTransform = self.graphicComponent.transform:Find("frame")
-  if not IsNil(self.frameTransform) then
-    self.content_transform = self.frameTransform:Find("content")
-  end
-  UIPanel.super.InitGameObjectChildren(self)
+	UIPanel.super.OnAllAssetsLoadDone(self)
+	local canvas = self:GetCanvas()
+	canvas.overrideSorting = true
+	canvas.sortingLayerName = "UI"
+	self:GetGraphicComponent():GetGameObject():GetOrAddComponent(typeof(CS.UnityEngine.UI.GraphicRaycaster))
+	self:OnSortingOrderChange()
 end
 
 ---@param parentTransform CS.UnityEngine.Transform
 function UIPanel:OnInitPanel(parentTransform)
-  ---@type CS.CsCat.UILayer
-  self.uiLayer = global.client.uiManager.uiLayerManager:GetUILayer(self.layerName)
-  self.graphicComponent:SetParentTransform(parentTransform or self.uiLayer.graphicComponent.transform)
-  self.uiLayer:AddPanel(self)
+	---@type CS.CsCat.UILayer
+	self._uiLayer = global.client.uiManager._uiLayerManager:GetUILayer(self._layerName)
+	self:GetGraphicComponent():SetParentTransform(parentTransform or self._uiLayer.graphicComponent.transform)
+	self._uiLayer:AddPanel(self)
 end
 
 ---@return CS.UnityEngine.Canvas
 function UIPanel:GetCanvas()
-  if not self.canvas then
-    ---@type CS.UnityEngine.Canvas
-    self.canvas = self.graphicComponent.gameObject:GetOrAddComponent(typeof(CS.UnityEngine.Canvas))
-  end
-  return self.canvas
+	if not self._canvas then
+		---@type CS.UnityEngine.Canvas
+		self._canvas = self:GetGraphicComponent():GetGameObject():GetOrAddComponent(typeof(CS.UnityEngine.Canvas))
+	end
+	return self._canvas
 end
 
 function UIPanel:GetSortingOrder()
-  return self.sortingOrder
+	return self._sortingOrder
 end
 
 function UIPanel:IsHideBlackMaskBehind()
-  return self.isHideBlackMaskBehind
+	return self._isHideBlackMaskBehind
 end
 
 ---@param sortingOrder number
 function UIPanel:SetSortingOrder(sortingOrder)
-  if self.sortingOrder == sortingOrder then
-    return
-  end
-  self.sortingOrder = sortingOrder
-  self:OnSortingOrderChange()
+	if self._sortingOrder == sortingOrder then
+		return
+	end
+	self._sortingOrder = sortingOrder
+	self:OnSortingOrderChange()
 end
 
 function UIPanel:OnSortingOrderChange()
-  if IsNil(self.graphicComponent.gameObject) then
-    return
-  end
-  self:GetCanvas().sortingOrder = self:GetSortingOrder()
+	if IsNil(self:GetGraphicComponent():GetGameObject()) then
+		return
+	end
+	self:GetCanvas().sortingOrder = self:GetSortingOrder()
 end
 
 function UIPanel:SetToTop()
-  self.uiLayer:SetPanelToTop(self)
+	self._uiLayer:SetPanelToTop(self)
 end
 
 function UIPanel:SetToBottom()
-  self.uiLayer:SetPanelToBottom(self)
+	self._uiLayer:SetPanelToBottom(self)
 end
 
----@param new_index number
-function UIPanel:SetPanelIndex(new_index)
-  self.uiLayer:SetPanelIndex(self, new_index)
-end
-
-
-
-function UIPanel:__Destroy()
-  UIPanel.super.__Destroy(self)
-  self.sortingOrder = math.mininteger
-  self.canvas = nil
-  self.isHideBlackMaskBehind = false
+---@param newIndex number
+function UIPanel:SetPanelIndex(newIndex)
+	self._uiLayer:SetPanelIndex(self, newIndex)
 end
 
 function UIPanel:Close()
-  self.uiLayer:RemovePanel(self)
-  self.parent:CloseChildPanel(self.key)
+	self._uiLayer:RemovePanel(self)
+	self.parent:CloseChildPanel(self.key)
+end
+
+----------------------------------------------------------------------
+-- SetGet相关
+----------------------------------------------------------------------
+function UIPanel:SetLayerName(layerName)
+	self._layerName = layerName
+end
+
+function UIPanel:_Destroy()
+	UIPanel.super.__Destroy(self)
+	self._sortingOrder = math.mininteger
+	self._canvas = nil
+	self._isHideBlackMaskBehind = false
 end
 
 

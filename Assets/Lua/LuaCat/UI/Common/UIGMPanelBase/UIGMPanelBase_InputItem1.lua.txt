@@ -1,0 +1,33 @@
+---@class UIGMPanelBase_InputItem1:UIObject
+local UIGMPanelBase_InputItem1 = Class("UIGMPanelBase_InputItem1", UIObject)
+
+function UIGMPanelBase_InputItem1:Init(gameObject, desc, yesCallback)
+	UIGMPanelBase_InputItem1.super.Init(self)
+	self._desc = desc
+	self._yesCallback = yesCallback
+	self:GetGraphicComponent():SetGameObject(gameObject, true)
+end
+
+function UIGMPanelBase_InputItem1:_InitUI()
+	UIGMPanelBase_InputItem1.super._InitUI(self)
+	---@type CS.UnityEngine.UI.Text
+	self._Txt_Desc = self:GetGraphicComponent():GetTransform():FindComponentInChildren(typeof(CS.UnityEngine.UI.Text), "Txt_Desc", true, true)
+	---@type CS.UnityEngine.UI.InputField
+	self._InputField_1 = self._graphicComponent._transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.InputField), "InputField_1", true, true)
+	---@type CS.UnityEngine.UI.Button
+	self._Btn_Yes = self._graphicComponent._transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Button), "Btn_Yes", true, true)
+end
+
+function UIGMPanelBase_InputItem1:_InitUIExtensions()
+	UIGMPanelBase_InputItem1.super._InitUIExtensions(self)
+	self._Txt_Desc.text = self._desc
+end
+
+function UIGMPanelBase_InputItem1:AddUIEvents()
+	UIGMPanelBase_InputItem1.super.AddUnityEvents(self)
+	if self._yesCallback then
+		self:RegisterOnClick(self._Btn_Yes, self._yesCallback)
+	end
+end
+
+return UIGMPanelBase_InputItem1

@@ -130,7 +130,7 @@ end
 -- TimerManagerPlugin
 ----------------------------------------------------------------------
 function GameComponent:GetTimerManager()
-	return self.entity:GetTimerManager()
+	return self._entity:GetTimerManager()
 end
 
 ---@return TimerManagerPlugin
@@ -194,7 +194,7 @@ end
 ----------------------------------------------------------------------
 -- __Reset
 ----------------------------------------------------------------------
-function GameComponent:__Reset()
+function GameComponent:_Reset()
 	GameComponent.super.__Reset(self)
 	self:StopAllCoroutines()
 	self:RemoveAllDOTweens()
@@ -206,7 +206,7 @@ end
 ----------------------------------------------------------------------
 -- __Destroy
 ----------------------------------------------------------------------
-function GameComponent:__Destroy()
+function GameComponent:_Destroy()
 	GameComponent.super.__Destroy(self)
 	self:StopAllCoroutines()
 	self:RemoveAllDOTweens()

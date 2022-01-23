@@ -4,8 +4,8 @@ local AnimationNameConst = Class("AnimationNameConst")
 AnimationNameConst.walk = "walk"
 AnimationNameConst.idle = "idle"
 AnimationNameConst.die = "die"
-AnimationNameConst.be_throwed = "be_throwed"
-AnimationNameConst.be_hit = "be_hit"
+AnimationNameConst.beThrown = "beThrown"
+AnimationNameConst.beHit = "beHit"
 AnimationNameConst.attack = "attack"
 
 return AnimationNameConst

@@ -3,7 +3,7 @@
 ---@class UIRockerInput2:UIRockerInput
 local UIRockerInput2 = Class("UIRockerInput2", UIRockerInput)
 
-function UIRockerInput2:__GetAxisKeyInput()
+function UIRockerInput2:_GetAxisKeyInput()
 	local axisXLeft = Input.GetKey(CS.UnityEngine.KeyCode.A) and -1 or 0--键盘的左
 	local axisXRight = Input.GetKey(CS.UnityEngine.KeyCode.D) and 1 or 0--键盘的右
 	local axisYDown = Input.GetKey(CS.UnityEngine.KeyCode.S) and -1 or 0--键盘的下

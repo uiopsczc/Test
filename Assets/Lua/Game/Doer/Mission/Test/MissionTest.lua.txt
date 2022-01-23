@@ -1,35 +1,33 @@
 local MissionTest = {}
 
 function MissionTest.Test1()
-  local user = global.client.user
-  user:AcceptMission("1",user)
+	local user = global.client.user
+	user:AcceptMission("1", user)
 
-  local dict = {}
-  local dict_tmp = {}
-  user:DoSave(dict, dict_tmp)
-  log(dict, dict_tmp)
+	local dict = {}
+	local dictTmp = {}
+	user:DoSave(dict, dictTmp)
+	log(dict, dictTmp)
 end
 
 function MissionTest.Test2()
-  local user = global.client.user
-  user:FinishMission("1",user)
+	local user = global.client.user
+	user:FinishMission("1", user)
 
-  local dict = {}
-  local dict_tmp = {}
-  user:DoSave(dict, dict_tmp)
-  log(dict, dict_tmp)
+	local dict = {}
+	local dictTmp = {}
+	user:DoSave(dict, dictTmp)
+	log(dict, dictTmp)
 end
 
 function MissionTest.Test3()
-  local user = global.client.user
-  user:GiveUpMission("1",user)
+	local user = global.client.user
+	user:GiveUpMission("1", user)
 
-  local dict = {}
-  local dict_tmp = {}
-  user:DoSave(dict, dict_tmp)
-  log(dict, dict_tmp)
+	local dict = {}
+	local dictTmp = {}
+	user:DoSave(dict, dictTmp)
+	log(dict, dictTmp)
 end
-
-
 
 return MissionTest

@@ -5,108 +5,108 @@ local UIScreenDragPanel = Class("UIScreenDragPanel", UIBackgroundPanel)
 
 function UIScreenDragPanel:Init(moveRange)
 	UIScreenDragPanel.super.Init(self)
-	self.graphicComponent:SetPrefabPath("Assets/Resources/Common/UI/Prefab/UIScreenDragPanel.prefab")
-	self.moveRange = moveRange
-	self.initNotEnable = initNotEnable
+	self:GetGraphicComponent():SetPrefabPath("Assets/PatchResources/UI/UIScreenDragPanel/Prefab/UIScreenDragPanel.prefab")
+	self._moveRange = moveRange
+	self._initNotEnable = nil
 	-- 用于移动的比例
-	self.deltaMoveScale = 1 / (ScreenConst.Screen_Height / ScreenConst.Design_Resolution_Height * 12)
-	self.deltaHeightScale = ScreenConst.Screen_Height / ScreenConst.Design_Resolution_Height * 0.15  -- 屏幕拖拽控制器缩放屏幕灵敏度
+	self._deltaMoveScale = 1 / (ScreenConst.Screen_Height / ScreenConst.Design_Resolution_Height * 12)
+	self._deltaHeightScale = ScreenConst.Screen_Height / ScreenConst.Design_Resolution_Height * 0.15  -- 屏幕拖拽控制器缩放屏幕灵敏度
 	-- 设置摄像机移动范围
-	self.cameraManager = global.client.combat.cameraManager
-	self.cameraManager:SetMainCameraMoveRange(moveRange)
+	self._cameraManager = global.client.combat.cameraManager
+	self._cameraManager:SetMainCameraMoveRange(moveRange)
 	-- 触摸数
-	self.touchCount = 0
+	self._touchCount = 0
 	-- 用于双指控制调整摄像头高度时使用，记录手指两点距离变化
-	self.modifyCameraHeightInfo = {}
-	self.lastDistance = 0
+	self._modifyCameraHeightInfo = {}
+	self._lastDistance = 0
 end
 
-function UIScreenDragPanel:AddUnityEvents()
+function UIScreenDragPanel:AddUIEvents()
 	UIScreenDragPanel.super.AddUnityEvents(self)
-	self:RegisterOnDrag(self.graphicComponent.gameObject, function(...)
+	self:RegisterOnDrag(self:GetGraphicComponent():GetGameObject(), function(...)
 		self:OnUIScreenDrag(...)
 	end)
-	self:RegisterOnPointerDown(self.graphicComponent.gameObject, function(...)
+	self:RegisterOnPointerDown(self:GetGraphicComponent():GetGameObject(), function(...)
 		self:OnUIScreenPointerDown(...)
 	end)
-	self:RegisterOnPointerUp(self.graphicComponent.gameObject, function(...)
+	self:RegisterOnPointerUp(self:GetGraphicComponent():GetGameObject(), function(...)
 		self:OnUIScreenPointerUp(...)
 	end)
 end
 
 function UIScreenDragPanel:__SetIsEnabled(isEnabled)
 	UIScreenDragPanel.super.__SetIsEnabled(self, isEnabled)
-	self.graphicComponent:SetIsShow(isEnabled)
+	self:GetGraphicComponent():SetIsShow(isEnabled)
 	if not isEnabled then
-		self.touchCount = 0
+		self._touchCount = 0
 	end
 end
 
 function UIScreenDragPanel:OnUIScreenPointerDown(eventData)
-	self.touchCount = self.touchCount + 1
+	self._touchCount = self._touchCount + 1
 	-- 不处理大于2个触摸点的操作
-	if self.touchCount > 2 then
+	if self._touchCount > 2 then
 		return
 	end
 
 
 	-- 记录当前手指坐标
-	self.modifyCameraHeightInfo[eventData.pointerId] = eventData.position
+	self._modifyCameraHeightInfo[eventData.pointerId] = eventData.position
 	-- 计算当前两个手指的距离
-	if self.touchCount > 1 then
-		self.lastDistance = self:__CalculateTwoPointDistance()
+	if self._touchCount > 1 then
+		self._lastDistance = self:_CalculateTwoPointDistance()
 	end
 
-	if self.cameraManager then
-		self.cameraManager:MoveByDelta(0, 0, 0)
+	if self._cameraManager then
+		self._cameraManager:MoveByDelta(0, 0, 0)
 	end
 end
 
 -- 计算两个触点的距离
-function UIScreenDragPanel:__CalculateTwoPointDistance()
+function UIScreenDragPanel:_CalculateTwoPointDistance()
 	local otherPoint
-	for eventData_pointerId, eventDataPosition in pairs(self.modifyCameraHeightInfo) do
+	for _eventDataPointerId, eventDataPosition in pairs(self._modifyCameraHeightInfo) do
 		if otherPoint then
 			return Vector2.Distance(otherPoint, eventDataPosition)
 		end
 		otherPoint = eventDataPosition
 	end
 	-- 如果只剩下一个点，则返回上一次的距离
-	return self.lastDistance
+	return self._lastDistance
 end
 
 function UIScreenDragPanel:OnUIScreenPointerUp(eventData)
-	self.modifyCameraHeightInfo[eventData.pointerId] = nil
-	self.touchCount = self.touchCount - 1
+	self._modifyCameraHeightInfo[eventData.pointerId] = nil
+	self._touchCount = self._touchCount - 1
 end
 
 function UIScreenDragPanel:OnUIScreenDrag(eventData)
-	if not self.cameraManager then
+	if not self._cameraManager then
 		return
 	end
 	-- 如果是一个触摸点的时候是拖拽屏幕移动
-	if self.touchCount < 1.5 then
-		self.cameraManager:MoveByDelta(eventData.delta.x * self.deltaMoveScale, eventData.delta.y * self.deltaMoveScale, 0)
+	if self._touchCount < 1.5 then
+		self._cameraManager:MoveByDelta(eventData.delta.x * self._deltaMoveScale, eventData.delta.y * self._deltaMoveScale, 0)
 	else
 		-- 如果是大于1个触摸点的时候，是调整摄像头高度
-		self.modifyCameraHeightInfo[eventData.pointerId] = eventData.position
-		local distance = self:__CalculateTwoPointDistance()
-		self.cameraManager:MoveByDelta(0, 0, (distance - self.lastDistance) * self.deltaHeightScale)
-		self.lastDistance = distance
+		self._modifyCameraHeightInfo[eventData.pointerId] = eventData.position
+		local distance = self:_CalculateTwoPointDistance()
+		self._cameraManager:MoveByDelta(0, 0, (distance - self._lastDistance) * self._deltaHeightScale)
+		self._lastDistance = distance
 	end
 end
 
-function UIScreenDragPanel:__Reset()
-	UIScreenDragPanel.super.__Reset(self)
-	if self.cameraManager then
-		self.cameraManager:SetMainCameraMoveRange(nil)
+function UIScreenDragPanel:_Reset()
+	UIScreenDragPanel.super._Reset(self)
+	if self._cameraManager then
+		self._cameraManager:SetMainCameraMoveRange(nil)
 	end
 end
 
-function UIScreenDragPanel:__Destroy()
-	UIScreenDragPanel.super.__Destroy(self)
-	if self.cameraManager then
-		self.cameraManager:SetMainCameraMoveRange(nil)
+function UIScreenDragPanel:_Destroy()
+	UIScreenDragPanel.super._Destroy(self)
+	if self._cameraManager then
+		self._cameraManager:SetMainCameraMoveRange(nil)
 	end
 end
 

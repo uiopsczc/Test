@@ -1,12 +1,12 @@
 local RoleTest = {}
 function RoleTest.Test()
-  local user = global.client.user
-  user:AddRole("1")
+	local user = global.client.user
+	user:AddRole("1")
 
-  local dict = {}
-  local dict_tmp = {}
-  user:DoSave(dict, dict_tmp)
-  log(dict, dict_tmp)
+	local dict = {}
+	local dictTmp = {}
+	user:DoSave(dict, dictTmp)
+	log(dict, dictTmp)
 end
 
 return RoleTest

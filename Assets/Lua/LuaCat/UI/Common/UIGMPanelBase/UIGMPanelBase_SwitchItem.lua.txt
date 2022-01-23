@@ -3,33 +3,34 @@ local UIGMPanelBase_SwitchItem = Class("UIGMPanelBase_SwitchItem", UIObject)
 
 function UIGMPanelBase_SwitchItem:Init(gameObject, desc, yesCallback, noCallback)
 	UIGMPanelBase_SwitchItem.super.Init(self)
-	self.desc = desc
-	self.yesCallback = yesCallback
-	self.noCallback = noCallback
-	self.graphicComponent:SetGameObject(gameObject, true)
+	self._desc = desc
+	self._yesCallback = yesCallback
+	self._noCallback = noCallback
+	self:GetGraphicComponent():SetGameObject(gameObject, true)
 end
 
-function UIGMPanelBase_SwitchItem:InitGameObjectChildren()
-	UIGMPanelBase_SwitchItem.super.InitGameObjectChildren(self)
+function UIGMPanelBase_SwitchItem:_InitUI()
+	UIGMPanelBase_SwitchItem.super._InitUI(self)
 	---@type CS.UnityEngine.UI.Text
-	self.descText = self.graphicComponent.transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Text), "desc", true, true)
+	self._Txt_Desc = self._graphicComponent._transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Text), "Txt_Desc", true, true)
 	---@type CS.UnityEngine.UI.Button
-	self.noBtn = self.graphicComponent.transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Button), "no_btn", true, true)
+	self._Btn_No = self._graphicComponent._transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Button), "Btn_No", true, true)
 	---@type CS.UnityEngine.UI.Button
-	self.yesBtn = self.graphicComponent.transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Button), "yes_btn", true, true)
-
-	self.descText.text = self.desc
-
-
+	self._Btn_Yes = self._graphicComponent._transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Button), "Btn_Yes", true, true)
 end
 
-function UIGMPanelBase_SwitchItem:AddUnityEvents()
+function UIGMPanelBase_SwitchItem:_InitUIExtensions()
+	UIGMPanelBase_SwitchItem.super._InitUIExtensions(self)
+	self._Txt_Desc.text = self._desc
+end
+
+function UIGMPanelBase_SwitchItem:AddUIEvents()
 	UIGMPanelBase_SwitchItem.super.AddUnityEvents(self)
-	if self.yesCallback then
-		self:RegisterOnClick(self.yesBtn, self.yesCallback)
+	if self._yesCallback then
+		self:RegisterOnClick(self._Btn_Yes, self._yesCallback)
 	end
-	if self.noCallback then
-		self:RegisterOnClick(self.noBtn, self.noCallback)
+	if self._noCallback then
+		self:RegisterOnClick(self._Btn_No, self._noCallback)
 	end
 end
 

@@ -2,26 +2,25 @@
 local UICombatTestPanel = Class("UICombatTestPanel", UIBackgroundPanel)
 
 function UICombatTestPanel:Init(...)
-  UICombatTestPanel.super.Init(self, ...)
-  self.graphicComponent:SetPrefabPath("Assets/Resources/common/ui/prefab/UICombatTestPanel.prefab")
+	UICombatTestPanel.super.Init(self, ...)
+	self._graphicComponent:SetPrefabPath("Assets/Resources/common/ui/prefab/UICombatTestPanel.prefab")
 end
 
 function UICombatTestPanel:InitGameObjectChildren()
-  UICombatTestPanel.super.InitGameObjectChildren(self)
-  self.gm_btn = self.frameTransform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Button), "gm_btn")
-  self.test_btn = self.frameTransform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Button), "test_btn")
+	UICombatTestPanel.super.InitGameObjectChildren(self)
+	self.gmBtn = self._frameTransform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Button), "gm_btn")
+	self.testBtn = self._frameTransform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Button), "test_btn")
 end
 
-
-function UICombatTestPanel:AddUnityEvents()
-  UICombatTestPanel.super.AddUnityEvents(self)
-  self:RegisterOnClick(self.test_btn, function()
-    self:Test()
-  end)
+function UICombatTestPanel:AddUIEvents()
+	UICombatTestPanel.super.AddUnityEvents(self)
+	self:RegisterOnClick(self.testBtn, function()
+		self:Test()
+	end)
 end
 
 function UICombatTestPanel:Test()
-  EffectTest.Test()
+	EffectTest.Test()
 end
 
 return UICombatTestPanel

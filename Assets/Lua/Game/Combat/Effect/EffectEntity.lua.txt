@@ -1,58 +1,53 @@
 ---@class EffectEntity:GameObjectEntity
 local EffectEntity = Class("EffectBase", GameObjectEntity)
 
-
 ---@param unit Unit
-function EffectEntity:Init(effect_id, unit)
-  EffectEntity.super.Init(self)
-  self.unit = unit
-  self.effect_id = effect_id
-  self.cfgEffectData = CfgEffect.get_by_id(effect_id)
-  self.graphicComponent:SetPrefabPath(self.cfgEffectData.prefab_path)
+function EffectEntity:Init(effectId, unit)
+	EffectEntity.super.Init(self)
+	self.unit = unit
+	self.effectId = effectId
+	self.cfgEffectData = CfgEffect.get_by_id(effectId)
+	self._graphicComponent:SetPrefabPath(self.cfgEffectData.prefabPath)
 end
 
 function EffectEntity:CreateGraphicComponent()
-  return self:AddComponent(nil, EffectGraphicComponent,global.client.combat.effectManager.resLoadComponent)
+	return self:AddComponent(nil, EffectGraphicComponent, global.client.combat.effectManager.resLoadComponent)
 end
 
 function EffectEntity:OnAllAssetsLoadDone()
-  EffectEntity.super.OnAllAssetsLoadDone(self)
-  self.graphicComponent:SetIsShow(true)
+	EffectEntity.super.OnAllAssetsLoadDone(self)
+	self._graphicComponent:SetIsShow(true)
 end
 
-
 function EffectEntity:InstantiateGameObject(prefab)
-  ---@type EffectInfo
-  self.effectInfo =  global.client.combat.effectManager:__CreateEffect(prefab,self)
-  self.effectInfo.clone:SetActive(false)
-  return self.effectInfo.clone
+	---@type EffectInfo
+	self.effectInfo = global.client.combat.effectManager:__CreateEffect(prefab, self)
+	self.effectInfo.clone:SetActive(false)
+	return self.effectInfo.clone
 end
 
 function EffectEntity:OnEffectReach()
-  self.parent:RemoveChild(self.key)
+	self.parent:RemoveChild(self.key)
 end
 
-
 function EffectEntity:OnNoRemainDuration()
-  self.parent:RemoveChild(self.key)
+	self.parent:RemoveChild(self.key)
 end
 
 function EffectEntity:ApplyToTransformComponent(position, eulerAngles, scale)
-  if position then
-    self.transformComponent:SetPosition(position)
-  end
-  if eulerAngles then
-    self.transformComponent:SetEulerAngles(eulerAngles)
-  end
-  if scale then
-    self.transformComponent:SetScale(scale)
-  end
+	if position then
+		self.transformComponent:SetPosition(position)
+	end
+	if eulerAngles then
+		self.transformComponent:SetEulerAngles(eulerAngles)
+	end
+	if scale then
+		self.transformComponent:SetScale(scale)
+	end
 end
-
 
 function EffectEntity:__Destroy()
-  EffectEntity.super.__Destroy(self)
+	EffectEntity.super.__Destroy(self)
 end
-
 
 return EffectEntity

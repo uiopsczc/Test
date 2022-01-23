@@ -3,5 +3,4 @@ local StageEventNameConst = {}
 
 StageEventNameConst.On_Stage_Loaded = "On_Stage_Loaded"
 
-
 return StageEventNameConst

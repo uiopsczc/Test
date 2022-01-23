@@ -182,29 +182,29 @@ function AStar:AddNeighbor(neighborList, basePoint, dx, dy)
 
 	--当前点(p.x,p.y)与该检测邻居点(new_x,new_y)如果是斜线的话， 垂直于当前点(p.x,p.y)与该检测邻居点(new_x,new_y)对角线的两个点中其中一个是阻挡的,则该检测邻居点忽略，不考虑
 	-- 判断左上角邻居节点
-	if dx == -1 and dy == 1 and self:IsSkiped(DirectionConst.GetDirectionInfo(dx, dy), newX, newY) then
+	if dx == -1 and dy == 1 and self:IsSkipped(DirectionConst.GetDirectionInfo(dx, dy), newX, newY) then
 		return
 	end
 
 	-- 判断左下角邻居节点
-	if dx == -1 and dy == -1 and self:IsSkiped(DirectionConst.GetDirectionInfo(dx, dy), newX, newY) then
+	if dx == -1 and dy == -1 and self:IsSkipped(DirectionConst.GetDirectionInfo(dx, dy), newX, newY) then
 		return
 	end
 
 	-- 判断右上角邻居节点
-	if dx == 1 and dy == 1 and self:IsSkiped(DirectionConst.GetDirectionInfo(dx, dy), newX, newY) then
+	if dx == 1 and dy == 1 and self:IsSkipped(DirectionConst.GetDirectionInfo(dx, dy), newX, newY) then
 		return
 	end
 
 	-- 判断右下角邻居节点
-	if dx == 1 and dy == -1 and self:IsSkiped(DirectionConst.GetDirectionInfo(dx, dy), newX, newY) then
+	if dx == 1 and dy == -1 and self:IsSkipped(DirectionConst.GetDirectionInfo(dx, dy), newX, newY) then
 		return
 	end
 
 	table.insert(neighborList, AStarNode.New(newX, newY))
 end
 
-function AStar:IsSkiped(directionInfo, x, y)
+function AStar:IsSkipped(directionInfo, x, y)
 	local x1 = 0
 	local y1 = 0
 	local x2 = 0

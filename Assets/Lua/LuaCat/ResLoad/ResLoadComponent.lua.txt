@@ -4,11 +4,11 @@ local ResLoadComponent = Class("ResLoadComponent", GameComponent)
 ---@param resLoad ResLoad
 function ResLoadComponent:Init(resLoad)
 	ResLoadComponent.super.Init(self)
-	self.resLoad = resLoad
+	self._resLoad = resLoad
 end
 
 function ResLoadComponent:IsAllLoadDone()
-	return self.resLoad:IsAllLoadDone()
+	return self._resLoad:IsAllLoadDone()
 end
 
 ---@param onAllLoadDoneCallback fun()
@@ -28,27 +28,27 @@ end
 ---@param onLoadDoneCallback fun(assetCat:CS.CsCat.AssetCat)
 ---@param callbackCause any
 function ResLoadComponent:GetOrLoadAsset(assetPath, onLoadSuccessCallback, onLoadFailCallback, onLoadDoneCallback, callbackCause)
-	return self.resLoad:GetOrLoadAsset(assetPath, onLoadSuccessCallback, onLoadFailCallback, onLoadDoneCallback, callbackCause)
+	return self._resLoad:GetOrLoadAsset(assetPath, onLoadSuccessCallback, onLoadFailCallback, onLoadDoneCallback, callbackCause)
 end
 
 ---@param assetCat CS.CsCat.AssetCat
 function ResLoadComponent:CancelLoadCallback(assetCat, callbackCause)
-	self.resLoad:CancelLoadCallback(assetCat, callbackCause)
+	self._resLoad:CancelLoadCallback(assetCat, callbackCause)
 end
 
 ---@param assetCat CS.CsCat.AssetCat
 function ResLoadComponent:CancelLoadAllCallbacks(assetCat)
-	self.resLoad:CancelLoadAllCallbacks(assetCat)
+	self._resLoad:CancelLoadAllCallbacks(assetCat)
 end
 
-function ResLoadComponent:__Reset()
-	ResLoadComponent.super.__Reset(self)
-	self.resLoad:Reset()
+function ResLoadComponent:_Reset()
+	ResLoadComponent.super._Reset(self)
+	self._resLoad:Reset()
 end
 
-function ResLoadComponent:__Destroy()
-	ResLoadComponent.super.__Destroy(self)
-	self.resLoad:Destroy()
+function ResLoadComponent:_Destroy()
+	ResLoadComponent.super._Destroy(self)
+	self._resLoad:Destroy()
 end
 
 return ResLoadComponent

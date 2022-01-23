@@ -3,46 +3,61 @@ local UIItemBase = Class("UIItemBase", UIObject)
 
 function UIItemBase:Init(parentTransform)
 	UIItemBase.super.Init(self)
-	self.graphicComponent:SetParentTransform(parentTransform)
-	self.graphicComponent:SetPrefabPath("Assets/Resources/Common/UI/Prefab/UIItemBase.prefab")
+	self:GetGraphicComponent():SetParentTransform(parentTransform)
+	self:GetGraphicComponent():SetPrefabPath("Assets/PatchResources/UI/UIItemBase/Prefab/UIItemBase.prefab")
 end
 
-function UIItemBase:InitGameObjectChildren()
-	UIItemBase.super.InitGameObjectChildren(self)
-	self.contentTransform = self.graphicComponent.transform:Find("content")
-	self.contentBgImage = self.contentTransform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Image), "bg")
-	self.contentBgGameObject = self.contentBgImage.gameObject
-	self.contentQualityImage = self.contentTransform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Image), "quality")
-	self.contentIconImage = self.contentTransform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Image), "icon")
-	self.contentCountText = self.contentTransform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Text), "count")
-	self.nameTransform = self.graphicComponent.transform:Find("name")
-	self.nameBgImage = self.nameTransform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Image), "bg")
-	self.nameText = self.nameTransform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Text), "text")
+function UIItemBase:_InitUI()
+	UIItemBase.super._InitUI(self)
+	self._Img_Bg = self:GetContentTransform():FindComponentInChildren(typeof(CS.UnityEngine.UI.Image), "Img_Bg")
+	self._Img_Quality = self:GetContentTransform():FindComponentInChildren(typeof(CS.UnityEngine.UI.Image), "Img_Quality")
+	self._Img_Icon = self:GetContentTransform():FindComponentInChildren(typeof(CS.UnityEngine.UI.Image), "Img_Icon")
+	self._Txt_Count = self:GetContentTransform():FindComponentInChildren(typeof(CS.UnityEngine.UI.Text), "Txt_Count")
 end
 
----@param isShowName @不填为true
-function UIItemBase:Show(itemId, itemCount, isShowName)
-	if isShowName == nil then
-		isShowName = true
+function UIItemBase:_InitUIExtensions()
+	self._bgGameObject = self._Img_Bg.gameObject
+end
+
+function UIItemBase:GetCfgItemData(itemId)
+	return CfgItem.get_by_id(itemId)
+end
+
+function UIItemBase:GetCfgQualityData(itemId)
+	local cfgItemData = self:GetCfgItemData(itemId)
+	return cfgItemData.qualityId == nil and nil or CfgProperty.get_by_id(cfgItemData.qualityId)
+end
+
+function UIItemBase:Show(itemId, itemCount)
+	self:SetImgBg(itemId)
+	self:SetImgQuality(itemId)
+	self:SetImgIcon(itemId)
+	self:SetTxtCount(itemCount)
+end
+
+function UIItemBase:SetImgBg(itemId)
+	local cfgItemData = self:GetCfgItemData(itemId)
+	if not string.IsNilOrWhiteSpace(cfgItemData.bgPath) then
+		self:SetImageAsync(self._Img_Bg, cfgItemData.bgPath, nil, false)
 	end
+end
 
-	self.itemId = itemId
-	self.itemCount = itemCount
-
-	self.cfgItemData = CfgItem.get_by_id(itemId)
-	self.cfgQualityData = self.cfgItemData.quality_id == nil and nil or CfgProperty.get_by_id(self.cfgItemData.quality_id)
-
-	if not string.IsNilOrWhiteSpace(self.cfgItemData.bg_path) then
-		self:SetImageAsync(self.contentBgImage, self.cfgItemData.bg_path, nil, false)
-	end
-	if self.cfgQualityData and not string.IsNilOrWhiteSpace(self.cfgQualityData.icon_path) then
-		self:SetImageAsync(self.contentQualityImage, self.cfgQualityData.icon_path, nil, false)
+function UIItemBase:SetImgQuality(itemId)
+	local cfgQualityData = self:GetCfgQualityData(itemId)
+	if cfgQualityData and not string.IsNilOrWhiteSpace(cfgQualityData.iconPath) then
+		self:SetImageAsync(self._Img_Quality, cfgQualityData.iconPath, nil, false)
 	else
-		self.contentBgGameObject:SetActive(false)
+		self._bgGameObject:SetActive(false)
 	end
-	self:SetImageAsync(self.contentIconImage, self.cfgItemData.icon_path, nil, false)
-	self.contentCountText.text = (self.itemCount == 0 or self.itemCount == 1) and "" or string.format("x%s", self.itemCount)
-	self.nameText.text = self.cfgItemData.name
+end
+
+function UIItemBase:SetImgIcon(itemId)
+	local cfgItemData = self:GetCfgItemData(itemId)
+	self:SetImageAsync(self._Img_Icon, cfgItemData.iconPath, nil, false)
+end
+
+function UIItemBase:SetTxtCount(itemCount)
+	self._Txt_Count.text = (itemCount == 0 or itemCount == 1) and "" or string.format("x%s", itemCount)
 end
 
 return UIItemBase

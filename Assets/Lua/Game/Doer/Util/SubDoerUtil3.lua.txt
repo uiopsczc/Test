@@ -4,102 +4,104 @@ local SubDoerUtil3 = Class("SubDoerUtil3")
 --********************************里面的结构是  Dict<rid,Doer>****************************
 ------------------------DoXXX--------------------------------
 -- 卸载doer中的sub_doer_key子doers
----@param parent_doer Doer
----@param relase_sub_doer_func fun(sub_doer:Doer)
-function SubDoerUtil3.DoReleaseSubDoer(parent_doer, sub_doer_key, relase_sub_doer_func)
-  --销毁
-  local sub_doers = SubDoerUtil3.GetSubDoers(parent_doer, sub_doer_key)
-  for i = #sub_doers, 1, -1 do
-    local sub_doer = sub_doers[i]
-    relase_sub_doer_func(sub_doer)
-    sub_doer:SetEnv(nil)
-    sub_doer:Destruct()
-  end
-  table.RemoveAll_Dict(SubDoerUtil3.GetSubDoerDict_ToEdit(parent_doer, sub_doer_key))
+---@param parentDoer Doer
+---@param releaseSubDoerFunc fun(sub_doer:Doer)
+function SubDoerUtil3.DoReleaseSubDoer(parentDoer, subDoerKey, releaseSubDoerFunc)
+	--销毁
+	local subDoers = SubDoerUtil3.GetSubDoers(parentDoer, subDoerKey)
+	for i = #subDoers, 1, -1 do
+		local subDoer = subDoers[i]
+		releaseSubDoerFunc(subDoer)
+		subDoer:SetEnv(nil)
+		subDoer:Destruct()
+	end
+	table.RemoveAll_Dict(SubDoerUtil3.GetSubDoerDict_ToEdit(parentDoer, subDoerKey))
 end
 -----------------容器---------------------
 -- 获取doer中的sub_doer_key子doers  没有id一层的包裹
----@param parent_doer Doer
----@param filter_func fun(sub_doer:Doer)
+---@param parentDoer Doer
+---@param filterFunc fun(sub_doer:Doer)
 ---@return Doer[]
-function SubDoerUtil3.GetSubDoers(parent_doer, sub_doer_key, id, filter_func)
-  ---@type Doer[]
-  local dict = SubDoerUtil3.GetSubDoerDict_ToEdit(parent_doer,sub_doer_key)
-  if not id then
-    local result = {}
-    for _, sub_doer in pairs(dict) do
-      if not filter_func or filter_func(sub_doer) then
-        table.insert(result, sub_doer)
-      end
-      return result
-    end
-  end
-  local result = {}
-  for _, sub_doer in pairs(dict) do
-    if sub_doer:GetId() == id then
-      if not filter_func or filter_func(sub_doer) then
-        table.insert(result, sub_doer)
-      end
-    end
-  end
-  return result
+function SubDoerUtil3.GetSubDoers(parentDoer, subDoerKey, id, filterFunc)
+	---@type Doer[]
+	local dict = SubDoerUtil3.GetSubDoerDict_ToEdit(parentDoer, subDoerKey)
+	if not id then
+		local result = {}
+		for _, subDoer in pairs(dict) do
+			if not filterFunc or filterFunc(subDoer) then
+				table.insert(result, subDoer)
+			end
+			return result
+		end
+	end
+	local result = {}
+	for _, subDoer in pairs(dict) do
+		if subDoer:GetId() == id then
+			if not filterFunc or filterFunc(subDoer) then
+				table.insert(result, subDoer)
+			end
+		end
+	end
+	return result
 end
 
 -- 获取doer中的sub_doer_key子doers  没有id一层的包裹 可以直接插入删除
 ---@return table<string,Doer>
-function SubDoerUtil3.GetSubDoerDict_ToEdit(parent_doer, sub_doer_key)
-  return parent_doer:GetOrAddTmp(sub_doer_key, function()
-    return {}
-  end)
+function SubDoerUtil3.GetSubDoerDict_ToEdit(parentDoer, subDoerKey)
+	return parentDoer:GetOrAddTmp(subDoerKey, function()
+		return {}
+	end)
 end
 
 
 
 
 -- doer中sub_doer_key的子doers
----@param parent_doer Doer
----@param filter_func fun(sub_doer:Doer)
-function SubDoerUtil3.HasSubDoers(parent_doer, sub_doer_key, id, filter_func)
-  return not table.IsNilOrEmpty(SubDoerUtil3.GetSubDoers(parent_doer, sub_doer_key, id, filter_func))
+---@param parentDoer Doer
+---@param filterFunc fun(sub_doer:Doer)
+function SubDoerUtil3.HasSubDoers(parentDoer, subDoerKey, id, filterFunc)
+	return not table.IsNilOrEmpty(SubDoerUtil3.GetSubDoers(parentDoer, subDoerKey, id, filterFunc))
 end
 
 -- 获取doer中的sub_doer_key的子doer数量
----@param parent_doer Doer
-function SubDoerUtil3.GetSubDoersCount(parent_doer, sub_doer_key, id, filter_func)
-  return table.Count(SubDoerUtil3.GetSubDoers(parent_doer, sub_doer_key, id, filter_func))
+---@param parentDoer Doer
+function SubDoerUtil3.GetSubDoersCount(parentDoer, subDoerKey, id, filterFunc)
+	return table.Count(SubDoerUtil3.GetSubDoers(parentDoer, subDoerKey, id, filterFunc))
 end
 
 
 -- 获取doer中的sub_doer_key的id_or_rid子doer
----@param parent_doer Doer
+---@param parentDoer Doer
 ---@return Doer
-function SubDoerUtil3.GetSubDoer(parent_doer, sub_doer_key, id_or_rid)
-  if IdUtil.IsId(id_or_rid) then --id的情况
-    local id = id_or_rid
-    for _, sub_doer in ipairs(SubDoerUtil3.GetSubDoers(parent_doer, sub_doer_key)) do
-      if sub_doer:GetId() == id then
-        return sub_doer
-      end
-    end
-    return nil
-  else -- rid的情况
-    local rid = id_or_rid
-    return SubDoerUtil3.GetSubDoerDict_ToEdit(parent_doer, sub_doer_key)[rid]
-  end
+function SubDoerUtil3.GetSubDoer(parentDoer, subDoerKey, idOrRid)
+	if IdUtil.IsId(idOrRid) then
+		--id的情况
+		local id = idOrRid
+		for _, subDoer in ipairs(SubDoerUtil3.GetSubDoers(parentDoer, subDoerKey)) do
+			if subDoer:GetId() == id then
+				return subDoer
+			end
+		end
+		return nil
+	else
+		-- rid的情况
+		local rid = idOrRid
+		return SubDoerUtil3.GetSubDoerDict_ToEdit(parentDoer, subDoerKey)[rid]
+	end
 end
 
 -- 清除doer中是否有sub_doer_key的子doers
----@param parent_doer Doer
----@param clear_sub_doer_func fun(sub_doer:Doer)
-function SubDoerUtil3.ClearSubDoers(parent_doer, sub_doer_key, clear_sub_doer_func)
-  local list = SubDoerUtil3.GetSubDoers(parent_doer, sub_doer_key)
-  for i = #list, 1, -1 do
-    local sub_doer = list[i]
-    clear_sub_doer_func(sub_doer)
-    sub_doer:SetEnv(nil)
-    sub_doer:Destruct()
-  end
-  table.RemoveAll_Dict(SubDoerUtil3.GetSubDoerDict_ToEdit(parent_doer, sub_doer_key))
+---@param parentDoer Doer
+---@param clearSubDoerFunc fun(sub_doer:Doer)
+function SubDoerUtil3.ClearSubDoers(parentDoer, subDoerKey, clearSubDoerFunc)
+	local list = SubDoerUtil3.GetSubDoers(parentDoer, subDoerKey)
+	for i = #list, 1, -1 do
+		local subDoer = list[i]
+		clearSubDoerFunc(subDoer)
+		subDoer:SetEnv(nil)
+		subDoer:Destruct()
+	end
+	table.RemoveAll_Dict(SubDoerUtil3.GetSubDoerDict_ToEdit(parentDoer, subDoerKey))
 end
 
 return SubDoerUtil3

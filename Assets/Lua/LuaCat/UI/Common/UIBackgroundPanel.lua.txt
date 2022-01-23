@@ -2,7 +2,7 @@
 local UIBackgroundPanel = Class("UIBackgroundPanel", UIPanel)
 
 function UIBackgroundPanel:Init(...)
-	self.layerName = "BackgroundUILayer"
+	self:SetLayerName("BackgroundUILayer")
 	UIBackgroundPanel.super.Init(self, ...)
 end
 

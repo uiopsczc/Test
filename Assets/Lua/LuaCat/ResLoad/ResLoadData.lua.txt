@@ -3,36 +3,43 @@ local ResLoadData = Class("ResLoadData")
 
 function ResLoadData:Init(assetCat)
 	---@type CS.CsCat.AssetCat
-	self.assetCat = assetCat
-	self.assetCat:AddRefCount()
-	self.refCount = 0
+	self._assetCat = assetCat
+	self._assetCat:AddRefCount()
+	self._refCount = 0
 end
 
 function ResLoadData:AddRefCount()
-	self.refCount = self.refCount + 1
+	self._refCount = self._refCount + 1
 end
 
 function ResLoadData:SubRefCount(subValue)
 	subValue = subValue or 1
 	subValue = math.abs(subValue)
-	self.refCount = self.refCount - subValue
-end
-
-function ResLoadData:Destroy()
-	self.refCount = 0
-	self.assetCat:SubRefCount(1, true)
+	self._refCount = self._refCount - subValue
 end
 
 function ResLoadData:IsLoadDone()
-	if self.isLoadDone then
+	if self._isLoadDone then
 		return true
 	end
-	if self.assetCat:IsLoadDone() then
-		self.isLoadDone = true
+	if self._assetCat:IsLoadDone() then
+		self._isLoadDone = true
 		return true
 	else
 		return false
 	end
+end
+
+----------------------------------------------------------------------
+-- SetGet相关
+----------------------------------------------------------------------
+function ResLoadData:GetAssetCat()
+	return self._assetCat
+end
+
+function ResLoadData:Destroy()
+	self._refCount = 0
+	self._assetCat:SubRefCount(1, true)
 end
 
 return ResLoadData

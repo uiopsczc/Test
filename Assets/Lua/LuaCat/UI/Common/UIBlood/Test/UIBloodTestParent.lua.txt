@@ -7,20 +7,20 @@ function UIBloodTestParent:Init(name, sliderCount)
 	rectTransform.anchorMin = Vector2.zero
 	rectTransform.anchorMax = Vector2.one
 	rectTransform.sizeDelta = Vector2.zero
-	self.graphicComponent:SetGameObject(rectTransform.gameObject)
-	self.uiBlood = global.client.uiManager:AddUIBlood(self.graphicComponent.transform, 150, sliderCount)
+	self:GetGraphicComponent():SetGameObject(rectTransform.gameObject)
+	self._uiBlood = global.client.uiManager:AddUIBlood(self:GetGraphicComponent():GetTransform(), 150, sliderCount)
 end
 
 ---@param callback fun(value:number,next_tween:CS.DG.Tweening.Tween)
 ---@return CS.DG.Tweening.Tween
 function UIBloodTestParent:SlideTo(toValue, callback)
-	return self.uiBlood:SlideTo(toValue, callback)
+	return self._uiBlood:SlideTo(toValue, callback)
 end
 
-function UIBloodTestParent:__Reset()
-	UIBloodTestParent.super.__Reset(self)
-	global.client.uiManager:RemoveUIBlood(self.uiBlood)
-	self.uiBlood = nil
+function UIBloodTestParent:_Reset()
+	UIBloodTestParent.super._Reset(self)
+	global.client.uiManager:RemoveUIBlood(self._uiBlood)
+	self._uiBlood = nil
 end
 
 return UIBloodTestParent

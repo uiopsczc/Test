@@ -1,5 +1,5 @@
 local UIRockerConst = {}
 
-UIRockerConst.UIRock_Prefab_Path = "Assets/Resources/common/ui/prefab/UIRocker.prefab"
+UIRockerConst.UIRock_Prefab_Path = "Assets/PatchResources/UI/UIRocker/Prefab/UIRocker.prefab"
 
 return UIRockerConst

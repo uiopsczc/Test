@@ -1,24 +1,22 @@
 ---@class RoleFactory:DoerFactory
-local RoleFactory = Class("RoleFactory",DoerFactory)
+local RoleFactory = Class("RoleFactory", DoerFactory)
 
 function RoleFactory:Init()
-  RoleFactory.super.Init(self)
-  self.defaultDoerClassPath = "game.doer.role.Role"
+	RoleFactory.super.Init(self)
+	self.defaultDoerClassPath = "Game.Doer.Role.Role"
 end
 
 function RoleFactory:GetClassPath(id)
-  return string.IsNilOrEmpty(self:GetCfgRoleData(id).class_path_lua) and self.defaultDoerClassPath or self:GetCfgRoleData(id).class_path_lua
+	return string.IsNilOrEmpty(self:GetCfgRoleData(id).class_path_lua) and self.defaultDoerClassPath or self:GetCfgRoleData(id).class_path_lua
 end
 
 function RoleFactory:GetCfgRoleData(id)
-  return CfgRole.get_by_id(id)
+	return CfgRole.get_by_id(id)
 end
 
 ---@return RoleDBase
 function RoleFactory:__NewDBase(id_or_rid)
-  return RoleDBase.New(id_or_rid)
+	return RoleDBase.New(id_or_rid)
 end
-
-
 
 return RoleFactory

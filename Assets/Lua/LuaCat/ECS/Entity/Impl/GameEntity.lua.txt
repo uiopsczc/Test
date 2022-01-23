@@ -15,7 +15,7 @@ function GameEntity:Init(...)
 	self.dotweenPluginComponent = self:AddComponent(nil, DOTweenPluginComponent, DOTweenPlugin.New())
 
 	---@type GraphicComponent
-	self.graphicComponent = self:CreateGraphicComponent()
+	self._graphicComponent = self:CreateGraphicComponent()
 end
 
 ---@return GraphicComponent
@@ -25,7 +25,7 @@ end
 
 function GameEntity:PostInit()
 	GameEntity.super.PostInit(self)
-	self.graphicComponent:LoadPrefabPath()
+	self._graphicComponent:LoadPrefabPath()
 	self:PreLoadAssets()
 	self:CheckIsAllAssetsLoadDone()
 end
@@ -200,7 +200,7 @@ end
 ----------------------------------------------------------------------
 --- 只会被触发一次
 function GameEntity:InvokeAfterAllAssetsLoadDone(callback)
-	if self.isAllAssetsLoadDone then
+	if self._isAllAssetsLoadDone then
 		callback()
 	else
 		table.insert(self.allAssetsLoadDoneCallback, callback)
@@ -216,9 +216,9 @@ function GameEntity:CheckIsAllAssetsLoadDone()
 		self:WaitUntil(function()
 			return self.resLoadComponent:IsAllLoadDone()
 		end)
-		if not string.IsNilOrEmpty(self.graphicComponent.prefabPath) then
+		if not string.IsNilOrEmpty(self._graphicComponent.prefabPath) then
 			self:WaitUntil(function()
-				return self.graphicComponent:IsLoadDone()
+				return self._graphicComponent:IsLoadDone()
 			end)
 		end
 		self:OnAllAssetsLoadDone()
@@ -227,7 +227,7 @@ end
 
 function GameEntity:OnAllAssetsLoadDone()
 	self:Broadcast(string.ToEventName(ECSEventNameConst.OnAllAssetsLoadDone, self))
-	self.isAllAssetsLoadDone = true
+	self._isAllAssetsLoadDone = true
 	DelegateUtil.InvokeCallback(self.allAssetsLoadDoneCallback)
 	self.allAssetsLoadDoneCallback = nil
 end
@@ -254,16 +254,23 @@ end
 ----------------------------------------------------------------------
 -- __Reset
 ----------------------------------------------------------------------
-function GameEntity:__Reset()
+function GameEntity:_Reset()
 	GameEntity.super.__Reset(self)
 	self:RemoveAllListeners()
 	self.allAssetsLoadDoneCallback = {}
 end
 
 ----------------------------------------------------------------------
+-- SetGet相关
+----------------------------------------------------------------------
+function GameEntity:GetGraphicComponent()
+	return self._graphicComponent
+end
+
+----------------------------------------------------------------------
 -- __Destroy
 ----------------------------------------------------------------------
-function GameEntity:__Destroy()
+function GameEntity:_Destroy()
 	GameEntity.super.__Destroy(self)
 	self:RemoveAllListeners()
 
@@ -271,9 +278,9 @@ function GameEntity:__Destroy()
 	self.resLoadComponent = nil
 	self.coroutinePluginComponent = nil
 	self.timerManagerPluginComponent = nil
-	self.graphicComponent = nil
+	self._graphicComponent = nil
 
-	self.isAllAssetsLoadDone = false
+	self._isAllAssetsLoadDone = false
 	self.allAssetsLoadDoneCallback = {}
 end
 

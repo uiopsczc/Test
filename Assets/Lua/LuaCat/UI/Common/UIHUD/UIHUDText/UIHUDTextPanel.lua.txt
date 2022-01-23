@@ -3,7 +3,7 @@ local UIHUDTextPanel = Class("UIHUDTextPanel", UIHUDPanel)
 
 function UIHUDTextPanel:Init()
 	UIHUDTextPanel.super.Init(self)
-	self.graphicComponent:SetPrefabPath("Assets/Resources/common/ui/prefab/UITestPanel.prefab")
+	self:GetGraphicComponent():SetPrefabPath("Assets/PatchResources/UI/UITest/Prefab/UITestPanel.prefab")
 end
 
 return UIHUDTextPanel

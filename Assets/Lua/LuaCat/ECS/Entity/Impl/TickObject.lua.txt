@@ -22,7 +22,7 @@ function TickObject:Update(deltaTime, unscaledDeltaTime)
 	for _, component in self:ForeachComponent() do
 		component:Update(deltaTime, unscaledDeltaTime)
 	end
-	self:__Update(deltaTime, unscaledDeltaTime)
+	self:_Update(deltaTime, unscaledDeltaTime)
 end
 
 function TickObject:FixedUpdate(deltaTime, unscaledDeltaTime)
@@ -51,7 +51,7 @@ function TickObject:LateUpdate(deltaTime, unscaledDeltaTime)
 	self:__LateUpdate(deltaTime, unscaledDeltaTime)
 end
 
-function TickObject:__Update(deltaTime, unscaledDeltaTime)
+function TickObject:_Update(deltaTime, unscaledDeltaTime)
 end
 
 function TickObject:__FixedUpdate(deltaTime, unscaledDeltaTime)

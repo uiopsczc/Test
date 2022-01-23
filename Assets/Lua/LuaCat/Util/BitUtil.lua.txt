@@ -1,4 +1,4 @@
-function __Bitbase(left, right, op)
+function _BitBase(left, right, op)
 	--对每一位进行op运算，然后将值返回
 	if left < right then
 		left, right = right, left
@@ -16,34 +16,34 @@ function __Bitbase(left, right, op)
 	return res
 end
 
-function __BitAnd(left, right)
+function _BitAnd(left, right)
 	--与
 	return (left == 1 and right == 1) and 1 or 0
 end
 
-function __BitOr(left, right)
+function _BitOr(left, right)
 	--或
 	return (left == 1 or right == 1) and 1 or 0
 end
 
-function __BitXorOp(left, right)
+function _BitXorOp(left, right)
 	--异或
 	return (left + right) == 1 and 1 or 0
 end
 
 function BitAnd(left, right)
 	--与
-	return __Bitbase(left, right, __BitAnd)
+	return _BitBase(left, right, _BitAnd)
 end
 
 function BitOr(left, right)
 	--或
-	return __Bitbase(left, right, __BitOr)
+	return _BitBase(left, right, _BitOr)
 end
 
 function BitXorOp(left, right)
 	--异或
-	return __Bitbase(left, right, __BitXorOp)
+	return _BitBase(left, right, _BitXorOp)
 end
 
 function BitNot(left)

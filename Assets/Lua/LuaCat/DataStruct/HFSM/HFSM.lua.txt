@@ -322,7 +322,7 @@ function HFSM:Update(deltaTime, unscaledDeltaTime)
 	if not self:IsCanUpdate() then
 		return
 	end
-	self:__Update(deltaTime, unscaledDeltaTime)
+	self:_Update(deltaTime, unscaledDeltaTime)
 	for _, component in self:ForeachComponent() do
 		component:Update(deltaTime, unscaledDeltaTime)
 	end

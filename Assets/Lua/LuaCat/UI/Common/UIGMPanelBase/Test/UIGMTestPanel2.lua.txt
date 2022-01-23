@@ -1,4 +1,4 @@
-local UIGMPanelBase = require("luacat.ui.common.UIGMPanelBase.UIGMPanelBase")
+local UIGMPanelBase = require("LuaCat.UI.Common.UIGMPanelBase.UIGMPanelBase")
 
 ---@class UIGMTestPanel2:UIGMPanelBase
 local UIGMTestPanel2 = Class("UIGMTestPanel2", UIGMPanelBase)
@@ -15,9 +15,9 @@ end
 function UIGMTestPanel2:InitConfigList()
 	UIGMTestPanel2.super.InitConfigList(self)
 	table.insert(self.configList, {
-		type = "input_item",
+		type = "inputItem1",
 		desc = "YYYY",
-		yes_callback = function()
+		yesCallback = function()
 			self:GMTest()
 		end
 	})

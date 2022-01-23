@@ -2,50 +2,49 @@
 local Cache = Class("Cache")
 
 function Cache:Init()
-  self.dict = {}
+	self.dict = {}
 end
 
 function Cache:Set(key, value)
-  self.dict[key] = value
+	self.dict[key] = value
 end
 
 function Cache:Remove(key)
-  self.dict[key] = nil
+	self.dict[key] = nil
 end
 
 function Cache:Get(key)
-  return self.dict[key]
+	return self.dict[key]
 end
 
 function Cache:ContainsKey(key)
-  if self.dict[key] ~= nil then
-    return true
-  end
-  return false
+	if self.dict[key] ~= nil then
+		return true
+	end
+	return false
 end
 
-
 function Cache:ContainsValue(value)
-  if table.ContainsValue(self.dict, value) then
-    return true
-  end
-  return false
+	if table.ContainsValue(self.dict, value) then
+		return true
+	end
+	return false
 end
 
 function Cache:GetOrAddDefault(key, dvFunc)
-  return table.GetOrAddDefault_Dict(self.dict, key, dvFunc)
+	return table.GetOrAddDefault_Dict(self.dict, key, dvFunc)
 end
 
 function Cache:GetOrGetDefault(key, dvFunc)
-  return table.GetOrAddDefault_Dict(self.dict, key, dvFunc)
+	return table.GetOrAddDefault_Dict(self.dict, key, dvFunc)
 end
 
 function Cache:Remove2(key)
-  return table.Remove_Dict(self.dict, key)
+	return table.Remove_Dict(self.dict, key)
 end
 
 function Cache:Clear()
-  table.Clear(self.dict)
+	table.Clear(self.dict)
 end
 
 return Cache

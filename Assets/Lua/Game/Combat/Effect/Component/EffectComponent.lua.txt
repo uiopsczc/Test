@@ -2,9 +2,9 @@
 local EffectComponent = Class("EffectComponent", GameComponent)
 
 function EffectComponent:Init()
-  EffectComponent.super.Init(self)
-  ---@type EffectEntity
-  self.effectEntity = self.entity
+	EffectComponent.super.Init(self)
+	---@type EffectEntity
+	self.effectEntity = self._entity
 end
 
 return EffectComponent

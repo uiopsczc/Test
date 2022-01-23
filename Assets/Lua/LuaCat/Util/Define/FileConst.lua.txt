@@ -1,4 +1,4 @@
-local BuildConst = require("luacat.assetBundle.define.BuildConst")
+local BuildConst = require("LuaCat.AssetBundle.Define.BuildConst")
 local Application = CS.UnityEngine.Application
 local FilePathConst = {}
 
@@ -29,8 +29,8 @@ FilePathConst.SpritesPath = FilePathConst.ResourcesPath .. "Sprites/"
 -- ResourcesPath
 FilePathConst.Resources_Flag = "/Resources/"
 
--- assetBundlesMainfest
-FilePathConst.AssetBundlesMainfest = FilePathConst.AssetBundlesPath .. "Mainfest"
+-- assetBundlesManifest
+FilePathConst.AssetBundlesManifest = FilePathConst.AssetBundlesPath .. "Manifest"
 
 -- ExesPath 执行路径
 FilePathConst.ExesPath = FilePathConst.AssetsPath .. "Exes/"

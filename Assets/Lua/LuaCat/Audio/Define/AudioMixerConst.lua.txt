@@ -9,11 +9,11 @@ local _
 
 ----@type table<string, AudioMixerGroupInfo>
 AudioMixerConst.Group_Dict = {
-  Master = {group_path = "Master", volume_name = "Master_volume"},
-  bgm = {group_path = "Master/bgm", volume_name = "bgm_volume"},
-  ui = {group_path = "Master/ui", volume_name = "ui_volume"},
-  sfx = {group_path = "Master/sfx", volume_name = "sfx_volume"},
-  ambient = {group_path = "Master/ambient", volume_name = "ambient_volume"},
+	Master = { groupPath = "Master", volumeName = "Master_volume" },
+	bgm = { groupPath = "Master/bgm", volumeName = "bgm_volume" },
+	ui = { groupPath = "Master/ui", volumeName = "ui_volume" },
+	sfx = { groupPath = "Master/sfx", volumeName = "sfx_volume" },
+	ambient = { groupPath = "Master/ambient", volumeName = "ambient_volume" },
 }
 
 return AudioMixerConst

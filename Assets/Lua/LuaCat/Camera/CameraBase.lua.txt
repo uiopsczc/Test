@@ -2,158 +2,158 @@
 local CameraBase = Class("CameraBase", TickObject)
 
 ---@param camera CS.UnityEngine.Camera
-function CameraBase:Init(camera, is_not_destroy_gameObject)
-  CameraBase.super.Init(self)
-  ---@type CS.UnityEngine.Camera
-  self.camera = camera
-  self.graphicComponent:SetGameObject(self.camera.gameObject, is_not_destroy_gameObject)
+function CameraBase:Init(camera, isNotDestroyGameObject)
+	CameraBase.super.Init(self)
+	---@type CS.UnityEngine.Camera
+	self.camera = camera
+	self._graphicComponent:SetGameObject(self.camera.gameObject, isNotDestroyGameObject)
 
-  ---@type Vector3
-  self.org_position = self.graphicComponent.transform.position
-  ---@type Vector3
-  self.org_eulerAngles = self.graphicComponent.transform.eulerAngles
-  ---@type Quaternion
-  self.org_rotation = self.graphicComponent.transform.rotation
-  ---@type number
-  self.org_fov = self.camera.fieldOfView
+	---@type Vector3
+	self.orgPosition = self._graphicComponent._transform.position
+	---@type Vector3
+	self.orgEulerAngles = self._graphicComponent._transform.eulerAngles
+	---@type Quaternion
+	self.orgRotation = self._graphicComponent._transform.rotation
+	---@type number
+	self.orgFov = self.camera.fieldOfView
 
-  ---@type Vector3
-  self.current_position = self.graphicComponent.transform.position
-  ---@type Vector3
-  self.current_eulerAngles = self.graphicComponent.transform.eulerAngles
-  ---@type Quaternion
-  self.current_rotation = self.graphicComponent.transform.rotation
-  ---@type number
-  self.current_fov = self.camera.fieldOfView
-  ---@type number
-  self.lerp_speed = 4
+	---@type Vector3
+	self.currentPosition = self._graphicComponent._transform.position
+	---@type Vector3
+	self.currentEulerAngles = self._graphicComponent._transform.eulerAngles
+	---@type Quaternion
+	self.currentRotation = self._graphicComponent._transform.rotation
+	---@type number
+	self.currentFov = self.camera.fieldOfView
+	---@type number
+	self.lerpSpeed = 4
 
-  self.shakeData_list = {}
+	self.shakeDataList = {}
 end
 
 function CameraBase:IsCanUpdate()
-  return not self.isCanNotUpdate and CameraBase.super.IsCanUpdate(self)
+	return not self.isCanNotUpdate and CameraBase.super.IsCanUpdate(self)
 end
 
 function CameraBase:__LateUpdate(deltaTime, unscaledDeltaTime)
-  CameraBase.super.__LateUpdate(self, deltaTime, unscaledDeltaTime)
-  if self.current_operation == "无" then
-    self.graphicComponent.transform.position = self.current_position
-  elseif self.current_operation == "锁定到目标" then
-    if self.lock_to_transform then
-      self:ApplyLockTo(deltaTime)
-    end
-  elseif self.current_operation == "增量移动" then
-    self:ApplyMoveByDelta(deltaTime)
-  elseif self.current_operation == "移动到目标" then
-    self:ApplyMoveToTarget(deltaTime)
-  end
+	CameraBase.super.__LateUpdate(self, deltaTime, unscaledDeltaTime)
+	if self.currentOperation == "无" then
+		self._graphicComponent._transform.position = self.currentPosition
+	elseif self.currentOperation == "锁定到目标" then
+		if self.lockToTransform then
+			self:ApplyLockTo(deltaTime)
+		end
+	elseif self.currentOperation == "增量移动" then
+		self:ApplyMoveByDelta(deltaTime)
+	elseif self.currentOperation == "移动到目标" then
+		self:ApplyMoveToTarget(deltaTime)
+	end
 
-  self.current_position = self.graphicComponent.transform.position
-  self.current_rotation = self.graphicComponent.transform.rotation
-  self.current_fov = self.camera.fieldOfView
+	self.currentPosition = self._graphicComponent._transform.position
+	self.currentRotation = self._graphicComponent._transform.rotation
+	self.currentFov = self.camera.fieldOfView
 
-  self:ApplyShakeScreen(deltaTime)
-  self:ApplyMoveRange(deltaTime)
+	self:ApplyShakeScreen(deltaTime)
+	self:ApplyMoveRange(deltaTime)
 
 end
 
 --------------------------------LockTo----------------------
-function CameraBase:SetLockTo(lock_to_transform)
-  self.lock_to_transform = lock_to_transform
+function CameraBase:SetLockTo(lockToTransform)
+	self.lockToTransform = lockToTransform
 end
 
 function CameraBase:ApplyLockTo(deltaTime)
-  local position = self.lock_to_transform.position
-  self.transform.position = Vector3.Lerp(self.graphicComponent.transform.position, position, deltaTime)
+	local position = self.lockToTransform.position
+	self.transform.position = Vector3.Lerp(self._graphicComponent._transform.position, position, deltaTime)
 end
 
 --------------------------------MoveByDelta--------------------
 function CameraBase:MoveByDelta(dx, dy, dz)
-  self.current_operation = "增量移动"
-  self.move_by_delta_target_position = self.current_position + self.graphicComponent.transform.right * dx + self.graphicComponent.transform.up * dy + self.graphicComponent.transform.forward * dz
-  --if math.abs(dy) > 0.15 then
-  --  self.move_by_delta_target_position = Vector3.New(self.current_position.x, self.current_position.y + dy, self.current_position.z)
-  --else
-  --  self.move_by_delta_target_position = self.current_position + self.transform.right * dx + self.transform.forward * dz
-  --end
+	self.currentOperation = "增量移动"
+	self.moveByDeltaTargetPosition = self.currentPosition + self._graphicComponent._transform.right * dx + self._graphicComponent._transform.up * dy + self._graphicComponent._transform.forward * dz
+	--if math.abs(dy) > 0.15 then
+	--  self.move_by_delta_target_position = Vector3.New(self.current_position.x, self.current_position.y + dy, self.current_position.z)
+	--else
+	--  self.move_by_delta_target_position = self.current_position + self.transform.right * dx + self.transform.forward * dz
+	--end
 end
 
 function CameraBase:ApplyMoveByDelta(deltaTime)
-  self.graphicComponent.transform.position = Vector3.Lerp(self.current_position, self.move_by_delta_target_position, self.lerp_speed * deltaTime)
-  if Vector3.SqrMagnitude(self.graphicComponent.transform.position - self.move_by_delta_target_position) < 0.2 then
-    self:MoveByDeltaReset()
-  end
+	self._graphicComponent._transform.position = Vector3.Lerp(self.currentPosition, self.moveByDeltaTargetPosition, self.lerpSpeed * deltaTime)
+	if Vector3.SqrMagnitude(self._graphicComponent._transform.position - self.moveByDeltaTargetPosition) < 0.2 then
+		self:MoveByDeltaReset()
+	end
 end
 
 function CameraBase:MoveByDeltaReset()
-  self.graphicComponent.transform.position = self.move_by_delta_target_position
-  self.current_operation = "无"
+	self._graphicComponent._transform.position = self.moveByDeltaTargetPosition
+	self.currentOperation = "无"
 end
 -----------------------------MoveToTarget------------------------
----@param move_to CS.UnityEngine.Transform|Vector3
----@param move_to_target_duration number
----@param move_to_target_eulerAngles Vector3
----@param move_to_target_look_position Vector3
----@param is_reach_need_stop boolean
-function CameraBase:SettMoveToTarget(move_to, move_to_target_duration, move_to_target_eulerAngles, move_to_target_look_position, is_reach_need_stop)
-  if IsInstanceOf(move_to, "Vector3") then
-    ---@type Vector3
-    self.move_to_target_position = move_to
-  else
-    ---@type CS.UnityEngine.Transform
-    self.move_to_target_transform = move_to
-    ---@type Vector3
-    self.move_to_target_position = self.move_to_target_transform.position
-  end
+---@param moveTo CS.UnityEngine.Transform|Vector3
+---@param moveToTargetDuration number
+---@param moveToTargetEulerAngles Vector3
+---@param moveToTargetLookPosition Vector3
+---@param isReachNeedStop boolean
+function CameraBase:SettMoveToTarget(moveTo, moveToTargetDuration, moveToTargetEulerAngles, moveToTargetLookPosition, isReachNeedStop)
+	if IsInstanceOf(moveTo, "Vector3") then
+		---@type Vector3
+		self.moveToTargetPosition = moveTo
+	else
+		---@type CS.UnityEngine.Transform
+		self.moveToTargetTransform = moveTo
+		---@type Vector3
+		self.moveToTargetPosition = self.moveToTargetTransform.position
+	end
 
-  self.move_to_target_duration = move_to_target_duration
-  if move_to_target_eulerAngles then
-    ---@type Quaternion
-    self.move_to_target_rotation = Quaternion.Euler(move_to_target_eulerAngles.x, move_to_target_eulerAngles.y, move_to_target_eulerAngles.z)
-  end
-  if move_to_target_look_position then
-    ---@type Vector3
-    self.move_to_target_rotation = Quaternion.LookRotation(self.move_to_target_look_position - self.move_to_target_position)
-  end
-  ---@type boolean
-  self.is_reach_need_stop = is_reach_need_stop
+	self.moveToTargetDuration = moveToTargetDuration
+	if moveToTargetEulerAngles then
+		---@type Quaternion
+		self.moveToTargetRotation = Quaternion.Euler(moveToTargetEulerAngles.x, moveToTargetEulerAngles.y, moveToTargetEulerAngles.z)
+	end
+	if moveToTargetLookPosition then
+		---@type Vector3
+		self.moveToTargetRotation = Quaternion.LookRotation(self.moveToTargetLookPosition - self.moveToTargetPosition)
+	end
+	---@type boolean
+	self.isReachNeedStop = isReachNeedStop
 
-  ---@type Vector3
-  self.move_to_target_start_position = self.current_position
-  ---@type Quaternion
-  self.move_to_target_start_rotation = self.current_rotation
-  ---@type number
-  self.move_to_target_current_time = 0
+	---@type Vector3
+	self.moveToTargetStartPosition = self.currentPosition
+	---@type Quaternion
+	self.moveToTargetStartRotation = self.currentRotation
+	---@type number
+	self.moveToTargetCurrentTime = 0
 end
 
 function CameraBase:ApplyMoveToTarget(deltaTime)
-  if self.move_to_target_transform then
-    self.move_to_target_position = self.move_to_target_transform.position
-  end
-  self.move_to_target_current_time = self.move_to_target_current_time + deltaTime
-  local position
-  local rotation
-  if self.move_to_target_duration == 0 or self.move_to_target_current_time >= self.move_to_target_duration then
-    position = self.move_to_target_position
-    rotation = self.move_to_target_start_rotation
-    if self.is_reach_need_stop then
-      self:MoveToTargetReset()
-    end
-  else
-    local percent = NumberUtil.GetPercent(self.move_to_target_current_time, 0, self.move_to_target_duration)
-    position = Vector3.Lerp(self.move_to_target_start_position, self.move_to_target_position, percent)
-    rotation = Quaternion.Slerp(self.move_to_target_start_rotation, self.move_to_target_start_rotation, percent)
-  end
-  self.graphicComponent.transform.position = position
-  self.graphicComponent.transform.rotation = rotation
+	if self.moveToTargetTransform then
+		self.moveToTargetPosition = self.moveToTargetTransform.position
+	end
+	self.moveToTargetCurrentTime = self.moveToTargetCurrentTime + deltaTime
+	local position
+	local rotation
+	if self.moveToTargetDuration == 0 or self.moveToTargetCurrentTime >= self.moveToTargetDuration then
+		position = self.moveToTargetPosition
+		rotation = self.moveToTargetStartRotation
+		if self.isReachNeedStop then
+			self:MoveToTargetReset()
+		end
+	else
+		local percent = NumberUtil.GetPercent(self.moveToTargetCurrentTime, 0, self.moveToTargetDuration)
+		position = Vector3.Lerp(self.moveToTargetStartPosition, self.moveToTargetPosition, percent)
+		rotation = Quaternion.Slerp(self.moveToTargetStartRotation, self.moveToTargetStartRotation, percent)
+	end
+	self._graphicComponent._transform.position = position
+	self._graphicComponent._transform.rotation = rotation
 end
 
 function CameraBase:MoveToTargetReset()
-  self.current_operation = "无"
-  self.move_to_target_position = nil
-  self.move_to_target_transform = nil
-  self.is_reach_need_stop = false
+	self.currentOperation = "无"
+	self.moveToTargetPosition = nil
+	self.moveToTargetTransform = nil
+	self.isReachNeedStop = false
 end
 -----------------------------Range---------------------------------
 function CameraBase:SetMoveRange(move_range)
@@ -164,96 +164,96 @@ function CameraBase:ApplyMoveRange(delta_time)
 end
 -------------------------------------Setting------------------------
 function CameraBase:ApplySetting(position, rotation, fov)
-  self.current_position = position
-  self.current_eulerAngles = rotation.eulerAngles
-  self.current_rotation = rotation
-  self.current_fov = fov
+	self.currentPosition = position
+	self.currentEulerAngles = rotation.eulerAngles
+	self.currentRotation = rotation
+	self.currentFov = fov
 
-  self.org_position = position
-  self.org_eulerAngles = rotation.eulerAngles
-  self.org_rotation = rotation
-  self.org_fov = fov
+	self.orgPosition = position
+	self.orgEulerAngles = rotation.eulerAngles
+	self.orgRotation = rotation
+	self.orgFov = fov
 end
 -------------------------------------ShakeScreen------------------------
 ---@param duration number
----@param pos_shake_range Vector3
----@param pos_shake_frequency Vector3
----@param eulerAngles_shake_range Vector3
----@param eulerAngles_shake_frequency Vector3
----@param fov_shake_range number
----@param fov_shake_frequency number
-function CameraBase:ShakeScreen(duration, pos_shake_range, pos_shake_frequency, eulerAngles_shake_range, eulerAngles_shake_frequency, fov_shake_range, fov_shake_frequency)
-  table.insert(self.shakeData_list, {
-    frame_time = 0,
-    duration = duration,
-    pos_shake_range = pos_shake_range,
-    pos_shake_frequency = pos_shake_frequency,
-    eulerAngles_shake_range = eulerAngles_shake_range,
-    eulerAngles_shake_frequency = eulerAngles_shake_frequency,
-    fov_shake_range = fov_shake_range,
-    fov_shake_frequency = fov_shake_frequency,
-  })
+---@param posShakeRange Vector3
+---@param posShakeFrequency Vector3
+---@param eulerAnglesShakeRange Vector3
+---@param eulerAnglesShakeFrequency Vector3
+---@param fovShakeRange number
+---@param fovShakeFrequency number
+function CameraBase:ShakeScreen(duration, posShakeRange, posShakeFrequency, eulerAnglesShakeRange, eulerAnglesShakeFrequency, fovShakeRange, fovShakeFrequency)
+	table.insert(self.shakeDataList, {
+		frameTime = 0,
+		duration = duration,
+		posShakeRange = posShakeRange,
+		posShakeFrequency = posShakeFrequency,
+		eulerAnglesShakeRange = eulerAnglesShakeRange,
+		eulerAnglesShakeFrequency = eulerAnglesShakeFrequency,
+		fovShakeRange = fovShakeRange,
+		fovShakeFrequency = fovShakeFrequency,
+	})
 end
 
 function CameraBase:ApplyShakeScreen(deltaTime)
-  local shakeResult = self:GetShakeResult(deltaTime)
-  if shakeResult then
-    local shake_position = self.current_rotation * shakeResult.posistion
-    self.graphicComponent.transform.position = self.graphicComponent.transform.position + shake_position
-    local shake_rotation = self.current_rotation * Quaternion.Euler(shakeResult.eulerAngles.x, shakeResult.eulerAngles.y, shakeResult.eulerAngles.z)
-    self.graphicComponent.transform.rotation = shake_rotation
-    self.camera.fieldOfView = self.camera.fieldOfView + shakeResult.fov
-  end
+	local shakeResult = self:GetShakeResult(deltaTime)
+	if shakeResult then
+		local shakePosition = self.currentRotation * shakeResult.position
+		self._graphicComponent._transform.position = self._graphicComponent._transform.position + shakePosition
+		local shakeRotation = self.currentRotation * Quaternion.Euler(shakeResult.eulerAngles.x, shakeResult.eulerAngles.y, shakeResult.eulerAngles.z)
+		self._graphicComponent._transform.rotation = shakeRotation
+		self.camera.fieldOfView = self.camera.fieldOfView + shakeResult.fov
+	end
 end
 
 function CameraBase:GetShakeResult(deltaTime)
-  local shake_position = Vector3.New(0, 0, 0)
-  local shake_eulerAngles = Vector3.New(0, 0, 0)
-  local shake_fov = 0
-  for i = #self.shakeData_list, 1, -1 do
-    local shakeData = self.shakeData_list[i]
-    shakeData.frame_time = shakeData.frame_time + deltaTime
-    if shakeData.frame_time >= shakeData.duration then
-      table.remove(self.shakeData_list, i)
-    else
-      if shakeData.pos_shake_range and shakeData.pos_shake_frequency then
-        shake_position = shake_position + self:__CalculateShakeResult_Vector3(shakeData.duration, shakeData.frame_time, shakeData.pos_shake_range, shakeData.pos_shake_frequency)
-      end
-      if shakeData.eulerAngles_shake_range and shakeData.eulerAngles_shake_frequency then
-        shake_eulerAngles = shake_eulerAngles + self:__CalculateShakeResult_Vector3(shakeData.duration, shakeData.frame_time, shakeData.eulerAngles_shake_range, shakeData.eulerAngles_shake_frequency)
-      end
-      if shakeData.fov_shake_range and shakeData.fov_shake_frequency then
-        shake_fov = shake_fov + self:__CalculateShakeResult_Number(shakeData.duration, shakeData.frame_time, shakeData.fov_shake_range, shakeData.fov_shake_frequency)
-      end
-      return {
-        posistion = shake_position,
-        eulerAngles = shake_eulerAngles,
-        fov = shake_fov
-      }
-    end
-  end
-  return nil
+	local shakePosition = Vector3.New(0, 0, 0)
+	local shakeEulerAngles = Vector3.New(0, 0, 0)
+	local shakeFov = 0
+	for i = #self.shakeDataList, 1, -1 do
+		local shakeData = self.shakeDataList[i]
+		shakeData.frameTime = shakeData.frameTime + deltaTime
+		if shakeData.frameTime >= shakeData.duration then
+			table.remove(self.shakeDataList, i)
+		else
+			if shakeData.posShakeRange and shakeData.posShakeFrequency then
+				shakePosition = shakePosition + self:__CalculateShakeResult_Vector3(shakeData.duration, shakeData.frameTime, shakeData.posShakeRange, shakeData.posShakeFrequency)
+			end
+			if shakeData.eulerAngles_shake_range and shakeData.eulerAngles_shake_frequency then
+				shakeEulerAngles = shakeEulerAngles + self:__CalculateShakeResult_Vector3(shakeData.duration, shakeData.frameTime, shakeData.eulerAnglesShakeRange, shakeData.eulerAnglesShakeFrequency)
+			end
+			if shakeData.fovShakeRange and shakeData.fov_shake_frequency then
+				shakeFov = shakeFov + self:__CalculateShakeResult_Number(shakeData.duration, shakeData.frameTime, shakeData.fovShakeRange, shakeData.fovShakeFrequency)
+			end
+			return {
+				position = shakePosition,
+				eulerAngles = shakeEulerAngles,
+				fov = shakeFov
+			}
+		end
+	end
+	return nil
 end
 
 ---@param duration number
----@param frame_time number
----@param shake_range number
----@param shake_frequency number
-function CameraBase:__CalculateShakeResult_Number(duration, frame_time, shake_range, shake_frequency)
-  local reduction = (duration - frame_time) / duration
-  return math.sin(2 * math.PI * shake_frequency * frame_time) * shake_range * reduction
+---@param frameTime number
+---@param shakeRange number
+---@param shakeFrequency number
+function CameraBase:__CalculateShakeResult_Number(duration, frameTime, shakeRange, shakeFrequency)
+	local reduction = (duration - frameTime) / duration
+	return math.sin(2 * math.PI * shakeFrequency * frameTime) * shakeRange * reduction
 end
 
 ---@param duration number
----@param frame_time number
----@param shake_range Vector3
----@param shake_frequency Vector3
-function CameraBase:__CalculateShakeResult_Vector3(duration, frame_time, shake_range, shake_frequency)
-  return Vector3.New(
-      self:__CalculateShakeResult_Number(duration, frame_time, shake_range.x, shake_frequency.x),
-      self:__CalculateShakeResult_Number(duration, frame_time, shake_range.y, shake_frequency.y),
-      self:__CalculateShakeResult_Number(duration, frame_time, shake_range.z, shake_frequency.z)
-  )
+---@param frameTime number
+---@param shakeRange Vector3
+---@param shakeFrequency Vector3
+function CameraBase:__CalculateShakeResult_Vector3(duration, frameTime, shakeRange, shakeFrequency)
+	return Vector3.New(
+		self:__CalculateShakeResult_Number(duration, frameTime, shakeRange.x, shakeFrequency.x),
+		self:__CalculateShakeResult_Number(duration, frameTime, shakeRange.y, shakeFrequency.y),
+		self:__CalculateShakeResult_Number(duration, frameTime, shakeRange.z, shakeFrequency.z)
+	)
 end
 
 return CameraBase

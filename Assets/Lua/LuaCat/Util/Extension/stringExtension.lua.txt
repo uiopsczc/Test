@@ -1,4 +1,4 @@
-local FilePathConst = require("luacat.util.define.FileConst")
+local FilePathConst = require("LuaCat.Util.Define.FileConst")
 Char_Val_a = string.byte('a')
 Char_Val_z = string.byte('z')
 Char_Val_A = string.byte('A')
@@ -116,7 +116,7 @@ function string.IsNilOrEmpty(content)
 	return true
 end
 
--- 寻找'第一个'toSerach在字符串str中的index,找不到则返回-1
+-- 寻找'第一个'toSearch在字符串str中的index,找不到则返回-1
 ---@param content string
 ---@param toSearch string
 ---@return boolean @找不到则返回-1
@@ -132,7 +132,7 @@ function string.IndexEndOf(str, toSearch, index)
 	return beginPos ~= nil and endPos or -1
 end
 
--- 寻找'最后一个'to_search在字符串str中的index,找不到则返回-1
+-- 寻找'最后一个'toSearch在字符串str中的index,找不到则返回-1
 ---@param content string
 ---@param toSearch string
 ---@return boolean @找不到则返回-1
@@ -221,14 +221,14 @@ end
 -- 将str用双引号括起来
 ---@param content string @pos在left之后第一个字母的index
 ---@return string
-function string.QuoteEndIndex(s, left, right, pos)
+function string.QuoteEndIndex(content, left, right, pos)
 	pos = pos or 1
 	local stack = 0
-	while pos <= string.len(s) do
-		if string.IndexOf(s, left, pos) == pos then
+	while pos <= string.len(content) do
+		if string.IndexOf(content, left, pos) == pos then
 			stack = stack + 1
 			pos = pos + string.len(left)
-		elseif string.IndexOf(s, right, pos) == pos then
+		elseif string.IndexOf(content, right, pos) == pos then
 			if stack == 0 then
 				return pos
 			else
@@ -458,9 +458,9 @@ function string.ToEventName(name, source)
 	return name
 end
 
-
-
----------------------------------------------------------------------
+----------------------------------------------------------------------
+--
+----------------------------------------------------------------------
 -- AssetPath相关
 function string.GetAssetPathInfo(content)
 	local names = string.Split(content, ":")

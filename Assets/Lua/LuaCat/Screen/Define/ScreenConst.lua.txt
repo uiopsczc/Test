@@ -1,12 +1,10 @@
 ---@class ScreenConst
 local ScreenConst = {}
 
-
 ScreenConst.Screen_Height = CS.UnityEngine.Screen.height
 ScreenConst.Screen_Width = CS.UnityEngine.Screen.width
 
 ScreenConst.Design_Resolution_Height = 1920
 ScreenConst.Design_Resolution_Width = 1080
-
 
 return ScreenConst

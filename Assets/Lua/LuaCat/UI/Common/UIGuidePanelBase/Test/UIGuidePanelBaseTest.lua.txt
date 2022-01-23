@@ -3,7 +3,7 @@ function UIGuidePanelBaseTest.Test()
 	---@type UIGuidePanelBase
 	local panel = global.client.uiManager:CreateChildPanel(nil, require("LuaCat.UI.Common.UIGuidePanelBase.UIGuidePanelBase"))
 	panel:InvokeAfterAllAssetsLoadDone(function()
-		panel.bgItem:Show()
+		panel:GetBgItem():Show()
 		panel:CreateDialogRightItem():Show("hello")
 	end)
 end

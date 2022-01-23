@@ -2,61 +2,61 @@
 local AnimatorComp = Class("AnimatorComp")
 
 function AnimatorComp:Init()
-  ---@type table<CS.UnityEngine.Animator,table<string,AnimatorParameterInfo>>
-  self.animators_parameterInfo_dict = {}
-  ---@type string
-  self.cur_animation_name = nil
+	---@type table<CS.UnityEngine.Animator,table<string,AnimatorParameterInfo>>
+	self.animatorsParameterInfoDict = {}
+	---@type string
+	self.curAnimationName = nil
 end
 
 function AnimatorComp:Destroy()
-  self.animators_parameterInfo_dict = {}
-  self.cur_animation_name = nil
+	self.animatorsParameterInfoDict = {}
+	self.curAnimationName = nil
 end
 
 function AnimatorComp:OnBuild()
 end
 
 function AnimatorComp:OnBuildOk(gameObject)
-  local animators = gameObject:GetComponentsInChildren(typeof(CS.UnityEngine.Animator))
-  for i = 0, animators.Length - 1 do
-    local animator = animators[i]
-    self:SaveAnimator(animator)
-  end
+	local animators = gameObject:GetComponentsInChildren(typeof(CS.UnityEngine.Animator))
+	for i = 0, animators.Length - 1 do
+		local animator = animators[i]
+		self:SaveAnimator(animator)
+	end
 end
 
 ---@param animator CS.UnityEngine.Animator
 function AnimatorComp:SaveAnimator(animator)
-  local parameters = animator.parameters
-  local animatorParameterInfo_dict = {}
-  for i = 0, parameters.Length - 1 do
-    local parameter = parameters[i]
-    animatorParameterInfo_dict[parameter.name] = AnimatorParameterInfo.New(animator, parameter)
-  end
-  self.animators_parameterInfo_dict[animator] = animatorParameterInfo_dict
+	local parameters = animator.parameters
+	local animatorParameterInfoDict = {}
+	for i = 0, parameters.Length - 1 do
+		local parameter = parameters[i]
+		animatorParameterInfoDict[parameter.name] = AnimatorParameterInfo.New(animator, parameter)
+	end
+	self.animatorsParameterInfoDict[animator] = animatorParameterInfoDict
 end
 
-function AnimatorComp:PlayAnimation(animation_name, parameter_value, speed)
-  if self.cur_animation_name == AnimationNameConst.die then
-    return
-  end
-  local is_changed = false
-  for animator, animatorParameterInfo_dict in pairs(self.animators_parameterInfo_dict) do
-    -- 停掉上一个动画
-    if self.cur_animation_name
-        and animatorParameterInfo_dict[self.cur_animation_name]
-        and animatorParameterInfo_dict[self.cur_animation_name].animatorControllerParameterType == CS.UnityEngine.AnimatorControllerParameterType.Bool  then
-      animatorParameterInfo_dict[self.cur_animation_name]:SetValue(false)
-    end
-    -- 设置更改的动画
-    if animatorParameterInfo_dict[animation_name] then
-      animator.speed = speed or 1
-      animatorParameterInfo_dict[animation_name]:SetValue(parameter_value)
-      is_changed = true
-    end
-  end
-  if is_changed then
-    self.cur_animation_name = animation_name
-  end
+function AnimatorComp:PlayAnimation(animationName, parameterValue, speed)
+	if self.curAnimationName == AnimationNameConst.die then
+		return
+	end
+	local isChanged = false
+	for animator, animatorParameterInfoDict in pairs(self.animatorsParameterInfoDict) do
+		-- 停掉上一个动画
+		if self.curAnimationName
+			and animatorParameterInfoDict[self.curAnimationName]
+			and animatorParameterInfoDict[self.curAnimationName].animatorControllerParameterType == CS.UnityEngine.AnimatorControllerParameterType.Bool then
+			animatorParameterInfoDict[self.curAnimationName]:SetValue(false)
+		end
+		-- 设置更改的动画
+		if animatorParameterInfoDict[animationName] then
+			animator.speed = speed or 1
+			animatorParameterInfoDict[animationName]:SetValue(parameterValue)
+			isChanged = true
+		end
+	end
+	if isChanged then
+		self.curAnimationName = animationName
+	end
 end
 
 return AnimatorComp

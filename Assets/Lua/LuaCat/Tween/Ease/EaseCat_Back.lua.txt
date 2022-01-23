@@ -26,7 +26,9 @@ function EaseCat_Back.EaseInOut(t, b, c, d, s)
 	return c / 2 * (t * t * ((s + 1) * t + s) + 2) + b
 end
 
--------------------------------------------------------------------------
+----------------------------------------------------------------------
+--
+----------------------------------------------------------------------
 function EaseCat_Back.EaseIn2(startValue, endValue, pct, s)
 	return EaseCat_Back.EaseIn(pct, startValue, endValue - startValue, 1, s)
 end

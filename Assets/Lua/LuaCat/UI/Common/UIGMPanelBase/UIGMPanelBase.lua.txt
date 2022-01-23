@@ -1,4 +1,4 @@
-local UIGMPanelBase_InputItem = require("LuaCat.UI.Common.UIGMPanelBase.UIGMPanelBase_InputItem")
+local UIGMPanelBase_InputItem1 = require("LuaCat.UI.Common.UIGMPanelBase.UIGMPanelBase_InputItem")
 local UIGMPanelBase_InputItem2 = require("LuaCat.UI.Common.UIGMPanelBase.UIGMPanelBase_InputItem2")
 local UIGMPanelBase_SwitchItem = require("LuaCat.UI.Common.UIGMPanelBase.UIGMPanelBase_SwitchItem")
 
@@ -7,25 +7,23 @@ local UIGMPanelBase = Class("UIGMPanelBase", UIPopUpPanel)
 
 function UIGMPanelBase:Init()
 	UIGMPanelBase.super.Init(self)
-	self.graphicComponent:SetPrefabPath("Assets/Resources/common/ui/prefab/UIGMPanelBase.prefab")
+	self:GetGraphicComponent():SetPrefabPath("Assets/PatchResources/UI/UIGMPanelBase/Prefab/UIGMPanelBase.prefab")
 	---@type table<string,string>[]
 	self.configList = {}
 end
 
-function UIGMPanelBase:InitGameObjectChildren()
-	UIGMPanelBase.super.InitGameObjectChildren(self)
-	self.innerContentTransform = self.frameTransform:Find("content/Scroll View/Viewport/Content")
-	self.switchItemPrefab = self.innerContentTransform:Find("switch_item").gameObject
-	self.inputItemPrefab = self.innerContentTransform:Find("input_item").gameObject
-	self.inputItem2Prefab = self.innerContentTransform:Find("input_item_2").gameObject
-	self.closeBtnGameObject = self.frameTransform:Find("content/close_btn").gameObject
-
-
+function UIGMPanelBase:_InitUI()
+	UIGMPanelBase.super._InitUI(self)
+	self._Nego_Content = self._frameTransform:Find("Content/Scroll View/Viewport/Nego_Content")
+	self._Nego_SwitchItem = self._Nego_Content:Find("Nego_SwitchItem").gameObject
+	self._Nego_InputItem1 = self._Nego_Content:Find("Nego_InputItem1").gameObject
+	self._Nego_InputItem2 = self._Nego_Content:Find("Nego_InputItem2").gameObject
+	self._Btn_Close = self:GetFrameTransform():Find("Content/Btn_Close").gameObject
 end
 
-function UIGMPanelBase:AddUnityEvents()
+function UIGMPanelBase:AddUIEvents()
 	UIGMPanelBase.super.AddUnityEvents(self)
-	self:RegisterOnClick(self.closeBtnGameObject, function()
+	self:RegisterOnClick(self._Btn_Close, function()
 		self:Close()
 	end)
 end
@@ -43,39 +41,39 @@ end
 function UIGMPanelBase:InitItems()
 	for _, config in ipairs(self.configList) do
 		local curType = config["type"]
-		if curType == "switch_item" then
+		if curType == "switchItem" then
 			self:InitSwitchItem(config)
-		elseif curType == "input_item" then
-			self:InitInputItem(config)
-		elseif curType == "input_item_2" then
+		elseif curType == "inputItem1" then
+			self:InitInputItem1(config)
+		elseif curType == "inputItem2" then
 			self:InitInputItem2(config)
 		end
 	end
 end
 
 function UIGMPanelBase:CreateClone(prefab)
-	local clone = GameObject.Instantiate(prefab, self.innerContentTransform)
+	local clone = GameObject.Instantiate(prefab, self._Nego_Content)
 	clone:SetActive(true)
 	return clone
 end
 
 function UIGMPanelBase:InitSwitchItem(config)
-	local clone = self:CreateClone(self.switchItemPrefab)
-	self:AddChild(nil, UIGMPanelBase_SwitchItem, clone, config["desc"], config["yes_callback"], config["no_callback"])
+	local clone = self:CreateClone(self._Nego_SwitchItem)
+	self:AddChild(nil, UIGMPanelBase_SwitchItem, clone, config["desc"], config["yesCallback"], config["noCallback"])
 end
 
-function UIGMPanelBase:InitInputItem(config)
-	local clone = self:CreateClone(self.inputItemPrefab)
-	self:AddChild(nil, UIGMPanelBase_InputItem, clone, config["desc"], config["yes_callback"])
+function UIGMPanelBase:InitInputItem1(config)
+	local clone = self:CreateClone(self._Nego_InputItem1)
+	self:AddChild(nil, UIGMPanelBase_InputItem1, clone, config["desc"], config["yesCallback"])
 end
 
 function UIGMPanelBase:InitInputItem2(config)
-	local clone = self:CreateClone(self.inputItem2Prefab)
-	self:AddChild(nil, UIGMPanelBase_InputItem2, clone, config["desc"], config["yes_callback"])
+	local clone = self:CreateClone(self._Nego_InputItem2)
+	self:AddChild(nil, UIGMPanelBase_InputItem2, clone, config["desc"], config["yesCallback"])
 end
 
-function UIGMPanelBase:__Destroy()
-	UIGMPanelBase.super.__Destroy(self)
+function UIGMPanelBase:_Destroy()
+	UIGMPanelBase.super._Destroy(self)
 	self.configList = {}
 end
 

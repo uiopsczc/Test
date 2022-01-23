@@ -3,7 +3,7 @@ local UIBloodManager = Class("UIBloodManager", UIObject)
 
 function UIBloodManager:Init()
 	UIBloodManager.super.Init(self)
-	self.graphicComponent:SetGameObject(GameObject.Find(UIConst.UICanvas_Path .. "/UIBloodManager"), true)
+	self:GetGraphicComponent():SetGameObject(GameObject.Find(UIConst.UICanvas_Path .. "/UIBloodManager"), true)
 	---@type CS.UnityEngine.GameObject[]
 	self.uiBloodGameObjectPool = {}
 end
@@ -33,12 +33,12 @@ function UIBloodManager:DespawnUIBloodGameObject(uiBloodGameObject)
 		return
 	end
 	table.insert(self.uiBloodGameObjectPool, uiBloodGameObject)
-	uiBloodGameObject.transform:SetParent(self.graphicComponent.transform)
+	uiBloodGameObject.transform:SetParent(self:GetGraphicComponent():GetTransform())
 end
 
-function UIBloodManager:__Reset()
-	UIBloodManager.super.__Reset(self)
-	self.graphicComponent:SetIsShow(false)
+function UIBloodManager:_Reset()
+	UIBloodManager.super._Reset(self)
+	self:GetGraphicComponent():SetIsShow(false)
 end
 
 return UIBloodManager

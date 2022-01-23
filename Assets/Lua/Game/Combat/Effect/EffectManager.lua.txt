@@ -2,13 +2,13 @@
 local EffectManager = Class("EffectManager", TickObject)
 
 function EffectManager:Init()
-  EffectManager.super.Init(self)
-  self.resLoadComponent.resLoad.isNotCheckDestroy = true --effectManager销毁的时候才去把assetBundle销毁
-  self:AddListener(UnitEventNameConst.On_Unit_Destroy, function(...)
-    self:DestroyByUnit(...)
-  end)
-  ---@type string[]
-  self.gameObject_pool_name_list = {}
+	EffectManager.super.Init(self)
+	self.resLoadComponent._resLoad._isNotCheckDestroy = true --effectManager销毁的时候才去把assetBundle销毁
+	self:AddListener(UnitEventNameConst.On_Unit_Destroy, function(...)
+		self:DestroyByUnit(...)
+	end)
+	---@type string[]
+	self.gameObjectPoolNameList = {}
 end
 
 
@@ -20,115 +20,112 @@ end
 ---@param eulerAngles Vector3
 ---@param unit Unit
 ---@return EffectEntity
-function EffectManager:CreateEffectEntity(effect_id, unit, pos, eulerAngles)
-  ---@type EffectEntity
-  local effectEntity = self:AddChild(nil, EffectEntity, effect_id, unit)
-  table.Append_Array(self.gameObject_pool_name_list, effectEntity.graphicComponent:GetEffectGameObjectPoolName(), true)
-  if pos then
-    effectEntity.transformComponent:SetPosition(pos)
-  end
-  if eulerAngles then
-    effectEntity.transformComponent:SetEulerAngles(eulerAngles)
-  end
-  return effectEntity
+function EffectManager:CreateEffectEntity(effectId, unit, pos, eulerAngles)
+	---@type EffectEntity
+	local effectEntity = self:AddChild(nil, EffectEntity, effectId, unit)
+	table.Append_Array(self.gameObjectPoolNameList, effectEntity._graphicComponent:GetEffectGameObjectPoolName(), true)
+	if pos then
+		effectEntity.transformComponent:SetPosition(pos)
+	end
+	if eulerAngles then
+		effectEntity.transformComponent:SetEulerAngles(eulerAngles)
+	end
+	return effectEntity
 end
 
 ---@param unit Unit
----@param force_eulerAngles Vector3
----@param sector_angle number
+---@param forceEulerAngles Vector3
+---@param sectorAngle number
 ---@return EffectEntity
-function EffectManager:CreateAttachEffect(effect_id, unit,duration, force_eulerAngles, sector_angle)
-  local effectEntity = self:CreateEffectEntity(effect_id, unit, nil, nil)
-  effectEntity:AddComponent(nil, AttachEffectComponent,unit:ToUnitPosition(), force_eulerAngles,sector_angle)
-  if duration then
-    effectEntity:AddComponent(nil, DurationEffectComponent,duration)
-  end
+function EffectManager:CreateAttachEffect(effectId, unit, duration, forceEulerAngles, sectorAngle)
+	local effectEntity = self:CreateEffectEntity(effectId, unit, nil, nil)
+	effectEntity:AddComponent(nil, AttachEffectComponent, unit:ToUnitPosition(), forceEulerAngles, sectorAngle)
+	if duration then
+		effectEntity:AddComponent(nil, DurationEffectComponent, duration)
+	end
 
-  return effectEntity
+	return effectEntity
 end
 
 ---@param unit Unit
 ---@param position Vector3
 ---@param eulerAngles Vector3
 ---@param duration number
----@param is_hide boolean
+---@param isHide boolean
 ---@return EffectEntity
-function EffectManager:CreateGroundEffectEntity(effect_id, unit, position, eulerAngles, duration, is_hide)
-  local effectEntity = self:CreateEffectEntity(effect_id, unit, position, eulerAngles)
-  effectEntity:AddComponent(nil, DurationEffectComponent, duration)
-  effectEntity.graphicComponent:SetIsShow(not is_hide)
-  return effectEntity
+function EffectManager:CreateGroundEffectEntity(effectId, unit, position, eulerAngles, duration, isHide)
+	local effectEntity = self:CreateEffectEntity(effectId, unit, position, eulerAngles)
+	effectEntity:AddComponent(nil, DurationEffectComponent, duration)
+	effectEntity._graphicComponent:SetIsShow(not isHide)
+	return effectEntity
 end
 
 ---@param unit Unit
----@param source_iposition IPosition
----@param target_iposition IPosition
+---@param sourceIPosition IPosition
+---@param targetIPosition IPosition
 ---@param speed number
----@param acc_speed number
+---@param accSpeed number
 ---@return EffectEntity
-function EffectManager:CreateLineEffectEntity(effect_id, unit, source_iposition, target_iposition, speed, acc_speed)
-  local effectEntity = self:CreateEffectEntity(effect_id, unit)
-  effectEntity:AddComponent(nil, LineEffectComponent, source_iposition, target_iposition, 0, speed, acc_speed)
-  return effectEntity
+function EffectManager:CreateLineEffectEntity(effectId, unit, sourceIPosition, targetIPosition, speed, accSpeed)
+	local effectEntity = self:CreateEffectEntity(effectId, unit)
+	effectEntity:AddComponent(nil, LineEffectComponent, sourceIPosition, targetIPosition, 0, speed, accSpeed)
+	return effectEntity
 end
 
 ---@param unit Unit
----@param start_position Vector3
----@param spin_dir Vector3
----@param start_spin_angle number
----@param spin_speed number
----@param spin_length number
----@param forward_dir number
----@param forward_speed number
+---@param startPosition Vector3
+---@param spinDir Vector3
+---@param startSpinAngle number
+---@param spinSpeed number
+---@param spinLength number
+---@param forwardDir number
+---@param forwardSpeed number
 ---@return EffectEntity
-function EffectManager:CreateSpinLineEffect(effect_id, unit, start_position, spin_dir, start_spin_angle, spin_speed, spin_length, forward_dir, forward_speed)
-  local effectEntity = self:CreateEffectEntity(effect_id,  unit)
-  effectEntity:AddComponent(nil, SpinLineEffectComponent, start_position, spin_dir, start_spin_angle, spin_speed, spin_length, forward_dir, forward_speed)
-  return effectEntity
+function EffectManager:CreateSpinLineEffect(effectId, unit, startPosition, spinDir, startSpinAngle, spinSpeed, spinLength, forwardDir, forwardSpeed)
+	local effectEntity = self:CreateEffectEntity(effectId, unit)
+	effectEntity:AddComponent(nil, SpinLineEffectComponent, startPosition, spinDir, startSpinAngle, spinSpeed, spinLength, forwardDir, forwardSpeed)
+	return effectEntity
 end
 
-
-
-
 ---@param unit Unit
----@param source_iposition IPosition
----@param target_iposition IPosition
+---@param sourceIPosition IPosition
+---@param targetIPosition IPosition
 ---@param gravity Vector3
----@param start_angle number
+---@param startAngle number
 ---@return EffectEntity
-function EffectManager:CreateMortarMissileEffectEntity(effect_id, unit, source_iposition, target_iposition, gravity, start_angle)
-  local effectEntity = self:CreateEffectEntity(effect_id,  unit)
-  effectEntity:AddComponent(nil, MortarEffectComponent, source_iposition, target_iposition, gravity, start_angle)
-  return effectEntity
+function EffectManager:CreateMortarMissileEffectEntity(effectId, unit, sourceIPosition, targetIPosition, gravity, startAngle)
+	local effectEntity = self:CreateEffectEntity(effectId, unit)
+	effectEntity:AddComponent(nil, MortarEffectComponent, sourceIPosition, targetIPosition, gravity, startAngle)
+	return effectEntity
 end
 
 
 -----------------------------------------------------------------------------------------------------
 
 function EffectManager:RemoveEffectEntity(key)
-  self:RemoveChild(key)
+	self:RemoveChild(key)
 end
 
 ---@return EffectEntity
 function EffectManager:GetEffectEntity(key)
-  return self:GetChild(key)
+	return self:GetChild(key)
 end
 
 -- 销毁
 function EffectManager:DestroyByUnit(unit)
-  for _, child in self:ForeachChildOfType(EffectEntity) do
-    if child.unit == unit then
-      self:RemoveEffectEntity(child.key)
-    end
-  end
+	for _, child in self:ForeachChildOfType(EffectEntity) do
+		if child.unit == unit then
+			self:RemoveEffectEntity(child.key)
+		end
+	end
 end
 
 function EffectManager:__Destroy()
-  EffectManager.super.__Destroy(self)
-  for _, pool_name in ipairs(self.gameObject_pool_name_list) do
-    PoolCatManagerUtil.RemovePool(pool_name)
-  end
-  table.Clear(self.gameObject_pool_name_list)
+	EffectManager.super.__Destroy(self)
+	for _, poolName in ipairs(self.gameObjectPoolNameList) do
+		PoolCatManagerUtil.RemovePool(poolName)
+	end
+	table.Clear(self.gameObjectPoolNameList)
 end
 
 return EffectManager

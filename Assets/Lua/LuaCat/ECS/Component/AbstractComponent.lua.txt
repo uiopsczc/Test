@@ -1,7 +1,7 @@
 ---@class AbstractComponent:Class
 ---@field key string
 ---@field isKeyUsingParentIdPool boolean
----@field entity AbstractEntity
+---@field _entity AbstractEntity
 ---@field isPaused boolean
 ---@field _isDestroyed boolean
 ---@field isEnabled boolean
@@ -21,7 +21,7 @@ end
 
 function AbstractComponent:__OnDespawn_()
 	self.key = nil
-	self.entity = nil
+	self._entity = nil
 	self.isKeyUsingParentIdPool = nil
 	self.cache:Clear()
 end
@@ -105,10 +105,10 @@ function AbstractComponent:SetIsPaused(isPaused)
 		return
 	end
 	self.isPaused = isPaused
-	self:__SetIsPaused(isPaused)
+	self:_SetIsPaused(isPaused)
 end
 
-function AbstractComponent:__SetIsPaused(is_paused)
+function AbstractComponent:_SetIsPaused(is_paused)
 
 end
 
@@ -123,11 +123,11 @@ end
 -- Reset相关
 ----------------------------------------------------------------------
 function AbstractComponent:Reset()
-	self:__Reset()
+	self:_Reset()
 	self:__PostReset()
 end
 
-function AbstractComponent:__Reset()
+function AbstractComponent:_Reset()
 end
 
 function AbstractComponent:__PostReset()
@@ -137,6 +137,12 @@ end
 
 function AbstractComponent:__OnDespawn_Reset()
 	self.resetCallback = nil
+end
+----------------------------------------------------------------------
+-- SetGet相关
+----------------------------------------------------------------------
+function AbstractComponent:GetEntity()
+	return self._entity
 end
 
 ----------------------------------------------------------------------
@@ -152,13 +158,13 @@ function AbstractComponent:Destroy()
 	end
 	self:SetIsEnabled(false)
 	self:SetIsPaused(false)
-	self:__Destroy()
+	self:_Destroy()
 	self._isDestroyed = true
 	self:__PostDestroy()
 	self.cache:Clear()
 end
 
-function AbstractComponent:__Destroy()
+function AbstractComponent:_Destroy()
 end
 
 function AbstractComponent:__PostDestroy()

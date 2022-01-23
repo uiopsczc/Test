@@ -2,30 +2,30 @@
 ---@class RandomManager
 local RandomManager = Class("RandomManager")
 function RandomManager:Init(seed)
-	self.randomSeed = seed or nil
-	if self.randomSeed then
-		self.seed = math.floor(self.randomSeed) % 0x10000000
+	self._randomSeed = seed or nil
+	if self._randomSeed then
+		self._seed = math.floor(self._randomSeed) % 0x10000000
 	else
-		self.seed = math.random(0, 0x10000000 - 1)
-		self.randomSeed = self.seed
+		self._seed = math.random(0, 0x10000000 - 1)
+		self._randomSeed = self._seed
 	end
 end
 
-local function __Randomize(self)
+local function _Randomize(self)
 	self.seed = (22695477 * self.seed + 1) % 0x10000000
 end
 
 function RandomManager:GetSeedOriginal()
-	return self.randomSeed
+	return self._randomSeed
 end
 
 function RandomManager:GetSeedCurrent()
-	return self.seed
+	return self._seed
 end
 
 function RandomManager:_Random()
-	__Randomize(self)
-	return self.seed / 0x10000000
+	_Randomize(self)
+	return self._seed / 0x10000000
 end
 
 function RandomManager:RandomBoolean()
@@ -38,18 +38,18 @@ end
 
 -- 包括m和不包括n
 function RandomManager:RandomInt(m, n)
-	__Randomize(self)
+	_Randomize(self)
 	if n then
-		return math.floor(m + self.seed / 0x10000000 * (n - m))
+		return math.floor(m + self._seed / 0x10000000 * (n - m))
 	else
-		return math.floor(0 + self.seed / 0x10000000 * (m - 0))
+		return math.floor(0 + self._seed / 0x10000000 * (m - 0))
 	end
 end
 
 -- 包括m,包括n
 function RandomManager:RandomFloat(m, n)
-	__Randomize(self)
-	local r = self.seed / (0x10000000 - 1)
+	_Randomize(self)
+	local r = self._seed / (0x10000000 - 1)
 	if r > 0.99999 then
 		r = 1
 	end
@@ -116,7 +116,7 @@ function RandomManager:RandomSelect(array, count, isUnique)
 end
 
 function RandomManager:Destroy()
-	self.seed = nil
+	self._seed = nil
 end
 
 return RandomManager

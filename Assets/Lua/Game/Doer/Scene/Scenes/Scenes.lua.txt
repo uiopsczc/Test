@@ -1,80 +1,80 @@
 ---@class Scenes
 local Scenes = Class("Scenes")
 ------------------------场景容器------------------------------
-function Scenes:Init(parent_doer, sub_doer_key)
-  ---@type Scene
-  self.parent_doer = parent_doer
-  self.sub_doer_key = sub_doer_key
+function Scenes:Init(parentDoer, subDoerKey)
+	---@type Scene
+	self.parentDoer = parentDoer
+	self.subDoerKey = subDoerKey
 end
 ------------------------DoXXX--------------------------------
 -- 卸载
 function Scenes:DoRelease()
-  SubDoerUtil3.DoReleaseSubDoer(self.parent_doer, self.sub_doer_key)
+	SubDoerUtil3.DoReleaseSubDoer(self.parentDoer, self.subDoerKey)
 end
 
 -- 保存
-function Scenes:DoSave(dict, dict_tmp, save_key)
-  save_key = save_key or "scenes"
-  local scenes = self:GetScenes()
-  local dict_scenes = {}
-  local dict_scenes_tmp = {}
-  for _, scene in ipairs(scenes) do
-    local dict_scene = {}
-    local dict_scene_tmp = {}
-    scene:PrepareSave(dict_scene, dict_scene_tmp)
-    local rid = scene:GetRid()
-    dict_scenes[rid] = dict_scene
-    dict_scenes_tmp[rid] = table.GetNilIfEmpty(dict_scene_tmp)
-  end
-  dict[save_key] = table.GetNilIfEmpty(dict_scenes)
-  dict_tmp[save_key] = table.GetNilIfEmpty(dict_scenes_tmp)
+function Scenes:DoSave(dict, dict_tmp, saveKey)
+	saveKey = saveKey or "scenes"
+	local scenes = self:GetScenes()
+	local dictScenes = {}
+	local dictScenesTmp = {}
+	for _, scene in ipairs(scenes) do
+		local dictScene = {}
+		local dictSceneTmp = {}
+		scene:PrepareSave(dictScene, dictSceneTmp)
+		local rid = scene:GetRid()
+		dictScenes[rid] = dictScene
+		dictScenesTmp[rid] = table.GetNilIfEmpty(dictSceneTmp)
+	end
+	dict[saveKey] = table.GetNilIfEmpty(dictScenes)
+	dict_tmp[saveKey] = table.GetNilIfEmpty(dictScenesTmp)
 end
 
 -- 还原
-function Scenes:DoRestore(dict, dict_tmp, restore_key)
-  restore_key = restore_key or "scenes"
-  self:ClearScenes()
-  local dict_scenes = table.Remove_Dict(dict, restore_key)
-  local dict_scenes_tmp = table.Remove_Dict(dict_tmp, restore_key)
-  if not table.IsNilOrEmpty(dict_scenes) then
-    for rid, value in pairs(dict_scenes) do
-      local scene_dict_to_edit = self:GetSceneDict_ToEdit()
-      local dict_scene = dict_scenes[rid]
-      ---@type Scene
-      local scene = global.client.sceneFactory:NewDoer(rid)
-      scene:SetEnv(self.parent_doer)
-      local dict_scene_tmp
-      if dict_scenes_tmp then
-        dict_scene_tmp = dict_scenes_tmp[rid]
-      end
-      scene:FinishRestore(dict_scene, dict_scene_tmp)
-      scene_dict_to_edit[rid] = scene
-    end
-  end
+function Scenes:DoRestore(dict, dictTmp, restoreKey)
+	restoreKey = restoreKey or "scenes"
+	self:ClearScenes()
+	local dictScenes = table.Remove_Dict(dict, restoreKey)
+	local dictScenesTmp = table.Remove_Dict(dictTmp, restoreKey)
+	if not table.IsNilOrEmpty(dictScenes) then
+		for rid, value in pairs(dictScenes) do
+			local sceneDictToEdit = self:GetSceneDict_ToEdit()
+			local dictScene = dictScenes[rid]
+			---@type Scene
+			local scene = global.client.sceneFactory:NewDoer(rid)
+			scene:SetEnv(self.parentDoer)
+			local dictSceneTmp
+			if dictScenesTmp then
+				dictSceneTmp = dictScenesTmp[rid]
+			end
+			scene:FinishRestore(dictScene, dictSceneTmp)
+			sceneDictToEdit[rid] = scene
+		end
+	end
 end
 --------------------------OnXXX-------------------
 
 --------------------------------------------------
----@param filter_func fun(sub_doer:Doer)
+---@param filterFunc fun(sub_doer:Doer)
 ---@return Scene[]
-function Scenes:GetScenes(id, filter_func)
-  return SubDoerUtil3.GetSubDoers(self.parent_doer, self.sub_doer_key, id, filter_func)
+function Scenes:GetScenes(id, filterFunc)
+	return SubDoerUtil3.GetSubDoers(self.parentDoer, self.subDoerKey, id, filterFunc)
 end
 
 -- 可以直接插入删除
 ---@return table<string,Scene>
 function Scenes:GetSceneDict_ToEdit()
-  return SubDoerUtil3.GetSubDoerDict_ToEdit(self.parent_doer, self.sub_doer_key)
+	return SubDoerUtil3.GetSubDoerDict_ToEdit(self.parentDoer, self.subDoerKey)
 end
 
----@param id_or_rid string
+---@param idOrRid string
 ---@return Scene
-function Scenes:GetScene(id_or_rid)
-  return SubDoerUtil3.GetSubDoer(self.parent_doer, self.sub_doer_key, id_or_rid)
+function Scenes:GetScene(idOrRid)
+	return SubDoerUtil3.GetSubDoer(self.parentDoer, self.subDoerKey, idOrRid)
 end
 
 function Scenes:ClearScenes()
-  SubDoerUtil3.ClearSubDoers(self.parent_doer, self.sub_doer_key)
+	SubDoerUtil3.ClearSubDoers(self.parentDoer, self.subDoerKey)
 end
 
 return Scenes

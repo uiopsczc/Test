@@ -2,31 +2,31 @@
 local Critter = Class("Critter", Thing)
 
 function Critter:Init()
-  Critter.super.Init(self)
-  ---@type Equips
-  self.o_equips = Equips.New(self, "o_equips")
+	Critter.super.Init(self)
+	---@type Equips
+	self.oEquips = Equips.New(self, "o_equips")
 end
 
 ------------------------DoXXX--------------------------------
 -- 卸载
 function Critter:DoRelease()
-  --销毁装备
-  self.o_equips:DoRelease()
-  Critter.super.DoRelease(self)
+	--销毁装备
+	self.oEquips:DoRelease()
+	Critter.super.DoRelease(self)
 end
 
 -- 保存
-function Critter:DoSave(dict, dict_tmp)
-  Critter.super.DoSave(self,dict, dict_tmp)
-  -- 存储装备
-  self.o_equips:DoSave(dict, dict_tmp)
+function Critter:DoSave(dict, dictTmp)
+	Critter.super.DoSave(self, dict, dictTmp)
+	-- 存储装备
+	self.oEquips:DoSave(dict, dictTmp)
 end
 
 -- 还原
-function Critter:DoRestore(dict, dict_tmp)
-  -- 还原装备
-  self.o_equips:DoRestore(dict, dict_tmp)
-  Critter.super.DoRestore(self,dict, dict_tmp)
+function Critter:DoRestore(dict, dictTmp)
+	-- 还原装备
+	self.oEquips:DoRestore(dict, dictTmp)
+	Critter.super.DoRestore(self, dict, dictTmp)
 end
 
 --region 装备
@@ -34,34 +34,34 @@ end
 -- 获得指定的装备
 ---@return Item[]
 function Critter:GetEquips(id)
-  return self.o_equips:GetEquips(id)
+	return self.oEquips:GetEquips(id)
 end
 
 -- 是否有装备
 function Critter:HasEquips()
-  return self.o_equips:HasEquips()
+	return self.oEquips:HasEquips()
 end
 
 -- 获得指定的装备
 ---@return Item[]
-function Critter:GetEquipsOfTypes(type_1, type_2)
-  return self.o_equips:GetEquipsOfTypes(type_1, type_2)
+function Critter:GetEquipsOfTypes(type1, type2)
+	return self.oEquips:GetEquipsOfTypes(type1, type2)
 end
 
-function Critter:HasEquipsOfTypes(type_1, type_2)
-  return self.o_equips:HasEquipsOfTypes(type_1, type_2)
+function Critter:HasEquipsOfTypes(type1, type2)
+	return self.oEquips:HasEquipsOfTypes(type1, type2)
 end
 
 -- 获得指定的装备
 ---@return Item
-function Critter:GetEquip(id_or_rid)
-  return self.o_equips:GetEquip(id_or_rid)
+function Critter:GetEquip(idOrRid)
+	return self.oEquips:GetEquip(idOrRid)
 end
 
 -- 获得指定类别的装备
 ---@return Item
-function Critter:GetEquipOfTypes(type_1, type_2)
-  return self.o_equips:GetEquipOfTypes(type_1, type_2)
+function Critter:GetEquipOfTypes(type1, type2)
+	return self.oEquips:GetEquipOfTypes(type1, type2)
 end
 
 
@@ -70,75 +70,75 @@ end
 
 -- 清除所有装备
 function Critter:ClearEquips()
-  self.o_equips:ClearEquips()
+	self.oEquips:ClearEquips()
 end
 
 
 -- 检测穿上装备
 ---@param equip Item
 function Critter:CheckPutOnEquip(equip)
-  return self:OnCheckPutOnEquip(equip) and equip:OnCheckPutOnEquip(self)
+	return self:OnCheckPutOnEquip(equip) and equip:OnCheckPutOnEquip(self)
 end
 
 -- 穿上装备
 function Critter:PutOnEquip(equip)
-  local env = equip:GetEnv()
-  if env ~= nil then
-    error2(string.format("PutOnEquip error:%s still in %s", equip, env))
-    return false
-  end
-  local list = self.o_equips:GetEquips_ToEdit()
-  if table.ContainsValue(list, equip) then
-    error2(string.format("PutOnEquip error:%s already put on %s", self, equip))
-    return false
-  end
-  if not (self:OnPutOnEquip(equip) and equip.OnPutOnEquip(self)) then
-    return false
-  end
+	local env = equip:GetEnv()
+	if env ~= nil then
+		error2(string.format("PutOnEquip error:%s still in %s", equip, env))
+		return false
+	end
+	local list = self.oEquips:GetEquips_ToEdit()
+	if table.ContainsValue(list, equip) then
+		error2(string.format("PutOnEquip error:%s already put on %s", self, equip))
+		return false
+	end
+	if not (self:OnPutOnEquip(equip) and equip.OnPutOnEquip(self)) then
+		return false
+	end
 
-  equip:SetEnv(self)
-  equip:SetPutOn(true)
-  table.insert(list, equip)
-  return true
+	equip:SetEnv(self)
+	equip:SetPutOn(true)
+	table.insert(list, equip)
+	return true
 end
 
 -- 检测脱下装备
 function Critter:CheckTakeOffEquip(equip)
-  return self:OnCheckTakeOffEquip(equip)  and equip:OnCheckTakeOffEquip(self)
+	return self:OnCheckTakeOffEquip(equip) and equip:OnCheckTakeOffEquip(self)
 end
 
 -- 脱下装备
 ---@param equip Item
 function Critter:TakeOffEquip(equip)
-  local list = self.o_equips:GetEquips_ToEdit()
-  if not table.ContainsValue(list, equip) then
-    error2(string.format("TakeOffEquip error:%s not contains equip:%s", self, equip))
-    return false
-  end
-  if not (self:OnTakeOffEquip(equip) and equip:OnTakeOffEquip(self)) then
-    return false
-  end
+	local list = self.oEquips:GetEquips_ToEdit()
+	if not table.ContainsValue(list, equip) then
+		error2(string.format("TakeOffEquip error:%s not contains equip:%s", self, equip))
+		return false
+	end
+	if not (self:OnTakeOffEquip(equip) and equip:OnTakeOffEquip(self)) then
+		return false
+	end
 
-  table.RemoveByValue_Array(list, equip)
-  equip:SetIsPutOn(false)
-  equip:SetEnv(nil)
-  return true
+	table.RemoveByValue_Array(list, equip)
+	equip:SetIsPutOn(false)
+	equip:SetEnv(nil)
+	return true
 end
 --------------------------OnXXX-------------------
 function Critter:OnCheckPutOnEquip(equip)
-  return true
+	return true
 end
 
 function Critter:OnPutOnEquip(equip)
-  return true
+	return true
 end
 
 function Critter:OnCheckTakeOffEquip(equip)
-  return true
+	return true
 end
 
 function Critter:OnTakeOffEquip(equip)
-  return true
+	return true
 end
 --endregion
 
@@ -146,26 +146,26 @@ end
 --------------------------Item-------------------------------------------
 ---@param item Item
 function Critter:CheckUseItem(item)
-  return self:OnCheckUseItem(item) and item:OnCheckUseItem(self)
+	return self:OnCheckUseItem(item) and item:OnCheckUseItem(self)
 end
 
 ---@param item Item
 function Critter:UseItem(item)
-  local env = item:GetEnv()
-  if env then
-    error2(string.format("%s still in %s",item,env))
-    return
-  end
-  return self:OnUseItem(item) and item:OnUseItem(self)
+	local env = item:GetEnv()
+	if env then
+		error2(string.format("%s still in %s", item, env))
+		return
+	end
+	return self:OnUseItem(item) and item:OnUseItem(self)
 end
 
 --------------------------OnXXX-------------------
 function Critter:OnCheckUseItem(item)
-  return true
+	return true
 end
 
 function Critter:OnUseItem(item)
-  return true
+	return true
 end
 --endregion
 

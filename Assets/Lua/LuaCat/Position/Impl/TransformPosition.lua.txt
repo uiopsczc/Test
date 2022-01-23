@@ -4,8 +4,8 @@ local TransformPosition = Class("TransformPosition", IPosition)
 ---@param transform CS.UnityEngine.Transform
 ---@param socketName string
 function TransformPosition:Init(transform, socketName)
-	self.transform = transform
-	self.socketName = socketName
+	self._transform = transform
+	self._socketName = socketName
 end
 
 ---@return Vector3
@@ -15,16 +15,16 @@ end
 
 ---@return CS.UnityEngine.Transform
 function TransformPosition:GetTransform()
-	if string.IsNilOrWhiteSpace(self.socketName) then
-		return self.transform
+	if string.IsNilOrWhiteSpace(self._socketName) then
+		return self._transform
 	else
-		return self.transform:GetSocketTransform(self.socketName)
+		return self._transform:GetSocketTransform(self._socketName)
 	end
 end
 
 ---@param socketName string
 function TransformPosition:SetSocketName(socketName)
-	self.socketName = socketName
+	self._socketName = socketName
 end
 
 function TransformPosition:IsValid()

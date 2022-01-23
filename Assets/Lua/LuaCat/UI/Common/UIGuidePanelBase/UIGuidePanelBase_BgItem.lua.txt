@@ -3,15 +3,15 @@ local UIGuidePanelBase_BgItem = Class("UIGuidePanelBase_BgItem", UIObject)
 
 function UIGuidePanelBase_BgItem:Init(gameObject)
 	UIGuidePanelBase_BgItem.super.Init(self, gameObject)
-	self.graphicComponent:SetGameObject(gameObject, true)
+	self._graphicComponent:SetGameObject(gameObject, true)
 end
 
-function UIGuidePanelBase_BgItem:InitGameObjectChildren()
-	UIGuidePanelBase_BgItem.super.InitGameObjectChildren(self)
+function UIGuidePanelBase_BgItem:_InitUIExtensions()
+	UIGuidePanelBase_BgItem.super._InitUIExtensions(self)
 	---@type CS.UnityEngine.UI.Image
-	self.image = self.graphicComponent.gameObject:GetComponent(typeof(CS.UnityEngine.UI.Image))
+	self._image = self:GetGraphicComponent():GetGameObject():GetComponent(typeof(CS.UnityEngine.UI.Image))
 	---@type CS.UnityEngine.UI.Button
-	self.button = self.graphicComponent.gameObject:GetComponent(typeof(CS.UnityEngine.UI.Button))
+	self._button = self:GetGraphicComponent():GetGameObject():GetComponent(typeof(CS.UnityEngine.UI.Button))
 end
 
 function UIGuidePanelBase_BgItem:Show(isClickable, clickCallback, isVisible)
@@ -22,17 +22,17 @@ function UIGuidePanelBase_BgItem:Show(isClickable, clickCallback, isVisible)
 		isVisible = true
 	end
 	if not isVisible then
-		self.image:SetAlpha(0.007)
+		self._image:SetAlpha(0.007)
 	end
 	if isClickable then
 		---@type UIPanel
 		local parent = self.parent
 		if clickCallback == nil then
-			parent:RegisterOnClick(self.button, function()
+			parent:RegisterOnClick(self._button, function()
 				parent:Close()
 			end)
 		else
-			parent:RegisterOnClick(self.button, function()
+			parent:RegisterOnClick(self._button, function()
 				clickCallback(parent)
 			end)
 		end

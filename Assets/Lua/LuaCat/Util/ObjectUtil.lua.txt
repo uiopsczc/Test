@@ -1,10 +1,10 @@
 ---@class ObjectUtil
 ObjectUtil = {}
 
-function ObjectUtil.ToNumberOrToDefault(value, dv)
-	dv = dv or 0
+function ObjectUtil.ToNumberOrToDefault(value, defaultValue)
+	defaultValue = defaultValue or 0
 	if value == nil then
-		return dv
+		return defaultValue
 	end
 	if IsBoolean(value) then
 		return value == true and 1 or 0
@@ -17,20 +17,20 @@ function ObjectUtil.ToNumberOrToDefault(value, dv)
 			return tonumber(value)
 		end
 	end
-	return dv
+	return defaultValue
 end
 
-function ObjectUtil.ToStringOrToDefault(value, dv)
+function ObjectUtil.ToStringOrToDefault(value, defaultValue)
 	if value == nil then
-		return dv
+		return defaultValue
 	end
 	return tostring(value)
 end
 
-function ObjectUtil.ToBooleanOrToDefault(value, dv)
-	dv = dv or false
+function ObjectUtil.ToBooleanOrToDefault(value, defaultValue)
+	defaultValue = defaultValue or false
 	if value == nil then
-		return dv
+		return defaultValue
 	end
 	if IsBoolean(value) then
 		return value
@@ -47,7 +47,7 @@ function ObjectUtil.ToBooleanOrToDefault(value, dv)
 		end
 		return ObjectUtil.ToNumberOrToDefault(value, 0) ~= 0
 	end
-	return dv
+	return defaultValue
 end
 
 function ObjectUtil.GetNotNilKey(obj)

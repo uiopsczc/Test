@@ -1,26 +1,26 @@
 ---@class UnitLookAtInfo
----@field is_rotate_x_arrived boolean
----@field is_rotate_y_arrived boolean
----@field look_at_unit Unit
----@field look_at_dir Vector3
+---@field isRotateXArrived boolean
+---@field isRotateYArrived boolean
+---@field lookAtUnit Unit
+---@field lookAtDir Vector3
 ---@field mode string
----@field is_locked boolean
+---@field isLocked boolean
 local UnitLookAtInfo = Class("UnitLookAtInfo")
 
 function UnitLookAtInfo:Init()
-  self.mode = "idle"
+	self.mode = "idle"
 end
 
 function UnitLookAtInfo:HasLookAt()
-  return self.IsLookAtDir() or self.IsLookAtUnit()
+	return self.IsLookAtDir() or self.IsLookAtUnit()
 end
 
 function UnitLookAtInfo:IsLookAtDir()
-  return self.look_at_dir ~= nil
+	return self.lookAtDir ~= nil
 end
 
 function UnitLookAtInfo:IsLookAtUnit()
-  return self.look_at_unit ~= nil
+	return self.lookAtUnit ~= nil
 end
 
 return UnitLookAtInfo

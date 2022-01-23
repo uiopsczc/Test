@@ -89,7 +89,6 @@ end
 
 -- 清空table
 ---@param t table
----@param value any
 ---@retun boolean
 function table.Clear(t)
 	for k in pairs(t) do
@@ -103,7 +102,7 @@ end
 -- 如果t为array，则删除值在...中的数据
 -- 如果t为dict，则删除key在...中的数据
 function table.Remove(t, ...)
-	table.__Remove(t, false, ...)
+	table._Remove(t, false, ...)
 end
 
 
@@ -112,7 +111,7 @@ end
 -- 如果t为array，则删除值在...中的数据
 -- 如果t为dict，则删除key在...中的数据
 function table.RemoveRepeat(t, ...)
-	table.__Remove(t, true, ...)
+	table._Remove(t, true, ...)
 end
 
 
@@ -120,7 +119,7 @@ end
 -- 如果t为array，则删除值在...中的数据
 -- 如果t为dict，则删除key在...中的数据
 ---@param isRepeatRemove @是否重复删除
-function table.__Remove(t, isRepeatRemove, ...)
+function table._Remove(t, isRepeatRemove, ...)
 	local toRemoveArray = table.GetArgs(...)
 	-- 如果t为array，则删除值在...中的数据
 	local curTIndex = 1
@@ -211,7 +210,7 @@ function table.CloneDeep(t)
 	return _Clone({}, t)
 end
 
-local function __Dump(self, depth, pre)
+local function _Dump(self, depth, pre)
 	depth = depth or 1
 	pre = pre or ""
 	local nextPre = pre .. "  "
@@ -220,13 +219,13 @@ local function __Dump(self, depth, pre)
 		local pieces = {}
 		if table.IsArray(self) then
 			for i = 1, #self do
-				local valueStr = __Dump(self[i], depth - 1, nextPre)
+				local valueStr = _Dump(self[i], depth - 1, nextPre)
 				table.insert(pieces, valueStr)
 			end
 		else
 			for k, v in pairs(self) do
-				local keyStr = __Dump(k, depth - 1, nextPre)
-				local valueStr = __Dump(v, depth - 1, nextPre)
+				local keyStr = _Dump(k, depth - 1, nextPre)
+				local valueStr = _Dump(v, depth - 1, nextPre)
 				table.insert(pieces, string.format("\n%s[%s]=%s", nextPre, keyStr, valueStr))
 			end
 		end
@@ -243,7 +242,7 @@ function table.Dump(self, depth)
 	local str
 	return setmetatable({}, { __tostring = function()
 		if not str then
-			str = __Dump(self, depth)
+			str = _Dump(self, depth)
 		end
 		return str
 	end })
@@ -279,7 +278,9 @@ function table.GetValue(self, ...)
 	end
 end
 
--------------------------------------------------------------
+----------------------------------------------------------------------
+--
+----------------------------------------------------------------------
 -- table.ApplyDiff(old,diff)
 -- 将diff中的东西应用到old中
 function table.ApplyDiff(oldDict, diffDict)
@@ -377,8 +378,9 @@ function table.IsDiff(oldDict, newDict)
 	return false
 end
 
-
------------------------------CS端相关处理-----------------------------------------------
+----------------------------------------------------------------------
+-- CS端相关处理
+----------------------------------------------------------------------
 -- 将CS端的数组转为lua table
 -- index base on 1
 function table.ConvertCSArray2LuaTable(csArray, elementConvertFunc)

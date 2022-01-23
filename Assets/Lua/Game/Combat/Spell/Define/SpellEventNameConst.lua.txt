@@ -5,6 +5,4 @@ SpellEventNameConst.On_Missile_Reach = "On_Missile_Reach"
 SpellEventNameConst.On_Spell_Cast = "On_Spell_Cast"
 SpellEventNameConst.On_Spell_Start = "On_Spell_Start"
 
-
-
 return SpellEventNameConst

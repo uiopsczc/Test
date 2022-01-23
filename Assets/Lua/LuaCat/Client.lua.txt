@@ -138,20 +138,14 @@ function Client:GoTo(stageClassType, fadeHideDuration, onStageShowCallback)
 		end
 		self.stage = self:AddChild(nil, stageClassType)
 		if onStageShowCallback then
-			self.stage.onShowCallback = { onStageShowCallback }
+			self.stage._onShowCallback = { onStageShowCallback }
 		end
 		self.stage:Start()
 	end)
 end
 
-
-
-
-
-
-
 -- 重启
-function Client:Rebort()
+function Client:Reboot()
 end
 
 function Client:__Update(deltaTime, unscaledDeltaTime)

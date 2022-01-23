@@ -3,39 +3,37 @@ local UITestPanel = Class("UITestPanel", UIBackgroundPanel)
 
 function UITestPanel:Init(...)
 	UITestPanel.super.Init(self, ...)
-	self.graphicComponent:SetPrefabPath("Assets/Resources/Common/UI/Prefab/UITestPanel.prefab")
+	self:GetGraphicComponent():SetPrefabPath("Assets/PatchResources/UI/UITest/Prefab/UITestPanel.prefab")
 end
 
-function UITestPanel:InitGameObjectChildren()
-	UITestPanel.super.InitGameObjectChildren(self)
-	self.gmBtn = self.frameTransform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Button), "gm_btn")
-	self.testBtn = self.frameTransform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Button), "test_btn")
-	self.combatTestBtn = self.frameTransform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Button), "combat_test_btn")
-
+function UITestPanel:_InitUI()
+	UITestPanel.super._InitUI(self)
+	self._Btn_Gm = self:GetFrameTransform():FindComponentInChildren(typeof(CS.UnityEngine.UI.Button), "Btn_Gm")
+	self._Btn_Test = self:GetFrameTransform():FindComponentInChildren(typeof(CS.UnityEngine.UI.Button), "Btn_Test")
+	self._Btn_CombatTest = self:GetFrameTransform():FindComponentInChildren(typeof(CS.UnityEngine.UI.Button), "Btn_CombatTest")
 end
 
-function UITestPanel:AddUnityEvents()
-	UITestPanel.super.AddUnityEvents(self)
-	self:RegisterOnClick(self.gmBtn, function()
+function UITestPanel:AddUIEvents()
+	UITestPanel.super.AddUIEvents(self)
+	self:RegisterOnClick(self._Btn_Gm, function()
 		global.client.uiManager:CreateChildPanel("UIGMPanel", require("LuaCat.UI.Common.UIGMPanelBase.Test.UIGMTestPanel"))
 	end)
-	self:RegisterOnClick(self.testBtn, function()
+	self:RegisterOnClick(self._Btn_Test, function()
 		self:Test()
 	end)
-	self:RegisterOnClick(self.combatTestBtn,
+	self:RegisterOnClick(self._Btn_CombatTest,
 		function()
 			global.client:GoTo(
 				CombatStageTest,
 				0.1,
 				function()
-					global.client.uiManager.uiLoadingPanel:Reset()
+					global.client.uiManager._uiLoadingPanel:Reset()
 				end)
 		end)
 end
 
 function UITestPanel:Test()
 	log("lua Test")
-	--require("luacat.effect.test.EffectTest").Test()
 end
 
 return UITestPanel

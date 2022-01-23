@@ -1,156 +1,156 @@
-local AudioMixerConst = require("luacat.audio.define.AudioMixerConst")
-local AudioSourceUtil = require("luacat.util.mono.AudioSourceUtil")
+local AudioMixerConst = require("LuaCat.Audio.Define.AudioMixerConst")
+local AudioSourceUtil = require("LuaCat.Util.Mono.AudioSourceUtil")
 ---@class AudioManager:TickObject
 local AudioManager = Class("AudioManager", TickObject)
 
 function AudioManager:Init()
-  AudioManager.super.Init(self)
-  self.graphicComponent:SetGameObject(GameObject.Find("AudioManager"))
-  ---@type CS.UnityEngine.AudioListener
-  self.audioListener = self.graphicComponent.transform:Find("AudioListener"):GetComponent(typeof(CS.UnityEngine.AudioListener))
-  ---@type CS.UnityEngine.Transform
-  self.audioSource_container_transform = self.graphicComponent.transform:Find("AudioSourceContainer")
-  ---@type CS.UnityEngine.Transform
-  self.bgm_container_transform = self.graphicComponent.transform:Find("BGMContainer")
-  ---@type CS.UnityEngine.AudioSource
-  self.bgm_audioSource = self.bgm_container_transform:GetComponent(typeof(CS.UnityEngine.AudioSource))
-  ---@type CS.UnityEngine.AudioSource[]
-  self.playing_audioSource_list = {}
+	AudioManager.super.Init(self)
+	self._graphicComponent:SetGameObject(GameObject.Find("AudioManager"))
+	---@type CS.UnityEngine.AudioListener
+	self.audioListener = self._graphicComponent._transform:Find("AudioListener"):GetComponent(typeof(CS.UnityEngine.AudioListener))
+	---@type CS.UnityEngine.Transform
+	self.audioSourceContainerTransform = self._graphicComponent._transform:Find("AudioSourceContainer")
+	---@type CS.UnityEngine.Transform
+	self.bgmContainerTransform = self._graphicComponent._transform:Find("BGMContainer")
+	---@type CS.UnityEngine.AudioSource
+	self.bgmAudioSource = self.bgmContainerTransform:GetComponent(typeof(CS.UnityEngine.AudioSource))
+	---@type CS.UnityEngine.AudioSource[]
+	self.playingAudioSourceList = {}
 end
 
 function AudioManager:__Update(deltaTime, unscaledDeltaTime)
-  AudioManager.super.__Update(self,deltaTime,unscaledDeltaTime)
-  for i = #self.playing_audioSource_list, 1, -1 do
-    local playing_audioSource = self.playing_audioSource_list[i]
-    if not playing_audioSource.isPlaying then
-      table.remove(self.playing_audioSource_list, i)
-      playing_audioSource.gameObject:Destroy()
-      return -- 每次只删除一个
-    end
-  end
+	AudioManager.super.__Update(self, deltaTime, unscaledDeltaTime)
+	for i = #self.playingAudioSourceList, 1, -1 do
+		local playingAudioSource = self.playingAudioSourceList[i]
+		if not playingAudioSource.isPlaying then
+			table.remove(self.playingAudioSourceList, i)
+			playingAudioSource.gameObject:Destroy()
+			return -- 每次只删除一个
+		end
+	end
 end
 
 -- value [0,1]
-function AudioManager:SetGroupVolume(group_name, value)
-  value = math.Clamp01(value)
-  local decibel = math.Lerp(-80, 0, math.Pow(value,0.3)) -- 分贝与真实听到的声音并不是线性的
-  self:SetGroupDecibel(group_name, decibel)
+function AudioManager:SetGroupVolume(groupName, value)
+	value = math.Clamp01(value)
+	local decibel = math.Lerp(-80, 0, math.Pow(value, 0.3)) -- 分贝与真实听到的声音并不是线性的
+	self:SetGroupDecibel(groupName, decibel)
 end
 
 -- value [-80,0] 分贝
-function AudioManager:SetGroupDecibel(group_name, decibel)
-  decibel = math.Clamp(decibel, -80, 0)
-  global.singletonMaster.audioMixer:SetFloat(AudioMixerConst.Group_Dict[group_name].volume_name, decibel)
+function AudioManager:SetGroupDecibel(groupName, decibel)
+	decibel = math.Clamp(decibel, -80, 0)
+	global.singletonMaster._audioMixer:SetFloat(AudioMixerConst.Group_Dict[groupName].volume_name, decibel)
 end
 
 -- value [0,1]
 function AudioManager:SetAllGroupVolume(value)
-  for group_name,_ in pairs(AudioMixerConst.Group_Dict) do
-    self:SetGroupVolume(group_name, value)
-  end
+	for groupName, _ in pairs(AudioMixerConst.Group_Dict) do
+		self:SetGroupVolume(groupName, value)
+	end
 end
 
 function AudioManager:SetAudioListenerPosition(position)
-  self.audioListener.transform.position = position
+	self.audioListener.transform.position = position
 end
 
 ---@param target CS.UnityEngine.GameObject
 ---@param range number
-function AudioManager:PlaySound(asset_path, group_name, target, target_localPosition, is_loop, range)
-  self.resLoadComponent:GetOrLoadAsset(asset_path,function(assetCat)
-    self:OnSoundLoadSuccess(assetCat:Get(),group_name,target,target_localPosition,is_loop,range)
-  end)
+function AudioManager:PlaySound(assetPath, groupName, target, targetLocalPosition, isLoop, range)
+	self.resLoadComponent:GetOrLoadAsset(assetPath, function(assetCat)
+		self:OnSoundLoadSuccess(assetCat:Get(), groupName, target, targetLocalPosition, isLoop, range)
+	end)
 end
 
 ---@param audioClip CS.UnityEngine.AudioClip
 ---@param target CS.UnityEngine.GameObject
 ---@param range number
-function AudioManager:OnSoundLoadSuccess(audioClip, group_name, target, target_localPosition, is_loop, range)
-  -- 如果没有target，音频挂AudioMgr上
-  local target = target or self.audioSource_container_transform.gameObject
-  -- 如果有pos，生成原地音频
-  if target_localPosition then
-    local clone = GameObject("AudioSource")
-    clone.transform:SetParent(target.transform)
-    clone.transform.localPosition = target_localPosition
-    target = clone
-  end
-  local audioSource = self:GetAudioSource(target)
-  if target_localPosition then
-    table.insert(self.playing_audioSource_list, audioSource)
-  end
-  if range then
-    audioSource.spatialBlend = 1 -- 0表示2D，1表示3D
-    audioSource.minDistance = range / 2
-    audioSource.maxDistance = range
-  else
-    audioSource.spatialBlend = 0 -- 0表示2D，1表示3D
-  end
-  audioSource.clip = audioClip
-  AudioSourceUtil.SetAudioMixerOutput(audioSource, group_name)
-  AudioSourceUtil.SetAudioMixerOutput(audioSource,group_name)
-  audioSource.loop = is_loop or false
-  audioSource.playOnAwake = false
-  audioSource:Play()
+function AudioManager:OnSoundLoadSuccess(audioClip, groupName, target, targetLocalPosition, isLoop, range)
+	-- 如果没有target，音频挂AudioMgr上
+	local target = target or self.audioSourceContainerTransform.gameObject
+	-- 如果有pos，生成原地音频
+	if targetLocalPosition then
+		local clone = GameObject("AudioSource")
+		clone.transform:SetParent(target.transform)
+		clone.transform.localPosition = targetLocalPosition
+		target = clone
+	end
+	local audioSource = self:GetAudioSource(target)
+	if targetLocalPosition then
+		table.insert(self.playingAudioSourceList, audioSource)
+	end
+	if range then
+		audioSource.spatialBlend = 1 -- 0表示2D，1表示3D
+		audioSource.minDistance = range / 2
+		audioSource.maxDistance = range
+	else
+		audioSource.spatialBlend = 0 -- 0表示2D，1表示3D
+	end
+	audioSource.clip = audioClip
+	AudioSourceUtil.SetAudioMixerOutput(audioSource, groupName)
+	AudioSourceUtil.SetAudioMixerOutput(audioSource, groupName)
+	audioSource.loop = isLoop or false
+	audioSource.playOnAwake = false
+	audioSource:Play()
 end
 
 ---@param target CS.UnityEngine.GameObject
 ---@return CS.UnityEngine.AudioSource
 function AudioManager:GetAudioSource(target)
-  -- 选择AudioSource，如果attachGmaeobj上有不在播放的AudioSource，
-  -- 使用其播放，没有则创建新AudioSource
-  local target_audioSources = target:GetComponents(typeof(CS.UnityEngine.AudioSource))
-  for _,audioSource in pairs(target_audioSources) do
-    if not audioSource.isPlaying then
-      return audioSource
-    end
-  end
-  return target:AddComponent(typeof(CS.UnityEngine.AudioSource))
+	-- 选择AudioSource，如果attachGmaeobj上有不在播放的AudioSource，
+	-- 使用其播放，没有则创建新AudioSource
+	local targetAudioSources = target:GetComponents(typeof(CS.UnityEngine.AudioSource))
+	for _, audioSource in pairs(targetAudioSources) do
+		if not audioSource.isPlaying then
+			return audioSource
+		end
+	end
+	return target:AddComponent(typeof(CS.UnityEngine.AudioSource))
 end
 
-function AudioManager:PlayUISound(sound_path)
-  self:PlaySound(sound_path, "ui")
-end
-
--- is_paused 默认为true
-function AudioManager:PlayBGMSound(sound_path, is_paused)
-  if is_paused == nil then
-    is_paused = true
-  end
-  --跟cs端统一
-  if sound_path == global.client.csClient.audioManager.last_bgm_path then
-    return
-  end
-
-  self.resLoadComponent:GetOrLoadAsset(sound_path, function(assetCat)
-    self:OnBGMLoadSuccess(assetCat:Get(),is_paused)
-    global.client.csClient.audioManager.last_bgm_path = sound_path
-  end)
+function AudioManager:PlayUISound(soundPath)
+	self:PlaySound(soundPath, "ui")
 end
 
 -- is_paused 默认为true
-function AudioManager:PauseBGMSound(is_paused)
-  if is_paused == nil then
-    is_paused = true
-  end
-  if is_paused then
-    self.bgm_audioSource:Pause()
-  else
-    self.bgm_audioSource:UnPause()
-  end
+function AudioManager:PlayBGMSound(soundPath, isPaused)
+	if isPaused == nil then
+		isPaused = true
+	end
+	--跟cs端统一
+	if soundPath == global.client.csClient.audioManager.last_bgm_path then
+		return
+	end
+
+	self.resLoadComponent:GetOrLoadAsset(soundPath, function(assetCat)
+		self:OnBGMLoadSuccess(assetCat:Get(), isPaused)
+		global.client.csClient.audioManager.lastBgmPath = soundPath
+	end)
+end
+
+-- is_paused 默认为true
+function AudioManager:PauseBGMSound(isPaused)
+	if isPaused == nil then
+		isPaused = true
+	end
+	if isPaused then
+		self.bgmAudioSource:Pause()
+	else
+		self.bgmAudioSource:UnPause()
+	end
 end
 
 function AudioManager:StopBGMSound()
-  self.bgm_audioSource:Stop()
+	self.bgmAudioSource:Stop()
 end
 
 ---@param audioClip CS.UnityEngine.AudioClip
 function AudioManager:OnBGMLoadSuccess(audioClip, is_loop)
-  local audioSource = self.bgm_audioSource
-  audioSource.clip = audioClip
-  audioSource.loop = is_loop or false
-  audioSource.playOnAwake = false
-  audioSource:Play()
+	local audioSource = self.bgmAudioSource
+	audioSource.clip = audioClip
+	audioSource.loop = is_loop or false
+	audioSource.playOnAwake = false
+	audioSource:Play()
 end
 
 return AudioManager

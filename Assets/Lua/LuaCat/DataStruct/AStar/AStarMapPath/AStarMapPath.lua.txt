@@ -80,12 +80,12 @@ function AStarMapPath:FindAroundFreePoint(basePoint, outCount, exceptPointList, 
 end
 
 -- 获得轨迹中可通过的最远点
----@param track_list Vector2[]
+---@param trackList Vector2[]
 ---@param canPassObstacleTypes number[]
 ---@param canPassTerrainTypes number[]
 ---@param can_pass boolean
-function AStarMapPath:GetMostPassPoint(track_list, canPassObstacleTypes, canPassTerrainTypes, canOut)
-	return AStarUtil.GetMostPassPoint(self, track_list, canPassObstacleTypes, canPassTerrainTypes, canOut)
+function AStarMapPath:GetMostPassPoint(trackList, canPassObstacleTypes, canPassTerrainTypes, canOut)
+	return AStarUtil.GetMostPassPoint(self, trackList, canPassObstacleTypes, canPassTerrainTypes, canOut)
 end
 
 -- 获得两点之间的连线中可通过的最远点

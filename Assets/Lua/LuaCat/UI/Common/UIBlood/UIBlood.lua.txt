@@ -1,6 +1,6 @@
 ---@class UIBlood:UIObject
----@field sliderCat SliderCat
-local UIBlood = Class("UIMupltyBoold", UIObject)
+---@field _sliderCat SliderCat
+local UIBlood = Class("UIBlood", UIObject)
 
 ---@param parentTransform CS.UnityEngine.Transform
 ---@param maxValue number
@@ -9,9 +9,9 @@ local UIBlood = Class("UIMupltyBoold", UIObject)
 ---@param sliderColorList Color[]
 function UIBlood:Init(parentTransform, maxValue, sliderCount, toValue, sliderColorList)
 	UIBlood.super.Init(self)
-	self.graphicComponent:SetPrefabPath("Assets/Resources/Common/UI/Prefab/UIBoold.prefab")
-	self.graphicComponent:SetParentTransform(parentTransform)
-	self.slideFrom0To1Duration = 1
+	self:GetGraphicComponent():SetPrefabPath("Assets/PatchResources/UI/UIBlood/Prefab/UIBlood.prefab")
+	self:GetGraphicComponent():SetParentTransform(parentTransform)
+	self._slideFrom0To1Duration = 1
 	self:InitBlood(maxValue, sliderCount, toValue, sliderColorList)
 end
 
@@ -20,61 +20,60 @@ end
 ---@param toValue number
 ---@param sliderColorList Color[]
 function UIBlood:InitBlood(maxValue, sliderCount, toValue, sliderColorList)
-	self.sliderColorList = sliderColorList or UIBloodConst.Color_List1
-	self.sliderCount = sliderCount or 1 -- 血条的个数
-	self.maxValue = maxValue
-	self.toValue = toValue or maxValue
+	self._sliderColorList = sliderColorList or UIBloodConst.Color_List1
+	self._sliderCount = sliderCount or 1 -- 血条的个数
+	self._maxValue = maxValue
+	self._toValue = toValue or maxValue
 end
 
-function UIBlood:InitGameObjectChildren()
-	UIBlood.super.InitGameObjectChildren(self)
-
+function UIBlood:_InitUI()
+	UIBlood.super._InitUI(self)
 	---@type CS.UnityEngine.UI.Slider
-	self.slider = self.graphicComponent.transform:Find("slider"):GetComponent(typeof(CS.UnityEngine.UI.Slider))
+	self._Slider_Blood = self._graphicComponent._transform:Find("Slider_Blood"):GetComponent(typeof(CS.UnityEngine.UI.Slider))
 	---@type CS.UnityEngine.UI.Image
-	self.sliderBackImage = self.graphicComponent.transform:FindChildRecursive("Background"):GetComponent(typeof(CS.UnityEngine.UI.Image))
+	self._Img_Bg = self._graphicComponent._transform:FindChildRecursive("Img_Bg"):GetComponent(typeof(CS.UnityEngine.UI.Image))
 	---@type CS.UnityEngine.UI.Image
-	self.sliderFrontImage = self.graphicComponent.transform:FindChildRecursive("Fill"):GetComponent(typeof(CS.UnityEngine.UI.Image))
+	self._Img_Fg = self._graphicComponent._transform:FindChildRecursive("Img_Fg"):GetComponent(typeof(CS.UnityEngine.UI.Image))
 end
 
 function UIBlood:OnAllAssetsLoadDone()
 	UIBlood.super.OnAllAssetsLoadDone(self)
-	self.graphicComponent:SetIsNotDestroyGameObject(true)
-	self:__OnAllAssetsLoadDone()
+	self:GetGraphicComponent():SetIsNotDestroyGameObject(true)
+	self:_OnAllAssetsLoadDone()
 end
 
 -- spawn的时候重用
-function UIBlood:__OnAllAssetsLoadDone()
-	local sliderInfo = self:__GetSliderInfoByValue(self.toValue)
-	if self.sliderCat then
-		self.sliderCat:Init(self.slider, sliderInfo.index, self.slideFrom0To1Duration, sliderInfo.pct)
+function UIBlood:_OnAllAssetsLoadDone()
+	local sliderInfo = self:_GetSliderInfoByValue(self._toValue)
+	if self._sliderCat then
+		self._sliderCat:Init(self._Slider_Blood, sliderInfo.index, self._slideFrom0To1Duration, sliderInfo.pct)
 	else
-		self.sliderCat = SliderCat.New(self.slider, sliderInfo.index, self.slideFrom0To1Duration, sliderInfo.pct)
+		self._sliderCat = SliderCat.New(self._Slider_Blood, sliderInfo.index, self._slideFrom0To1Duration, sliderInfo.pct)
 	end
-	self:__SetSliderColor(self.sliderCat.curIndex)
-	self.graphicComponent:SetIsShow(true)
+	self:_SetSliderColor(self._sliderCat:GetCurIndex())
+	self:GetGraphicComponent():SetIsShow(true)
 end
 
 ---@param prefab CS.UnityEngine.GameObject
 function UIBlood:InstantiateGameObject(prefab)
-	local clone = global.client.uiManager.uiBloodManager:SpawnUIBloodGameObject()
+	local clone = global.client.uiManager._uiBloodManager:SpawnUIBloodGameObject()
 	if not clone then
 		clone = GameObject.Instantiate(prefab)
 	end
 	return clone
 end
 
-function UIBlood:__GetSliderInfoByValue(value)
+function UIBlood:_GetSliderInfoByValue(value)
 	local index
 	local pct
 	if value == 0 then
 		index = 1
 		pct = 0
-	elseif value == self.maxValue then
-		index = self.sliderCount
+	elseif value == self._maxValue then
+		index = self._sliderCount
 		pct = 1
 	else
-		local sliderEachValue = self.maxValue / self.sliderCount
+		local sliderEachValue = self._maxValue / self._sliderCount
 		index = math.ceil(value / sliderEachValue)
 		local intPart, fractionalPart
 		intPart, fractionalPart = math.modf(value / sliderEachValue)
@@ -86,11 +85,11 @@ function UIBlood:__GetSliderInfoByValue(value)
 	return { index = index, pct = pct }
 end
 
-function UIBlood:__SetSliderColor(index)
-	local sliderBackColor = self.sliderColorList[index]
-	local sliderFrontColor = self.sliderColorList[index + 1]
-	self.sliderBackImage.color = sliderBackColor
-	self.sliderFrontImage.color = sliderFrontColor
+function UIBlood:_SetSliderColor(index)
+	local sliderBackColor = self._sliderColorList[index]
+	local sliderFrontColor = self._sliderColorList[index + 1]
+	self._Img_Bg.color = sliderBackColor
+	self._Img_Fg.color = sliderFrontColor
 end
 
 ---@param toValue number
@@ -99,33 +98,33 @@ end
 ---@param sliderCount number
 ---@return CS.DG.Tweening.Tween
 function UIBlood:SlideTo(toValue, callback, maxValue, sliderCount)
-	self.toValue = toValue
+	self._toValue = toValue
 	if maxValue then
-		self.maxValue = maxValue
+		self._maxValue = maxValue
 	end
 	if sliderCount then
-		self.sliderCount = sliderCount
+		self._sliderCount = sliderCount
 	end
-	if not self.sliderCat then
+	if not self._sliderCat then
 		return
 	end
-	local sliderInfo = self:__GetSliderInfoByValue(toValue)
-	return self:AddDOTween("UIBlood", self.sliderCat:SlideTo(sliderInfo.index, sliderInfo.pct, function(index, pct, nextTween)
-		self:__SetSliderColor(self.sliderCat.curIndex)
+	local sliderInfo = self:_GetSliderInfoByValue(toValue)
+	return self:AddDOTween("UIBlood", self._sliderCat:SlideTo(sliderInfo.index, sliderInfo.pct, function(index, pct, nextTween)
+		self:_SetSliderColor(self._sliderCat:GetCurIndex())
 		if nextTween then
 			self:AddDOTween("UIBlood", nextTween)
 		end
 		if callback then
-			local current_value = (self.sliderCat:GetCurrentValue() - 1) * (self.maxValue / self.sliderCount)
-			callback(current_value, nextTween)
+			local currentValue = (self._sliderCat:GetCurrentValue() - 1) * (self._maxValue / self._sliderCount)
+			callback(currentValue, nextTween)
 		end
 	end))
 end
 
-function UIBlood:__Destroy()
-	UIBlood.super.__Destroy(self)
-	self.graphicComponent:SetIsShow(false)
-	global.client.uiManager.uiBloodManager:DespawnUIBloodGameObject(self.gameObject)
+function UIBlood:_Destroy()
+	UIBlood.super._Destroy(self)
+	self:GetGraphicComponent():SetIsShow(false)
+	global.client.uiManager:GetUIBloodManager():DespawnUIBloodGameObject(self:GetGraphicComponent():GetGameObject())
 end
 
 return UIBlood

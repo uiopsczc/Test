@@ -5,75 +5,75 @@ BoundsUtil = {}
 ---@param bounds Bounds
 ---@return Vector3
 function BoundsUtil.FrontTopLeft(bounds)
-  return bounds.center + Vector3(-bounds.size.x / 2, bounds.size.y / 2, bounds.size.z / 2)
+	return bounds.center + Vector3(-bounds.size.x / 2, bounds.size.y / 2, bounds.size.z / 2)
 end
 
 -- 世界坐标（前面  右上角）
 ---@param bounds Bounds
 ---@return Vector3
 function BoundsUtil.FrontTopRight(bounds)
-  return bounds.center + Vector3(bounds.size.x / 2, bounds.size.y / 2, bounds.size.z / 2)
+	return bounds.center + Vector3(bounds.size.x / 2, bounds.size.y / 2, bounds.size.z / 2)
 end
 
 -- 世界坐标（前面  左下角）
 ---@param bounds Bounds
 ---@return Vector3
 function BoundsUtil.FrontBottomLeft(bounds)
-  return bounds.center + Vector3(-bounds.size.x / 2, -bounds.size.y / 2, bounds.size.z / 2)
+	return bounds.center + Vector3(-bounds.size.x / 2, -bounds.size.y / 2, bounds.size.z / 2)
 end
 
 -- 世界坐标（前面  左下角）
 ---@param bounds Bounds
 ---@return Vector3
 function BoundsUtil.FrontBottomRight(bounds)
-  return bounds.center + Vector3(bounds.size.x / 2, -bounds.size.y / 2, bounds.size.z / 2)
+	return bounds.center + Vector3(bounds.size.x / 2, -bounds.size.y / 2, bounds.size.z / 2)
 end
 
 -- 世界坐标（后面 左上角）
 ---@param bounds Bounds
 ---@return Vector3
 function BoundsUtil.BackTopLeft(bounds)
-  return bounds.center + Vector3(-bounds.size.x / 2, bounds.size.y / 2, -bounds.size.z / 2)
+	return bounds.center + Vector3(-bounds.size.x / 2, bounds.size.y / 2, -bounds.size.z / 2)
 end
 
 -- 世界坐标（后面 右上角）
 ---@param bounds Bounds
 ---@return Vector3
 function BoundsUtil.BackTopRight(bounds)
-  return bounds.center + Vector3(bounds.size.x / 2, bounds.size.y / 2, -bounds.size.z / 2)
+	return bounds.center + Vector3(bounds.size.x / 2, bounds.size.y / 2, -bounds.size.z / 2)
 end
 
 -- 世界坐标（后面 左下角）
 ---@param bounds Bounds
 ---@return Vector3
 function BoundsUtil.BackBottomLeft(bounds)
-  return bounds.center + Vector3(-bounds.size.x / 2, -bounds.size.y / 2, -bounds.size.z / 2)
+	return bounds.center + Vector3(-bounds.size.x / 2, -bounds.size.y / 2, -bounds.size.z / 2)
 end
 
 -- 世界坐标（后面 右下角）
 ---@param bounds Bounds
 ---@return Vector3
 function BoundsUtil.BackBottomRight(bounds)
-  return bounds.center + Vector3(bounds.size.x / 2, -bounds.size.y / 2, -bounds.size.z / 2)
+	return bounds.center + Vector3(bounds.size.x / 2, -bounds.size.y / 2, -bounds.size.z / 2)
 end
 
 -- 所有的世界坐标
 ---@param bounds Bounds
 ---@return Vector3[]
 function BoundsUtil.CornerPoints(bounds)
-  local result = {}
+	local result = {}
 
-  table.insert(result,BoundsUtil.FrontTopLeft(bounds))
-  table.insert(result,BoundsUtil.FrontTopRight(bounds))
-  table.insert(result,BoundsUtil.FrontBottomLeft(bounds))
-  table.insert(result,BoundsUtil.FrontBottomRight(bounds))
+	table.insert(result, BoundsUtil.FrontTopLeft(bounds))
+	table.insert(result, BoundsUtil.FrontTopRight(bounds))
+	table.insert(result, BoundsUtil.FrontBottomLeft(bounds))
+	table.insert(result, BoundsUtil.FrontBottomRight(bounds))
 
-  table.insert(result,BoundsUtil.BackTopLeft(bounds))
-  table.insert(result,BoundsUtil.BackTopRight(bounds))
-  table.insert(result,BoundsUtil.BackBottomLeft(bounds))
-  table.insert(result,BoundsUtil.BackBottomRight(bounds))
+	table.insert(result, BoundsUtil.BackTopLeft(bounds))
+	table.insert(result, BoundsUtil.BackTopRight(bounds))
+	table.insert(result, BoundsUtil.BackBottomLeft(bounds))
+	table.insert(result, BoundsUtil.BackBottomRight(bounds))
 
-  return result
+	return result
 end
 
 

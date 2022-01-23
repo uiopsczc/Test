@@ -5,9 +5,8 @@ local HuiFuJi = Class("HuiFuJi", Item)
 
 ---@param critter Critter
 function HuiFuJi:OnUseItem(critter)
-  critter:Add("hp","5")
-  return true
+	critter:Add("hp", "5")
+	return true
 end
-
 
 return HuiFuJi

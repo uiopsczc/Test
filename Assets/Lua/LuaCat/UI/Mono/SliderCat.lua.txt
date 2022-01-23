@@ -7,7 +7,7 @@ local SliderCat = Class("SliderCat")
 ---@param curPct number
 function SliderCat:Init(slider, curIndex, duration, curPct)
 	---@type CS.UnityEngine.UI.Slider
-	self.slider = slider
+	self._slider = slider
 	self:SetValues(curIndex, duration, curPct)
 end
 
@@ -16,18 +16,22 @@ end
 ---@param curPct number
 function SliderCat:SetValues(curIndex, duration, curPct)
 	if curIndex then
-		self.curIndex = curIndex
+		self._curIndex = curIndex
 	end
 	if duration then
 		self.duration = duration
 	end
 	if curPct then
-		self.slider.value = curPct
+		self._slider.value = curPct
 	end
 end
 
+function SliderCat:GetCurIndex()
+	return self._curIndex
+end
+
 function SliderCat:GetCurrentValue()
-	return self.curIndex + self.slider.value
+	return self._curIndex + self._slider.value
 end
 
 ---@param toIndex number @到哪个index
@@ -35,9 +39,9 @@ end
 ---@param callback fun(index:number, pct:number,next_tween:CS.DG.Tweening.Tween)
 ---@return CS.DG.Tweening.Tween
 function SliderCat:SlideTo(toIndex, toPct, callback)
-	if self.curIndex == toIndex then
-		local tweenDuration = math.abs(self.slider.value - toPct) * self.duration
-		local tween = self.slider:DOValue(toPct, tweenDuration, false):SetEase(CS.DG.Tweening.Ease.Linear)
+	if self._curIndex == toIndex then
+		local tweenDuration = math.abs(self._slider.value - toPct) * self.duration
+		local tween = self._slider:DOValue(toPct, tweenDuration, false):SetEase(CS.DG.Tweening.Ease.Linear)
 		if callback then
 			tween:OnComplete(function()
 				callback(toIndex, toPct, nil)
@@ -45,22 +49,22 @@ function SliderCat:SlideTo(toIndex, toPct, callback)
 		end
 		return tween
 	else
-		local isToLargeIndex = self.curIndex < toIndex --是否是向更大的index滑动
+		local isToLargeIndex = self._curIndex < toIndex --是否是向更大的index滑动
 		local tweenToPct = isToLargeIndex and 1 or 0
-		local tweenDuration = math.abs(self.slider.value - tweenToPct)
-		local tween = self.slider:DOValue(tweenToPct, tweenDuration, false):SetEase(CS.DG.Tweening.Ease.Linear)
+		local tweenDuration = math.abs(self._slider.value - tweenToPct)
+		local tween = self._slider:DOValue(tweenToPct, tweenDuration, false):SetEase(CS.DG.Tweening.Ease.Linear)
 		tween:OnComplete(function()
 			if isToLargeIndex then
 				-- 向更大的index滑动
-				self.slider.value = 0
-				self.curIndex = self.curIndex + 1
+				self._slider.value = 0
+				self._curIndex = self._curIndex + 1
 			else
-				self.slider.value = 1
-				self.curIndex = self.curIndex - 1
+				self._slider.value = 1
+				self._curIndex = self._curIndex - 1
 			end
 			local nextTween = self:SlideTo(toIndex, toPct, callback)
 			if callback then
-				callback(self.curIndex, self.slider.value, nextTween)
+				callback(self._curIndex, self._slider.value, nextTween)
 			end
 		end)
 		return tween

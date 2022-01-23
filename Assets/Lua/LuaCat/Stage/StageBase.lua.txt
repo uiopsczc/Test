@@ -1,16 +1,16 @@
 ---@class StageBase:TickObject
----@field scenePath string
+---@field _scenePath string
 local StageBase = Class("StageBase", TickObject)
 
 function StageBase:Init()
 	StageBase.super.Init(self)
-	self.loadSceneMode = CS.UnityEngine.SceneManagement.LoadSceneMode.Additive
-	self.isShowFade = false
-	self.isShowLoading = true
+	self._loadSceneMode = CS.UnityEngine.SceneManagement.LoadSceneMode.Additive
+	self._isShowFade = false
+	self._isShowLoading = true
 	---@type UIPanel[]
-	self.panelList = {}
-	self.loadingScene = {}
-	self.onShowCallback = {}
+	self._panelList = {}
+	self._loadingScene = {}
+	self._onShowCallback = {}
 end
 
 function StageBase:LoadPanels()
@@ -33,9 +33,9 @@ function StageBase:StartLoading()
 	lastPct = 0.1
 	self:SetLoadingPct(lastPct)
 
-	if self.scenePath then
+	if self._scenePath then
 		---@type CS.UnityEngine.AsyncOperation
-		self.asyncOperation = CS.UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(self.scenePath, self.loadSceneMode)
+		self._asyncOperation = CS.UnityEngine.SceneManagement.SceneManager.LoadSceneAsync(self._scenePath, self._loadSceneMode)
 		self:WaitUntilScenePathLoadDone()
 	end
 	lastPct = 0.2
@@ -63,38 +63,43 @@ function StageBase:IEPreShow()
 end
 
 function StageBase:Show()
-	DelegateUtil.InvokeCallback(self.onShowCallback)
+	DelegateUtil.InvokeCallback(self._onShowCallback)
 end
 
--------------------------Fade-------------------------
+----------------------------------------------------------------------
+-- Fade
+----------------------------------------------------------------------
 function StageBase:HideFade()
-	if global.client.uiManager.uiFadePanel.graphicComponent.gameObject.activeInHierarchy then
+	if global.client.uiManager:GetUIFadePanel():GetGraphicComponent():GetGameObject().activeInHierarchy then
 		global.client.uiManager:FadeTo(nil, 0, FadeConst.Stage_Fade_Default_Hide_Duration, function()
 			global.client.uiManager:HideFade()
 		end)
 	end
 end
--------------------------Loading-------------------------
+
+----------------------------------------------------------------------
+-- Loading
+----------------------------------------------------------------------
 function StageBase:SetLoadingPct(pct)
-	if self.isShowLoading then
+	if self._isShowLoading then
 		global.client.uiManager:SetLoadingPct(pct)
 	end
 end
 
 function StageBase:HideLoading()
-	if self.isShowLoading then
+	if self._isShowLoading then
 		global.client.uiManager:HideLoading()
 	end
 end
 
 function StageBase:WaitUntilPreLoadAssetsLoadDone(callback)
-	local assetAsyncloaderProcessingList = global.client.csClient.assetBundleManager.assetBundleAsyncLoaderProcessingListessingList
+	local assetAsyncLoaderProcessingList = global.client.csClient.assetBundleManager.assetBundleAsyncLoaderProcessingList
 	local assetBundleAsyncLoaderProcessingList = global.client.csClient.assetBundleManager.assetBundleAsyncLoaderProcessingList
-	local totalLoadingCount = assetAsyncloaderProcessingList.Count + assetBundleAsyncLoaderProcessingList.Count
+	local totalLoadingCount = assetAsyncLoaderProcessingList.Count + assetBundleAsyncLoaderProcessingList.Count
 	local curPct = 0
 	local nextPct = 0
-	while assetAsyncloaderProcessingList.Count > 0 or assetBundleAsyncLoaderProcessingList.Count > 0 do
-		curPct = (assetAsyncloaderProcessingList.Count + assetBundleAsyncLoaderProcessingList.Count) / totalLoadingCount
+	while assetAsyncLoaderProcessingList.Count > 0 or assetBundleAsyncLoaderProcessingList.Count > 0 do
+		curPct = (assetAsyncLoaderProcessingList.Count + assetBundleAsyncLoaderProcessingList.Count) / totalLoadingCount
 		if curPct > nextPct then
 			nextPct = curPct
 		end
@@ -106,20 +111,20 @@ end
 
 function StageBase:WaitUntilScenePathLoadDone()
 	self:WaitUntil(function()
-		return self.asyncOperation.isDone
+		return self._asyncOperation.isDone
 	end)
 end
 
 function StageBase:WaitUntilAllAssetsLoadDone()
 	self:WaitUntil(function()
-		return self.isAllAssetsLoadDone
+		return self._isAllAssetsLoadDone
 	end)
 end
 
 function StageBase:WaitUntilAllPanelsLoadDone()
 	self:WaitUntil(function()
-		for _, panel in ipairs(self.panelList) do
-			if not panel.isAllAssetsLoadDone then
+		for _, panel in ipairs(self._panelList) do
+			if not panel._isAllAssetsLoadDone then
 				return false
 			end
 		end
@@ -127,10 +132,38 @@ function StageBase:WaitUntilAllPanelsLoadDone()
 	end)
 end
 
+----------------------------------------------------------------------
+-- SetGet相关
+----------------------------------------------------------------------
+function StageBase:GetSceneName()
+	return string.FileName(string.WithoutSuffix(self._scenePath))
+end
+
+function StageBase:SetScenePath(scenePath)
+	self._scenePath = scenePath
+end
+
+function StageBase:GetScenePath()
+	return self._scenePath
+end
+
+function StageBase:SetIsShowFade(isShowFade)
+	self._isShowFade = isShowFade
+end
+
+function StageBase:SetIsShowLoading(isShowLoading)
+	self._isShowLoading = isShowLoading
+end
+
+function StageBase:SetStageName(stageName)
+	self._stageName = stageName
+end
+
+
 function StageBase:IEPreDestroy()
 	global.client.uiManager:Reset()
 	global.poolCatManager:Trim()
-	if self.scenePath then
+	if self._scenePath then
 		local asyncOperation = CS.UnityEngine.SceneManagement.SceneManager.UnloadSceneAsync(self:GetSceneName())
 		global.client:WaitUntil(function()
 			return asyncOperation.isDone
@@ -138,8 +171,7 @@ function StageBase:IEPreDestroy()
 	end
 end
 
-function StageBase:GetSceneName()
-	return string.FileName(string.WithoutSuffix(self.scenePath))
-end
+
+
 
 return StageBase

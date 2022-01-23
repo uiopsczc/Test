@@ -77,7 +77,9 @@ function EaseCat_Elastic.EaseInOut(t, b, c, d, a, p)
 	return a * math.Pow(2, -10 * t) * math.sin((t * d - s) * math.PI_two / p) * .5 + c + b
 end
 
--------------------------------------------------------------------------
+----------------------------------------------------------------------
+--
+----------------------------------------------------------------------
 function EaseCat_Elastic.EaseIn2(startValue, endValue, pct, a, p)
 	return EaseCat_Elastic.EaseIn(pct, startValue, endValue - startValue, 1, a, p)
 end

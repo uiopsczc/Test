@@ -9,55 +9,63 @@ local UIGuidePanelBase = Class("UIGuidePanelBase", UIPopUpPanel)
 
 function UIGuidePanelBase:Init()
 	UIGuidePanelBase.super.Init(self)
-	self.graphicComponent:SetPrefabPath("Assets/Resources/Common/UI/Prefab/UIGuidePanelBase.prefab")
+	self:GetGraphicComponent():SetPrefabPath("Assets/PatchResources/UI/UIGuidePanelBase/Prefab/UIGuidePanelBase.prefab")
 end
 
-function UIGuidePanelBase:InitGameObjectChildren()
-	UIGuidePanelBase.super.InitGameObjectChildren(self)
-	self.bgPrefab = self.frameTransform:Find("bg").gameObject
-	self.dialogRightPrefab = self.frameTransform:Find("dialog_right").gameObject
-	self.dialogLeftPrefab = self.frameTransform:Find("dialog_left").gameObject
-	self.fingerPrefab = self.frameTransform:Find("finger").gameObject
-	self.arrowPrefab = self.frameTransform:Find("arrow").gameObject
-	self.descPrefab = self.frameTransform:Find("desc").gameObject
+function UIGuidePanelBase:_InitUI()
+	UIGuidePanelBase.super.InitUI(self)
+	self._Nego_Bg = self:GetFrameTransform():Find("Nego_Bg").gameObject
+	self._Nego_DialogRight = self:GetFrameTransform():Find("Nego_DialogRight").gameObject
+	self._Nego_DialogLeft = self:GetFrameTransform():Find("Nego_DialogLeft").gameObject
+	self._Nego_Finger = self:GetFrameTransform():Find("Nego_Finger").gameObject
+	self._Nego_Arrow = self:GetFrameTransform():Find("Nego_Arrow").gameObject
+	self._Nego_Desc = self:GetFrameTransform():Find("Nego_Desc").gameObject
+end
+
+function UIGuidePanelBase:_InitUIExtensions()
+	UIGuidePanelBase.super._InitUIExtensions(self)
 
 	---@type UIGuidePanelBase_BgItem
-	self.bgItem = self:AddChild(nil, UIGuidePanelBase_BgItem, self.bgPrefab)
+	self._bgItem = self:AddChild(nil, UIGuidePanelBase_BgItem, self._Nego_Bg)
 end
 
 ---@return UIGuidePanelBase_DialogItem
 function UIGuidePanelBase:CreateDialogLeftItem()
-	local clone = GameObject.Instantiate(self.dialogLeftPrefab, self.graphicComponent.transform)
+	local clone = GameObject.Instantiate(self._Nego_DialogLeft, self._graphicComponent._transform)
 	clone:SetActive(true)
 	return self:AddChild(nil, UIGuidePanelBase_DialogItem, clone)
 end
 
 ---@return UIGuidePanelBase_DialogItem
 function UIGuidePanelBase:CreateDialogRightItem()
-	local clone = GameObject.Instantiate(self.dialogRightPrefab, self.graphicComponent.transform)
+	local clone = GameObject.Instantiate(self._Nego_DialogRight, self._graphicComponent._transform)
 	clone:SetActive(true)
 	return self:AddChild(nil, UIGuidePanelBase_DialogItem, clone)
 end
 
 ---@return UIGuidePanelBase_FingerItem
 function UIGuidePanelBase:CreateFingerItem()
-	local clone = GameObject.Instantiate(self.fingerPrefab, self.graphicComponent.transform)
+	local clone = GameObject.Instantiate(self._Nego_Finger, self._graphicComponent._transform)
 	clone:SetActive(true)
 	return self:AddChild(nil, UIGuidePanelBase_FingerItem, clone)
 end
 
 ---@return UIGuidePanelBase_ArrowItem
 function UIGuidePanelBase:CreateArrowItem()
-	local clone = GameObject.Instantiate(self.arrowPrefab, self.graphicComponent.transform)
+	local clone = GameObject.Instantiate(self._Nego_Arrow, self._graphicComponent._transform)
 	clone:SetActive(true)
 	return self:AddChild(nil, UIGuidePanelBase_ArrowItem, clone)
 end
 
 ---@return UIGuidePanelBase_DescItem
 function UIGuidePanelBase:CreateDescItem()
-	local clone = GameObject.Instantiate(self.descPrefab, self.graphicComponent.transform)
+	local clone = GameObject.Instantiate(self._Nego_Desc, self._graphicComponent._transform)
 	clone:SetActive(true)
 	return self:AddChild(nil, UIGuidePanelBase_DescItem, clone)
+end
+
+function UIGuidePanelBase:GetBgItem()
+	return self._bgItem
 end
 
 return UIGuidePanelBase

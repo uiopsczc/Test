@@ -1,59 +1,59 @@
 ---@class Roles
 local Roles = Class("Roles")
 ------------------------装备容器------------------------------
-function Roles:Init(parent_doer, sub_doer_key)
-  ---@type Doer
-  self.parent_doer = parent_doer
-  self.sub_doer_key = sub_doer_key
+function Roles:Init(parentDoer, subDoerKey)
+	---@type Doer
+	self.parentDoer = parentDoer
+	self.subDoerKey = subDoerKey
 end
 ------------------------DoXXX--------------------------------
 -- 卸载
 function Roles:DoRelease()
-  SubDoerUtil1.DoReleaseSubDoer(self.parent_doer, self.sub_doer_key)
+	SubDoerUtil1.DoReleaseSubDoer(self.parentDoer, self.subDoerKey)
 end
 
 -- 保存
-function Roles:DoSave(dict, dict_tmp, save_key)
-  save_key = save_key or "roles"
-  local roles = self:GetRoles()
-  local dict_roles = {}
-  local dict_roles_tmp = {}
-  for i = 1, #roles do
-    local dict_role = {}
-    local dict_role_tmp = {}
-    local role = roles[i]
-    local rid = role:GetRid()
-    role:PrepareSave(dict_role, dict_role_tmp)
-    dict_role["rid"] = rid
-    table.insert(dict_roles, dict_role)
-    if not table.IsNilOrEmpty(dict_role_tmp) then
-      dict_roles_tmp[rid] = dict_role_tmp
-    end
-  end
-  dict[save_key] = table.GetNilIfEmpty(dict_roles)
-  dict_tmp[save_key] = table.GetNilIfEmpty(dict_roles_tmp)
+function Roles:DoSave(dict, dictTmp, saveKey)
+	saveKey = saveKey or "roles"
+	local roles = self:GetRoles()
+	local dictRoles = {}
+	local dictRolesTmp = {}
+	for i = 1, #roles do
+		local dictRole = {}
+		local dictRoleTmp = {}
+		local role = roles[i]
+		local rid = role:GetRid()
+		role:PrepareSave(dictRole, dictRoleTmp)
+		dictRole["rid"] = rid
+		table.insert(dictRoles, dictRole)
+		if not table.IsNilOrEmpty(dictRoleTmp) then
+			dictRolesTmp[rid] = dictRoleTmp
+		end
+	end
+	dict[saveKey] = table.GetNilIfEmpty(dictRoles)
+	dictTmp[saveKey] = table.GetNilIfEmpty(dictRolesTmp)
 end
 
 -- 还原
-function Roles:DoRestore(dict, dict_tmp, restore_key)
-  restore_key = restore_key or "roles"
-  self:ClearRoles()
-  local dict_roles = table.Remove_Dict(dict, restore_key)
-  local dict_roles_tmp = table.Remove_Dict(dict_tmp, restore_key)
-  if not table.IsNilOrEmpty(dict_roles) then
-    local roles = self:GetRoles_ToEdit()
-    for _, dict_role in ipairs(dict_roles) do
-      local rid = table.Remove_Dict(dict_role,"rid")
-      local role = global.client.roleFactory:NewDoer(rid)
-      role:SetEnv(self.parent_doer)
-      local dict_role_tmp
-      if dict_roles_tmp then
-        dict_role_tmp = dict_roles_tmp[rid]
-      end
-      role:FinishRestore(dict_role, dict_role_tmp)
-      table.insert(roles,role)
-    end
-  end
+function Roles:DoRestore(dict, dictTmp, restoreKey)
+	restoreKey = restoreKey or "roles"
+	self:ClearRoles()
+	local dictRoles = table.Remove_Dict(dict, restoreKey)
+	local dictRolesTmp = table.Remove_Dict(dictTmp, restoreKey)
+	if not table.IsNilOrEmpty(dictRoles) then
+		local roles = self:GetRoles_ToEdit()
+		for _, dictRole in ipairs(dictRoles) do
+			local rid = table.Remove_Dict(dictRole, "rid")
+			local role = global.client.roleFactory:NewDoer(rid)
+			role:SetEnv(self.parentDoer)
+			local dictRoleTmp
+			if dictRolesTmp then
+				dictRoleTmp = dictRolesTmp[rid]
+			end
+			role:FinishRestore(dictRole, dictRoleTmp)
+			table.insert(roles, role)
+		end
+	end
 end
 --------------------------OnXXX-------------------
 
@@ -62,30 +62,31 @@ end
 ---@param id string
 ---@return Role[]
 function Roles:GetRoles(id)
-  return SubDoerUtil1.GetSubDoers(self.parent_doer,self.sub_doer_key, id)
+	return SubDoerUtil1.GetSubDoers(self.parentDoer, self.subDoerKey, id)
 end
 
 ---@return Role[]
-function Roles:GetRoles_ToEdit() -- 可以直接插入删除
-  return SubDoerUtil1.GetSubDoers_ToEdit(self.parent_doer,self.sub_doer_key)
+function Roles:GetRoles_ToEdit()
+	-- 可以直接插入删除
+	return SubDoerUtil1.GetSubDoers_ToEdit(self.parentDoer, self.subDoerKey)
 end
 
 function Roles:GetRolesCount()
-  return SubDoerUtil1.GetSubDoersCount(self.parent_doer,self.sub_doer_key)
+	return SubDoerUtil1.GetSubDoersCount(self.parentDoer, self.subDoerKey)
 end
 
 -- 获得指定的角色
 ---@param id_or_rid string
 ---@return Role
 function Roles:GetRole(id_or_rid)
-  return SubDoerUtil1.GetSubDoer(self.parent_doer,self.sub_doer_key, id_or_rid)
+	return SubDoerUtil1.GetSubDoer(self.parentDoer, self.subDoerKey, id_or_rid)
 end
 
 -- 清除所有角色
 function Roles:ClearRoles()
-  return SubDoerUtil1.ClearSubDoers(self.parent_doer,self.sub_doer_key, function(role)
-    self.parent_doer:RemoveRole(role)
-  end)
+	return SubDoerUtil1.ClearSubDoers(self.parentDoer, self.subDoerKey, function(role)
+		self.parentDoer:RemoveRole(role)
+	end)
 end
 
 return Roles

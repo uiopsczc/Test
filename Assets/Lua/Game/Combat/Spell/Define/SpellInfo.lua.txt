@@ -1,16 +1,14 @@
 ---@class SpellInfo:Class
 ---@field spell_id
----@field cooldown_rate
----@field cooldown_remain_duration
+---@field coolDownRate
+---@field coolDownRemainDuration
 ---@field level
 local SpellInfo = Class("SpellInfo")
 
-function SpellInfo:GetCooldownPct()
-  local cfgSpellData = CfgSpell.get_by_id(self.spell_id)
-  local cooldown_duration = cfgSpellData.cooldown_duration
-  return self.cooldown_remain_duration / (cooldown_duration * self.cooldown_rate)
+function SpellInfo:GetCoolDownPct()
+	local cfgSpellData = CfgSpell.get_by_id(self.spell_id)
+	local coolDownDuration = cfgSpellData.coolDownDuration
+	return self.coolDownRemainDuration / (coolDownDuration * self.coolDownRate)
 end
-
-
 
 return SpellInfo

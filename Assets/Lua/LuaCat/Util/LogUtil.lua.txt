@@ -1,3 +1,7 @@
+local kLevel = 4
+
+local batchLogCache = {}
+
 local function __ToString(...)
 	local result = {}
 	table.WalkArgs(function(index, e)
@@ -14,7 +18,7 @@ local function __ToString(...)
 	return result
 end
 
-local function __Dump(...)
+local function _Dump(...)
 	local result = {}
 	table.WalkArgs(function(index, e)
 		local v = e
@@ -27,8 +31,6 @@ local function __Dump(...)
 	table.SafePackArray(result)
 	return table.SafeUnpack(result)
 end
-
-batchLogCache = {}
 
 function Traceback(msg, level, thread)
 	local result = { msg }
@@ -69,7 +71,7 @@ function Traceback(msg, level, thread)
 	return table.concat(result)
 end
 
-local function __GetFormatTraceback(level, thread, ...)
+local function _GetFormatTraceback(level, thread, ...)
 	local msg = table.concat(__ToString(...), " ")
 	msg = Traceback(msg, 0)
 	local info
@@ -82,52 +84,50 @@ local function __GetFormatTraceback(level, thread, ...)
 	return msg
 end
 
-local function __LogWithLevel(level, thread, ...)
-	LogCat.Log(__GetFormatTraceback(level, thread, ...))
-	--AddBatchLogCache(__GetFormatTraceback(level,thread, ...), "log")
+local function _LogWithLevel(level, thread, ...)
+	LogCat.Log(_GetFormatTraceback(level, thread, ...))
 end
 
-local function __WarnWithLevel(level, thread, ...)
-	LogCat.LogWarning(__GetFormatTraceback(level, thread, ...))
-	--AddBatchLogCache(__GetFormatTraceback(level,thread, ...), "warn")
+local function _WarnWithLevel(level, thread, ...)
+	LogCat.LogWarning(_GetFormatTraceback(level, thread, ...))
 end
 
-local function __ErrorWithLevel(level, thread, ...)
-	LogCat.LogError(__GetFormatTraceback(level, thread, ...))
-	--AddBatchLogCache(__GetFormatTraceback(level,thread, ...), "error")
+local function _ErrorWithLevel(level, thread, ...)
+	LogCat.LogError(_GetFormatTraceback(level, thread, ...))
 end
 
 function AddBatchLogCache(message, logType)
 	table.insert(batchLogCache, { message = message, logType = logType })
 end
 
-------------------------------------------------------------
-local level = 4
+----------------------------------------------------------------------
+--
+----------------------------------------------------------------------
 function Log(...)
-	__LogWithLevel(level, nil, ...)
+	_LogWithLevel(kLevel, nil, ...)
 end
 function LogFormat(format, ...)
 	Log(string.format(format, ...))
 end
 function log(...)
-	__LogWithLevel(level, nil, __Dump(...))
+	_LogWithLevel(kLevel, nil, _Dump(...))
 end
 
 function Warn(...)
-	__WarnWithLevel(level, nil, ...)
+	_WarnWithLevel(kLevel, nil, ...)
 end
 function WarnFormat(format, ...)
 	Warn(string.format(format, ...))
 end
 function warn(...)
-	__WarnWithLevel(level, nil, __Dump(...))
+	_WarnWithLevel(kLevel, nil, _Dump(...))
 end
 
 function Error(...)
-	__ErrorWithLevel(level, nil, ...)
+	_ErrorWithLevel(kLevel, nil, ...)
 end
 function error2(...)
-	__ErrorWithLevel(level, nil, __Dump(...))
+	_ErrorWithLevel(kLevel, nil, _Dump(...))
 end
 function ErrorFormat(format, ...)
 	Error(string.format(format, ...))

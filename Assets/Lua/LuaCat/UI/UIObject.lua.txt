@@ -4,13 +4,35 @@ local UIObject = Class("UIObject", GameEntity)
 function UIObject:Init()
 	UIObject.super.Init(self)
 	---@type table<string,UIPanel>
-	self.childPanelDict = self.childPanelDict or {}
+	self._childPanelDict = self._childPanelDict or {}
 	---@type CS.CsCat.UGUIEventListener
-	self.registeredUGUIEventListenerList = self.registeredUGUIEventListenerList or {}
+	self._registeredUGUIEventListenerList = self._registeredUGUIEventListenerList or {}
 end
 
 function UIObject:CreateGraphicComponent()
 	return self:AddComponent(nil, UIGraphicComponent, self.resLoadComponent)
+end
+
+function UIObject:InitGameObjectChildren()
+	GameEntity.super.InitGameObjectChildren(self)
+	self:_InitUI()
+	self:_InitUIExtensions()
+end
+
+function UIObject:_InitUI()
+
+end
+
+function UIObject:_InitUIExtensions()
+
+end
+
+function UIObject:InitGameObjectChildren()
+	self._frameTransform = self:GetGraphicComponent():GetTransform():Find("Frame")
+	if not IsNil(self._frameTransform) then
+		self._contentTransform = self._frameTransform:Find("Content")
+	end
+	UIObject.super.InitGameObjectChildren(self)
 end
 
 ----------------------------------------------------------------------
@@ -18,10 +40,10 @@ end
 ----------------------------------------------------------------------
 ---@param uguiEventListener CS.CsCat.UGUIEventListener
 function UIObject:SaveRegisteredUGUIEventListener(uguiEventListener)
-	if table.ContainsValue(self.registeredUGUIEventListenerList, uguiEventListener) then
+	if table.ContainsValue(self._registeredUGUIEventListenerList, uguiEventListener) then
 		return
 	end
-	table.insert(self.registeredUGUIEventListenerList, uguiEventListener)
+	table.insert(self._registeredUGUIEventListenerList, uguiEventListener)
 end
 
 -- OnClick
@@ -44,7 +66,7 @@ end
 
 -- OnDrag
 function UIObject:RegisterOnDrag(target, func)
-	local result = function(go, eventData)
+	local result = function(gameObject, eventData)
 		func(eventData)
 	end
 	local gameObject = target.gameObject
@@ -74,7 +96,7 @@ end
 
 -- OnPointerUp
 function UIObject:RegisterOnPointerUp(target, func)
-	local result = function(go, eventData)
+	local result = function(gameObject, eventData)
 		func(eventData)
 	end
 	local gameObject = target.gameObject
@@ -106,7 +128,7 @@ function UIObject:CreateChildPanel(key, classType, parentTransform, ...)
 		childPanel = self:GetChild(key)
 	end
 	if childPanel then
-		error2("duplicate child_panel:%s", key)
+		error2("duplicate childPanel:%s", key)
 		return nil
 	end
 	childPanel = self:AddChildWithoutInit(key, classType)
@@ -114,19 +136,19 @@ function UIObject:CreateChildPanel(key, classType, parentTransform, ...)
 	childPanel:OnInitPanel(parentTransform)
 	childPanel:PostInit()
 	childPanel:SetIsEnabled(true, false)
-	self.childPanelDict[childPanel.key] = childPanel
+	self._childPanelDict[childPanel.key] = childPanel
 	return childPanel
 end
 
 function UIObject:Open()
-	self:AddUnityEvents()
-	self:AddGameEvents()
+	self:AddUIEvents()
+	self:AddLogicEvents()
 end
 
-function UIObject:AddUnityEvents()
+function UIObject:AddUIEvents()
 end
 
-function UIObject:AddGameEvents()
+function UIObject:AddLogicEvents()
 end
 
 ---@return UIPanel
@@ -135,22 +157,22 @@ function UIObject:GetChildPanel(key)
 end
 
 
--- 从Panle中Close，再调到这里来，不要直接使用这个
+-- 从Panel中Close，再调到这里来，不要直接使用这个
 function UIObject:CloseChildPanel(key)
 	local childPanel = self:GetChildPanel(key)
 	if not childPanel then
 		return
 	end
-	if self.childPanelDict[key] then
-		self.childPanelDict[key] = nil
+	if self._childPanelDict[key] then
+		self._childPanelDict[key] = nil
 	end
 	self:RemoveChild(key)
 end
 
 function UIObject:CloseAllChildPanels(isRemainResidentPanels)
-	local panelNameList = table.Keys_Dict(self.childPanelDict)
+	local panelNameList = table.Keys_Dict(self._childPanelDict)
 	for _, panelName in ipairs(panelNameList) do
-		local childPanel = self.childPanelDict[panelName]
+		local childPanel = self._childPanelDict[panelName]
 		if not childPanel.is_resident or not isRemainResidentPanels then
 			childPanel:Close()
 		end
@@ -206,25 +228,36 @@ function UIObject:SetRawImageAsync(image, assetPath, callback, isSetNativeSize)
 end
 
 ----------------------------------------------------------------------
--- __Reset
+-- _Reset
 ----------------------------------------------------------------------
-function UIObject:__Reset()
-	UIObject.super.__Reset(self)
-	for _, registeredUGUIEventListener in ipairs(self.registeredUGUIEventListenerList) do
+function UIObject:_Reset()
+	UIObject.super._Reset(self)
+	for _, registeredUGUIEventListener in ipairs(self._registeredUGUIEventListenerList) do
 		registeredUGUIEventListener:Destroy()
 	end
-	self.registeredUGUIEventListenerList = {}
+	self._registeredUGUIEventListenerList = {}
+end
+
+----------------------------------------------------------------------
+-- SetGet相关
+----------------------------------------------------------------------
+function UIObject:GetFrameTransform()
+	return self._frameTransform
+end
+
+function UIObject:GetContentTransform()
+	return self._contentTransform
 end
 
 ----------------------------------------------------------------------
 -- __Destroy
 ----------------------------------------------------------------------
-function UIObject:__Destroy()
-	UIObject.super.__Destroy(self)
-	for _, registeredUGUIEventListener in ipairs(self.registeredUGUIEventListenerList) do
+function UIObject:_Destroy()
+	UIObject.super._Destroy(self)
+	for _, registeredUGUIEventListener in ipairs(self._registeredUGUIEventListenerList) do
 		registeredUGUIEventListener:Destroy()
 	end
-	self.registeredUGUIEventListenerList = {}
+	self._registeredUGUIEventListenerList = {}
 end
 
 return UIObject

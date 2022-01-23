@@ -20,8 +20,9 @@ function EaseCat_Quart.EaseInOut(t, b, c, d)
 	return -c / 2 * (t * t * t * t - 2) + b
 end
 
--------------------------------------------------------------------------
-
+----------------------------------------------------------------------
+--
+----------------------------------------------------------------------
 function EaseCat_Quart.EaseIn2(startValue, endValue, pct)
 	return EaseCat_Quart.EaseIn(pct, startValue, endValue - startValue, 1)
 end

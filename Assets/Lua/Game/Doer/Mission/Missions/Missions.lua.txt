@@ -1,62 +1,62 @@
 ---@class Missions
 local Missions = Class("Missions")
 ------------------------背包容器------------------------------
-function Missions:Init(parent_doer, sub_doer_key)
-  ---@type Doer
-  self.parent_doer = parent_doer
-  self.sub_doer_key = sub_doer_key
+function Missions:Init(parentDoer, subDoerKey)
+	---@type Doer
+	self.parentDoer = parentDoer
+	self.subDoerKey = subDoerKey
 end
 ------------------------DoXXX--------------------------------
 -- 卸载
 function Missions:DoRelease()
-  SubDoerUtil1.DoReleaseSubDoer(self.parent_doer,self.sub_doer_key)
+	SubDoerUtil1.DoReleaseSubDoer(self.parentDoer, self.subDoerKey)
 end
 
 -- 保存
-function Missions:DoSave(dict, dict_tmp, save_key)
-  save_key = save_key or "missions"
-  local missions = self:GetMissions()
-  local list_missions = {}
-  local dict_missions_tmp = {}
-  for _, mission in ipairs(missions) do
-    local rid = mission:GetRid()
-    local dict_mission = {}
-    local dict_mission_tmp = {}
-    mission:PrepareSave(dict_mission, dict_mission_tmp)
-    dict_mission["rid"] = rid
-    table.insert(list_missions, dict_mission)
-    if not table.IsNilOrEmpty(dict_mission_tmp) then
-      dict_missions_tmp[rid] = dict_mission_tmp
-    end
-  end
-  dict[save_key] = table.GetNilIfEmpty(list_missions)
-  dict_tmp[save_key] = table.GetNilIfEmpty(dict_missions_tmp)
+function Missions:DoSave(dict, dictTmp, saveKey)
+	saveKey = saveKey or "missions"
+	local missions = self:GetMissions()
+	local listMissions = {}
+	local dictMissionsTmp = {}
+	for _, mission in ipairs(missions) do
+		local rid = mission:GetRid()
+		local dictMission = {}
+		local dictMissionTmp = {}
+		mission:PrepareSave(dictMission, dictMissionTmp)
+		dictMission["rid"] = rid
+		table.insert(listMissions, dictMission)
+		if not table.IsNilOrEmpty(dictMissionTmp) then
+			dictMissionsTmp[rid] = dictMissionTmp
+		end
+	end
+	dict[saveKey] = table.GetNilIfEmpty(listMissions)
+	dictTmp[saveKey] = table.GetNilIfEmpty(dictMissionsTmp)
 end
 
 -- 还原
-function Missions:DoRestore(dict, dict_tmp, restore_key)
-  restore_key = restore_key or "missions"
-  self:ClearMissions()
-  local list_missions = table.Remove_Dict(dict, restore_key)
-  local dict_missions_tmp = table.Remove_Dict(dict_tmp, restore_key)
-  if not table.IsNilOrEmpty(list_missions) then
-    for id, value in pairs(list_missions) do
-      ---@type Item
-      local mission
-      local missions = self:GetMissions_ToEdit(id)
-      for _, dict_mission in ipairs(list_missions) do
-        local rid = table.Remove_Dict(dict_mission,"rid")
-        mission = global.client.itemFactory:NewDoer(rid)
-        mission:SetEnv(self.parent_doer)
-        local dict_mission_tmp
-        if dict_missions_tmp then
-          dict_mission_tmp = dict_missions_tmp[rid]
-        end
-        mission:FinishRestore(dict_mission, dict_mission_tmp)
-        table.insert(missions, mission)
-      end
-    end
-  end
+function Missions:DoRestore(dict, dictTmp, restoreKey)
+	restoreKey = restoreKey or "missions"
+	self:ClearMissions()
+	local listMissions = table.Remove_Dict(dict, restoreKey)
+	local dictMissionsTmp = table.Remove_Dict(dictTmp, restoreKey)
+	if not table.IsNilOrEmpty(listMissions) then
+		for id, _ in pairs(listMissions) do
+			---@type Item
+			local mission
+			local missions = self:GetMissions_ToEdit(id)
+			for _, dictMission in ipairs(listMissions) do
+				local rid = table.Remove_Dict(dictMission, "rid")
+				mission = global.client.itemFactory:NewDoer(rid)
+				mission:SetEnv(self.parentDoer)
+				local dictMissionTmp
+				if dictMissionsTmp then
+					dictMissionTmp = dictMissionsTmp[rid]
+				end
+				mission:FinishRestore(dictMission, dictMissionTmp)
+				table.insert(missions, mission)
+			end
+		end
+	end
 end
 --------------------------OnXXX-------------------
 
@@ -64,34 +64,33 @@ end
 ---@param id string
 ---@return Mission[]
 function Missions:GetMissions(id)
-  return SubDoerUtil1.GetSubDoers(self.parent_doer,self.sub_doer_key,id)
+	return SubDoerUtil1.GetSubDoers(self.parentDoer, self.subDoerKey, id)
 end
 
 -- 可以直接插入删除
 ---@param id string
 ---@return Mission[]
 function Missions:GetMissions_ToEdit(id)
-  return SubDoerUtil1.GetSubDoers_ToEdit(self.parent_doer,self.sub_doer_key,id)
+	return SubDoerUtil1.GetSubDoers_ToEdit(self.parentDoer, self.subDoerKey, id)
 end
 
 function Missions:HasMissions()
-  return SubDoerUtil1.HasSubDoers(self.parent_doer, self.sub_doer_key)
+	return SubDoerUtil1.HasSubDoers(self.parentDoer, self.subDoerKey)
 end
 
 function Missions:GetMissionsCount()
-  return SubDoerUtil1.GetSubDoersCount(self.parent_doer, self.sub_doer_key)
+	return SubDoerUtil1.GetSubDoersCount(self.parentDoer, self.subDoerKey)
 end
 
 ---@param id_or_rid string
 ---@return Mission
 function Missions:GetMission(id_or_rid)
-  return SubDoerUtil1.GetSubDoer(self.parent_doer, self.sub_doer_key, id_or_rid)
+	return SubDoerUtil1.GetSubDoer(self.parentDoer, self.subDoerKey, id_or_rid)
 end
 
 function Missions:ClearMissions()
-  return SubDoerUtil1.ClearSubDoers(self.parent_doer, self.sub_doer_key, function(mission)
-  end)
+	return SubDoerUtil1.ClearSubDoers(self.parentDoer, self.subDoerKey, function(mission)
+	end)
 end
-
 
 return Missions

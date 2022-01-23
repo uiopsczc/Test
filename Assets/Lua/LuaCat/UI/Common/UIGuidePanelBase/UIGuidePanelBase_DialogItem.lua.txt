@@ -3,21 +3,21 @@ local UIGuidePanelBase_DialogItem = Class("UIGuidePanelBase_DialogItem", UIObjec
 
 function UIGuidePanelBase_DialogItem:Init(gameObject)
 	UIGuidePanelBase_DialogItem.super.Init(self, gameObject)
-	self.graphicComponent:SetGameObject(gameObject, true)
+	self:GetGraphicComponent():SetGameObject(gameObject, true)
 end
 
-function UIGuidePanelBase_DialogItem:InitGameObjectChildren()
-	UIGuidePanelBase_DialogItem.super.InitGameObjectChildren(self)
+function UIGuidePanelBase_DialogItem:_InitUI()
+	UIGuidePanelBase_DialogItem.super._InitUI(self)
 	---@type CS.UnityEngine.UI.Image
-	self.touXiangImg = self.graphicComponent.transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Image), "tou_xiang", true, true)
+	self._Img_Head = self:GetGraphicComponent():GetTransform():FindComponentInChildren(typeof(CS.UnityEngine.UI.Image), "Img_Head", true, true)
 	---@type CS.UnityEngine.UI.Text
-	self.descText = self.graphicComponent.transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Text), "content/desc")
+	self._Txt_Desc = self:GetGraphicComponent():GetTransform():FindComponentInChildren(typeof(CS.UnityEngine.UI.Text), "Nego_Content/Txt_Desc")
 end
 
-function UIGuidePanelBase_DialogItem:Show(desc, image_path)
-	self.descText.text = desc
-	if image_path then
-		self:SetImageAsync(self.touXiangImg, image_path)
+function UIGuidePanelBase_DialogItem:Show(desc, imagePath)
+	self._Txt_Desc.text = desc
+	if imagePath then
+		self:SetImageAsync(self._Img_Head, imagePath)
 	end
 end
 

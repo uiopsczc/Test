@@ -1,7 +1,7 @@
 local BuildConst = {}
 
 -- AssetPathMap
-BuildConst.AssetPathMap_File_Name =  "@"
+BuildConst.AssetPathMap_File_Name = "@"
 BuildConst.ManifestBundle_Name = BuildConst.AssetPathMap_File_Name
 
 BuildConst.AssetsPackage_Root = "Assets/" .. BuildConst.AssetPathMap_File_Name .. "/"

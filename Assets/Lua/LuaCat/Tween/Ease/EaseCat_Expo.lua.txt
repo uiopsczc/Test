@@ -32,7 +32,9 @@ function EaseCat_Expo.EaseInOut(t, b, c, d)
 	return c / 2 * (-math.Pow(2, -10 * t) + 2) + b
 end
 
--------------------------------------------------------------------------
+----------------------------------------------------------------------
+--
+----------------------------------------------------------------------
 function EaseCat_Expo.EaseIn2(startValue, endValue, pct)
 	return EaseCat_Expo.EaseIn(pct, startValue, endValue - startValue, 1)
 end

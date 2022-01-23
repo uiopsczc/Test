@@ -2,166 +2,165 @@
 local DoerEvent = Class("DoerEvent", Doer)
 
 function DoerEvent:GetCfgDoerEventData()
-  return CfgDoerEvent.get_by_id(self:GetId())
+	return CfgDoerEvent.get_by_id(self:GetId())
 end
 
 function DoerEvent:Execute(desc, owner, doerAttrParser)
-  if not self:CheckDoerEventTriggerCondition(doerAttrParser) then
-    return false
-  end
-  local cfgDoerEventData = self:GetCfgDoerEventData()
-  local is_not_talk = cfgDoerEventData.is_not_talk -- 不弹出talk
-  --通用情况
-  local trigger_desc = cfgDoerEventData.trigger_desc
-  local word_list = {}
-  if not string.IsNilOrWhiteSpace(trigger_desc) then
-    table.insert(word_list, doerAttrParser:ParseString(trigger_desc))
-  end
-  local ok = 1 -- 0-触发条件失败，1-触发成功，执行失败，2-触发成功，执行成功
-  local step_ids = cfgDoerEventData.step_ids
-  if not table.IsNilOrEmpty(step_ids) then
-    for i = 1, table.Count(step_ids) do
-      local step_id = step_ids[i]
-      local cfgDoerEventStepData = CfgDoerEventStep.get_by_id(step_id)
-      ok = self:ExecuteStep(desc .. "步骤" .. i, step_id, owner, doerAttrParser, word_list)
-      if ok == 0 then
-        break
-      elseif ok == 2 and cfgDoerEventStepData.is_stop_here then
-        break
-      end
-    end
-  end
-  if not is_not_talk and not table.IsNilOrEmpty(word_list) then
-    for _, word in ipairs(word_list) do
-      global.client.uiManager:Notify(word)
-    end
-  end
-  return ok > 0
+	if not self:CheckDoerEventTriggerCondition(doerAttrParser) then
+		return false
+	end
+	local cfgDoerEventData = self:GetCfgDoerEventData()
+	local isNotTalk = cfgDoerEventData.is_not_talk -- 不弹出talk
+	--通用情况
+	local triggerDesc = cfgDoerEventData.trigger_desc
+	local wordList = {}
+	if not string.IsNilOrWhiteSpace(triggerDesc) then
+		table.insert(wordList, doerAttrParser:ParseString(triggerDesc))
+	end
+	local ok = 1 -- 0-触发条件失败，1-触发成功，执行失败，2-触发成功，执行成功
+	local stepIds = cfgDoerEventData.stepIds
+	if not table.IsNilOrEmpty(stepIds) then
+		for i = 1, table.Count(stepIds) do
+			local stepId = stepIds[i]
+			local cfgDoerEventStepData = CfgDoerEventStep.get_by_id(stepId)
+			ok = self:ExecuteStep(desc .. "步骤" .. i, stepId, owner, doerAttrParser, wordList)
+			if ok == 0 then
+				break
+			elseif ok == 2 and cfgDoerEventStepData.isStopHere then
+				break
+			end
+		end
+	end
+	if not isNotTalk and not table.IsNilOrEmpty(wordList) then
+		for _, word in ipairs(wordList) do
+			global.client.uiManager:Notify(word)
+		end
+	end
+	return ok > 0
 end
 
 ---@param doerAttrParser  DoerAttrParser
 function DoerEvent:CheckDoerEventTriggerCondition(doerAttrParser)
-  local cfgDoerEventData = CfgDoerEvent.get_by_id(self:GetId())
-  local is_not_talk = cfgDoerEventData.is_not_talk -- 不弹出talk
-  local trigger_condition = cfgDoerEventData.trigger_condition -- 触发条件
-  if not string.IsNilOrWhiteSpace(trigger_condition) and not doerAttrParser:ParseBoolean(trigger_condition) then
-    --不满足触发的情况
-    if not is_not_talk then
-      local can_not_trigger_desc = cfgDoerEventData.can_not_trigger_desc
-      if string.IsNilOrWhiteSpace(can_not_trigger_desc) then
-        global.client.uiManager:Notify(global.Lang.GetText("现在不能触发此操作"))
-      else
-        global.client.uiManager:Notify(doerAttrParser:ParseString(can_not_trigger_desc))
-      end
-    end
-    return false
-  end
-  return true
+	local cfgDoerEventData = CfgDoerEvent.get_by_id(self:GetId())
+	local isNotTalk = cfgDoerEventData.is_not_talk -- 不弹出talk
+	local triggerCondition = cfgDoerEventData.trigger_condition -- 触发条件
+	if not string.IsNilOrWhiteSpace(triggerCondition) and not doerAttrParser:ParseBoolean(triggerCondition) then
+		--不满足触发的情况
+		if not isNotTalk then
+			local isCanNotTriggerDesc = cfgDoerEventData.can_not_trigger_desc
+			if string.IsNilOrWhiteSpace(isCanNotTriggerDesc) then
+				global.client.uiManager:Notify(global.Lang.GetText("现在不能触发此操作"))
+			else
+				global.client.uiManager:Notify(doerAttrParser:ParseString(isCanNotTriggerDesc))
+			end
+		end
+		return false
+	end
+	return true
 end
 
 ---@param doerAttrParser  DoerAttrParser
-function DoerEvent:ExecuteStep(desc, doerEventStep_id, owner, doerAttrParser, word_list)
-  local cfgDoerEventStepData = CfgDoerEventStep.get_by_id(doerEventStep_id)
-  local trigger_condition = cfgDoerEventStepData.trigger_condition -- 触发条件
-  if not string.IsNilOrWhiteSpace(trigger_condition) and not doerAttrParser:ParseBoolean(trigger_condition) then
-    --不满足触发的情况
-    local can_not_trigger_desc = cfgDoerEventStepData.can_not_trigger_desc
-    if string.IsNilOrWhiteSpace(can_not_trigger_desc) then
-      table.insert(word_list, global.Lang.GetText("现在不能触发此操作"))
-    else
-      table.insert(word_list, doerAttrParser:ParseString(can_not_trigger_desc))
-    end
-    return 0
-  end
-  local trigger_desc = cfgDoerEventStepData.trigger_desc -- 触发提示语
-  if not string.IsNilOrWhiteSpace(trigger_desc) then
-    table.insert(word_list, doerAttrParser:ParseString(trigger_desc))
-  end
-  local execute_condition = cfgDoerEventStepData.execute_condition -- 执行条件
-  if not string.IsNilOrWhiteSpace(execute_condition) and not doerAttrParser:ParseBoolean(execute_condition) then
-    --不满足触发的情况
-    local can_not_execute_desc = cfgDoerEventStepData.can_not_execute_desc -- 不执行提示语
-    if not string.IsNilOrWhiteSpace(can_not_execute_desc) then
-      table.insert(word_list, doerAttrParser:ParseString(can_not_execute_desc))
-    end
-    return 1
-  end
+function DoerEvent:ExecuteStep(desc, doerEventStep_id, owner, doerAttrParser, wordList)
+	local cfgDoerEventStepData = CfgDoerEventStep.get_by_id(doerEventStep_id)
+	local triggerCondition = cfgDoerEventStepData.trigger_condition -- 触发条件
+	if not string.IsNilOrWhiteSpace(triggerCondition) and not doerAttrParser:ParseBoolean(triggerCondition) then
+		--不满足触发的情况
+		local isCanNotTriggerDesc = cfgDoerEventStepData.can_not_trigger_desc
+		if string.IsNilOrWhiteSpace(isCanNotTriggerDesc) then
+			table.insert(wordList, global.Lang.GetText("现在不能触发此操作"))
+		else
+			table.insert(wordList, doerAttrParser:ParseString(isCanNotTriggerDesc))
+		end
+		return 0
+	end
+	local triggerDesc = cfgDoerEventStepData.triggerDesc -- 触发提示语
+	if not string.IsNilOrWhiteSpace(triggerDesc) then
+		table.insert(wordList, doerAttrParser:ParseString(triggerDesc))
+	end
+	local executeCondition = cfgDoerEventStepData.executeCondition -- 执行条件
+	if not string.IsNilOrWhiteSpace(executeCondition) and not doerAttrParser:ParseBoolean(executeCondition) then
+		--不满足触发的情况
+		local isCanNotExecuteDesc = cfgDoerEventStepData.isCanNotExecuteDesc -- 不执行提示语
+		if not string.IsNilOrWhiteSpace(isCanNotExecuteDesc) then
+			table.insert(wordList, doerAttrParser:ParseString(isCanNotExecuteDesc))
+		end
+		return 1
+	end
 
-  local execute_desc = cfgDoerEventStepData.execute_desc -- 执行提示语
-  if not string.IsNilOrWhiteSpace(execute_desc) then
-    table.insert(word_list, doerAttrParser:ParseString(execute_desc))
-  end
-  ---@type DoerAttrSetter
-  local doerAttrSetter = DoerAttrSetter.New(desc,doerAttrParser)
-  -- 设置属性、更改属性
-  local set_attr_dict = cfgDoerEventStepData.set_attr_dict
-  if not table.IsNilOrEmpty(set_attr_dict) then
-    for attr_name, attr_value in pairs(set_attr_dict) do
-      doerAttrSetter:Set(attr_name, attr_value,false)
-    end
-  end
-  local add_attr_dict = cfgDoerEventStepData.add_attr_dict
-  if not table.IsNilOrEmpty(add_attr_dict) then
-    for attr_name, attr_value in pairs(add_attr_dict) do
-      doerAttrSetter:Set(attr_name, attr_value,true)
-    end
-  end
+	local executeDesc = cfgDoerEventStepData.execute_desc -- 执行提示语
+	if not string.IsNilOrWhiteSpace(executeDesc) then
+		table.insert(wordList, doerAttrParser:ParseString(executeDesc))
+	end
+	---@type DoerAttrSetter
+	local doerAttrSetter = DoerAttrSetter.New(desc, doerAttrParser)
+	-- 设置属性、更改属性
+	local setAttrDict = cfgDoerEventStepData.setAttrDict
+	if not table.IsNilOrEmpty(setAttrDict) then
+		for attrName, attrValue in pairs(setAttrDict) do
+			doerAttrSetter:Set(attrName, attrValue, false)
+		end
+	end
+	local addAttrDict = cfgDoerEventStepData.add_attr_dict
+	if not table.IsNilOrEmpty(addAttrDict) then
+		for attrName, attrValue in pairs(addAttrDict) do
+			doerAttrSetter:Set(attrName, attrValue, true)
+		end
+	end
+
+	---@type User
+	local user
+	if IsInstanceOf(doerAttrParser:GetU(), "User") then
+		user = doerAttrParser:GetU()
+	elseif IsInstanceOf(doerAttrParser:GetO(), "User") then
+		user = doerAttrParser:GetO()
+	elseif IsInstanceOf(doerAttrParser:GetE(), "User") then
+		user = doerAttrParser:GetE()
+	else
+		user = global.client.user
+	end
+
+	-- 添加或者删除物品
+	local dealItemDict = cfgDoerEventStepData.deal_item_dict
+	if not table.IsNilOrEmpty(dealItemDict) then
+		user:DealItems(dealItemDict, doerAttrParser)
+	end
+
+	-- 接受任务
+	local acceptMissionIds = cfgDoerEventStepData.accept_mission_ids
+	if not table.IsNilOrEmpty(acceptMissionIds) then
+		for _, acceptMissionId in ipairs(acceptMissionIds) do
+			user:AcceptMission(owner, acceptMissionId)
+		end
+	end
 
 
-  ---@type User
-  local user
-  if IsInstanceOf(doerAttrParser:GetU(),"User") then
-    user = doerAttrParser:GetU()
-  elseif IsInstanceOf(doerAttrParser:GetO(),"User") then
-    user = doerAttrParser:GetO()
-  elseif IsInstanceOf(doerAttrParser:GetE(),"User") then
-    user = doerAttrParser:GetE()
-  else
-    user = global.client.user
-  end
+	-- 放弃任务
+	local giveUpMissionIds = cfgDoerEventStepData.give_up_mission_ids
+	if not table.IsNilOrEmpty(giveUpMissionIds) then
+		for _, giveUpMissionId in ipairs(giveUpMissionIds) do
+			user:GiveUpMission(giveUpMissionId)
+		end
+	end
 
-  -- 添加或者删除物品
-  local deal_item_dict = cfgDoerEventStepData.deal_item_dict
-  if not table.IsNilOrEmpty(deal_item_dict) then
-    user:DealItems(deal_item_dict, doerAttrParser)
-  end
+	-- 添加已完成任务
+	local addFinishedMissionIds = cfgDoerEventStepData.add_finished_mission_ids
+	if not table.IsNilOrEmpty(addFinishedMissionIds) then
+		for _, addFinishedMissionId in ipairs(addFinishedMissionIds) do
+			user:AddFinishedMissionId(addFinishedMissionId)
+		end
+	end
 
-  -- 接受任务
-  local accept_mission_ids = cfgDoerEventStepData.accept_mission_ids
-  if not table.IsNilOrEmpty(accept_mission_ids) then
-    for _, accept_mission_id in ipairs(accept_mission_ids) do
-      user:AcceptMission(owner, accept_mission_id)
-    end
-  end
+	-- 删除已完成任务
+	local removeFinishedMissionIds = cfgDoerEventStepData.remove_finished_mission_ids
+	if not table.IsNilOrEmpty(removeFinishedMissionIds) then
+		for _, removeFinishedMissionId in ipairs(removeFinishedMissionIds) do
+			user:RemoveFinishedMissionId(removeFinishedMissionId)
+		end
+	end
 
-
-  -- 放弃任务
-  local give_up_mission_ids = cfgDoerEventStepData.give_up_mission_ids
-  if not table.IsNilOrEmpty(give_up_mission_ids) then
-    for _, give_up_mission_id in ipairs(give_up_mission_ids) do
-      user:GiveUpMission(give_up_mission_id)
-    end
-  end
-
-  -- 添加已完成任务
-  local add_finished_mission_ids = cfgDoerEventStepData.add_finished_mission_ids
-  if not table.IsNilOrEmpty(add_finished_mission_ids) then
-    for _, add_finished_mission_id in ipairs(add_finished_mission_ids) do
-      user:AddFinishedMissionId(add_finished_mission_id)
-    end
-  end
-
-  -- 删除已完成任务
-  local remove_finished_mission_ids = cfgDoerEventStepData.remove_finished_mission_ids
-  if not table.IsNilOrEmpty(remove_finished_mission_ids) then
-    for _, remove_finished_mission_id in ipairs(remove_finished_mission_ids) do
-      user:RemoveFinishedMissionId(remove_finished_mission_id)
-    end
-  end
-
-  -- 检测完成任务
-  user:CheckAutoFinishMissions()
-  return 2
+	-- 检测完成任务
+	user:CheckAutoFinishMissions()
+	return 2
 end
 
 return DoerEvent

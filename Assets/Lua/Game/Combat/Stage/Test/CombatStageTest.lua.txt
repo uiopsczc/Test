@@ -2,20 +2,20 @@
 local CombatStageTest = Class("CombatStageTest", CombatStageBase)
 
 function CombatStageTest:Init()
-  CombatStageTest.super.Init(self)
-  self.is_show_fade = true
-  self.stage_name = "CombatStageTest"
+	CombatStageTest.super.Init(self)
+	self.isShowFade = true
+	self.stageName = "CombatStageTest"
 end
 
 function CombatStageTest:LoadPanels()
-  CombatStageTest.super.LoadPanels(self)
-  table.insert(self.panelList, global.client.uiManager:CreateChildPanel("UICombatTestPanel", UICombatTestPanel))
+	CombatStageTest.super.LoadPanels(self)
+	table.insert(self._panelList, global.client.uiManager:CreateChildPanel("UICombatTestPanel", UICombatTestPanel))
 end
 
 function CombatStageTest:Show()
-  CombatStageTest.super.Show(self)
-  self:StartCombat({ gameLevel_class_path = "game.combat.gameLevel.test.GameLevelTest", combat_class_path = "game.combat.combat.test.CombatTest" })
-  self:HideFade()
+	CombatStageTest.super.Show(self)
+	self:StartCombat({ gameLevelClassPath = "Game.Combat.GameLevel.Test.GameLevelTest", combatClassPath = "Game.Combat.Combat.Test.CombatTest" })
+	self:HideFade()
 end
 
 return CombatStageTest

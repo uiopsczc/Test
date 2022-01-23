@@ -3,24 +3,24 @@ local DOTweenPlugin = Class("DOTweenPlugin")
 
 function DOTweenPlugin:Init()
 	---@type table<string,CS.DG.Tweening.Tween>
-	self.dict = {}
+	self._dict = {}
 	---@type IdPool
-	self.idPool = IdPool.New()
+	self._idPool = IdPool.New()
 end
 
 ---@param key string
 ---@return CS.DG.Tweening.Sequence
 function DOTweenPlugin:AddDOTweenSequence(key)
 	self:CleanNotActiveDOTweens()
-	if key and self.dict[key] then
+	if key and self._dict[key] then
 		self:RemoveDOTween(key)
 	end
 	if not key then
-		key = tostring(self.idPool:Get())
+		key = tostring(self._idPool:Get())
 	end
 	---@type CS.DG.Tweening.Sequence
 	local sequence = CS.DG.Tweening.Sequence()
-	self.dict[key] = sequence
+	self._dict[key] = sequence
 	return sequence
 end
 
@@ -29,13 +29,13 @@ end
 ---@return CS.DG.Tweening.Tween
 function DOTweenPlugin:AddDOTween(key, tween)
 	self:CleanNotActiveDOTweens()
-	if key and self.dict[key] then
+	if key and self._dict[key] then
 		self:RemoveDOTween(key)
 	end
 	if not key then
-		key = tostring(self.idPool:Get())
+		key = tostring(self._idPool:Get())
 	end
-	self.dict[key] = tween
+	self._dict[key] = tween
 	return tween
 end
 
@@ -44,15 +44,15 @@ function DOTweenPlugin:RemoveDOTween(keyOrTween)
 	if IsString(keyOrTween) then
 		local key = keyOrTween
 		self:CleanNotActiveDOTweens()
-		if self.dict[key] and self.dict[key]:IsActive() then
-			self.dict[key]:Kill()
+		if self._dict[key] and self._dict[key]:IsActive() then
+			self._dict[key]:Kill()
 		end
-		self.dict[key] = nil
-		self.idPool:Despawn(key)
+		self._dict[key] = nil
+		self._idPool:Despawn(key)
 	else
 		local tween = keyOrTween
 		local key
-		for curKey, curTween in pairs(self.dict) do
+		for curKey, curTween in pairs(self._dict) do
 			if curTween == tween then
 				key = curKey
 				break
@@ -65,28 +65,28 @@ function DOTweenPlugin:RemoveDOTween(keyOrTween)
 end
 
 function DOTweenPlugin:CleanNotActiveDOTweens()
-	for curKey, curTween in pairs(self.dict) do
+	for curKey, curTween in pairs(self._dict) do
 		if not curTween:IsActive() then
-			self.dict[curKey] = nil
-			self.idPool:Despawn(curKey)
+			self._dict[curKey] = nil
+			self._idPool:Despawn(curKey)
 		end
 	end
 end
 
 function DOTweenPlugin:RemoveAllDOTweens()
-	for curKey, curTween in pairs(self.dict) do
+	for curKey, curTween in pairs(self._dict) do
 		if curTween:IsActive() then
 			curTween:Kill()
 		end
 	end
-	self.dict = {}
-	self.idPool:DespawnAll()
+	self._dict = {}
+	self._idPool:DespawnAll()
 end
 
-function DOTweenPlugin:SetIsPaused(is_paused)
-	for curKey, curTween in pairs(self.dict) do
+function DOTweenPlugin:SetIsPaused(isPaused)
+	for curKey, curTween in pairs(self._dict) do
 		if curTween:IsActive() then
-			if is_paused then
+			if isPaused then
 				curTween:Pause()
 			else
 				curTween:Play()

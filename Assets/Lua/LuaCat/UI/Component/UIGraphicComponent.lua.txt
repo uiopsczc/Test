@@ -3,7 +3,7 @@ local UIGraphicComponent = Class("UIGraphicComponent", GraphicComponent)
 
 function UIGraphicComponent:SetGameObject(gameObject, isNotDestroyGameObject)
 	UIGraphicComponent.super.SetGameObject(self, gameObject, isNotDestroyGameObject)
-	self.entity:Open()
+	self:GetEntity():Open()
 end
 
 return UIGraphicComponent

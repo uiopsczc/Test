@@ -3,15 +3,15 @@ local StageTest = Class("StageTest", StageBase)
 
 function StageTest:Init()
 	StageTest.super.Init(self)
-	self.isShowFade = true
-	self.isShowLoading = false
-	self.stageName = "StageTest"
-	self.scenePath = "Assets/Resources/common/ui/scene/StageTestScene.unity"
+	self:SetIsShowFade(true)
+	self:SetIsShowLoading(false)
+	self:SetStageName("StageTest")
+	self:SetScenePath("Assets/PatchResources/Scenes/StageTestScene.unity")
 end
 
 function StageTest:LoadPanels()
 	StageTest.super.LoadPanels(self)
-	table.insert(self.panelList, global.client.uiManager:CreateChildPanel("UITestPanel", require("luacat.ui.common.UITest.UITestPanel")))
+	table.insert(self._panelList, global.client.uiManager:CreateChildPanel("UITestPanel", require("LuaCat.UI.Common.UITest.UITestPanel")))
 end
 
 function StageTest:Show()

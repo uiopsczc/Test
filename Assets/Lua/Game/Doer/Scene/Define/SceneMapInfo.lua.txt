@@ -1,13 +1,13 @@
 ---@class SceneMapInfo
 local SceneMapInfo = Class("SceneMapInfo")
 
-function SceneMapInfo:Init(grids,project_grids,offset_pos_x,offset_pos_y)
-  ---@type number[][]
-  self.grids = grids
-  ---@type number[][]
-  self.project_grids = project_grids
-  ---@type Vector2
-  self.offset_pos = Vector2.New(offset_pos_x,offset_pos_y)
+function SceneMapInfo:Init(grids, projectGrids, offsetPosX, offsetPosY)
+	---@type number[][]
+	self.grids = grids
+	---@type number[][]
+	self.projectGrids = projectGrids
+	---@type Vector2
+	self.offsetPos = Vector2.New(offsetPosX, offsetPosY)
 end
 
 return SceneMapInfo

@@ -1,27 +1,30 @@
-local UIHUDTextBase = require("luacat.ui.common.UIHUD.UIHUDTextBase.UIHUDTextBase")
+local UIHUDTextBase = require("LuaCat.UI.Common.UIHUD.UIHUDTextBase.UIHUDTextBase")
 ---@class UIHUDNumber:UIHUDTextBase
 local UIHUDNumber = Class("UIHUDNumber", UIHUDTextBase)
 
-function UIHUDNumber:Init(parent_transform)
-	UIHUDNumber.super.Init(self, parent_transform)
-	self.defaultShowDuration = 1
-	self.durationHalf = self.defaultShowDuration * 0.5
+function UIHUDNumber:Init(parentTransform)
+	UIHUDNumber.super.Init(self, parentTransform)
+	self._defaultShowDuration = 1
+	self._halfDuration = self._defaultShowDuration * 0.5
+end
+
+function UIHUDNumber:AddLogicEvents()
 	self:AddListener(GlobalEventNameConst.Update, self.Update)
 end
 
 ---@param randomManager RandomManager
 function UIHUDNumber:SetRandomManager(randomManager)
-	self.randomManager = randomManager
+	self._randomManager = randomManager
 end
 
 ---@return RandomManager
 function UIHUDNumber:GetRandomManager()
-	return self.randomManager
+	return self._randomManager or global.client.randomManager
 end
 
 function UIHUDNumber:Show(spawnWorldPosition, showString, color)
 	self:InvokeAfterAllAssetsLoadDone(function()
-		self.duration = self.defaultShowDuration
+		self._duration = self._defaultShowDuration
 		local curSpawnWorldPosition
 		if IsFunction(spawnWorldPosition) then
 			curSpawnWorldPosition = spawnWorldPosition()
@@ -36,18 +39,18 @@ function UIHUDNumber:Show(spawnWorldPosition, showString, color)
 			curSpawnWorldPosition = spawnWorldPosition.position
 		end
 
-		self.spawnUIPosition = CameraUtil.WorldToUIPos(nil, global.client.combat.cameraManager.main_cameraBase.camera, curSpawnWorldPosition)
-		self.textComp.text = showString
-		self.textComp.color = color
+		self._spawnUIPosition = CameraUtil.WorldToUIPos(nil, global.client.combat.cameraManager.mainCameraBase.camera, curSpawnWorldPosition)
+		self._textComp.text = showString
+		self._textComp.color = color
 
 		if self:GetRandomManager():RandomBoolean() then
-			self.posDiffX = self:GetRandomManager():RandomFloat(30, 100)
+			self._posDiffX = self:GetRandomManager():RandomFloat(30, 100)
 		else
-			self.posDiffX = self:GetRandomManager():RandomFloat(-100, -30)
+			self._posDiffX = self:GetRandomManager():RandomFloat(-100, -30)
 		end
-		self.posDiffY = self:GetRandomManager():RandomFloat(50, 100)
-		self.isShowing = true
-		self.graphicComponent:SetIsShow(true)
+		self._posDiffY = self:GetRandomManager():RandomFloat(50, 100)
+		self._isShowing = true
+		self:GetGraphicComponent():SetIsShow(true)
 		self:UpdatePos(0)
 	end)
 end
@@ -60,39 +63,39 @@ function UIHUDNumber:Update(deltaTime, unscaledDeltaTime)
 end
 
 function UIHUDNumber:UpdatePos(deltaTime)
-	if not self.isShowing then
+	if not self._isShowing then
 		return
 	end
-	self.duration = self.duration - deltaTime
-	if self.duration <= 0 then
+	self._duration = self._duration - deltaTime
+	if self._duration <= 0 then
 		self:Reset()
 		return
 	end
 
-	if self.duration > self.durationHalf then
-		self.__posDiffY = EaseCat.Cubic.EaseOut2(0, self.posDiffY, (self.defaultShowDuration - self.duration) / self.durationHalf)
+	if self._duration > self._halfDuration then
+		self._posDiffY = EaseCat.Cubic.EaseOut2(0, self._posDiffY, (self._defaultShowDuration - self._duration) / self._halfDuration)
 	else
-		self.__posDiffY = EaseCat.Cubic.EaseIn2(self.posDiffY, 0, (self.durationHalf - self.duration) / self.durationHalf)
+		self._posDiffY = EaseCat.Cubic.EaseIn2(self._posDiffY, 0, (self._halfDuration - self._duration) / self._halfDuration)
 	end
 
-	local pct = (self.defaultShowDuration - self.duration) / self.defaultShowDuration
-	self.__posDiffX = EaseCat.Linear.EaseNone2(0, self.posDiffX, pct)
+	local pct = (self._defaultShowDuration - self._duration) / self._defaultShowDuration
+	self._posDiffX = EaseCat.Linear.EaseNone2(0, self._posDiffX, pct)
 
-	if not self.isFading and pct >= 0.8 then
-		self.isFading = true
-		self.textComp:DOFade(0.2, self.duration)
+	if not self._isFading and pct >= 0.8 then
+		self._isFading = true
+		self._textComp:DOFade(0.2, self._duration)
 	end
 
-	local pos = self.spawnUIPosition + Vector2(self.__posDiffX, self.__posDiffY)
-	self.graphicComponent.rectTransform.anchoredPosition = pos
+	local pos = self._spawnUIPosition + Vector2(self._posDiffX, self._posDiffY)
+	self:GetGraphicComponent():GetRectTransform().anchoredPosition = pos
 end
 
-function UIHUDNumber:__Reset()
-	UIHUDNumber.super.__Reset(self)
-	self.graphicComponent:SetIsShow(false)
-	self.duration = self.defaultShowDuration
-	self.isShowing = false
-	self.isFading = false
+function UIHUDNumber:_Reset()
+	UIHUDNumber.super._Reset(self)
+	self:GetGraphicComponent():SetIsShow(false)
+	self._duration = self._defaultShowDuration
+	self._isShowing = false
+	self._isFading = false
 end
 
 return UIHUDNumber

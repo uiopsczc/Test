@@ -2,34 +2,32 @@
 local Role = Class("Role", Critter)
 
 function Role:Init()
-  Role.super.Init(self)
+	Role.super.Init(self)
 end
 
 function Role:OnInit()
-  Role.super.OnInit(self)
+	Role.super.OnInit(self)
 end
 
 function Role:GetCfgRoleData()
-  CfgRole.get_by_id(self:GetId())
+	CfgRole.get_by_id(self:GetId())
 end
 
 --------------------------OnXXX-------------------
 function Role:OnCheckAddRole(user)
-  return true
+	return true
 end
 
 function Role:OnAddRole(user)
-  return true
+	return true
 end
 
 function Role:OnCheckRemoveRole(user)
-  return true
+	return true
 end
 
 function Role:RemoveRole(user)
-  return true
+	return true
 end
-
-
 
 return Role

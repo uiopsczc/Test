@@ -1,4 +1,4 @@
-local EventDispatcher = require("luacat.eventDispatcher.EventDispatcher")
+local EventDispatcher = require("LuaCat.EventDispatcher.EventDispatcher")
 -- 更新管理，负责Unity侧Update、LateUpdate、FixedUpdate对Lua脚本的调用
 -- 注意：
 -- 1、别直接用tolua的UpdateBeat、LateUpdateBeat、FixedUpdateBeat，所有需要以上三个更新函数的脚本，都从这里注册。
@@ -7,14 +7,14 @@ local EventDispatcher = require("luacat.eventDispatcher.EventDispatcher")
 ---@field _updateHandle
 ---@field _lateUpdateHandle
 ---@field _fixedUpdateHandle
----@field eventDispatcher EventDispatcher
+---@field _eventDispatcher EventDispatcher
 local UpdateManager = Class("UpdateManager")
 
 function UpdateManager:Init()
 	self._updateHandle = nil
 	self._lateUpdateHandle = nil
 	self._fixedUpdateHandle = nil
-	self.eventDispatcher = EventDispatcher.New()
+	self._eventDispatcher = EventDispatcher.New()
 	self:Start()
 end
 
@@ -29,42 +29,41 @@ end
 
 -- 广播Update
 function UpdateManager:UpdateHandle()
-	self.eventDispatcher:Broadcast(GlobalEventNameConst.Update, Time.deltaTime, Time.unscaledDeltaTime)
+	self._eventDispatcher:Broadcast(GlobalEventNameConst.Update, Time.deltaTime, Time.unscaledDeltaTime)
 end
 -- 广播LateUpdate
 function UpdateManager:LateUpdateHandle()
-	self.eventDispatcher:Broadcast(GlobalEventNameConst.LateUpdate, Time.deltaTime, Time.unscaledDeltaTime)
+	self._eventDispatcher:Broadcast(GlobalEventNameConst.LateUpdate, Time.deltaTime, Time.unscaledDeltaTime)
 end
 -- 广播FixedUpdate
 function UpdateManager:FixedUpdateHandle()
-	self.eventDispatcher:Broadcast(GlobalEventNameConst.FixedUpdate, Time.fixedDeltaTime, Time.unscaledDeltaTime)
-	--self.eventDispatcher:Broadcast(UpdateManagerEventName.FixedUpdate,Time.fixedDeltaTime, Time.fixedUnscaledDeltaTime)
+	self._eventDispatcher:Broadcast(GlobalEventNameConst.FixedUpdate, Time.fixedDeltaTime, Time.unscaledDeltaTime)
 end
 
 -- 添加Update更新
 function UpdateManager:AddUpdate(listener)
-	self.eventDispatcher:AddListener(GlobalEventNameConst.Update, listener)
+	self._eventDispatcher:AddListener(GlobalEventNameConst.Update, listener)
 end
 -- 添加LateUpdate更新
 function UpdateManager:AddLateUpdate(listener)
-	self.eventDispatcher:AddListener(GlobalEventNameConst.LateUpdate, listener)
+	self._eventDispatcher:AddListener(GlobalEventNameConst.LateUpdate, listener)
 end
 -- 添加FixedUpdate更新
 function UpdateManager:AddFixedUpdate(listener)
-	self.eventDispatcher:AddListener(GlobalEventNameConst.FixedUpdate, listener)
+	self._eventDispatcher:AddListener(GlobalEventNameConst.FixedUpdate, listener)
 end
 
 -- 移除Update更新
 function UpdateManager:RemoveUpdate(listener)
-	self.eventDispatcher:RemoveListener(GlobalEventNameConst.Update, listener)
+	self._eventDispatcher:RemoveListener(GlobalEventNameConst.Update, listener)
 end
 -- 移除LateUpdate更新
 function UpdateManager:RemoveLateUpdate(listener)
-	self.eventDispatcher:RemoveListener(GlobalEventNameConst.LateUpdate, listener)
+	self._eventDispatcher:RemoveListener(GlobalEventNameConst.LateUpdate, listener)
 end
 -- 移除FixedUpdate更新
 function UpdateManager:RemoveFixedUpdate(listener)
-	self.eventDispatcher:RemoveListener(GlobalEventNameConst.FixedUpdate, listener)
+	self._eventDispatcher:RemoveListener(GlobalEventNameConst.FixedUpdate, listener)
 end
 
 function UpdateManager:Destroy()
@@ -80,8 +79,8 @@ function UpdateManager:Destroy()
 		FixedUpdateBeat:RemoveListener(self._fixedUpdateHandle)
 		self._fixedUpdateHandle = nil
 	end
-	self.eventDispatcher:Clear()
-	self.eventDispatcher = nil
+	self._eventDispatcher:Clear()
+	self._eventDispatcher = nil
 end
 
 return UpdateManager

@@ -6,6 +6,6 @@ FactionConst.A_Faction = "A"
 FactionConst.B_Faction = "B"
 FactionConst.C_Faction = "C"
 
-FactionConst.Faction_List = {FactionConst.A_Faction ,FactionConst.B_Faction,FactionConst.C_Faction}
+FactionConst.Faction_List = { FactionConst.A_Faction, FactionConst.B_Faction, FactionConst.C_Faction }
 
 return FactionConst

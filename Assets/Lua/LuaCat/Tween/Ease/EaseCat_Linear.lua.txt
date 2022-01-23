@@ -17,7 +17,9 @@ function EaseCat_Linear.EaseInOut(t, b, c, d)
 	return c * t / d + b
 end
 
--------------------------------------------------------------------------
+----------------------------------------------------------------------
+--
+----------------------------------------------------------------------
 function EaseCat_Linear.EaseNone2(startValue, endValue, pct)
 	return EaseCat_Linear.EaseNone(pct, startValue, endValue - startValue, 1)
 end

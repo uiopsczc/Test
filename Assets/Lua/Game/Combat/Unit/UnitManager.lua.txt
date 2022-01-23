@@ -1,117 +1,116 @@
 ---@class UnitManager:TickObject
 local UnitManager = Class("UnitManager", TickObject)
 
-
 function UnitManager:Init(...)
-  UnitManager.super.Init(self, ...)
-  self.graphicComponent:SetGameObject(GameObject.Find("UnitManager") or GameObject("UnitManager"))
-  ---@type table<string,Unit> @key是faction
-  self.unit_dict = {}
-  self:InitFactionUnitDict()
-  self:InitFactionStateInfoDict()
+	UnitManager.super.Init(self, ...)
+	self._graphicComponent:SetGameObject(GameObject.Find("UnitManager") or GameObject("UnitManager"))
+	---@type table<string,Unit> @key是faction
+	self.unitDict = {}
+	self:InitFactionUnitDict()
+	self:InitFactionStateInfoDict()
 
-  self:AddListener(UnitEventNameConst.On_Unit_Guid_Change, function(...)
-    self:OnUnitGuidChange(...)
-  end)
-  self:AddListener(UnitEventNameConst.On_Unit_Faction_Change, function(...)
-    self:OnUnitFactionChange(...)
-  end)
+	self:AddListener(UnitEventNameConst.On_Unit_Guid_Change, function(...)
+		self:OnUnitGuidChange(...)
+	end)
+	self:AddListener(UnitEventNameConst.On_Unit_Faction_Change, function(...)
+		self:OnUnitFactionChange(...)
+	end)
 end
 
 function UnitManager:__Update(deltaTime, unscaledDeltaTime)
-  UnitManager.super.__Update(self, deltaTime, unscaledDeltaTime)
-  for _,unit in pairs(self.unit_dict) do
-    if not unit:IsDead() and not unit:IsDestroyed() then
-      unit:ReduceSpellCooldown(deltaTime)
-    end
-  end
+	UnitManager.super.__Update(self, deltaTime, unscaledDeltaTime)
+	for _, unit in pairs(self.unitDict) do
+		if not unit:IsDead() and not unit:IsDestroyed() then
+			unit:ReduceSpellCoolDown(deltaTime)
+		end
+	end
 end
 
-function UnitManager:CreateUnit(arg_dict)
-  local unit_old = self:GetUnit(arg_dict.guid)
-  if unit_old then
-    self:RemoveUnit(unit_old:GetGuid())
-  end
-  local unit = self:AddChild(arg_dict.guid, Unit)
-  unit:Build(arg_dict)
-  self.unit_dict[unit.key] = unit
-  self.faction_unit_dict[unit:GetFaction()][unit:GetGuid()] = unit
-  if unit.cfgUnitData.ai_class_path_lua then
-    unit:RunAI(unit.cfgUnitData.ai_class_path_lua)
-  end
-  return unit
+function UnitManager:CreateUnit(argDict)
+	local unitOld = self:GetUnit(argDict.guid)
+	if unitOld then
+		self:RemoveUnit(unitOld:GetGuid())
+	end
+	local unit = self:AddChild(argDict.guid, Unit)
+	unit:Build(argDict)
+	self.unitDict[unit.key] = unit
+	self.factionUnitDict[unit:GetFaction()][unit:GetGuid()] = unit
+	if unit.cfgUnitData.aiClassPathLua then
+		unit:RunAI(unit.cfgUnitData.aiClassPathLua)
+	end
+	return unit
 end
 
 ---@param unit Unit
-function UnitManager:UpdateUnit(unit, arg_dict)
-  local new_guid = arg_dict.guid
-  local old_guid = unit:GetGuid()
-  if new_guid and old_guid then
-    self:Broadcast(UnitEventNameConst.On_Unit_Guid_Change, old_guid, new_guid)
-  end
-  if new_guid then
-    arg_dict.guid = nil
-  end
-  unit:UpdateUnit(arg_dict)
+function UnitManager:UpdateUnit(unit, argDict)
+	local newGuid = argDict.guid
+	local oldGuid = unit:GetGuid()
+	if newGuid and oldGuid then
+		self:Broadcast(UnitEventNameConst.On_Unit_Guid_Change, oldGuid, newGuid)
+	end
+	if newGuid then
+		argDict.guid = nil
+	end
+	unit:UpdateUnit(argDict)
 end
 
 function UnitManager:GetUnit(guid)
-  return self:GetChild(guid)
+	return self:GetChild(guid)
 end
 
 function UnitManager:GetUnitDict()
-  return self.unit_dict
+	return self.unitDict
 end
 
 function UnitManager:RemoveUnit(guid)
-  local unit = self:GetUnit(guid)
-  if unit then
-    self:RemoveChild(guid)
-    self.unit_dict[guid] = nil
-    if unit:GetFaction() then
-      self.faction_unit_dict[unit:GetFaction()][guid] = nil
-    end
-  end
+	local unit = self:GetUnit(guid)
+	if unit then
+		self:RemoveChild(guid)
+		self.unitDict[guid] = nil
+		if unit:GetFaction() then
+			self.factionUnitDict[unit:GetFaction()][guid] = nil
+		end
+	end
 end
 
-function UnitManager:OnUnitGuidChange(old_guid, new_guid)
-  local unit = self:GetUnit(old_guid)
-  if unit and old_guid ~= new_guid then
-    self.unit_dict[old_guid] = nil
-    self.keyToChildDict[old_guid] = nil
-    local index = table.IndexOf_Array(self.children_key_list, old_guid)
+function UnitManager:OnUnitGuidChange(oldGuid, newGuid)
+	local unit = self:GetUnit(oldGuid)
+	if unit and oldGuid ~= newGuid then
+		self.unitDict[oldGuid] = nil
+		self.keyToChildDict[oldGuid] = nil
+		local index = table.IndexOf_Array(self.childrenKeyList, oldGuid)
 
-    self.unit_dict[new_guid] = unit
-    self.keyToChildDict[new_guid] = unit
-    self.children_key_list[index] = new_guid
-  end
+		self.unitDict[newGuid] = unit
+		self.keyToChildDict[newGuid] = unit
+		self.childrenKeyList[index] = newGuid
+	end
 end
 
 ----------------------------------------------------------------------
 -- Faction相关
 ----------------------------------------------------------------------
 function UnitManager:InitFactionUnitDict()
-  ---@type table<string,table<string,Unit>>  @key是faction,sub_key是guid
-  self.faction_unit_dict = {}
-  for _, faction in ipairs(FactionConst.Faction_List) do
-    self.faction_unit_dict[faction] = {}
-  end
+	---@type table<string,table<string,Unit>>  @key是faction,sub_key是guid
+	self.factionUnitDict = {}
+	for _, faction in ipairs(FactionConst.Faction_List) do
+		self.factionUnitDict[faction] = {}
+	end
 end
 
 function UnitManager:InitFactionStateInfoDict()
-  -- 初始化阵营间能否攻击，加血等
-  ---@type table<string,table<string,FactionState>>
-  self.factionState_dict = {}
+	-- 初始化阵营间能否攻击，加血等
+	---@type table<string,table<string,FactionState>>
+	self.factionState_dict = {}
 
-  self:SetFactionStateIsCanAttack(FactionConst.A_Faction, FactionConst.A_Faction, false)
-  self:SetFactionStateIsCanHelp(FactionConst.A_Faction, FactionConst.A_Faction, true)
-  self:SetFactionStateIsCanAttack(FactionConst.A_Faction, FactionConst.B_Faction, true)
-  self:SetFactionStateIsCanHelp(FactionConst.A_Faction, FactionConst.B_Faction, false)
+	self:SetFactionStateIsCanAttack(FactionConst.A_Faction, FactionConst.A_Faction, false)
+	self:SetFactionStateIsCanHelp(FactionConst.A_Faction, FactionConst.A_Faction, true)
+	self:SetFactionStateIsCanAttack(FactionConst.A_Faction, FactionConst.B_Faction, true)
+	self:SetFactionStateIsCanHelp(FactionConst.A_Faction, FactionConst.B_Faction, false)
 
-  self:SetFactionStateIsCanAttack(FactionConst.B_Faction, FactionConst.A_Faction, true)
-  self:SetFactionStateIsCanHelp(FactionConst.B_Faction, FactionConst.A_Faction, false)
-  self:SetFactionStateIsCanAttack(FactionConst.B_Faction, FactionConst.B_Faction, false)
-  self:SetFactionStateIsCanHelp(FactionConst.B_Faction, FactionConst.B_Faction, true)
+	self:SetFactionStateIsCanAttack(FactionConst.B_Faction, FactionConst.A_Faction, true)
+	self:SetFactionStateIsCanHelp(FactionConst.B_Faction, FactionConst.A_Faction, false)
+	self:SetFactionStateIsCanAttack(FactionConst.B_Faction, FactionConst.B_Faction, false)
+	self:SetFactionStateIsCanHelp(FactionConst.B_Faction, FactionConst.B_Faction, true)
 end
 
 -- 如果找敌人，找“不是自己阵营且单向阵营关系can_attack = true”
@@ -119,193 +118,194 @@ end
 -- check_state 参数：
 -- 1. enemy 判断是否敌人
 -- 2. friend 判断是否自己人
-function UnitManager:CheckFaction(faction1, faction2, check_state)
-  if faction2 then
-    local factionState = self.factionState_dict[faction1][faction2]
-    -- 找敌人
-    if check_state == "enemy" then
-      if faction1 ~= faction2 and factionState.is_can_attack then
-        return true
-      end
-    elseif check_state == "friend" then
-      -- 找自己人
-      if faction1 == faction2 or factionState.is_can_help then
-        return true
-      end
-    else
-      -- all
-      return true
-    end
-  end
+function UnitManager:CheckFaction(faction1, faction2, checkState)
+	if faction2 then
+		local factionState = self.factionState_dict[faction1][faction2]
+		-- 找敌人
+		if checkState == "enemy" then
+			if faction1 ~= faction2 and factionState.is_can_attack then
+				return true
+			end
+		elseif checkState == "friend" then
+			-- 找自己人
+			if faction1 == faction2 or factionState.is_can_help then
+				return true
+			end
+		else
+			-- all
+			return true
+		end
+	end
 end
 
-function UnitManager:SetFactionState(faction1, faction2, state_key, state_value, is_both_set)
-  if faction1 and faction2 then
-    if not self.factionState_dict[faction1] then
-      self.factionState_dict[faction1] = {}
-    end
-    if not self.factionState_dict[faction1][faction2] then
-      self.factionState_dict[faction1][faction2] = FactionState.New()
-    end
-    self.factionState_dict[faction1][faction2][state_key] = state_value
+function UnitManager:SetFactionState(faction1, faction2, stateKey, stateValue, isBothSet)
+	if faction1 and faction2 then
+		if not self.factionState_dict[faction1] then
+			self.factionState_dict[faction1] = {}
+		end
+		if not self.factionState_dict[faction1][faction2] then
+			self.factionState_dict[faction1][faction2] = FactionState.New()
+		end
+		self.factionState_dict[faction1][faction2][stateKey] = stateValue
 
-    if is_both_set then
-      self:SetFactionState(faction2, faction1, state_key, state_value)
-    end
-  end
+		if isBothSet then
+			self:SetFactionState(faction2, faction1, stateKey, stateValue)
+		end
+	end
 end
 
-function UnitManager:SetFactionStateIsCanAttack(faction1, faction2, is_can_attack, is_both_set)
-  self:SetFactionState(faction1, faction2, "is_can_attack", is_can_attack, is_both_set)
+function UnitManager:SetFactionStateIsCanAttack(faction1, faction2, isCanAttack, isBothSet)
+	self:SetFactionState(faction1, faction2, "is_can_attack", isCanAttack, isBothSet)
 end
 
-function UnitManager:SetFactionStateIsCanHelp(faction1, faction2, is_can_help, is_both_set)
-  self:SetFactionState(faction1, faction2, "is_can_help", is_can_help, is_both_set)
+function UnitManager:SetFactionStateIsCanHelp(faction1, faction2, isCanHelp, isBothSet)
+	self:SetFactionState(faction1, faction2, "is_can_help", isCanHelp, isBothSet)
 end
 
-function UnitManager:OnUnitFactionChange(unit_guid, old_faction, new_faction)
-  local unit = self:GetUnit(unit_guid)
-  if unit and old_faction ~= new_faction then
-    self.faction_unit_dict[old_faction][unit_guid] = nil
-    self.faction_unit_dict[new_faction][unit_guid] = unit
-  end
+function UnitManager:OnUnitFactionChange(unitGuid, oldFaction, newFaction)
+	local unit = self:GetUnit(unitGuid)
+	if unit and oldFaction ~= newFaction then
+		self.factionUnitDict[oldFaction][unitGuid] = nil
+		self.factionUnitDict[newFaction][unitGuid] = unit
+	end
 end
 
-function UnitManager:GetMatchFactionList(faction, check_scope)
-  local faction_list = {}
-  for _, _faction in ipairs(FactionConst.Faction_List) do
-    if self:CheckFaction(_faction, faction, check_scope) then
-      table.insert(faction_list, _faction)
-    end
-  end
-  return faction_list
+function UnitManager:GetMatchFactionList(faction, checkScope)
+	local factionList = {}
+	for _, curFaction in ipairs(FactionConst.Faction_List) do
+		if self:CheckFaction(curFaction, faction, checkScope) then
+			table.insert(factionList, curFaction)
+		end
+	end
+	return factionList
 end
 
-function UnitManager:GetFactionUnitList(faction_list)
-  local faction_unit_list = {}
-  for _, faction in ipairs(faction_list) do
-    for _, unit in pairs(self.faction_unit_dict[faction]) do
-      table.insert(faction_unit_list, unit)
-    end
-  end
-  return faction_unit_list
+function UnitManager:GetFactionUnitList(factionList)
+	local factionUnitList = {}
+	for _, faction in ipairs(factionList) do
+		for _, unit in pairs(self.factionUnitDict[faction]) do
+			table.insert(factionUnitList, unit)
+		end
+	end
+	return factionUnitList
 end
 ----------------------------------------------------------------------
 -- 选择Unit相关
 ----------------------------------------------------------------------
 ---@return Unit[]
-function UnitManager:SelectUnit(condition_dict)
-  local range_info = condition_dict.range_info
-  local origin = condition_dict.origin
-  local start_position = origin
-  local scope = condition_dict.scope
-  if not IsVector3(origin) then
-    start_position = origin:GetPosition()
-  end
-  local max_distance = range_info.radius
-  if range_info.mode == "rect" then
-    max_distance = math.max(max_distance or 0, range_info.height)
-    max_distance = math.max(max_distance, range_info.width)
-  end
+function UnitManager:SelectUnit(conditionDict)
+	local rangeInfo = conditionDict.rangeInfo
+	local origin = conditionDict.origin
+	local startPosition = origin
+	local scope = conditionDict.scope
+	if not IsVector3(origin) then
+		startPosition = origin:GetPosition()
+	end
+	local maxDistance = rangeInfo.radius
+	if rangeInfo.mode == "rect" then
+		maxDistance = math.max(maxDistance or 0, rangeInfo.height)
+		maxDistance = math.max(maxDistance, rangeInfo.width)
+	end
 
-  local order = condition_dict.order
-  local faction = condition_dict.faction
-  local candidate_list = condition_dict.candidate_list
-  local is_only_attackable = condition_dict.is_only_attackable
-  local is_can_select_hide_unit = condition_dict.is_can_select_hide_unit
+	local order = conditionDict.order
+	local faction = conditionDict.faction
+	local candidateList = conditionDict.candidateList
+	local isOnlyAttackable = conditionDict.isOnlyAttackable
+	local isCanSelectHideUnit = conditionDict.isCanSelectHideUnit
 
-  local target_unit_list = {}
-  local match_faction_list = self:GetMatchFactionList(faction, scope)
+	local targetUnitList = {}
+	local matchFactionList = self:GetMatchFactionList(faction, scope)
 
-  -- 有候选目标时，则在候选目标里选择，不考虑忽略阵营
-  local check_unit_list = candidate_list or self:GetFactionUnitList(match_faction_list)
-  for _, unit in ipairs(check_unit_list) do
-    if not unit:IsDestroyed() and not unit:IsDead() and
-        self:__CheckUnit(unit, origin, range_info, faction, scope, is_only_attackable, is_can_select_hide_unit) then
-      table.insert(target_unit_list, unit)
-    end
-  end
+	-- 有候选目标时，则在候选目标里选择，不考虑忽略阵营
+	local checkUnitList = candidateList or self:GetFactionUnitList(matchFactionList)
+	for _, unit in ipairs(checkUnitList) do
+		if not unit:IsDestroyed() and not unit:IsDead() and
+			self:__CheckUnit(unit, origin, rangeInfo, faction, scope, isOnlyAttackable, isCanSelectHideUnit) then
+			table.insert(targetUnitList, unit)
+		end
+	end
 
-  if order == "distance" and #target_unit_list > 1 then
-    table.QuickSort_Array(target_unit_list, function(a, b)
-      return a:Distance(origin) <= b:Distance(origin)
-    end)
-  end
-  return target_unit_list
+	if order == "distance" and #targetUnitList > 1 then
+		table.QuickSort_Array(targetUnitList, function(a, b)
+			return a:Distance(origin) <= b:Distance(origin)
+		end)
+	end
+	return targetUnitList
 end
 
 ---@param unit Unit
 ---@param origin @原点
-function UnitManager:__CheckUnit(unit, origin, range_info, faction, scope, is_only_attackable, is_can_select_hide_unit)
-  if unit.cfgUnitData.type == "技能物体" then
-    return
-  end
-  if is_only_attackable then
-    if unit:IsInvincible() then
-      return false
-    end
-  end
-  if scope ~= "all" then
-    if (not scope) or (scope and scope ~= "friend") then
-      if not self:CheckFaction(faction, unit:GetFaction(), "enemy") then
-        return false
-      end
-    else
-      if not self:CheckFaction(faction, unit:GetFaction(), "friend") then
-        return false
-      end
-    end
-  end
-  if not is_can_select_hide_unit then
-    if unit:IsHide() and not unit:IsExpose() then
-      return false
-    end
-  end
-  if not origin or not range_info then
-    return false
-  end
+function UnitManager:__CheckUnit(unit, origin, rangeInfo, faction, scope, isOnlyAttackable, isCanSelectHideUnit)
+	if unit.cfgUnitData.type == "技能物体" then
+		return
+	end
+	if isOnlyAttackable then
+		if unit:IsInvincible() then
+			return false
+		end
+	end
+	if scope ~= "all" then
+		if (not scope) or (scope and scope ~= "friend") then
+			if not self:CheckFaction(faction, unit:GetFaction(), "enemy") then
+				return false
+			end
+		else
+			if not self:CheckFaction(faction, unit:GetFaction(), "friend") then
+				return false
+			end
+		end
+	end
+	if not isCanSelectHideUnit then
+		if unit:IsHide() and not unit:IsExpose() then
+			return false
+		end
+	end
+	if not origin or not rangeInfo then
+		return false
+	end
 
-  if range_info.mode == "circle" then
-    local radius = range_info.radius
-    if not radius or radius < 0 then
-      return false
-    end
-    if unit:Distance(origin) > radius then
-      return false
-    end
-    local angle = range_info.angle
-    if not angle then
-      return true
-    end
-    local forward = range_info.rotation:Forward()
-    if not IsVector3(origin) then
-      origin = origin:GetPosition()
-    end
-    local right = forward * Quaternion.AngleAxis(90)
-    local dir_r = (unit:GetPosition() + (right * radius)) - origin
-    local dir_l = (unit:GetPosition() + (-right * radius)) - origin
-    return (Vector3.Angle(forward, dir_l) < angle / 2) or (Vector3.Angle(forward, dir_r) < angle / 2)
-  elseif range_info.mode == "rect" then
-    if not range_info.height or not range_info.width or range_info.height < 0 or range_info.width < 0 then
-      return false
-    end
-    if not range_info.rotation then
-      range_info.rotation = Quaternion.New(0, 0, 0, 0)
-    end
-    local pos = unit:GetPosition()
-    if not IsVector3(origin) then
-      origin = origin:GetPosition()
-    end
-    pos = pos - origin
-    pos = pos * (-range_info.rotation)
-    local unit_radius = unit:GetRadius() or 0
-    if range_info.is_use_center then
-      return math.abs(pos.x) < range_info.width / 2 + unit_radius and math.abs(pos.z) < range_info.height / 2 + unit_radius
-    else--左下角
-      return math.abs(pos.x) < range_info.width + unit_radius and math.abs(pos.z) < range_info.height + unit_radius
-    end
-  end
-  return false
+	if rangeInfo.mode == "circle" then
+		local radius = rangeInfo.radius
+		if not radius or radius < 0 then
+			return false
+		end
+		if unit:Distance(origin) > radius then
+			return false
+		end
+		local angle = rangeInfo.angle
+		if not angle then
+			return true
+		end
+		local forward = rangeInfo.rotation:Forward()
+		if not IsVector3(origin) then
+			origin = origin:GetPosition()
+		end
+		local right = forward * Quaternion.AngleAxis(90)
+		local dirR = (unit:GetPosition() + (right * radius)) - origin
+		local dirL = (unit:GetPosition() + (-right * radius)) - origin
+		return (Vector3.Angle(forward, dirL) < angle / 2) or (Vector3.Angle(forward, dirR) < angle / 2)
+	elseif rangeInfo.mode == "rect" then
+		if not rangeInfo.height or not rangeInfo.width or rangeInfo.height < 0 or rangeInfo.width < 0 then
+			return false
+		end
+		if not rangeInfo.rotation then
+			rangeInfo.rotation = Quaternion.New(0, 0, 0, 0)
+		end
+		local pos = unit:GetPosition()
+		if not IsVector3(origin) then
+			origin = origin:GetPosition()
+		end
+		pos = pos - origin
+		pos = pos * (-rangeInfo.rotation)
+		local unitRadius = unit:GetRadius() or 0
+		if rangeInfo.isUseCenter then
+			return math.abs(pos.x) < rangeInfo.width / 2 + unitRadius and math.abs(pos.z) < rangeInfo.height / 2 + unitRadius
+		else
+			--左下角
+			return math.abs(pos.x) < rangeInfo.width + unitRadius and math.abs(pos.z) < rangeInfo.height + unitRadius
+		end
+	end
+	return false
 end
 
 return UnitManager

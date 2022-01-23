@@ -3,5 +3,4 @@ local EffectManagerConst = {}
 
 EffectManagerConst.Pool_Name = "EffectPool"
 
-
 return EffectManagerConst

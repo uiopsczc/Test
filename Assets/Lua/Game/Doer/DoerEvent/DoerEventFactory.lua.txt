@@ -1,44 +1,44 @@
 ---@class DoerEventFactory:DoerFactory
-local DoerEventFactory = Class("DoerEventFactory",DoerFactory)
+local DoerEventFactory = Class("DoerEventFactory", DoerFactory)
 
 function DoerEventFactory:Init()
-  DoerEventFactory.super.Init(self)
-  self.defaultDoerClassPath = "game.doer.doerEvent.DoerEvent"
-  ---@type table<string,DoerEvent>
-  self.doerEvent_dict = {}
-  for _, cfgDoerEventData in ipairs(CfgDoerEvent.All()) do
-    self:LoadDoerEvent(cfgDoerEventData.id)
-  end
+	DoerEventFactory.super.Init(self)
+	self.defaultDoerClassPath = "Game.Doer.DoerEvent.DoerEvent"
+	---@type table<string,DoerEvent>
+	self.doerEventDict = {}
+	for _, cfgDoerEventData in ipairs(CfgDoerEvent.All()) do
+		self:LoadDoerEvent(cfgDoerEventData.id)
+	end
 end
 
 function DoerEventFactory:GetClassPath(id)
-  return string.IsNilOrEmpty(self:GetCfgDoerEventData(id).class_path_lua) and self.defaultDoerClassPath or self:GetCfgDoerEventData(id).class_path_lua
+	return string.IsNilOrEmpty(self:GetCfgDoerEventData(id).class_path_lua) and self.defaultDoerClassPath or self:GetCfgDoerEventData(id).class_path_lua
 end
 
 function DoerEventFactory:GetCfgDoerEventData(id)
-  return CfgDoerEvent.get_by_id(id)
+	return CfgDoerEvent.get_by_id(id)
 end
 
 ---@return DoerEventDBase
-function DoerEventFactory:__NewDBase(id_or_rid)
-  return DoerEventDBase.New(id_or_rid)
+function DoerEventFactory:__NewDBase(idOrRid)
+	return DoerEventDBase.New(idOrRid)
 end
 -------------------------------------------------------------------------------------
 function DoerEventFactory:LoadDoerEvent(id)
-  local class_path = self:GetClassPath(id)
-  local doerEvent = self:AddChildWithoutInit(nil, require(class_path))
-  local doerEventDBase = self:__NewDBase(id)
-  doerEvent.factory = self
-  doerEvent:SetDBase(doerEventDBase)
-  doerEventDBase:SetDoer(doerEvent)
-  doerEvent:Init(doerEvent.key)
-  doerEvent:PostInit()
-  doerEvent:SetIsEnabled(true, false)
-  self.doerEvent_dict[id] = doerEvent
+	local classPath = self:GetClassPath(id)
+	local doerEvent = self:AddChildWithoutInit(nil, require(classPath))
+	local doerEventDBase = self:__NewDBase(id)
+	doerEvent.factory = self
+	doerEvent:SetDBase(doerEventDBase)
+	doerEventDBase:SetDoer(doerEvent)
+	doerEvent:Init(doerEvent.key)
+	doerEvent:PostInit()
+	doerEvent:SetIsEnabled(true, false)
+	self.doerEventDict[id] = doerEvent
 end
 
 function DoerEventFactory:GetDoerEvent(id)
-  return self.doerEvent_dict[id]
+	return self.doerEventDict[id]
 end
 
 return DoerEventFactory

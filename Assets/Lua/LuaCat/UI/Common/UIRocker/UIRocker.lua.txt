@@ -1,89 +1,98 @@
-local UIRockerConst = require("luacat.ui.common.UIRocker.define.UIRockerConst")
+local UIRockerConst = require("LuaCat.UI.Common.UIRocker.Define.UIRockerConst")
 ---@class UIRocker:UIObject
 local UIRocker = Class("UIRocker", UIObject)
 ---@param uiRockerInput UIRockerInput
 function UIRocker:Init(prefabPath, parentTransform, uiRockerInput)
 	UIRocker.super.Init(self)
-	self.movePctX = 0
-	self.movePctY = 0
-	self.pointId = 0
+	self._movePctX = 0
+	self._movePctY = 0
+	self._pointId = 0
 	---@type UIRockerInput
-	self.uiRockerInput = uiRockerInput
-	self.graphicComponent:SetPrefabPath(prefabPath or UIRockerConst.UIRock_Prefab_Path)
-	self.graphicComponent:SetParentTransform(parentTransform)
+	self._uiRockerInput = uiRockerInput
+	self:GetGraphicComponent():SetPrefabPath(prefabPath or UIRockerConst.UIRock_Prefab_Path)
+	self:GetGraphicComponent():SetParentTransform(parentTransform)
+end
 
+function UIRocker:_InitUI()
+	UIRocker.super._InitUI(self)
+	self._Nego_RockerTriggerArea = self:GetGraphicComponent():GetTransform():Find("Nego_RockerTriggerArea").gameObject
+	self._Nego_Rocker = self:GetGraphicComponent():GetTransform():Find("Nego_Rocker").gameObject
+	self._Nego_Boll = self._Nego_Rocker.transform:Find("Nego_Boll").gameObject
+	self._Nego_Arrow = self._Nego_Rocker.transform:Find("Nego_Arrow").gameObject
+end
+
+function UIRocker:_InitUIExtensions()
+	UIRocker.super._InitUIExtensions(self)
+	---@type CS.UnityEngine.RectTransform
+	self._rockerRectTransform = self._Nego_Rocker:GetComponent(typeof(CS.UnityEngine.RectTransform))
+	---@type CS.UnityEngine.RectTransform
+	self._bollRectTransform = self._Nego_Boll:GetComponent(typeof(CS.UnityEngine.RectTransform))
+	---@type CS.UnityEngine.RectTransform
+	self._arrowRectTransform = self._Nego_Arrow:GetComponent(typeof(CS.UnityEngine.RectTransform))
+	self._bollImage = self._Nego_Boll:GetComponent(typeof(CS.UnityEngine.UI.Image))
+	self._canvasGroup = self:GetGraphicComponent():GetGameObject():GetComponent(typeof(CS.UnityEngine.CanvasGroup))
+
+	self._rockerRectTransformSizeDelta = self._rockerRectTransform.sizeDelta
+	self._rockerOriginAnchoredPosition = self._rockerRectTransform.anchoredPosition
+	self._uiRockerRadius = self._rockerRectTransformSizeDelta.x / 2
+	self._uiRockerRadiusInEventData = self._uiRockerRadius --是跟self._rockerRadius一样的
+	self._bollOriginAnchoredPosition = self._bollRectTransform.anchoredPosition
+end
+
+function UIRocker:AddUIEvents()
+	UIRocker.super.AddUIEvents(self)
+	self:RegisterOnDrag(self._Nego_RockerTriggerArea, function(...)
+		self:OnRockerDrag(...)
+	end)
+	self:RegisterOnPointerDown(self._Nego_RockerTriggerArea, function(...)
+		self:OnUIRockerPointerDown(...)
+	end)
+	self:RegisterOnPointerUp(self._Nego_RockerTriggerArea, function(...)
+		self:OnUIRockerPointerUp(...)
+	end)
+end
+
+function UIRocker:AddLogicEvents()
 	self:AddListener(GlobalEventNameConst.Update, self.Update)
 end
 
-function UIRocker:OnAllAssetsLoadDone()
-	UIRocker.super.OnAllAssetsLoadDone(self)
-	local uiRockerTriggerAreaGameObject = self.graphicComponent.transform:Find("uiRocker_trigger_area").gameObject
-	self:RegisterOnDrag(uiRockerTriggerAreaGameObject, function(...)
-		self:OnRockerDrag(...)
-	end)
-	self:RegisterOnPointerDown(uiRockerTriggerAreaGameObject, function(...)
-		self:OnUIRockerPointerDown(...)
-	end)
-	self:RegisterOnPointerUp(uiRockerTriggerAreaGameObject, function(...)
-		self:OnUIRockerPointerUp(...)
-	end)
-
-	self.uiRockerGameObject = self.graphicComponent.transform:Find("uiRocker").gameObject
-	---@type CS.UnityEngine.RectTransform
-	self.uiRockerRectTransform = self.uiRockerGameObject:GetComponent(typeof(CS.UnityEngine.RectTransform))
-	self.uiRockerRectTransformSizeDelta = self.uiRockerRectTransform.sizeDelta
-	self.uiRockerOriginAnchoredPosition = self.uiRockerRectTransform.anchoredPosition
-	self.uiRockerRadius = self.uiRockerRectTransformSizeDelta.x / 2
-	self.uiRockerRadiusInEventData = self.uiRockerRadius --是跟self.rocker_radius一样的
-
-	self.bollGameObject = self.uiRockerGameObject.transform:Find("boll").gameObject
-	---@type CS.UnityEngine.RectTransform
-	self.bollRectTransform = self.bollGameObject:GetComponent(typeof(CS.UnityEngine.RectTransform))
-	self.bollOriginAnchoredPosition = self.bollRectTransform.anchoredPosition
-
-	self.arrowGameObject = self.uiRockerGameObject.transform:Find("arrow").gameObject
-	self.arrowRectTransform = self.arrowGameObject:GetComponent(typeof(CS.UnityEngine.RectTransform))
-
-	self.bollImage = self.bollGameObject:GetComponent(typeof(CS.UnityEngine.UI.Image))
-	self.canvasGroup = self.graphicComponent.gameObject:GetComponent(typeof(CS.UnityEngine.CanvasGroup))
-end
 
 -- 响应的时候是否需要设值alpha值
 -- 按住时设置alpha为1
 -- 松开时设置alpha为0
 function UIRocker:SetIsNeedResponseWithSetAlpha(isNeedResponseWithSetAlpha)
-	self.isNeedResponseWithSetAlpha = isNeedResponseWithSetAlpha
+	self._isNeedResponseWithSetAlpha = isNeedResponseWithSetAlpha
 end
 
-function UIRocker:__SetIsEnabled(isEnabled)
-	UIRocker.super.__SetIsEnabled(self, isEnabled)
+function UIRocker:_SetIsEnabled(isEnabled)
+	UIRocker.super._SetIsEnabled(self, isEnabled)
 	if not isEnabled then
 		self:OnUIRockerPointerUp()
 	end
 end
 
 function UIRocker:SetUIRockerAnchoredPosition(x, y)
-	self.uiRockerRectTransform.anchoredPosition = Vector2(x, y)
+	self._rockerRectTransform.anchoredPosition = Vector2(x, y)
 end
 
 function UIRocker:SetBollAnchoredPosition(x, y)
-	self.bollRectTransform.anchoredPosition = Vector2(x, y)
+	self._bollRectTransform.anchoredPosition = Vector2(x, y)
 end
 
 function UIRocker:SetArrowLocalRotation(z)
-	self.arrowRectTransform.localRotation = Quaternion.Euler(0, 0, z)
+	self._arrowRectTransform.localRotation = Quaternion.Euler(0, 0, z)
 end
 
 function UIRocker:SetArrowActive(isActive)
-	self.arrowGameObject:SetActive(isActive)
+	self._Nego_Arrow:SetActive(isActive)
 end
 
 function UIRocker:Update(deltaTime, unscaledDeltaTime)
 	if not self:IsCanUpdate() then
 		return
 	end
-	if self.movePctX ~= 0 or self.movePctY ~= 0 then
-		self.uiRockerInput:AxisMove(self.movePctX, self.movePctY)
+	if self._movePctX ~= 0 or self._movePctY ~= 0 then
+		self._uiRockerInput:AxisMove(self._movePctX, self._movePctY)
 	end
 end
 
@@ -91,38 +100,38 @@ function UIRocker:OnUIRockerPointerDown(eventData)
 	if not self:GetIsEnabled() then
 		return
 	end
-	self.pointId = eventData.pointerId
-	self.uiRockerDownPosInEventData = eventData.pressPosition
-	self.uiRockerDownAnchoredPosition = CameraUtil.ScreenToUIPos(nil, nil, Vector3.New(eventData.pressPosition.x, eventData.pressPosition.y, 0), self.uiRockerRectTransform.pivot)
-	local offset = self.uiRockerRectTransform.pivot - Vector2.New(0.5, 0.5)-- 还原到点击的位置为中心点
-	local uiRockerDownAnchoredPosition = self.uiRockerDownAnchoredPosition + Vector2.New(offset.x * self.uiRockerRectTransform.sizeDelta.x, offset.y * self.uiRockerRectTransform.sizeDelta.y)-- 还原到点击的位置为中心点
+	self._pointId = eventData.pointerId
+	self._uiRockerDownPosInEventData = eventData.pressPosition
+	self._uiRockerDownAnchoredPosition = CameraUtil.ScreenToUIPos(nil, nil, Vector3.New(eventData.pressPosition.x, eventData.pressPosition.y, 0), self._rockerRectTransform.pivot)
+	local offset = self._rockerRectTransform.pivot - Vector2.New(0.5, 0.5)-- 还原到点击的位置为中心点
+	local uiRockerDownAnchoredPosition = self._uiRockerDownAnchoredPosition + Vector2.New(offset.x * self._rockerRectTransform.sizeDelta.x, offset.y * self._rockerRectTransform.sizeDelta.y)-- 还原到点击的位置为中心点
 	self:SetUIRockerAnchoredPosition(uiRockerDownAnchoredPosition.x, uiRockerDownAnchoredPosition.y)
-	self.bollImage.color = Color.New(1, 1, 1, 1)
+	self._bollImage.color = Color.New(1, 1, 1, 1)
 
-	if self.isNeedResponseWithSetAlpha then
-		self.canvasGroup.alpha = 1
+	if self._isNeedResponseWithSetAlpha then
+		self._canvasGroup.alpha = 1
 	end
 end
 
 function UIRocker:OnUIRockerPointerUp(eventData)
-	self.isDragging = false
+	self._isDragging = false
 	if not self:GetIsEnabled() then
 		return
 	end
-	if eventData and self.pointId ~= eventData.pointerId then
+	if eventData and self._pointId ~= eventData.pointerId then
 		return
 	end
-	self:SetUIRockerAnchoredPosition(self.uiRockerOriginAnchoredPosition.x, self.uiRockerOriginAnchoredPosition.y)
-	self:SetBollAnchoredPosition(self.bollOriginAnchoredPosition.x, self.bollOriginAnchoredPosition.y)
+	self:SetUIRockerAnchoredPosition(self._rockerOriginAnchoredPosition.x, self._rockerOriginAnchoredPosition.y)
+	self:SetBollAnchoredPosition(self._bollOriginAnchoredPosition.x, self._bollOriginAnchoredPosition.y)
 	self:SetArrowActive(false)
 	self:SetArrowLocalRotation(0)
-	self.movePctX = 0
-	self.movePctY = 0
+	self._movePctX = 0
+	self._movePctY = 0
 
-	self.uiRockerInput:AxisMove(0, 0)
-	self.bollImage.color = Color.New(1, 1, 1, 0.3)
-	if self.isNeedResponseWithSetAlpha then
-		self.canvasGroup.alpha = 0
+	self._uiRockerInput:AxisMove(0, 0)
+	self._bollImage.color = Color.New(1, 1, 1, 0.3)
+	if self._isNeedResponseWithSetAlpha then
+		self._canvasGroup.alpha = 0
 	end
 end
 
@@ -130,19 +139,19 @@ function UIRocker:OnRockerDrag(eventData)
 	if not self:GetIsEnabled() then
 		return
 	end
-	if self.pointId ~= eventData.pointerId then
+	if self._pointId ~= eventData.pointerId then
 		return
 	end
-	local dx = eventData.position.x - self.uiRockerDownPosInEventData.x
-	local dy = eventData.position.y - self.uiRockerDownPosInEventData.y
+	local dx = eventData.position.x - self._uiRockerDownPosInEventData.x
+	local dy = eventData.position.y - self._uiRockerDownPosInEventData.y
 	local distance = math.sqrt(dx * dx + dy * dy)
 
-	local _dx = math.Clamp(dx, -self.uiRockerRadiusInEventData, self.uiRockerRadiusInEventData) -- 不能超过半径
-	local _dy = math.Clamp(dy, -self.uiRockerRadiusInEventData, self.uiRockerRadiusInEventData) -- 不能超过半径
-	local pct_x = math.abs(dx) / distance -- 比例，用于还原到圆内的坐标
-	local pct_y = math.abs(dy) / distance -- 比例，用于还原到圆内的坐标
+	local clampedDx = math.Clamp(dx, -self._uiRockerRadiusInEventData, self._uiRockerRadiusInEventData) -- 不能超过半径
+	local clampedDy = math.Clamp(dy, -self._uiRockerRadiusInEventData, self._uiRockerRadiusInEventData) -- 不能超过半径
+	local pctX = math.abs(dx) / distance -- 比例，用于还原到圆内的坐标
+	local pctY = math.abs(dy) / distance -- 比例，用于还原到圆内的坐标
 
-	self:SetBollAnchoredPosition(_dx * pct_x, _dy * pct_y)
+	self:SetBollAnchoredPosition(clampedDx * pctX, clampedDy * pctY)
 	local dir = Vector3(dx, dy, 0)
 	local angle = Vector3.Angle(dir, Vector3.up)
 	if not (Vector3.Cross(dir, Vector3.forward).y > 0) then
@@ -150,26 +159,26 @@ function UIRocker:OnRockerDrag(eventData)
 	end
 	self:SetArrowActive(true)
 	self:SetArrowLocalRotation(angle)
-	self.movePctX = distance == 0 and 0 or _dx * pct_x / self.uiRockerRadiusInEventData
-	self.movePctY = distance == 0 and 0 or _dy * pct_y / self.uiRockerRadiusInEventData
-	if self.movePctX == 0 and self.movePctY == 0 then
+	self._movePctX = distance == 0 and 0 or clampedDx * pctX / self._uiRockerRadiusInEventData
+	self._movePctY = distance == 0 and 0 or clampedDy * pctY / self._uiRockerRadiusInEventData
+	if self._movePctX == 0 and self._movePctY == 0 then
 		self:SetArrowActive(false)
 		self:SetBollAnchoredPosition(0, 0)
 	end
-	self.isDragging = true
+	self._isDragging = true
 end
 
-function UIRocker:__Reset()
-	UIRocker.super.__Reset(self)
-	if not self.graphicComponent.gameObject then
+function UIRocker:_Reset()
+	UIRocker.super._Reset(self)
+	if not self:GetGraphicComponent():GetGameObject() then
 		return
 	end
 	self:OnUIRockerPointerUp()
 end
 
-function UIRocker:__Destroy()
-	UIRocker.super.__Destroy(self)
-	if not self.graphicComponent.gameObject then
+function UIRocker:_Destroy()
+	UIRocker.super._Destroy(self)
+	if not self:GetGraphicComponent():GetGameObject() then
 		return
 	end
 	self:OnUIRockerPointerUp()

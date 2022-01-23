@@ -1,6 +1,6 @@
 ----------------------------------------------------------------------
 -- 冒泡排序
----- O(n^2)
+-- O(n^2)
 ----------------------------------------------------------------------
 -- 执行方法func后返回 false 时进行交换
 --  如：table.BubbleSort_Array(table, function(a, b)
@@ -53,7 +53,7 @@ local function __Merge(array, left, middle, right, func)
 			rightArrayCurIndex = rightArrayCurIndex + 1
 		end
 	end
-	-- left_array_cur_index <= mid and right_array_cur_index <= right 其中之一不成立的情况
+	-- leftArrayCurIndex <= mid and rightArrayCurIndex <= right 其中之一不成立的情况
 	-- 处理没有被完全处理的数组
 	for i = leftArrayCurIndex, middle do
 		newArrayCurIndex = newArrayCurIndex + 1

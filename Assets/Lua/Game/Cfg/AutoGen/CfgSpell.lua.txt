@@ -4,27 +4,27 @@
 ---@field name
 ---@field class_path_lua
 ---@field class_path_cs
----@field is_can_move_while_cast
+---@field isCanMoveWhileCast
 ---@field range
----@field damage_factor
+---@field damageFactor
 ---@field type
----@field target_type
----@field damage_type
----@field cast_type
----@field action_name
----@field animation_name
----@field animation_duration
----@field hand_effect_ids
----@field go_effect_ids
----@field hit_effect_ids
+---@field targetType
+---@field damageType
+---@field castType
+---@field actionName
+---@field animationName
+---@field animationDuration
+---@field handEffectIds
+---@field goEffectIds
+---@field hitEffectIds
 ---@field ground_effect_ids
----@field line_effect_ids
----@field is_not_face_to_target
----@field cast_time
----@field break_time
----@field new_spell_trigger_ids
+---@field lineEffectIds
+---@field isNotFaceToTarget
+---@field castTime
+---@field breakTime
+---@field newSpellTriggerIds
 ---@field is_need_target
----@field cooldown_duration
+---@field coolDown_duration
 ---@field passive_buff_ids
 ---@field select_unit_arg_dict
 ---@field arg_dict
@@ -59,7 +59,7 @@ local data_list = {
     break_time = 0.0,
     new_spell_trigger_ids = json:decode([=[[]]=]),
     is_need_target = false,
-    cooldown_duration = 0.0,
+    coolDown_duration = 0.0,
     passive_buff_ids = json:decode([=[[]]=]),
     select_unit_arg_dict = json:decode([=[{}]=]),
     arg_dict = json:decode([=[{}]=]),

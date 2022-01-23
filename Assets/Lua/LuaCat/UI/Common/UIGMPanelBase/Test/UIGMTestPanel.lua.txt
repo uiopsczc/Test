@@ -15,9 +15,9 @@ end
 function UIGMTestPanel:InitConfigList()
 	UIGMTestPanel.super.InitConfigList(self)
 	table.insert(self.configList, {
-		type = "switch_item",
+		type = "switchItem",
 		desc = "GMTest",
-		yes_callback = function()
+		yesCallback = function()
 			self:GMTest()
 		end
 	})

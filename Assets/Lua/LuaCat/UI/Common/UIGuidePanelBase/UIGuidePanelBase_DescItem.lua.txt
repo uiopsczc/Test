@@ -2,25 +2,25 @@
 local UIGuidePanelBase_DescItem = Class("UIGuidePanelBase_DescItem", UIObject)
 
 function UIGuidePanelBase_DescItem:Init(gameObject)
-  UIGuidePanelBase_DescItem.super.Init(self, gameObject)
-  self.graphicComponent:SetGameObject(gameObject, true)
+	UIGuidePanelBase_DescItem.super.Init(self, gameObject)
+	self:GetGraphicComponent():SetGameObject(gameObject, true)
 end
 
-function UIGuidePanelBase_DescItem:InitGameObjectChildren()
-	UIGuidePanelBase_DescItem.super.InitGameObjectChildren(self)
+function UIGuidePanelBase_DescItem:_InitUIExtensions()
+	UIGuidePanelBase_DescItem.super._InitUIExtensions(self)
 	---@type CS.UnityEngine.UI.Text
-	self.descText = self.graphicComponent.transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Text), "desc", true, true)
+	self._Txt_Desc = self:GetGraphicComponent():GetTransform():FindComponentInChildren(typeof(CS.UnityEngine.UI.Text), "Txt_Desc", true, true)
 	---@type CS.UnityEngine.UI.Image
-	self.descImage = self.graphicComponent.gameObject:GetComponent(typeof(CS.UnityEngine.UI.Image))
+	self._Img_Desc = self:GetGraphicComponent():GetTransform():GetComponent(typeof(CS.UnityEngine.UI.Image))
 end
 
 function UIGuidePanelBase_DescItem:Show(desc, isBgVisible)
 	if isBgVisible == nil then
 		isBgVisible = true
 	end
-	self.descText.text = desc
+	self._Txt_Desc.text = desc
 	if not isBgVisible then
-		self.descImage:SetAlpha(0)
+		self._Img_Desc:SetAlpha(0)
 	end
 end
 

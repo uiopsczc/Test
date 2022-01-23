@@ -13,8 +13,9 @@ function EaseCat_Sine.EaseInOut(t, b, c, d)
 	return -c / 2 * (math.cos(math.PI * t / d) - 1) + b
 end
 
--------------------------------------------------------------------------
-
+----------------------------------------------------------------------
+--
+----------------------------------------------------------------------
 function EaseCat_Sine.EaseIn2(startValue, endValue, pct)
 	return EaseCat_Sine.EaseIn(pct, startValue, endValue - startValue, 1)
 end

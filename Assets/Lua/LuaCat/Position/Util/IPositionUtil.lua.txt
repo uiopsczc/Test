@@ -2,7 +2,6 @@
 local IPositionUtil = {}
 
 ---@param value Vector3|CS.UnityEngine.Transform|Unit
----@param socket_name string
 ---@return IPosition
 function IPositionUtil.NewIPosition(value)
 	if IsVector3(value) then

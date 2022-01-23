@@ -3,8 +3,7 @@ local cfgData = {}
 
 ---@param cfgSceneData CfgSceneData
 function cfgData.GetSceneMapInfo(cfgSceneData)
-  return nil
+	return nil
 end
-
 
 return cfgData

@@ -4,25 +4,25 @@ local UIManager = Class("UIManager", UIObject)
 
 function UIManager:Init()
 	UIManager.super.Init(self)
-	self.graphicComponent:SetGameObject(GameObject.Find(UIConst.UIManager_Path), true)
+	self:GetGraphicComponent():SetGameObject(GameObject.Find(UIConst.UIManager_Path), true)
 	---@type CS.UnityEngine.Camera
-	self.uiCamera = GameObject.Find(UIConst.UICamera_Path):GetComponent(typeof(CS.UnityEngine.Camera))
+	self._uiCamera = GameObject.Find(UIConst.UICamera_Path):GetComponent(typeof(CS.UnityEngine.Camera))
 	---@type CS.UnityEngine.Canvas
-	self.uiCanvas = GameObject.Find(UIConst.UICanvas_Path):GetComponent(typeof(CS.UnityEngine.Canvas))
+	self._uiCanvas = GameObject.Find(UIConst.UICanvas_Path):GetComponent(typeof(CS.UnityEngine.Canvas))
 	---@type CS.UnityEngine.RectTransform
-	self.uiCanvas_rectTransform = self.uiCanvas:GetComponent(typeof(CS.UnityEngine.RectTransform))
+	self._uiCanvasRectTransform = self._uiCanvas:GetComponent(typeof(CS.UnityEngine.RectTransform))
 	---@type UIBloodManager
-	self.uiBloodManager = self:AddChild(nil, UIBloodManager)
+	self._uiBloodManager = self:AddChild(nil, UIBloodManager)
 end
 
 function UIManager:PostInit()
 	---@type CS.CsCat.UIManager
-	self.csUIManager = global.client.csClient.uiManager
+	self._csUIManager = global.client.csClient.uiManager
 	---@type CS.CsCat.UILayerManager
-	self.uiLayerManager = self.csUIManager.uiLayerManager
+	self._uiLayerManager = self._csUIManager.uiLayerManager
 	self:InitListeners()
 	self:InitPanels()
-	self.uiNotifyManager = self.csUIManager.uiNotifyManager
+	self._uiNotifyManager = self._csUIManager.uiNotifyManager
 	UIManager.super.PostInit(self)
 end
 
@@ -31,20 +31,22 @@ end
 
 function UIManager:InitPanels()
 	---@type CS.CsCat.UIBlackMaskPanel
-	self.uiBlackMaskPanel = self.csUIManager.uiBlackMaskPanel
+	self._uiBlackMaskPanel = self._csUIManager.uiBlackMaskPanel
 	---@type CS.CsCat.UILoadingPanel
-	self.uiLoadingPanel = self.csUIManager.uiLoadingPanel
+	self._uiLoadingPanel = self._csUIManager.uiLoadingPanel
 	---@type CS.CsCat.UIWaitingPanel
-	self.uiWaitingPanel = self.csUIManager.uiWaitingPanel
+	self._uiWaitingPanel = self._csUIManager.uiWaitingPanel
 	---@type CS.CsCat.UIShowLogoPanel
-	self.uiShowLogoPanel = self.csUIManager.uiShowLogoPanel
+	self._uiShowLogoPanel = self._csUIManager.uiShowLogoPanel
 	---@type CS.CsCat.UIFadePanel
-	self.uiFadePanel = self.csUIManager.uiFadePanel
+	self._uiFadePanel = self._csUIManager.uiFadePanel
 	---@type CS.CsCat.UILanternNotifyPanel
-	self.uiLanternNotifyPanel = self.csUIManager.uiLanternNotifyPanel
+	self._uiLanternNotifyPanel = self._csUIManager.uiLanternNotifyPanel
 end
 
------------------------------UIBlood--------------------------------
+----------------------------------------------------------------------
+-- UIBlood相关
+----------------------------------------------------------------------
 ---@param parentTransform CS.UnityEngine.Transform
 ---@param maxValue number
 ---@param sliderCount number
@@ -52,63 +54,86 @@ end
 ---@param sliderColorList Color[]
 ---@retrun UIBlood
 function UIManager:AddUIBlood(parentTransform, maxValue, sliderCount, toValue, sliderColorList)
-	return self.uiBloodManager:AddUIBlood(parentTransform, maxValue, sliderCount, toValue, sliderColorList)
+	return self._uiBloodManager:AddUIBlood(parentTransform, maxValue, sliderCount, toValue, sliderColorList)
 end
 
 ---@param uiBlood UIBlood
 function UIManager:RemoveUIBlood(uiBlood)
-	return self.uiBloodManager:RemoveChild(uiBlood.key)
+	return self._uiBloodManager:RemoveChild(uiBlood.key)
 end
 
------------------------------Notify--------------------------------
+----------------------------------------------------------------------
+-- Notify相关
+----------------------------------------------------------------------
 function UIManager:Notify(desc, parentTransform, isAddToChildPanelStack)
 	isAddToChildPanelStack = isAddToChildPanelStack or false
-	self.uiNotifyManager:Notify(desc, parentTransform, isAddToChildPanelStack)
+	self._uiNotifyManager:Notify(desc, parentTransform, isAddToChildPanelStack)
 end
 
 function UIManager:LanternNotify(desc)
-	self.uiNotifyManager:LanternNotify(desc)
+	self._uiNotifyManager:LanternNotify(desc)
 end
------------------------------Fade--------------------------------
+
+----------------------------------------------------------------------
+-- Fade相关
+----------------------------------------------------------------------
 function UIManager:HideFade()
-	self.uiFadePanel:HideFade()
+	self._uiFadePanel:HideFade()
 end
 
 function UIManager:FadeInOut(duration, callback)
-	self.uiFadePanel:FadeInOut(duration, callback)
+	self._uiFadePanel:FadeInOut(duration, callback)
 end
 
 function UIManager:FadeTo(fromAlpha, toAlpha, duration, callback)
 	if fromAlpha then
-		self.uiFadePanel:FadeTo(fromAlpha, toAlpha, duration, callback)
+		self._uiFadePanel:FadeTo(fromAlpha, toAlpha, duration, callback)
 	else
-		self.uiFadePanel:FadeTo(toAlpha, duration, callback)
+		self._uiFadePanel:FadeTo(toAlpha, duration, callback)
 	end
-
 end
-----------------------------Loading--------------------------------
+
+----------------------------------------------------------------------
+-- Loading相关
+----------------------------------------------------------------------
 function UIManager:SetLoadingPct(pct)
-	self.uiLoadingPanel:SetPct(pct)
+	self._uiLoadingPanel:SetPct(pct)
 end
 
 function UIManager:HideLoading()
-	self.uiLoadingPanel:HideLoading()
+	self._uiLoadingPanel:HideLoading()
 end
-----------------------------Waiting--------------------------------
+
+----------------------------------------------------------------------
+-- Waiting相关
+----------------------------------------------------------------------
 function UIManager:StartWaiting()
-	self.uiWaitingPanel:StartWaiting()
+	self._uiWaitingPanel:StartWaiting()
 end
 
 function UIManager:EndWaiting()
-	self.uiWaitingPanel:EndWaiting()
+	self._uiWaitingPanel:EndWaiting()
 end
 
 function UIManager:HideWaiting()
-	self.uiWaitingPanel:HideWaiting()
+	self._uiWaitingPanel:HideWaiting()
 end
---------------------------------------------------------------------
-function UIManager:__Reset()
-	UIManager.super.__Reset(self)
+
+----------------------------------------------------------------------
+-- SetGet相关
+----------------------------------------------------------------------
+function UIManager:GetUIBloodManager()
+	return self._uiBloodManager
+end
+
+function UIManager:GetUIFadePanel()
+	return self._uiFadePanel
+end
+----------------------------------------------------------------------
+--
+----------------------------------------------------------------------
+function UIManager:_Reset()
+	UIManager.super._Reset(self)
 	self:CloseAllChildPanels(true)
 end
 

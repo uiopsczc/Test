@@ -5,7 +5,7 @@
 -- 主代码块中的local变量和local函数无法重载，变量和函数都要写在类或函数中
 -- 运行中的协程无法更新，所以协程不适合长时间运行
 
-local function __ReloadFile(fileName)
+local function _ReloadFile(fileName)
 	local old = package.loaded[fileName]
 	package.loaded[fileName] = nil
 	local new = require(fileName)
@@ -33,7 +33,7 @@ function Reload()
 		end
 	end
 	for k, v in pairs(fileList) do
-		__ReloadFile(k)
+		_ReloadFile(k)
 	end
 	if EnableGlobal and DisableGlobal then
 		DisableGlobal()

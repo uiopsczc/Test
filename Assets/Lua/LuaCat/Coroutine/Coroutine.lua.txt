@@ -170,26 +170,26 @@ function Coroutine.YieldStart(func, callback, ...)
 	---@param callback fun
 	---@param isWaiting boolean
 	---@param isOver boolean
-	local parent_dict = PoolCatManagerUtil.GetOrAddCustomPool(yieldParentDictPoolName, function()
+	local parentDict = PoolCatManagerUtil.GetOrAddCustomPool(yieldParentDictPoolName, function()
 		return {}
-	end)                                  :Spawn()
-	parent_dict.co = co
-	parent_dict.callback = callback
-	parent_dict.is_waiting = false
-	parent_dict.is_over = false
+	end)                                 :Spawn()
+	parentDict.co = co
+	parentDict.callback = callback
+	parentDict.isWaiting = false
+	parentDict.isOver = false
 
-	local child_co = __GetCoroutine()
-	yieldChildCo2ParentDict[child_co] = parent_dict
-	yieldCo2ChildCoDict[co] = child_co
-	local isCallSuccess, resumeResult = __PResume(child_co, func, table.SafeUnpack(funcArgs))
+	local childCo = __GetCoroutine()
+	yieldChildCo2ParentDict[childCo] = parentDict
+	yieldCo2ChildCoDict[co] = childCo
+	local isCallSuccess, resumeResult = __PResume(childCo, func, table.SafeUnpack(funcArgs))
 	if not isCallSuccess then
-		PoolCatManagerUtil.Despawn(parent_dict, yieldParentDictPoolName)
-		yieldChildCo2ParentDict[child_co] = nil
+		PoolCatManagerUtil.Despawn(parentDict, yieldParentDictPoolName)
+		yieldChildCo2ParentDict[childCo] = nil
 		yieldCo2ChildCoDict[co] = nil
 		return nil
-	elseif parent_dict.is_over then
-		PoolCatManagerUtil.Despawn(parent_dict, yieldParentDictPoolName)
-		yieldChildCo2ParentDict[child_co] = nil
+	elseif parentDict.isOver then
+		PoolCatManagerUtil.Despawn(parentDict, yieldParentDictPoolName)
+		yieldChildCo2ParentDict[childCo] = nil
 		yieldCo2ChildCoDict[co] = nil
 		if resumeResult == nil then
 			return nil
@@ -197,10 +197,10 @@ function Coroutine.YieldStart(func, callback, ...)
 			return table.SafeUnpack(resumeResult)
 		end
 	else
-		parent_dict.is_waiting = true
+		parentDict.isWaiting = true
 		local yield_ret = table.SafePack(coroutine.yield())--会中断当前的co(即parentCo)
-		PoolCatManagerUtil.Despawn(parent_dict, yieldParentDictPoolName)
-		yieldChildCo2ParentDict[child_co] = nil
+		PoolCatManagerUtil.Despawn(parentDict, yieldParentDictPoolName)
+		yieldChildCo2ParentDict[childCo] = nil
 		yieldCo2ChildCoDict[co] = nil
 		return table.SafeUnpack(yield_ret)
 	end
@@ -210,9 +210,9 @@ end
 -- 注意：
 -- 1、与Unity侧协程yield return不同，对子级协程来说yieldreturn一定会等待一帧再往下执行
 function Coroutine.YieldReturn(...)
-	local callback_args = table.SafePack(...)
-	local child_co = coroutine.running() or error("coroutine.yieldreturn must be run in coroutine") -- 子协程
-	Coroutine.YieldCallback(child_co, table.SafeUnpack(callback_args))
+	local callbackArgs = table.SafePack(...)
+	local childCo = coroutine.running() or error("coroutine.yieldreturn must be run in coroutine") -- 子协程
+	Coroutine.YieldCallback(childCo, table.SafeUnpack(callbackArgs))
 	-- 子级协程等待一帧再继续往下执行
 	return Coroutine.WaitForFrames(1)
 end
@@ -222,17 +222,17 @@ end
 -- 1、子级协程异步回调并没有运行在子级协程当中，不能使用yieldreturn，实际上不能使用任何协程相关接口，除了start
 -- 2、yieldcallback需要传递当前的子级协程，这个可以从异步回调的首个参数获取
 -- 3、不会等待一帧，实际上协程中的回调是每帧执行一次的
-function Coroutine.YieldCallback(child_co, ...)
-	assert(child_co ~= nil and type(child_co) == "thread")
-	local callback_args = table.SafePack(...)
-	local parent_dict = yieldChildCo2ParentDict[child_co]
+function Coroutine.YieldCallback(childCo, ...)
+	assert(childCo ~= nil and type(childCo) == "thread")
+	local callbackArgs = table.SafePack(...)
+	local parentDict = yieldChildCo2ParentDict[childCo]
 	-- 没有父级协程，啥都不做
-	if not parent_dict or not parent_dict.co then
+	if not parentDict or not parentDict.co then
 		return
 	end
-	local callback = parent_dict.callback
+	local callback = parentDict.callback
 	assert(callback ~= nil, "If you don't need callback, use normal function call instead!!!")
-	callback(child_co, table.SafeUnpack(callback_args))
+	callback(childCo, table.SafeUnpack(callbackArgs))
 end
 
 -- 退出子级协程，将控制权转移给父级协程，并交付数据作为yieldstart返回值，配合yieldstart使用
@@ -242,18 +242,18 @@ end
 -- 3、不使用return，可能无法正确退出子级协程
 function Coroutine.YieldBreak(...)
 	local co = coroutine.running() or error("coroutine.yieldbreak must be run in coroutine")
-	local parent_dict = yieldChildCo2ParentDict[co]
+	local parentDict = yieldChildCo2ParentDict[co]
 	-- 没有父级协程
-	if not parent_dict then
+	if not parentDict then
 		return ...
 	end
 
-	parent_dict.is_over = true
-	assert(parent_dict.co ~= nil, "What's the fuck!!!")
-	if not parent_dict.is_waiting then
+	parentDict.isOver = true
+	assert(parentDict.co ~= nil, "What's the fuck!!!")
+	if not parentDict.isWaiting then
 		return ...
 	else
-		__PResume(parent_dict.co, nil, ...)
+		__PResume(parentDict.co, nil, ...)
 		--__PResume(parentMap.co,  ...)  我觉得这里应该这样子才对，这里会到yieldStart的isWating=true下的yiled的返回值
 	end
 end
@@ -266,7 +266,7 @@ function Coroutine.WaitForFixedUpdate(timerManager)
 	local timer = PoolCatManagerUtil.Spawn(Timer)
 	timer:Init(__DoAction, nil, 0, 0, Timer.UpdateMode.FixedUpdate, nil, true, true)
 	local action = __GetAction(co, timer)
-	timer.targetFuncArgs = { action }
+	timer._targetFuncArgs = { action }
 	action.timerManager = timerManager or global.client.timerManager
 	action.timerManager:AddTimer2(timer)
 	actionDict[co] = action
@@ -281,7 +281,7 @@ function Coroutine.WaitForFrames(frames, timerManager)
 	local timer = PoolCatManagerUtil.Spawn(Timer)
 	timer:Init(__DoAction, nil, frames, 0, Timer.UpdateMode.Update, nil, true, true)
 	local action = __GetAction(co, timer)
-	timer.targetFuncArgs = { action }
+	timer._targetFuncArgs = { action }
 	action.timerManager = timerManager or global.client.timerManager
 	action.timerManager:AddTimer2(timer)
 	actionDict[co] = action
@@ -297,7 +297,7 @@ function Coroutine.WaitForSeconds(seconds, timerManager)
 	local timer = PoolCatManagerUtil.Spawn(Timer)
 	timer:Init(__DoAction, nil, seconds, nil, Timer.UpdateMode.Update, nil, true, false)
 	local action = __GetAction(co, timer)
-	timer.targetFuncArgs = { action }
+	timer._targetFuncArgs = { action }
 	action.timerManager = timerManager or global.client.timerManager
 	action.timerManager:AddTimer2(timer)
 	actionDict[co] = action
@@ -310,7 +310,7 @@ local function __AsyncOpCheck(co, async_operation, callback)
 	if callback ~= nil then
 		callback(co, async_operation.progress)
 	end
-	return async_operation.is_done
+	return async_operation.isDone
 end
 
 -- 等待异步操作完成，并在Update执行完毕resume
@@ -323,14 +323,14 @@ end
 function Coroutine.WaitForAsyncOp(async_operation, callback, timerManager)
 	---@class CoroutineAsyncOperation
 	---@field progress number
-	---@field is_done boolean
+	---@field isDone boolean
 	assert(async_operation)
 	local co = coroutine.running() or error("coroutine.waitforasyncop must be run in coroutine")
 	---@type Timer
 	local timer = PoolCatManagerUtil.Spawn(Timer)
 	timer:Init(__DoActionLoop, nil, 1, 1, Timer.UpdateMode.Update, nil, true, true)--每帧都检测
 	local action = __GetAction(co, timer, __AsyncOpCheck, table.SafePack(co, async_operation, callback), true)
-	timer.targetFuncArgs = { action }
+	timer._targetFuncArgs = { action }
 	action.timerManager = timerManager or global.client.timerManager
 	action.timerManager:AddTimer2(timer)
 	actionDict[co] = action
@@ -347,7 +347,7 @@ function Coroutine.WaitUntil(timerManager, func, ...)
 	local timer = PoolCatManagerUtil.Spawn(Timer)
 	timer:Init(__DoActionLoop, nil, 1, 1, Timer.UpdateMode.Update, nil, true, true)--每帧都检测
 	local action = __GetAction(co, timer, func, funcArgs, true)
-	timer.targetFuncArgs = { action }
+	timer._targetFuncArgs = { action }
 	action.timerManager = timerManager or global.client.timerManager
 	action.timerManager:AddTimer2(timer)
 	actionDict[co] = action
@@ -364,7 +364,7 @@ function Coroutine.WaitWhile(timerManager, func, ...)
 	timer:Init(__DoActionLoop, nil, 1, 1, Timer.UpdateMode.Update, nil, true, true)--每帧都检测
 	local funcArgs = table.SafePack(...)
 	local action = __GetAction(co, timer, func, funcArgs, false)
-	timer.targetFuncArgs = { action }
+	timer._targetFuncArgs = { action }
 	action.timerManager = timerManager or global.client.timerManager
 	action.timerManager:AddTimer2(timer)
 	actionDict[co] = action
@@ -379,7 +379,7 @@ function Coroutine.WaitForEndOfFrame(timerManager)
 	local timer = PoolCatManagerUtil.Spawn(Timer)
 	timer:Init(__DoActionLoop, nil, 1, 1, Timer.UpdateMode.LateUpdate, nil, true, true)--每帧都检测
 	local action = __GetAction(co, timer)
-	timer.targetFuncArgs = { action }
+	timer._targetFuncArgs = { action }
 	action.timerManager = timerManager or global.client.timerManager
 	action.timerManager:AddTimer2(timer)
 	actionDict[co] = action
@@ -398,19 +398,19 @@ function Coroutine.Stop(co)
 		--poolCatManager:Despawn(co, co_pool_name)
 	end
 
-	local parent_dict = yieldChildCo2ParentDict[co]
-	if parent_dict then
+	local parentDict = yieldChildCo2ParentDict[co]
+	if parentDict then
 		yieldChildCo2ParentDict[co] = nil
-		if parent_dict.co then
-			Coroutine.Stop(parent_dict.co)
+		if parentDict.co then
+			Coroutine.Stop(parentDict.co)
 		end
-		PoolCatManagerUtil.Despawn(parent_dict, yieldParentDictPoolName)
+		PoolCatManagerUtil.Despawn(parentDict, yieldParentDictPoolName)
 	end
 
-	local child_co = yieldCo2ChildCoDict[co]
-	if child_co then
+	local childCo = yieldCo2ChildCoDict[co]
+	if childCo then
 		yieldCo2ChildCoDict[co] = nil
-		Coroutine.Stop(child_co)
+		Coroutine.Stop(childCo)
 	end
 end
 
@@ -422,16 +422,16 @@ function Coroutine.SetIsPaused(co, is_paused)
 		end
 	end
 
-	local parent_dict = yieldChildCo2ParentDict[co]
-	if parent_dict then
-		if parent_dict.co then
-			Coroutine.SetIsPaused(parent_dict.co, is_paused)
+	local parentDict = yieldChildCo2ParentDict[co]
+	if parentDict then
+		if parentDict.co then
+			Coroutine.SetIsPaused(parentDict.co, is_paused)
 		end
 	end
 
-	local child_co = yieldCo2ChildCoDict[co]
-	if child_co then
-		Coroutine.SetIsPaused(child_co, is_paused)
+	local childCo = yieldCo2ChildCoDict[co]
+	if childCo then
+		Coroutine.SetIsPaused(childCo, is_paused)
 	end
 end
 

@@ -7,13 +7,13 @@ local GraphicComponent = Class("GraphicComponent", GameComponent)
 function GraphicComponent:Init(resLoadComponent)
 	GraphicComponent.super.Init(self)
 	---@type GameEntity
-	self.gameEntity = self.entity
+	self.gameEntity = self._entity
 	---@type ResLoadComponentPlugin
 	self.resLoadComponentPlugin = ResLoadComponentPlugin.New(resLoadComponent)
-	if self.entity._className == "Client" then
+	if self._entity._className == "Client" then
 		return
 	end
-	self:AddListener(string.ToEventName(ECSEventNameConst.OnAllAssetsLoadDone, self.entity), function()
+	self:AddListener(string.ToEventName(ECSEventNameConst.OnAllAssetsLoadDone, self._entity), function()
 		self:OnAllAssetsLoadDone()
 	end)
 end
@@ -25,8 +25,8 @@ end
 ---@param parentTransform CS.UnityEngine.Transform
 function GraphicComponent:SetParentTransform(parentTransform)
 	self.parentTransform = parentTransform
-	if self.transform then
-		self.transform:SetParent(self.parentTransform, self.gameObject.layer ~= LayerMask.NameToLayer("UI"))
+	if self._transform then
+		self._transform:SetParent(self.parentTransform, self._gameObject.layer ~= LayerMask.NameToLayer("UI"))
 	end
 end
 
@@ -36,8 +36,8 @@ end
 
 function GraphicComponent:SetIsShow(isShow)
 	self.isHide = not isShow
-	if self.gameObject then
-		self.gameObject:SetActive(not self.isHide)
+	if self._gameObject then
+		self._gameObject:SetActive(not self.isHide)
 	end
 end
 
@@ -47,17 +47,17 @@ end
 
 function GraphicComponent:SetGameObject(gameObject, isNotDestroyGameObject)
 	if not gameObject then
-		self.gameObject = nil
-		self.transform = nil
-		self.rectTransform = nil
+		self._gameObject = nil
+		self._transform = nil
+		self._rectTransform = nil
 		return
 	end
 	---@type CS.UnityEngine.GameObject
-	self.gameObject = gameObject
+	self._gameObject = gameObject
 	---@type CS.UnityEngine.Transform
-	self.transform = self.gameObject.transform
+	self._transform = self._gameObject.transform
 	---@type CS.UnityEngine.RectTransform
-	self.rectTransform = self.gameObject:GetComponent(typeof(CS.UnityEngine.RectTransform))
+	self._rectTransform = self._gameObject:GetComponent(typeof(CS.UnityEngine.RectTransform))
 	if isNotDestroyGameObject ~= nil then
 		self.isNotDestroyGameObject = isNotDestroyGameObject
 	end
@@ -66,8 +66,8 @@ function GraphicComponent:SetGameObject(gameObject, isNotDestroyGameObject)
 end
 
 function GraphicComponent:DestroyGameObject()
-	if self.gameObject and not self.isNotDestroyGameObject then
-		self.gameObject:Destroy()
+	if self._gameObject and not self.isNotDestroyGameObject then
+		self._gameObject:Destroy()
 		self:SetGameObject(nil)
 	end
 end
@@ -107,7 +107,23 @@ function GraphicComponent:OnAllAssetsLoadDone()
 end
 
 ----------------------------------------------------------------------
--- __Destroy
+-- SetGet相关
+----------------------------------------------------------------------
+function GraphicComponent:GetGameObject()
+	return self._gameObject
+end
+
+function GraphicComponent:GetTransform()
+	return self._transform
+end
+
+function GraphicComponent:GetRectTransform()
+	return self._rectTransform
+end
+
+
+----------------------------------------------------------------------
+-- __Reset
 ----------------------------------------------------------------------
 function GraphicComponent:__Reset()
 	GraphicComponent.super.__Destroy(self)
@@ -126,9 +142,9 @@ function GraphicComponent:__Destroy()
 	self.resLoadComponentPlugin = nil
 
 	self.parentTransform = nil
-	self.gameObject = nil
-	self.transform = nil
-	self.rectTransform = nil
+	self._gameObject = nil
+	self._transform = nil
+	self._rectTransform = nil
 	self.isNotDestroyGameObject = false
 	self.prefab = nil
 	self.prefabPath = nil

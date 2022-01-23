@@ -1,6 +1,6 @@
 
 
-require("luacat.coroutine.Coroutine")
+require("LuaCat.Coroutine.Coroutine")
 
 
 local function TestStart()
@@ -31,10 +31,10 @@ end
 local function TestWaitUntil()
   Coroutine.Start(function()
     print("start")
-    local wait_duration = 3
+    local waitDuration = 3
     local untilFunc = function()
-      wait_duration = wait_duration - Time.deltaTime
-      return wait_duration <= 0
+      waitDuration = waitDuration - Time.deltaTime
+      return waitDuration <= 0
     end
     Coroutine.WaitUntil(nil, untilFunc)
     print("end")
@@ -47,10 +47,10 @@ end
 local function TestWaitWhile()
   Coroutine.Start(function()
     print("start")
-    local wait_duration = 3
+    local waitDuration = 3
     local whileFunc = function()
-      wait_duration = wait_duration - Time.deltaTime
-      return wait_duration >= 0
+      waitDuration = waitDuration - Time.deltaTime
+      return waitDuration >= 0
     end
     Coroutine.WaitWhile(nil, whileFunc)
     print("end")
@@ -96,15 +96,15 @@ end
 local function TestYield()
   Coroutine.Start(function()
     -- 用于统计回调次数
-    local callback_count = 0
+    local callbackCount = 0
     -- 父级协程回调
     local callback = function(child_co, ...)
       local param = { ... }
-      callback_count = callback_count + 1
-      if callback_count == 1 then
+      callbackCount = callbackCount + 1
+      if callbackCount == 1 then
         print("callbak1 " .. param[1])
         return
-      elseif callback_count == 2 then
+      elseif callbackCount == 2 then
         print("callbak2 " .. param[1])
         Coroutine.WaitForFrames(120)
         print("callbak3 world")
@@ -133,37 +133,37 @@ end
 local function TestYieldCallback()
   -- 模拟一个异步回调
   ---@type CoroutineAsyncOperation
-  local async_op = { is_done = false, progress = 0 }
+  local asyncOp = { isDone = false, progress = 0 }
   -- 用于同步
-  local cur_frame = Time.frameCount
-  local wait_frame_count = 50
-  local until_func = function()
-    return Time.frameCount == cur_frame + wait_frame_count
+  local curFrame = Time.frameCount
+  local waitFrameCount = 50
+  local untilFunc = function()
+    return Time.frameCount == curFrame + waitFrameCount
   end
   -- 启动协程1驱动异步回调
   Coroutine.Start(function()
-    Coroutine.WaitUntil(nil, until_func)
-    while async_op.progress < 1.0 do
-      async_op.progress = async_op.progress + 0.001 * 1
+    Coroutine.WaitUntil(nil, untilFunc)
+    while asyncOp.progress < 1.0 do
+      asyncOp.progress = asyncOp.progress + 0.001 * 1
       Coroutine.WaitForFrames(1)
     end
-    async_op.is_done = true
+    asyncOp.isDone = true
   end)
   -- 同时启动协程2
   Coroutine.Start(function()
     -- 用于统计回调次数
-    local callback_count = 0
+    local callbackCount = 0
     -- 父级协程回调
     local callback = function(co, progress)
-      callback_count = callback_count + 1
-      print("progress:" .. progress .. "     asyncOp.progress:" .. async_op.progress)
+      callbackCount = callbackCount + 1
+      print("progress:" .. progress .. "     asyncOp.progress:" .. asyncOp.progress)
     end
     -- 子级协程函数体
     local func = function()
       -- 同步时间
-      Coroutine.WaitUntil(nil, until_func)
+      Coroutine.WaitUntil(nil, untilFunc)
       -- yieldcallback测试
-      Coroutine.WaitForAsyncOp(async_op, function(co, progress)
+      Coroutine.WaitForAsyncOp(asyncOp, function(co, progress)
         Coroutine.YieldCallback(co, progress)
       end)
       -- yieldbreak测试

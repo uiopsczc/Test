@@ -3,7 +3,7 @@ local UIHUDNumberPanel = Class("UIHUDNumberPanel", UIHUDPanel)
 
 function UIHUDNumberPanel:Init()
 	UIHUDNumberPanel.super.Init(self)
-	self.graphicComponent:SetPrefabPath("Assets/Resources/common/ui/prefab/UINumberPanel.prefab")
+	self:GetGraphicComponent():SetPrefabPath("Assets/PatchResources/UI/UIHUD/Prefab/UINumberPanel.prefab")
 end
 
 return UIHUDNumberPanel

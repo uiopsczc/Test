@@ -1,4 +1,4 @@
-local Timer = require("luacat.timer.Timer")
+local Timer = require("LuaCat.Timer.Timer")
 
 ---@class TimerManager:Class
 ---@field _updateTimerList Timer[]
@@ -6,7 +6,6 @@ local Timer = require("luacat.timer.Timer")
 ---@field _fixedUpdateTimerList Timer[]
 ---@field _toAddTimerList Timer[]
 ---@field _toRemoveTimerList Timer[]
----
 ---@field _coUpdateTimerList Timer[]
 ---@field _coLateUpdateTimerList Timer[]
 ---@field _coFixedUpdateTimerList Timer[]
@@ -26,7 +25,7 @@ function TimerManager:Init()
 	self._coFixedUpdateTimerList = {}
 end
 
-local function __Add(timerList, timer)
+local function _Add(timerList, timer)
 	table.insert(timerList, timer)
 	timer:Start()
 end
@@ -47,12 +46,12 @@ end
 
 ---@param timer Timer
 function TimerManager:AddTimer2(timer)
-	__Add(self:GetTimerList(timer.updateMode, timer.isCoroutineTimer), timer)
+	_Add(self:GetTimerList(timer._updateMode, timer._isCoroutineTimer), timer)
 end
 
 ---@param timer Timer
 function TimerManager:RemoveTimer(timer, index)
-	local timerList = self:GetTimerList(timer.updateMode, timer.isCoroutineTimer)
+	local timerList = self:GetTimerList(timer._updateMode, timer._isCoroutineTimer)
 	if index then
 		table.remove(timerList, index)
 	else
@@ -62,7 +61,9 @@ function TimerManager:RemoveTimer(timer, index)
 	PoolCatManagerUtil.Despawn(timer)
 end
 
--------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------
+--
+----------------------------------------------------------------------
 -- 获取Update定时器
 ---@return Timer
 function TimerManager:AddTimer(targetFunc, targetFuncArgs, delay, interval, updateMode, isUseUnscaledDeltaTime, isCoroutineTimer, isUseFrame)
@@ -98,10 +99,12 @@ function TimerManager:AddCoLateUpdateTimer(targetFunc, targetFuncArgs, delay, in
 	return self:AddTimer(targetFunc, targetFuncArgs, delay, interval, Timer.UpdateMode.LateUpdate, isUseUnscaledDeltaTime, true, isUseFrame)
 end
 
--------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------
+--
+----------------------------------------------------------------------
 ---@param self TimerManager
 ---@param timerList Timer[]
-local function __DoUpdate(self, timerList, deltaTime, unscaledDeltaTime)
+local function _DoUpdate(self, timerList, deltaTime, unscaledDeltaTime)
 	self.is_updating = true
 	for i = 1, #timerList do
 		local timer = timerList[i]
@@ -120,27 +123,27 @@ local function __DoUpdate(self, timerList, deltaTime, unscaledDeltaTime)
 end
 
 function TimerManager:Update(deltaTime, unscaledDeltaTime)
-	__DoUpdate(self, self._updateTimerList, deltaTime, unscaledDeltaTime)
+	_DoUpdate(self, self._updateTimerList, deltaTime, unscaledDeltaTime)
 end
 
 function TimerManager:FixedUpdate(deltaTime, unscaledDeltaTime)
-	__DoUpdate(self, self._fixedUpdateTimerList, deltaTime, unscaledDeltaTime)
+	_DoUpdate(self, self._fixedUpdateTimerList, deltaTime, unscaledDeltaTime)
 end
 
 function TimerManager:LateUpdate(deltaTime, unscaledDeltaTime)
-	__DoUpdate(self, self._lateUpdateTimerList, deltaTime, unscaledDeltaTime)
+	_DoUpdate(self, self._lateUpdateTimerList, deltaTime, unscaledDeltaTime)
 end
 
 function TimerManager:CoUpdate(deltaTime, unscaledDeltaTime)
-	__DoUpdate(self, self._coUpdateTimerList, deltaTime, unscaledDeltaTime)
+	_DoUpdate(self, self._coUpdateTimerList, deltaTime, unscaledDeltaTime)
 end
 
 function TimerManager:CoFixedUpdate(deltaTime, unscaledDeltaTime)
-	__DoUpdate(self, self._coFixedUpdateTimerList, deltaTime, unscaledDeltaTime)
+	_DoUpdate(self, self._coFixedUpdateTimerList, deltaTime, unscaledDeltaTime)
 end
 
 function TimerManager:CoLateUpdate(deltaTime, unscaledDeltaTime)
-	__DoUpdate(self, self._coLateUpdateTimerList, deltaTime, unscaledDeltaTime)
+	_DoUpdate(self, self._coLateUpdateTimerList, deltaTime, unscaledDeltaTime)
 end
 
 function TimerManager:Destroy()

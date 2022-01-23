@@ -1,135 +1,138 @@
 ---@class ItemBag
 local ItemBag = Class("ItemBag")
 ------------------------背包容器------------------------------
-function ItemBag:Init(parent_doer, sub_doer_key)
-  ---@type Critter
-  self.parent_doer = parent_doer
-  self.sub_doer_key = sub_doer_key
+function ItemBag:Init(parentDoer, subDoerKey)
+	---@type Critter
+	self.parentDoer = parentDoer
+	self.subDoerKey = subDoerKey
 end
 ------------------------DoXXX--------------------------------
 -- 卸载
 function ItemBag:DoRelease()
-  SubDoerUtil2.ClearSubDoers(self.parent_doer,self.sub_doer_key)
+	SubDoerUtil2.ClearSubDoers(self.parentDoer, self.subDoerKey)
 end
 
 -- 保存
-function ItemBag:DoSave(dict, dict_tmp,save_key)
-  save_key = save_key or "item_bag"
-  local items = self:GetItems()
-  local dict_items = {}
-  local dict_items_tmp = {}
-  for _,item in ipairs(items) do
-    local id = item:GetId()
-    local rid = item:GetRid()
-    local can_fold = item:CanFold()
-    if can_fold then -- 可折叠
-      dict_items[id] = item:GetCount()
-    else
-      local dict_item_list = table.GetOrAddDefault_Dict(dict_items, id, function() return {}end)
-      local dict_item = {}
-      local dict_item_tmp = {}
-      item:PrepareSave(dict_item, dict_item_tmp)
-      dict_item["rid"] = rid
-      table.insert(dict_item_list, dict_item)
-      if not table.IsNilOrEmpty(dict_item_tmp) then
-        dict_items_tmp[rid] = dict_item_tmp
-      end
-    end
-  end
-  dict[save_key] = table.GetNilIfEmpty(dict_items)
-  dict_tmp[save_key] = table.GetNilIfEmpty(dict_items_tmp)
+function ItemBag:DoSave(dict, dictTmp, saveKey)
+	saveKey = saveKey or "item_bag"
+	local items = self:GetItems()
+	local dictItems = {}
+	local dictItemsTmp = {}
+	for _, item in ipairs(items) do
+		local id = item:GetId()
+		local rid = item:GetRid()
+		local isCanFold = item:CanFold()
+		if isCanFold then
+			-- 可折叠
+			dictItems[id] = item:GetCount()
+		else
+			local dictItemList = table.GetOrAddDefault_Dict(dictItems, id, function()
+				return {}
+			end)
+			local dictItem = {}
+			local dictItemTmp = {}
+			item:PrepareSave(dictItem, dictItemTmp)
+			dictItem["rid"] = rid
+			table.insert(dictItemList, dictItem)
+			if not table.IsNilOrEmpty(dictItemTmp) then
+				dictItemsTmp[rid] = dictItemTmp
+			end
+		end
+	end
+	dict[saveKey] = table.GetNilIfEmpty(dictItems)
+	dictTmp[saveKey] = table.GetNilIfEmpty(dictItemsTmp)
 end
 
 -- 还原
 ---@param doer Doer
-function ItemBag:DoRestore(dict, dict_tmp, restore_key)
-  restore_key = restore_key or "item_bag"
-  self:ClearItems()
-  local dict_items = table.Remove_Dict(dict, restore_key)
-  local dict_items_tmp = table.Remove_Dict(dict_tmp, restore_key)
-  if not table.IsNilOrEmpty(dict_items) then
-    for id, value in pairs(dict_items) do
-      ---@type Item
-      local item
-      local items = self:GetItems_ToEdit(id)
-      if IsNumber(value) then
-        -- id情况，可折叠的item
-        local count  = value
-        item = global.client.itemFactory:NewDoer(id)
-        item:SetEnv(self.parent_doer)
-        item:SetCount(count)
-        table.insert(items,item)
-      else
-        -- 不可折叠的情况
-        local dict_item_list = value
-        for _, dict_item in ipairs(dict_item_list) do
-          local rid = table.Remove_Dict(dict_item,"rid")
-          item = global.client.itemFactory:NewDoer(rid)
-          item:SetEnv(self.parent_doer)
-          local dict_item_tmp
-          if dict_items_tmp then
-            dict_item_tmp = dict_items_tmp[rid]
-          end
-          item:FinishRestore(dict_item, dict_item_tmp)
-          table.insert(items,item)
-        end
-      end
-    end
-  end
+function ItemBag:DoRestore(dict, dictTmp, restoreKey)
+	restoreKey = restoreKey or "item_bag"
+	self:ClearItems()
+	local dictItems = table.Remove_Dict(dict, restoreKey)
+	local dictItemsTmp = table.Remove_Dict(dictTmp, restoreKey)
+	if not table.IsNilOrEmpty(dictItems) then
+		for id, value in pairs(dictItems) do
+			---@type Item
+			local item
+			local items = self:GetItems_ToEdit(id)
+			if IsNumber(value) then
+				-- id情况，可折叠的item
+				local count = value
+				item = global.client.itemFactory:NewDoer(id)
+				item:SetEnv(self.parentDoer)
+				item:SetCount(count)
+				table.insert(items, item)
+			else
+				-- 不可折叠的情况
+				local dictItemList = value
+				for _, dictItem in ipairs(dictItemList) do
+					local rid = table.Remove_Dict(dictItem, "rid")
+					item = global.client.itemFactory:NewDoer(rid)
+					item:SetEnv(self.parentDoer)
+					local dictItemTmp
+					if dictItemsTmp then
+						dictItemTmp = dictItemsTmp[rid]
+					end
+					item:FinishRestore(dictItem, dictItemTmp)
+					table.insert(items, item)
+				end
+			end
+		end
+	end
 end
 --------------------------OnXXX-------------------
 
 --------------------------------------------------
 ---@param item Item
----@param type_1 string
----@param type_2 string
-function ItemBag:__FilterType(item, type_1, type_2)
-  if item:GetType1() == type_1 and (not type_2 or type_2 == item:GetType2()) then
-    return true
-  end
+---@param type1 string
+---@param type2 string
+function ItemBag:__FilterType(item, type1, type2)
+	if item:GetType1() == type1 and (not type2 or type2 == item:GetType2()) then
+		return true
+	end
 end
 
 ---@param id string
 ---@return Item[]
 function ItemBag:GetItems(id)
-  return SubDoerUtil2.GetSubDoers(self.parent_doer,self.sub_doer_key,id)
+	return SubDoerUtil2.GetSubDoers(self.parentDoer, self.subDoerKey, id)
 end
 
 -- 可以直接插入删除
 ---@param id string
 ---@return Item[]
 function ItemBag:GetItems_ToEdit(id)
-  return SubDoerUtil2.GetSubDoers_ToEdit(self.parent_doer,self.sub_doer_key,id)
+	return SubDoerUtil2.GetSubDoers_ToEdit(self.parentDoer, self.subDoerKey, id)
 end
 
----@param id_or_rid string
+---@param idOrRid string
 ---@return Item
-function ItemBag:GetItem(id_or_rid)
-  return SubDoerUtil2.GetSubDoer(self.parent_doer,self.sub_doer_key,id_or_rid)
+function ItemBag:GetItem(idOrRid)
+	return SubDoerUtil2.GetSubDoer(self.parentDoer, self.subDoerKey, idOrRid)
 end
 
----@param type_1 string
----@param type_2 string
+---@param type1 string
+---@param type2 string
 ---@return Item[]
-function ItemBag:GetItemsOfTypes(type_1, type_2)
-  return SubDoerUtil2.GetSubDoers(self.parent_doer,self.sub_doer_key,nil,function(item)
-    return self:__FilterType(item, type_1, type_2)
-  end)
+function ItemBag:GetItemsOfTypes(type1, type2)
+	return SubDoerUtil2.GetSubDoers(self.parentDoer, self.subDoerKey, nil, function(item)
+		return self:__FilterType(item, type1, type2)
+	end)
 end
 
 ---@return string[]
 function ItemBag:GetItemIds()
-  return SubDoerUtil2.GetSubDoerIds(self.parent_doer,self.sub_doer_key)
+	return SubDoerUtil2.GetSubDoerIds(self.parentDoer, self.subDoerKey)
 end
 
 ---@param id string
 function ItemBag:GetItemCount(id)
-  return SubDoerUtil2.GetSubDoerCount(self.parent_doer,self.sub_doer_key,id)
+	return SubDoerUtil2.GetSubDoerCount(self.parentDoer, self.subDoerKey, id)
 end
 
 ---@param id string
 function ItemBag:HasItem(id)
-  return SubDoerUtil2.HasSubDoers(self.parent_doer,self.sub_doer_key,id)
+	return SubDoerUtil2.HasSubDoers(self.parentDoer, self.subDoerKey, id)
 end
 
 -- 放入物品
@@ -138,54 +141,52 @@ end
 ---@param id string
 ---@param count number
 ---@return Item[]
-function ItemBag:AddItems(id,count)
-  local cfgItemData = CfgItem.get_by_id(id)
-  local can_fold = cfgItemData.can_fold
-  local item
-  local result = {}
-  if can_fold then
-    item = global.client.itemFactory:NewDoer(id)
-    item:SetCount(count)
-    self:AddItem(item)
-    table.insert(result,item)
-  else
-    for i = 1, count do
-      item = global.client.itemFactory:NewDoer(id)
-      self:AddItem(item)
-      table.insert(result,item)
-    end
-  end
-  return result
+function ItemBag:AddItems(id, count)
+	local cfgItemData = CfgItem.get_by_id(id)
+	local isCanFold = cfgItemData.isCanFold
+	local item
+	local result = {}
+	if isCanFold then
+		item = global.client.itemFactory:NewDoer(id)
+		item:SetCount(count)
+		self:AddItem(item)
+		table.insert(result, item)
+	else
+		for i = 1, count do
+			item = global.client.itemFactory:NewDoer(id)
+			self:AddItem(item)
+			table.insert(result, item)
+		end
+	end
+	return result
 end
 
 ---@param item Item
 function ItemBag:AddItem(item)
-  SubDoerUtil2.AddSubDoers(self.parent_doer,self.sub_doer_key,item)
+	SubDoerUtil2.AddSubDoers(self.parentDoer, self.subDoerKey, item)
 end
 
 ---@param id string
 ---@param count number
 ---@return Item[]
 function ItemBag:RemoveItems(id, count)
-  return SubDoerUtil2.RemoveSubDoers(self.parent_doer,self.sub_doer_key, id,count,global.client.itemFactory)
+	return SubDoerUtil2.RemoveSubDoers(self.parentDoer, self.subDoerKey, id, count, global.client.itemFactory)
 end
 
 ---@param id string
 ---@param count number
 function ItemBag:CanRemoveItems(id, count)
-  return SubDoerUtil2.CanRemoveSubDoers(self.parent_doer,self.sub_doer_key, id,count)
+	return SubDoerUtil2.CanRemoveSubDoers(self.parentDoer, self.subDoerKey, id, count)
 end
 
----@param item_or_rid Item|string
+---@param itemOrRid Item|string
 ---@return Item
-function ItemBag:RemoveItem(item_or_rid)
-  return SubDoerUtil2.RemoveSubDoer(self.parent_doer,self.sub_doer_key, item_or_rid)
+function ItemBag:RemoveItem(itemOrRid)
+	return SubDoerUtil2.RemoveSubDoer(self.parentDoer, self.subDoerKey, itemOrRid)
 end
-
 
 function ItemBag:ClearItems()
-  SubDoerUtil2.ClearSubDoers(self.parent_doer,self.sub_doer_key)
+	SubDoerUtil2.ClearSubDoers(self.parentDoer, self.subDoerKey)
 end
-
 
 return ItemBag

@@ -50,9 +50,9 @@ function AStarUtil.IsSameBlock(p1, p2)
 end
 
 -- 是否在相邻区块，block是基于Client_View_Width_Grid_Count，Client_View_Height_Grid_Count
-function AStarUtil.IsNeighborBlock(p1_x, p1_y, p2_x, p2_y)
-	local x = math.abs(math.modf((p1_x - p2_x) / AStarMapPathConst.Client_View_Width_Grid_Count))
-	local y = math.abs(math.modf((p1_y - p2_y) / AStarMapPathConst.Client_View_Width_Grid_Count))
+function AStarUtil.IsNeighborBlock(p1X, p1Y, p2X, p2Y)
+	local x = math.abs(math.modf((p1X - p2X) / AStarMapPathConst.Client_View_Width_Grid_Count))
+	local y = math.abs(math.modf((p1Y - p2Y) / AStarMapPathConst.Client_View_Width_Grid_Count))
 	return x <= 1 and y <= 1
 end
 -----------------------------------InRange相关--------------------------------
@@ -511,8 +511,8 @@ function AStarUtil.GetMostLinePassPoint(astarMapPath, lp, tp, canPassObstacleTyp
 	if not isCanOut and not AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), lp.x, lp.y) then
 		return lp
 	end
-	local point_list = AStarUtil.GetLinePointList(lp, tp)
-	return AStarUtil.GetMostPassPoint(astarMapPath, point_list, canPassObstacleTypes, canPassTerrainTypes, isCanOut)
+	local pointList = AStarUtil.GetLinePointList(lp, tp)
+	return AStarUtil.GetMostPassPoint(astarMapPath, pointList, canPassObstacleTypes, canPassTerrainTypes, isCanOut)
 end
 
 -------------------------------------RangeFreePoint-----------------------------------
@@ -558,9 +558,9 @@ function AStarUtil.GetRandomMovePoint(astarMapPath, basePoint, goalPoint, maxRad
 			AStarMapPathConst.Random_Move_Distance_Max + 1)
 	local list = AStarUtil.GetAroundFreePointList(astarMapPath, basePoint, outCount, canPassObstacleTypes, canPassTerrainTypes)
 	while #list > 0 do
-		local remove_index = randomManager:RandomInt(1, #list + 1)
-		local targetPoint = list[remove_index]
-		table.remove(list, remove_index)
+		local removeIndex = randomManager:RandomInt(1, #list + 1)
+		local targetPoint = list[removeIndex]
+		table.remove(list, removeIndex)
 		if Vector2.Distance(goalPoint, targetPoint) <= maxRadiusBetweenTargetPointAndGoalPoint then
 			return targetPoint
 		end
@@ -940,10 +940,10 @@ function AStarUtil.GetMapDistance(pointA, pointB)
 end
 
 ---@param pos Vector2
----@param compare_pos Vector2
+---@param comparePos Vector2
 ---@param radius number
-function AStarUtil.IsInAround(pos, compare_pos, radius)
-	if AStarUtil.GetMapDistance(pos, compare_pos) <= radius then
+function AStarUtil.IsInAround(pos, comparePos, radius)
+	if AStarUtil.GetMapDistance(pos, comparePos) <= radius then
 		return true
 	end
 	return false

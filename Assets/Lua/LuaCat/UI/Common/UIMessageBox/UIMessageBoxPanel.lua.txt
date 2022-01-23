@@ -4,73 +4,79 @@ local UIMessageBoxPanel = Class("UIMessageBoxPanel", UIPopUpPanel)
 
 function UIMessageBoxPanel:Init(...)
 	UIMessageBoxPanel.super.Init(self, ...)
-	self.graphicComponent:SetPrefabPath("Assets/Resources/common/ui/prefab/UIMessageBoxPanel.prefab")
+	self:GetGraphicComponent():SetPrefabPath("Assets/PatchResources/UI/UIMessageBox/Prefab/UIMessageBoxPanel.prefab")
 end
 
-function UIMessageBoxPanel:InitGameObjectChildren()
-	UIMessageBoxPanel.super.InitGameObjectChildren(self)
-	self.titleText = self.content_transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Text), "title")
-	self.subtitleText = self.content_transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Text), "subtitle")
-	self.descText = self.content_transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Text), "content/desc/Scroll View/Viewport/Content/desc")
-	self.descScrollRect = self.content_transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.ScrollRect), "content/desc/Scroll View")
-	self.itemParentTransform = self.content_transform:Find("content/items/Scroll View/Viewport/Content")
-	self.itemsTransform = self.content_transform:Find("content/items")
-	self.itemsScrollRect = self.content_transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.ScrollRect), "content/items/Scroll View")
-	self.closeBtn = self.content_transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Button), "close")
-	self.button1 = self.content_transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Button), "buttons/button1")
-	self.button1Text = self.content_transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Text), "buttons/button1/text")
-	self.button2 = self.content_transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Button), "buttons/button2")
-	self.button2Text = self.content_transform:FindComponentInChildren(typeof(CS.UnityEngine.UI.Text), "buttons/button2/text")
+function UIMessageBoxPanel:_InitUI()
+	UIMessageBoxPanel.super._InitUI(self)
+	self._Txt_Title = self:GetContentTransform():FindComponentInChildren(typeof(CS.UnityEngine.UI.Text), "Txt_Title")
+	self._Txt_Subtitle = self:GetContentTransform():FindComponentInChildren(typeof(CS.UnityEngine.UI.Text), "Txt_Subtitle")
+	self._Txt_Desc = self:GetContentTransform():FindComponentInChildren(typeof(CS.UnityEngine.UI.Text), "Txt_Desc")
+	self._Btn_Close = self:GetContentTransform():FindComponentInChildren(typeof(CS.UnityEngine.UI.Button), "Btn_Close")
+	self._Btn_Button1 = self:GetContentTransform():FindComponentInChildren(typeof(CS.UnityEngine.UI.Button), "Btn_Button1")
+	self._Txt_Button1 = self:GetContentTransform():FindComponentInChildren(typeof(CS.UnityEngine.UI.Text), "Txt_Button1")
+	self._Btn_Button2 = self:GetContentTransform():FindComponentInChildren(typeof(CS.UnityEngine.UI.Button), "Btn_Button2")
+	self._Txt_Button2 = self:GetContentTransform():FindComponentInChildren(typeof(CS.UnityEngine.UI.Text), "Txt_Button2")
+end
 
+function UIMessageBoxPanel:_InitUIExtensions()
+	UIMessageBoxPanel.super._InitUIExtensions(self)
+	self._descScrollRect = self:GetContentTransform():FindComponentInChildren(typeof(CS.UnityEngine.UI.ScrollRect), "Nego_Content/Nego_Desc/Scroll View")
+	self._itemParentTransform = self:GetContentTransform():Find("Nego_Content/Nego_Items/Scroll View/Viewport/Content")
+	self._itemsTransform = self:GetContentTransform():Find("Nego_Content/Nego_Items")
+	self._itemsScrollRect = self:GetContentTransform():FindComponentInChildren(typeof(CS.UnityEngine.UI.ScrollRect), "Nego_Content/Nego_Items/Scroll View")
+end
+
+function UIMessageBoxPanel:Open()
+	UIMessageBoxPanel.super.Open(self)
 	self.t = self:AddUpdateTimer(function()
 		log("1111")
 		return true
 	end, nil, 0, 1)
-	warn(self.t.remain_duration)
 end
 
 function UIMessageBoxPanel:Show(title, subTitle, desc, itemInfoDictList, closeCallback, button1Desc, button1Callback, button2Desc, button2Callback)
-	self.graphicComponent:SetIsShow(true)
-	self.titleText.text = title
-	self.subtitleText.text = subTitle
-	self.descText.text = desc
-	self.descScrollRect.verticalNormalizedPosition = 1
-	self.itemsTransform.gameObject:SetActive(not table.IsNilOrEmpty(itemInfoDictList))
+	self:GetGraphicComponent():SetIsShow(true)
+	self._Txt_Title.text = title
+	self._Txt_Subtitle.text = subTitle
+	self._Txt_Desc.text = desc
+	self._descScrollRect.verticalNormalizedPosition = 1
+	self._itemsTransform.gameObject:SetActive(not table.IsNilOrEmpty(itemInfoDictList))
 	if not table.IsNilOrEmpty(itemInfoDictList) then
-		for _, itemInfo_dict in ipairs(itemInfoDictList) do
-			local id = itemInfo_dict["id"]
-			local count = itemInfo_dict["count"]
+		for _, itemInfoDict in ipairs(itemInfoDictList) do
+			local id = itemInfoDict["id"]
+			local count = itemInfoDict["count"]
 			---@type UIItemBase
-			local uiItemBase = self:AddChild("a" .. count, UIItemBase, self.itemParentTransform)
+			local uiItemBase = self:AddChild("a" .. count, UIItemBase, self._itemParentTransform)
 			uiItemBase:InvokeAfterAllAssetsLoadDone(function()
 				--log(count)
 				uiItemBase:Show(tostring(id), count)
 				self:StartCoroutine("ScrollRectSetVerticalPosition", function()
 					self:WaitForFrames(1)
-					self.itemsScrollRect.verticalNormalizedPosition = 1
+					self._itemsScrollRect.verticalNormalizedPosition = 1
 				end)
 			end)
 		end
 	end
 
 	if button1Callback then
-		self.button1.gameObject:SetActive(true)
-		self.button1Text.text = button1Desc
-		self:RegisterOnClick(self.button1, button1Callback)
+		self._Btn_Button1.gameObject:SetActive(true)
+		self._Txt_Button1.text = button1Desc
+		self:RegisterOnClick(self._Btn_Button1, button1Callback)
 	else
-		self.button1.gameObject:SetActive(false)
+		self._Btn_Button1.gameObject:SetActive(false)
 	end
 
 	if button2Callback then
-		self.button2.gameObject:SetActive(true)
-		self.button2Text.text = button2Desc
-		self:RegisterOnClick(self.button2, button2Callback)
+		self._Btn_Button2.gameObject:SetActive(true)
+		self._Txt_Button2.text = button2Desc
+		self:RegisterOnClick(self._Btn_Button2, button2Callback)
 	else
-		self.button2.gameObject:SetActive(false)
+		self._Btn_Button2.gameObject:SetActive(false)
 	end
 
 	self.closeCallback = closeCallback
-	self:RegisterOnClick(self.closeBtn, function()
+	self:RegisterOnClick(self._Btn_Close, function()
 		self:Close()
 	end)
 end

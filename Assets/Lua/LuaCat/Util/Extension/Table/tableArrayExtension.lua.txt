@@ -398,7 +398,7 @@ function table.Last_Array(array)
 end
 
 -- 根据权重返回随机的index
----@param array number[]
+---@param weightArray number[]
 ---@return  number
 function table.RandomIndexByWeights_Array(weightArray)
 	local total = 0
@@ -420,7 +420,7 @@ function table.RandomIndexByWeights_Array(weightArray)
 end
 
 -- 根据权重返回随机的indexes
----@param array number[]
+---@param weightArray number[]
 ---@param count number
 ---@param isUnique boolean
 ---@return  number
@@ -443,7 +443,7 @@ end
 ---@param num number @随机个数，不填则为array长度个
 ---@param isUnique boolean @是否唯一（不重复） 不填则为true（唯一，不重复)
 ---@param weightArray number[] @权重数组
----@return  T[]
+---@return T[]
 function table.Random_Array(array, num, isUnique, weightArray)
 	local result = {}
 	isUnique = isUnique and isUnique or false
@@ -542,14 +542,6 @@ end
 -- 删除array中的元素值为...的元素
 function table.RemoveByValue_Array(array, ...)
 	local toRemoveList = table.GetArgs(...)
-	--local to_remove_dict = table.ArrayToDict(to_remove_list)
-	--for i = #array, 1,-1 do
-	--  local v = array[i]
-	--  local value = v == nil and "__nil__" or v
-	--  if to_remove_dict[value] then
-	--    table.remove(array, i)
-	--  end
-	--end
 	for i = #array, 1, -1 do
 		local v = array[i]
 		for j = 1, #toRemoveList do

@@ -4,63 +4,67 @@ local TimerManagerPluginComponent = Class("TimerManagerPluginComponent", Abstrac
 ---@param timerManagerPlugin TimerManagerPlugin
 function TimerManagerPluginComponent:Init(timerManagerPlugin)
 	TimerManagerPluginComponent.super.Init(self)
-	self.timerManagerPlugin = timerManagerPlugin
+	self._timerManagerPlugin = timerManagerPlugin
 end
 
 ---@param timer Timer
 function TimerManagerPluginComponent:RemoveTimer(timer)
-	self.timerManagerPlugin:RemoveTimer(timer)
+	self._timerManagerPlugin:RemoveTimer(timer)
 end
 
 function TimerManagerPluginComponent:RemoveAllTimers()
-	self.timerManagerPlugin:RemoveAllTimers()
+	self._timerManagerPlugin:RemoveAllTimers()
 end
 
--------------------------------------------------------------------------------------------------------
+----------------------------------------------------------------------
+--
+----------------------------------------------------------------------
 -- 获取Update定时器
 ---@return Timer
 function TimerManagerPluginComponent:AddTimer(targetFunc, targetFuncArgs, delay, interval, updateMode, isUseUnscaledDeltaTime, isCoroutineTimer, isUseFrame)
-	return self.timerManagerPlugin:AddTimer(targetFunc, targetFuncArgs, delay, interval, updateMode, isUseUnscaledDeltaTime, isCoroutineTimer, isUseFrame)
+	return self._timerManagerPlugin:AddTimer(targetFunc, targetFuncArgs, delay, interval, updateMode, isUseUnscaledDeltaTime, isCoroutineTimer, isUseFrame)
 end
 
 ---@return Timer
 function TimerManagerPluginComponent:AddCoTimer(targetFunc, targetFuncArgs, delay, interval, updateMode, isUseUnscaledDeltaTime, isUseFrame)
-	return self.timerManagerPlugin:AddCoTimer(targetFunc, targetFuncArgs, delay, interval, updateMode, isUseUnscaledDeltaTime, isUseFrame)
+	return self._timerManagerPlugin:AddCoTimer(targetFunc, targetFuncArgs, delay, interval, updateMode, isUseUnscaledDeltaTime, isUseFrame)
 end
 
 function TimerManagerPluginComponent:AddUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
-	return self.timerManagerPlugin:AddUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
+	return self._timerManagerPlugin:AddUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
 end
 function TimerManagerPluginComponent:AddFixedUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
-	return self.timerManagerPlugin:AddFixedUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
+	return self._timerManagerPlugin:AddFixedUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
 end
 function TimerManagerPluginComponent:AddLateUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
-	return self.timerManagerPlugin:AddLateUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
+	return self._timerManagerPlugin:AddLateUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
 end
 
 function TimerManagerPluginComponent:AddCoUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
-	return self.timerManagerPlugin:AddCoUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
+	return self._timerManagerPlugin:AddCoUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
 end
 function TimerManagerPluginComponent:AddCoFixedUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
-	return self.timerManagerPlugin:AddCoFixedUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
+	return self._timerManagerPlugin:AddCoFixedUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
 end
 function TimerManagerPluginComponent:AddCoLateUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
-	return self.timerManagerPlugin:AddCoLateUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
+	return self._timerManagerPlugin:AddCoLateUpdateTimer(targetFunc, targetFuncArgs, delay, interval, isUseUnscaledDeltaTime, isUseFrame)
 end
 
-function TimerManagerPluginComponent:__SetIsPaused(isPaused)
-	TimerManagerPluginComponent.super.__SetIsPaused(self, isPaused)
-	self.timerManagerPlugin:SetIsPaused(isPaused)
+function TimerManagerPluginComponent:_SetIsPaused(isPaused)
+	TimerManagerPluginComponent.super._SetIsPaused(self, isPaused)
+	self._timerManagerPlugin:SetIsPaused(isPaused)
 end
 
--------------------------------------------------------------------------------------------------------
-function TimerManagerPluginComponent:__Reset()
-	TimerManagerPluginComponent.super.__Reset(self)
+----------------------------------------------------------------------
+-- 相关
+----------------------------------------------------------------------
+function TimerManagerPluginComponent:_Reset()
+	TimerManagerPluginComponent.super._Reset(self)
 	self:RemoveAllTimers()
 end
 
-function TimerManagerPluginComponent:__Destroy()
-	TimerManagerPluginComponent.super.__Destroy(self)
+function TimerManagerPluginComponent:_Destroy()
+	TimerManagerPluginComponent.super._Destroy(self)
 	self:RemoveAllTimers()
 end
 

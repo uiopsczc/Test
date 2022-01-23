@@ -1,19 +1,18 @@
 ---@class Vector2Util
 Vector2Util = {}
 
-
 function Vector2Util.Cross(v1, v2)
-  return v1.x * v2.y - v2.x * v1.y
+	return v1.x * v2.y - v2.x * v1.y
 end
 
 ---@param v Vector2
-function Vector3Util.ToVector3(v, format )
-  format = format or  "x,y,0"
-  local formats = string.Split(format,',')
-  local x = Vector3Util.GetFormat(v, formats[1])
-  local y = Vector3Util.GetFormat(v, formats[2])
-  local z = Vector3Util.GetFormat(v, formats[3])
-  return Vector3(x, y, z)
+function Vector3Util.ToVector3(v, format)
+	format = format or "x,y,0"
+	local formats = string.Split(format, ',')
+	local x = Vector3Util.GetFormat(v, formats[1])
+	local y = Vector3Util.GetFormat(v, formats[2])
+	local z = Vector3Util.GetFormat(v, formats[3])
+	return Vector3(x, y, z)
 end
 
 

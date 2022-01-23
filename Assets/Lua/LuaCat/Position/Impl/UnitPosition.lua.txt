@@ -4,8 +4,8 @@ local UnitPosition = Class("UnitPosition", IPosition)
 ---@param unit Unit
 ---@param socketName string
 function UnitPosition:Init(unit, socketName)
-	self.unit = unit
-	self.socketName = socketName
+	self._unit = unit
+	self._socketName = socketName
 end
 
 ---@return Vector3
@@ -15,20 +15,20 @@ end
 
 ---@return CS.UnityEngine.Transform
 function UnitPosition:GetTransform()
-	if string.IsNilOrWhiteSpace(self.socketName) then
-		return self.unit.graphicComponent.transform
+	if string.IsNilOrWhiteSpace(self._socketName) then
+		return self._unit:GetGraphicComponent():GetTransform()
 	else
-		return self.unit.graphicComponent.transform:GetSocketTransform(self.socketName)
+		return self._unit:GetGraphicComponent():GetTransform():GetSocketTransform(self._socketName)
 	end
 end
 
 ---@param socketName string
 function UnitPosition:SetSocketName(socketName)
-	self.socketName = socketName
+	self._socketName = socketName
 end
 
 function UnitPosition:IsValid()
-	return not self.unit:IsDead()
+	return not self._unit:IsDead()
 end
 
 return UnitPosition

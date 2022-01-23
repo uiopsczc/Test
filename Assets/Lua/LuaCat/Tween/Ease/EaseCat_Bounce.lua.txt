@@ -29,7 +29,9 @@ function EaseCat_Bounce.EaseInOut(t, b, c, d)
 	return EaseCat_Bounce.EaseOut(t * 2 - d, 0, c, d) * .5 + c * .5 + b
 end
 
--------------------------------------------------------------------------
+----------------------------------------------------------------------
+--
+----------------------------------------------------------------------
 function EaseCat_Bounce.EaseIn2(startValue, endValue, pct)
 	return EaseCat_Bounce.EaseIn(pct, startValue, endValue - startValue, 1)
 end

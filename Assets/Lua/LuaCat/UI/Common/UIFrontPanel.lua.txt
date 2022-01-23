@@ -2,7 +2,7 @@
 local UIFrontPanel = Class("UIFrontPanel", UIPanel)
 
 function UIFrontPanel:Init(...)
-	self.layerName = "FrontUILayer"
+	self:SetLayerName("FrontUILayer")
 	UIFrontPanel.super.Init(self, ...)
 end
 

@@ -9,9 +9,9 @@ function table.FindKeyByValue_Dict(t, value)
 end
 
 function table.FindKey_Dict(t, key)
-	for _key, _ in pairs(t) do
-		if _key == key then
-			return _key
+	for curKey, _ in pairs(t) do
+		if curKey == key then
+			return curKey
 		end
 	end
 end
@@ -21,9 +21,9 @@ function table.Remove_Dict(dict, key)
 		return nil
 	end
 	local result, toRemoveKey
-	for _key, _ in pairs(dict) do
-		if _key == key then
-			toRemoveKey = _key
+	for curKey, _ in pairs(dict) do
+		if curKey == key then
+			toRemoveKey = curKey
 			break
 		end
 	end
@@ -200,9 +200,9 @@ function table.Trim_Dict(t)
 	end
 end
 
-----------------------------------------------------------------------------------
----ValueListDict
-----------------------------------------------------------------------------------
+----------------------------------------------------------------------
+-- ValueListDict
+----------------------------------------------------------------------
 function table.Add_ValueListDict(valueListDict, key, value)
 	local valueList = table.GetOrAddDefault_Dict(valueListDict, key, function()
 		return {}
@@ -283,9 +283,9 @@ function table.CheckAll_ValueListDict(valueListDict)
 	end
 end
 
-----------------------------------------------------------------------------------
----ValueDictDict
-----------------------------------------------------------------------------------
+----------------------------------------------------------------------
+-- ValueDictDict
+----------------------------------------------------------------------
 function table.Add_ValueDictDict(valueDictDict, key1, key2, value)
 	local valueDict = table.GetOrAddDefault_Dict(valueDictDict, key1, function()
 		return {}
@@ -355,7 +355,7 @@ function table.CheckAll_ValueDictDict(valueDictDict)
 			table.insert(toRemoveKey1List, key1)
 		end
 	end
-	for _, to_remove_key1 in ipairs(toRemoveKey1List) do
-		valueDictDict[to_remove_key1] = nil
+	for _, toRemoveKey1 in ipairs(toRemoveKey1List) do
+		valueDictDict[toRemoveKey1] = nil
 	end
 end

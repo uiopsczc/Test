@@ -2,7 +2,6 @@
 local Vector3Position = Class("Vector3Position", IPosition)
 
 ---@param vector3 Vector3
----@param socketName string
 function Vector3Position:Init(vector3)
 	self.vector3 = vector3
 end

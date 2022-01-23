@@ -2,7 +2,7 @@
 local UIPopUpPanel = Class("UIPopUpPanel", UIPanel)
 
 function UIPopUpPanel:Init(...)
-	self.layerName = "PopUpUILayer"
+	self:SetLayerName("PopUpUILayer")
 	UIPopUpPanel.super.Init(self, ...)
 end
 

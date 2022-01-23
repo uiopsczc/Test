@@ -1,67 +1,65 @@
 ---@class MortarEffectComponent:SourceTargetEffectComponent
 local MortarEffectComponent = Class("MortarEffectComponent", SourceTargetEffectComponent)
 
----@param source_iposition IPosition
----@param target_iposition IPosition
+---@param sourceIPosition IPosition
+---@param targetIPosition IPosition
 ---@param gravity Vector3
----@param start_angle number
-function MortarEffectComponent:Init(source_iposition, target_iposition, gravity, start_angle)
-  MortarEffectComponent.super.Init(self)
+---@param startAngle number
+function MortarEffectComponent:Init(sourceIPosition, targetIPosition, gravity, startAngle)
+	MortarEffectComponent.super.Init(self)
 
-  self.source_iposition = source_iposition
-  self.target_iposition = target_iposition
-  self:SetSocket()
-  self.gravity = gravity
-  self.start_angle = start_angle
+	self.sourceIPosition = sourceIPosition
+	self.targetIPosition = targetIPosition
+	self:SetSocket()
+	self.gravity = gravity
+	self.startAngle = startAngle
 
-  self:__InitFields()
+	self:__InitFields()
 
-  self:Calculate(0)
-  self.effectEntity:ApplyToTransformComponent(self.current_position, self.current_eulerAngles)
+	self:Calculate(0)
+	self.effectEntity:ApplyToTransformComponent(self.currentPosition, self.currentEulerAngles)
 end
 
-
 function MortarEffectComponent:__InitFields()
-  self.source_position = self.source_iposition:GetPosition()
-  self.target_position = self.target_iposition:GetPosition()
-  self.current_eulerAngles = Quaternion.LookRotation(self.target_position - self.source_position, Vector3.up).eulerAngles
-  local target_position_xz = self.target_position:SetZeroY()
-  local source_position_xz = self.source_position:SetZeroY()
-  local distance = Vector3.Distance(target_position_xz, source_position_xz)
-  local rad = math.atan(self.start_angle, distance)
-  local dir_horizon = (target_position_xz - source_position_xz).normalized / math.tan(rad)
-  local dir = dir_horizon + Vector3.New(0, 1, 0)
-  local gravity_y = math.abs(self.gravity.y)
-  local height = self.source_position.y - self.target_position.y
-  local rate = math.tan(rad) * gravity_y * distance /
-      math.sqrt(2 * gravity_y * (height + distance * math.tan(rad)))
+	self.sourcePosition = self.sourceIPosition:GetPosition()
+	self.targetPosition = self.targetIPosition:GetPosition()
+	self.currentEulerAngles = Quaternion.LookRotation(self.targetPosition - self.sourcePosition, Vector3.up).eulerAngles
+	local targetPositionXZ = self.targetPosition:SetZeroY()
+	local sourcePositionXZ = self.sourcePosition:SetZeroY()
+	local distance = Vector3.Distance(targetPositionXZ, sourcePositionXZ)
+	local rad = math.atan(self.startAngle, distance)
+	local dirHorizon = (targetPositionXZ - sourcePositionXZ).normalized / math.tan(rad)
+	local dir = dirHorizon + Vector3.New(0, 1, 0)
+	local gravityY = math.abs(self.gravity.y)
+	local height = self.sourcePosition.y - self.targetPosition.y
+	local rate = math.tan(rad) * gravityY * distance /
+		math.sqrt(2 * gravityY * (height + distance * math.tan(rad)))
 
-  self.velocity = dir * rate
-  self.remain_duration = distance / (dir_horizon.magnitude * rate)
-  self.all_duration = self.remain_duration
-  self.start_position = self.source_position
-  self.vertical = rate
-  self.direction = self.velocity
-  self.height = self.start_position.y
+	self.velocity = dir * rate
+	self.remainDuration = distance / (dirHorizon.magnitude * rate)
+	self.allDuration = self.remainDuration
+	self.startPosition = self.sourcePosition
+	self.vertical = rate
+	self.direction = self.velocity
+	self.height = self.startPosition.y
 
-  self.current_position = self.start_position
+	self.currentPosition = self.startPosition
 end
 
 function MortarEffectComponent:Calculate(deltaTime)
-  self.remain_duration = self.remain_duration - deltaTime
-  if self.remain_duration <= 0 then
-    self:OnEffectReach()
-    return
-  end
-  self.direction = self.direction + self.gravity * deltaTime
-  self.current_eulerAngles = Quaternion.LookRotation(self.direction).eulerAngles
-  local pass_duration = self.all_duration - self.remain_duration
-  local interp = self.remain_duration / self.all_duration
-  local position_new = self.start_position * interp + self.target_position * (1 - interp)
-  local height = self.height + self.vertical * pass_duration + self.gravity.y * pass_duration * pass_duration * 0.5
-  position_new.y = height
-  self.current_position = position_new
+	self.remainDuration = self.remainDuration - deltaTime
+	if self.remainDuration <= 0 then
+		self:OnEffectReach()
+		return
+	end
+	self.direction = self.direction + self.gravity * deltaTime
+	self.currentEulerAngles = Quaternion.LookRotation(self.direction).eulerAngles
+	local passDuration = self.allDuration - self.remainDuration
+	local interp = self.remainDuration / self.allDuration
+	local positionNew = self.startPosition * interp + self.targetPosition * (1 - interp)
+	local height = self.height + self.vertical * passDuration + self.gravity.y * passDuration * passDuration * 0.5
+	positionNew.y = height
+	self.currentPosition = positionNew
 end
-
 
 return MortarEffectComponent

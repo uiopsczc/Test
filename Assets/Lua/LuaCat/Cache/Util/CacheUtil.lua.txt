@@ -2,57 +2,51 @@
 local CacheUtil = Class("CacheUtil")
 
 function CacheUtil.GetCache(obj)
-  return global.cacheManager:GetOrAddCahce(obj)
+	return global.cacheManager:GetOrAddCache(obj)
 end
 
 function CacheUtil.IsContainCache(obj)
-  global.cacheManager:IsContainsKey(obj)
+	global.cacheManager:IsContainsKey(obj)
 end
 
 function CacheUtil.RemoveCache(obj)
-  global.cacheManager:Remove(obj)
+	global.cacheManager:Remove(obj)
 end
 
-
 function CacheUtil.CacheSet(obj, key, value)
-  CacheUtil.GetCache(obj):Set(key,value)
+	CacheUtil.GetCache(obj):Set(key, value)
 end
 
 function CacheUtil.CacheRemove(obj, key)
-  CacheUtil.GetCache(obj):Remove(key)
+	CacheUtil.GetCache(obj):Remove(key)
 end
 
-function CacheUtil.CacheGet(obj,key)
-  return CacheUtil.GetCache(obj):Get(key)
+function CacheUtil.CacheGet(obj, key)
+	return CacheUtil.GetCache(obj):Get(key)
 end
 
-function CacheUtil.CacheContainsKey(obj,key)
-  return CacheUtil.GetCache(obj):ContainsKey(key)
+function CacheUtil.CacheContainsKey(obj, key)
+	return CacheUtil.GetCache(obj):ContainsKey(key)
 end
 
-
-function CacheUtil.CacheContainsValue(obj,value)
-  return CacheUtil.GetCache(obj):ContainsValue(value)
+function CacheUtil.CacheContainsValue(obj, value)
+	return CacheUtil.GetCache(obj):ContainsValue(value)
 end
 
-function CacheUtil.CacheGetOrAddDefault(obj,key, dvFunc)
-  return CacheUtil.GetCache(obj):GetOrAddDefault(key,dvFunc)
+function CacheUtil.CacheGetOrAddDefault(obj, key, dvFunc)
+	return CacheUtil.GetCache(obj):GetOrAddDefault(key, dvFunc)
 end
 
-function CacheUtil.CacheGetOrGetDefault(obj,key, dvFunc)
-  return CacheUtil.GetCache(obj):GetOrGetDefault(key,dvFunc)
+function CacheUtil.CacheGetOrGetDefault(obj, key, dvFunc)
+	return CacheUtil.GetCache(obj):GetOrGetDefault(key, dvFunc)
 end
 
-function CacheUtil.CacheRemove2(obj,key)
-  return CacheUtil.GetCache(obj):Remove2(key)
+function CacheUtil.CacheRemove2(obj, key)
+	return CacheUtil.GetCache(obj):Remove2(key)
 end
 
 function CacheUtil.CacheClear(obj)
-  CacheUtil.GetCache(obj):Clear()
+	CacheUtil.GetCache(obj):Clear()
 end
-
-
-
-
 
 return CacheUtil

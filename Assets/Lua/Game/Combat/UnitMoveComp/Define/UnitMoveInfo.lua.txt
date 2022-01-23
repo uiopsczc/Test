@@ -1,25 +1,25 @@
 ---@class UnitMoveInfo
----@field animation_speed number
----@field animation_name string
+---@field animationSpeed number
+---@field animationName string
 ---@field speed number
----@field remain_duration number
----@field target_pos Vector3
----@field target_index_in_path number
+---@field remainDuration number
+---@field targetPos Vector3
+---@field targetIndexInPath number
 ---@field path Vector3[]
----@field look_at_unit Unit
----@field rotate_remain_duration number
----@field end_rotation Quaternion
+---@field lookAtUnit Unit
+---@field rotateRemainDuration number
+---@field endRotation Quaternion
 local UnitMoveInfo = Class("UnitMoveInfo")
 
 function UnitMoveInfo:Init()
-  self.animation_speed = -1
-  self.animation_name = AnimationNameConst.walk
-  self.speed = 1
-  self.rotate_remain_duration = 0
+	self.animationSpeed = -1
+	self.animationName = AnimationNameConst.walk
+	self.speed = 1
+	self.rotateRemainDuration = 0
 end
 
 function UnitMoveInfo:IsHasAnimationName()
-  return not string.IsNilOrWhiteSpace(self.animation_name)
+	return not string.IsNilOrWhiteSpace(self.animationName)
 end
 
 return UnitMoveInfo

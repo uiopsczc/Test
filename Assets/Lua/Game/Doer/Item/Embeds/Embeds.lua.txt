@@ -1,42 +1,42 @@
 ---@class Embeds
 local Embeds = Class("Embeds")
 ------------------------镶物容器------------------------------
-function Embeds:Init(parent_doer, sub_doer_key)
-  ---@type Item
-  self.parent_doer = parent_doer
-  self.sub_doer_key = sub_doer_key
+function Embeds:Init(parentDoer, subDoerKey)
+	---@type Item
+	self.parentDoer = parentDoer
+	self.subDoerKey = subDoerKey
 end
 ------------------------DoXXX--------------------------------
 -- 卸载
 function Embeds:DoRelease()
-  SubDoerUtil1.DoReleaseSubDoer(self.parent_doer, self.sub_doer_key)
+	SubDoerUtil1.DoReleaseSubDoer(self.parentDoer, self.subDoerKey)
 end
 
 -- 保存
-function Embeds:DoSave(dict, dict_tmp, save_key)
-  save_key = save_key or "embed_ids"
-  local embeds = self:GetEmbeds()
-  local dict_embed_ids = {}
-  for _, embed in ipairs(embeds) do
-    table.insert(dict_embed_ids, embed:GetId())
-  end
-  dict[save_key] = table.GetNilIfEmpty(dict_embed_ids)
+function Embeds:DoSave(dict, dictTmp, saveKey)
+	saveKey = saveKey or "embed_ids"
+	local embeds = self:GetEmbeds()
+	local dictEmbedIds = {}
+	for _, embed in ipairs(embeds) do
+		table.insert(dictEmbedIds, embed:GetId())
+	end
+	dict[saveKey] = table.GetNilIfEmpty(dictEmbedIds)
 end
 
 -- 还原
-function Embeds:DoRestore(dict, dict_tmp, restore_key)
-  restore_key = restore_key or "embed_ids"
-  self:ClearEmbeds()
-  local dict_embed_ids = table.Remove_Dict(dict, restore_key)
-  if not table.IsNilOrEmpty(dict_embed_ids) then
-    local embeds = self:GetEmbeds_ToEdit()
-    for i = 1, #dict_embed_ids do
-      local embed_id = dict_embed_ids[i]
-      local embed = self.parent_doer.factory:NewDoer(embed_id)
-      embed:SetEnv(self.parent_doer)
-      table.insert(embeds, embed)
-    end
-  end
+function Embeds:DoRestore(dict, dictTmp, restoreKey)
+	restoreKey = restoreKey or "embed_ids"
+	self:ClearEmbeds()
+	local dictEmbedIds = table.Remove_Dict(dict, restoreKey)
+	if not table.IsNilOrEmpty(dictEmbedIds) then
+		local embeds = self:GetEmbeds_ToEdit()
+		for i = 1, #dictEmbedIds do
+			local embedId = dictEmbedIds[i]
+			local embed = self.parentDoer.factory:NewDoer(embedId)
+			embed:SetEnv(self.parentDoer)
+			table.insert(embeds, embed)
+		end
+	end
 end
 --------------------------OnXXX-------------------
 
@@ -45,35 +45,36 @@ end
 ---@param id string
 ---@return Item[]
 function Embeds:GetEmbeds(id)
-  return SubDoerUtil1.GetSubDoers(self.parent_doer,self.sub_doer_key, id)
+	return SubDoerUtil1.GetSubDoers(self.parentDoer, self.subDoerKey, id)
 end
 
 ---@return Item[]
-function Embeds:GetEmbeds_ToEdit() --可以直接插入删除
-  return SubDoerUtil1.GetSubDoers_ToEdit(self.parent_doer,self.sub_doer_key)
+function Embeds:GetEmbeds_ToEdit()
+	--可以直接插入删除
+	return SubDoerUtil1.GetSubDoers_ToEdit(self.parentDoer, self.subDoerKey)
 end
 
 -- 是否有镶物
 function Embeds:HasEmbeds()
-  return SubDoerUtil1.HasSubDoers(self.parent_doer,self.sub_doer_key)
+	return SubDoerUtil1.HasSubDoers(self.parentDoer, self.subDoerKey)
 end
 
 function Embeds:GetEmbedsCount()
-  return SubDoerUtil1.GetSubDoersCount(self.parent_doer,self.sub_doer_key)
+	return SubDoerUtil1.GetSubDoersCount(self.parentDoer, self.subDoerKey)
 end
 
 -- 获得指定的镶物
----@param id_or_rid string
+---@param idOrRid string
 ---@return Item
-function Embeds:GetEmbed(id_or_rid)
-  return SubDoerUtil1.GetSubDoer(self.parent_doer,self.sub_doer_key, id_or_rid)
+function Embeds:GetEmbed(idOrRid)
+	return SubDoerUtil1.GetSubDoer(self.parentDoer, self.subDoerKey, idOrRid)
 end
 
 -- 清除所有镶物
 function Embeds:ClearEmbeds()
-  return SubDoerUtil1.ClearSubDoers(self.parent_doer,self.sub_doer_key, function(embed)
-    self.parent_doer:EmbedOff(embed)
-  end)
+	return SubDoerUtil1.ClearSubDoers(self.parentDoer, self.subDoerKey, function(embed)
+		self.parentDoer:EmbedOff(embed)
+	end)
 end
 
 return Embeds
