@@ -7,7 +7,7 @@ function LineEffectGraphicComponent:OnAllAssetsLoadDone()
 	self.xlineRendererList = table.ConvertCSArray2LuaTable(self._transform:GetComponent(typeof(CS.CsCat.XLineRenderer)))
 end
 
-function LineEffectGraphicComponent:__Update(deltaTime, unscaledDeltaTime)
+function LineEffectGraphicComponent:_Update(deltaTime, unscaledDeltaTime)
 	LineEffectGraphicComponent.super.__Update(self, deltaTime, unscaledDeltaTime)
 	self._transform.position = self.effectEntity.transformComponent:GetPosition()
 	self._transform.eulerAngles = self.effectEntity.transformComponent:GetEulerAngles()

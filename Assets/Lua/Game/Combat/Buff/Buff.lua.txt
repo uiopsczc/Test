@@ -122,7 +122,7 @@ function Buff:RemoveTriggerSpell()
 	end
 end
 
-function Buff:__Destroy()
+function Buff:_Destroy()
 	Buff.super.__Destroy(self)
 	self:RemoveEffects()
 	self:RemovePropertyDict()

@@ -1,20 +1,20 @@
-local EventListener = require("luacat.eventDispatcher.EventListener")
+local EventListener = require("LuaCat.EventDispatcher.EventListener")
 ---@class EventDispatcherPlugin
 local EventDispatcherPlugin = Class("EventDispatcherPlugin")
 
 function EventDispatcherPlugin:Init(eventDispatcher)
 	---@type EventDispatcher
-	self.eventDispatcher = eventDispatcher
-	self.eventListenerDict = {}
+	self._eventDispatcher = eventDispatcher
+	self._eventListenerDict = {}
 end
 
 ---@return EventListener
 function EventDispatcherPlugin:AddListener(eventName, handler)
 	assert(eventName)
-	local groupListenerDict = table.GetOrAddDefault_Dict(self.eventListenerDict, eventName, function()
+	local groupListenerDict = table.GetOrAddDefault_Dict(self._eventListenerDict, eventName, function()
 		return {}
 	end)
-	local listener = self.eventDispatcher:AddListener(eventName, handler)
+	local listener = self._eventDispatcher:AddListener(eventName, handler)
 	groupListenerDict[listener] = true
 	return listener
 end
@@ -27,65 +27,65 @@ end
 function EventDispatcherPlugin:RemoveListener(...)
 	local args = table.SafePack(...)
 	if args.n == 2 then
-		return self:__RemoveListener2(args[1], args[2])
+		return self:_RemoveListener2(args[1], args[2])
 	elseif IsInstanceOf(args[1], EventListener._className) then
-		return self:__RemoveListener1(args[1])
+		return self:_RemoveListener1(args[1])
 	elseif args.n == 1 then
-		return self:__RemoveListener3(args[1])
+		return self:_RemoveListener3(args[1])
 	end
 end
 
 function EventDispatcherPlugin:RemoveAllListeners()
-	for eventName, groupListenerDict in pairs(self.eventListenerDict) do
+	for eventName, groupListenerDict in pairs(self._eventListenerDict) do
 		for listener, isActive in pairs(groupListenerDict) do
 			if isActive then
-				self.eventDispatcher:RemoveListener(listener)
+				self._eventDispatcher:RemoveListener(listener)
 			end
 		end
 	end
-	self.eventListenerDict = {}
+	self._eventListenerDict = {}
 end
 
 ---@param listener EventListener
 ---@return EventListener
-function EventDispatcherPlugin:__RemoveListener1(listener)
-	local eventName = listener.eventName
-	local groupListenerDict = self.eventListenerDict[eventName]
+function EventDispatcherPlugin:_RemoveListener1(listener)
+	local eventName = listener._eventName
+	local groupListenerDict = self._eventListenerDict[eventName]
 	if not groupListenerDict or not groupListenerDict[listener] then
 		return
 	end
-	if self.eventDispatcher:RemoveListener(listener) then
+	if self._eventDispatcher:RemoveListener(listener) then
 		groupListenerDict[listener] = nil
 		return listener
 	end
 end
 
 ---@return EventListener
-function EventDispatcherPlugin:__RemoveListener2(eventName, handler)
-	local groupListenerDict = self.eventListenerDict[eventName]
+function EventDispatcherPlugin:_RemoveListener2(eventName, handler)
+	local groupListenerDict = self._eventListenerDict[eventName]
 	if not groupListenerDict then
 		return
 	end
 	for listener, isActive in pairs(groupListenerDict) do
 		if isActive and listener.handler == handler then
-			return self:__RemoveListener1(listener)
+			return self:_RemoveListener1(listener)
 		end
 	end
 end
 
 ---@return EventListener
-function EventDispatcherPlugin:__RemoveListener3(handler)
-	for eventName, groupListenerDict in pairs(self.eventListenerDict) do
+function EventDispatcherPlugin:_RemoveListener3(handler)
+	for eventName, groupListenerDict in pairs(self._eventListenerDict) do
 		for listener, isActive in pairs(groupListenerDict) do
 			if isActive and listener.handler == handler then
-				return self:__RemoveListener1(listener)
+				return self:_RemoveListener1(listener)
 			end
 		end
 	end
 end
 
 function EventDispatcherPlugin:Broadcast(eventName, ...)
-	self.eventDispatcher:Broadcast(eventName, ...)
+	self._eventDispatcher:Broadcast(eventName, ...)
 end
 
 function EventDispatcherPlugin:Destroy()

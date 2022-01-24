@@ -1,4 +1,4 @@
-local PoolCat = require("luacat.poolCat.PoolCat")
+local PoolCat = require("LuaCat.PoolCat.PoolCat")
 ---@class CustomPoolCat:PoolCat
 local CustomPoolCat = Class("CustomPoolCat", PoolCat)
 
@@ -6,11 +6,11 @@ local CustomPoolCat = Class("CustomPoolCat", PoolCat)
 ---@param spawnFunc fun():any
 function CustomPoolCat:Init(poolName, spawnFunc)
 	CustomPoolCat.super.Init(self, poolName, nil)
-	self.spawnFunc = spawnFunc
+	self._spawnFunc = spawnFunc
 end
 
 function CustomPoolCat:__Spawn()
-	return self.spawnFunc()
+	return self._spawnFunc()
 end
 
 return CustomPoolCat

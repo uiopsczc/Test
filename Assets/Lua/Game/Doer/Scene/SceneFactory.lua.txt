@@ -3,11 +3,11 @@ local SceneFactory = Class("SceneFactory", DoerFactory)
 
 function SceneFactory:Init()
 	SceneFactory.super.Init(self)
-	self.defaultDoerClassPath = "game.doer.scene.Scene"
+	self._defaultDoerClassPath = "game.doer.scene.Scene"
 end
 
 function SceneFactory:GetClassPath(id)
-	return string.IsNilOrEmpty(self:GetCfgSceneData(id).class_path_lua) and self.defaultDoerClassPath or self:GetCfgSceneData(id).class_path_lua
+	return string.IsNilOrEmpty(self:GetCfgSceneData(id).class_path_lua) and self._defaultDoerClassPath or self:GetCfgSceneData(id).class_path_lua
 end
 
 function SceneFactory:GetCfgSceneData(id)
@@ -15,7 +15,7 @@ function SceneFactory:GetCfgSceneData(id)
 end
 
 ---@return SceneDBase
-function SceneFactory:__NewDBase(id_or_rid)
+function SceneFactory:_NewDBase(id_or_rid)
 	return SceneDBase.New(id_or_rid)
 end
 

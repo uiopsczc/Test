@@ -2,8 +2,16 @@
 local EventListener = Class("EventListener")
 
 function EventListener:Init(eventName, handler)
-	self.eventName = eventName
-	self.handler = handler
+	self._eventName = eventName
+	self._handler = handler
+end
+
+function EventListener:GetHandler()
+	return self._handler
+end
+
+function EventListener:GetEventName()
+	return self._eventName
 end
 
 return EventListener

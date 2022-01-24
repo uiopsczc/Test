@@ -5,20 +5,20 @@ function B_CoroutineHFSMState:IEEnter(...)
 	self:YieldStart(function(...)
 		B_CoroutineHFSMState.super.IEEnter(self, ...)
 	end, nil, ...)
-	log("Enter B_CoroutineHFSMState", self.key)
+	log("Enter B_CoroutineHFSMState", self._key)
 	self:YieldBreak()
 end
 
 function B_CoroutineHFSMState:__Update(deltaTime, unscaledDeltaTime)
 	B_CoroutineHFSMState.super.__Update(self, deltaTime, unscaledDeltaTime)
-	log("Execute B_CoroutineHFSMState", self.key)
+	log("Execute B_CoroutineHFSMState", self._key)
 end
 
 function B_CoroutineHFSMState:IEExit(...)
 	self:YieldStart(function(...)
 		B_CoroutineHFSMState.super.IEExit(self, ...)
 	end, nil, ...)
-	log("Exit B_CoroutineHFSMState", self.key)
+	log("Exit B_CoroutineHFSMState", self._key)
 	self:YieldBreak()
 end
 

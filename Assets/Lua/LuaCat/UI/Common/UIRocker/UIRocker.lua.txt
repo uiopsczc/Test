@@ -97,7 +97,7 @@ function UIRocker:Update(deltaTime, unscaledDeltaTime)
 end
 
 function UIRocker:OnUIRockerPointerDown(eventData)
-	if not self:GetIsEnabled() then
+	if not self:IsEnabled() then
 		return
 	end
 	self._pointId = eventData.pointerId
@@ -115,7 +115,7 @@ end
 
 function UIRocker:OnUIRockerPointerUp(eventData)
 	self._isDragging = false
-	if not self:GetIsEnabled() then
+	if not self:IsEnabled() then
 		return
 	end
 	if eventData and self._pointId ~= eventData.pointerId then
@@ -136,7 +136,7 @@ function UIRocker:OnUIRockerPointerUp(eventData)
 end
 
 function UIRocker:OnRockerDrag(eventData)
-	if not self:GetIsEnabled() then
+	if not self:IsEnabled() then
 		return
 	end
 	if self._pointId ~= eventData.pointerId then

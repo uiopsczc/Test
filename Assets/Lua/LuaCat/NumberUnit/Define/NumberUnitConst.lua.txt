@@ -1,6 +1,6 @@
 local NumberUnitConst = {}
 
-function NumberUnitConst.To_numberUnit_Dict(numberUnitList)
+function NumberUnitConst.To_NumberUnit_Dict(numberUnitList)
 	if not numberUnitList then
 		return nil
 	end
@@ -25,7 +25,7 @@ function NumberUnitConst.To_numberUnit_List(numberUnitDict)
 	return numberUnitList
 end
 
-NumberUnitConst.numberUnit_List = {
+NumberUnitConst.NumberUnit_List = {
 	{
 		["index"] = 1,
 		["zhiShu"] = 0,
@@ -137,9 +137,9 @@ NumberUnitConst.numberUnit_List = {
 		["numberUnit"] = "V",
 		["id"] = "V" },
 }
-NumberUnitConst.numberUnit_Dict = NumberUnitConst.To_numberUnit_Dict(NumberUnitConst.numberUnit_List)
+NumberUnitConst.NumberUnit_Dict = NumberUnitConst.To_NumberUnit_Dict(NumberUnitConst.NumberUnit_List)
 
-NumberUnitConst.numberUnit_List2 = {
+NumberUnitConst.NumberUnit_List2 = {
 	{
 		["index"] = 1,
 		["zhiShu"] = 0,
@@ -252,6 +252,6 @@ NumberUnitConst.numberUnit_List2 = {
 		["numberUnit"] = "V",
 		["id"] = "V" },
 }
-NumberUnitConst.numberUnit_Dict2 = NumberUnitConst.To_numberUnit_Dict(NumberUnitConst.numberUnit_List2)
+NumberUnitConst.NumberUnit_Dict2 = NumberUnitConst.To_NumberUnit_Dict(NumberUnitConst.NumberUnit_List2)
 
 return NumberUnitConst

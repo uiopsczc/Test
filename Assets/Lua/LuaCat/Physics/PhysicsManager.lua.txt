@@ -3,81 +3,81 @@ local PhysicsManager = Class("PhysicsManager", TickObject)
 
 function PhysicsManager:Init()
 	PhysicsManager.super.Init(self)
-	self.raycastKeyInt = 0
+	self._raycastKeyInt = 0
 	---@type table<string,fun()[]>
-	self.onClickDict = {}
+	self._onClickDict = {}
 	---@type table<string,fun()[]>
-	self.onPointerDownDict = {}
+	self._onPointerDownDict = {}
 	---@type table<string,fun()[]>
-	self.onPointerUpDict = {}
-	self.raycastLayerMask = nil
+	self._onPointerUpDict = {}
+	self._raycastLayerMask = nil
 end
 
 ---@param ... string[]
 function PhysicsManager:SetRaycastLayer(...)
 	if not ... then
-		self.raycastLayerMask = nil
+		self._raycastLayerMask = nil
 	else
-		self.raycastLayerMask = CS.UnityEngine.LayerMask.GetMask(...)
+		self._raycastLayerMask = CS.UnityEngine.LayerMask.GetMask(...)
 	end
 end
 
-function PhysicsManager:__SetIsCanRaycast(isCanRaycast)
+function PhysicsManager:_SetIsCanRaycast(isCanRaycast)
 	self.isCanRaycast = isCanRaycast
 end
 
-function PhysicsManager:__UpdateRaycastState()
-	if table.Count(self.onPointerDownDict) == 0 and
-			table.Count(self.onPointerUpDict) == 0 and
-			table.Count(self.onClickDict) == 0
+function PhysicsManager:_UpdateRaycastState()
+	if table.Count(self._onPointerDownDict) == 0 and
+		table.Count(self._onPointerUpDict) == 0 and
+		table.Count(self._onClickDict) == 0
 	then
-		self:__SetIsCanRaycast(false)
+		self:_SetIsCanRaycast(false)
 	else
-		self:__SetIsCanRaycast(true)
+		self:_SetIsCanRaycast(true)
 	end
 end
 
 ---@param gameObject CS.UnityEngine.GameObject
-function PhysicsManager:__GetOrAddRaycastId(gameObject)
-	return gameObject:GetOrAddCache("raycast_id_lua", function()
-		self.raycastKeyInt = self.raycastKeyInt + 1
-		return tostring(self.raycastKeyInt)
+function PhysicsManager:_GetOrAddRaycastId(gameObject)
+	return gameObject:GetOrAddCache("raycastIdLua", function()
+		self._raycastKeyInt = self._raycastKeyInt + 1
+		return tostring(self._raycastKeyInt)
 	end)
 end
 
 function PhysicsManager:RegisterOnPointerDown(gameObject, callback)
-	local raycastId = self:__GetOrAddRaycastId(gameObject)
-	local callbackList = table.GetOrAddDefault_Dict(self.onPointerDownDict, raycastId, function()
+	local raycastId = self:_GetOrAddRaycastId(gameObject)
+	local callbackList = table.GetOrAddDefault_Dict(self._onPointerDownDict, raycastId, function()
 		return {}
 	end)
 	table.insert(callbackList, callback)
-	self:__UpdateRaycastState()
+	self:_UpdateRaycastState()
 	return callbackList
 end
 
 function PhysicsManager:RegisterOnPointerUp(gameObject, callback)
-	local raycastId = self:__GetOrAddRaycastId(gameObject)
-	local callbackList = table.GetOrAddDefault_Dict(self.onPointerUpDict, raycastId, function()
+	local raycastId = self:_GetOrAddRaycastId(gameObject)
+	local callbackList = table.GetOrAddDefault_Dict(self._onPointerUpDict, raycastId, function()
 		return {}
 	end)
 	table.insert(callbackList, callback)
-	self:__UpdateRaycastState()
+	self:_UpdateRaycastState()
 	return callbackList
 end
 
 function PhysicsManager:RegisterOnClick(gameObject, callback)
-	local raycastId = self:__GetOrAddRaycastId(gameObject)
-	local callbackList = table.GetOrAddDefault_Dict(self.onClickDict, raycastId, function()
+	local raycastId = self:_GetOrAddRaycastId(gameObject)
+	local callbackList = table.GetOrAddDefault_Dict(self._onClickDict, raycastId, function()
 		return {}
 	end)
 	table.insert(callbackList, callback)
-	self:__UpdateRaycastState()
+	self:_UpdateRaycastState()
 	return callbackList
 end
 
 function PhysicsManager:UnRegisterOnPointerDown(gameObject, callback)
-	local raycastId = self:__GetOrAddRaycastId(gameObject)
-	local callbackList = table.GetOrAddDefault_Dict(self.onPointerDownDict, raycastId, function()
+	local raycastId = self:_GetOrAddRaycastId(gameObject)
+	local callbackList = table.GetOrAddDefault_Dict(self._onPointerDownDict, raycastId, function()
 		return {}
 	end)
 	if callback then
@@ -86,14 +86,14 @@ function PhysicsManager:UnRegisterOnPointerDown(gameObject, callback)
 		callbackList = {}
 	end
 	if #callbackList == 0 then
-		self.onPointerDownDict[raycastId] = nil
+		self._onPointerDownDict[raycastId] = nil
 	end
-	self:__UpdateRaycastState()
+	self:_UpdateRaycastState()
 end
 
 function PhysicsManager:UnRegisterOnPointerUp(gameObject, callback)
-	local raycastId = self:__GetOrAddRaycastId(gameObject)
-	local callbackList = table.GetOrAddDefault_Dict(self.onPointerUpDict, raycastId, function()
+	local raycastId = self:_GetOrAddRaycastId(gameObject)
+	local callbackList = table.GetOrAddDefault_Dict(self._onPointerUpDict, raycastId, function()
 		return {}
 	end)
 	if callback then
@@ -102,14 +102,14 @@ function PhysicsManager:UnRegisterOnPointerUp(gameObject, callback)
 		callbackList = {}
 	end
 	if #callbackList == 0 then
-		self.onPointerUpDict[raycastId] = nil
+		self._onPointerUpDict[raycastId] = nil
 	end
-	self:__UpdateRaycastState()
+	self:_UpdateRaycastState()
 end
 
 function PhysicsManager:UnRegisterOnClick(gameObject, callback)
-	local raycastId = self:__GetOrAddRaycastId(gameObject)
-	local callbackList = table.GetOrAddDefault_Dict(self.onClickDict, raycastId, function()
+	local raycastId = self:_GetOrAddRaycastId(gameObject)
+	local callbackList = table.GetOrAddDefault_Dict(self._onClickDict, raycastId, function()
 		return {}
 	end)
 	if callback then
@@ -118,18 +118,18 @@ function PhysicsManager:UnRegisterOnClick(gameObject, callback)
 		callbackList = {}
 	end
 	if #callbackList == 0 then
-		self.onClickDict[raycastId] = nil
+		self._onClickDict[raycastId] = nil
 	end
-	self:__UpdateRaycastState()
+	self:_UpdateRaycastState()
 end
 
 function PhysicsManager:OnRaycast(hit)
 	---@type CS.UnityEngine.RaycastHit
-	self.lastHit = hit
+	self._lastHit = hit
 	self:Broadcast(PhysicsEventNameConst.OnRaycast, hit.transform.gameObject)
 end
 
-function PhysicsManager:__Callback(dictName, raycastId)
+function PhysicsManager:_Callback(dictName, raycastId)
 	if not raycastId then
 		return
 	end
@@ -146,41 +146,41 @@ function PhysicsManager:IsCanUpdate()
 	return self.isCanRaycast and PhysicsManager.super.IsCanUpdate(self)
 end
 
-function PhysicsManager:__Update(deltaTime, unscaledDeltaTime)
-	PhysicsManager.super.__Update(self, deltaTime, unscaledDeltaTime)
-	if Input.GetMouseButtonDown(0) and not self.isClickDown then
+function PhysicsManager:_Update(deltaTime, unscaledDeltaTime)
+	PhysicsManager.super._Update(self, deltaTime, unscaledDeltaTime)
+	if Input.GetMouseButtonDown(0) and not self._isClickDown then
 		if UIUtil.IsOverUI(Input.mousePosition) then
 			-- 点击在UI上的不用处理
 			return
 		end
-		self.isClickDown = true
-		global.client.csClient.physicsManager:Raycast(Input.mousePosition, self.raycastLayerMask)
-		self:__OnPointerDown()
+		self._isClickDown = true
+		global.client.csClient.physicsManager:Raycast(Input.mousePosition, self._raycastLayerMask)
+		self:_OnPointerDown()
 	elseif Input.GetMouseButtonUp(0) then
-		self.isClickDown = false
-		self:__OnPointerUp()
+		self._isClickDown = false
+		self:_OnPointerUp()
 	end
 end
 
 ---@param hit CS.UnityEngine.RaycastHit
-function PhysicsManager:__GetRaycastIdByHit(hit)
+function PhysicsManager:_GetRaycastIdByHit(hit)
 	local gameObject = hit.transform.gameObject
-	return self:__GetOrAddRaycastId(gameObject)
+	return self:_GetOrAddRaycastId(gameObject)
 end
 
-function PhysicsManager:__OnPointerDown()
-	if self.lastHit then
-		local raycast_id = self:__GetRaycastIdByHit(self.lastHit)
-		self:__Callback("on_pointer_down_dict", raycast_id)
+function PhysicsManager:_OnPointerDown()
+	if self._lastHit then
+		local raycast_id = self:_GetRaycastIdByHit(self._lastHit)
+		self:_Callback("onPointerDownDict", raycast_id)
 	end
 end
 
-function PhysicsManager:__OnPointerUp()
-	if self.lastHit then
-		local raycastId = self:__GetRaycastIdByHit(self.lastHit)
-		self:__Callback("on_pointer_up_dict", raycastId)
-		self:__Callback("on_click_dict", raycastId)
-		self.lastHit = nil
+function PhysicsManager:_OnPointerUp()
+	if self._lastHit then
+		local raycastId = self:_GetRaycastIdByHit(self._lastHit)
+		self:_Callback("onPointerUpDict", raycastId)
+		self:_Callback("onClickDict", raycastId)
+		self._lastHit = nil
 	end
 end
 

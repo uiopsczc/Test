@@ -33,7 +33,7 @@ function UnitManager:CreateUnit(argDict)
 	end
 	local unit = self:AddChild(argDict.guid, Unit)
 	unit:Build(argDict)
-	self.unitDict[unit.key] = unit
+	self.unitDict[unit._key] = unit
 	self.factionUnitDict[unit:GetFaction()][unit:GetGuid()] = unit
 	if unit.cfgUnitData.aiClassPathLua then
 		unit:RunAI(unit.cfgUnitData.aiClassPathLua)
@@ -77,11 +77,11 @@ function UnitManager:OnUnitGuidChange(oldGuid, newGuid)
 	local unit = self:GetUnit(oldGuid)
 	if unit and oldGuid ~= newGuid then
 		self.unitDict[oldGuid] = nil
-		self.keyToChildDict[oldGuid] = nil
+		self._keyToChildDict[oldGuid] = nil
 		local index = table.IndexOf_Array(self.childrenKeyList, oldGuid)
 
 		self.unitDict[newGuid] = unit
-		self.keyToChildDict[newGuid] = unit
+		self._keyToChildDict[newGuid] = unit
 		self.childrenKeyList[index] = newGuid
 	end
 end

@@ -71,13 +71,13 @@ function CombatBase:__Update(deltaTime, unscaledDeltaTime)
 	self.timerManager:CoUpdate(deltaTime, unscaledDeltaTime)
 end
 
-function CombatBase:__LateUpdate(deltaTime, unscaledDeltaTime)
+function CombatBase:_LateUpdate(deltaTime, unscaledDeltaTime)
 	CombatBase.super.__LateUpdate(self, deltaTime, unscaledDeltaTime)
 	self.timerManager:LateUpdate(deltaTime, unscaledDeltaTime)
 	self.timerManager:CoLateUpdate(deltaTime, unscaledDeltaTime)
 end
 
-function CombatBase:__FixedUpdate(deltaTime, unscaledDeltaTime)
+function CombatBase:_FixedUpdate(deltaTime, unscaledDeltaTime)
 	CombatBase.super.__FixedUpdate(self, deltaTime, unscaledDeltaTime)
 	self.timerManager:FixedUpdate(deltaTime, unscaledDeltaTime)
 	self.timerManager:CoFixedUpdate(deltaTime, unscaledDeltaTime)

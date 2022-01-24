@@ -7,9 +7,9 @@ local GraphicComponent = Class("GraphicComponent", GameComponent)
 function GraphicComponent:Init(resLoadComponent)
 	GraphicComponent.super.Init(self)
 	---@type GameEntity
-	self.gameEntity = self._entity
+	self._gameEntity = self._entity
 	---@type ResLoadComponentPlugin
-	self.resLoadComponentPlugin = ResLoadComponentPlugin.New(resLoadComponent)
+	self._resLoadComponentPlugin = ResLoadComponentPlugin.New(resLoadComponent)
 	if self._entity._className == "Client" then
 		return
 	end
@@ -24,9 +24,9 @@ end
 ----------------------------------------------------------------------
 ---@param parentTransform CS.UnityEngine.Transform
 function GraphicComponent:SetParentTransform(parentTransform)
-	self.parentTransform = parentTransform
+	self._parentTransform = parentTransform
 	if self._transform then
-		self._transform:SetParent(self.parentTransform, self._gameObject.layer ~= LayerMask.NameToLayer("UI"))
+		self._transform:SetParent(self._parentTransform, self._gameObject.layer ~= LayerMask.NameToLayer("UI"))
 	end
 end
 
@@ -35,14 +35,14 @@ function GraphicComponent:InstantiateGameObject(prefab)
 end
 
 function GraphicComponent:SetIsShow(isShow)
-	self.isHide = not isShow
+	self._isHide = not isShow
 	if self._gameObject then
-		self._gameObject:SetActive(not self.isHide)
+		self._gameObject:SetActive(not self._isHide)
 	end
 end
 
 function GraphicComponent:InitGameObjectChildren()
-	self.gameEntity:InitGameObjectChildren()
+	self._gameEntity:InitGameObjectChildren()
 end
 
 function GraphicComponent:SetGameObject(gameObject, isNotDestroyGameObject)
@@ -59,14 +59,14 @@ function GraphicComponent:SetGameObject(gameObject, isNotDestroyGameObject)
 	---@type CS.UnityEngine.RectTransform
 	self._rectTransform = self._gameObject:GetComponent(typeof(CS.UnityEngine.RectTransform))
 	if isNotDestroyGameObject ~= nil then
-		self.isNotDestroyGameObject = isNotDestroyGameObject
+		self._isNotDestroyGameObject = isNotDestroyGameObject
 	end
 	self:InitGameObjectChildren()
-	self:SetIsShow(not self.isHide)
+	self:SetIsShow(not self._isHide)
 end
 
 function GraphicComponent:DestroyGameObject()
-	if self._gameObject and not self.isNotDestroyGameObject then
+	if self._gameObject and not self._isNotDestroyGameObject then
 		self._gameObject:Destroy()
 		self:SetGameObject(nil)
 	end
@@ -75,34 +75,34 @@ end
 ----------------------------------------------------------------------
 -- prefab相关
 ----------------------------------------------------------------------
-function GraphicComponent:SetPrefabPath(prefab_path)
-	self.prefabPath = prefab_path
-	self.isLoadDone = self.prefabPath == nil
+function GraphicComponent:SetPrefabPath(prefabPath)
+	self._prefabPath = prefabPath
+	self._isLoadDone = self._prefabPath == nil
 end
 
 function GraphicComponent:LoadPrefabPath()
-	if self.prefabPath then
-		self.prefabAssetCat = self.resLoadComponentPlugin:GetOrLoadAsset(self.prefabPath, nil, nil, function()
-			self.isLoadDone = true
+	if self._prefabPath then
+		self._prefabAssetCat = self._resLoadComponentPlugin:GetOrLoadAsset(self._prefabPath, nil, nil, function()
+			self._isLoadDone = true
 		end, self)
 	end
 end
 
 function GraphicComponent:IsLoadDone()
-	return self.isLoadDone
+	return self._isLoadDone
 end
 
 function GraphicComponent:OnAllAssetsLoadDone()
-	if self.prefabPath then
-		self.prefab = self.prefabAssetCat:Get(string.GetSubAssetPath(self.prefabPath))
-		local clone = self:InstantiateGameObject(self.prefab)
-		clone.name = self.prefab.name
-		clone.transform:CopyFrom(self.prefab.transform)
+	if self._prefabPath then
+		self._prefab = self._prefabAssetCat:Get(string.GetSubAssetPath(self._prefabPath))
+		local clone = self:InstantiateGameObject(self._prefab)
+		clone.name = self._prefab.name
+		clone.transform:CopyFrom(self._prefab.transform)
 		self:SetGameObject(clone)
 	end
 
-	if self.parentTransform then
-		self:SetParentTransform(self.parentTransform)
+	if self._parentTransform then
+		self:SetParentTransform(self._parentTransform)
 	end
 end
 
@@ -123,35 +123,35 @@ end
 
 
 ----------------------------------------------------------------------
--- __Reset
+-- _Reset
 ----------------------------------------------------------------------
-function GraphicComponent:__Reset()
-	GraphicComponent.super.__Destroy(self)
-	self.resLoadComponentPlugin:Destroy()
+function GraphicComponent:_Reset()
+	GraphicComponent.super._Reset(self)
+	self._resLoadComponentPlugin:Destroy()
 	self:DestroyGameObject()
 end
 
 ----------------------------------------------------------------------
 -- __Destroy
 ----------------------------------------------------------------------
-function GraphicComponent:__Destroy()
-	GraphicComponent.super.__Destroy(self)
-	self.resLoadComponentPlugin:Destroy()
+function GraphicComponent:_Destroy()
+	GraphicComponent.super._Destroy(self)
+	self._resLoadComponentPlugin:Destroy()
 	self:DestroyGameObject()
 
-	self.resLoadComponentPlugin = nil
+	self._resLoadComponentPlugin = nil
 
-	self.parentTransform = nil
+	self._parentTransform = nil
 	self._gameObject = nil
 	self._transform = nil
 	self._rectTransform = nil
-	self.isNotDestroyGameObject = false
-	self.prefab = nil
-	self.prefabPath = nil
-	self.prefabAssetCat = nil
+	self._isNotDestroyGameObject = false
+	self._prefab = nil
+	self._prefabPath = nil
+	self._prefabAssetCat = nil
 
-	self.isLoadDone = false
-	self.isHide = false
+	self._isLoadDone = false
+	self._isHide = false
 end
 
 return GraphicComponent

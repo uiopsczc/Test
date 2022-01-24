@@ -1,4 +1,4 @@
-local PoolCat = require("luacat.poolCat.PoolCat")
+local PoolCat = require("LuaCat.PoolCat.PoolCat")
 ---@class UnityObjectPoolCat:PoolCat
 local UnityObjectPoolCat = Class("UnityObjectPoolCat", PoolCat)
 
@@ -22,14 +22,14 @@ end
 function UnityObjectPoolCat:InitParent(prefab, category)
 end
 
-function UnityObjectPoolCat:__Spawn()
+function UnityObjectPoolCat:_Spawn()
 	local clone = CS.UnityEngine.Object.Instantiate(self.prefab)
 	clone.name = self.prefab.name
 	return clone
 end
 
-function UnityObjectPoolCat:__Trim(despawnedObject)
-	UnityObjectPoolCat.super.__Trim(self, despawnedObject)
+function UnityObjectPoolCat:_Trim(despawnedObject)
+	UnityObjectPoolCat.super._Trim(self, despawnedObject)
 	despawnedObject:Destroy()
 end
 

@@ -5,13 +5,13 @@ local PoolCat = Class("PoolCat")
 ---@param spawnClassType Class
 ---@param spawnFunc fun():any
 function PoolCat:Init(poolName, spawnClassType, spawnFunc)
-	self.poolName = poolName
-	self.spawnClassType = spawnClassType
-	self.spawnFunc = spawnFunc
+	self._poolName = poolName
+	self._spawnClassType = spawnClassType
+	self._spawnFunc = spawnFunc
 	---@type list
-	self.despawnedObjectStack = list.new()
+	self._despawnedObjectStack = list.new()
 	---@type list
-	self.spawnedObjectList = list.new()
+	self._spawnedObjectList = list.new()
 end
 
 ---@param initCount number
@@ -23,26 +23,26 @@ function PoolCat:InitPool(initCount, onSpawnCallback)
 	end
 end
 
-function PoolCat:__Spawn()
-	if self.spawnFunc then
-		return self.spawnFunc()
+function PoolCat:_Spawn()
+	if self._spawnFunc then
+		return self._spawnFunc()
 	end
-	return self.spawnClassType.NewWithoutInit()
+	return self._spawnClassType.NewWithoutInit()
 end
 
 ---@param onSpawnCallback fun(spawn:any)
 function PoolCat:Spawn(onSpawnCallback)
 	local spawn
 
-	if self.despawnedObjectStack.length > 0 then
-		spawn = self.despawnedObjectStack:pop()
+	if self._despawnedObjectStack.length > 0 then
+		spawn = self._despawnedObjectStack:pop()
 	else
-		spawn = self:__Spawn()
+		spawn = self:_Spawn()
 	end
 	if onSpawnCallback then
 		onSpawnCallback(spawn)
 	end
-	self.spawnedObjectList:push(spawn)
+	self._spawnedObjectList:push(spawn)
 	return spawn
 end
 
@@ -52,13 +52,13 @@ function PoolCat:Despawn(despawnObject)
 		return
 	end
 
-	if self.spawnedObjectList:find(despawnObject) == nil then
-		error2(string.format("pool %s not contian: %s", self.poolName, tostring(despawnObject)))
+	if self._spawnedObjectList:find(despawnObject) == nil then
+		error2(string.format("pool %s not contain: %s", self._poolName, tostring(despawnObject)))
 		return
 	end
 
-	self.despawnedObjectStack:push(despawnObject)
-	self.spawnedObjectList:erase(despawnObject)
+	self._despawnedObjectStack:push(despawnObject)
+	self._spawnedObjectList:erase(despawnObject)
 	if IsTable(despawnObject) then
 		if despawnObject.OnDespawn then
 			despawnObject:OnDespawn()
@@ -67,18 +67,18 @@ function PoolCat:Despawn(despawnObject)
 end
 
 function PoolCat:Trim()
-	for _, despawned_object in ipairs(self.despawnedObjectStack) do
-		self:__Trim(despawned_object)
+	for _, despawnedObject in ipairs(self._despawnedObjectStack) do
+		self:_Trim(despawnedObject)
 	end
-	self.despawnedObjectStack:clear()
+	self._despawnedObjectStack:clear()
 end
 
-function PoolCat:__Trim(despawned_object)
+function PoolCat:_Trim(despawnedObject)
 end
 
 function PoolCat:DespawnAll()
 	local toDespawnObjectList = {}
-	for _, spawnedObject in ilist(self.spawnedObjectList) do
+	for _, spawnedObject in ilist(self._spawnedObjectList) do
 		table.insert(toDespawnObjectList, spawnedObject)
 	end
 	for _, toDespawnObject in ipairs(toDespawnObjectList) do
@@ -88,7 +88,7 @@ function PoolCat:DespawnAll()
 end
 
 function PoolCat:IsEmpty()
-	if self.spawnedObjectList.length == 0 and self.despawnedObjectStack.length == 0 then
+	if self._spawnedObjectList.length == 0 and self._despawnedObjectStack.length == 0 then
 		return true
 	end
 	return false
@@ -98,12 +98,12 @@ function PoolCat:Destroy()
 	self:DespawnAll()
 	self:Trim()
 
-	self.spawnClassType = nil
-	self.poolName = nil
-	self.spawnFunc = nil
+	self._spawnClassType = nil
+	self._poolName = nil
+	self._spawnFunc = nil
 
-	self.spawnedObjectList:clear()
-	self.despawnedObjectStack:clear()
+	self._spawnedObjectList:clear()
+	self._despawnedObjectStack:clear()
 end
 
 return PoolCat

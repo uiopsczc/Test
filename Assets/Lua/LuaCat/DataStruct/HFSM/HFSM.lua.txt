@@ -29,7 +29,7 @@ function HFSM:Start()
 		self:ChangeToState(self.defaultSubDirectState)
 	end
 	if self.defaultSubDirectHFSM then
-		self:ChangeToHFSM(self.defaultSubDirectHFSM.key)
+		self:ChangeToHFSM(self.defaultSubDirectHFSM._key)
 	end
 end
 
@@ -295,10 +295,10 @@ end
 -- Paused相关
 ----------------------------------------------------------------------
 function HFSM:SetIsPaused(isPaused, isLoopChildren)
-	if self:GetIsPaused() == isPaused then
+	if self:IsPaused() == isPaused then
 		return
 	end
-	self.isPaused = isPaused
+	self._isPaused = isPaused
 	if isLoopChildren then
 		if self.currentSubDirectHFSM then
 			self.currentSubDirectHFSM:SetIsPaused(isPaused, true)
@@ -308,14 +308,14 @@ function HFSM:SetIsPaused(isPaused, isLoopChildren)
 		end
 	end
 
-	self:__SetIsPaused(isPaused)
+	self:_SetIsPaused(isPaused)
 end
 
 ----------------------------------------------------------------------
 -- Update相关
 ----------------------------------------------------------------------
 function HFSM:IsCanUpdate()
-	return self:GetIsEnabled() and HFSM.super.IsCanUpdate(self)
+	return self:IsEnabled() and HFSM.super.IsCanUpdate(self)
 end
 
 function HFSM:Update(deltaTime, unscaledDeltaTime)
@@ -338,7 +338,7 @@ function HFSM:FixedUpdate(deltaTime, unscaledDeltaTime)
 	if not self:IsCanUpdate() then
 		return
 	end
-	self:__FixedUpdate(deltaTime, unscaledDeltaTime)
+	self:_FixedUpdate(deltaTime, unscaledDeltaTime)
 	for _, component in self:ForeachComponent() do
 		component:FixedUpdate(deltaTime, unscaledDeltaTime)
 	end
@@ -354,7 +354,7 @@ function HFSM:LateUpdate(deltaTime, unscaledDeltaTime)
 	if not self:IsCanUpdate() then
 		return
 	end
-	self:__LateUpdate(deltaTime, unscaledDeltaTime)
+	self:_LateUpdate(deltaTime, unscaledDeltaTime)
 	for _, component in self:ForeachComponent() do
 		component:LateUpdate(deltaTime, unscaledDeltaTime)
 	end

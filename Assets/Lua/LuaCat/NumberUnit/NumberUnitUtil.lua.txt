@@ -1,4 +1,4 @@
-local NumberUnitConst = require("luacat.numberunit.define.NumberUnitConst")
+local NumberUnitConst = require("LuaCat.NumberUnit.Define.NumberUnitConst")
 local NumberUnitUtil = {}
 
 NumberUnitUtil.Max_Integer_Count = 3 -- 有单位时最多显示多少为整数

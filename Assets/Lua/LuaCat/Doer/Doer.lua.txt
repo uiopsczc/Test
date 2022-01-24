@@ -1,6 +1,6 @@
 ---@class Doer:TickObject
----@field factory DoerFactory
----@field dbase DBase @数据对象
+---@field _factory DoerFactory
+---@field _dbase DBase @数据对象
 local Doer = Class("Doer", TickObject)
 
 function Doer:PostInit()
@@ -9,8 +9,8 @@ function Doer:PostInit()
 end
 
 function Doer:Destruct()
-	if self.factory then
-		self.factory:ReleaseDoer(self)
+	if self._factory then
+		self._factory:ReleaseDoer(self)
 	end
 end
 
@@ -22,7 +22,9 @@ function Doer:FinishRestore(dict, dictTmp)
 	self:DoRestore(dict, dictTmp)
 end
 
--------OnXXX-------------------------
+----------------------------------------------------------------------
+-- OnXXX
+----------------------------------------------------------------------
 function Doer:OnInit()
 end
 
@@ -45,9 +47,9 @@ end
 function Doer:OnReloadCfg()
 end
 
--------------DoXXX-----------------------
-
-
+----------------------------------------------------------------------
+-- DoXXX
+----------------------------------------------------------------------
 function Doer:DoSave(dict, dictTmp)
 	self:GetSaveData(dict)
 	self:GetSaveTmpData(dictTmp)
@@ -75,21 +77,23 @@ function Doer:DoRelease()
 	self:OnRelease()
 end
 
---------------------GetXXXX-------------------------
+----------------------------------------------------------------------
+-- SetGet相关
+----------------------------------------------------------------------
 function Doer:GetId()
-	return self.dbase.id
+	return self._dbase:GetId()
 end
 
 function Doer:GetRid()
-	return self.dbase.rid
+	return self._dbase:GetRid()
 end
 
 function Doer:GetRidSeq()
-	return self.dbase:GetRidSeq()
+	return self._dbase:GetRidSeq()
 end
 
 function Doer:GetDBase()
-	return self.dbase
+	return self._dbase
 end
 
 function Doer:GetShort()
@@ -111,7 +115,7 @@ end
 
 --  拷贝数据到指定dict
 function Doer:GetAll(dict)
-	table.CombineByReplace_Dict(dict, self.dbase.db)
+	table.CombineByReplace_Dict(dict, self._dbase:GetDb())
 end
 
 --  获得需存储运行时数据
@@ -129,7 +133,7 @@ function Doer:GetSaveTmpData(dict)
 end
 
 function Doer:Get(key, defaultValue)
-	local value = self.dbase.db[key]
+	local value = self._dbase:GetDb()[key]
 	value = value or defaultValue
 	return value
 end
@@ -139,12 +143,12 @@ end
 
 --  拷贝运行时数据到指定dict
 function Doer:GetTmpAll(dict)
-	table.CombineByReplace_Dict(dict, self.dbase.dbTmp)
+	table.CombineByReplace_Dict(dict, self._dbase:GetDbTmp())
 end
 
-function Doer:GetTmp(key, default_value)
-	local value = self.dbase.dbTmp[key]
-	value = value or default_value
+function Doer:GetTmp(key, defaultValue)
+	local value = self._dbase:GetDbTmp()[key]
+	value = value or defaultValue
 	return value
 end
 
@@ -182,17 +186,16 @@ function Doer:GetBelong()
 	return self:GetTmp("belong", "");
 end
 
---------------------SetXXXX-----------------------------
 function Doer:SetDBase(dbase)
-	self.dbase = dbase
+	self._dbase = dbase
 end
 
 function Doer:Set(key, value)
-	self.dbase.db[key] = value
+	self._dbase:GetDb()[key] = value
 end
 
 function Doer:SetTmp(key, value)
-	self.dbase.dbTmp[key] = value
+	self._dbase:GetDbTmp()[key] = value
 end
 
 function Doer:SetCount(count)
@@ -222,46 +225,54 @@ function Doer:SetBelong(belong)
 	self:SetTmp("belong", belong)
 end
 
---------------------AddXXXX-----------------------------
+function Doer:SetFactory(factory)
+	self._factory = factory
+end
+
+----------------------------------------------------------------------
+-- AddXXXX相关
+----------------------------------------------------------------------
 function Doer:AddAll(dict)
-	table.CombineByReplace_Dict(self.dbase.db, dict)
+	table.CombineByReplace_Dict(self._dbase:GetDb(), dict)
 end
 
-function Doer:Add(key, add_value)
-	self.dbase.db[key] = self.dbase.db[key] or 0
-	self.dbase.db[key] = self.dbase.db[key] + add_value
+function Doer:Add(key, addValue)
+	self._dbase:GetDb()[key] = self._dbase:GetDb()[key] or 0
+	self._dbase:GetDb()[key] = self._dbase:GetDb()[key] + addValue
 end
 
-function Doer:AddString(key, add_value)
-	self.dbase.db[key] = self.dbase.db[key] or ""
-	self.dbase.db[key] = self.dbase.db[key] .. add_value
+function Doer:AddString(key, addValue)
+	self._dbase:GetDb()[key] = self._dbase:GetDb()[key] or ""
+	self._dbase:GetDb()[key] = self._dbase:GetDb()[key] .. addValue
 end
 
-function Doer:AddTmp(key, add_value)
-	self.dbase.dbTmp[key] = self.dbase.dbTmp[key] or 0
-	self.dbase.dbTmp[key] = self.dbase.dbTmp[key] + add_value
+function Doer:AddTmp(key, addValue)
+	self._dbase:GetDbTmp()[key] = self._dbase:GetDbTmp()[key] or 0
+	self._dbase:GetDbTmp()[key] = self._dbase:GetDbTmp()[key] + addValue
 end
 
-function Doer:AddTmpString(key, add_value)
-	self.dbase.dbTmp[key] = self.dbase.dbTmp[key] or ""
-	self.dbase.dbTmp[key] = self.dbase.dbTmp[key] .. add_value
+function Doer:AddTmpString(key, addValue)
+	self._dbase:GetDbTmp()[key] = self._dbase:GetDbTmp()[key] or ""
+	self._dbase:GetDbTmp()[key] = self._dbase:GetDbTmp()[key] .. addValue
 end
 
 function Doer:AddTmpAll(dict)
-	table.CombineByReplace_Dict(self.dbase.dbTmp, dict)
+	table.CombineByReplace_Dict(self._dbase:GetDbTmp(), dict)
 end
 
 function Doer:AddCount(addValue)
 	return self:Add("count", addValue)
 end
 
-----------------GetOrAddXXXX-----------------------------
+----------------------------------------------------------------------
+-- GetOrAddXXXX相关
+----------------------------------------------------------------------
 function Doer:GetOrAddTmp(key, addFunc)
-	return table.GetOrAddDefault_Dict(self.dbase.dbTmp, key, addFunc)
+	return table.GetOrAddDefault_Dict(self._dbase:GetDbTmp(), key, addFunc)
 end
 
 function Doer:GetOrAdd(key, addFunc)
-	return table.GetOrAddDefault_Dict(self.dbase.db, key, addFunc)
+	return table.GetOrAddDefault_Dict(self._dbase:GetDb(), key, addFunc)
 end
 
 return Doer

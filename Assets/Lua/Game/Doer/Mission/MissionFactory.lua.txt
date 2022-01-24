@@ -3,11 +3,11 @@ local MissionFactory = Class("MissionFactory", DoerFactory)
 
 function MissionFactory:Init()
 	MissionFactory.super.Init(self)
-	self.defaultDoerClassPath = "Game.Doer.Mission.Mission"
+	self._defaultDoerClassPath = "Game.Doer.Mission.Mission"
 end
 
 function MissionFactory:GetClassPath(id)
-	return string.IsNilOrEmpty(CfgMission.get_by_id(id).class_path_lua) and self.defaultDoerClassPath or CfgMission.get_by_id(id).class_path_lua
+	return string.IsNilOrEmpty(CfgMission.get_by_id(id).class_path_lua) and self._defaultDoerClassPath or CfgMission.get_by_id(id).class_path_lua
 end
 
 function MissionFactory:GetCfgMissionData(id)
@@ -15,7 +15,7 @@ function MissionFactory:GetCfgMissionData(id)
 end
 
 ---@return DoerEventDBase
-function MissionFactory:__NewDBase(idOrRid)
+function MissionFactory:_NewDBase(idOrRid)
 	return MissionDBase.New(idOrRid)
 end
 

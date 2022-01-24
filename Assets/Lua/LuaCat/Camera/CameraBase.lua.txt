@@ -32,10 +32,10 @@ function CameraBase:Init(camera, isNotDestroyGameObject)
 end
 
 function CameraBase:IsCanUpdate()
-	return not self.isCanNotUpdate and CameraBase.super.IsCanUpdate(self)
+	return not self._isCanNotUpdate and CameraBase.super.IsCanUpdate(self)
 end
 
-function CameraBase:__LateUpdate(deltaTime, unscaledDeltaTime)
+function CameraBase:_LateUpdate(deltaTime, unscaledDeltaTime)
 	CameraBase.super.__LateUpdate(self, deltaTime, unscaledDeltaTime)
 	if self.currentOperation == "无" then
 		self._graphicComponent._transform.position = self.currentPosition

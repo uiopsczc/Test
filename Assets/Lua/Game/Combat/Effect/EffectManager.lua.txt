@@ -3,7 +3,7 @@ local EffectManager = Class("EffectManager", TickObject)
 
 function EffectManager:Init()
 	EffectManager.super.Init(self)
-	self.resLoadComponent._resLoad._isNotCheckDestroy = true --effectManager销毁的时候才去把assetBundle销毁
+	self._resLoadComponent._resLoad._isNotCheckDestroy = true --effectManager销毁的时候才去把assetBundle销毁
 	self:AddListener(UnitEventNameConst.On_Unit_Destroy, function(...)
 		self:DestroyByUnit(...)
 	end)
@@ -120,7 +120,7 @@ function EffectManager:DestroyByUnit(unit)
 	end
 end
 
-function EffectManager:__Destroy()
+function EffectManager:_Destroy()
 	EffectManager.super.__Destroy(self)
 	for _, poolName in ipairs(self.gameObjectPoolNameList) do
 		PoolCatManagerUtil.RemovePool(poolName)

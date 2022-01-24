@@ -545,7 +545,7 @@ function SpellBase:RemoveSelf()
 	global.client.combat.spellManager:RemoveSpell(self:GetGuid())
 end
 
-function SpellBase:__Destroy()
+function SpellBase:_Destroy()
 	SpellBase.super.__Destroy(self)
 	if not self.isSpellAnimationFinished then
 		global.client.combat.spellManager:OnSpellAnimationFinished(self)

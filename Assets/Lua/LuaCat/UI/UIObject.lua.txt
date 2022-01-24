@@ -10,7 +10,7 @@ function UIObject:Init()
 end
 
 function UIObject:CreateGraphicComponent()
-	return self:AddComponent(nil, UIGraphicComponent, self.resLoadComponent)
+	return self:AddComponent(nil, UIGraphicComponent, self._resLoadComponent)
 end
 
 function UIObject:InitGameObjectChildren()
@@ -136,7 +136,7 @@ function UIObject:CreateChildPanel(key, classType, parentTransform, ...)
 	childPanel:OnInitPanel(parentTransform)
 	childPanel:PostInit()
 	childPanel:SetIsEnabled(true, false)
-	self._childPanelDict[childPanel.key] = childPanel
+	self._childPanelDict[childPanel._key] = childPanel
 	return childPanel
 end
 
@@ -191,7 +191,7 @@ function UIObject:SetImageAsync(image, assetPath, callback, isSetNativeSize)
 	if isSetNativeSize == nil then
 		isSetNativeSize = true
 	end
-	self.resLoadComponent:GetOrLoadAsset(string.GetMainAssetPath(assetPath), function(assetCat)
+	self._resLoadComponent:GetOrLoadAsset(string.GetMainAssetPath(assetPath), function(assetCat)
 		if IsNil(image) then
 			return
 		end
@@ -213,7 +213,7 @@ function UIObject:SetRawImageAsync(image, assetPath, callback, isSetNativeSize)
 	if isSetNativeSize == nil then
 		isSetNativeSize = true
 	end
-	self.resLoadComponent:GetOrLoadAsset(string.GetMainAssetPath(assetPath), function(assetCat)
+	self._resLoadComponent:GetOrLoadAsset(string.GetMainAssetPath(assetPath), function(assetCat)
 		if IsNil(image) then
 			return
 		end

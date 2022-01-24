@@ -5,13 +5,13 @@ function TestData:Init(gameData)
 	if not gameData.TestData then
 		gameData.TestData = {}
 	end
-	self.data = gameData.TestData
+	self._data = gameData.TestData
 
-	self.test = self.data.test or 0
+	self._test = self._data.test or 0
 end
 
 function TestData:Save()
-	self.data.test = self.test
+	self._data.test = self._test
 end
 
 return TestData

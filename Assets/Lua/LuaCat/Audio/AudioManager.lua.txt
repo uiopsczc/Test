@@ -57,7 +57,7 @@ end
 ---@param target CS.UnityEngine.GameObject
 ---@param range number
 function AudioManager:PlaySound(assetPath, groupName, target, targetLocalPosition, isLoop, range)
-	self.resLoadComponent:GetOrLoadAsset(assetPath, function(assetCat)
+	self._resLoadComponent:GetOrLoadAsset(assetPath, function(assetCat)
 		self:OnSoundLoadSuccess(assetCat:Get(), groupName, target, targetLocalPosition, isLoop, range)
 	end)
 end
@@ -122,7 +122,7 @@ function AudioManager:PlayBGMSound(soundPath, isPaused)
 		return
 	end
 
-	self.resLoadComponent:GetOrLoadAsset(soundPath, function(assetCat)
+	self._resLoadComponent:GetOrLoadAsset(soundPath, function(assetCat)
 		self:OnBGMLoadSuccess(assetCat:Get(), isPaused)
 		global.client.csClient.audioManager.lastBgmPath = soundPath
 	end)

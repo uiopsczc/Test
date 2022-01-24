@@ -6,7 +6,7 @@ local GameComponent = Class("GameComponent", AbstractComponent)
 function GameComponent:Init(...)
 	GameComponent.super.Init(self, ...)
 	---@type DOTweenPlugin
-	self.dotweenPlugin = DOTweenPlugin.New()
+	self._dotweenPlugin = DOTweenPlugin.New()
 end
 
 ----------------------------------------------------------------------
@@ -14,10 +14,10 @@ end
 ----------------------------------------------------------------------
 ---@return CoroutinePlugin
 function GameComponent:GetCoroutinePlugin()
-	if not self.coroutinePlugin then
-		self.coroutinePlugin = CoroutinePlugin.New(self:GetTimerManager())
+	if not self._coroutinePlugin then
+		self._coroutinePlugin = CoroutinePlugin.New(self:GetTimerManager())
 	end
-	return self.coroutinePlugin
+	return self._coroutinePlugin
 end
 
 function GameComponent:StartCoroutine(key, func, ...)
@@ -70,27 +70,27 @@ end
 ---@param key string
 ---@return CS.DG.Tweening.Sequence
 function GameComponent:AddDOTweenSequence(key)
-	return self.dotweenPlugin:AddDOTweenSequence(key)
+	return self._dotweenPlugin:AddDOTweenSequence(key)
 end
 
 ---@param key string
 ---@param tween CS.DG.Tweening.Tween
 ---@return CS.DG.Tweening.Tween
 function GameComponent:AddDOTween(key, tween)
-	return self.dotweenPlugin:AddDOTween(key, tween)
+	return self._dotweenPlugin:AddDOTween(key, tween)
 end
 
 ---@param keyOrTween CS.DG.Tweening.Tween||string
 function GameComponent:RemoveDOTween(keyOrTween)
-	self.dotweenPlugin:RemoveDOTween(keyOrTween)
+	self._dotweenPlugin:RemoveDOTween(keyOrTween)
 end
 
 function GameComponent:RemoveAllDOTweens()
-	self.dotweenPlugin:RemoveAllDOTweens()
+	self._dotweenPlugin:RemoveAllDOTweens()
 end
 
 function GameComponent:SetIsPaused_DOTweens(isPaused)
-	self.dotweenPlugin:SetIsPaused(isPaused)
+	self._dotweenPlugin:SetIsPaused(isPaused)
 end
 
 ----------------------------------------------------------------------
@@ -135,10 +135,10 @@ end
 
 ---@return TimerManagerPlugin
 function GameComponent:GetTimerManagerPlugin()
-	if not self.timerManagerPlugin then
-		self.timerManagerPlugin = TimerManagerPlugin.New(self:GetTimerManager())
+	if not self._timerManagerPlugin then
+		self._timerManagerPlugin = TimerManagerPlugin.New(self:GetTimerManager())
 	end
-	return self.timerManagerPlugin
+	return self._timerManagerPlugin
 end
 
 function GameComponent:AddTimer(targetFunc, targetFuncArgs, delay, interval, updateMode, isUseUnscaledDeltaTime, isCoroutineTimer, isUseFrame)
@@ -184,8 +184,8 @@ end
 ----------------------------------------------------------------------
 -- Pause
 ----------------------------------------------------------------------
-function GameComponent:__SetIsPaused(isPaused)
-	GameComponent.super.__SetIsPaused(self, isPaused)
+function GameComponent:_SetIsPaused(isPaused)
+	GameComponent.super._SetIsPaused(self, isPaused)
 	self:SetIsPaused_Timers(isPaused)
 	self:SetIsPaused_DOTweens(isPaused)
 	self:SetIsPaused_Coroutines(isPaused)
@@ -195,7 +195,7 @@ end
 -- __Reset
 ----------------------------------------------------------------------
 function GameComponent:_Reset()
-	GameComponent.super.__Reset(self)
+	GameComponent.super._Reset(self)
 	self:StopAllCoroutines()
 	self:RemoveAllDOTweens()
 	self:RemoveAllTimers()
@@ -207,14 +207,14 @@ end
 -- __Destroy
 ----------------------------------------------------------------------
 function GameComponent:_Destroy()
-	GameComponent.super.__Destroy(self)
+	GameComponent.super._Destroy(self)
 	self:StopAllCoroutines()
 	self:RemoveAllDOTweens()
 	self:RemoveAllTimers()
 
 	self:RemoveAllListeners()
 
-	self.timerManagerPlugin = nil
+	self._timerManagerPlugin = nil
 end
 
 return GameComponent

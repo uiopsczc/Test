@@ -10,8 +10,8 @@ function GameShortcutKeyManager:Init()
 	--self.hfsmComponent.hfsm:Start()
 end
 
-function GameShortcutKeyManager:__Update(deltaTime, unscaledDeltaTime)
-	GameShortcutKeyManager.super.__Update(self, deltaTime, unscaledDeltaTime)
+function GameShortcutKeyManager:_Update(deltaTime, unscaledDeltaTime)
+	GameShortcutKeyManager.super._Update(self, deltaTime, unscaledDeltaTime)
 	if Input.GetKeyDown("f1") then
 
 	end
@@ -29,7 +29,7 @@ function GameShortcutKeyManager:__Update(deltaTime, unscaledDeltaTime)
 		Reload()
 	end
 	if Input.GetKeyDown("f6") then
-		client:Rebort()
+		client:Reboot()
 	end
 	if Input.GetKeyDown("f7") then
 		global.client:GoTo(StageTest, 0.2)

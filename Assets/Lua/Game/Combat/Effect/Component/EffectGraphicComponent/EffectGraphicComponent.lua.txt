@@ -2,7 +2,7 @@
 local EffectGraphicComponent = Class("EffectGraphicComponent", GraphicComponent)
 
 function EffectGraphicComponent:Init()
-	EffectGraphicComponent.super.Init(self, global.client.combat.effectManager.resLoadComponent)
+	EffectGraphicComponent.super.Init(self, global.client.combat.effectManager._resLoadComponent)
 	---@type EffectEntity
 	self.effectEntity = self._entity
 end
@@ -50,7 +50,7 @@ function EffectGraphicComponent:IsCanUpdate()
 	return self._gameObject and EffectGraphicComponent.super.IsCanUpdate(self)
 end
 
-function EffectGraphicComponent:__Update(deltaTime, unscaledDeltaTime)
+function EffectGraphicComponent:_Update(deltaTime, unscaledDeltaTime)
 	EffectGraphicComponent.super.__Update(self, deltaTime, unscaledDeltaTime)
 	self:ApplyToTransform(self.effectEntity.transformComponent:GetPosition(), self.effectEntity.transformComponent:GetEulerAngles())
 end

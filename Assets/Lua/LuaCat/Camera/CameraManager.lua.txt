@@ -28,7 +28,7 @@ end
 
 function CameraManager:RemoveCameras()
 	for i = #self.cameraBaseList, 1, -1 do
-		self:RemoveChild(self.cameraBaseList[i].key)
+		self:RemoveChild(self.cameraBaseList[i]._key)
 		table.remove(self.cameraBaseList, i)
 	end
 end
@@ -41,7 +41,7 @@ function CameraManager:SetMainCameraMoveRange(range)
 	self.mainCameraBase:SetMoveRange(range)
 end
 
-function CameraManager:__Destroy()
+function CameraManager:_Destroy()
 	CameraManager.super.__Destroy(self)
 end
 

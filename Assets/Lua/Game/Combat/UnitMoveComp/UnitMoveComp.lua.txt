@@ -32,7 +32,7 @@ function UnitMoveComp:__Update(deltaTime, unscaledDeltaTime)
 	end
 end
 
-function UnitMoveComp:__Destroy()
+function UnitMoveComp:_Destroy()
 	UnitMoveComp.super.__Destroy(self)
 	self.unit = nil
 end

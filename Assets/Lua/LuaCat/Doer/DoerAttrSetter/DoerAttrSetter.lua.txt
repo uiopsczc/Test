@@ -16,63 +16,63 @@ end
 
 function DoerAttrSetter:SetU(u)
 	---@type Doer
-	self.u = u--主动对象，比如任务中接受任务的玩家
+	self._u = u--主动对象，比如任务中接受任务的玩家
 end
 
 function DoerAttrSetter:GetU()
-	return self.u
+	return self._u
 end
 
 function DoerAttrSetter:SetO(o)
 	---@type Doer
-	self.o = o -- 被动对象，比如任务中的任务
+	self._o = o -- 被动对象，比如任务中的任务
 end
 
 function DoerAttrSetter:GetO()
-	return self.o
+	return self._o
 end
 
 function DoerAttrSetter:SetE(e)
 	---@type Doer
-	self.e = e --中间对象，比如任务中给与任务的npc
+	self._e = e --中间对象，比如任务中给与任务的npc
 end
 
 function DoerAttrSetter:GetE()
-	return self.e
+	return self._e
 end
 
 function DoerAttrSetter:SetM(m)
 	---@type table<string,any>
-	self.m = m -- 相互传数据的hashttable
+	self._m = m -- 相互传数据的hashttable
 end
 
 function DoerAttrSetter:GetM()
-	return self.m
+	return self._m
 end
 
 function DoerAttrSetter:SetDoerAttrParser(doerAttrParser)
 	---@type DoerAttrParser
-	self.doerAttrParser = doerAttrParser
+	self._doerAttrParser = doerAttrParser
 end
 
 function DoerAttrSetter:GetDoerAttrParser()
-	return self.doerAttrParser
+	return self._doerAttrParser
 end
 
 function DoerAttrSetter:SetDesc(desc)
 	---@type string
-	self.desc = desc
+	self._desc = desc
 end
 
 function DoerAttrSetter:GetDesc()
-	return self.desc
+	return self._desc
 end
 
 function DoerAttrSetter:Set(key, valueExpression, isAdd)
-	if self.doerAttrParser and string.IndexOf(key, "{") ~= -1 then
-		key = self.doerAttrParser:ParseString(key)
+	if self._doerAttrParser and string.IndexOf(key, "{") ~= -1 then
+		key = self._doerAttrParser:ParseString(key)
 	end
-	local objectValue = self.doerAttrParser:Parse(valueExpression)
+	local objectValue = self._doerAttrParser:Parse(valueExpression)
 	self:SetObject(key, objectValue, isAdd)
 end
 
@@ -80,16 +80,16 @@ function DoerAttrSetter:SetObject(key, objectValue, isAdd)
 	if string.StartsWith(key, "u.") then
 		-- 主动对象属性
 		key = string.sub(key, string.len("u.") + 1)
-		if self.u then
-			self:SetObjectValue(self.u, key, objectValue, isAdd)
+		if self._u then
+			self:SetObjectValue(self._u, key, objectValue, isAdd)
 		end
 		return
 	end
 	if string.StartsWith(key, "ut.") then
 		-- 主动对象临时属性
 		key = string.sub(key, string.len("ut.") + 1)
-		if self.u then
-			self:SetObjectTmpValue(self.u, key, objectValue, isAdd)
+		if self._u then
+			self:SetObjectTmpValue(self._u, key, objectValue, isAdd)
 		end
 		return
 	end
@@ -97,16 +97,16 @@ function DoerAttrSetter:SetObject(key, objectValue, isAdd)
 	if string.StartsWith(key, "o.") then
 		-- 被动对象属性
 		key = string.sub(key, string.len("o.") + 1)
-		if self.o then
-			self:SetObjectValue(self.o, key, objectValue, isAdd)
+		if self._o then
+			self:SetObjectValue(self._o, key, objectValue, isAdd)
 		end
 		return
 	end
 	if string.StartsWith(key, "ot.") then
 		-- 被动对象临时属性
 		key = string.sub(key, string.len("ot.") + 1)
-		if self.o then
-			self:SetObjectTmpValue(self.o, key, objectValue, isAdd)
+		if self._o then
+			self:SetObjectTmpValue(self._o, key, objectValue, isAdd)
 		end
 		return
 	end
@@ -114,16 +114,16 @@ function DoerAttrSetter:SetObject(key, objectValue, isAdd)
 	if string.StartsWith(key, "e.") then
 		-- 中间对象属性
 		key = string.sub(key, string.len("e.") + 1)
-		if self.e then
-			self:SetObjectValue(self.e, key, objectValue, isAdd)
+		if self._e then
+			self:SetObjectValue(self._e, key, objectValue, isAdd)
 		end
 		return
 	end
 	if string.StartsWith(key, "et.") then
 		-- 中间对象临时属性
 		key = string.sub(key, string.len("et.") + 1)
-		if self.e then
-			self:SetObjectTmpValue(self.e, key, objectValue, isAdd)
+		if self._e then
+			self:SetObjectTmpValue(self._e, key, objectValue, isAdd)
 		end
 		return
 	end
@@ -131,43 +131,46 @@ function DoerAttrSetter:SetObject(key, objectValue, isAdd)
 	if string.StartsWith(key, "m.") then
 		-- 当前或中间对象
 		key = string.sub(key, string.len("m.") + 1)
-		if self.m then
+		if self._m then
 			if IsNumber(objectValue) then
 				if isAdd then
-					self.m[key] = ObjectUtil.ToNumberOrToDefault(self.m[key], 0) + objectValue
+					self._m[key] = ObjectUtil.ToNumberOrToDefault(self._m[key], 0) + objectValue
 				else
-					self.m = objectValue
+					self._m = objectValue
 				end
 			end
 			if IsBoolean(objectValue) then
-				self.m[key] = objectValue
+				self._m[key] = objectValue
 			end
 			if IsString(objectValue) then
 				if objectValue == "nil" then
-					self.m[key] = nil
+					self._m[key] = nil
 				elseif isAdd then
-					self.m[key] = table.GetOrAddDefault_Dict(self.m, key, function()
+					self._m[key] = table.GetOrAddDefault_Dict(self._m, key, function()
 						return ""
 					end) .. objectValue
 				else
-					self.m[key] = objectValue
+					self._m[key] = objectValue
 				end
 			end
 		end
 		return
 	end
 
-	if self.u then
+	if self._u then
 		self:SetObject("u." .. key, objectValue, isAdd)
-	elseif self.o then
+	elseif self._o then
 		self:SetObject("o." .. key, objectValue, isAdd)
-	elseif self.e then
+	elseif self._e then
 		self:SetObject("e." .. key, objectValue, isAdd)
-	elseif self.m then
+	elseif self._m then
 		self:SetObject("m." .. key, objectValue, isAdd)
 	end
 end
---------------------------------------------------SetObjectValue----------------------
+
+----------------------------------------------------------------------
+-- SetObjectValue相关
+----------------------------------------------------------------------
 ---@param doer Doer
 function DoerAttrSetter:SetObjectTmpValue(doer, key, objectValue, isAdd)
 	if objectValue == "nil" then
@@ -224,7 +227,7 @@ function DoerAttrSetter:SetObjectValue_Doer(doer, key, objectValue, isAdd)
 			if env then
 				key = string.sub(key, string.len("env") + 1)
 				---@type DoerAttrSetter
-				local attrAttrSetter = DoerAttrSetter.New(self.desc)
+				local attrAttrSetter = DoerAttrSetter.New(self._desc)
 				attrAttrSetter:SetU(env)
 				DoerAttrSetter:SetObject("u" .. key, objectValue, isAdd)
 			end
@@ -236,7 +239,7 @@ function DoerAttrSetter:SetObjectValue_Doer(doer, key, objectValue, isAdd)
 			if owner then
 				key = string.sub(key, string.len("owner") + 1)
 				---@type DoerAttrSetter
-				local attrAttrSetter = DoerAttrSetter.New(self.desc)
+				local attrAttrSetter = DoerAttrSetter.New(self._desc)
 				attrAttrSetter:SetU(owner)
 				DoerAttrSetter:SetObject("u" .. key, objectValue, isAdd)
 			end
@@ -278,12 +281,12 @@ function DoerAttrSetter:SetObjectValue_User_AddAttrEquip(user, key, objectValue,
 		local pos = string.IndexOf(value, ";") -- count;pz:2,jl:3
 		if pos ~= -1 then
 			local countString = string.Trim(string.sub(value, pos - 1))
-			local countValue = self.doerAttrParser:ParseNumber(countString, 0)
+			local countValue = self._doerAttrParser:ParseNumber(countString, 0)
 			local attrs = string.ToDictionary(string.sub(value, pos + 1))
 			local attrDict = {}
 			for attrKey, attrValue in pairs(attrs) do
-				local attrKeyPostParse = self.doerAttrParser:ParseString(attrKey)
-				local attrValuePostParse = self.doerAttrParser:Parse(attrValue)
+				local attrKeyPostParse = self._doerAttrParser:ParseString(attrKey)
+				local attrValuePostParse = self._doerAttrParser:Parse(attrValue)
 				attrDict[attrKeyPostParse] = attrValuePostParse
 			end
 			for i = 1, countValue do
@@ -316,7 +319,7 @@ function DoerAttrSetter:SetObjectValue_User_Items(user, key, objectValue, isAdd)
 			local item = user:GetItem(itemId)
 			if item then
 				---@type DoerAttrSetter
-				local doerAttrSetter = DoerAttrSetter.New(self.desc)
+				local doerAttrSetter = DoerAttrSetter.New(self._desc)
 				doerAttrSetter:SetU(item)
 				doerAttrSetter:SetObject("u" .. key, objectValue, isAdd)
 			end
@@ -345,7 +348,7 @@ function DoerAttrSetter:SetObjectValue_User_Missions(user, key, objectValue, isA
 			local mission = user:GetMission(missionId)
 			if mission then
 				---@type DoerAttrSetter
-				local doerAttrSetter = DoerAttrSetter.New(self.desc)
+				local doerAttrSetter = DoerAttrSetter.New(self._desc)
 				doerAttrSetter:SetU(mission)
 				doerAttrSetter:SetObject("u" .. key, objectValue, isAdd)
 			end

@@ -4,9 +4,24 @@ local DirectionInfo = Class("DirectionInfo")
 ---@param y number
 ---@param name string
 function DirectionInfo:Init(x, y, name)
-	self.x = x
-	self.y = y
-	self.name = name
+	self._x = x
+	self._y = y
+	self._name = name
+end
+
+----------------------------------------------------------------------
+-- SetGet相关
+----------------------------------------------------------------------
+function DirectionInfo:GetX()
+	return self._x
+end
+
+function DirectionInfo:GetY()
+	return self._y
+end
+
+function DirectionInfo:GetName()
+	return self._name
 end
 
 return DirectionInfo

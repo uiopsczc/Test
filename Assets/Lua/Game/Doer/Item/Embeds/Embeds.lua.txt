@@ -32,7 +32,7 @@ function Embeds:DoRestore(dict, dictTmp, restoreKey)
 		local embeds = self:GetEmbeds_ToEdit()
 		for i = 1, #dictEmbedIds do
 			local embedId = dictEmbedIds[i]
-			local embed = self.parentDoer.factory:NewDoer(embedId)
+			local embed = self.parentDoer._factory:NewDoer(embedId)
 			embed:SetEnv(self.parentDoer)
 			table.insert(embeds, embed)
 		end

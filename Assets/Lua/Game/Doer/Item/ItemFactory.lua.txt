@@ -3,11 +3,11 @@ local ItemFactory = Class("ItemFactory", DoerFactory)
 
 function ItemFactory:Init()
 	ItemFactory.super.Init(self)
-	self.defaultDoerClassPath = "Game.Doer.Item.Item"
+	self._defaultDoerClassPath = "Game.Doer.Item.Item"
 end
 
 function ItemFactory:GetClassPath(id)
-	return string.IsNilOrEmpty(self:GetCfgItemData(id).class_path_lua) and self.defaultDoerClassPath or self:GetCfgItemData(id).class_path_lua
+	return string.IsNilOrEmpty(self:GetCfgItemData(id).class_path_lua) and self._defaultDoerClassPath or self:GetCfgItemData(id).class_path_lua
 end
 
 function ItemFactory:GetCfgItemData(id)
@@ -15,7 +15,7 @@ function ItemFactory:GetCfgItemData(id)
 end
 
 ---@return ItemDBase
-function ItemFactory:__NewDBase(id_or_rid)
+function ItemFactory:_NewDBase(id_or_rid)
 	return ItemDBase.New(id_or_rid)
 end
 

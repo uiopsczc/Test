@@ -1,11 +1,11 @@
 ---@class TickObject:GameEntity
----@field isCanNotUpdate boolean
+---@field _isCanNotUpdate boolean
 local TickObject = Class("TickObject", GameEntity)
 
 function TickObject:Init()
 	TickObject.super.Init(self)
-	self.isNotDeleteChildRelationShipImmediately = true
-	self.isNotDeleteComponentRelationShipImmediately = true
+	self:SetIsNotDeleteChildRelationShipImmediately(true)
+	self:SetIsNotDeleteComponentRelationShipImmediately(true)
 end
 
 --function TickObject:IsCanUpdate()
@@ -35,7 +35,7 @@ function TickObject:FixedUpdate(deltaTime, unscaledDeltaTime)
 	for _, component in self:ForeachComponent() do
 		component:FixedUpdate(deltaTime, unscaledDeltaTime)
 	end
-	self:__FixedUpdate(deltaTime, unscaledDeltaTime)
+	self:_FixedUpdate(deltaTime, unscaledDeltaTime)
 end
 
 function TickObject:LateUpdate(deltaTime, unscaledDeltaTime)
@@ -48,21 +48,21 @@ function TickObject:LateUpdate(deltaTime, unscaledDeltaTime)
 	for _, component in self:ForeachComponent() do
 		component:LateUpdate(deltaTime, unscaledDeltaTime)
 	end
-	self:__LateUpdate(deltaTime, unscaledDeltaTime)
+	self:_LateUpdate(deltaTime, unscaledDeltaTime)
 end
 
 function TickObject:_Update(deltaTime, unscaledDeltaTime)
 end
 
-function TickObject:__FixedUpdate(deltaTime, unscaledDeltaTime)
+function TickObject:_FixedUpdate(deltaTime, unscaledDeltaTime)
 end
 
-function TickObject:__LateUpdate(deltaTime, unscaledDeltaTime)
+function TickObject:_LateUpdate(deltaTime, unscaledDeltaTime)
 end
 
-function TickObject:__Destroy()
-	TickObject.super.__Destroy(self)
-	self.isCanNotUpdate = false
+function TickObject:_Destroy()
+	TickObject.super._Destroy(self)
+	self._isCanNotUpdate = false
 end
 
 return TickObject

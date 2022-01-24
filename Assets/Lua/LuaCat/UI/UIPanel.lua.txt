@@ -76,7 +76,7 @@ end
 
 function UIPanel:Close()
 	self._uiLayer:RemovePanel(self)
-	self.parent:CloseChildPanel(self.key)
+	self._parent:CloseChildPanel(self._key)
 end
 
 ----------------------------------------------------------------------

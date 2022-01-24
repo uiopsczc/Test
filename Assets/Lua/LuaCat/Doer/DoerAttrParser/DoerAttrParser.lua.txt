@@ -7,12 +7,12 @@ end
 
 ---@param randomManager RandomManager
 function DoerAttrParser:SetRandomManager(randomManager)
-	self.randomManager = randomManager
+	self._randomManager = randomManager
 end
 
 ---@return RandomManager
 function DoerAttrParser:GetRandomManager()
-	return self.randomManager
+	return self._randomManager
 end
 
 function DoerAttrParser:Set(u, o, e, m)
@@ -24,38 +24,38 @@ end
 
 function DoerAttrParser:SetU(u)
 	---@type Doer
-	self.u = u--主动对象，比如任务中接受任务的玩家
+	self._u = u--主动对象，比如任务中接受任务的玩家
 end
 
 function DoerAttrParser:GetU()
-	return self.u
+	return self._u
 end
 
 function DoerAttrParser:SetO(o)
 	---@type Doer
-	self.o = o -- 被动对象，比如任务中的任务
+	self._o = o -- 被动对象，比如任务中的任务
 end
 
 function DoerAttrParser:GetO()
-	return self.o
+	return self._o
 end
 
 function DoerAttrParser:SetE(e)
 	---@type Doer
-	self.e = e --中间对象，比如任务中给与任务的npc
+	self._e = e --中间对象，比如任务中给与任务的npc
 end
 
 function DoerAttrParser:GetE()
-	return self.e
+	return self._e
 end
 
 function DoerAttrParser:SetM(m)
 	---@type table<string,any>
-	self.m = m -- 相互传数据的hashttable
+	self._m = m -- 相互传数据的hashttable
 end
 
 function DoerAttrParser:GetM()
-	return self.m
+	return self._m
 end
 
 ---@param flag number
@@ -114,17 +114,17 @@ end
 
 function DoerAttrParser:ParseString(expression)
 	log(string.format("解析ing:%s", expression))
-	local replace_func = function(match_string)
-		return self:Replace(match_string)
+	local replaceFunc = function(matchString)
+		return self:Replace(matchString)
 	end
 	-- 决定解析的先后顺序
 	if string.IndexOf(expression, "${") ~= -1 then
 		if string.IndexOf(expression, "$${") ~= -1 then
-			expression = string.ReplaceAll(expression, DoerAttrParserConst.Pattern3, replace_func)
+			expression = string.ReplaceAll(expression, DoerAttrParserConst.Pattern3, replaceFunc)
 		end
-		expression = string.ReplaceAll(expression, DoerAttrParserConst.Pattern2, replace_func)
+		expression = string.ReplaceAll(expression, DoerAttrParserConst.Pattern2, replaceFunc)
 	end
-	return string.ReplaceAll(expression, DoerAttrParserConst.Pattern1, replace_func)
+	return string.ReplaceAll(expression, DoerAttrParserConst.Pattern1, replaceFunc)
 end
 
 function DoerAttrParser:Replace(expression)
@@ -150,8 +150,8 @@ function DoerAttrParser:Replace(expression)
 	if string.StartsWith(expression, "u.") then
 		-- 主动对象属性
 		expression = string.sub(expression, string.len("u.") + 1)
-		if self.u then
-			return self:GetDoerValue(self.u, expression, typeString)
+		if self._u then
+			return self:GetDoerValue(self._u, expression, typeString)
 		else
 			return self:ConvertValue("", typeString)
 		end
@@ -159,8 +159,8 @@ function DoerAttrParser:Replace(expression)
 	if string.StartsWith(expression, "ut.") then
 		-- 主动对象临时属性
 		expression = string.sub(expression, string.len("ut.") + 1)
-		if self.u then
-			return self:GetDoerTmpValue(self.u, expression, typeString)
+		if self._u then
+			return self:GetDoerTmpValue(self._u, expression, typeString)
 		else
 			return self:ConvertValue("", typeString)
 		end
@@ -169,8 +169,8 @@ function DoerAttrParser:Replace(expression)
 	if string.StartsWith(expression, "o.") then
 		-- 被动对象属性
 		expression = string.sub(expression, string.len("o.") + 1)
-		if self.o then
-			return self:GetDoerValue(self.o, expression, typeString)
+		if self._o then
+			return self:GetDoerValue(self._o, expression, typeString)
 		else
 			return self:ConvertValue("", typeString)
 		end
@@ -178,8 +178,8 @@ function DoerAttrParser:Replace(expression)
 	if string.StartsWith(expression, "ot.") then
 		-- 被动对象临时属性
 		expression = string.sub(expression, string.len("ot.") + 1)
-		if self.o then
-			return self:GetDoerTmpValue(self.o, expression, typeString)
+		if self._o then
+			return self:GetDoerTmpValue(self._o, expression, typeString)
 		else
 			return self:ConvertValue("", typeString)
 		end
@@ -188,8 +188,8 @@ function DoerAttrParser:Replace(expression)
 	if string.StartsWith(expression, "e.") then
 		-- 中间对象属性
 		expression = string.sub(expression, string.len("e.") + 1)
-		if self.e then
-			return self:GetDoerValue(self.e, expression, typeString)
+		if self._e then
+			return self:GetDoerValue(self._e, expression, typeString)
 		else
 			return self:ConvertValue("", typeString)
 		end
@@ -197,8 +197,8 @@ function DoerAttrParser:Replace(expression)
 	if string.StartsWith(expression, "et.") then
 		-- 中间对象临时属性
 		expression = string.sub(expression, string.len("et.") + 1)
-		if self.e then
-			return self:GetDoerTmpValue(self.e, expression, typeString)
+		if self._e then
+			return self:GetDoerTmpValue(self._e, expression, typeString)
 		else
 			return self:ConvertValue("", typeString)
 		end
@@ -207,8 +207,8 @@ function DoerAttrParser:Replace(expression)
 	if string.StartsWith(expression, "m.") then
 		-- 当前或中间对象
 		expression = string.sub(expression, string.len("m.") + 1)
-		if self.m then
-			return self:ConvertValue(self.m[expression], typeString)
+		if self._m then
+			return self:ConvertValue(self._m[expression], typeString)
 		else
 			return self:ConvertValue("", typeString)
 		end
@@ -273,14 +273,14 @@ function DoerAttrParser:Replace(expression)
 	end
 
 	-- 默认的处理
-	if self.m then
-		return self:ConvertValue(self.m[expression], typeString)
+	if self._m then
+		return self:ConvertValue(self._m[expression], typeString)
 	end
-	if self.u then
-		return self:ConvertValue(self.u[expression], typeString)
+	if self._u then
+		return self:ConvertValue(self._u[expression], typeString)
 	end
-	if self.o then
-		return self:ConvertValue(self.o[expression], typeString)
+	if self._o then
+		return self:ConvertValue(self._o[expression], typeString)
 	end
 	return self:ConvertValue("", typeString)
 end
@@ -315,7 +315,7 @@ end
 ---@param key string
 ---@return boolean
 function DoerAttrParser:GetDoerValue_Doer(doer, key, typeString, resultDict)
-	local is_break = false
+	local isBreak = false
 	if IsInstanceOf(doer, "Doer") then
 		if string.StartsWith(key, "env.") or string.StartsWith(key, "envt.") then
 			local env = doer:GetEnv()
@@ -372,7 +372,7 @@ function DoerAttrParser:GetDoerValue_Doer(doer, key, typeString, resultDict)
 			return true
 		end
 	end
-	return is_break
+	return isBreak
 end
 
 ---@param typeString string
@@ -518,8 +518,9 @@ end
 
 
 
--------------------------------------------------------------------------------
-
+----------------------------------------------------------------------
+--
+----------------------------------------------------------------------
 function DoerAttrParser:ConvertValue(value, typeString)
 	return tostring(DoerAttrParserUtil.ConvertValue(value, typeString))
 end

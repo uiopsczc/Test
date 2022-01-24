@@ -1,47 +1,47 @@
 ---@class AbstractEntity:Class
----@field key string
----@field parent AbstractEntity
+---@field _key string
+---@field _parent AbstractEntity
 ---@field _isDestroyed boolean
----@field isKeyUsingParentIdPool boolean
----@field isPaused boolean
----@field isNotDeleteChildRelationShipImmediately boolean @是否不立刻将child从child_key_list和children_dict中删除关联关系
----@field isNotDeleteComponentRelationShipImmediately boolean @是否不立刻将component从component_list和component_dict中删除关联关系
----@field isHasDestroyedChild boolean @是否【子孙】child中有要从child_key_list和children_dict中删除关联关系
----@field isHasDestroyedChildComponent boolean @是否【子孙】child中有要从component_list和component_dict中删除关联关系
----@field isHasDestroyedComponent boolean @是否有compoent是要从component_list和component_dict中删除关联关系
----@field isEnabled boolean
+---@field _isKeyUsingParentIdPool boolean
+---@field _isPaused boolean
+---@field _isNotDeleteChildRelationShipImmediately boolean @是否不立刻将child从child_key_list和children_dict中删除关联关系
+---@field _isNotDeleteComponentRelationShipImmediately boolean @是否不立刻将component从component_list和component_dict中删除关联关系
+---@field _isHasDestroyedChild boolean @是否【子孙】child中有要从child_key_list和children_dict中删除关联关系
+---@field _isHasDestroyedChildComponent boolean @是否【子孙】child中有要从component_list和component_dict中删除关联关系
+---@field _isHasDestroyedComponent boolean @是否有compoent是要从component_list和component_dict中删除关联关系
+---@field _isEnabled boolean
 --------注意创建后记得设置key
 local AbstractEntity = Class("AbstractEntity")
 
 -----注意创建后记得设置key
 function AbstractEntity:Init()
 	---@type table<string, AbstractEntity>
-	self.keyToChildDict = {}
+	self._keyToChildDict = {}
 	---@type table<string,AbstractEntity[]>
-	self.classNameToChildListDict = {}--准确的类型
+	self._classNameToChildListDict = {}--准确的类型
 	---@type string[]
-	self.childKeyList = {}
+	self._childKeyList = {}
 	---@type string[]
-	self.childClassNameList = {}
+	self._childClassNameList = {}
 	---@type IdPool
-	self.childKeyIdPool = IdPool.New()
+	self._childKeyIdPool = IdPool.New()
 
 	---@type table<string, AbstractComponent>
-	self.keyToComponentDict = {}
+	self._keyToComponentDict = {}
 	---@type table<string, AbstractComponent[]>
-	self.classNameToComponentListDict = {}
+	self._classNameToComponentListDict = {}
 	---@type string[]
-	self.componentKeyList = {}
+	self._componentKeyList = {}
 	---@type string[]
-	self.componentClassNameList = {}
+	self._componentClassNameList = {}
 	---@type IdPool
-	self.componentKeyIdPool = IdPool.New()
+	self._componentKeyIdPool = IdPool.New()
 
-	self.destroyCallback = {}
-	self.resetCallback = {}
+	self._destroyCallback = {}
+	self._resetCallback = {}
 
 	---@type Cache
-	self.cache = Cache.New()
+	self._cache = Cache.New()
 end
 
 function AbstractEntity:PostInit()
@@ -53,31 +53,31 @@ end
 function AbstractEntity:Refresh(...)
 end
 
-function AbstractEntity:__OnDespawn_()
-	self.isHasDestroyedChild = false
-	self.isHasDestroyedChildComponent = false
-	self.isHasDestroyedComponent = false
+function AbstractEntity:_OnDespawn_()
+	self._isHasDestroyedChild = false
+	self._isHasDestroyedChildComponent = false
+	self._isHasDestroyedComponent = false
 
-	self.cache:Clear()
+	self._cache:Clear()
 end
 
 ----------------------------------------------------------------------
 -- child相关 ForeachChild
 ----------------------------------------------------------------------
 function AbstractEntity:ForeachChild()
-	return self.__ForeachChild, { childrenDict = self.keyToChildDict, childKeyList = self.childKeyList, count = #self.childKeyList }, 0
+	return self._ForeachChild, { childrenDict = self._keyToChildDict, childKeyList = self._childKeyList, count = #self._childKeyList }, 0
 end
 
 ---@param i number
-function AbstractEntity.__ForeachChild(childrenInfo, i)
+function AbstractEntity._ForeachChild(childrenInfo, i)
 	---@type AbstractEntity
 	local child
-	local childrenDict = childrenInfo.children_dict
-	local child_keyList = childrenInfo.child_key_list
+	local childrenDict = childrenInfo.childrenDict
+	local childKeyList = childrenInfo.childKeyList
 	local count = childrenInfo.count
-	while i < count and i <= #child_keyList do
+	while i < count and i <= #childKeyList do
 		i = i + 1
-		child = childrenDict[child_keyList[i]]
+		child = childrenDict[childKeyList[i]]
 		if not child:IsDestroyed() then
 			return i, child
 		end
@@ -86,25 +86,24 @@ end
 
 ---@param childClassType Class
 function AbstractEntity:ForeachChildOfType(childClassType)
-	return self.__ForeachChildOfType,
-
+	return self._ForeachChildOfType,
 	{
-		childrenDict = self.keyToChildDict,
-		childKeyList = self.childKeyList,
-		count = #self.childKeyList,
+		childrenDict = self._keyToChildDict,
+		childKeyList = self._childKeyList,
+		count = #self._childKeyList,
 		childClassType = childClassType
 	},
 	0
 end
 
 ---@param i number
-function AbstractEntity.__ForeachChildOfType(childrenInfo, i)
+function AbstractEntity._ForeachChildOfType(childrenInfo, i)
 	---@type AbstractEntity
 	local child
-	local childrenDict = childrenInfo.children_dict
-	local childKeyList = childrenInfo.child_key_list
+	local childrenDict = childrenInfo.childrenDict
+	local childKeyList = childrenInfo.childKeyList
 	local count = childrenInfo.count
-	local childClassType = childrenInfo.child_class_type
+	local childClassType = childrenInfo.childClassType
 	while i < count and i <= #childKeyList do
 		i = i + 1
 		child = childrenDict[childKeyList[i]]
@@ -114,39 +113,39 @@ function AbstractEntity.__ForeachChildOfType(childrenInfo, i)
 	end
 end
 
-function AbstractEntity:__OnDespawn_Child()
-	table.Clear(self.keyToChildDict)
-	table.Clear(self.classNameToChildListDict)
-	table.Clear(self.childKeyList)
-	table.Clear(self.childClassNameList)
-	self.parent = nil
-	self.isKeyUsingParentIdPool = false
+function AbstractEntity:_OnDespawn_Child()
+	table.Clear(self._keyToChildDict)
+	table.Clear(self._classNameToChildListDict)
+	table.Clear(self._childKeyList)
+	table.Clear(self._childClassNameList)
+	self._parent = nil
+	self._isKeyUsingParentIdPool = false
 end
 
 ----------------------------------------------------------------------
 -- child相关 AddChild
 ----------------------------------------------------------------------
 ---@param childKey string
----@param childClassType Class @例如: require("luacat.ecs.entity.AbstractEntity")
+---@param childClassType Class @例如: require("LuaCat.ECS.Entity.AbstractEntity")
 ---@return AbstractEntity
 function AbstractEntity:AddChildWithoutInit(childKey, childClassType)
-	if childKey and self.keyToChildDict[childKey] then
+	if childKey and self._keyToChildDict[childKey] then
 		Error("duplicate add child:", childKey, childClassType._className)
 		return
 	end
 	local isKeyUsingParentIdPool = not childKey
 	if isKeyUsingParentIdPool then
-		childKey = tostring(self.childKeyIdPool:Get())
+		childKey = tostring(self._childKeyIdPool:Get())
 		--再次检查键值
-		if self.keyToChildDict[childKey] then
+		if self._keyToChildDict[childKey] then
 			Error("duplicate add child:", childKey, childClassType._className)
 			return
 		end
 	end
 	---@type AbstractEntity
 	local child = PoolCatManagerUtil.Spawn(childClassType)
-	child.key = childKey
-	child.isKeyUsingParentIdPool = isKeyUsingParentIdPool
+	child:SetKey(childKey)
+	child:SetIsKeyUsingParentIdPool(isKeyUsingParentIdPool)
 	return self:AddChild2(child)
 end
 
@@ -154,17 +153,17 @@ end
 ---@param child T
 ---@return T
 function AbstractEntity:AddChild2(child)
-	if self.keyToChildDict[child.key] then
-		Error("duplicate add child:", child.key, child.__class_name)
+	if self._keyToChildDict[child.key] then
+		Error("duplicate add child:", child.key, child._className)
 		return
 	end
-	child.parent = self
-	self:__AddChildRelationship(child)
+	child:SetParent(self)
+	self:_AddChildRelationship(child)
 	return child
 end
 
 ---@param childKey string
----@param childClassType Class @例如: require("luacat.ecs.entity.AbstractEntity")
+---@param childClassType Class @例如: require("LuaCat.ECS.Entity.AbstractEntity")
 ---@return AbstractEntity
 function AbstractEntity:AddChild(childKey, childClassType, ...)
 	local child = self:AddChildWithoutInit(childKey, childClassType)
@@ -180,15 +179,15 @@ function AbstractEntity:AddChild(childKey, childClassType, ...)
 end
 
 ---@param child AbstractEntity
-function AbstractEntity:__AddChildRelationship(child)
-	self.keyToChildDict[child.key] = child
-	local classNameToChildList = table.GetOrAddDefault_Dict(self.classNameToChildListDict, child._className, function()
+function AbstractEntity:_AddChildRelationship(child)
+	self._keyToChildDict[child:GetKey()] = child
+	local classNameToChildList = table.GetOrAddDefault_Dict(self._classNameToChildListDict, child._className, function()
 		return {}
 	end)
 	table.insert(classNameToChildList, child)
-	table.insert(self.childKeyList, child.key)
-	if not table.ContainsValue(self.childClassNameList, child._className) then
-		table.insert(self.childClassNameList, child._className)
+	table.insert(self._childKeyList, child:GetKey())
+	if not table.ContainsValue(self._childClassNameList, child._className) then
+		table.insert(self._childClassNameList, child._className)
 	end
 end
 
@@ -198,13 +197,13 @@ end
 ---@param childKey string
 ---@return AbstractEntity
 function AbstractEntity:GetChild(childKey)
-	if not self.keyToChildDict[childKey] then
+	if not self._keyToChildDict[childKey] then
 		return nil
 	end
-	if self.keyToChildDict[childKey]:IsDestroyed() then
+	if self._keyToChildDict[childKey]:IsDestroyed() then
 		return nil
 	end
-	return self.keyToChildDict[childKey]
+	return self._keyToChildDict[childKey]
 end
 
 ---@param childClassType Class
@@ -220,10 +219,10 @@ end
 ---@param childClassType Class
 ---@return AbstractEntity
 function AbstractEntity:GetChildStrictlyByType(childClassType)
-	if not self.classNameToChildListDict[childClassType._className] then
+	if not self._classNameToChildListDict[childClassType._className] then
 		return
 	end
-	for _, child in ipairs(self.classNameToChildListDict[childClassType._className]) do
+	for _, child in ipairs(self._classNameToChildListDict[childClassType._className]) do
 		if not child:IsDestroyed() then
 			return child
 		end
@@ -247,10 +246,10 @@ end
 function AbstractEntity:GetChildrenStrictlyByType(childClassType)
 	---@type AbstractEntity[]
 	local result = {}
-	if not self.classNameToChildListDict[childClassType._className] then
+	if not self._classNameToChildListDict[childClassType._className] then
 		return result
 	end
-	for _, child in self.classNameToChildListDict[childClassType._className] do
+	for _, child in self._classNameToChildListDict[childClassType._className] do
 		if not child:IsDestroyed() then
 			table.insert(result, child)
 		end
@@ -264,10 +263,10 @@ end
 ---@param childKey string
 ---@return AbstractEntity
 function AbstractEntity:RemoveChild(childKey)
-	if not self.keyToChildDict[childKey] then
+	if not self._keyToChildDict[childKey] then
 		return nil
 	end
-	local child = self.keyToChildDict[childKey]
+	local child = self._keyToChildDict[childKey]
 	return self:RemoveChild2(child)
 end
 
@@ -278,12 +277,12 @@ function AbstractEntity:RemoveChild2(child)
 		return nil
 	end
 	child:Destroy()
-	if not self.isNotDeleteChildRelationShipImmediately then
-		self:__RemoveChildRelationship(child)
-		self:__DespawnChildKey(child)
+	if not self._isNotDeleteChildRelationShipImmediately then
+		self:_RemoveChildRelationship(child)
+		self:_DespawnChildKey(child)
 		PoolCatManagerUtil:Despawn(child)
 	else
-		self:__MarkHasDestroyedChild()
+		self:MarkHasDestroyedChild()
 	end
 	return child
 end
@@ -333,63 +332,65 @@ function AbstractEntity:RemoveChildrenStrictlyByType(childClassType)
 end
 
 function AbstractEntity:RemoveAllChildren()
-	local toRemoveChildKeyList = table.Clone(self.childKeyList)
+	local toRemoveChildKeyList = table.Clone(self._childKeyList)
 	for _, childKey in ipairs(toRemoveChildKeyList) do
 		self:RemoveChild(childKey)
 	end
 end
 
 ----------------------------------------------------------------------
-function AbstractEntity:__MarkHasDestroyedChild()
-	if not self.isHasDestroyedChild then
-		self.isHasDestroyedChild = true
-		if self.parent then
-			self.parent:__MarkHasDestroyedChild()
+--
+----------------------------------------------------------------------
+function AbstractEntity:MarkHasDestroyedChild()
+	if not self._isHasDestroyedChild then
+		self._isHasDestroyedChild = true
+		if self._parent then
+			self._parent:MarkHasDestroyedChild()
 		end
 	end
 end
 
 ---@param child AbstractEntity
-function AbstractEntity:__RemoveChildRelationship(child)
-	self.keyToChildDict[child.key] = nil
-	table.RemoveByValue_Array(self.childKeyList, child.key)
-	table.RemoveByValue_Array(self.classNameToChildListDict[child._className], child)
+function AbstractEntity:_RemoveChildRelationship(child)
+	self._keyToChildDict[child:GetKey()] = nil
+	table.RemoveByValue_Array(self._childKeyList, child:GetKey())
+	table.RemoveByValue_Array(self._classNameToChildListDict[child._className], child)
 end
 
 ---@param child AbstractEntity
-function AbstractEntity:__DespawnChildKey(child)
-	if child.isKeyUsingParentIdPool then
-		self.childKeyIdPool:Despawn(child.key)
-		child.isKeyUsingParentIdPool = false
+function AbstractEntity:_DespawnChildKey(child)
+	if child:IsKeyUsingParentIdPool() then
+		self._childKeyIdPool:Despawn(child:GetKey())
+		child:SetIsKeyUsingParentIdPool(false)
 	end
 end
 
 function AbstractEntity:CheckDestroyed()
 	--有【子孙】child中有要从child_key_list和children_dict中删除关联关系
 	--或者有【子孙】child的component要从从component_list和component_dict中删除关联关系
-	if self.isHasDestroyedChild or self.isHasDestroyedChildComponent then
-		local child_key
+	if self._isHasDestroyedChild or self._isHasDestroyedChildComponent then
+		local childKey
 		---@type AbstractEntity
 		local child
-		for i = #self.childKeyList, 1, -1 do
-			child_key = self.childKeyList[i]
-			child = self.keyToChildDict[child_key]
+		for i = #self._childKeyList, 1, -1 do
+			childKey = self._childKeyList[i]
+			child = self._keyToChildDict[childKey]
 			child:CheckDestroyed()
 			if child:IsDestroyed() then
 				-- 该child自身要被delete
-				self:__RemoveChildRelationship(child)
-				self:__DespawnChildKey(child)
+				self:_RemoveChildRelationship(child)
+				self:_DespawnChildKey(child)
 				PoolCatManagerUtil.Despawn(child)
 			end
 		end
 
-		self.isHasDestroyedChild = false
-		self.isHasDestroyedChildComponent = false
+		self._isHasDestroyedChild = false
+		self._isHasDestroyedChildComponent = false
 	end
 
-	if self.isHasDestroyedComponent then
-		self:__CheckDestroyedComponents()
-		self.isHasDestroyedComponent = false
+	if self._isHasDestroyedComponent then
+		self:_CheckDestroyedComponents()
+		self._isHasDestroyedComponent = false
 	end
 end
 
@@ -398,16 +399,16 @@ end
 ----------------------------------------------------------------------
 -- 按加入的顺序遍历
 function AbstractEntity:ForeachComponent()
-	return self.__ForeachComponent, { keyToComponentDict = self.keyToComponentDict, componentKeyList = self.componentKeyList, count = #self.componentKeyList }, 0
+	return self._ForeachComponent, { keyToComponentDict = self._keyToComponentDict, componentKeyList = self._componentKeyList, count = #self._componentKeyList }, 0
 end
 
 -- 按加入的顺序遍历
 ---@param i number
-function AbstractEntity.__ForeachComponent(componentInfo, i)
+function AbstractEntity._ForeachComponent(componentInfo, i)
 	---@type AbstractComponent
 	local component
-	local componentKeyList = componentInfo.component_key_list
-	local keyToComponentDict = componentInfo.key_to_component_dict
+	local componentKeyList = componentInfo.componentKeyList
+	local keyToComponentDict = componentInfo.keyToComponentDict
 	local count = componentInfo.count
 	while i < count do
 		i = i + 1
@@ -420,11 +421,11 @@ function AbstractEntity.__ForeachComponent(componentInfo, i)
 end
 
 function AbstractEntity:ForeachComponentOfType(componentClassType)
-	return self.__ForeachComponentOfType, { keyToComponentDict = self.keyToComponentDict, componentKeyList = self.componentKeyList, count = #self.componentKeyList, componentClassType = componentClassType }, 0
+	return self._ForeachComponentOfType, { keyToComponentDict = self._keyToComponentDict, componentKeyList = self._componentKeyList, count = #self._componentKeyList, componentClassType = componentClassType }, 0
 end
 
 ---@param i number
-function AbstractEntity.__ForeachComponentOfType(componentInfo, i)
+function AbstractEntity._ForeachComponentOfType(componentInfo, i)
 	---@type AbstractComponent
 	local component
 	local componentKeyList = componentInfo.componentKeyList
@@ -441,11 +442,11 @@ function AbstractEntity.__ForeachComponentOfType(componentInfo, i)
 	end
 end
 
-function AbstractEntity:__OnDespawn_Component()
-	table.Clear(self.keyToComponentDict)
-	table.Clear(self.classNameToComponentListDict)
-	table.Clear(self.componentKeyList)
-	table.Clear(self.componentClassNameList)
+function AbstractEntity:_OnDespawn_Component()
+	table.Clear(self._keyToComponentDict)
+	table.Clear(self._classNameToComponentListDict)
+	table.Clear(self._componentKeyList)
+	table.Clear(self._componentClassNameList)
 end
 
 ----------------------------------------------------------------------
@@ -465,33 +466,32 @@ end
 ---@return AbstractComponent
 function AbstractEntity:AddComponent2(component, componentKey)
 	if componentKey then
-		component.key = componentKey
+		component:SetKey(componentKey)
 	end
-	if component.key and self.keyToComponentDict[component.key] then
-		Error("duplicate add component:", component.key, component._className)
+	if component:GetKey() and self._keyToComponentDict[component:GetKey()] then
+		Error("duplicate add component:", component:GetKey(), component._className)
 		return nil
 	end
 
 	local isKeyUsingParentIdPool = not componentKey
 	if isKeyUsingParentIdPool then
-		componentKey = tostring(self.componentKeyIdPool:Get())
+		componentKey = tostring(self._componentKeyIdPool:Get())
 		--再次检查键值
-		if componentKey and self.keyToComponentDict[componentKey] then
+		if componentKey and self._keyToComponentDict[componentKey] then
 			Error("duplicate add component:", componentKey, component._className)
 			return nil
 		end
 	end
-	component.key = componentKey
-	component.isKeyUsingParentIdPool = isKeyUsingParentIdPool
-	component._entity = self
+	component:SetKey(componentKey)
+	component:SetIsKeyUsingParentIdPool(isKeyUsingParentIdPool)
+	component:SetEntity(self)
 
-	self:__AddComponentRelationship(component)
+	self:_AddComponentRelationship(component)
 	return component
 end
 
 ---@param componentKey string
 ---@param componentClassType Class
----@param AbstractComponent
 function AbstractEntity:AddComponent(componentKey, componentClassType, ...)
 	local component = self:AddComponentWithoutInit(componentKey, componentClassType)
 	if not component then
@@ -505,15 +505,15 @@ function AbstractEntity:AddComponent(componentKey, componentClassType, ...)
 end
 
 ---@param component AbstractComponent
-function AbstractEntity:__AddComponentRelationship(component)
-	self.keyToComponentDict[component.key] = component
-	local classNameToComponentList = table.GetOrAddDefault_Dict(self.classNameToComponentListDict, component._className, function()
+function AbstractEntity:_AddComponentRelationship(component)
+	self._keyToComponentDict[component:GetKey()] = component
+	local classNameToComponentList = table.GetOrAddDefault_Dict(self._classNameToComponentListDict, component._className, function()
 		return {}
 	end)
 	table.insert(classNameToComponentList, component)
-	table.insert(self.componentKeyList, component.key)
-	if not table.ContainsValue(self.componentClassNameList, component._className) then
-		table.insert(self.componentClassNameList, component._className)
+	table.insert(self._componentKeyList, component:GetKey())
+	if not table.ContainsValue(self._componentClassNameList, component._className) then
+		table.insert(self._componentClassNameList, component._className)
 	end
 end
 
@@ -523,13 +523,13 @@ end
 ---@param componentKey string
 ---@return AbstractComponent
 function AbstractEntity:GetComponent(componentKey)
-	if not self.keyToComponentDict[componentKey] then
+	if not self._keyToComponentDict[componentKey] then
 		return nil
 	end
-	if self.keyToComponentDict[componentKey]:IsDestroyed() then
+	if self._keyToComponentDict[componentKey]:IsDestroyed() then
 		return nil
 	end
-	return self.keyToComponentDict[componentKey]
+	return self._keyToComponentDict[componentKey]
 end
 
 ---@param componentClassType Class
@@ -542,10 +542,10 @@ function AbstractEntity:GetComponentByType(componentClassType)
 end
 
 function AbstractEntity:GetComponentStrictlyByType(componentClassType)
-	if not self.classNameToComponentListDict[componentClassType._className] then
+	if not self._classNameToComponentListDict[componentClassType._className] then
 		return nil
 	end
-	for _, component in self.classNameToComponentListDict[componentClassType._className] do
+	for _, component in self._classNameToComponentListDict[componentClassType._className] do
 		if not component:IsDestroyed() then
 			return component
 		end
@@ -569,10 +569,10 @@ end
 function AbstractEntity:GetComponentsStrictlyByType(componentClassType)
 	---@type AbstractEntity[]
 	local result = {}
-	if not self.classNameToComponentListDict[componentClassType._className] then
+	if not self._classNameToComponentListDict[componentClassType._className] then
 		return result
 	end
-	for _, component in self.classNameToComponentListDict[componentClassType._className] do
+	for _, component in self._classNameToComponentListDict[componentClassType._className] do
 		if not component:IsDestroyed() then
 			table.insert(result, component)
 		end
@@ -585,10 +585,10 @@ end
 ---@param componentKey string
 ---@return AbstractComponent
 function AbstractEntity:RemoveComponent(componentKey)
-	if not self.keyToComponentDict[componentKey] then
+	if not self._keyToComponentDict[componentKey] then
 		return nil
 	end
-	local component = self.keyToComponentDict[componentKey]
+	local component = self._keyToComponentDict[componentKey]
 	return self:RemoveComponent2(component)
 end
 
@@ -600,12 +600,12 @@ function AbstractEntity:RemoveComponent2(component)
 		return nil
 	end
 	component:Destroy()
-	if not self.isNotDeleteComponentRelationShipImmediately then
-		self:__RemoveComponentRelationship(component)
-		self:__DespawnComponentKey(component)
+	if not self._isNotDeleteComponentRelationShipImmediately then
+		self:_RemoveComponentRelationship(component)
+		self:_DespawnComponentKey(component)
 		PoolCatManagerUtil.Despawn(component)
 	else
-		self:__MarkHasDestroyedComponent()
+		self:_MarkHasDestroyedComponent()
 	end
 	return component
 end
@@ -628,7 +628,7 @@ function AbstractEntity:RemoveComponentStrictlyByType(componentClassType)
 	return component
 end
 
----@param componentClassType Class @如 require("luacat.ecs.component.impl.AbstractObjectComponent")
+---@param componentClassType Class @如 require("LuaCat.ECS.Component.Impl.AbstractObjectComponent")
 ---@return AbstractComponent
 function AbstractEntity:RemoveComponentsByType(componentClassType)
 	local components = self:GetComponentsByType(componentClassType)
@@ -640,7 +640,7 @@ function AbstractEntity:RemoveComponentsByType(componentClassType)
 	return components
 end
 
----@param componentClassType Class @如 require("luacat.ecs.component.impl.AbstractObjectComponent")
+---@param componentClassType Class @如 require("LuaCat.ECS.Component.Impl.AbstractObjectComponent")
 ---@return AbstractComponent
 function AbstractEntity:RemoveComponentsStrictlyByType(componentClassType)
 	local components = self:GetComponentsStrictlyByType(componentClassType)
@@ -653,57 +653,59 @@ function AbstractEntity:RemoveComponentsStrictlyByType(componentClassType)
 end
 
 function AbstractEntity:RemoveAllComponents()
-	local toRemoveComponentKeyList = table.Clone(self.componentKeyList)
+	local toRemoveComponentKeyList = table.Clone(self._componentKeyList)
 	for _, componentKey in ipairs(toRemoveComponentKeyList) do
 		self:RemoveComponent(componentKey)
 	end
 end
 
 ----------------------------------------------------------------------
-function AbstractEntity:__MarkHasDestroyedComponent()
-	if not self.isHasDestroyedComponent then
-		self.isHasDestroyedComponent = true
-		if self.parent then
-			self.parent:__MarkHasDestroyedChildComponent()
+--
+----------------------------------------------------------------------
+function AbstractEntity:_MarkHasDestroyedComponent()
+	if not self._isHasDestroyedComponent then
+		self._isHasDestroyedComponent = true
+		if self._parent then
+			self._parent:MarkHasDestroyedChildComponent()
 		end
 	end
 end
 
-function AbstractEntity:__MarkHasDestroyedChildComponent()
-	if not self.isHasDestroyedChildComponent then
-		self.isHasDestroyedChildComponent = true
-		if self.parent then
-			self.parent:__MarkHasDestroyedChildComponent()
+function AbstractEntity:MarkHasDestroyedChildComponent()
+	if not self._isHasDestroyedChildComponent then
+		self._isHasDestroyedChildComponent = true
+		if self._parent then
+			self._parent:MarkHasDestroyedChildComponent()
 		end
 	end
 end
 
 ---@param component AbstractComponent
-function AbstractEntity:__RemoveComponentRelationship(component)
-	self.keyToComponentDict[component.key] = nil
-	table.RemoveByValue_Array(self.classNameToComponentListDict[component._className], component)
-	table.RemoveByValue_Array(self.componentKeyList, component.key)
+function AbstractEntity:_RemoveComponentRelationship(component)
+	self._keyToComponentDict[component:GetKey()] = nil
+	table.RemoveByValue_Array(self._classNameToComponentListDict[component._className], component)
+	table.RemoveByValue_Array(self._componentKeyList, component:GetKey())
 end
 
 ---@param component AbstractComponent
-function AbstractEntity:__DespawnComponentKey(component)
-	if component.isKeyUsingParentIdPool then
-		self.componentKeyIdPool:Despawn(component.key)
-		component.isKeyUsingParentIdPool = false
+function AbstractEntity:_DespawnComponentKey(component)
+	if component._isKeyUsingParentIdPool then
+		self._componentKeyIdPool:Despawn(component:GetKey())
+		component:SetIsKeyUsingParentIdPool(false)
 	end
 end
 
---主要作用是将IsDestroyed的component从component_list和component_dict中删除
-function AbstractEntity:__CheckDestroyedComponents()
+--主要作用是将IsDestroyed的component从componentList和componentDict中删除
+function AbstractEntity:_CheckDestroyedComponents()
 	---@type AbstractComponent
 	local component
-	local component_key
-	for i = #self.componentKeyList, 1, -1 do
-		component_key = self.componentKeyList[i]
-		component = self.keyToComponentDict[component_key]
+	local componentKey
+	for i = #self._componentKeyList, 1, -1 do
+		componentKey = self._componentKeyList[i]
+		component = self._keyToComponentDict[componentKey]
 		if component:IsDestroyed() then
-			self:__RemoveComponentRelationship(component)
-			self:__DespawnComponentKey(component)
+			self:_RemoveComponentRelationship(component)
+			self:_DespawnComponentKey(component)
 			PoolCatManagerUtil.Despawn(component)
 		end
 	end
@@ -713,7 +715,7 @@ end
 -- Update相关
 ----------------------------------------------------------------------
 function AbstractEntity:IsCanUpdate()
-	return self:GetIsEnabled() and not self:GetIsPaused() and not self:IsDestroyed()
+	return self:IsEnabled() and not self:IsPaused() and not self:IsDestroyed()
 end
 
 
@@ -722,18 +724,18 @@ end
 ----------------------------------------------------------------------
 
 function AbstractEntity:SetIsPaused(isPaused, isLoopChildren)
-	if self:GetIsPaused() == isPaused then
+	if self:IsPaused() == isPaused then
 		return
 	end
-	self.isPaused = isPaused
+	self._isPaused = isPaused
 	if isLoopChildren then
 		self:SetAllChildrenIsPaused(isPaused)
 	end
 	self:SetAllComponentsIsPaused(isPaused)
-	self:__SetIsPaused(isPaused)
+	self:_SetIsPaused(isPaused)
 end
 
-function AbstractEntity:__SetIsPaused(isPaused)
+function AbstractEntity:_SetIsPaused(isPaused)
 end
 
 function AbstractEntity:SetAllChildrenIsPaused(isPaused)
@@ -748,12 +750,12 @@ function AbstractEntity:SetAllComponentsIsPaused(isPaused)
 	end
 end
 
-function AbstractEntity:GetIsPaused()
-	return self.isPaused or false
+function AbstractEntity:IsPaused()
+	return self._isPaused or false
 end
 
-function AbstractEntity:__OnDespawn_Pause()
-	self.isPaused = false
+function AbstractEntity:_OnDespawn_Pause()
+	self._isPaused = false
 end
 
 ----------------------------------------------------------------------
@@ -761,7 +763,7 @@ end
 ----------------------------------------------------------------------
 ---@param isEnabled boolean
 function AbstractEntity:SetIsEnabled(isEnabled, isLoopChildren)
-	if self:GetIsEnabled() == isEnabled then
+	if self:IsEnabled() == isEnabled then
 		return
 	end
 	if isLoopChildren then
@@ -773,7 +775,7 @@ function AbstractEntity:SetIsEnabled(isEnabled, isLoopChildren)
 		component:SetIsEnabled(isEnabled)
 	end
 
-	self.isEnabled = isEnabled
+	self._isEnabled = isEnabled
 	self:_SetIsEnabled(isEnabled)
 	if isEnabled then
 		self:OnEnable()
@@ -785,8 +787,8 @@ end
 function AbstractEntity:_SetIsEnabled(isEnabled)
 end
 
-function AbstractEntity:GetIsEnabled()
-	return self.isEnabled or false
+function AbstractEntity:IsEnabled()
+	return self._isEnabled or false
 end
 
 function AbstractEntity:OnEnable()
@@ -795,8 +797,8 @@ end
 function AbstractEntity:OnDisable()
 end
 
-function AbstractEntity:__OnDespawn_Enable()
-	self.isEnabled = false
+function AbstractEntity:_OnDespawn_Enable()
+	self._isEnabled = false
 end
 
 ----------------------------------------------------------------------
@@ -809,15 +811,15 @@ function AbstractEntity:Reset(isLoopChildren)
 	end
 	self:ResetAllComponents()
 	self:_Reset()
-	self:__PostReset()
+	self:_PostReset()
 end
 
 function AbstractEntity:_Reset()
 end
 
-function AbstractEntity:__PostReset()
-	DelegateUtil.InvokeCallback(self.resetCallback)
-	self.resetCallback = {}
+function AbstractEntity:_PostReset()
+	DelegateUtil.InvokeCallback(self._resetCallback)
+	self._resetCallback = {}
 end
 
 function AbstractEntity:ResetAllChildren()
@@ -832,8 +834,38 @@ function AbstractEntity:ResetAllComponents()
 	end
 end
 
-function AbstractEntity:__OnDespawn_Reset()
-	self.resetCallback = nil
+function AbstractEntity:_OnDespawn_Reset()
+	self._resetCallback = nil
+end
+----------------------------------------------------------------------
+-- SetGet相关
+----------------------------------------------------------------------
+function AbstractEntity:GetKey()
+	return self._key
+end
+
+function AbstractEntity:SetKey(key)
+	self._key = key
+end
+
+function AbstractEntity:SetIsKeyUsingParentIdPool(isKeyUsingParentIdPool)
+	self._isKeyUsingParentIdPool = isKeyUsingParentIdPool
+end
+
+function AbstractEntity:IsKeyUsingParentIdPool()
+	return self._isKeyUsingParentIdPool
+end
+
+function AbstractEntity:SetParent(parent)
+	self._parent = parent
+end
+
+function AbstractEntity:SetIsNotDeleteChildRelationShipImmediately(isNotDeleteChildRelationShipImmediately)
+	self._isNotDeleteChildRelationShipImmediately = isNotDeleteChildRelationShipImmediately
+end
+
+function AbstractEntity:SetIsNotDeleteComponentRelationShipImmediately(isNotDeleteComponentRelationShipImmediately)
+	self._isNotDeleteComponentRelationShipImmediately = isNotDeleteComponentRelationShipImmediately
 end
 
 ----------------------------------------------------------------------
@@ -853,32 +885,32 @@ function AbstractEntity:Destroy()
 	self:RemoveAllComponents()
 	self:_Destroy()
 	self._isDestroyed = true
-	self:__PostDestroy()
-	self.cache:Clear()
+	self:_PostDestroy()
+	self._cache:Clear()
 end
 
 function AbstractEntity:_Destroy()
 
 end
 
-function AbstractEntity:__PostDestroy()
-	DelegateUtil.InvokeCallback(self.destroyCallback)
-	self.destroyCallback = {}
+function AbstractEntity:_PostDestroy()
+	DelegateUtil.InvokeCallback(self._destroyCallback)
+	self._destroyCallback = {}
 end
 
-function AbstractEntity:__OnDespawn_Destroy()
+function AbstractEntity:_OnDespawn_Destroy()
 	self._isDestroyed = false
-	self.key = nil
+	self._key = nil
 end
 
 function AbstractEntity:OnDespawn()
-	self:__OnDespawn_()
-	self:__OnDespawn_Child()
-	self:__OnDespawn_Component()
-	self:__OnDespawn_Destroy()
-	self:__OnDespawn_Enable()
-	self:__OnDespawn_Pause()
-	self:__OnDespawn_Reset()
+	self:_OnDespawn_()
+	self:_OnDespawn_Child()
+	self:_OnDespawn_Component()
+	self:_OnDespawn_Destroy()
+	self:_OnDespawn_Enable()
+	self:_OnDespawn_Pause()
+	self:_OnDespawn_Reset()
 end
 
 return AbstractEntity

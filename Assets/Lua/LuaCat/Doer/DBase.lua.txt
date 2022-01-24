@@ -1,40 +1,49 @@
 ---@class DBase:Class
----@field doer @数据对象
+---@field _doer @数据对象
 local DBase = Class("DBase")
 
 function DBase:Init(idOrRid, db, dbTmp)
 	if IdUtil.IsRid(idOrRid) then
 		local rid = idOrRid
-		self.rid = rid
-		self.id = IdUtil.RidToId(rid)
+		self._rid = rid
+		self._id = IdUtil.RidToId(rid)
 	else
-		self.id = idOrRid
-		self.rid = IdUtil.NewRid(idOrRid)
+		self._id = idOrRid
+		self._rid = IdUtil.NewRid(idOrRid)
 	end
-	self.db = db or {}
-	self.dbTmp = dbTmp or {}
+	self._db = db or {}
+	self._dbTmp = dbTmp or {}
 end
 
---------------------------GetXXX------------------------------
+----------------------------------------------------------------------
+-- SetGet相关
+----------------------------------------------------------------------
 function DBase:GetId()
-	return self.id
+	return self._id
 end
 
 function DBase:GetRid()
-	return self.rid
+	return self._rid
 end
 
 function DBase:GetRidSeq()
-	return IdUtil.RidToSeq(self.rid)
+	return IdUtil.RidToSeq(self._rid)
 end
 
 function DBase:GetDoer()
-	return self.doer
+	return self._doer
 end
 
---------------------------SetXXX------------------------------
 function DBase:SetDoer(doer)
-	self.doer = doer
+	self._doer = doer
+end
+
+function DBase:GetDb()
+	return self._db
+end
+
+function DBase:GetDbTmp()
+	return self._dbTmp
 end
 
 return DBase

@@ -11,7 +11,7 @@ function Unit:Init()
 	self.isInSight = true -- 是否在视野内，用于优化，由unitManager设置
 end
 
-function Unit:__Destroy()
+function Unit:_Destroy()
 	Unit.super.__Destroy(self)
 	self:Broadcast(UnitEventNameConst.On_Unit_Destroy, self)
 	if self.animatorComp then
@@ -176,7 +176,7 @@ function Unit:__SetModel(tag, modelPath, modelType)
 	end
 	unitModelInfo.path = modelPath
 	unitModelInfo.prefab = nil
-	self.resLoadComponent:GetOrLoadAsset(modelPath, function(assetCat)
+	self._resLoadComponent:GetOrLoadAsset(modelPath, function(assetCat)
 		local prefab = assetCat:Get(string.GetSubAssetPath(modelPath), modelType)
 		self:__OnLoadOK(prefab, tag)
 	end)
@@ -202,8 +202,8 @@ function Unit:__CheckAllLoadOK()
 	end
 
 	local unitModelInfo = self.unitModelInfoDict["main"]
-	local clone = GameObject.Instantiate(unitModelInfo.prefab, self:GetPosition(), self:GetRotation(), self.parent.graphicComponent.transform)
-	clone.name = string.format("%s:%s", self.unitId, self.key)
+	local clone = GameObject.Instantiate(unitModelInfo.prefab, self:GetPosition(), self:GetRotation(), self._parent.graphicComponent.transform)
+	clone.name = string.format("%s:%s", self.unitId, self._key)
 	self._graphicComponent:SetGameObject(clone)
 	self:__OnBuildOK()
 	self.isLoadOk = true
@@ -481,7 +481,7 @@ function Unit:OnKilled(sourceUnit, spell, isPlayDeadAnimation, isWaitingRebirth,
 			end, nil, deadBodyDelay)
 		end
 	else
-		global.client.combat.unitManager:RemoveUnit(self.key)
+		global.client.combat.unitManager:RemoveUnit(self._key)
 	end
 end
 
@@ -500,7 +500,7 @@ function Unit:__OnDieOver()
 end
 
 function Unit:__OnDieBuryOver()
-	global.client.combat.unitManager:RemoveUnit(self.key)
+	global.client.combat.unitManager:RemoveUnit(self._key)
 end
 
 ----------------------------------------------------------------------
@@ -803,7 +803,7 @@ end
 function Unit:RunAI(aiClassPath)
 	local aiClass = aiClassPath and ClassLoadUtil.Load(aiClassPath) or AIBaseComp
 	if self.aiComp then
-		self:RemoveChild(self.aiComp.key)
+		self:RemoveChild(self.aiComp._key)
 	end
 	self.aiComp = self:AddChild(nil, aiClass, self)
 end

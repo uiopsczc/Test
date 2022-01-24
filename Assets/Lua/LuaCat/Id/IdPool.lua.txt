@@ -2,11 +2,11 @@
 local IdPool = Class("IdPool", CustomPoolCat)
 
 function IdPool:Init(poolName)
-	self.currentNumber = 0
+	self._currentNumber = 0
 	poolName = poolName or ""
 	IdPool.super.Init(self, poolName, function()
-		self.currentNumber = self.currentNumber + 1
-		return self.currentNumber
+		self._currentNumber = self._currentNumber + 1
+		return self._currentNumber
 	end)
 end
 

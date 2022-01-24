@@ -1,55 +1,55 @@
-local PoolCat = require("luacat.poolCat.PoolCat")
+local PoolCat = require("LuaCat.PoolCat.PoolCat")
 
 ---@class PoolCatManager:Class
----@field poolDict table<string,PoolCat>
+---@field _poolDict table<string,PoolCat>
 local PoolCatManager = Class("PoolCatManager")
 
 function PoolCatManager:Init()
 	---@type table<string,PoolCat>
-	self.poolDict = {}
+	self._poolDict = {}
 end
 
 ---@param poolName string
 ---@param pool PoolCat
 ---@return PoolCat
 function PoolCatManager:AddPool(poolName, pool)
-	self.poolDict[poolName] = pool
+	self._poolDict[poolName] = pool
 	return pool
 end
 
 ---@param poolName string
 function PoolCatManager:RemovePool(poolName)
-	if self.poolDict[poolName] then
-		self.poolDict[poolName]:Destroy()
-		self.poolDict[poolName] = nil
+	if self._poolDict[poolName] then
+		self._poolDict[poolName]:Destroy()
+		self._poolDict[poolName] = nil
 	end
 end
 
 ---@param poolName string
 ---@return PoolCat
 function PoolCatManager:GetPool(poolName)
-	return self.poolDict[poolName]
+	return self._poolDict[poolName]
 end
 
 ---@param classType Class
 ---@return PoolCat
 function PoolCatManager:GetPoolByType(classType)
-	return self.poolDict[classType._className]
+	return self._poolDict[classType._className]
 end
 
 ---@param poolName Class
 ---@return boolean
 function PoolCatManager:IsContainsPool(poolName)
-	return self.poolDict[poolName] ~= nil
+	return self._poolDict[poolName] ~= nil
 end
 
 ---@param poolClassType Class
----@param ... @pool_construct_args
+---@param ... @poolConstructArgs
 ---@return PoolCat
 function PoolCatManager:GetOrAddPool(poolClassType, ...)
 	local poolConstructArgs = table.SafePack(...)
 	local poolName = poolConstructArgs[1]
-	local poolCat = table.GetOrAddDefault_Dict(self.poolDict, poolName, function()
+	local poolCat = table.GetOrAddDefault_Dict(self._poolDict, poolName, function()
 		return poolClassType.New(table.SafeUnpack(poolConstructArgs))
 	end)
 	return poolCat
@@ -62,20 +62,20 @@ function PoolCatManager:Despawn(despawnObject, poolName)
 		poolName = despawnObject._className
 	end
 
-	if self.poolDict[poolName] then
-		self.poolDict[poolName]:Despawn(despawnObject)
+	if self._poolDict[poolName] then
+		self._poolDict[poolName]:Despawn(despawnObject)
 	end
 end
 
 ---@param poolName string
 function PoolCatManager:DespawnAll(poolName)
-	if self.poolDict[poolName] ~= nil then
-		self.poolDict[poolName]:DespawnAll()
+	if self._poolDict[poolName] ~= nil then
+		self._poolDict[poolName]:DespawnAll()
 	end
 end
 
 function PoolCatManager:Trim()
-	for _, pool in pairs(self.poolDict) do
+	for _, pool in pairs(self._poolDict) do
 		pool:Trim()
 	end
 end
@@ -86,7 +86,7 @@ end
 ---@return any
 function PoolCatManager:Spawn(spawnClassType, poolName, onSpawnCallback)
 	local poolName = poolName or spawnClassType._className
-	local pool = table.GetOrAddDefault_Dict(self.poolDict, poolName, function()
+	local pool = table.GetOrAddDefault_Dict(self._poolDict, poolName, function()
 		return PoolCat.New(poolName, spawnClassType)
 	end)
 	local spawn = pool:Spawn(onSpawnCallback)
@@ -98,7 +98,7 @@ end
 ---@param onSpawnCallback fun(spawn:any)
 ---@return any
 function PoolCatManager:SpawnByFunc(spawnFunc, poolName, onSpawnCallback)
-	local pool = table.GetOrAddDefault_Dict(self.poolDict, poolName, function()
+	local pool = table.GetOrAddDefault_Dict(self._poolDict, poolName, function()
 		return PoolCat.New(poolName, nil, spawnFunc)
 	end)
 	local spawn = pool:Spawn(onSpawnCallback)

@@ -38,7 +38,7 @@ function GameLevelBase:IsFinished()
 	return self.is_finished
 end
 
-function GameLevelBase:__Destroy()
+function GameLevelBase:_Destroy()
 	GameLevelBase.super.__Destroy(self)
 end
 

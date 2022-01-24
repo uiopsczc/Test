@@ -18,7 +18,7 @@ function DurationEffectComponent:SetDuration(duration)
 	self.remainDuration = duration
 end
 
-function DurationEffectComponent:__Update(deltaTime, unscaledDeltaTime)
+function DurationEffectComponent:_Update(deltaTime, unscaledDeltaTime)
 	DurationEffectComponent.super.__Update(self, deltaTime, unscaledDeltaTime)
 	self.remainDuration = self.remainDuration - deltaTime
 	if self.remainDuration <= 0 then

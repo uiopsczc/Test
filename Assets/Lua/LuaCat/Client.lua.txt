@@ -133,7 +133,7 @@ function Client:GoTo(stageClassType, fadeHideDuration, onStageShowCallback)
 				self.stage:IEPreDestroy()
 				self:YieldBreak()
 			end)
-			self:RemoveChild(self.stage.key)
+			self:RemoveChild(self.stage._key)
 			self.stage = nil
 		end
 		self.stage = self:AddChild(nil, stageClassType)
@@ -150,14 +150,14 @@ end
 
 function Client:__Update(deltaTime, unscaledDeltaTime)
 	Client.super.__Update(self, deltaTime, unscaledDeltaTime)
-	self.timerManagerPluginComponent:Update(deltaTime, unscaledDeltaTime)
+	self._timerManagerPluginComponent:Update(deltaTime, unscaledDeltaTime)
 	self.eventDispatcher:Broadcast(GlobalEventNameConst.Update, deltaTime, unscaledDeltaTime)
 	self.timerManager:Update(deltaTime, unscaledDeltaTime)
 	self.timerManager:CoUpdate(deltaTime, unscaledDeltaTime)
 	LogUpdate()
 end
 
-function Client:__LateUpdate(deltaTime, unscaledDeltaTime)
+function Client:_LateUpdate(deltaTime, unscaledDeltaTime)
 	Client.super.__LateUpdate(self, deltaTime, unscaledDeltaTime)
 	self.timerManager:LateUpdate(deltaTime, unscaledDeltaTime)
 	self.eventDispatcher:Broadcast(GlobalEventNameConst.LateUpdate, deltaTime, unscaledDeltaTime)
@@ -165,7 +165,7 @@ function Client:__LateUpdate(deltaTime, unscaledDeltaTime)
 	self.timerManager:CoLateUpdate(deltaTime, unscaledDeltaTime)
 end
 
-function Client:__FixedUpdate(deltaTime, unscaledDeltaTime)
+function Client:_FixedUpdate(deltaTime, unscaledDeltaTime)
 	Client.super.__FixedUpdate(self, deltaTime, unscaledDeltaTime)
 	self.timerManager:FixedUpdate(deltaTime, unscaledDeltaTime)
 	self.eventDispatcher:Broadcast(GlobalEventNameConst.FixedUpdate, deltaTime, unscaledDeltaTime)

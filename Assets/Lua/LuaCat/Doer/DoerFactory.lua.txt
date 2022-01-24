@@ -1,25 +1,25 @@
 ---@class DoerFactory:TickObject
----@field defaultDoerClassPath string
+---@field _defaultDoerClassPath string
 local DoerFactory = Class("ObjectFactory", TickObject)
 
 function DoerFactory:Init()
 	DoerFactory.super.Init(self)
 	---@type table<string,table<string,DBase>>
-	self.idDict = {} -- key是id,sub_key是rid
+	self._idDict = {} -- key是id,sub_key是rid
 end
 
 function DoerFactory:GetClassPath(id)
-	return self.defaultDoerClassPath
+	return self._defaultDoerClassPath
 end
 
 -- 需子类重写
 ---@return DBase
-function DoerFactory:__NewDBase(idOrRid)
+function DoerFactory:_NewDBase(idOrRid)
 	return DBase.New(idOrRid)
 end
 
 ---@return Doer
-function DoerFactory:__NewDoer(id)
+function DoerFactory:_NewDoer(id)
 	local classPath = self:GetClassPath(id)
 	local classType = ClassLoadUtil.Load(classPath)
 	local doer = self:AddChildWithoutInit(nil, classType)
@@ -30,12 +30,12 @@ end
 function DoerFactory:GetDoerCount(id)
 	local count = 0
 	if not id then
-		for id, dbaseDict in pairs(self.idDict) do
+		for id, dbaseDict in pairs(self._idDict) do
 			count = count + table.Count(dbaseDict)
 		end
 	else
-		if self.idDict[id] then
-			count = table.Count(self.idDict[id])
+		if self._idDict[id] then
+			count = table.Count(self._idDict[id])
 		end
 	end
 	return count
@@ -47,15 +47,15 @@ end
 function DoerFactory:GetDoers(id)
 	local result = {}
 	if not id then
-		for id, dbaseDict in pairs(self.idDict) do
+		for id, dbaseDict in pairs(self._idDict) do
 			for rid, dbase in pairs(dbaseDict) do
-				table.insert(result, dbase.doer)
+				table.insert(result, dbase:GetDoer())
 			end
 		end
 	else
-		if self.idDict[id] then
-			for rid, dbase in pairs(self.idDict[id]) do
-				table.insert(result, dbase.doer)
+		if self._idDict[id] then
+			for rid, dbase in pairs(self._idDict[id]) do
+				table.insert(result, dbase:GetDoer())
 			end
 		end
 	end
@@ -67,14 +67,14 @@ end
 function DoerFactory:FindDoer(idOrRid)
 	local id = IdUtil.RidToId(idOrRid)
 	local isId = IdUtil.IsId(idOrRid)
-	if not table.IsNilOrEmpty(self.idDict[id]) then
-		for rid, dbase in pairs(self.idDict[id]) do
+	if not table.IsNilOrEmpty(self._idDict[id]) then
+		for rid, dbase in pairs(self._idDict[id]) do
 			if isId then
 				-- id的情况
-				return dbase.doer
+				return dbase:GetDoer()
 			else
 				if rid == idOrRid then
-					return dbase.doer
+					return dbase:GetDoer()
 				end
 			end
 		end
@@ -85,13 +85,13 @@ end
 ---@return Doer
 function DoerFactory:NewDoer(idOrRid)
 	local id = IdUtil.RidToId(idOrRid)
-	local doer = self:__NewDoer(id)
-	local dbase = self:__NewDBase(idOrRid)
+	local doer = self:_NewDoer(id)
+	local dbase = self:_NewDBase(idOrRid)
 	doer:SetDBase(dbase)
 	dbase:SetDoer(doer)
-	doer.factory = self
-	local rid = dbase.rid
-	local dbaseDict = table.GetOrAddDefault_Dict(self.idDict, id, function()
+	doer:SetFactory(self)
+	local rid = dbase:GetRid()
+	local dbaseDict = table.GetOrAddDefault_Dict(self._idDict, id, function()
 		return {}
 	end)
 	dbaseDict[rid] = dbase
@@ -107,11 +107,11 @@ end
 function DoerFactory:ReleaseDoer(doer)
 	local id = doer:GetId()
 	local rid = doer:GetRid()
-	if self.idDict[id] then
-		self.idDict[id][rid] = nil
+	if self._idDict[id] then
+		self._idDict[id][rid] = nil
 	end
 	doer:DoRelease()
-	self:RemoveChild(doer.key)
+	self:RemoveChild(doer._key)
 end
 
 return DoerFactory

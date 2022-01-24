@@ -34,7 +34,7 @@ function BuffManager:AddBuff(buffId, sourceUnit, forceDuration, argDict)
 		---@type Buff
 		local buff = self:AddChild(nil, Buff, self, buffId)
 		buff:CreateBuffCache(duration, sourceUnit, sourceSpell, argDict)
-		self.buffDict[buff.key] = buff
+		self.buffDict[buff._key] = buff
 		local buffList = table.GetOrAddDefault_Dict(self.buffListDict, buffId, function()
 			return {}
 		end)
@@ -66,9 +66,9 @@ end
 
 ---@param buff Buff
 function BuffManager:RemoveBuffByBuff(buff)
-	self.buffDict[buff.key] = nil
+	self.buffDict[buff._key] = nil
 	table.RemoveByValue_Array(self.buffListDict[buff.buffId], buff)
-	self:RemoveChild(buff.key)
+	self:RemoveChild(buff._key)
 end
 
 function BuffManager:HasBuff(buffId)
@@ -178,7 +178,7 @@ function BuffManager:RemoveControlBuff()
 	end
 end
 
-function BuffManager:__Destroy()
+function BuffManager:_Destroy()
 	BuffManager.super.__Destroy(self)
 	for _, buff_id in ipairs(table.Keys_Dict(self.buffDict)) do
 		self:RemoveBuff(buff_id)

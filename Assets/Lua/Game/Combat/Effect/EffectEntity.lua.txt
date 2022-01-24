@@ -11,7 +11,7 @@ function EffectEntity:Init(effectId, unit)
 end
 
 function EffectEntity:CreateGraphicComponent()
-	return self:AddComponent(nil, EffectGraphicComponent, global.client.combat.effectManager.resLoadComponent)
+	return self:AddComponent(nil, EffectGraphicComponent, global.client.combat.effectManager._resLoadComponent)
 end
 
 function EffectEntity:OnAllAssetsLoadDone()
@@ -27,11 +27,11 @@ function EffectEntity:InstantiateGameObject(prefab)
 end
 
 function EffectEntity:OnEffectReach()
-	self.parent:RemoveChild(self.key)
+	self._parent:RemoveChild(self._key)
 end
 
 function EffectEntity:OnNoRemainDuration()
-	self.parent:RemoveChild(self.key)
+	self._parent:RemoveChild(self._key)
 end
 
 function EffectEntity:ApplyToTransformComponent(position, eulerAngles, scale)
@@ -46,7 +46,7 @@ function EffectEntity:ApplyToTransformComponent(position, eulerAngles, scale)
 	end
 end
 
-function EffectEntity:__Destroy()
+function EffectEntity:_Destroy()
 	EffectEntity.super.__Destroy(self)
 end
 

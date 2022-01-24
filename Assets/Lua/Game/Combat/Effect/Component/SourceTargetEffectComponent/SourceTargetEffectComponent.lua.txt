@@ -45,7 +45,7 @@ function SourceTargetEffectComponent:OnEffectReach()
 	self.effectEntity:OnEffectReach()
 end
 
-function SourceTargetEffectComponent:__Update(deltaTime, unscaledDeltaTime)
+function SourceTargetEffectComponent:_Update(deltaTime, unscaledDeltaTime)
 	SourceTargetEffectComponent.super.__Update(self, deltaTime, unscaledDeltaTime)
 	self:Calculate(deltaTime)
 	self.effectEntity:ApplyToTransformComponent(self.currentPosition, self.currentEulerAngles)

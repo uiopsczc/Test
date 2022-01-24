@@ -19,7 +19,7 @@ function CombatStageBase:StartCombat(arg_dict)
 	self.combat:Start()
 end
 
-function CombatStageBase:__Destroy()
+function CombatStageBase:_Destroy()
 	CombatStageBase.super.__Destroy(self)
 	global.client.combat = nil
 

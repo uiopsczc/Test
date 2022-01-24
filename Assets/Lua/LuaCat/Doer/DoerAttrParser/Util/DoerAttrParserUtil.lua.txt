@@ -1,23 +1,23 @@
 DoerAttrParserUtil = {}
 
-function DoerAttrParserUtil.ConvertValue(value, type_string)
-	if string.EqualsIgnoreCase(type_string, DoerAttrParserConst.Type_String_List[1])
-			or string.EqualsIgnoreCase(type_string, DoerAttrParserConst.Type_String_List[2]) then
+function DoerAttrParserUtil.ConvertValue(value, typeString)
+	if string.EqualsIgnoreCase(typeString, DoerAttrParserConst.Type_String_List[1])
+		or string.EqualsIgnoreCase(typeString, DoerAttrParserConst.Type_String_List[2]) then
 		return ObjectUtil.ToNumberOrToDefault(value, 0)
 	end
-	if string.EqualsIgnoreCase(type_string, DoerAttrParserConst.Type_String_List[3]) then
+	if string.EqualsIgnoreCase(typeString, DoerAttrParserConst.Type_String_List[3]) then
 		return ObjectUtil.ToBooleanOrToDefault(value, 0)
 	end
-	if string.EqualsIgnoreCase(type_string, DoerAttrParserConst.Type_String_List[4]) then
+	if string.EqualsIgnoreCase(typeString, DoerAttrParserConst.Type_String_List[4]) then
 		return ObjectUtil.ToStringOrToDefault(value, "")
 	end
-	error2(string.format("没有处理该type_string[%s]的方法", type_string))
+	error2(string.format("没有处理该typeString[%s]的方法", typeString))
 end
 
 function DoerAttrParserUtil.GetTypeString(value)
-	local value_first_char = (value and string.len(value) > 1) and value[1] or ""
+	local valueFirstChar = (value and string.len(value) > 1) and value[1] or ""
 	for i = #DoerAttrParserConst.Type_String_List, 2, -1 do
-		if value_first_char == DoerAttrParserConst.Type_String_List[i] then
+		if valueFirstChar == DoerAttrParserConst.Type_String_List[i] then
 			return DoerAttrParserConst.Type_String_List[i]
 		end
 	end

@@ -26,7 +26,7 @@ function UIGuidePanelBase_BgItem:Show(isClickable, clickCallback, isVisible)
 	end
 	if isClickable then
 		---@type UIPanel
-		local parent = self.parent
+		local parent = self._parent
 		if clickCallback == nil then
 			parent:RegisterOnClick(self._button, function()
 				parent:Close()

@@ -25,15 +25,15 @@ function IdUtil.RidToId(rid)
 	end
 end
 
-function IdUtil.IsIdOrRidEquals(id_or_rid, id, rid)
-	if IdUtil.IsId(id_or_rid) then
-		if id_or_rid == id then
+function IdUtil.IsIdOrRidEquals(idOrRid, id, rid)
+	if IdUtil.IsId(idOrRid) then
+		if idOrRid == id then
 			return true
 		else
 			return false
 		end
 	else
-		if id_or_rid == rid then
+		if idOrRid == rid then
 			return true
 		else
 			return false

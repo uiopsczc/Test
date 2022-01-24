@@ -59,7 +59,7 @@ end
 
 ---@param uiBlood UIBlood
 function UIManager:RemoveUIBlood(uiBlood)
-	return self._uiBloodManager:RemoveChild(uiBlood.key)
+	return self._uiBloodManager:RemoveChild(uiBlood._key)
 end
 
 ----------------------------------------------------------------------

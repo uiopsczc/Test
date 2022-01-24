@@ -8,13 +8,13 @@ function HFSMComponent:Init(hfsm)
 end
 
 ---@param isPaused boolean
-function HFSMComponent:__SetIsPaused(isPaused)
+function HFSMComponent:_SetIsPaused(isPaused)
 	HFSMComponent.super.__SetIsPaused(self, isPaused)
 	self.hfsm:SetIsPaused(true, true)
 end
 
 ---@param isEnabled boolean
-function HFSMComponent:__SetIsEnabled(isEnabled)
+function HFSMComponent:_SetIsEnabled(isEnabled)
 	HFSMComponent.super.__SetIsEnabled(self, isEnabled)
 	self.hfsm:SetIsEnabled(true, true)
 end
@@ -34,17 +34,17 @@ function HFSMComponent:Update(deltaTime, unscaledDeltaTime)
 	self.hfsm:CheckDestroyed()
 end
 
-function HFSMComponent:__Update(deltaTime, unscaledDeltaTime)
+function HFSMComponent:_Update(deltaTime, unscaledDeltaTime)
 	HFSMComponent.super.__Update(self, deltaTime, unscaledDeltaTime)
 	self.hfsm:Update(deltaTime, unscaledDeltaTime)
 end
 
-function HFSMComponent:__FixedUpdate(deltaTime, unscaledDeltaTime)
+function HFSMComponent:_FixedUpdate(deltaTime, unscaledDeltaTime)
 	HFSMComponent.super.__FixedUpdate(self, deltaTime, unscaledDeltaTime)
 	self.hfsm:FixedUpdate(deltaTime, unscaledDeltaTime)
 end
 
-function HFSMComponent:__LateUpdate(deltaTime, unscaledDeltaTime)
+function HFSMComponent:_LateUpdate(deltaTime, unscaledDeltaTime)
 	HFSMComponent.super.__LateUpdate(self, deltaTime, unscaledDeltaTime)
 	self.hfsm:LateUpdate(deltaTime, unscaledDeltaTime)
 end

@@ -14,8 +14,8 @@ function NormalGameObjectPoolCat:InitParent(prefab, category)
 	NormalGameObjectPoolCat.super.InitParent(self, prefab, category)
 	local rootGameObject = CS.CsCat.GameObjectUtil.GetOrNewGameObject("Pools", nil)
 	---@type CS.UnityEngine.Transform
-	self.rootTransform = rootGameObject.transform
-	self.categoryTransform = self.rootTransform:GetOrNewGameObject(category).transform
+	self._rootTransform = rootGameObject.transform
+	self._categoryTransform = self._rootTransform:GetOrNewGameObject(category).transform
 end
 
 function NormalGameObjectPoolCat:Despawn(obj)
@@ -28,7 +28,7 @@ function NormalGameObjectPoolCat:Despawn(obj)
 	--  end
 	--end
 	clone:SetActive(false)
-	clone.transform:SetParent(self.categoryTransform)
+	clone.transform:SetParent(self._categoryTransform)
 	clone.transform:CopyFrom(self.prefab.transform)
 	CacheUtil.RemoveCache(clone)
 	NormalGameObjectPoolCat.super.Despawn(self, obj)

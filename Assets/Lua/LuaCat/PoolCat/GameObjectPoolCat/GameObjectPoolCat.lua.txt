@@ -1,4 +1,4 @@
-local UnityObjectPoolCat = require("luacat.poolCat.UnityObjectPoolCat")
+local UnityObjectPoolCat = require("LuaCat.PoolCat.UnityObjectPoolCat")
 ---@class GameObjectPoolCat:UnityObjectPoolCat
 local GameObjectPoolCat = Class("GameObjectPoolCat", UnityObjectPoolCat)
 

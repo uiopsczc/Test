@@ -1,9 +1,9 @@
-local TestData = require("luacat.gameData.data.TestData")
+local TestData = require("LuaCat.GameData.Data.TestData")
 ---@class GameData
 local GameData = Class("GameData")
 
-function GameData:Init(file_path)
-	self.file_path = file_path
+function GameData:Init(filePath)
+	self._filePath = filePath
 	-- 刚开始的默认数值
 	local orgData = {
 		testData = {
@@ -13,19 +13,19 @@ function GameData:Init(file_path)
 		dictUser = {},
 		dictTmpUser = {},
 	}
-	if CS.System.IO.File.Exists(file_path) then
-		local content = StdioUtil.ReadFile(file_path)
-		self.data = json:decode(content)
+	if CS.System.IO.File.Exists(filePath) then
+		local content = StdioUtil.ReadFile(filePath)
+		self._data = json:decode(content)
 	else
-		self.data = orgData
+		self._data = orgData
 	end
-	table.ApplyDiff(self.data, table.GetNotExist(self.data, orgData)) --将org_data中有，但self.data中没有的,应用到self.data中
+	table.ApplyDiff(self._data, table.GetNotExist(self._data, orgData)) --将orgData中有，但self._data中没有的,应用到self._data中
 end
 
 function GameData:Save()
 	self:SaveUser()
-	local content = json:encode(self.data)
-	StdioUtil.WriteFile(self.file_path, content)
+	local content = json:encode(self._data)
+	StdioUtil.WriteFile(self._filePath, content)
 end
 
 function GameData:SaveUser()
@@ -33,15 +33,15 @@ function GameData:SaveUser()
 	local dictTmpUser = {}
 	local user = global.client.user
 	user:DoSave(dictUser, dictTmpUser)
-	self.data.dictUser = dictUser
-	self.data.dictTmpUser = dictTmpUser
-	self.data.userId = user:GetId()
+	self._data.dictUser = dictUser
+	self._data.dictTmpUser = dictTmpUser
+	self._data.userId = user:GetId()
 end
 
 function GameData:RestoreUser()
-	local userId = self.data.userId
-	local dictUser = self.data.dictUser
-	local dictTmpUser = self.data.dictTmpUser
+	local userId = self._data.userId
+	local dictUser = self._data.dictUser
+	local dictTmpUser = self._data.dictTmpUser
 	---@type User
 	local user = global.client.userFactory:NewDoer(userId)
 	user:DoRestore(dictUser, dictTmpUser)

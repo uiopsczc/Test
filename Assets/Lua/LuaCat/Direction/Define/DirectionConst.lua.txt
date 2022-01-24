@@ -20,10 +20,10 @@ DirectionConst.Direction_Dict2_Func = function()
 	---@type table<number,table<number,DirectionInfo>>
 	local result = {}
 	for _, directionInfo in pairs(DirectionConst.Direction_Dict) do
-		local sub_dict = table.GetOrAddDefault_Dict(result, directionInfo.x, function()
+		local subDict = table.GetOrAddDefault_Dict(result, directionInfo._x, function()
 			return {}
 		end)
-		sub_dict[directionInfo.y] = directionInfo
+		subDict[directionInfo._y] = directionInfo
 	end
 	return result
 end

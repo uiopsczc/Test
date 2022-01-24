@@ -3,17 +3,17 @@ local A_HFSMState = Class("A_HFSMState", HFSMState)
 
 function A_HFSMState:Enter(...)
 	A_HFSMState.super.Enter(self, ...)
-	log("Enter A_HFSMState", self.key)
+	log("Enter A_HFSMState", self._key)
 end
 
 function A_HFSMState:__Update(deltaTime, unscaledDeltaTime)
 	A_HFSMState.super.__Update(self, deltaTime, unscaledDeltaTime)
-	log("Execute A_HFSMState", self.key)
+	log("Execute A_HFSMState", self._key)
 end
 
 function A_HFSMState:Exit(...)
 	A_HFSMState.super.Exit(self, ...)
-	log("Exit A_HFSMState", self.key)
+	log("Exit A_HFSMState", self._key)
 end
 
 return A_HFSMState

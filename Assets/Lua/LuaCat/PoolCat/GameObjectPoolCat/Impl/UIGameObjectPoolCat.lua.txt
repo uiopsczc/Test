@@ -6,7 +6,7 @@ local UIGameObjectPoolCat = Class("UIGameObjectPoolCat", GameObjectPoolCat)
 ---@param category string
 function UIGameObjectPoolCat:Init(poolName, prefab, category)
 	UIGameObjectPoolCat.super.Init(self, poolName, prefab, category)
-	self.prefabRectTransform = prefab:GetComponent(typeof(RectTransform))
+	self._prefabRectTransform = prefab:GetComponent(typeof(RectTransform))
 end
 
 ---@param prefab CS.UnityEngine.Object
@@ -15,8 +15,8 @@ function UIGameObjectPoolCat:InitParent(prefab, category)
 	UIGameObjectPoolCat.super.InitParent(self, prefab, category)
 	local rootGameObject = CS.CsCat.GameObjectUtil.GetOrNewGameObject("UIPools", nil)
 	---@type CS.UnityEngine.Transform
-	self.rootTransform = rootGameObject.transform
-	self.categoryTransform = self.rootTransform:GetOrNewGameObject(category).transform
+	self._rootTransform = rootGameObject.transform
+	self._categoryTransform = self._rootTransform:GetOrNewGameObject(category).transform
 end
 
 function UIGameObjectPoolCat:Despawn(obj)
@@ -29,8 +29,8 @@ function UIGameObjectPoolCat:Despawn(obj)
 	--  end
 	--end
 	clone:SetActive(false)
-	clone.transform:SetParent(self.categoryTransform)
-	clone:GetComponent(typeof(RectTransform)):CopyFrom(self.prefabRectTransform)
+	clone.transform:SetParent(self._categoryTransform)
+	clone:GetComponent(typeof(RectTransform)):CopyFrom(self._prefabRectTransform)
 	CacheUtil.RemoveCache(clone)
 	UIGameObjectPoolCat.super.Despawn(self, obj)
 end

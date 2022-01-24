@@ -10,8 +10,9 @@ end
 function Thing:GetPos()
 	return self:GetTmp("o_pos")
 end
-
----------------------OnXXX------------------------
+----------------------------------------------------------------------
+-- OnXXX相关
+----------------------------------------------------------------------
 function Thing:OnUpgrade(key)
 end
 
@@ -38,15 +39,9 @@ end
 function Thing:OnMove(scene, fromPos, trackList, type)
 
 end
-
-
-
----------------------GetXXX------------------------
-
----------------------SetXXX------------------------
-
-
------------------升级------------------------
+----------------------------------------------------------------------
+-- 升级相关
+----------------------------------------------------------------------
 function Thing:CheckUpgrade(key)
 	return self:OnCheckUpgrade(key)
 end
@@ -54,7 +49,9 @@ end
 function Thing:Upgrade(key)
 	return self:OnUpgrade(key)
 end
------------------------------------------------------------
+----------------------------------------------------------------------
+-- SetGet相关
+----------------------------------------------------------------------
 ---@param comparePos Vector2
 ---@param radius number
 function Thing:IsInAround(comparePos, radius)
