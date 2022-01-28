@@ -3,27 +3,27 @@ local DirectionConst = {}
 
 ---@type table<string,DirectionInfo>
 DirectionConst.Direction_Dict = {
-	leftBottom = DirectionInfo.New(-1, -1, "left_bottom"),
+	leftBottom = DirectionInfo.New(-1, -1, "leftBottom"),
 	bottom = DirectionInfo.New(0, -1, "bottom"),
-	rightBottom = DirectionInfo.New(1, -1, "right_bottom"),
+	rightBottom = DirectionInfo.New(1, -1, "rightBottom"),
 
 	left = DirectionInfo.New(-1, 0, "left"),
 	center = DirectionInfo.New(0, 0, "center"),
 	right = DirectionInfo.New(1, 0, "right"),
 
-	leftTop = DirectionInfo.New(-1, 1, "left_top"),
+	leftTop = DirectionInfo.New(-1, 1, "leftTop"),
 	top = DirectionInfo.New(0, 1, "top"),
-	rightTop = DirectionInfo.New(1, 1, "right_top"),
+	rightTop = DirectionInfo.New(1, 1, "rightTop"),
 }
 
 DirectionConst.Direction_Dict2_Func = function()
 	---@type table<number,table<number,DirectionInfo>>
 	local result = {}
 	for _, directionInfo in pairs(DirectionConst.Direction_Dict) do
-		local subDict = table.GetOrAddDefault_Dict(result, directionInfo._x, function()
+		local subDict = table.GetOrAddDefault_Dict(result, directionInfo:GetX(), function()
 			return {}
 		end)
-		subDict[directionInfo._y] = directionInfo
+		subDict[directionInfo:GetY()] = directionInfo
 	end
 	return result
 end

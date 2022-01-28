@@ -2,7 +2,9 @@
 ---@class AStarUtil
 local AStarUtil = {}
 
------------------------------------GridType相关--------------------------------
+----------------------------------------------------------------------
+-- GridType相关
+----------------------------------------------------------------------
 -- 是否有效障碍
 function AStarUtil.IsValidObstacleType(gridType)
 	return (gridType & 0xff) ~= AStarMapPathConst.Invalid_Obstacle_Types
@@ -55,7 +57,10 @@ function AStarUtil.IsNeighborBlock(p1X, p1Y, p2X, p2Y)
 	local y = math.abs(math.modf((p1Y - p2Y) / AStarMapPathConst.Client_View_Width_Grid_Count))
 	return x <= 1 and y <= 1
 end
------------------------------------InRange相关--------------------------------
+
+----------------------------------------------------------------------
+-- InRange相关
+----------------------------------------------------------------------
 ---@param rangeGrids number[][]
 function AStarUtil.IsInRangeX(rangeGrids, x)
 	if x < 1 or x > #rangeGrids then
@@ -79,7 +84,9 @@ function AStarUtil.IsInRange(rangeGrids, x, y)
 	end
 	return true
 end
------------------------------------Neighbor相关--------------------------------
+----------------------------------------------------------------------
+-- Neighbor相关
+----------------------------------------------------------------------
 ---@param basePoint Vector2
 ---@return Vector2[]
 function AStarUtil.GetNeighborList(basePoint)
@@ -157,7 +164,9 @@ function AStarUtil.GetOppositeNeighborList(o, p)
 	return list
 end
 
------------------------------------ViewingRange相关--------------------------------
+----------------------------------------------------------------------
+-- ViewingRange相关
+----------------------------------------------------------------------
 -- 获得leftBottom和rightTop的范围两边外延（AStarConst.Client_View_Width_Grid_Count / 2，AStarConst.Client_View_Height_Grid_Count / 2） 可见范围
 ---@param leftBottom Vector2
 ---@param rightTop Vector2
@@ -177,7 +186,9 @@ end
 function AStarUtil.IsInViewingRange(viewingRangeBasePoint, checkPoint)
 	return AStarUtil.GetViewingRange(viewingRangeBasePoint, viewingRangeBasePoint):IsInRange(checkPoint)
 end
---------------------------------------CanPass相关---------------------------------------
+----------------------------------------------------------------------
+-- CanPass相关
+----------------------------------------------------------------------
 -- 检测某个点是否可通过
 ---@param gridsOrAStarMapPath number[][]|AStarMapPath
 ---@param x number
@@ -185,11 +196,11 @@ end
 ---@param canPassObstacleTypes number[]
 ---@param canPassTerrainTypes number[]
 ---@param isCanOut boolean @是否允许在场景外
-function AStarUtil.CanPass(gridsOrAStarMapPath, x, y, canPassObstacleTypes, canPassTerrainTypes, isCanOut)
+function AStarUtil.IsCanPass(gridsOrAStarMapPath, x, y, canPassObstacleTypes, canPassTerrainTypes, isCanOut)
 	if IsInstanceOf(gridsOrAStarMapPath, "AStarMapPath") then
-		return AStarUtil.__CanPass2(gridsOrAStarMapPath, x, y, canPassObstacleTypes, canPassTerrainTypes, isCanOut)
+		return AStarUtil._CanPass2(gridsOrAStarMapPath, x, y, canPassObstacleTypes, canPassTerrainTypes, isCanOut)
 	else
-		return AStarUtil.__CanPass1(gridsOrAStarMapPath, x, y, canPassObstacleTypes, canPassTerrainTypes)
+		return AStarUtil._CanPass1(gridsOrAStarMapPath, x, y, canPassObstacleTypes, canPassTerrainTypes)
 	end
 end
 
@@ -198,7 +209,7 @@ end
 ---@param y number
 ---@param canPassObstacleTypes number[]
 ---@param canPassTerrainTypes number[]
-function AStarUtil.__CanPass1(grids, x, y, canPassObstacleTypes, canPassTerrainTypes)
+function AStarUtil._CanPass1(grids, x, y, canPassObstacleTypes, canPassTerrainTypes)
 	local gridType = grids[x][y]
 	if gridType then
 		local gridObstacleType = AStarUtil.GetObstacleType(gridType)
@@ -225,7 +236,7 @@ end
 ---@param canPassObstacleTypes number[]
 ---@param canPassTerrainTypes number[]
 ---@param isCanOut boolean
-function AStarUtil.__CanPass2(astarMapPath, x, y, canPassObstacleTypes, canPassTerrainTypes, isCanOut)
+function AStarUtil._CanPass2(astarMapPath, x, y, canPassObstacleTypes, canPassTerrainTypes, isCanOut)
 	if not AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), x, y) then
 		return isCanOut
 	end
@@ -234,7 +245,7 @@ function AStarUtil.__CanPass2(astarMapPath, x, y, canPassObstacleTypes, canPassT
 		-- 填充区域
 		return isCanOut
 	end
-	if not AStarUtil.CanPass(astarMapPath:GetFinalGrids(), x, y, canPassObstacleTypes, canPassTerrainTypes) then
+	if not AStarUtil.IsCanPass(astarMapPath:GetFinalGrids(), x, y, canPassObstacleTypes, canPassTerrainTypes) then
 		return false
 	end
 	return true
@@ -246,53 +257,53 @@ end
 ---@param canPassObstacleTypes number[]
 ---@param canPassTerrainTypes number[]
 ---@param isCanOut boolean @是否允许在场景外
-function AStarUtil.CanTrackListPass(astarMapPath, trackList, canPassObstacleTypes, canPassTerrainTypes, isCanOut)
+function AStarUtil.IsTrackListCanPass(astarMapPath, trackList, canPassObstacleTypes, canPassTerrainTypes, isCanOut)
 	if #trackList == 0 then
 		return true
 	end
 	local lp = trackList[1]
 	if #trackList == 1 then
-		return AStarUtil.CanPass(astarMapPath, lp.x, lp.y, canPassObstacleTypes, canPassTerrainTypes, isCanOut)
+		return AStarUtil.IsCanPass(astarMapPath, lp.x, lp.y, canPassObstacleTypes, canPassTerrainTypes, isCanOut)
 	end
 	for i = 2, #trackList do
 		local p = trackList[i]
-		if not AStarUtil.CanPass(astarMapPath, p.x, p.y, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
+		if not AStarUtil.IsCanPass(astarMapPath, p.x, p.y, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
 			return false
 		end
 		local directionInfo = DirectionConst.GetDirectionInfo(p.x - lp.x, p.y - lp.y)
-		if directionInfo == DirectionConst.GetDirectionInfo("left_top") then
+		if directionInfo == DirectionConst.GetDirectionInfo("leftTop") then
 			-- 左上角
-			if not AStarUtil.CanPass(astarMapPath, p.x + 1, p.y, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
+			if not AStarUtil.IsCanPass(astarMapPath, p.x + 1, p.y, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
 				return false
 			end
-			if not AStarUtil.CanPass(astarMapPath, p.x, p.y - 1, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
+			if not AStarUtil.IsCanPass(astarMapPath, p.x, p.y - 1, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
 				return false
 			end
 		end
 		if directionInfo == DirectionConst.GetDirectionInfo("rightTop") then
 			-- 右上角
-			if not AStarUtil.CanPass(astarMapPath, p.x - 1, p.y, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
+			if not AStarUtil.IsCanPass(astarMapPath, p.x - 1, p.y, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
 				return false
 			end
-			if not AStarUtil.CanPass(astarMapPath, p.x, p.y - 1, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
+			if not AStarUtil.IsCanPass(astarMapPath, p.x, p.y - 1, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
 				return false
 			end
 		end
 		if directionInfo == DirectionConst.GetDirectionInfo("rightBottom") then
 			-- 右下角
-			if not AStarUtil.CanPass(astarMapPath, p.x - 1, p.y, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
+			if not AStarUtil.IsCanPass(astarMapPath, p.x - 1, p.y, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
 				return false
 			end
-			if not AStarUtil.CanPass(astarMapPath, p.x, p.y + 1, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
+			if not AStarUtil.IsCanPass(astarMapPath, p.x, p.y + 1, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
 				return false
 			end
 		end
 		if directionInfo == DirectionConst.GetDirectionInfo("leftBottom") then
 			-- 左下角
-			if not AStarUtil.CanPass(astarMapPath, p.x + 1, p.y, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
+			if not AStarUtil.IsCanPass(astarMapPath, p.x + 1, p.y, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
 				return false
 			end
-			if not AStarUtil.CanPass(astarMapPath, p.x, p.y + 1, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
+			if not AStarUtil.IsCanPass(astarMapPath, p.x, p.y + 1, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
 				return false
 			end
 		end
@@ -308,17 +319,20 @@ end
 ---@param canPassObstacleTypes number[]
 ---@param canPassTerrainTypes number[]
 ---@param isCanOut boolean
-function AStarUtil.CanLinePass(astarMapPath, pointA, pointB, canPassObstacleTypes, canPassTerrainTypes, isCanOut)
+function AStarUtil.IsLineCanPass(astarMapPath, pointA, pointB, canPassObstacleTypes, canPassTerrainTypes, isCanOut)
 	if not isCanOut and (not AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), pointA.x, pointA.y) or not AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), pointB.x, pointB.y)) then
 		return false
 	end
 	local linePointList = AStarUtil.GetLinePointList(pointA, pointB)
-	if not AStarUtil.CanTrackListPass(astarMapPath, linePointList, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
+	if not AStarUtil.IsTrackListCanPass(astarMapPath, linePointList, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
 		return false
 	end
 	return true
 end
--------------------------------------AroundFreePoint相关-----------------------------------
+
+----------------------------------------------------------------------
+-- AroundFreePoint相关
+----------------------------------------------------------------------
 -- 获取P点四周为+-outCount的可以通过的点列表
 ---@param astarMapPath AStarMapPath
 ---@param basePoint Vector2
@@ -331,14 +345,14 @@ function AStarUtil.GetAroundFreePointList(astarMapPath, basePoint, outCount, can
 	local y
 	--log(basePoint.x,basePoint.y)
 	local field = AStarUtil.GetField(astarMapPath:GetFinalGrids()[basePoint.x][basePoint.y]) -- 所属区块值
-	local canPass = AStarUtil.CanPass(astarMapPath, basePoint.x, basePoint.y, canPassObstacleTypes, canPassTerrainTypes) -- 是否起始在障碍点
+	local canPass = AStarUtil.IsCanPass(astarMapPath, basePoint.x, basePoint.y, canPassObstacleTypes, canPassTerrainTypes) -- 是否起始在障碍点
 
 	y = basePoint.y - outCount -- 下边一行
 	if AStarUtil.IsInRangeY(astarMapPath:GetFinalGrids(), y) then
 		for x = basePoint.x - outCount, basePoint.x + outCount do
 			if AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), x, y)
 					and (not canPass or field == AStarUtil.GetField(astarMapPath:GetFinalGrids()[x][y]))
-					and AStarUtil.CanPass(astarMapPath, x, y, canPassObstacleTypes, canPassTerrainTypes) then
+					and AStarUtil.IsCanPass(astarMapPath, x, y, canPassObstacleTypes, canPassTerrainTypes) then
 				table.insert(list, Vector2(x, y))
 			end
 		end
@@ -349,7 +363,7 @@ function AStarUtil.GetAroundFreePointList(astarMapPath, basePoint, outCount, can
 		for y = basePoint.y - outCount, basePoint.y + outCount do
 			if AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), x, y)
 					and (not canPass or field == AStarUtil.GetField(astarMapPath:GetFinalGrids()[x][y]))
-					and AStarUtil.CanPass(astarMapPath, x, y, canPassObstacleTypes, canPassTerrainTypes) then
+					and AStarUtil.IsCanPass(astarMapPath, x, y, canPassObstacleTypes, canPassTerrainTypes) then
 				table.insert(list, Vector2(x, y))
 			end
 		end
@@ -360,7 +374,7 @@ function AStarUtil.GetAroundFreePointList(astarMapPath, basePoint, outCount, can
 		for x = basePoint.x + outCount, basePoint.x - outCount, -1 do
 			if AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), x, y)
 					and (not canPass or field == AStarUtil.GetField(astarMapPath:GetFinalGrids()[x][y]))
-					and AStarUtil.CanPass(astarMapPath, x, y, canPassObstacleTypes, canPassTerrainTypes) then
+					and AStarUtil.IsCanPass(astarMapPath, x, y, canPassObstacleTypes, canPassTerrainTypes) then
 				table.insert(list, Vector2(x, y))
 			end
 		end
@@ -371,7 +385,7 @@ function AStarUtil.GetAroundFreePointList(astarMapPath, basePoint, outCount, can
 		for y = basePoint.y + outCount, basePoint.y - outCount, -1 do
 			if AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), x, y)
 					and (not canPass or field == AStarUtil.GetField(astarMapPath:GetFinalGrids()[x][y]))
-					and AStarUtil.CanPass(astarMapPath, x, y, canPassObstacleTypes, canPassTerrainTypes) then
+					and AStarUtil.IsCanPass(astarMapPath, x, y, canPassObstacleTypes, canPassTerrainTypes) then
 				table.insert(list, Vector2(x, y))
 			end
 		end
@@ -390,13 +404,13 @@ end
 function AStarUtil.FindAroundFreePoint(astarMapPath, basePoint, outCount, exceptPointList, canPassObstacleTypes, canPassTerrainTypes, randomManager)
 	randomManager = randomManager or global.client.randomManager
 	if not outCount then
-		return AStarUtil.__FindAroundFreePoint(astarMapPath, basePoint, exceptPointList, canPassObstacleTypes, canPassTerrainTypes, randomManager)
+		return AStarUtil._FindAroundFreePoint(astarMapPath, basePoint, exceptPointList, canPassObstacleTypes, canPassTerrainTypes, randomManager)
 	end
 	if not AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), basePoint.x, basePoint.y) then
 		return nil
 	end
 	local list = {}
-	if AStarUtil.CanPass(astarMapPath, basePoint.x, basePoint.y, canPassObstacleTypes, canPassTerrainTypes) and (exceptPointList == nil or not table.ContainsValue(exceptPointList, basePoint)) then
+	if AStarUtil.IsCanPass(astarMapPath, basePoint.x, basePoint.y, canPassObstacleTypes, canPassTerrainTypes) and (exceptPointList == nil or not table.ContainsValue(exceptPointList, basePoint)) then
 		table.insert(list, basePoint)
 	end
 	local max = math.max(math.max(basePoint.x, astarMapPath:Width() - basePoint.x), math.max(basePoint.y, astarMapPath:Height() - basePoint.y))
@@ -421,12 +435,12 @@ end
 ---@param exceptPointList Vector2[]
 ---@param canPassObstacleTypes number[]
 ---@param canPassTerrainTypes number[]
-function AStarUtil.__FindAroundFreePoint(astarMapPath, basePoint, exceptPointList, canPassObstacleTypes, canPassTerrainTypes, randomManager)
+function AStarUtil._FindAroundFreePoint(astarMapPath, basePoint, exceptPointList, canPassObstacleTypes, canPassTerrainTypes, randomManager)
 	randomManager = randomManager or global.client.randomManager
 	if not AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), basePoint.x, basePoint.y) then
 		return nil
 	end
-	if AStarUtil.CanPass(astarMapPath, basePoint.x, basePoint.y, canPassObstacleTypes, canPassTerrainTypes) and (not exceptPointList or not table.ContainsValue(exceptPointList, basePoint)) then
+	if AStarUtil.IsCanPass(astarMapPath, basePoint.x, basePoint.y, canPassObstacleTypes, canPassTerrainTypes) and (not exceptPointList or not table.ContainsValue(exceptPointList, basePoint)) then
 		return basePoint
 	end
 	local max = math.max(math.max(basePoint.x, astarMapPath:Width() - basePoint.x), math.max(basePoint.y, astarMapPath:Height() - basePoint.y))
@@ -440,7 +454,10 @@ function AStarUtil.__FindAroundFreePoint(astarMapPath, basePoint, exceptPointLis
 		end
 	end
 end
--------------------------------------MostPassPoint-----------------------------------
+
+----------------------------------------------------------------------
+-- MostPassPoint相关
+----------------------------------------------------------------------
 ---@param astarMapPath AStarMapPath
 ---@param trackList Vector2[]
 ---@param canPassObstacleTypes number[]
@@ -451,46 +468,46 @@ function AStarUtil.GetMostPassPoint(astarMapPath, trackList, canPassObstacleType
 	local tp = lp
 	for i = 2, #trackList do
 		local p = trackList[i]
-		if not AStarUtil.CanPass(astarMapPath, p.x, p.y, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
+		if not AStarUtil.IsCanPass(astarMapPath, p.x, p.y, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
 			break
 		end
 		local directionInfo = DirectionConst.GetDirectionInfo(p.x - lp.x, p.y - lp.y)
-		if directionInfo == DirectionConst.GetDirectionInfo("left_top") then
+		if directionInfo == DirectionConst.GetDirectionInfo("leftTop") then
 			-- 左上角
-			if not AStarUtil.CanPass(astarMapPath, p.x + 1, p.y, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
+			if not AStarUtil.IsCanPass(astarMapPath, p.x + 1, p.y, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
 				break
 			end
-			if not AStarUtil.CanPass(astarMapPath, p.x, p.y - 1, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
+			if not AStarUtil.IsCanPass(astarMapPath, p.x, p.y - 1, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
 				break
 			end
 		end
 
 		if directionInfo == DirectionConst.GetDirectionInfo("rightTop") then
 			-- 右上角
-			if not AStarUtil.CanPass(astarMapPath, p.x - 1, p.y, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
+			if not AStarUtil.IsCanPass(astarMapPath, p.x - 1, p.y, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
 				break
 			end
-			if not AStarUtil.CanPass(astarMapPath, p.x, p.y - 1, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
+			if not AStarUtil.IsCanPass(astarMapPath, p.x, p.y - 1, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
 				break
 			end
 		end
 
 		if directionInfo == DirectionConst.GetDirectionInfo("rightBottom") then
 			-- 右下角
-			if not AStarUtil.CanPass(astarMapPath, p.x - 1, p.y, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
+			if not AStarUtil.IsCanPass(astarMapPath, p.x - 1, p.y, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
 				break
 			end
-			if not AStarUtil.CanPass(astarMapPath, p.x, p.y + 1, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
+			if not AStarUtil.IsCanPass(astarMapPath, p.x, p.y + 1, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
 				break
 			end
 		end
 
 		if directionInfo == DirectionConst.GetDirectionInfo("leftBottom") then
 			-- 左下角
-			if not AStarUtil.CanPass(astarMapPath, p.x + 1, p.y, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
+			if not AStarUtil.IsCanPass(astarMapPath, p.x + 1, p.y, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
 				break
 			end
-			if not AStarUtil.CanPass(astarMapPath, p.x, p.y + 1, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
+			if not AStarUtil.IsCanPass(astarMapPath, p.x, p.y + 1, canPassObstacleTypes, canPassTerrainTypes, isCanOut) then
 				break
 			end
 		end
@@ -515,14 +532,16 @@ function AStarUtil.GetMostLinePassPoint(astarMapPath, lp, tp, canPassObstacleTyp
 	return AStarUtil.GetMostPassPoint(astarMapPath, pointList, canPassObstacleTypes, canPassTerrainTypes, isCanOut)
 end
 
--------------------------------------RangeFreePoint-----------------------------------
+----------------------------------------------------------------------
+-- RangeFreePoint相关
+----------------------------------------------------------------------
 -- 获取range范围内的可以通过的格子列表
 function AStarUtil.GetRangeFreePointList(astarMapPath, x1, y1, x2, y2, exceptPointList, canPassObstacleTypes, canPassTerrainTypes)
 	local list = {}
 	for x = x1, x2 do
 		for y = y1, y2 do
 			if AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), x, y) then
-				local canPass = AStarUtil.CanPass(astarMapPath, x, y, canPassObstacleTypes, canPassTerrainTypes)
+				local canPass = AStarUtil.IsCanPass(astarMapPath, x, y, canPassObstacleTypes, canPassTerrainTypes)
 				if canPass then
 					local p = Vector2(x, y)
 					if not exceptPointList or not table.ContainsValue(exceptPointList, p) then
@@ -550,7 +569,9 @@ function AStarUtil.FindRangeFreePoint(astarMapPath, x1, y1, x2, y2, exceptPointL
 	return nil
 end
 
---------------------------------------------RandomMovePoint相关-------------------------------
+----------------------------------------------------------------------
+-- RandomMovePoint相关
+----------------------------------------------------------------------
 ---@param randomManager RandomManager
 function AStarUtil.GetRandomMovePoint(astarMapPath, basePoint, goalPoint, maxRadiusBetweenTargetPointAndGoalPoint, canPassObstacleTypes, canPassTerrainTypes, randomManager)
 	randomManager = randomManager or global.client.randomManager
@@ -567,7 +588,10 @@ function AStarUtil.GetRandomMovePoint(astarMapPath, basePoint, goalPoint, maxRad
 	end
 	return nil
 end
-------------------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------
+--
+----------------------------------------------------------------------
 -- 获取以centerPoint为中心，半径为radius的圆弧形格子列表
 function AStarUtil.GetArcPointList(centerPoint, radius)
 	local list = {}
@@ -968,7 +992,9 @@ function AStarUtil.IsInSector(pos, sectorCenterPos, sectorDir, sectorRadius, sec
 	return false
 end
 
--------------------------------------------GUI------------------------------
+----------------------------------------------------------------------
+-- GUI相关
+----------------------------------------------------------------------
 function AStarUtil.GUIShowPointList(left, bottom, right, top, pointList)
 	local offsetX = 220
 	local offsetY = 100
@@ -998,7 +1024,10 @@ function AStarUtil.GUIShowPointList(left, bottom, right, top, pointList)
 		end
 	end
 end
------------------------------------------NearestPoint------------------------------------
+
+----------------------------------------------------------------------
+-- NearestPoint相关
+----------------------------------------------------------------------
 -- 获取离a,b最近的点
 function AStarUtil.GetNearestPoint(astarMapPath, pointA, pointB, canPassObstacleTypes, canPassTerrainTypes)
 	local p = pointA
@@ -1014,8 +1043,8 @@ function AStarUtil.GetNearestNearbyPoint(astarMapPath, pointA, pointB, canPassOb
 	local dx = pointB.x > pointA.x and 1 or pointB.x < pointA.x and -1 or 0
 	local dy = pointB.y > pointA.y and 1 or pointB.y < pointA.y and -1 or 0
 
-	local min_distance = AStarUtil.GetMapDistance(pointA, pointB)
-	local min_point = pointA
+	local minDistance = AStarUtil.GetMapDistance(pointA, pointB)
+	local minPoint = pointA
 	local x
 	local y
 
@@ -1024,12 +1053,12 @@ function AStarUtil.GetNearestNearbyPoint(astarMapPath, pointA, pointB, canPassOb
 	local s1 = false
 	if AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), x, y) then
 		local p = Vector2(x, y)
-		if AStarUtil.CanPass(astarMapPath, x, y, canPassObstacleTypes, canPassTerrainTypes) then
+		if AStarUtil.IsCanPass(astarMapPath, x, y, canPassObstacleTypes, canPassTerrainTypes) then
 			s1 = true
 			local d = AStarUtil.GetMapDistance(p, pointB)
-			if d < min_distance then
-				min_point = p
-				min_distance = d
+			if d < minDistance then
+				minPoint = p
+				minDistance = d
 			end
 		end
 	end
@@ -1039,12 +1068,12 @@ function AStarUtil.GetNearestNearbyPoint(astarMapPath, pointA, pointB, canPassOb
 	local s2 = false
 	if AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), x, y) then
 		local p = Vector2(x, y)
-		if AStarUtil.CanPass(astarMapPath, x, y, canPassObstacleTypes, canPassTerrainTypes) then
+		if AStarUtil.IsCanPass(astarMapPath, x, y, canPassObstacleTypes, canPassTerrainTypes) then
 			s2 = true
 			local d = AStarUtil.GetMapDistance(p, pointB)
-			if d < min_distance then
-				min_point = p
-				min_distance = d
+			if d < minDistance then
+				minPoint = p
+				minDistance = d
 			end
 		end
 	end
@@ -1054,17 +1083,17 @@ function AStarUtil.GetNearestNearbyPoint(astarMapPath, pointA, pointB, canPassOb
 		y = pointA.y + dy
 		if AStarUtil.IsInRange(astarMapPath:GetFinalGrids(), x, y) then
 			local p = Vector2(x, y)
-			if AStarUtil.CanPass(astarMapPath, x, y, canPassObstacleTypes, canPassTerrainTypes) then
+			if AStarUtil.IsCanPass(astarMapPath, x, y, canPassObstacleTypes, canPassTerrainTypes) then
 				local d = AStarUtil.GetMapDistance(p, pointB)
-				if d < min_distance then
-					min_point = p
-					min_distance = d
+				if d < minDistance then
+					minPoint = p
+					minDistance = d
 				end
 			end
 		end
 	end
 
-	return min_point
+	return minPoint
 end
 
 return AStarUtil

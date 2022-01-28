@@ -1,13 +1,15 @@
 ---@class AStarNode
----@field parent AStarNode
+---@field _parent AStarNode
 local AStarNode = Class("AStarNode")
 function AStarNode:Init(x, y)
-	self.pos = Vector2(x, y)
-	self.g = 0 --当前消耗值
-	self.h = 0-- 预估还需的消耗值
-	self.f = 0-- 当前消耗值 + 预估还需的消耗值
+	self._pos = Vector2(x, y)
+	self._g = 0 --当前消耗值
+	self._h = 0-- 预估还需的消耗值
+	self._f = 0-- 当前消耗值 + 预估还需的消耗值
 end
 
+---@param a AStarNode
+---@param b AStarNode
 AStarNode.__eq = function(a, b)
 	if a == nil and b == nil then
 		return true
@@ -18,7 +20,46 @@ AStarNode.__eq = function(a, b)
 	if a ~= nil and b == nil then
 		return false
 	end
-	return a.pos.x == b.pos.x and a.pos.y == b.pos.y
+	return a:GetPos().x == b:GetPos().x and a:GetPos().y == b:GetPos().y
+end
+
+----------------------------------------------------------------------
+-- SetGet相关
+----------------------------------------------------------------------
+function AStarNode:GetPos()
+	return self._pos
+end
+
+function AStarNode:GetG()
+	return self._g
+end
+
+function AStarNode:GetH()
+	return self._h
+end
+
+function AStarNode:GetF()
+	return self._f
+end
+
+function AStarNode:SetG(g)
+	self._g = g
+end
+
+function AStarNode:SetH(h)
+	self._h = h
+end
+
+function AStarNode:SetF(f)
+	self._f = f
+end
+
+function AStarNode:SetParent(parent)
+	self._parent = parent
+end
+
+function AStarNode:GetParent()
+	return self._parent
 end
 
 return AStarNode

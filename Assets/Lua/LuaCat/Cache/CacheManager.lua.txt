@@ -3,26 +3,26 @@ local CacheManager = Class("CacheManager")
 
 function CacheManager:Init()
 	---@type table<string,Cache>
-	self.cacheDict = {}
+	self._cacheDict = {}
 end
 
 ---@return Cache
 function CacheManager:GetOrAddCache(key)
-	if self.cacheDict[key] == nil then
-		self.cacheDict[key] = Cache.New()
+	if self._cacheDict[key] == nil then
+		self._cacheDict[key] = Cache.New()
 	end
-	return self.cacheDict[key]
+	return self._cacheDict[key]
 end
 
 function CacheManager:Remove(key)
-	if self.cacheDict[key] then
-		self.cacheDict[key]:Clear()
+	if self._cacheDict[key] then
+		self._cacheDict[key]:Clear()
 	end
-	self.cacheDict[key] = nil
+	self._cacheDict[key] = nil
 end
 
 function CacheManager:IsContainsKey(key)
-	if self.cacheDict[key] ~= nil then
+	if self._cacheDict[key] ~= nil then
 		return true
 	end
 	return false

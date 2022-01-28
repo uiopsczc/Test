@@ -8,17 +8,17 @@ local AStarImpl = Class("AStarImpl", AStar)
 function AStarImpl:Init(astarMapPath, astarType, canPassObstacleTypes, canPassTerrainTypes)
 	AStarImpl.super.Init(self, astarType)
 	---@type AStarMapPath
-	self.astarMapPath = astarMapPath
-	self.canPassObstacleTypes = canPassObstacleTypes
-	self.canPassTerrainTypes = canPassTerrainTypes
-	self:SetRange(1, 1, self.astarMapPath:Height(), self.astarMapPath:Width())
+	self._astarMapPath = astarMapPath
+	self._canPassObstacleTypes = canPassObstacleTypes
+	self._canPassTerrainTypes = canPassTerrainTypes
+	self:SetRange(1, 1, self._astarMapPath:Height(), self._astarMapPath:Width())
 end
 
 ---@param x number
 ---@param y number
 ---@return boolean
 function AStarImpl:CanPass(x, y)
-	if not AStarUtil.CanPass(self.astarMapPath:GetFinalGrids(), x, y, self.canPassObstacleTypes, self.canPassTerrainTypes) then
+	if not AStarUtil.IsCanPass(self._astarMapPath:GetFinalGrids(), x, y, self._canPassObstacleTypes, self._canPassTerrainTypes) then
 		return false
 	end
 	return true

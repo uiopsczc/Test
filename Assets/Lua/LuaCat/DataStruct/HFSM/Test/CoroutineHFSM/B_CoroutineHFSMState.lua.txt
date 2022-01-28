@@ -9,8 +9,8 @@ function B_CoroutineHFSMState:IEEnter(...)
 	self:YieldBreak()
 end
 
-function B_CoroutineHFSMState:__Update(deltaTime, unscaledDeltaTime)
-	B_CoroutineHFSMState.super.__Update(self, deltaTime, unscaledDeltaTime)
+function B_CoroutineHFSMState:_Update(deltaTime, unscaledDeltaTime)
+	B_CoroutineHFSMState.super._Update(self, deltaTime, unscaledDeltaTime)
 	log("Execute B_CoroutineHFSMState", self._key)
 end
 

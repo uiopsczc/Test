@@ -1,5 +1,5 @@
-local A_CoroutineHFSMState = require("luacat.dataStruct.hfsm.test.CoroutineHFSM.A_CoroutineHFSMState")
-local B_CoroutineHFSMState = require("luacat.dataStruct.hfsm.test.CoroutineHFSM.B_CoroutineHFSMState")
+local A_CoroutineHFSMState = require("LuaCat.DataStruct.HFSM.Test.CoroutineHFSM.A_CoroutineHFSMState")
+local B_CoroutineHFSMState = require("LuaCat.DataStruct.HFSM.Test.CoroutineHFSM.B_CoroutineHFSMState")
 
 ----@class TestCoroutineHFSM:CoroutineHFSM
 local TestCoroutineHFSM = Class("TestCoroutineHFSM", CoroutineHFSM)

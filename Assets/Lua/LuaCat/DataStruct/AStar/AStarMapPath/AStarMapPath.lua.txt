@@ -4,43 +4,43 @@ local AStarMapPath = Class("AStarMapPath")
 ---@param grids number[][]
 function AStarMapPath:Init(grids)
 	---@type number[][]
-	self.grids = grids
+	self._grids = grids
 	---@type number[][]
-	self.projectGrids = table.InitArrays(self:Height())
+	self._projectGrids = table.InitArrays(self:Height())
 end
 
 function AStarMapPath:GetFinalGrids()
-	if not self.finalGrids then
+	if not self._finalGrids then
 		self:UpdateFinalGrids()
 	end
-	return self.finalGrids
+	return self._finalGrids
 end
 
 function AStarMapPath:UpdateFinalGrids()
-	self.finalGrids = table.InitArrays(self:Height())
-	for i = 1, #self.grids do
-		for j = 1, #self.grids[1] do
-			local gridType = self.grids[i][j]
-			local projectGridType = self.projectGrids[i][j]
+	self._finalGrids = table.InitArrays(self:Height())
+	for i = 1, #self._grids do
+		for j = 1, #self._grids[1] do
+			local gridType = self._grids[i][j]
+			local projectGridType = self._projectGrids[i][j]
 			if not projectGridType or projectGridType == 0 then
 				--没有project_grid_type，则用grid_type
-				self.finalGrids[i][j] = gridType
+				self._finalGrids[i][j] = gridType
 			else
 				local field = AStarUtil.GetField(gridType) --用grid_type的field
 				local terrainType = (projectGridType and AStarUtil.GetTerrainType(projectGridType) ~= 0) and AStarUtil.GetTerrainType(projectGridType) or AStarUtil.GetTerrainType(gridType) --覆盖关系
 				local obstacleType = (projectGridType and AStarUtil.GetObstacleType(projectGridType) ~= 0) and AStarUtil.GetObstacleType(projectGridType) or AStarUtil.GetObstacleType(gridType) --覆盖关系
-				self.finalGrids[i][j] = AStarUtil.ToGridType(field, terrainType, obstacleType)
+				self._finalGrids[i][j] = AStarUtil.ToGridType(field, terrainType, obstacleType)
 			end
 		end
 	end
 end
 
 function AStarMapPath:Width()
-	return not self.grids and 0 or #self.grids[1]
+	return not self._grids and 0 or #self._grids[1]
 end
 
 function AStarMapPath:Height()
-	return not self.grids and 0 or #self.grids
+	return not self._grids and 0 or #self._grids
 end
 
 --先对角线查找，再直角查找
@@ -102,10 +102,9 @@ function AStarMapPath:GetNearestPoint(pointA, pointB, canPassObstacleTypes, canP
 	return AStarUtil.GetNearestPoint(self, pointA, pointB, canPassObstacleTypes, canPassTerrainTypes)
 end
 
----@param track_list Vector2[]
+
 ---@param canPassObstacleTypes number[]
 ---@param canPassTerrainTypes number[]
----@param can_pass boolean
 function AStarMapPath:GetRandomMovePoint(basePoint, goalPoint, maxRadiusBetweenTargetPointAndGoalPoint, canPassObstacleTypes, canPassTerrainTypes, randomManager)
 	return AStarUtil.GetRandomMovePoint(self, basePoint, goalPoint, maxRadiusBetweenTargetPointAndGoalPoint, canPassObstacleTypes, canPassTerrainTypes, randomManager)
 end
@@ -119,24 +118,24 @@ function AStarMapPath:FindRangeFreePoint(x1, y1, x2, y2, exceptPointList, canPas
 	return AStarUtil.FindRangeFreePoint(self, x1, y1, x2, y2, exceptPointList, canPassObstacleTypes, canPassTerrainTypes, randomManager)
 end
 -- 检测某个点是否可通过
-function AStarMapPath:CanPass(x, y, canPassObstacleTypes, canPassTerrainTypes, canOut)
-	return AStarUtil.CanPass(self, x, y, canPassObstacleTypes, canPassTerrainTypes, canOut)
+function AStarMapPath:IsCanPass(x, y, canPassObstacleTypes, canPassTerrainTypes, canOut)
+	return AStarUtil.IsCanPass(self, x, y, canPassObstacleTypes, canPassTerrainTypes, canOut)
 end
 -- 检测轨迹是否可通过
-function AStarMapPath:CanTrackListPass(track_list, canPassObstacleTypes, canPassTerrainTypes, canOut)
-	return AStarUtil.CanTrackListPass(self, track_list, canPassObstacleTypes, canPassTerrainTypes, canOut)
+function AStarMapPath:IsTrackListCanPass(track_list, canPassObstacleTypes, canPassTerrainTypes, canOut)
+	return AStarUtil.IsTrackListCanPass(self, track_list, canPassObstacleTypes, canPassTerrainTypes, canOut)
 end
 -- 检测两点间直线是否可通过
-function AStarMapPath:CanLinePass(pointA, pointB, canPassObstacleTypes, canPassTerrainTypes, canOut)
-	return AStarUtil.CanLinePass(self, pointA, pointB, canPassObstacleTypes, canPassTerrainTypes, canOut)
+function AStarMapPath:IsLineCanPass(pointA, pointB, canPassObstacleTypes, canPassTerrainTypes, canOut)
+	return AStarUtil.IsLineCanPass(self, pointA, pointB, canPassObstacleTypes, canPassTerrainTypes, canOut)
 end
 
 -- 是否有效地图坐标（不含填充区域）
 function AStarMapPath:IsValidPoint(x, y)
-	if not AStarUtil.IsInRange(self.grids, x, y) then
+	if not AStarUtil.IsInRange(self._grids, x, y) then
 		return false
 	end
-	return AStarUtil.IsValidObstacleType(self.grids[x][y])
+	return AStarUtil.IsValidObstacleType(self._grids[x][y])
 end
 
 return AStarMapPath

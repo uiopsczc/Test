@@ -3,14 +3,14 @@ local AnimatorComp = Class("AnimatorComp")
 
 function AnimatorComp:Init()
 	---@type table<CS.UnityEngine.Animator,table<string,AnimatorParameterInfo>>
-	self.animatorsParameterInfoDict = {}
+	self._animatorsParameterInfoDict = {}
 	---@type string
-	self.curAnimationName = nil
+	self._curAnimationName = nil
 end
 
 function AnimatorComp:Destroy()
-	self.animatorsParameterInfoDict = {}
-	self.curAnimationName = nil
+	self._animatorsParameterInfoDict = {}
+	self._curAnimationName = nil
 end
 
 function AnimatorComp:OnBuild()
@@ -32,20 +32,20 @@ function AnimatorComp:SaveAnimator(animator)
 		local parameter = parameters[i]
 		animatorParameterInfoDict[parameter.name] = AnimatorParameterInfo.New(animator, parameter)
 	end
-	self.animatorsParameterInfoDict[animator] = animatorParameterInfoDict
+	self._animatorsParameterInfoDict[animator] = animatorParameterInfoDict
 end
 
 function AnimatorComp:PlayAnimation(animationName, parameterValue, speed)
-	if self.curAnimationName == AnimationNameConst.die then
+	if self._curAnimationName == AnimationNameConst.die then
 		return
 	end
 	local isChanged = false
-	for animator, animatorParameterInfoDict in pairs(self.animatorsParameterInfoDict) do
+	for animator, animatorParameterInfoDict in pairs(self._animatorsParameterInfoDict) do
 		-- 停掉上一个动画
-		if self.curAnimationName
-			and animatorParameterInfoDict[self.curAnimationName]
-			and animatorParameterInfoDict[self.curAnimationName].animatorControllerParameterType == CS.UnityEngine.AnimatorControllerParameterType.Bool then
-			animatorParameterInfoDict[self.curAnimationName]:SetValue(false)
+		if self._curAnimationName
+			and animatorParameterInfoDict[self._curAnimationName]
+			and animatorParameterInfoDict[self._curAnimationName]:GetAnimatorControllerParameterType() == CS.UnityEngine.AnimatorControllerParameterType.Bool then
+			animatorParameterInfoDict[self._curAnimationName]:SetValue(false)
 		end
 		-- 设置更改的动画
 		if animatorParameterInfoDict[animationName] then
@@ -55,7 +55,7 @@ function AnimatorComp:PlayAnimation(animationName, parameterValue, speed)
 		end
 	end
 	if isChanged then
-		self.curAnimationName = animationName
+		self._curAnimationName = animationName
 	end
 end
 

@@ -1,6 +1,6 @@
-local A_HFSMState = require("luacat.dataStruct.hfsm.test.HFSM.A_HFSMState")
-local B_HFSMState = require("luacat.dataStruct.hfsm.test.HFSM.B_HFSMState")
-local TestSubHFSM111 = require("luacat.dataStruct.hfsm.test.HFSM.TestSubHFSM111")
+local A_HFSMState = require("LuaCat.DataStruct.HFSM.Test.HFSM.A_HFSMState")
+local B_HFSMState = require("LuaCat.DataStruct.HFSM.Test.HFSM.B_HFSMState")
+local TestSubHFSM111 = require("LuaCat.DataStruct.HFSM.Test.HFSM.TestSubHFSM111")
 ----@class TestHFSM11:HFSM
 local TestSubHFSM11 = Class("TestSubHFSM11", HFSM)
 

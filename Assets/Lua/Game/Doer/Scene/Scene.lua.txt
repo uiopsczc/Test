@@ -142,7 +142,7 @@ function Scene:ClearProjectGrids(baseOnParentPos, childScene)
 					local py = self:ToParentY(baseOnParentPos, offsetPos, y)
 					if mapPath:IsValidPoint(px, py) then
 						-- 父场景无效区域不投影
-						mapPath.projectGrids[px][py] = 0
+						mapPath._projectGrids[px][py] = 0
 					end
 				end
 			end
@@ -157,7 +157,7 @@ end
 function Scene:SetProjectGrids(baseOnParentPos, childScene)
 	self:CheckParentCall()
 	local mapPath = self:GetMapPath()
-	if mapPath == nil or mapPath.grids == nil then
+	if mapPath == nil or mapPath._grids == nil then
 		return
 	end
 	local projectGrids
@@ -177,7 +177,7 @@ function Scene:SetProjectGrids(baseOnParentPos, childScene)
 					local py = self:ToParentY(baseOnParentPos, offsetPos, y)
 					if mapPath:IsValidPoint(px, py) then
 						-- 父场景无效区域不投影
-						mapPath.projectGrids[px][py] = v
+						mapPath._projectGrids[px][py] = v
 					end
 				end
 			end
@@ -189,12 +189,12 @@ end
 function Scene:ClearAllProjectGrids()
 	self:CheckParentCall()
 	local mapPath = self:GetMapPath()
-	if mapPath == nil or mapPath.projectGrids == nil then
+	if mapPath == nil or mapPath._projectGrids == nil then
 		return
 	end
-	for x = 1, #mapPath.projectGrids do
-		for y = 1, #mapPath.projectGrids[x] do
-			mapPath.projectGrids[x][y] = 0
+	for x = 1, #mapPath._projectGrids do
+		for y = 1, #mapPath._projectGrids[x] do
+			mapPath._projectGrids[x][y] = 0
 		end
 	end
 end
@@ -768,8 +768,8 @@ end
 ---@param toTopParentScene Scene
 ---@return AStarRange
 function Scene:ToParentRange(range, toTopParentScene)
-	local leftBottom = self:ToParentPos(Vector2.New(range.leftBottomX, range.leftBottomY), toTopParentScene)
-	local rightTop = self:ToParentPos(Vector2.New(range.rightTopX, range.rightTopY), toTopParentScene)
+	local leftBottom = self:ToParentPos(Vector2.New(range._leftBottomX, range._leftBottomY), toTopParentScene)
+	local rightTop = self:ToParentPos(Vector2.New(range._rightTopX, range._rightTopY), toTopParentScene)
 	return AStarRange.New(leftBottom.x, leftBottom.y, rightTop.x, rightTop.y)
 end
 
@@ -830,8 +830,8 @@ end
 ---@return AStarRange
 function Scene:FromParentRange(range)
 	if self:IsChildScene() then
-		local leftBottom = self:FromParentPos(Vector2.New(range.leftBottomX, range.leftBottomY))
-		local rightTop = self:FromParentPos(Vector2.New(range.rightTopX, range.rightTopY))
+		local leftBottom = self:FromParentPos(Vector2.New(range._leftBottomX, range._leftBottomY))
+		local rightTop = self:FromParentPos(Vector2.New(range._rightTopX, range._rightTopY))
 		return AStarRange.New(leftBottom.x, leftBottom.y, rightTop.x, rightTop.y)
 	else
 		return range
@@ -863,7 +863,7 @@ function Scene:GetRandomPos(canPassObstacleTypes, canPassTerrainTypes, randomMan
 	if canPassObstacleTypes ~= nil or canPassTerrainTypes ~= nil then
 		canPassObstacleTypes = canPassObstacleTypes or AStarMapPathConst.Air_Can_Pass_Obstacle_Types
 		canPassTerrainTypes = canPassTerrainTypes or AStarMapPathConst.Air_Can_Pass_Terrain_Types
-		result = AStarUtil.__FindAroundFreePoint(self:GetMapPath(), result, nil, canPassObstacleTypes,
+		result = AStarUtil._FindAroundFreePoint(self:GetMapPath(), result, nil, canPassObstacleTypes,
 			canPassTerrainTypes, randomManager)
 	end
 	return result

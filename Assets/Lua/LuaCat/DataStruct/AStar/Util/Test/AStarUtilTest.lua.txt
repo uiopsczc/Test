@@ -1,14 +1,14 @@
 ---@class AStarUtilTest
 local AStarUtilTest = {}
 
-local __grids = {
+local _grids = {
 	{ 1, 1, 3, 1, 1, 1 },
 	{ 3, 1, 1, 1, 3, 1 },
 	{ 3, 1, 1, 3, 1, 1 },
 	{ 1, 1, 1, 1, 3, 1 },
 	{ 1, 1, 1, 1, 1, 1 },
 }
-local grids = table.ToLeftBottomBaseArrays(__grids)
+local grids = table.ToLeftBottomBaseArrays(_grids)
 
 function AStarUtilTest.Test_GetArcPointList()
 	local centerPoint = Vector2.zero
@@ -142,11 +142,11 @@ function AStarUtilTest.Test_GetViewingRange()
 end
 
 function AStarUtilTest.Test_CanPass()
-	log(AStarUtil.CanPass(grids, 2, 2, AStarMapPathConst.Critter_Can_Pass_Obstacle_Types, AStarMapPathConst.User_Can_Pass_Terrain_Types))
+	log(AStarUtil.IsCanPass(grids, 2, 2, AStarMapPathConst.Critter_Can_Pass_Obstacle_Types, AStarMapPathConst.User_Can_Pass_Terrain_Types))
 end
 
 function AStarUtilTest.Test_CanTrackListPass()
-	log(AStarUtil.CanTrackListPass(AStarMapPath.New(grids), {
+	log(AStarUtil.IsTrackListCanPass(AStarMapPath.New(grids), {
 		Vector2(1, 1),
 		Vector2(2, 2),
 		Vector2(3, 3),
@@ -155,7 +155,7 @@ function AStarUtilTest.Test_CanTrackListPass()
 end
 
 function AStarUtilTest.Test_CanLinePass()
-	log(AStarUtil.CanLinePass(AStarMapPath.New(grids), Vector2(1, 1), Vector2(3, 3), AStarMapPathConst.Critter_Can_Pass_Obstacle_Types, AStarMapPathConst.User_Can_Pass_Terrain_Types))
+	log(AStarUtil.IsLineCanPass(AStarMapPath.New(grids), Vector2(1, 1), Vector2(3, 3), AStarMapPathConst.Critter_Can_Pass_Obstacle_Types, AStarMapPathConst.User_Can_Pass_Terrain_Types))
 end
 
 function AStarUtilTest.Test_GetAroundFreePointList()

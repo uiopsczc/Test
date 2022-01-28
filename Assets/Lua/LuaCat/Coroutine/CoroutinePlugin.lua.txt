@@ -3,31 +3,31 @@ local CoroutinePlugin = Class("CoroutinePlugin")
 
 function CoroutinePlugin:Init(timerManager)
 	---@type table<string,thread>
-	self.coroutineDict = {}
+	self._coroutineDict = {}
 	---@type IdPool
-	self.idPool = IdPool.New()
-	self.timerManager = timerManager
+	self._idPool = IdPool.New()
+	self._timerManager = timerManager
 end
 
 function CoroutinePlugin:StartCoroutine(key, func, ...)
 	if not key then
-		key = tostring(self.idPool:Get())
+		key = tostring(self._idPool:Get())
 	end
 	-- 如果有的话，先停再启动
-	if self.coroutineDict[key] then
-		Coroutine.Stop(self.coroutineDict[key])
-		self.coroutineDict[key] = nil
+	if self._coroutineDict[key] then
+		Coroutine.Stop(self._coroutineDict[key])
+		self._coroutineDict[key] = nil
 	end
 	local co = Coroutine.Start(func, ...)
-	self.coroutineDict[key] = co
+	self._coroutineDict[key] = co
 end
 
 function CoroutinePlugin:StopCoroutine(coOrKey)
 	local key
 	if IsThread(coOrKey) then
-		local _co = coOrKey
-		for coKey, co in pairs(self.coroutineDict) do
-			if _co == co then
+		local curCo = coOrKey
+		for coKey, co in pairs(self._coroutineDict) do
+			if curCo == co then
 				key = coKey
 				break
 			end
@@ -35,52 +35,52 @@ function CoroutinePlugin:StopCoroutine(coOrKey)
 	else
 		key = coOrKey
 	end
-	local co = self.coroutineDict[key]
+	local co = self._coroutineDict[key]
 	Coroutine.Stop(co)
-	self.coroutineDict[key] = nil
-	self.idPool:Despawn(key)
+	self._coroutineDict[key] = nil
+	self._idPool:Despawn(key)
 end
 
 function CoroutinePlugin:SetIsPaused(isPaused)
-	for _, co in pairs(self.coroutineDict) do
+	for _, co in pairs(self._coroutineDict) do
 		Coroutine.SetIsPaused(co, isPaused)
 	end
 end
 
 function CoroutinePlugin:StopAllCoroutines()
-	for _, co in pairs(self.coroutineDict) do
+	for _, co in pairs(self._coroutineDict) do
 		Coroutine.Stop(co)
 	end
-	self.coroutineDict = {}
-	self.idPool:DespawnAll()
+	self._coroutineDict = {}
+	self._idPool:DespawnAll()
 end
 
 function CoroutinePlugin:WaitForFixedUpdate()
-	return Coroutine.WaitForFixedUpdate(self.timerManager)
+	return Coroutine.WaitForFixedUpdate(self._timerManager)
 end
 
 function CoroutinePlugin:WaitForFrames(frames)
-	return Coroutine.WaitForFrames(frames, self.timerManager)
+	return Coroutine.WaitForFrames(frames, self._timerManager)
 end
 
 function CoroutinePlugin:WaitForSeconds(seconds)
-	return Coroutine.WaitForSeconds(seconds, self.timerManager)
+	return Coroutine.WaitForSeconds(seconds, self._timerManager)
 end
 
 function CoroutinePlugin:WaitForAsyncOp(asyncOperation, callback)
-	return Coroutine.WaitForAsyncOp(asyncOperation, callback, self.timerManager)
+	return Coroutine.WaitForAsyncOp(asyncOperation, callback, self._timerManager)
 end
 
 function CoroutinePlugin:WaitUntil(func, ...)
-	return Coroutine.WaitUntil(self.timerManager, func, ...)
+	return Coroutine.WaitUntil(self._timerManager, func, ...)
 end
 
 function CoroutinePlugin:WaitWhile(func, ...)
-	return Coroutine.WaitWhile(self.timerManager, func, ...)
+	return Coroutine.WaitWhile(self._timerManager, func, ...)
 end
 
 function CoroutinePlugin:WaitForEndOfFrame()
-	return Coroutine.WaitForEndOfFrame(self.timerManager)
+	return Coroutine.WaitForEndOfFrame(self._timerManager)
 end
 
 function CoroutinePlugin:YieldBreak(...)

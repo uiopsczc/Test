@@ -4,38 +4,38 @@ local AStar = Class("AStar")
 function AStar:Init(astarType)
 	self:SetAStarType(astarType)
 	---@type AStarNode[]
-	self.openList = {} -- 开放列表,排序
-	self.openDict = {} -- 开放列表,不排序，查找方便
+	self._openList = {} -- 开放列表,排序
+	self._openDict = {} -- 开放列表,不排序，查找方便
 	---@type AStarNode[]
-	self.closedDict = {} -- 关闭列表
+	self._closedDict = {} -- 关闭列表
 end
 
 function AStar:SetAStarType(astarType)
-	self.astarType = astarType or AStarType.Fast
+	self._astarType = astarType or AStarType.Fast
 end
 
 function AStar:SetRange(left, bottom, right, top)
-	self.left = math.min(left, right)
-	self.bottom = math.min(bottom, top)
-	self.right = math.max(left, right)
-	self.top = math.max(bottom, top)
-	self.elementCount = (math.abs(self.left - self.right) + 1) * (math.abs(self.top - self.bottom) + 1)
+	self._left = math.min(left, right)
+	self._bottom = math.min(bottom, top)
+	self._right = math.max(left, right)
+	self._top = math.max(bottom, top)
+	self._elementCount = (math.abs(self._left - self._right) + 1) * (math.abs(self._top - self._bottom) + 1)
 end
 
 function AStar:GetIndex(x, y)
-	return y * self.elementCount + x
+	return y * self._elementCount + x
 end
 
 function AStar:GetXY(index)
-	local y = math.modf(index / self.elementCount)
-	local x = index - y * self.elementCount
+	local y = math.modf(index / self._elementCount)
+	local x = index - y * self._elementCount
 	return x, y
 end
 
 function AStar:Reset()
-	self.openList = {}
-	self.openDict = {}
-	self.closedDict = {}
+	self._openList = {}
+	self._openDict = {}
+	self._closedDict = {}
 end
 
 ---@return Vector2[]
@@ -43,72 +43,72 @@ end
 function AStar:Solve(node)
 	---@type Vector2[]
 	local result = {}
-	table.insert(result, node.pos)
-	while node.parent do
-		table.insert(result, node.parent.pos)
-		node = node.parent
+	table.insert(result, node:GetPos())
+	while node:GetParent() do
+		table.insert(result, node:GetParent():GetPos())
+		node = node:GetParent()
 	end
 	result = table.Reverse_Array(result)
 	return result
 end
 
 ---@return AStarNode[]
----@param base_point Vector2
-function AStar:GetNeighborList(base_point)
+---@param basePoint Vector2
+function AStar:GetNeighborList(basePoint)
 	---@type AStarNode[]
 	local neighborList = {}
 	-- 增加左上角邻居节点
-	self:AddNeighbor(neighborList, base_point, -1, 1)
+	self:AddNeighbor(neighborList, basePoint, -1, 1)
 
 	-- 增加左侧邻居节点
-	self:AddNeighbor(neighborList, base_point, -1, 0)
+	self:AddNeighbor(neighborList, basePoint, -1, 0)
 
 	-- 增加左下角的邻居节点
-	self:AddNeighbor(neighborList, base_point, -1, -1)
+	self:AddNeighbor(neighborList, basePoint, -1, -1)
 
 	-- 增加上方邻居节点
-	self:AddNeighbor(neighborList, base_point, 0, 1)
+	self:AddNeighbor(neighborList, basePoint, 0, 1)
 
 	-- 增加下方邻居节点
-	self:AddNeighbor(neighborList, base_point, 0, -1)
+	self:AddNeighbor(neighborList, basePoint, 0, -1)
 
 	-- 增加右上角邻居节点
-	self:AddNeighbor(neighborList, base_point, 1, 1)
+	self:AddNeighbor(neighborList, basePoint, 1, 1)
 
 	-- 增加右侧邻居节点
-	self:AddNeighbor(neighborList, base_point, 1, 0)
+	self:AddNeighbor(neighborList, basePoint, 1, 0)
 
 	-- 增加右下角邻居节点
-	self:AddNeighbor(neighborList, base_point, 1, -1)
+	self:AddNeighbor(neighborList, basePoint, 1, -1)
 
 	return neighborList
 end
 
 ---@param node AStarNode
 function AStar:AddNodeToOpen(node)
-	if #self.openList == 0 then
-		table.insert(self.openList, node)
+	if #self._openList == 0 then
+		table.insert(self._openList, node)
 	else
-		for i = #self.openList, 1, -1 do
-			local currentNode = self.openList[i]
-			if node.f <= currentNode.f then
-				table.insert(self.openList, i + 1, node)
+		for i = #self._openList, 1, -1 do
+			local currentNode = self._openList[i]
+			if node:GetF() <= currentNode:GetF() then
+				table.insert(self._openList, i + 1, node)
 				break
 			end
 		end
 	end
-	self.openDict[self:GetIndex(node.pos.x, node.pos.y)] = node
+	self._openDict[self:GetIndex(node:GetPos().x, node:GetPos().y)] = node
 end
 
 ---@param node AStarNode
 function AStar:RemoveNodeFromOpen(node)
-	self.openDict[self:GetIndex(node.pos.x, node.pos.y)] = nil
-	table.RemoveByValue_Array(self.openList, node)
+	self._openDict[self:GetIndex(node:GetPos().x, node:GetPos().y)] = nil
+	table.RemoveByValue_Array(self._openList, node)
 end
 
 ---@param node AStarNode
 function AStar:IsNodeInOpen(node)
-	if self.openDict[self:GetIndex(node.pos.x, node.pos.y)] then
+	if self._openDict[self:GetIndex(node:GetPos().x, node:GetPos().y)] then
 		return true
 	else
 		return false
@@ -117,17 +117,17 @@ end
 
 ---@param node AStarNode
 function AStar:AddNodeToClose(node)
-	self.closedDict[self:GetIndex(node.pos.x, node.pos.y)] = node
+	self._closedDict[self:GetIndex(node:GetPos().x, node:GetPos().y)] = node
 end
 
 ---@param node AStarNode
 function AStar:RemoveNodeFromClose(node)
-	self.closedDict[self:GetIndex(node.pos.x, node.pos.y)] = nil
+	self._closedDict[self:GetIndex(node:GetPos().x, node:GetPos().y)] = nil
 end
 
 ---@param node AStarNode
 function AStar:IsNodeInClose(node)
-	if self.closedDict[self:GetIndex(node.pos.x, node.pos.y)] then
+	if self._closedDict[self:GetIndex(node:GetPos().x, node:GetPos().y)] then
 		return true
 	else
 		return false
@@ -139,7 +139,7 @@ end
 function AStar:GetG(p1, p2)
 	local dx = math.abs(p1.x - p2.x)
 	local dy = math.abs(p1.y - p2.y)
-	if self.astarType == AStarType.Best then
+	if self._astarType == AStarType.Best then
 		if dx == 1 and dy == 1 then
 			return (dx + dy) * AStarConst.Diagonal_Cost + AStarConst.Lineal_Cost
 		else
@@ -252,10 +252,10 @@ end
 ---@param x number
 ---@param y number
 function AStar:IsInRange(x, y)
-	if x < self.left or x > self.right then
+	if x < self._left or x > self._right then
 		return false
 	end
-	if y < self.bottom or y > self.top then
+	if y < self._bottom or y > self._top then
 		return false
 	end
 	return true
@@ -274,70 +274,70 @@ end
 ---@param goalY number
 function AStar:Find(startXOrStartPos, startYOrGoalPos, goalX, goalY)
 	if IsNumber(startXOrStartPos) then
-		return self:__Find1(startXOrStartPos, startYOrGoalPos, goalX, goalY)
+		return self:_Find1(startXOrStartPos, startYOrGoalPos, goalX, goalY)
 	else
-		return self:__Find2(startXOrStartPos, startYOrGoalPos)
+		return self:_Find2(startXOrStartPos, startYOrGoalPos)
 	end
 end
 ---@param startX number
 ---@param startY number
 ---@param goalX number
 ---@param goalY number
-function AStar:__Find1(startX, startY, goalX, goalY)
-	return self:__Find2(Vector2.New(startX, startY), Vector2.New(goalX, goalY))
+function AStar:_Find1(startX, startY, goalX, goalY)
+	return self:_Find2(Vector2.New(startX, startY), Vector2.New(goalX, goalY))
 end
 ---@param startPos Vector2
 ---@param goalPos Vector2
-function AStar:__Find2(startPos, goalPos)
+function AStar:_Find2(startPos, goalPos)
 	self:Reset()
 	-- 为起点赋初值
 	---@type AStarNode
 	local startNode = AStarNode.New(startPos.x, startPos.y)
-	startNode.h = self:GetH(startPos, goalPos)
-	startNode.f = startNode.h + startNode.g
+	startNode:SetH(self:GetH(startPos, goalPos))
+	startNode:SetF(startNode:GetH() + startNode:GetG())
 	self:AddNodeToOpen(startNode)
 
-	while #self.openList > 0 do
+	while #self._openList > 0 do
 		-- 寻找开启列表中F值最低的格子。我们称它为当前格
-		local checkNode = self.openList[1]
-		table.remove(self.openList, 1)
-		self.openDict[self:GetIndex(checkNode.pos.x, checkNode.pos.y)] = nil
+		local checkNode = self._openList[1]
+		table.remove(self._openList, 1)
+		self._openDict[self:GetIndex(checkNode:GetPos().x, checkNode:GetPos().y)] = nil
 
 		-- 把目标格添加进了开启列表，这时候路径被找到
-		if checkNode.pos == goalPos then
+		if checkNode:GetPos() == goalPos then
 			self:AddNodeToClose(checkNode)
 			return self:Solve(checkNode)
 		else
 			-- 获得当前附近的节点集合
 			---@type AStarNode[]
-			local neighborList = self:GetNeighborList(checkNode.pos)
+			local neighborList = self:GetNeighborList(checkNode:GetPos())
 			for i = 1, #neighborList do
 				-- 计算邻居节点的耗费值
 				local neighborNode = neighborList[i]
-				local neighborG = checkNode.g + self:GetG(checkNode.pos, neighborNode.pos)
+				local neighborG = checkNode:GetPos() + self:GetG(checkNode:GetPos(), neighborNode:GetPos())
 				if self:IsNodeInClose(neighborNode) then
-					if neighborG < neighborNode.g then
-						neighborNode.parent = checkNode
-						neighborNode.g = neighborG
-						neighborNode.h = self:GetH(neighborNode.pos, goalPos)
-						neighborNode.f = neighborNode.g + neighborNode.h
+					if neighborG < neighborNode:GetG() then
+						neighborNode:SetParent(checkNode)
+						neighborNode:SetG(neighborG)
+						neighborNode:SetH(self:GetH(neighborNode:GetPos(), goalPos))
+						neighborNode:SetF(neighborNode:GetG() + neighborNode:GetH())
 						self:RemoveNodeFromClose(neighborNode)
 						self:AddNodeToOpen(neighborNode)
 					end
 				elseif self:IsNodeInOpen(neighborNode) then
-					if neighborG < neighborNode.g then
-						neighborNode.parent = checkNode
-						neighborNode.g = neighborG
-						neighborNode.h = self:GetH(neighborNode.pos, goalPos)
-						neighborNode.f = neighborNode.g + neighborNode.h
+					if neighborG < neighborNode:GetG() then
+						neighborNode:SetParent(checkNode)
+						neighborNode:SetG(neighborG)
+						neighborNode:SetH(self:GetH(neighborNode:GetPos(), goalPos))
+						neighborNode:SetF(neighborNode:GetG() + neighborNode:GetH())
 						self:RemoveNodeFromOpen(neighborNode)
 						self:AddNodeToOpen(neighborNode)
 					end
 				else
-					neighborNode.parent = checkNode
-					neighborNode.g = neighborG
-					neighborNode.h = self:GetH(neighborNode.pos, goalPos)
-					neighborNode.f = neighborNode.g + neighborNode.h
+					neighborNode:SetParent(checkNode)
+					neighborNode:SetG(neighborG)
+					neighborNode:SetH(self:GetH(neighborNode:GetPos(), goalPos))
+					neighborNode:SetF(neighborNode:GetG() + neighborNode:GetH())
 					self:AddNodeToOpen(neighborNode) -- 排序插入
 				end
 			end

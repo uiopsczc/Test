@@ -4,45 +4,45 @@ local CameraManager = Class("CameraManager", TickObject)
 function CameraManager:Init()
 	CameraManager.super.Init(self)
 	---@type CameraBase[]
-	self.cameraBaseList = {}
+	self._cameraBaseList = {}
 
 	---@type CameraBase
-	self.mainCameraBase = self:AddChild("main_camera", CameraBase, GameObject.Find("Main Camera"):GetComponent(typeof(CS.UnityEngine.Camera)), true)
+	self._mainCameraBase = self:AddChild("mainCamera", CameraBase, GameObject.Find("Main Camera"):GetComponent(typeof(CS.UnityEngine.Camera)), true)
 	-----@type CameraBase
-	self.uiCameraBase = self:AddChild("ui_camera", CameraBase, GameObject.Find(UIConst.UICamera_Path):GetComponent(typeof(CS.UnityEngine.Camera)), true)
+	self._uiCameraBase = self:AddChild("uiCamera", CameraBase, GameObject.Find(UIConst.UICamera_Path):GetComponent(typeof(CS.UnityEngine.Camera)), true)
 	self:AddListener(StageEventNameConst.On_Stage_Loaded, function(stage)
 		self:OnStageLoaded(stage)
 	end)
 end
 
 function CameraManager:OnStageLoaded(stage)
-	self.cameraBaseList = {}
+	self._cameraBaseList = {}
 	local cameras = table.ConvertCSArray2LuaTable(CS.UnityEngine.Camera.allCameras)
 	for i, camera in ipairs(cameras) do
-		if camera ~= self.mainCameraBase.camera and camera ~= self.uiCameraBase.camera then
+		if camera ~= self._mainCameraBase:GetCamera() and camera ~= self._uiCameraBase:GetCamera() then
 			local cameraBase = self:AddChild(string.format("%s%s", camera.name, i), CameraBase, camera, false)
-			table.insert(self.cameraBaseList, cameraBase)
+			table.insert(self._cameraBaseList, cameraBase)
 		end
 	end
 end
 
 function CameraManager:RemoveCameras()
-	for i = #self.cameraBaseList, 1, -1 do
-		self:RemoveChild(self.cameraBaseList[i]._key)
-		table.remove(self.cameraBaseList, i)
+	for i = #self._cameraBaseList, 1, -1 do
+		self:RemoveChild(self._cameraBaseList[i]:GetKey())
+		table.remove(self._cameraBaseList, i)
 	end
 end
 
 function CameraManager:MoveByDelta(dx, dy, dz)
-	self.mainCameraBase:MoveByDelta(dx, dy, dz)
+	self._mainCameraBase:MoveByDelta(dx, dy, dz)
 end
 
 function CameraManager:SetMainCameraMoveRange(range)
-	self.mainCameraBase:SetMoveRange(range)
+	self._mainCameraBase:SetMoveRange(range)
 end
 
 function CameraManager:_Destroy()
-	CameraManager.super.__Destroy(self)
+	CameraManager.super._Destroy(self)
 end
 
 return CameraManager

@@ -39,7 +39,7 @@ function UIHUDNumber:Show(spawnWorldPosition, showString, color)
 			curSpawnWorldPosition = spawnWorldPosition.position
 		end
 
-		self._spawnUIPosition = CameraUtil.WorldToUIPos(nil, global.client.combat.cameraManager.mainCameraBase.camera, curSpawnWorldPosition)
+		self._spawnUIPosition = CameraUtil.WorldToUIPos(nil, global.client.combat.cameraManager._mainCameraBase._camera, curSpawnWorldPosition)
 		self._textComp.text = showString
 		self._textComp.color = color
 

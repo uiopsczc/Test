@@ -2,35 +2,39 @@
 local Counter = Class("Counter")
 
 function Counter:Init()
-	self.count = 0
-	self.changeValueInvokeFuncList = {}
+	self._count = 0
+	self._changeValueInvokeFuncList = {}
 end
 
 function Counter:Increase()
-	self.count = self.count + 1
-	self:__CheckFunc()
+	self._count = self._count + 1
+	self:_CheckFunc()
 end
 
 function Counter:Decrease()
-	self.count = self.count - 1
-	self:__CheckFunc()
+	self._count = self._count - 1
+	self:_CheckFunc()
 end
 
 function Counter:Reset()
-	self.count = 0
-	self.changeValueInvokeFuncList = {}
+	self._count = 0
+	self._changeValueInvokeFuncList = {}
 end
 
 function Counter:AddChangeValueInvokeFunc(func)
-	table.insert(self.changeValueInvokeFuncList, func)
+	table.insert(self._changeValueInvokeFuncList, func)
 end
 
-function Counter:__CheckFunc()
-	if not table.IsNilOrEmpty(self.changeValueInvokeFuncList) then
-		for _, func in ipairs(self.changeValueInvokeFuncList) do
+function Counter:_CheckFunc()
+	if not table.IsNilOrEmpty(self._changeValueInvokeFuncList) then
+		for _, func in ipairs(self._changeValueInvokeFuncList) do
 			func()
 		end
 	end
+end
+
+function Counter:GetCount()
+	return self._count
 end
 
 return Counter

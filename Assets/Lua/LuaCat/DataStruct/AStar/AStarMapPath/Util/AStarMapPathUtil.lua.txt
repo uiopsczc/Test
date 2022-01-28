@@ -9,14 +9,14 @@ function AStarMapPathUtil.BorderFindPath(astarMapPath, pointA, pointB, canPassOb
 	table.insert(list, pointA)
 	local dv = pointB.x > pointA.x and 1 or -1
 	for x = pointA.x + dv, pointB.x, dv do
-		if not AStarUtil.CanPass(astarMapPath, x, pointA.y, canPassObstacleTypes, canPassTerrainTypes) then
+		if not AStarUtil.IsCanPass(astarMapPath, x, pointA.y, canPassObstacleTypes, canPassTerrainTypes) then
 			return nil
 		end
 		table.insert(list, Vector2(x, pointA.y))
 	end
 	dv = pointB.y > pointA.y and 1 or -1
 	for y = pointA.y + dv, pointB.y, dv do
-		if not AStarUtil.CanPass(astarMapPath, pointB.x, y, canPassObstacleTypes, canPassTerrainTypes) then
+		if not AStarUtil.IsCanPass(astarMapPath, pointB.x, y, canPassObstacleTypes, canPassTerrainTypes) then
 			return nil
 		end
 		table.insert(list, Vector2(pointB.x, y))
@@ -42,15 +42,15 @@ function AStarMapPathUtil.DiagonallyFindPath(astarMapPath, pointA, pointB, canPa
 			x1 = pointA.x - math.abs(dy)
 		end
 		local p = Vector2(x1, pointB.y)
-		if not AStarUtil.CanPass(astarMapPath, p.x, p.y, canPassObstacleTypes, canPassTerrainTypes) then
+		if not AStarUtil.IsCanPass(astarMapPath, p.x, p.y, canPassObstacleTypes, canPassTerrainTypes) then
 			return nil
 		end
 		local list1 = AStarUtil.GetLinePointList(pointA, p)
-		if not AStarUtil.CanTrackListPass(astarMapPath, list1, canPassObstacleTypes, canPassTerrainTypes) then
+		if not AStarUtil.IsTrackListCanPass(astarMapPath, list1, canPassObstacleTypes, canPassTerrainTypes) then
 			return nil
 		end
 		local list2 = AStarUtil.GetLinePointList(p, pointB)
-		if not AStarUtil.CanTrackListPass(astarMapPath, list2, canPassObstacleTypes, canPassTerrainTypes) then
+		if not AStarUtil.IsTrackListCanPass(astarMapPath, list2, canPassObstacleTypes, canPassTerrainTypes) then
 			return nil
 		end
 		table.AddRange_Array(list, list1)
@@ -64,15 +64,15 @@ function AStarMapPathUtil.DiagonallyFindPath(astarMapPath, pointA, pointB, canPa
 			y1 = pointA.y - math.abs(dx)
 		end
 		local p = Vector2(pointB.x, y1)
-		if not AStarUtil.CanPass(astarMapPath, p.x, p.y, canPassObstacleTypes, canPassTerrainTypes) then
+		if not AStarUtil.IsCanPass(astarMapPath, p.x, p.y, canPassObstacleTypes, canPassTerrainTypes) then
 			return nil
 		end
 		local list1 = AStarUtil.GetLinePointList(pointA, p)
-		if not AStarUtil.CanTrackListPass(astarMapPath, list1, canPassObstacleTypes, canPassTerrainTypes) then
+		if not AStarUtil.IsTrackListCanPass(astarMapPath, list1, canPassObstacleTypes, canPassTerrainTypes) then
 			return nil
 		end
 		local list2 = AStarUtil.GetLinePointList(p, pointB)
-		if not AStarUtil.CanTrackListPass(astarMapPath, list2, canPassObstacleTypes, canPassTerrainTypes) then
+		if not AStarUtil.IsTrackListCanPass(astarMapPath, list2, canPassObstacleTypes, canPassTerrainTypes) then
 			return nil
 		end
 		table.AddRange_Array(list, list1)
@@ -97,7 +97,7 @@ function AStarMapPathUtil.DirectFindPath(astarMapPath, pointA, pointB, canPassOb
 		table.insert(list, pointA)
 		local dv = pointB.y > pointA.y and 1 or -1
 		for y = pointA.y + dv, pointB.y, dv do
-			if not AStarUtil.CanPass(astarMapPath, pointA.x, y, canPassObstacleTypes, canPassTerrainTypes) then
+			if not AStarUtil.IsCanPass(astarMapPath, pointA.x, y, canPassObstacleTypes, canPassTerrainTypes) then
 				return nil
 			end
 			table.insert(list, Vector2(pointA.x, y))
@@ -108,7 +108,7 @@ function AStarMapPathUtil.DirectFindPath(astarMapPath, pointA, pointB, canPassOb
 		table.insert(list, pointA)
 		local dv = pointB.x > pointA.x and 1 or -1
 		for x = pointA.x + dv, pointB.x, dv do
-			if not AStarUtil.CanPass(astarMapPath, x, pointA.y, canPassObstacleTypes, canPassTerrainTypes) then
+			if not AStarUtil.IsCanPass(astarMapPath, x, pointA.y, canPassObstacleTypes, canPassTerrainTypes) then
 				return nil
 			end
 			table.insert(list, Vector2(x, pointA.y))

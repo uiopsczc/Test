@@ -24,15 +24,13 @@ local yieldChildCo2ParentDict = {}
 -- 用于父协程寻找子协程
 local yieldCo2ChildCoDict = {}
 
---local co_pool_name = "coroutine_co_pool"
---Coroutine.co_pool_name = co_pool_name
-local actionPoolName = "coroutine_action_pool"
-local yieldParentDictPoolName = "coroutine_yield_parent_dict"
+local actionPoolName = "coroutineActionPool"
+local yieldParentDictPoolName = "coroutineYieldParentDict"
 
 
 
 -- 可复用协程
-local function __Coroutine(func, ...)
+local function _Coroutine(func, ...)
 	local funcArgs = table.SafePack(...)
 	while func do
 		local result = table.SafePack(func(table.SafeUnpack(funcArgs)))
@@ -44,16 +42,16 @@ local function __Coroutine(func, ...)
 end
 
 -- 获取协程
-local function __GetCoroutine()
+local function _GetCoroutine()
 	--local co = poolCatManager:Spawn(co_pool_name, function()
 	--  return coroutine.create(__Coroutine)
 	--end)
-	local co = coroutine.create(__Coroutine)
+	local co = coroutine.create(_Coroutine)
 	return co
 end
 
 -- 回收Action
-local function __RecycleAction(action)
+local function _RecycleAction(action)
 	action.co = false
 	action.timer = false
 	action.func = false
@@ -64,7 +62,7 @@ end
 
 -- 获取Action
 ---@return CoroutineAction
-local function __GetAction(co, timer, func, funcArgs, abort2CoValue)
+local function _GetAction(co, timer, func, funcArgs, abort2CoValue)
 	---@class CoroutineAction
 	---@field co
 	---@field timer Timer
@@ -87,7 +85,7 @@ end
 -- 但是可能会遇到调用协程时对象已经被销毁的情况，这种情况应该被当做正常情况
 -- 所以这里并不继续抛出异常，而只是输出一下错误日志，不要让客户端当掉
 -- 注意：Logger中实际上在调试模式会抛出异常
-local function __PResume(co, func, ...)
+local function _PResume(co, func, ...)
 	local resumeResult = nil
 	local funcArgs = table.SafePack(...)
 	if func ~= nil then
@@ -95,9 +93,9 @@ local function __PResume(co, func, ...)
 	else
 		resumeResult = table.SafePack(coroutine.resume(co, table.SafeUnpack(funcArgs)))
 	end
-	local isCallSuccess, error_msg = resumeResult[1], resumeResult[2]
+	local isCallSuccess, errorMsg = resumeResult[1], resumeResult[2]
 	if not isCallSuccess then
-		ErrorFormat("%s\n%s", error_msg, debug.traceback(co))
+		ErrorFormat("%s\n%s", errorMsg, debug.traceback(co))
 	elseif resumeResult.n > 1 then
 		table.remove(resumeResult, 1)
 	else
@@ -108,7 +106,7 @@ end
 
 ---@param action CoroutineAction
 ---@param abort boolean
-local function __DoAction(action, abort, ...)
+local function _DoAction(action, abort, ...)
 	assert(action.timer)
 	if not action.func then
 		abort = true
@@ -128,14 +126,14 @@ local function __DoAction(action, abort, ...)
 			action.timerManager:RemoveTimer(action.timer)
 		end
 		actionDict[action.co] = nil
-		__PResume(action.co, ...)
+		_PResume(action.co, ...)
 		---恢复action.co协程
-		__RecycleAction(action)
+		_RecycleAction(action)
 	end
 end
 
-local function __DoActionLoop(action, abort, ...)
-	__DoAction(action, abort, ...)
+local function _DoActionLoop(action, abort, ...)
+	_DoAction(action, abort, ...)
 	return true  --Timer中的func返回true的话，就会继续循环调用func
 end
 
@@ -145,8 +143,8 @@ end
 -- @...：传入协程的可变参数
 function Coroutine.Start(func, ...)
 	local funcArgs = table.SafePack(...)
-	local co = __GetCoroutine()
-	__PResume(co, func, table.SafeUnpack(funcArgs))
+	local co = _GetCoroutine()
+	_PResume(co, func, table.SafeUnpack(funcArgs))
 	return co
 end
 
@@ -178,10 +176,10 @@ function Coroutine.YieldStart(func, callback, ...)
 	parentDict.isWaiting = false
 	parentDict.isOver = false
 
-	local childCo = __GetCoroutine()
+	local childCo = _GetCoroutine()
 	yieldChildCo2ParentDict[childCo] = parentDict
 	yieldCo2ChildCoDict[co] = childCo
-	local isCallSuccess, resumeResult = __PResume(childCo, func, table.SafeUnpack(funcArgs))
+	local isCallSuccess, resumeResult = _PResume(childCo, func, table.SafeUnpack(funcArgs))
 	if not isCallSuccess then
 		PoolCatManagerUtil.Despawn(parentDict, yieldParentDictPoolName)
 		yieldChildCo2ParentDict[childCo] = nil
@@ -198,11 +196,11 @@ function Coroutine.YieldStart(func, callback, ...)
 		end
 	else
 		parentDict.isWaiting = true
-		local yield_ret = table.SafePack(coroutine.yield())--会中断当前的co(即parentCo)
+		local yieldRet = table.SafePack(coroutine.yield())--会中断当前的co(即parentCo)
 		PoolCatManagerUtil.Despawn(parentDict, yieldParentDictPoolName)
 		yieldChildCo2ParentDict[childCo] = nil
 		yieldCo2ChildCoDict[co] = nil
-		return table.SafeUnpack(yield_ret)
+		return table.SafeUnpack(yieldRet)
 	end
 end
 
@@ -253,7 +251,7 @@ function Coroutine.YieldBreak(...)
 	if not parentDict.isWaiting then
 		return ...
 	else
-		__PResume(parentDict.co, nil, ...)
+		_PResume(parentDict.co, nil, ...)
 		--__PResume(parentMap.co,  ...)  我觉得这里应该这样子才对，这里会到yieldStart的isWating=true下的yiled的返回值
 	end
 end
@@ -264,9 +262,9 @@ function Coroutine.WaitForFixedUpdate(timerManager)
 	local co = coroutine.running() or error("coroutine.waitforfixedupdate must be run in coroutine")
 	---@type Timer
 	local timer = PoolCatManagerUtil.Spawn(Timer)
-	timer:Init(__DoAction, nil, 0, 0, Timer.UpdateMode.FixedUpdate, nil, true, true)
-	local action = __GetAction(co, timer)
-	timer._targetFuncArgs = { action }
+	timer:Init(_DoAction, nil, 0, 0, Timer.UpdateMode.FixedUpdate, nil, true, true)
+	local action = _GetAction(co, timer)
+	timer:SetTargetFuncArgs({ action })
 	action.timerManager = timerManager or global.client.timerManager
 	action.timerManager:AddTimer2(timer)
 	actionDict[co] = action
@@ -279,9 +277,9 @@ function Coroutine.WaitForFrames(frames, timerManager)
 	local co = coroutine.running() or error("coroutine.waitforframes must be run in coroutine")
 	---@type Timer
 	local timer = PoolCatManagerUtil.Spawn(Timer)
-	timer:Init(__DoAction, nil, frames, 0, Timer.UpdateMode.Update, nil, true, true)
-	local action = __GetAction(co, timer)
-	timer._targetFuncArgs = { action }
+	timer:Init(_DoAction, nil, frames, 0, Timer.UpdateMode.Update, nil, true, true)
+	local action = _GetAction(co, timer)
+	timer:SetTargetFuncArgs({ action })
 	action.timerManager = timerManager or global.client.timerManager
 	action.timerManager:AddTimer2(timer)
 	actionDict[co] = action
@@ -295,9 +293,9 @@ function Coroutine.WaitForSeconds(seconds, timerManager)
 	local co = coroutine.running() or error("coroutine.waitforsenconds must be run in coroutine")
 	---@type Timer
 	local timer = PoolCatManagerUtil.Spawn(Timer)
-	timer:Init(__DoAction, nil, seconds, nil, Timer.UpdateMode.Update, nil, true, false)
-	local action = __GetAction(co, timer)
-	timer._targetFuncArgs = { action }
+	timer:Init(_DoAction, nil, seconds, nil, Timer.UpdateMode.Update, nil, true, false)
+	local action = _GetAction(co, timer)
+	timer:SetTargetFuncArgs({ action })
 	action.timerManager = timerManager or global.client.timerManager
 	action.timerManager:AddTimer2(timer)
 	actionDict[co] = action
@@ -305,12 +303,12 @@ function Coroutine.WaitForSeconds(seconds, timerManager)
 end
 
 ---@param callback fun(thread,float)  @第一个参数是co，第二个参数是asyncOperation.progress
----@param async_operation CoroutineAsyncOperation
-local function __AsyncOpCheck(co, async_operation, callback)
+---@param asyncOperation CoroutineAsyncOperation
+local function _AsyncOpCheck(co, asyncOperation, callback)
 	if callback ~= nil then
-		callback(co, async_operation.progress)
+		callback(co, asyncOperation.progress)
 	end
-	return async_operation.isDone
+	return asyncOperation.isDone
 end
 
 -- 等待异步操作完成，并在Update执行完毕resume
@@ -319,18 +317,18 @@ end
 -- @async_operation：异步句柄---或者任何带有isDone、progress成员属性的异步对象
 -- @callback：每帧回调，传入参数为异步操作进度progress
 ---@param callback fun(thread,float)  @第一个参数是co，第二个参数是asyncOperation.progress
----@param async_operation CoroutineAsyncOperation
-function Coroutine.WaitForAsyncOp(async_operation, callback, timerManager)
+---@param asyncOperation CoroutineAsyncOperation
+function Coroutine.WaitForAsyncOp(asyncOperation, callback, timerManager)
 	---@class CoroutineAsyncOperation
 	---@field progress number
 	---@field isDone boolean
-	assert(async_operation)
+	assert(asyncOperation)
 	local co = coroutine.running() or error("coroutine.waitforasyncop must be run in coroutine")
 	---@type Timer
 	local timer = PoolCatManagerUtil.Spawn(Timer)
-	timer:Init(__DoActionLoop, nil, 1, 1, Timer.UpdateMode.Update, nil, true, true)--每帧都检测
-	local action = __GetAction(co, timer, __AsyncOpCheck, table.SafePack(co, async_operation, callback), true)
-	timer._targetFuncArgs = { action }
+	timer:Init(_DoActionLoop, nil, 1, 1, Timer.UpdateMode.Update, nil, true, true)--每帧都检测
+	local action = _GetAction(co, timer, _AsyncOpCheck, table.SafePack(co, asyncOperation, callback), true)
+	timer:SetTargetFuncArgs( { action })
 	action.timerManager = timerManager or global.client.timerManager
 	action.timerManager:AddTimer2(timer)
 	actionDict[co] = action
@@ -345,9 +343,9 @@ function Coroutine.WaitUntil(timerManager, func, ...)
 	local funcArgs = table.SafePack(...)
 	---@type Timer
 	local timer = PoolCatManagerUtil.Spawn(Timer)
-	timer:Init(__DoActionLoop, nil, 1, 1, Timer.UpdateMode.Update, nil, true, true)--每帧都检测
-	local action = __GetAction(co, timer, func, funcArgs, true)
-	timer._targetFuncArgs = { action }
+	timer:Init(_DoActionLoop, nil, 1, 1, Timer.UpdateMode.Update, nil, true, true)--每帧都检测
+	local action = _GetAction(co, timer, func, funcArgs, true)
+	timer:SetTargetFuncArgs({ action })
 	action.timerManager = timerManager or global.client.timerManager
 	action.timerManager:AddTimer2(timer)
 	actionDict[co] = action
@@ -361,10 +359,10 @@ function Coroutine.WaitWhile(timerManager, func, ...)
 	local co = coroutine.running() or error("coroutine.waitwhile must be run in coroutine")
 	---@type Timer
 	local timer = PoolCatManagerUtil.Spawn(Timer)
-	timer:Init(__DoActionLoop, nil, 1, 1, Timer.UpdateMode.Update, nil, true, true)--每帧都检测
+	timer:Init(_DoActionLoop, nil, 1, 1, Timer.UpdateMode.Update, nil, true, true)--每帧都检测
 	local funcArgs = table.SafePack(...)
-	local action = __GetAction(co, timer, func, funcArgs, false)
-	timer._targetFuncArgs = { action }
+	local action = _GetAction(co, timer, func, funcArgs, false)
+	timer:SetTargetFuncArgs({ action })
 	action.timerManager = timerManager or global.client.timerManager
 	action.timerManager:AddTimer2(timer)
 	actionDict[co] = action
@@ -377,9 +375,9 @@ function Coroutine.WaitForEndOfFrame(timerManager)
 	local co = coroutine.running() or error("coroutine.waitforendofframe must be run in coroutine")
 	---@type Timer
 	local timer = PoolCatManagerUtil.Spawn(Timer)
-	timer:Init(__DoActionLoop, nil, 1, 1, Timer.UpdateMode.LateUpdate, nil, true, true)--每帧都检测
-	local action = __GetAction(co, timer)
-	timer._targetFuncArgs = { action }
+	timer:Init(_DoActionLoop, nil, 1, 1, Timer.UpdateMode.LateUpdate, nil, true, true)--每帧都检测
+	local action = _GetAction(co, timer)
+	timer:SetTargetFuncArgs({ action })
 	action.timerManager = timerManager or global.client.timerManager
 	action.timerManager:AddTimer2(timer)
 	actionDict[co] = action
@@ -394,7 +392,7 @@ function Coroutine.Stop(co)
 			action.timer:Stop()
 			action.timerManager:RemoveTimer(action.timer)
 		end
-		__RecycleAction(action)
+		_RecycleAction(action)
 		--poolCatManager:Despawn(co, co_pool_name)
 	end
 
@@ -414,24 +412,24 @@ function Coroutine.Stop(co)
 	end
 end
 
-function Coroutine.SetIsPaused(co, is_paused)
+function Coroutine.SetIsPaused(co, isPaused)
 	local action = actionDict[co]
 	if action then
 		if action.timer then
-			action.timer:SetIsPaused(is_paused)
+			action.timer:SetIsPaused(isPaused)
 		end
 	end
 
 	local parentDict = yieldChildCo2ParentDict[co]
 	if parentDict then
 		if parentDict.co then
-			Coroutine.SetIsPaused(parentDict.co, is_paused)
+			Coroutine.SetIsPaused(parentDict.co, isPaused)
 		end
 	end
 
 	local childCo = yieldCo2ChildCoDict[co]
 	if childCo then
-		Coroutine.SetIsPaused(childCo, is_paused)
+		Coroutine.SetIsPaused(childCo, isPaused)
 	end
 end
 
@@ -439,6 +437,6 @@ end
 function Coroutine.StopWaiting(co, ...)
 	local action = actionDict[co]
 	if action then
-		__DoAction(action, true, ...)
+		_DoAction(action, true, ...)
 	end
 end

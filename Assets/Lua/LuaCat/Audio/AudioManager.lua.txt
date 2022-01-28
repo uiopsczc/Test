@@ -5,25 +5,25 @@ local AudioManager = Class("AudioManager", TickObject)
 
 function AudioManager:Init()
 	AudioManager.super.Init(self)
-	self._graphicComponent:SetGameObject(GameObject.Find("AudioManager"))
+	self:GetGraphicComponent():SetGameObject(GameObject.Find("AudioManager"))
 	---@type CS.UnityEngine.AudioListener
-	self.audioListener = self._graphicComponent._transform:Find("AudioListener"):GetComponent(typeof(CS.UnityEngine.AudioListener))
+	self._audioListener = self:GetGraphicComponent():GetTransform():Find("AudioListener"):GetComponent(typeof(CS.UnityEngine.AudioListener))
 	---@type CS.UnityEngine.Transform
-	self.audioSourceContainerTransform = self._graphicComponent._transform:Find("AudioSourceContainer")
+	self._audioSourceContainerTransform = self:GetGraphicComponent():GetTransform():Find("AudioSourceContainer")
 	---@type CS.UnityEngine.Transform
-	self.bgmContainerTransform = self._graphicComponent._transform:Find("BGMContainer")
+	self._bgmContainerTransform = self:GetGraphicComponent():GetTransform():Find("BGMContainer")
 	---@type CS.UnityEngine.AudioSource
-	self.bgmAudioSource = self.bgmContainerTransform:GetComponent(typeof(CS.UnityEngine.AudioSource))
+	self._bgmAudioSource = self._bgmContainerTransform:GetComponent(typeof(CS.UnityEngine.AudioSource))
 	---@type CS.UnityEngine.AudioSource[]
-	self.playingAudioSourceList = {}
+	self._playingAudioSourceList = {}
 end
 
-function AudioManager:__Update(deltaTime, unscaledDeltaTime)
-	AudioManager.super.__Update(self, deltaTime, unscaledDeltaTime)
-	for i = #self.playingAudioSourceList, 1, -1 do
-		local playingAudioSource = self.playingAudioSourceList[i]
+function AudioManager:_Update(deltaTime, unscaledDeltaTime)
+	AudioManager.super._Update(self, deltaTime, unscaledDeltaTime)
+	for i = #self._playingAudioSourceList, 1, -1 do
+		local playingAudioSource = self._playingAudioSourceList[i]
 		if not playingAudioSource.isPlaying then
-			table.remove(self.playingAudioSourceList, i)
+			table.remove(self._playingAudioSourceList, i)
 			playingAudioSource.gameObject:Destroy()
 			return -- 每次只删除一个
 		end
@@ -40,7 +40,7 @@ end
 -- value [-80,0] 分贝
 function AudioManager:SetGroupDecibel(groupName, decibel)
 	decibel = math.Clamp(decibel, -80, 0)
-	global.singletonMaster._audioMixer:SetFloat(AudioMixerConst.Group_Dict[groupName].volume_name, decibel)
+	global.singletonMaster._audioMixer:SetFloat(AudioMixerConst.Group_Dict[groupName].volumeName, decibel)
 end
 
 -- value [0,1]
@@ -51,7 +51,7 @@ function AudioManager:SetAllGroupVolume(value)
 end
 
 function AudioManager:SetAudioListenerPosition(position)
-	self.audioListener.transform.position = position
+	self._audioListener.transform.position = position
 end
 
 ---@param target CS.UnityEngine.GameObject
@@ -67,7 +67,7 @@ end
 ---@param range number
 function AudioManager:OnSoundLoadSuccess(audioClip, groupName, target, targetLocalPosition, isLoop, range)
 	-- 如果没有target，音频挂AudioMgr上
-	local target = target or self.audioSourceContainerTransform.gameObject
+	local target = target or self._audioSourceContainerTransform.gameObject
 	-- 如果有pos，生成原地音频
 	if targetLocalPosition then
 		local clone = GameObject("AudioSource")
@@ -77,7 +77,7 @@ function AudioManager:OnSoundLoadSuccess(audioClip, groupName, target, targetLoc
 	end
 	local audioSource = self:GetAudioSource(target)
 	if targetLocalPosition then
-		table.insert(self.playingAudioSourceList, audioSource)
+		table.insert(self._playingAudioSourceList, audioSource)
 	end
 	if range then
 		audioSource.spatialBlend = 1 -- 0表示2D，1表示3D
@@ -134,19 +134,19 @@ function AudioManager:PauseBGMSound(isPaused)
 		isPaused = true
 	end
 	if isPaused then
-		self.bgmAudioSource:Pause()
+		self._bgmAudioSource:Pause()
 	else
-		self.bgmAudioSource:UnPause()
+		self._bgmAudioSource:UnPause()
 	end
 end
 
 function AudioManager:StopBGMSound()
-	self.bgmAudioSource:Stop()
+	self._bgmAudioSource:Stop()
 end
 
 ---@param audioClip CS.UnityEngine.AudioClip
 function AudioManager:OnBGMLoadSuccess(audioClip, is_loop)
-	local audioSource = self.bgmAudioSource
+	local audioSource = self._bgmAudioSource
 	audioSource.clip = audioClip
 	audioSource.loop = is_loop or false
 	audioSource.playOnAwake = false

@@ -1,103 +1,103 @@
 ---@class HFSMState:TickObject
----@field parentHFSM HFSM
-local HFSMState = Class("HFSMState",TickObject)
+---@field _parentHFSM HFSM
+local HFSMState = Class("HFSMState", TickObject)
 
 function HFSMState:Init()
-  HFSMState.super.Init(self)
+	HFSMState.super.Init(self)
 end
-
 
 function HFSMState:Enter(...)
-  self:SetIsEnabled(true, false)
-  self.parentHFSM.currentSubDirectState = self
+	self:SetIsEnabled(true, false)
+	self._parentHFSM:SetCurrentSubDirectState(self)
 end
 
-
 function HFSMState:Exit(...)
-  self:SetIsEnabled(false, false)
-  self.parentHFSM.currentSubDirectState = nil
+	self:SetIsEnabled(false, false)
+	self._parentHFSM:SetCurrentSubDirectState(nil)
 end
 
 ---@param to_state HFSMState
 function HFSMState:IsCanChangeToState(to_state, ...)
-  return true
+	return true
 end
 
 function HFSMState:ExitLoopTo(toHFSM, ...)
-  self:Exit(...)
-  local curHFSM = self.parentHFSM
-  while curHFSM ~= toHFSM do
-    curHFSM:Exit(...)
-    curHFSM = curHFSM.parentHFSM
-  end
+	self:Exit(...)
+	local curHFSM = self._parentHFSM
+	while curHFSM ~= toHFSM do
+		curHFSM:Exit(...)
+		curHFSM = curHFSM:GetParentHFSM()
+	end
+end
+
+function HFSMState:ChangeToState(keyOrState, isForce, ...)
+	self:GetRootHFSM():ChangeToState(keyOrState, isForce, ...)
+end
+
+function HFSMState:ChangeToHFSM(key, isForce, ...)
+	self.GetRootHFSM():ChangeToHFSM(key, isForce, ...)
+end
+
+function HFSMState:RevertToPreviousState()
+	self.GetRootHFSM():RevertToPreviousState()
 end
 
 ----------------------------------------------------------------------
---
+-- SetGet相关
 ----------------------------------------------------------------------
 function HFSMState:GetOwner()
-  return self:GetRootHFSM().owner
+	return self:GetRootHFSM()._owner
 end
-
 
 ---@return HFSM
 function HFSMState:GetRootHFSM()
-  return self.parentHFSM:GetRootHFSM()
+	return self._parentHFSM:GetRootHFSM()
+end
+
+function HFSMState:GetParentHFSM()
+	return self._parentHFSM
 end
 
 ---@return HFSM[]
 function HFSMState:GetParentHFSMList()
-  ---@type HFSM[]
-  local list = {}
-  local curHFSM = self.parentHFSM
-  table.insert(list, curHFSM)
-  table.AddRange_Array(list, curHFSM:GetParentHFSMList())
-  return list
+	---@type HFSM[]
+	local list = {}
+	local curHFSM = self._parentHFSM
+	table.insert(list, curHFSM)
+	table.AddRange_Array(list, curHFSM:GetParentHFSMList())
+	return list
 end
 
 ---@param state2 HFSMState
 ---@return HFSM
 function HFSMState:GetNearestSameParentHFSM(state2)
-  if not state2 then
-    return self:GetRootHFSM()
-  end
+	if not state2 then
+		return self:GetRootHFSM()
+	end
 
- local hfsmList1 = self:GetParentHFSMList()
- local hfsmList2 = state2:GetParentHFSMList()
+	local hfsmList1 = self:GetParentHFSMList()
+	local hfsmList2 = state2:GetParentHFSMList()
 
-  local hfsmDeeperList
-  local hfsmDict = {}
-  if #hfsmList1 > #hfsmList2 then
-    hfsmDeeperList = hfsmList1
-  else
-    hfsmDeeperList = hfsmList2
-  end
+	local hfsmDeeperList
+	local hfsmDict = {}
+	if #hfsmList1 > #hfsmList2 then
+		hfsmDeeperList = hfsmList1
+	else
+		hfsmDeeperList = hfsmList2
+	end
 
-  local hfsmLowerList = hfsmDeeperList == hfsmList1 and hfsmList2 or hfsmList1
-  for _, hfsm in ipairs(hfsmLowerList) do
-    hfsmDict[hfsm] = true
-  end
+	local hfsmLowerList = hfsmDeeperList == hfsmList1 and hfsmList2 or hfsmList1
+	for _, hfsm in ipairs(hfsmLowerList) do
+		hfsmDict[hfsm] = true
+	end
 
-  for _,hfsm in ipairs(hfsmDeeperList) do
-    if hfsmDict[hfsm] then
-      return hfsm
-    end
-  end
+	for _, hfsm in ipairs(hfsmDeeperList) do
+		if hfsmDict[hfsm] then
+			return hfsm
+		end
+	end
 
-  return nil
-end
-
-
-function HFSMState:ChangeToState(keyOrState, isForce, ...)
-  self:GetRootHFSM():ChangeToState(keyOrState, isForce, ...)
-end
-
-function HFSMState:ChangeToHFSM(key, isForce, ...)
-  self.GetRootHFSM():ChangeToHFSM(key, isForce, ...)
-end
-
-function HFSMState:RevertToPreviousState()
-  self.GetRootHFSM():RevertToPreviousState()
+	return nil
 end
 
 return HFSMState

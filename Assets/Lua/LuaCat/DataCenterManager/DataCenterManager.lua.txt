@@ -3,26 +3,26 @@ local EventDispatcher = require("luacat.eventDispatcher.EventDispatcher")
 local DataCenterManager = Class("DataCenterManager")
 
 function DataCenterManager:Init()
-	self.eventDispatcher = EventDispatcher.New()
+	self._eventDispatcher = EventDispatcher.New()
 end
 
-function DataCenterManager:__Delete()
-	self.eventDispatcher:Clear()
-	self.eventDispatcher = nil
+function DataCenterManager:_Delete()
+	self._eventDispatcher:Clear()
+	self._eventDispatcher = nil
 end
 
 function DataCenterManager:AddListener(eventName, listener)
-	self.eventDispatcher:AddListener(eventName, listener)
+	self._eventDispatcher:AddListener(eventName, listener)
 end
 
 -- 发送消息
 function DataCenterManager:Broadcast(eventName, ...)
-	self.eventDispatcher:Broadcast(eventName, ...)
+	self._eventDispatcher:Broadcast(eventName, ...)
 end
 
 -- 注销消息
 function DataCenterManager:RemoveListener(eventName, listener)
-	self.eventDispatcher:RemoveListener(eventName, listener)
+	self._eventDispatcher:RemoveListener(eventName, listener)
 end
 
 return DataCenterManager

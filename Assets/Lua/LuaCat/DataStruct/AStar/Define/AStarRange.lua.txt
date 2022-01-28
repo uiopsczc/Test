@@ -5,56 +5,56 @@ function AStarRange:Init(leftBottomX, leftBottomY, rightTopX, rightTopY)
 end
 
 function AStarRange:SetRange(leftBottomX, leftBottomY, rightTopX, rightTopY)
-	self.leftBottomX = math.min(leftBottomX, rightTopX)
-	self.leftBottomY = math.min(leftBottomY, rightTopY)
-	self.rightTopX = math.max(leftBottomX, rightTopX)
-	self.rightTopY = math.max(leftBottomY, rightTopY)
+	self._leftBottomX = math.min(leftBottomX, rightTopX)
+	self._leftBottomY = math.min(leftBottomY, rightTopY)
+	self._rightTopX = math.max(leftBottomX, rightTopX)
+	self._rightTopY = math.max(leftBottomY, rightTopY)
 end
 
 ---@return Vector2
 function AStarRange:GetCenter()
-	return Vector2.New((self.leftBottomX + self.rightTopX) / 2, (self.leftBottomY + self.rightTopY) / 2)
+	return Vector2.New((self._leftBottomX + self._rightTopX) / 2, (self._leftBottomY + self._rightTopY) / 2)
 end
 
 ---@return Vector2
 function AStarRange:GetLeftBottom()
-	return Vector2.New(self.leftBottomX, self.leftBottomY)
+	return Vector2.New(self._leftBottomX, self._leftBottomY)
 end
 
 ---@return Vector2
 function AStarRange:GetRightTop()
-	return Vector2.New(self.rightTopX, self.rightTopY)
+	return Vector2.New(self._rightTopX, self._rightTopY)
 end
 
 ---@return Vector2
 function AStarRange:GetRandomPos(randomManager)
 	randomManager = randomManager or global.client.randomManager
-	local dx = self.rightTopX - self.leftBottomX
-	local dy = self.rightTopY - self.leftBottomY
+	local dx = self._rightTopX - self._leftBottomX
+	local dy = self._rightTopY - self._leftBottomY
 	local x, y
 	if dx > 0 then
-		x = self.leftBottomX + randomManager:RandomInt(0, math.abs(dx) + 1)
+		x = self._leftBottomX + randomManager:RandomInt(0, math.abs(dx) + 1)
 	elseif dx < 0 then
-		x = self.leftBottomX - randomManager:RandomInt(0, math.abs(dx) + 1)
+		x = self._leftBottomX - randomManager:RandomInt(0, math.abs(dx) + 1)
 	else
-		x = self.leftBottomX
+		x = self._leftBottomX
 	end
 	if dy > 0 then
-		y = self.leftBottomY + randomManager:RandomInt(0, math.abs(dy) + 1)
+		y = self._leftBottomY + randomManager:RandomInt(0, math.abs(dy) + 1)
 	elseif dy < 0 then
-		y = self.leftBottomY - randomManager:RandomInt(0, math.abs(dy) + 1)
+		y = self._leftBottomY - randomManager:RandomInt(0, math.abs(dy) + 1)
 	else
-		y = self.leftBottomY
+		y = self._leftBottomY
 	end
 	return Vector2.New(x, y)
 end
 
 function AStarRange:GetWidth()
-	return self.rightTopX - self.leftBottomX
+	return self._rightTopX - self._leftBottomX
 end
 
 function AStarRange:GetHeight()
-	return self.rightTopY - self.leftBottomY
+	return self._rightTopY - self._leftBottomY
 end
 
 ---@param pos Vector2
@@ -66,19 +66,19 @@ end
 ---@return boolean
 function AStarRange:IsInRangeX(x)
 	---@type RangeCat
-	local rangeX = RangeCat.New(self.leftBottomX, self.rightTopX)
+	local rangeX = RangeCat.New(self._leftBottomX, self._rightTopX)
 	return rangeX:IsContains(x)
 end
 
 ---@return boolean
 function AStarRange:IsInRangeY(y)
 	---@type RangeCat
-	local range_y = RangeCat.New(self.leftBottomY, self.rightTopY)
+	local range_y = RangeCat.New(self._leftBottomY, self._rightTopY)
 	return range_y:IsContains(y)
 end
 
 function AStarRange:__tostring ()
-	return string.format("[%s,%s]-[%s,%s]", self.leftBottomX, self.leftBottomY, self.rightTopX, self.rightTopY)
+	return string.format("[%s,%s]-[%s,%s]", self._leftBottomX, self._leftBottomY, self._rightTopX, self._rightTopY)
 end
 
 return AStarRange

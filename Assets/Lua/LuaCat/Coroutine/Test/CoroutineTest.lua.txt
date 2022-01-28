@@ -60,7 +60,7 @@ end
 
 -- StopWaiting测试
 local function TestStopWaiting()
-  local abort_error = "Abort Err!!!"
+  local abortError = "Abort Err!!!"
   local co = Coroutine.Start(function()
     print("start")
     Coroutine.WaitForSeconds(3)
@@ -70,7 +70,7 @@ local function TestStopWaiting()
   end)
   Coroutine.Start(function()
     Coroutine.WaitForSeconds(1)
-    Coroutine.StopWaiting(co, abort_error)
+    Coroutine.StopWaiting(co, abortError)
   end)
 end
 --TestStopWaiting()
@@ -102,12 +102,12 @@ local function TestYield()
       local param = { ... }
       callbackCount = callbackCount + 1
       if callbackCount == 1 then
-        print("callbak1 " .. param[1])
+        print("callback1 " .. param[1])
         return
       elseif callbackCount == 2 then
-        print("callbak2 " .. param[1])
+        print("callback2 " .. param[1])
         Coroutine.WaitForFrames(120)
-        print("callbak3 world")
+        print("callback3 world")
         return
       end
     end
@@ -118,7 +118,7 @@ local function TestYield()
       Coroutine.YieldReturn(4)
       Coroutine.WaitForFrames(60)
       Coroutine.YieldReturn("hello")
-      -- yieldbreak测试
+      -- YieldBreak测试
       return Coroutine.YieldBreak("chen", "finished")
     end
     -- 启动子级协程并等待

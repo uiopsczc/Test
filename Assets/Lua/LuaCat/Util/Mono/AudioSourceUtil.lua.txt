@@ -12,7 +12,7 @@ function AudioSourceUtil.SetAudioMixerOutput(audioSource, groupName, audioMixer)
 		return {}
 	end)
 	local audioMixerGroups = table.GetOrAddDefault_Dict(dict, groupName, function()
-		local groups = audioMixer:FindMatchingGroups(AudioMixerConst.Group_Dict[groupName].group_path)
+		local groups = audioMixer:FindMatchingGroups(AudioMixerConst.Group_Dict[groupName].groupPath)
 		return table.ConvertCSArray2LuaTable(groups)
 	end)
 	if #audioMixerGroups >= 0 then

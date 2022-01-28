@@ -15,12 +15,12 @@ function CoroutineHFSMState:IEExitLoopTo(toHFSM, ...)
 	self:YieldStart(function()
 		self:IEExit()
 	end)
-	local curHFSM = self.parentHFSM
+	local curHFSM = self._parentHFSM
 	while curHFSM ~= toHFSM do
 		self:YieldStart(function()
 			curHFSM:IEExit()
 		end)
-		curHFSM = curHFSM.parentHFSM
+		curHFSM = curHFSM._parentHFSM
 	end
 	self:YieldBreak()
 end

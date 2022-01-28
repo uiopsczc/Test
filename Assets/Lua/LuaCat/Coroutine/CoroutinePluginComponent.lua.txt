@@ -63,18 +63,18 @@ function CoroutinePluginComponent:YieldReturn(...)
 	return self.coroutinePlugin:YieldReturn(...)
 end
 
-function CoroutinePluginComponent:__SetIsPaused(isPaused)
-	CoroutinePluginComponent.super.__SetIsPaused(self, isPaused)
+function CoroutinePluginComponent:_SetIsPaused(isPaused)
+	CoroutinePluginComponent.super._SetIsPaused(self, isPaused)
 	self.coroutinePlugin:SetIsPaused(isPaused)
 end
 
-function CoroutinePluginComponent:__Reset()
-	CoroutinePluginComponent.super.__Reset(self)
+function CoroutinePluginComponent:_Reset()
+	CoroutinePluginComponent.super._Reset(self)
 	self:StopAllCoroutines()
 end
 
-function CoroutinePluginComponent:__Destroy()
-	CoroutinePluginComponent.super.__Destroy(self)
+function CoroutinePluginComponent:_Destroy()
+	CoroutinePluginComponent.super._Destroy(self)
 	self:StopAllCoroutines()
 end
 

@@ -15,10 +15,10 @@ end
 function CoroutineHFSM:IEEnterLoopTo(toState, ...)
 	---@type CoroutineHFSM[]
 	local hfsmList = {}--倒序
-	local curHFSM = toState.parentHFSM
+	local curHFSM = toState:GetParentHFSM()
 	while curHFSM ~= self do
 		table.insert(hfsmList, curHFSM)
-		curHFSM = curHFSM.parentHFSM
+		curHFSM = curHFSM:GetParentHFSM()
 	end
 
 	for i = #hfsmList, 1, -1 do
@@ -79,7 +79,7 @@ function CoroutineHFSM:IEChangeToState(toStateOrToStateKey, isForce, ...)
 
 	self:Broadcast(string.ToEventName(CoroutineHFSMEventNameConst.Post_State_Enter, rootHFSM), toState)
 
-	self.previousState = fromState
+	self._previousState = fromState
 	self:Broadcast(string.ToEventName(CoroutineHFSMEventNameConst.State_Change_Finish, rootHFSM), fromState, toState)
 end
 

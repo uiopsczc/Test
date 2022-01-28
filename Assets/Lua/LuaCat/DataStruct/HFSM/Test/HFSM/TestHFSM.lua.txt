@@ -8,7 +8,7 @@ function TestHFSM:InitStates()
 	TestHFSM.super.InitStates(self)
 	self:AddSubDirectState("a", A_HFSMState)
 	self:AddSubDirectState("b", B_HFSMState)
-	self:AddSubDirectHFSM("sub_hfsm1", TestSubHFSM1)
+	self:AddSubDirectHFSM("subHFSM1", TestSubHFSM1)
 	self:SetDefaultSubDirectState("a")
 
 	self:AddListener(string.ToEventName("hello", self:GetRootHFSM()), function()

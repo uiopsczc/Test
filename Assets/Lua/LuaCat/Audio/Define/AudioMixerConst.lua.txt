@@ -3,8 +3,8 @@ local AudioMixerConst = {
 }
 
 ---@class AudioMixerGroupInfo
----@field group_path
----@field volume_name
+---@field groupPath
+---@field volumeName
 local _
 
 ----@type table<string, AudioMixerGroupInfo>

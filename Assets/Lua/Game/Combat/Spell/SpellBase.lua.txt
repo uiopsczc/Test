@@ -137,10 +137,10 @@ function SpellBase:InitCounter()
 end
 
 function SpellBase:__CounterFunc()
-	if self.counter.count < 0 then
+	if self.counter._count < 0 then
 		Error("counter.count < 0")
 	end
-	if self.counter.count == 0 and self.isSpellAnimationFinished and not self:IsDestroyed() then
+	if self.counter._count == 0 and self.isSpellAnimationFinished and not self:IsDestroyed() then
 		self:RemoveSelf()
 	end
 end
@@ -309,7 +309,7 @@ function SpellBase:OnSpellAnimationFinished()
 	end
 	self.isSpellAnimationFinished = true
 	global.client.combat.spellManager:OnSpellAnimationFinished(self)
-	if self.counter.count <= 0 then
+	if self.counter._count <= 0 then
 		self:RemoveSelf()
 	end
 	if self.cfgSpellData.isCanMoveWhileCast and self.sourceUnit and not self.sourceUnit:IsDead() then

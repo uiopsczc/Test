@@ -127,12 +127,18 @@ function Timer:Finish()
 	self._state = Timer.State.Finished
 end
 
-
-
 -- 是否已经完成计时
 function Timer:IsFinished()
 	return self._state == Timer.State.Finished
 end
+
+----------------------------------------------------------------------
+-- SetGet相关
+----------------------------------------------------------------------
+function Timer:SetTargetFuncArgs(targetFuncArgs)
+	self._targetFuncArgs = targetFuncArgs
+end
+
 
 function Timer:OnDespawn()
 	self._delay = 0

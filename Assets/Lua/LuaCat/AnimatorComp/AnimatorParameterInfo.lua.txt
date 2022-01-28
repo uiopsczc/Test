@@ -1,49 +1,57 @@
 ---@class AnimatorParameterInfo
----@field animator CS.UnityEngine.Animator
----@field animatorControllerParameter CS.UnityEngine.AnimatorControllerParameter
----@field name string
----@field value any
----@field animatorControllerParameterType CS.UnityEngine.AnimatorControllerParameterType
+---@field _animator CS.UnityEngine.Animator
+---@field _animatorControllerParameter CS.UnityEngine.AnimatorControllerParameter
+---@field _name string
+---@field _value any
+---@field _animatorControllerParameterType CS.UnityEngine.AnimatorControllerParameterType
 local AnimatorParameterInfo = Class("AnimatorParameterInfo")
 
 ---@param animator CS.UnityEngine.Animator
 ---@param animatorControllerParameter CS.UnityEngine.AnimatorControllerParameter
 function AnimatorParameterInfo:Init(animator, animatorControllerParameter)
-	self.animator = animator
-	self.animatorControllerParameter = animatorControllerParameter
-	self.name = self.animatorControllerParameter.name
-	self.value = self:GetValue()
-	self.animatorControllerParameterType = animatorControllerParameter.type
+	self._animator = animator
+	self._animatorControllerParameter = animatorControllerParameter
+	self._name = self._animatorControllerParameter.name
+	self._value = self:GetValue()
+	self._animatorControllerParameterType = animatorControllerParameter.type
 end
 
 function AnimatorParameterInfo:SetValue(value)
-	self.value = value
-	if self.animatorControllerParameterType == CS.UnityEngine.AnimatorControllerParameterType.Bool then
-		self.animator:SetBool(self.name, value)
-	elseif self.animatorControllerParameterType == CS.UnityEngine.AnimatorControllerParameterType.Float then
-		self.animator:SetFloat(self.name, value)
-	elseif self.animatorControllerParameterType == CS.UnityEngine.AnimatorControllerParameterType.Int then
-		self.animator:SetInteger(self.name, value)
-	elseif self.animatorControllerParameterType == CS.UnityEngine.AnimatorControllerParameterType.Trigger then
-		self.animator:SetTrigger(self.name)
+	self._value = value
+	if self._animatorControllerParameterType == CS.UnityEngine.AnimatorControllerParameterType.Bool then
+		self._animator:SetBool(self._name, value)
+	elseif self._animatorControllerParameterType == CS.UnityEngine.AnimatorControllerParameterType.Float then
+		self._animator:SetFloat(self._name, value)
+	elseif self._animatorControllerParameterType == CS.UnityEngine.AnimatorControllerParameterType.Int then
+		self._animator:SetInteger(self._name, value)
+	elseif self._animatorControllerParameterType == CS.UnityEngine.AnimatorControllerParameterType.Trigger then
+		self._animator:SetTrigger(self._name)
 	else
 		error("no animatorControllerParameterType")
 	end
-	self.animator:Update(0)
+	self._animator:Update(0)
 end
 
 function AnimatorParameterInfo:GetValue()
-	if self.animatorControllerParameterType == CS.UnityEngine.AnimatorControllerParameterType.Bool then
-		return self.animator:GetBool(self.name)
-	elseif self.animatorControllerParameterType == CS.UnityEngine.AnimatorControllerParameterType.Float then
-		return self.animator:GetFloat(self.name)
-	elseif self.animatorControllerParameterType == CS.UnityEngine.AnimatorControllerParameterType.Int then
-		return self.animator:GetInteger(self.name)
-	elseif self.animatorControllerParameterType == CS.UnityEngine.AnimatorControllerParameterType.Trigger then
+	if self._animatorControllerParameterType == CS.UnityEngine.AnimatorControllerParameterType.Bool then
+		return self._animator:GetBool(self._name)
+	elseif self._animatorControllerParameterType == CS.UnityEngine.AnimatorControllerParameterType.Float then
+		return self._animator:GetFloat(self._name)
+	elseif self._animatorControllerParameterType == CS.UnityEngine.AnimatorControllerParameterType.Int then
+		return self._animator:GetInteger(self._name)
+	elseif self._animatorControllerParameterType == CS.UnityEngine.AnimatorControllerParameterType.Trigger then
 		return nil
 	else
 		error("no animatorControllerParameterType")
 	end
 end
+
+----------------------------------------------------------------------
+-- SetGet相关
+----------------------------------------------------------------------
+function AnimatorParameterInfo:GetAnimatorControllerParameterType()
+	return self._animatorControllerParameterType
+end
+
 
 return AnimatorParameterInfo
