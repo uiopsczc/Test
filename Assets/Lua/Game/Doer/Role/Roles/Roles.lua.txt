@@ -1,15 +1,19 @@
 ---@class Roles
 local Roles = Class("Roles")
-------------------------装备容器------------------------------
+----------------------------------------------------------------------
+-- 装备容器
+----------------------------------------------------------------------
 function Roles:Init(parentDoer, subDoerKey)
 	---@type Doer
-	self.parentDoer = parentDoer
-	self.subDoerKey = subDoerKey
+	self._parentDoer = parentDoer
+	self._subDoerKey = subDoerKey
 end
-------------------------DoXXX--------------------------------
+----------------------------------------------------------------------
+-- DoXXX
+----------------------------------------------------------------------
 -- 卸载
 function Roles:DoRelease()
-	SubDoerUtil1.DoReleaseSubDoer(self.parentDoer, self.subDoerKey)
+	SubDoerUtil1.DoReleaseSubDoer(self._parentDoer, self._subDoerKey)
 end
 
 -- 保存
@@ -45,7 +49,7 @@ function Roles:DoRestore(dict, dictTmp, restoreKey)
 		for _, dictRole in ipairs(dictRoles) do
 			local rid = table.Remove_Dict(dictRole, "rid")
 			local role = global.client.roleFactory:NewDoer(rid)
-			role:SetEnv(self.parentDoer)
+			role:SetEnv(self._parentDoer)
 			local dictRoleTmp
 			if dictRolesTmp then
 				dictRoleTmp = dictRolesTmp[rid]
@@ -55,37 +59,37 @@ function Roles:DoRestore(dict, dictTmp, restoreKey)
 		end
 	end
 end
---------------------------OnXXX-------------------
-
----------------------------------------------
+----------------------------------------------------------------------
+-- OnXXX
+----------------------------------------------------------------------
 -- 获得指定的角色
 ---@param id string
 ---@return Role[]
 function Roles:GetRoles(id)
-	return SubDoerUtil1.GetSubDoers(self.parentDoer, self.subDoerKey, id)
+	return SubDoerUtil1.GetSubDoers(self._parentDoer, self._subDoerKey, id)
 end
 
 ---@return Role[]
 function Roles:GetRoles_ToEdit()
 	-- 可以直接插入删除
-	return SubDoerUtil1.GetSubDoers_ToEdit(self.parentDoer, self.subDoerKey)
+	return SubDoerUtil1.GetSubDoers_ToEdit(self._parentDoer, self._subDoerKey)
 end
 
 function Roles:GetRolesCount()
-	return SubDoerUtil1.GetSubDoersCount(self.parentDoer, self.subDoerKey)
+	return SubDoerUtil1.GetSubDoersCount(self._parentDoer, self._subDoerKey)
 end
 
 -- 获得指定的角色
----@param id_or_rid string
+---@param idOrRid string
 ---@return Role
-function Roles:GetRole(id_or_rid)
-	return SubDoerUtil1.GetSubDoer(self.parentDoer, self.subDoerKey, id_or_rid)
+function Roles:GetRole(idOrRid)
+	return SubDoerUtil1.GetSubDoer(self._parentDoer, self._subDoerKey, idOrRid)
 end
 
 -- 清除所有角色
 function Roles:ClearRoles()
-	return SubDoerUtil1.ClearSubDoers(self.parentDoer, self.subDoerKey, function(role)
-		self.parentDoer:RemoveRole(role)
+	return SubDoerUtil1.ClearSubDoers(self._parentDoer, self._subDoerKey, function(role)
+		self._parentDoer:RemoveRole(role)
 	end)
 end
 

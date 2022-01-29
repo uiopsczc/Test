@@ -1,6 +1,23 @@
 ---@class UnitModelInfo:Class
----@field path string
----@field prefab CS.UnityEngine.GameObject
+---@field _path string
+---@field _prefab CS.UnityEngine.GameObject
 local UnitModelInfo = Class("UnitModelInfo")
+
+function UnitModelInfo:SetPath(path)
+	self._path = path
+end
+
+function UnitModelInfo:GetPath()
+	return self._path
+end
+
+function UnitModelInfo:SetPrefab(prefab)
+	self._prefab = prefab
+end
+
+function UnitModelInfo:GetPrefab()
+	return self._prefab
+end
+
 
 return UnitModelInfo

@@ -229,6 +229,10 @@ function Doer:SetFactory(factory)
 	self._factory = factory
 end
 
+function Doer:GetFactory()
+	return self._factory
+end
+
 ----------------------------------------------------------------------
 -- AddXXXX相关
 ----------------------------------------------------------------------

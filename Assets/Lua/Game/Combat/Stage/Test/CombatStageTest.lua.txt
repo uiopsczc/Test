@@ -3,13 +3,13 @@ local CombatStageTest = Class("CombatStageTest", CombatStageBase)
 
 function CombatStageTest:Init()
 	CombatStageTest.super.Init(self)
-	self.isShowFade = true
-	self.stageName = "CombatStageTest"
+	self:SetIsShowFade(true)
+	self:SetStageName("CombatStageTest")
 end
 
 function CombatStageTest:LoadPanels()
 	CombatStageTest.super.LoadPanels(self)
-	table.insert(self._panelList, global.client.uiManager:CreateChildPanel("UICombatTestPanel", UICombatTestPanel))
+	table.insert(self:GetPanelList(), global.client.uiManager:CreateChildPanel("UICombatTestPanel", UICombatTestPanel))
 end
 
 function CombatStageTest:Show()

@@ -14,8 +14,8 @@ function GameLevelBase:IsCanUpdate()
 	return self:IsStarted() and self:IsFinished() and GameLevelBase.super.IsCanUpdate(self)
 end
 
-function GameLevelBase:__Update(deltaTime, unscaledDeltaTime)
-	GameLevelBase.super.__Update(self, deltaTime, unscaledDeltaTime)
+function GameLevelBase:_Update(deltaTime, unscaledDeltaTime)
+	GameLevelBase.super._Update(self, deltaTime, unscaledDeltaTime)
 end
 
 function GameLevelBase:CheckWin()
@@ -39,7 +39,7 @@ function GameLevelBase:IsFinished()
 end
 
 function GameLevelBase:_Destroy()
-	GameLevelBase.super.__Destroy(self)
+	GameLevelBase.super._Destroy(self)
 end
 
 return GameLevelBase

@@ -4,7 +4,11 @@ local GameObjectEntity = Class("GameObjectEntity", TickObject)
 function GameObjectEntity:Init(...)
 	GameObjectEntity.super.Init(self, ...)
 	---@type TransformComponent
-	self.transformComponent = self:AddComponent(nil, TransformComponent)
+	self._transformComponent = self:AddComponent(nil, TransformComponent)
+end
+
+function GameObjectEntity:GetTransformComponent()
+	return self._transformComponent
 end
 
 return GameObjectEntity

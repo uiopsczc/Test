@@ -2,11 +2,11 @@
 local CombatUtil = {}
 
 function CombatUtil.GetTime()
-	return global.client.combat.time
+	return global.client.combat._time
 end
 
 function CombatUtil.GetFrame()
-	return global.client.combat.frame
+	return global.client.combat._frame
 end
 
 return CombatUtil

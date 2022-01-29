@@ -12,7 +12,7 @@ function UIScreenDragPanel:Init(moveRange)
 	self._deltaMoveScale = 1 / (ScreenConst.Screen_Height / ScreenConst.Design_Resolution_Height * 12)
 	self._deltaHeightScale = ScreenConst.Screen_Height / ScreenConst.Design_Resolution_Height * 0.15  -- 屏幕拖拽控制器缩放屏幕灵敏度
 	-- 设置摄像机移动范围
-	self._cameraManager = global.client.combat.cameraManager
+	self._cameraManager = global.client.combat._cameraManager
 	self._cameraManager:SetMainCameraMoveRange(moveRange)
 	-- 触摸数
 	self._touchCount = 0

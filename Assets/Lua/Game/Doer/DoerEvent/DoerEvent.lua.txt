@@ -10,9 +10,9 @@ function DoerEvent:Execute(desc, owner, doerAttrParser)
 		return false
 	end
 	local cfgDoerEventData = self:GetCfgDoerEventData()
-	local isNotTalk = cfgDoerEventData.is_not_talk -- 不弹出talk
+	local isNotTalk = cfgDoerEventData.isNotTalk -- 不弹出talk
 	--通用情况
-	local triggerDesc = cfgDoerEventData.trigger_desc
+	local triggerDesc = cfgDoerEventData.triggerDesc
 	local wordList = {}
 	if not string.IsNilOrWhiteSpace(triggerDesc) then
 		table.insert(wordList, doerAttrParser:ParseString(triggerDesc))
@@ -42,12 +42,12 @@ end
 ---@param doerAttrParser  DoerAttrParser
 function DoerEvent:CheckDoerEventTriggerCondition(doerAttrParser)
 	local cfgDoerEventData = CfgDoerEvent.get_by_id(self:GetId())
-	local isNotTalk = cfgDoerEventData.is_not_talk -- 不弹出talk
-	local triggerCondition = cfgDoerEventData.trigger_condition -- 触发条件
+	local isNotTalk = cfgDoerEventData.isNotTalk -- 不弹出talk
+	local triggerCondition = cfgDoerEventData.triggerCondition -- 触发条件
 	if not string.IsNilOrWhiteSpace(triggerCondition) and not doerAttrParser:ParseBoolean(triggerCondition) then
 		--不满足触发的情况
 		if not isNotTalk then
-			local isCanNotTriggerDesc = cfgDoerEventData.can_not_trigger_desc
+			local isCanNotTriggerDesc = cfgDoerEventData.isCanNotTriggerDesc
 			if string.IsNilOrWhiteSpace(isCanNotTriggerDesc) then
 				global.client.uiManager:Notify(global.Lang.GetText("现在不能触发此操作"))
 			else
@@ -60,12 +60,12 @@ function DoerEvent:CheckDoerEventTriggerCondition(doerAttrParser)
 end
 
 ---@param doerAttrParser  DoerAttrParser
-function DoerEvent:ExecuteStep(desc, doerEventStep_id, owner, doerAttrParser, wordList)
-	local cfgDoerEventStepData = CfgDoerEventStep.get_by_id(doerEventStep_id)
+function DoerEvent:ExecuteStep(desc, doerEventStepId, owner, doerAttrParser, wordList)
+	local cfgDoerEventStepData = CfgDoerEventStep.get_by_id(doerEventStepId)
 	local triggerCondition = cfgDoerEventStepData.trigger_condition -- 触发条件
 	if not string.IsNilOrWhiteSpace(triggerCondition) and not doerAttrParser:ParseBoolean(triggerCondition) then
 		--不满足触发的情况
-		local isCanNotTriggerDesc = cfgDoerEventStepData.can_not_trigger_desc
+		local isCanNotTriggerDesc = cfgDoerEventStepData.isCanNotTriggerDesc
 		if string.IsNilOrWhiteSpace(isCanNotTriggerDesc) then
 			table.insert(wordList, global.Lang.GetText("现在不能触发此操作"))
 		else
@@ -87,7 +87,7 @@ function DoerEvent:ExecuteStep(desc, doerEventStep_id, owner, doerAttrParser, wo
 		return 1
 	end
 
-	local executeDesc = cfgDoerEventStepData.execute_desc -- 执行提示语
+	local executeDesc = cfgDoerEventStepData.executeDesc -- 执行提示语
 	if not string.IsNilOrWhiteSpace(executeDesc) then
 		table.insert(wordList, doerAttrParser:ParseString(executeDesc))
 	end
@@ -100,7 +100,7 @@ function DoerEvent:ExecuteStep(desc, doerEventStep_id, owner, doerAttrParser, wo
 			doerAttrSetter:Set(attrName, attrValue, false)
 		end
 	end
-	local addAttrDict = cfgDoerEventStepData.add_attr_dict
+	local addAttrDict = cfgDoerEventStepData.addAttrDict
 	if not table.IsNilOrEmpty(addAttrDict) then
 		for attrName, attrValue in pairs(addAttrDict) do
 			doerAttrSetter:Set(attrName, attrValue, true)
@@ -120,13 +120,13 @@ function DoerEvent:ExecuteStep(desc, doerEventStep_id, owner, doerAttrParser, wo
 	end
 
 	-- 添加或者删除物品
-	local dealItemDict = cfgDoerEventStepData.deal_item_dict
+	local dealItemDict = cfgDoerEventStepData.dealItemDict
 	if not table.IsNilOrEmpty(dealItemDict) then
 		user:DealItems(dealItemDict, doerAttrParser)
 	end
 
 	-- 接受任务
-	local acceptMissionIds = cfgDoerEventStepData.accept_mission_ids
+	local acceptMissionIds = cfgDoerEventStepData.acceptMissionIds
 	if not table.IsNilOrEmpty(acceptMissionIds) then
 		for _, acceptMissionId in ipairs(acceptMissionIds) do
 			user:AcceptMission(owner, acceptMissionId)
@@ -135,7 +135,7 @@ function DoerEvent:ExecuteStep(desc, doerEventStep_id, owner, doerAttrParser, wo
 
 
 	-- 放弃任务
-	local giveUpMissionIds = cfgDoerEventStepData.give_up_mission_ids
+	local giveUpMissionIds = cfgDoerEventStepData.giveUpMissionIds
 	if not table.IsNilOrEmpty(giveUpMissionIds) then
 		for _, giveUpMissionId in ipairs(giveUpMissionIds) do
 			user:GiveUpMission(giveUpMissionId)
@@ -143,7 +143,7 @@ function DoerEvent:ExecuteStep(desc, doerEventStep_id, owner, doerAttrParser, wo
 	end
 
 	-- 添加已完成任务
-	local addFinishedMissionIds = cfgDoerEventStepData.add_finished_mission_ids
+	local addFinishedMissionIds = cfgDoerEventStepData.addFinishedMissionIds
 	if not table.IsNilOrEmpty(addFinishedMissionIds) then
 		for _, addFinishedMissionId in ipairs(addFinishedMissionIds) do
 			user:AddFinishedMissionId(addFinishedMissionId)
@@ -151,7 +151,7 @@ function DoerEvent:ExecuteStep(desc, doerEventStep_id, owner, doerAttrParser, wo
 	end
 
 	-- 删除已完成任务
-	local removeFinishedMissionIds = cfgDoerEventStepData.remove_finished_mission_ids
+	local removeFinishedMissionIds = cfgDoerEventStepData.removeFinishedMissionIds
 	if not table.IsNilOrEmpty(removeFinishedMissionIds) then
 		for _, removeFinishedMissionId in ipairs(removeFinishedMissionIds) do
 			user:RemoveFinishedMissionId(removeFinishedMissionId)

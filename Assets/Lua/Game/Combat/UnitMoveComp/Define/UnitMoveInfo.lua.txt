@@ -1,25 +1,63 @@
 ---@class UnitMoveInfo
----@field animationSpeed number
----@field animationName string
----@field speed number
----@field remainDuration number
----@field targetPos Vector3
----@field targetIndexInPath number
----@field path Vector3[]
----@field lookAtUnit Unit
----@field rotateRemainDuration number
----@field endRotation Quaternion
+---@field _animationSpeed number
+---@field _animationName string
+---@field _speed number
+---@field _remainDuration number
+---@field _targetPos Vector3
+---@field _targetIndexInPath number
+---@field _path Vector3[]
+---@field _lookAtUnit Unit
+---@field _rotateRemainDuration number
+---@field _endRotation Quaternion
 local UnitMoveInfo = Class("UnitMoveInfo")
 
 function UnitMoveInfo:Init()
-	self.animationSpeed = -1
-	self.animationName = AnimationNameConst.walk
-	self.speed = 1
-	self.rotateRemainDuration = 0
+	self._animationSpeed = -1
+	self._animationName = AnimationNameConst.walk
+	self._speed = 1
+	self._rotateRemainDuration = 0
 end
 
 function UnitMoveInfo:IsHasAnimationName()
-	return not string.IsNilOrWhiteSpace(self.animationName)
+	return not string.IsNilOrWhiteSpace(self._animationName)
 end
+
+function UnitMoveInfo:SetSpeed(speed)
+	self._speed = speed
+end
+
+function UnitMoveInfo:SetTargetPos(targetPos)
+	self._targetPos = targetPos
+end
+
+function UnitMoveInfo:SetEndRotation(endRotation)
+	self._endRotation = endRotation
+end
+
+function UnitMoveInfo:GetAnimationName()
+	return self._animationName
+end
+
+function UnitMoveInfo:GetAnimationSpeed()
+	return self._animationSpeed
+end
+
+function UnitMoveInfo:GetSpeed()
+	return self._speed
+end
+
+function UnitMoveInfo:GetRotateRemainDuration()
+	return self._rotateRemainDuration
+end
+
+function UnitMoveInfo:GetTargetPos()
+	return self._targetPos
+end
+
+function UnitMoveInfo:GetRemainDuration()
+	return self._remainDuration
+end
+
+
 
 return UnitMoveInfo

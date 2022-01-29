@@ -4,14 +4,14 @@ local AIBaseComp = Class("AIBaseComp", TickObject)
 ---@param unit Unit
 function AIBaseComp:Init(unit)
 	AIBaseComp.super.Init(self, unit)
-	self.unit = unit
-	self.useSkillInterval = 6 -- ai攻击间隔
-	self.lastUseSkillTime = CombatUtil.GetTime()
-	self.useSkillNextIndex = 1
+	self._unit = unit
+	self._useSkillInterval = 6 -- ai攻击间隔
+	self._lastUseSkillTime = CombatUtil.GetTime()
+	self._useSkillNextIndex = 1
 end
 
-function AIBaseComp:__Update(deltaTime, unscaledDeltaTime)
-	AIBaseComp.super.__Update(self, deltaTime, unscaledDeltaTime)
+function AIBaseComp:_Update(deltaTime, unscaledDeltaTime)
+	AIBaseComp.super._Update(self, deltaTime, unscaledDeltaTime)
 	self:DoBehavior(deltaTime)
 end
 
@@ -23,20 +23,20 @@ end
 ---@param isNoNormalAttack boolean @是否不普通攻击
 function AIBaseComp:Attack(targetUnitList, isNoNormalAttack)
 	-- 先尝试释放技能
-	if CombatUtil.GetTime() - self.lastUseSkillTime >= self.useSkillInterval then
-		for i = 1, #self.unit.skillIdList do
-			self.useSkillNextIndex = self.useSkillNextIndex + 1
-			if self.useSkillNextIndex > #self.unit.skillIdList then
-				self.useSkillNextIndex = 1
+	if CombatUtil.GetTime() - self._lastUseSkillTime >= self._useSkillInterval then
+		for i = 1, #self._unit:GetSkillIdList() do
+			self._useSkillNextIndex = self._useSkillNextIndex + 1
+			if self._useSkillNextIndex > #self._unit:GetSkillIdList() then
+				self._useSkillNextIndex = 1
 			end
-			local skillId = self.unit.skillIdList[self.useSkillNextIndex]
+			local skillId = self._unit:GetSkillIdList()[self._useSkillNextIndex]
 			-- 如果当前技能不能施放，则放下一个。
 			-- 且保存着已经施放技能index在self.use_spell_next_index，
 			-- 以使每个技能都有机会施放
 			if self:TryCastSkill(skillId, targetUnitList) then
 				-- 成功施放了技能才记录最后一次使用技能的时间，以保证三个技能都不能施放时，
 				-- 下一帧继续尝试施放
-				self.lastUseSkillTime = CombatUtil.GetTime()
+				self._lastUseSkillTime = CombatUtil.GetTime()
 				return true
 			end
 		end
@@ -56,17 +56,17 @@ end
 -- 第一个参数返回true时，请注意第二个参数值的返回
 ---@param targetUnitList Unit[]
 function AIBaseComp:TryCastSkill(spellId, targetUnitList, isCanAttackWithoutSeeingTarget)
-	if not spellId or not self.unit:IsCanCastSkill() then
+	if not spellId or not self._unit:IsCanCastSkill() then
 		return false
 	end
 	--  如果没到释放的时机，直接就返回false
-	if not self.unit:IsTimeToCastSpell(spellId) then
+	if not self._unit:IsTimeToCastSpell(spellId) then
 		return false
 	end
 
 	local cfgSpellData = CfgSpell.get_by_id(spellId)
 	local attackRange = cfgSpellData.range
-	local targetUnit = global.client.combat.spellManager:RecommendCast(self.unit, spellId, targetUnitList, isCanAttackWithoutSeeingTarget)[1]
+	local targetUnit = global.client.combat:GetSpellManager():RecommendCast(self._unit, spellId, targetUnitList, isCanAttackWithoutSeeingTarget)[1]
 
 	if not targetUnit then
 		return false
@@ -74,13 +74,13 @@ function AIBaseComp:TryCastSkill(spellId, targetUnitList, isCanAttackWithoutSeei
 
 	if isCanAttackWithoutSeeingTarget then
 		-- 玩家可以没有见到目标就放技能
-		return self.unit:CastSpell(spellId, targetUnit, isCanAttackWithoutSeeingTarget)
+		return self._unit:CastSpell(spellId, targetUnit, isCanAttackWithoutSeeingTarget)
 	end
 	-- ai需要有目标才放技能放技能
 	--  如果技能填了不强制面向目标，则控制的时候不走去攻击范围，但ai还是会走去攻击范围
 	if (not attackRange) or (isCanAttackWithoutSeeingTarget and cfgSpellData.isNotFaceToTarget) or
 		not self:IsNeedGotoAttackRange(targetUnit, attackRange) then
-		return self.unit:CastSpell(spellId, targetUnit, isCanAttackWithoutSeeingTarget)
+		return self._unit:CastSpell(spellId, targetUnit, isCanAttackWithoutSeeingTarget)
 	end
 	return false
 end
@@ -88,13 +88,13 @@ end
 ---@param isCanAttackWithoutSeeingTarget @是否能没有见到目标就攻击
 ---@param targetUnitList Unit[]
 function AIBaseComp:TryNormalAttack(targetUnitList, isCanAttackWithoutSeeingTarget)
-	local attackId = self.unit:GetNormalAttackId()
-	if not attackId or not self.unit:IsCanNormalAttack() then
+	local attackId = self._unit:GetNormalAttackId()
+	if not attackId or not self._unit:IsCanNormalAttack() then
 		return
 	end
 	local cfgSpellData = CfgSpell.get_by_id(attackId)
 	local attackRange = cfgSpellData.range
-	local targetUnit = global.client.combat.spellManager:RecommendCast(self.unit, attackId, targetUnitList, isCanAttackWithoutSeeingTarget)[1]
+	local targetUnit = global.client.combat:GetSpellManager():RecommendCast(self._unit, attackId, targetUnitList, isCanAttackWithoutSeeingTarget)[1]
 
 	if not targetUnit then
 		return
@@ -102,16 +102,16 @@ function AIBaseComp:TryNormalAttack(targetUnitList, isCanAttackWithoutSeeingTarg
 
 	if isCanAttackWithoutSeeingTarget then
 		-- 玩家可以没有见到目标就放技能
-		return self.unit:NormalAttack(targetUnit)
+		return self._unit:NormalAttack(targetUnit)
 	end
 	-- ai需要有目标才放技能
 	--  如果有目标，但是没到释放的时机，走去攻击区域
-	if not self.unit:IsTimeToCastSpell(attackId) then
+	if not self._unit:IsTimeToCastSpell(attackId) then
 		self:IsNeedGotoAttackRange(targetUnit, attackRange)
 		return true, true
 	elseif (not attackRange) or not self:IsNeedGotoAttackRange(targetUnit, attackRange) then
-		self.unit:LookAt(targetUnit, AnimationNameConst.attack)
-		return self.unit:NormalAttack(targetUnit)
+		self._unit:LookAt(targetUnit, AnimationNameConst.attack)
+		return self._unit:NormalAttack(targetUnit)
 	else
 		return true, true
 	end
@@ -122,18 +122,18 @@ end
 -- 小兵会选择一个合适的攻击位置，相互不重叠
 ---@param targetUnit Unit
 function AIBaseComp:IsNeedGotoAttackRange(targetUnit, attackRange)
-	local unit = self.unit
+	local unit = self._unit
 	local distance = unit:Distance(targetUnit)
-	if unit.isMoveOccupy and distance <= attackRange then
+	if unit:IsMoveOccupy() and distance <= attackRange then
 		return false
 	end
 
-	local newTargetPos = self:__FindPlaceInAttackRange(targetUnit, attackRange)
+	local newTargetPos = self:_FindPlaceInAttackRange(targetUnit, attackRange)
 
 	if newTargetPos then
 		-- 找到空位uni
 		if unit:GetPosition():Distance(newTargetPos) < 0.01 then
-			unit.isMoveOccupy = true
+			unit:SetIsMoveOccupy(true)
 			unit:MoveStop()
 			return false
 		else
@@ -143,7 +143,7 @@ function AIBaseComp:IsNeedGotoAttackRange(targetUnit, attackRange)
 	else
 		-- 找不到空位时，已在范围内直接可攻击，不再范围内直接朝原目标点前进
 		if distance <= attackRange then
-			unit.isMoveOccupy = true
+			unit:SetIsMoveOccupy(true)
 			return false
 		end
 		return true
@@ -151,9 +151,9 @@ function AIBaseComp:IsNeedGotoAttackRange(targetUnit, attackRange)
 end
 
 -- 检查位置是否被占用
-function AIBaseComp:__HasConflict(pos, radius)
-	for _, unit in global.client.combat.unitManager:GetUnitDict() do
-		if unit ~= self.unit and unit.isMoveOccupy and unit:Distance(pos) < radius * 0.9 then
+function AIBaseComp:_IsHasConflict(pos, radius)
+	for _, unit in global.client.combat:GetUnitManager():GetUnitDict() do
+		if unit ~= self._unit and unit:IsMoveOccupy() and unit:Distance(pos) < radius * 0.9 then
 			return true
 		end
 	end
@@ -162,8 +162,8 @@ end
 -- 给小兵选择一个合适的攻击位置，相互不重叠
 -- 找到返回路径，否则返回false
 ---@param targetUnit Unit
-function AIBaseComp:__FindPlaceInAttackRange(targetUnit, attackRange)
-	local unit = self.unit
+function AIBaseComp:_FindPlaceInAttackRange(targetUnit, attackRange)
+	local unit = self._unit
 	local selfUnitPos = unit:GetPosition()
 	local selfUnitRadius = unit:GetRadius()
 	local targetUnitPos = targetUnit:GetPosition()
@@ -171,24 +171,24 @@ function AIBaseComp:__FindPlaceInAttackRange(targetUnit, attackRange)
 	local bothRadius = selfUnitRadius + targetUnitRadius
 
 	-- 检查位置是否可以站在这个位置
-	local function __CanStand(pos)
+	local function _IsCanStand(pos)
 		if pos:Distance(targetUnitPos) > attackRange + bothRadius
-			or self:__HasConflict(pos, selfUnitRadius) then
+			or self:_IsHasConflict(pos, selfUnitRadius) then
 			return false
 		end
-		self.__findTargetUnitPos = targetUnitPos
-		self.__findStandPos = pos
+		self._findTargetUnitPos = targetUnitPos
+		self._findStandPos = pos
 		return true
 	end
 
 	local distance = Vector3.Distance(selfUnitPos, targetUnitPos)
 	-- 目前位置就可以站位
-	if distance < attackRange + bothRadius and not self:__HasConflict(selfUnitPos, selfUnitRadius) then
+	if distance < attackRange + bothRadius and not self:_IsHasConflict(selfUnitPos, selfUnitRadius) then
 		return selfUnitPos
 	end
-	if self.__findTargetUnitPos == targetUnit:GetPosition() and
-		not self:__HasConflict(self.__findStandPos, selfUnitRadius) then
-		return self.__findStandPos
+	if self._findTargetUnitPos == targetUnit:GetPosition() and
+		not self:_IsHasConflict(self._findStandPos, selfUnitRadius) then
+		return self._findStandPos
 	end
 
 	local baseDistance = math.min(distance, bothRadius + attackRange - 0.1)
@@ -196,7 +196,7 @@ function AIBaseComp:__FindPlaceInAttackRange(targetUnit, attackRange)
 	local basePos = targetUnitPos + baseDir * baseDistance
 
 	-- 测试直线走过去的位置
-	if __CanStand(basePos) then
+	if _IsCanStand(basePos) then
 		return basePos
 	end
 	local angle = 0
@@ -215,12 +215,12 @@ function AIBaseComp:__FindPlaceInAttackRange(targetUnit, attackRange)
 			break
 		end
 		leftPos = targetUnitPos + baseDir * baseDistance * Quaternion.AngleAxis(angle, Vector3.up)
-		if __CanStand(leftPos) then
+		if _IsCanStand(leftPos) then
 			return leftPos
 		end
 
 		rightPos = targetUnitPos + baseDir * baseDistance * Quaternion.AngleAxis(-angle, Vector3.up)
-		if __CanStand(rightPos) then
+		if _IsCanStand(rightPos) then
 			return rightPos
 		end
 	end

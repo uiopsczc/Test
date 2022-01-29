@@ -5,7 +5,7 @@ function UnitManager:Init(...)
 	UnitManager.super.Init(self, ...)
 	self._graphicComponent:SetGameObject(GameObject.Find("UnitManager") or GameObject("UnitManager"))
 	---@type table<string,Unit> @key是faction
-	self.unitDict = {}
+	self._unitDict = {}
 	self:InitFactionUnitDict()
 	self:InitFactionStateInfoDict()
 
@@ -17,9 +17,9 @@ function UnitManager:Init(...)
 	end)
 end
 
-function UnitManager:__Update(deltaTime, unscaledDeltaTime)
-	UnitManager.super.__Update(self, deltaTime, unscaledDeltaTime)
-	for _, unit in pairs(self.unitDict) do
+function UnitManager:_Update(deltaTime, unscaledDeltaTime)
+	UnitManager.super._Update(self, deltaTime, unscaledDeltaTime)
+	for _, unit in pairs(self._unitDict) do
 		if not unit:IsDead() and not unit:IsDestroyed() then
 			unit:ReduceSpellCoolDown(deltaTime)
 		end
@@ -33,8 +33,8 @@ function UnitManager:CreateUnit(argDict)
 	end
 	local unit = self:AddChild(argDict.guid, Unit)
 	unit:Build(argDict)
-	self.unitDict[unit._key] = unit
-	self.factionUnitDict[unit:GetFaction()][unit:GetGuid()] = unit
+	self._unitDict[unit:GetKey()] = unit
+	self._factionUnitDict[unit:GetFaction()][unit:GetGuid()] = unit
 	if unit.cfgUnitData.aiClassPathLua then
 		unit:RunAI(unit.cfgUnitData.aiClassPathLua)
 	end
@@ -59,16 +59,16 @@ function UnitManager:GetUnit(guid)
 end
 
 function UnitManager:GetUnitDict()
-	return self.unitDict
+	return self._unitDict
 end
 
 function UnitManager:RemoveUnit(guid)
 	local unit = self:GetUnit(guid)
 	if unit then
 		self:RemoveChild(guid)
-		self.unitDict[guid] = nil
+		self._unitDict[guid] = nil
 		if unit:GetFaction() then
-			self.factionUnitDict[unit:GetFaction()][guid] = nil
+			self._factionUnitDict[unit:GetFaction()][guid] = nil
 		end
 	end
 end
@@ -76,13 +76,13 @@ end
 function UnitManager:OnUnitGuidChange(oldGuid, newGuid)
 	local unit = self:GetUnit(oldGuid)
 	if unit and oldGuid ~= newGuid then
-		self.unitDict[oldGuid] = nil
+		self._unitDict[oldGuid] = nil
 		self._keyToChildDict[oldGuid] = nil
 		local index = table.IndexOf_Array(self.childrenKeyList, oldGuid)
 
-		self.unitDict[newGuid] = unit
+		self._unitDict[newGuid] = unit
 		self._keyToChildDict[newGuid] = unit
-		self.childrenKeyList[index] = newGuid
+		self._childrenKeyList[index] = newGuid
 	end
 end
 
@@ -91,16 +91,16 @@ end
 ----------------------------------------------------------------------
 function UnitManager:InitFactionUnitDict()
 	---@type table<string,table<string,Unit>>  @key是faction,sub_key是guid
-	self.factionUnitDict = {}
+	self._factionUnitDict = {}
 	for _, faction in ipairs(FactionConst.Faction_List) do
-		self.factionUnitDict[faction] = {}
+		self._factionUnitDict[faction] = {}
 	end
 end
 
 function UnitManager:InitFactionStateInfoDict()
 	-- 初始化阵营间能否攻击，加血等
 	---@type table<string,table<string,FactionState>>
-	self.factionState_dict = {}
+	self._factionStateDict = {}
 
 	self:SetFactionStateIsCanAttack(FactionConst.A_Faction, FactionConst.A_Faction, false)
 	self:SetFactionStateIsCanHelp(FactionConst.A_Faction, FactionConst.A_Faction, true)
@@ -120,15 +120,15 @@ end
 -- 2. friend 判断是否自己人
 function UnitManager:CheckFaction(faction1, faction2, checkState)
 	if faction2 then
-		local factionState = self.factionState_dict[faction1][faction2]
+		local factionState = self._factionStateDict[faction1][faction2]
 		-- 找敌人
 		if checkState == "enemy" then
-			if faction1 ~= faction2 and factionState.is_can_attack then
+			if faction1 ~= faction2 and factionState.isCanAttack then
 				return true
 			end
 		elseif checkState == "friend" then
 			-- 找自己人
-			if faction1 == faction2 or factionState.is_can_help then
+			if faction1 == faction2 or factionState.isCanHelp then
 				return true
 			end
 		else
@@ -140,13 +140,13 @@ end
 
 function UnitManager:SetFactionState(faction1, faction2, stateKey, stateValue, isBothSet)
 	if faction1 and faction2 then
-		if not self.factionState_dict[faction1] then
-			self.factionState_dict[faction1] = {}
+		if not self._factionStateDict[faction1] then
+			self._factionStateDict[faction1] = {}
 		end
-		if not self.factionState_dict[faction1][faction2] then
-			self.factionState_dict[faction1][faction2] = FactionState.New()
+		if not self._factionStateDict[faction1][faction2] then
+			self._factionStateDict[faction1][faction2] = FactionState.New()
 		end
-		self.factionState_dict[faction1][faction2][stateKey] = stateValue
+		self._factionStateDict[faction1][faction2][stateKey] = stateValue
 
 		if isBothSet then
 			self:SetFactionState(faction2, faction1, stateKey, stateValue)
@@ -155,18 +155,18 @@ function UnitManager:SetFactionState(faction1, faction2, stateKey, stateValue, i
 end
 
 function UnitManager:SetFactionStateIsCanAttack(faction1, faction2, isCanAttack, isBothSet)
-	self:SetFactionState(faction1, faction2, "is_can_attack", isCanAttack, isBothSet)
+	self:SetFactionState(faction1, faction2, "isCanAttack", isCanAttack, isBothSet)
 end
 
 function UnitManager:SetFactionStateIsCanHelp(faction1, faction2, isCanHelp, isBothSet)
-	self:SetFactionState(faction1, faction2, "is_can_help", isCanHelp, isBothSet)
+	self:SetFactionState(faction1, faction2, "isCanHelp", isCanHelp, isBothSet)
 end
 
 function UnitManager:OnUnitFactionChange(unitGuid, oldFaction, newFaction)
 	local unit = self:GetUnit(unitGuid)
 	if unit and oldFaction ~= newFaction then
-		self.factionUnitDict[oldFaction][unitGuid] = nil
-		self.factionUnitDict[newFaction][unitGuid] = unit
+		self._factionUnitDict[oldFaction][unitGuid] = nil
+		self._factionUnitDict[newFaction][unitGuid] = unit
 	end
 end
 
@@ -183,7 +183,7 @@ end
 function UnitManager:GetFactionUnitList(factionList)
 	local factionUnitList = {}
 	for _, faction in ipairs(factionList) do
-		for _, unit in pairs(self.factionUnitDict[faction]) do
+		for _, unit in pairs(self._factionUnitDict[faction]) do
 			table.insert(factionUnitList, unit)
 		end
 	end
@@ -220,7 +220,7 @@ function UnitManager:SelectUnit(conditionDict)
 	local checkUnitList = candidateList or self:GetFactionUnitList(matchFactionList)
 	for _, unit in ipairs(checkUnitList) do
 		if not unit:IsDestroyed() and not unit:IsDead() and
-			self:__CheckUnit(unit, origin, rangeInfo, faction, scope, isOnlyAttackable, isCanSelectHideUnit) then
+			self:_CheckUnit(unit, origin, rangeInfo, faction, scope, isOnlyAttackable, isCanSelectHideUnit) then
 			table.insert(targetUnitList, unit)
 		end
 	end
@@ -235,8 +235,8 @@ end
 
 ---@param unit Unit
 ---@param origin @原点
-function UnitManager:__CheckUnit(unit, origin, rangeInfo, faction, scope, isOnlyAttackable, isCanSelectHideUnit)
-	if unit.cfgUnitData.type == "技能物体" then
+function UnitManager:_CheckUnit(unit, origin, rangeInfo, faction, scope, isOnlyAttackable, isCanSelectHideUnit)
+	if unit._cfgUnitData.type == "技能物体" then
 		return
 	end
 	if isOnlyAttackable then

@@ -8,7 +8,15 @@ function DoerFactory:Init()
 	self._idDict = {} -- key是id,sub_key是rid
 end
 
-function DoerFactory:GetClassPath(id)
+function DoerFactory:GetClassPath()
+	return self._defaultDoerClassPath
+end
+
+function DoerFactory:SetDefaultDoerClassPath(defaultDoerClassPath)
+	self._defaultDoerClassPath = defaultDoerClassPath
+end
+
+function DoerFactory:GetDefaultDoerClassPath()
 	return self._defaultDoerClassPath
 end
 

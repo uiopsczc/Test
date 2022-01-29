@@ -159,6 +159,10 @@ function StageBase:SetStageName(stageName)
 	self._stageName = stageName
 end
 
+function StageBase:GetPanelList()
+	return self._panelList
+end
+
 
 function StageBase:IEPreDestroy()
 	global.client.uiManager:Reset()

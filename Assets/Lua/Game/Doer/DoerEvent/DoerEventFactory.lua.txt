@@ -3,16 +3,16 @@ local DoerEventFactory = Class("DoerEventFactory", DoerFactory)
 
 function DoerEventFactory:Init()
 	DoerEventFactory.super.Init(self)
-	self._defaultDoerClassPath = "Game.Doer.DoerEvent.DoerEvent"
+	self:SetDefaultDoerClassPath("Game.Doer.DoerEvent.DoerEvent")
 	---@type table<string,DoerEvent>
-	self.doerEventDict = {}
+	self._doerEventDict = {}
 	for _, cfgDoerEventData in ipairs(CfgDoerEvent.All()) do
 		self:LoadDoerEvent(cfgDoerEventData.id)
 	end
 end
 
 function DoerEventFactory:GetClassPath(id)
-	return string.IsNilOrEmpty(self:GetCfgDoerEventData(id).class_path_lua) and self._defaultDoerClassPath or self:GetCfgDoerEventData(id).class_path_lua
+	return string.IsNilOrEmpty(self:GetCfgDoerEventData(id).class_path_lua) and self:GetDefaultDoerClassPath() or self:GetCfgDoerEventData(id).class_path_lua
 end
 
 function DoerEventFactory:GetCfgDoerEventData(id)
@@ -23,22 +23,26 @@ end
 function DoerEventFactory:_NewDBase(idOrRid)
 	return DoerEventDBase.New(idOrRid)
 end
--------------------------------------------------------------------------------------
+
+----------------------------------------------------------------------
+--
+----------------------------------------------------------------------
 function DoerEventFactory:LoadDoerEvent(id)
 	local classPath = self:GetClassPath(id)
+	---@type DoerEvent
 	local doerEvent = self:AddChildWithoutInit(nil, require(classPath))
 	local doerEventDBase = self:_NewDBase(id)
-	doerEvent.factory = self
+	doerEvent:SetFactory(self)
 	doerEvent:SetDBase(doerEventDBase)
 	doerEventDBase:SetDoer(doerEvent)
 	doerEvent:Init(doerEvent._key)
 	doerEvent:PostInit()
 	doerEvent:SetIsEnabled(true, false)
-	self.doerEventDict[id] = doerEvent
+	self._doerEventDict[id] = doerEvent
 end
 
 function DoerEventFactory:GetDoerEvent(id)
-	return self.doerEventDict[id]
+	return self._doerEventDict[id]
 end
 
 return DoerEventFactory

@@ -1,6 +1,22 @@
 ---@class ComboInfo
----@field nextTime number @下次触发combo的时间
----@field nextIndex number @下次触发combo的index
+---@field _nextTime number @下次触发combo的时间
+---@field _nextIndex number @下次触发combo的index
 local ComboInfo = {}
+
+function ComboInfo:SetNextTime(nextTime)
+	self._nextTime = nextTime
+end
+
+function ComboInfo:GetNextTime()
+	return self._nextTime
+end
+
+function ComboInfo:SetNextIndex(nextIndex)
+	self._nextIndex = nextIndex
+end
+
+function ComboInfo:GetNextIndex()
+	return self._nextIndex
+end
 
 return ComboInfo

@@ -4,13 +4,13 @@ local BuffManager = Class("BuffManager", TickObject)
 ---@param unit Unit
 function BuffManager:Init(unit)
 	BuffManager.super.Init(self)
-	self.unit = unit
+	self._unit = unit
 	---@type table<string,number>
-	self.stateDict = {}
+	self._stateDict = {}
 	---@type table<string,Buff>
-	self.buffDict = {}
+	self._buffDict = {}
 	---@type table<string,Buff[]>
-	self.buffListDict = {} -- 一个buff_id可能有多个相同的buff（不同时长，效果累加）同时存在，（效果不累加的放在buff类中处理）
+	self._buffListDict = {} -- 一个buff_id可能有多个相同的buff（不同时长，效果累加）同时存在，（效果不累加的放在buff类中处理）
 end
 
 ---@param sourceUnit Unit
@@ -19,23 +19,23 @@ function BuffManager:AddBuff(buffId, sourceUnit, forceDuration, argDict)
 	local duration = forceDuration or (not cfgBuffData.duration or cfgBuffData.duration == 0) and math.huge or cfgBuffData.duration
 	local sourceSpell = argDict.sourceSpell
 	local type1 = cfgBuffData.type1 -- buff or debuff
-	if type1 == "debuff" and self.unit:IsInvincible() then
+	if type1 == "debuff" and self._unit:IsInvincible() then
 		return
 	end
-	if self.unit:IsImmuneControl() and (cfgBuffData.type2 == "控制" or (cfgBuffData.state and StateConst.Control_State_Dict[cfgBuffData.state])) then
+	if self._unit:IsImmuneControl() and (cfgBuffData.type2 == "控制" or (cfgBuffData.state and StateConst.Control_State_Dict[cfgBuffData.state])) then
 		--显示免疫
 		return
 	end
 
-	if cfgBuffData.isUnique and self:HasBuff(buffId) then
+	if cfgBuffData.isUnique and self:IsHasBuff(buffId) then
 		-- cfgBuffData.is_unique是指该buff只有一个生效
-		self.buffListDict[buffId][1]:CreateBuffCache(duration, sourceUnit, sourceSpell, argDict)
+		self._buffListDict[buffId][1]:CreateBuffCache(duration, sourceUnit, sourceSpell, argDict)
 	else
 		---@type Buff
 		local buff = self:AddChild(nil, Buff, self, buffId)
 		buff:CreateBuffCache(duration, sourceUnit, sourceSpell, argDict)
-		self.buffDict[buff._key] = buff
-		local buffList = table.GetOrAddDefault_Dict(self.buffListDict, buffId, function()
+		self._buffDict[buff:GetKey()] = buff
+		local buffList = table.GetOrAddDefault_Dict(self._buffListDict, buffId, function()
 			return {}
 		end)
 		table.insert(buffList, buff)
@@ -50,56 +50,56 @@ function BuffManager:RemoveBuff(buffIdList, sourceUnitGuid, spellGuid)
 		curBuffIdList = buffIdList
 	end
 	for _, buffId in ipairs(curBuffIdList) do
-		self:__RemoveBuff(buffId, sourceUnitGuid, spellGuid)
+		self:_RemoveBuff(buffId, sourceUnitGuid, spellGuid)
 	end
 end
 
 --  可能删除多个buff
-function BuffManager:__RemoveBuff(buffId, sourceUnitGuid, sourceSpellGuid)
-	if not self.buffListDict[buffId] then
+function BuffManager:_RemoveBuff(buffId, sourceUnitGuid, sourceSpellGuid)
+	if not self._buffListDict[buffId] then
 		return
 	end
-	for i = #self.buffListDict[buffId], 1, -1 do
-		self.buffListDict[buffId][i]:RemoveBuffCache(sourceUnitGuid, sourceSpellGuid)
+	for i = #self._buffListDict[buffId], 1, -1 do
+		self._buffListDict[buffId][i]:RemoveBuffCache(sourceUnitGuid, sourceSpellGuid)
 	end
 end
 
 ---@param buff Buff
 function BuffManager:RemoveBuffByBuff(buff)
-	self.buffDict[buff._key] = nil
-	table.RemoveByValue_Array(self.buffListDict[buff.buffId], buff)
-	self:RemoveChild(buff._key)
+	self._buffDict[buff:GetKey()] = nil
+	table.RemoveByValue_Array(self._buffListDict[buff._buffId], buff)
+	self:RemoveChild(buff:GetKey())
 end
 
-function BuffManager:HasBuff(buffId)
-	if not self.buffListDict[buffId] then
+function BuffManager:IsHasBuff(buffId)
+	if not self._buffListDict[buffId] then
 		return false
 	end
-	if #self.buffListDict[buffId] == 0 then
+	if #self._buffListDict[buffId] == 0 then
 		return false
 	end
 	return true
 end
 
 function BuffManager:GetBuffCount()
-	return table.Count(self.buffDict)
+	return table.Count(self._buffDict)
 end
 
 function BuffManager:GetDebuffCount()
 	local count = 0
-	for _, buff in pairs(self.buffDict) do
-		if buff.cfgBuffData.type1 == "debuff" then
+	for _, buff in pairs(self._buffDict) do
+		if buff._cfgBuffData.type1 == "debuff" then
 			count = count + 1
 		end
 	end
 	return count
 end
 
-function BuffManager:HasState(stateName)
+function BuffManager:IsHasState(stateName)
 	if string.IsNilOrWhiteSpace(stateName) then
 		return false
 	end
-	local currentValue = table.GetOrAddDefault_Dict(self.stateDict, stateName, function()
+	local currentValue = table.GetOrAddDefault_Dict(self._stateDict, stateName, function()
 		return 0
 	end)
 	return currentValue > 0
@@ -109,30 +109,30 @@ function BuffManager:AddState(stateName)
 	if string.IsNilOrWhiteSpace(stateName) then
 		return
 	end
-	local currentValue = table.GetOrAddDefault_Dict(self.stateDict, stateName, function()
+	local currentValue = table.GetOrAddDefault_Dict(self._stateDict, stateName, function()
 		return 0
 	end)
 	currentValue = currentValue + 1
-	self.stateDict[stateName] = currentValue
+	self._stateDict[stateName] = currentValue
 
-	if currentValue == 1 and self.unit then
+	if currentValue == 1 and self._unit then
 		--第一次添加
 		if stateName == StateConst.ImmuneControl then
 			self:RemoveControlBuff()
 		end
 		if stateName == StateConst.Hide then
-			self.unit:UpdateHideState()
+			self._unit:UpdateHideState()
 		end
 		if stateName == StateConst.Expose then
-			self.unit:UpdateHideState()
+			self._unit:UpdateHideState()
 		end
 		if stateName == StateConst.Silent then
-			self:Broadcast(UnitEventNameConst.On_Unit_Is_Silent_Change, self.unit, not self:HasState(StateConst.Silent), self:HasState(StateConst.Silent))
+			self:Broadcast(UnitEventNameConst.On_Unit_Is_Silent_Change, self._unit, not self:IsHasState(StateConst.Silent), self:IsHasState(StateConst.Silent))
 		end
 		if stateName == StateConst.Confused then
-			self:Broadcast(UnitEventNameConst.On_Unit_Is_Confused_Change, self.unit, not self:HasState(StateConst.Confused), self:HasState(StateConst.Confused))
+			self:Broadcast(UnitEventNameConst.On_Unit_Is_Confused_Change, self._unit, not self:IsHasState(StateConst.Confused), self:IsHasState(StateConst.Confused))
 		end
-		self.unit:UpdateMixedStates()
+		self._unit:UpdateMixedStates()
 	end
 end
 
@@ -140,7 +140,7 @@ function BuffManager:RemoveState(stateName)
 	if string.IsNilOrWhiteSpace(stateName) then
 		return
 	end
-	local currentValue = table.GetOrAddDefault_Dict(self.stateDict, stateName, function()
+	local currentValue = table.GetOrAddDefault_Dict(self._stateDict, stateName, function()
 		return 0
 	end)
 	currentValue = currentValue - 1
@@ -148,42 +148,48 @@ function BuffManager:RemoveState(stateName)
 		ErrorFormat("%s state_name = %s", stateName, currentValue)
 	end
 	currentValue = math.max(0, currentValue)
-	self.stateDict[stateName] = currentValue
+	self._stateDict[stateName] = currentValue
 
-	if self.current_value == 0 and self.unit then
+	if self.currentValue == 0 and self._unit then
 		-- 最后一次删除
 		if stateName == StateConst.Hide then
-			self.unit:UpdateHideState()
+			self._unit:UpdateHideState()
 		end
 		if stateName == StateConst.Expose then
-			self.unit:UpdateHideState()
+			self._unit:UpdateHideState()
 		end
 		if stateName == StateConst.Silent then
-			self:Broadcast(UnitEventNameConst.On_Unit_Is_Silent_Change, self.unit, not self:HasState(StateConst.Silent), self:HasState(StateConst.Silent))
+			self:Broadcast(UnitEventNameConst.On_Unit_Is_Silent_Change, self._unit, not self:IsHasState(StateConst.Silent), self:IsHasState(StateConst.Silent))
 		end
 		if stateName == StateConst.Confused then
-			self:Broadcast(UnitEventNameConst.On_Unit_Is_Confused_Change, self.unit, not self:HasState(StateConst.Confused), self:HasState(StateConst.Confused))
+			self:Broadcast(UnitEventNameConst.On_Unit_Is_Confused_Change, self._unit, not self:IsHasState(StateConst.Confused), self:IsHasState(StateConst.Confused))
 		end
-		self.unit:UpdateMixedStates()
+		self._unit:UpdateMixedStates()
 	end
 end
 
 -- 去掉控制类型的buff
 function BuffManager:RemoveControlBuff()
-	for _, buffGuid in ipairs(table.Keys_Dict(self.buffDict)) do
-		local buff = self.buffDict[buffGuid]
-		if not buff:IsDestroyed() and buff.cfgBuffData.type2 == "控制" then
+	for _, buffGuid in ipairs(table.Keys_Dict(self._buffDict)) do
+		local buff = self._buffDict[buffGuid]
+		if not buff:IsDestroyed() and buff._cfgBuffData.type2 == "控制" then
 			self:RemoveBuff(buffGuid)
 		end
 	end
 end
 
+----------------------------------------------------------------------
+-- SetGet相关
+----------------------------------------------------------------------
+function BuffManager:GetUnit()
+	return self._unit
+end
+
 function BuffManager:_Destroy()
-	BuffManager.super.__Destroy(self)
-	for _, buff_id in ipairs(table.Keys_Dict(self.buffDict)) do
+	BuffManager.super._Destroy(self)
+	for _, buff_id in ipairs(table.Keys_Dict(self._buffDict)) do
 		self:RemoveBuff(buff_id)
 	end
-
 end
 
 return BuffManager

@@ -1,14 +1,46 @@
 ---@class SpellInfo:Class
----@field spell_id
----@field coolDownRate
----@field coolDownRemainDuration
----@field level
+---@field _spellId
+---@field _coolDownRate
+---@field _coolDownRemainDuration
+---@field _level
 local SpellInfo = Class("SpellInfo")
 
 function SpellInfo:GetCoolDownPct()
-	local cfgSpellData = CfgSpell.get_by_id(self.spell_id)
+	local cfgSpellData = CfgSpell.get_by_id(self._spellId)
 	local coolDownDuration = cfgSpellData.coolDownDuration
-	return self.coolDownRemainDuration / (coolDownDuration * self.coolDownRate)
+	return self._coolDownRemainDuration / (coolDownDuration * self._coolDownRate)
+end
+
+function SpellInfo:SetSpellId(spellId)
+	self._spellId = spellId
+end
+
+function SpellInfo:GetSpellId()
+	return self._spellId
+end
+
+function SpellInfo:SetCoolDownRate(coolDownRate)
+	self._coolDownRate = coolDownRate
+end
+
+function SpellInfo:GetCoolDownRate()
+	return self._coolDownRate
+end
+
+function SpellInfo:SetCoolDownRemainDuration(coolDownRemainDuration)
+	self._coolDownRemainDuration = coolDownRemainDuration
+end
+
+function SpellInfo:GetCoolDownRemainDuration()
+	return self._coolDownRemainDuration
+end
+
+function SpellInfo:SetLevel(level)
+	self._level = level
+end
+
+function SpellInfo:GetLevel()
+	return self._level
 end
 
 return SpellInfo

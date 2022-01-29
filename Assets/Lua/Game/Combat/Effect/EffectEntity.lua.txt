@@ -4,14 +4,14 @@ local EffectEntity = Class("EffectBase", GameObjectEntity)
 ---@param unit Unit
 function EffectEntity:Init(effectId, unit)
 	EffectEntity.super.Init(self)
-	self.unit = unit
-	self.effectId = effectId
-	self.cfgEffectData = CfgEffect.get_by_id(effectId)
-	self._graphicComponent:SetPrefabPath(self.cfgEffectData.prefabPath)
+	self._unit = unit
+	self._effectId = effectId
+	self._cfgEffectData = CfgEffect.get_by_id(effectId)
+	self:GetGraphicComponent():SetPrefabPath(self._cfgEffectData.prefabPath)
 end
 
 function EffectEntity:CreateGraphicComponent()
-	return self:AddComponent(nil, EffectGraphicComponent, global.client.combat.effectManager._resLoadComponent)
+	return self:AddComponent(nil, EffectGraphicComponent, global.client.combat._effectManager:GetResLoadComponent())
 end
 
 function EffectEntity:OnAllAssetsLoadDone()
@@ -21,33 +21,46 @@ end
 
 function EffectEntity:InstantiateGameObject(prefab)
 	---@type EffectInfo
-	self.effectInfo = global.client.combat.effectManager:__CreateEffect(prefab, self)
+	self.effectInfo = global.client.combat._effectManager:_CreateEffect(prefab, self)
 	self.effectInfo.clone:SetActive(false)
 	return self.effectInfo.clone
 end
 
 function EffectEntity:OnEffectReach()
-	self._parent:RemoveChild(self._key)
+	self._parent:RemoveChild(self:GetKey())
 end
 
 function EffectEntity:OnNoRemainDuration()
-	self._parent:RemoveChild(self._key)
+	self._parent:RemoveChild(self:GetKey())
 end
 
 function EffectEntity:ApplyToTransformComponent(position, eulerAngles, scale)
 	if position then
-		self.transformComponent:SetPosition(position)
+		self:GetTransformComponent():SetPosition(position)
 	end
 	if eulerAngles then
-		self.transformComponent:SetEulerAngles(eulerAngles)
+		self:GetTransformComponent():SetEulerAngles(eulerAngles)
 	end
 	if scale then
-		self.transformComponent:SetScale(scale)
+		self:GetTransformComponent():SetScale(scale)
 	end
 end
 
+----------------------------------------------------------------------
+-- SetGet相关
+----------------------------------------------------------------------
+function EffectEntity:GetEffectId()
+	return self._effectId
+end
+
+function EffectEntity:GetCfgEffectData()
+	return self._cfgEffectData
+end
+
+
+
 function EffectEntity:_Destroy()
-	EffectEntity.super.__Destroy(self)
+	EffectEntity.super._Destroy(self)
 end
 
 return EffectEntity

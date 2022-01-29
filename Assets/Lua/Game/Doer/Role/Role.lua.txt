@@ -13,7 +13,9 @@ function Role:GetCfgRoleData()
 	CfgRole.get_by_id(self:GetId())
 end
 
---------------------------OnXXX-------------------
+----------------------------------------------------------------------
+-- OnXXX
+----------------------------------------------------------------------
 function Role:OnCheckAddRole(user)
 	return true
 end

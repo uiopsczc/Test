@@ -3,11 +3,23 @@ local SceneMapInfo = Class("SceneMapInfo")
 
 function SceneMapInfo:Init(grids, projectGrids, offsetPosX, offsetPosY)
 	---@type number[][]
-	self.grids = grids
+	self._grids = grids
 	---@type number[][]
-	self.projectGrids = projectGrids
+	self._projectGrids = projectGrids
 	---@type Vector2
-	self.offsetPos = Vector2.New(offsetPosX, offsetPosY)
+	self._offsetPos = Vector2.New(offsetPosX, offsetPosY)
+end
+
+function SceneMapInfo:GetGrids()
+	return self._grids
+end
+
+function SceneMapInfo:GetProjectGrids()
+	return self._projectGrids
+end
+
+function SceneMapInfo:GetOffsetPos()
+	return self._offsetPos
 end
 
 return SceneMapInfo

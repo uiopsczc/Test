@@ -1,6 +1,24 @@
 ---@class UnitMaterialInfo:Class
----@field material CS.UnityEngine.Material
----@field color CS.UnityEngine.Color
+---@field _material CS.UnityEngine.Material
+---@field _color CS.UnityEngine.Color
 local UnitMaterialInfo = Class("UnitMaterialInfo")
+
+function UnitMaterialInfo:SetMaterial(_material)
+	self._material = _material
+end
+
+function UnitMaterialInfo:GetMaterial()
+	return self._material
+end
+
+function UnitMaterialInfo:SetColor(color)
+	self._color = color
+end
+
+function UnitMaterialInfo:GetColor()
+	return self._color
+end
+
+
 
 return UnitMaterialInfo

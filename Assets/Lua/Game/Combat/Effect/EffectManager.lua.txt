@@ -3,12 +3,12 @@ local EffectManager = Class("EffectManager", TickObject)
 
 function EffectManager:Init()
 	EffectManager.super.Init(self)
-	self._resLoadComponent._resLoad._isNotCheckDestroy = true --effectManager销毁的时候才去把assetBundle销毁
+	self:GetResLoadComponent():GetResLoad():SetIsNotCheckDestroy(true)  --effectManager销毁的时候才去把assetBundle销毁
 	self:AddListener(UnitEventNameConst.On_Unit_Destroy, function(...)
 		self:DestroyByUnit(...)
 	end)
 	---@type string[]
-	self.gameObjectPoolNameList = {}
+	self._gameObjectPoolNameList = {}
 end
 
 
@@ -23,12 +23,12 @@ end
 function EffectManager:CreateEffectEntity(effectId, unit, pos, eulerAngles)
 	---@type EffectEntity
 	local effectEntity = self:AddChild(nil, EffectEntity, effectId, unit)
-	table.Append_Array(self.gameObjectPoolNameList, effectEntity._graphicComponent:GetEffectGameObjectPoolName(), true)
+	table.Append_Array(self._gameObjectPoolNameList, effectEntity:GetGraphicComponent():GetEffectGameObjectPoolName(), true)
 	if pos then
-		effectEntity.transformComponent:SetPosition(pos)
+		effectEntity:GetTransformComponent():SetPosition(pos)
 	end
 	if eulerAngles then
-		effectEntity.transformComponent:SetEulerAngles(eulerAngles)
+		effectEntity:GetTransformComponent():SetEulerAngles(eulerAngles)
 	end
 	return effectEntity
 end
@@ -56,7 +56,7 @@ end
 function EffectManager:CreateGroundEffectEntity(effectId, unit, position, eulerAngles, duration, isHide)
 	local effectEntity = self:CreateEffectEntity(effectId, unit, position, eulerAngles)
 	effectEntity:AddComponent(nil, DurationEffectComponent, duration)
-	effectEntity._graphicComponent:SetIsShow(not isHide)
+	effectEntity:GetGraphicComponent():SetIsShow(not isHide)
 	return effectEntity
 end
 
@@ -99,9 +99,9 @@ function EffectManager:CreateMortarMissileEffectEntity(effectId, unit, sourceIPo
 	return effectEntity
 end
 
-
------------------------------------------------------------------------------------------------------
-
+----------------------------------------------------------------------
+--
+----------------------------------------------------------------------
 function EffectManager:RemoveEffectEntity(key)
 	self:RemoveChild(key)
 end
@@ -114,18 +114,18 @@ end
 -- 销毁
 function EffectManager:DestroyByUnit(unit)
 	for _, child in self:ForeachChildOfType(EffectEntity) do
-		if child.unit == unit then
-			self:RemoveEffectEntity(child.key)
+		if child:GetUnit() == unit then
+			self:RemoveEffectEntity(child:GetKey())
 		end
 	end
 end
 
 function EffectManager:_Destroy()
-	EffectManager.super.__Destroy(self)
-	for _, poolName in ipairs(self.gameObjectPoolNameList) do
+	EffectManager.super._Destroy(self)
+	for _, poolName in ipairs(self._gameObjectPoolNameList) do
 		PoolCatManagerUtil.RemovePool(poolName)
 	end
-	table.Clear(self.gameObjectPoolNameList)
+	table.Clear(self._gameObjectPoolNameList)
 end
 
 return EffectManager

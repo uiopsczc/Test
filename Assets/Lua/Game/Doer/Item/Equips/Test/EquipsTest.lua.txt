@@ -3,13 +3,13 @@ function EquipsTest.Test()
 	local user = global.client.user
 	user:AddItems("5", 5)
 	user:AddItems("6", 6)
-	user:PutOnEquip("5", user.mainRole)
-	user:PutOnEquip("6", user.mainRole)
+	user:PutOnEquip("5", user._mainRole)
+	user:PutOnEquip("6", user._mainRole)
 
 	local dict = {}
-	local dict_tmp = {}
-	user:DoSave(dict, dict_tmp)
-	log(dict, dict_tmp)
+	local dictTmp = {}
+	user:DoSave(dict, dictTmp)
+	log(dict, dictTmp)
 end
 
 return EquipsTest

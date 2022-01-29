@@ -868,6 +868,10 @@ function AbstractEntity:SetIsNotDeleteComponentRelationShipImmediately(isNotDele
 	self._isNotDeleteComponentRelationShipImmediately = isNotDeleteComponentRelationShipImmediately
 end
 
+function AbstractEntity:GetParent()
+	return self._parent
+end
+
 ----------------------------------------------------------------------
 -- Destroy相关
 ----------------------------------------------------------------------

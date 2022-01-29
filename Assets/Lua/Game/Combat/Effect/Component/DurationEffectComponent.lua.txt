@@ -4,36 +4,36 @@ local DurationEffectComponent = Class("DurationEffectComponent", EffectComponent
 function DurationEffectComponent:Init(duration)
 	DurationEffectComponent.super.Init(self)
 	self:SetDuration(duration)
-	self.noRemainDurationCallbackList = {}
+	self._noRemainDurationCallbackList = {}
 end
 
 ---@param callback fun()
 function DurationEffectComponent:AddNoRemainDurationCallback(callback)
-	table.insert(self.noRemainDurationCallbackList, callback)
+	table.insert(self._noRemainDurationCallbackList, callback)
 end
 
 ---@param duration number
 function DurationEffectComponent:SetDuration(duration)
-	self.duration = duration
-	self.remainDuration = duration
+	self._duration = duration
+	self._remainDuration = duration
 end
 
 function DurationEffectComponent:_Update(deltaTime, unscaledDeltaTime)
-	DurationEffectComponent.super.__Update(self, deltaTime, unscaledDeltaTime)
-	self.remainDuration = self.remainDuration - deltaTime
-	if self.remainDuration <= 0 then
+	DurationEffectComponent.super._Update(self, deltaTime, unscaledDeltaTime)
+	self._remainDuration = self._remainDuration - deltaTime
+	if self._remainDuration <= 0 then
 		self:OnNoRemainDuration()
 	end
 end
 
 function DurationEffectComponent:OnNoRemainDuration()
-	self.effectEntity:OnNoRemainDuration()
-	DelegateUtil.InvokeCallback(self.noRemainDurationCallbackList)
+	self._effectEntity:OnNoRemainDuration()
+	DelegateUtil.InvokeCallback(self._noRemainDurationCallbackList)
 end
 
-function DurationEffectComponent:__Destroy()
-	DurationEffectComponent.super.__Destroy(self)
-	self.noRemainDurationCallbackList = nil
+function DurationEffectComponent:_Destroy()
+	DurationEffectComponent.super._Destroy(self)
+	self._noRemainDurationCallbackList = nil
 end
 
 return DurationEffectComponent

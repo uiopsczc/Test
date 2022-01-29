@@ -1,23 +1,25 @@
 ---@class User:Critter
----@field mainRole Role
+---@field _mainRole Role
 local User = Class("User", Thing)
 
 function User:Init()
 	User.super.Init(self)
 	---@type Roles
-	self.oRoles = Roles.New(self, "o_roles")
+	self._oRoles = Roles.New(self, "o_roles")
 	---@type ItemBag
-	self.oItemBag = ItemBag.New(self, "o_item_bag")
+	self._oItemBag = ItemBag.New(self, "o_itemBag")
 	---@type Missions
-	self.oMissions = Missions.New(self, "o_missions")
+	self._oMissions = Missions.New(self, "o_missions")
 end
 
-------------------------DoXXX--------------------------------
+----------------------------------------------------------------------
+-- DoXXX
+----------------------------------------------------------------------
 -- 卸载
 function User:DoRelease()
-	self.oRoles:DoRelease()
-	self.oItemBag:DoRelease()
-	self.oMissions:DoRelease()
+	self._oRoles:DoRelease()
+	self._oItemBag:DoRelease()
+	self._oMissions:DoRelease()
 	User.super.DoRelease(self)
 end
 
@@ -25,73 +27,76 @@ end
 function User:DoSave(dict, dictTmp)
 	User.super.DoSave(self, dict, dictTmp)
 	-- 存储角色
-	self.oRoles:DoSave(dict, dictTmp)
+	self._oRoles:DoSave(dict, dictTmp)
 	-- 存储背包
-	self.oItemBag:DoSave(dict, dictTmp)
+	self._oItemBag:DoSave(dict, dictTmp)
 	-- 存储任务
-	self.oMissions:DoSave(dict, dictTmp)
-	if self.mainRole then
-		dict["main_role_rid"] = self.mainRole:GetRid()
+	self._oMissions:DoSave(dict, dictTmp)
+	if self._mainRole then
+		dict["mainRoleRid"] = self._mainRole:GetRid()
 	end
 end
 
 -- 还原
 function User:DoRestore(dict, dictTmp)
 	-- 还原角色
-	self.oRoles:DoRestore(dict, dictTmp)
+	self._oRoles:DoRestore(dict, dictTmp)
 	-- 还原背包
-	self.oItemBag:DoRestore(dict, dictTmp)
+	self._oItemBag:DoRestore(dict, dictTmp)
 	-- 还原任务
-	self.oMissions:DoRestore(dict, dictTmp)
+	self._oMissions:DoRestore(dict, dictTmp)
 
-	local mainRoleRid = table.Remove_Dict(dict, "main_role_rid")
-	self.mainRole = self:GetRole(mainRoleRid)
+	local mainRoleRid = table.Remove_Dict(dict, "mainRoleRid")
+	self._mainRole = self:GetRole(mainRoleRid)
 
 	User.super.DoRestore(self, dict, dictTmp)
 end
 
---------------------------OnXXX-------------------
+----------------------------------------------------------------------
+-- OnXXX
+----------------------------------------------------------------------
 
---region 角色
-----------------------角色----------------------------------
+----------------------------------------------------------------------
+-- 角色
+----------------------------------------------------------------------
 -- 获得指定的角色
 ---@return Role[]
 function User:GetRoles(id)
-	return self.oRoles:GetRoles(id)
+	return self._oRoles:GetRoles(id)
 end
 
 ---@return Role[]
 function User:GetRoles_ToEdit()
 	-- 可以直接插入删除
-	return self.oRoles:GetRoles_ToEdit()
+	return self._oRoles:GetRoles_ToEdit()
 end
 
 function User:GetRolesCount()
-	return self.oRoles:GetRolesCount()
+	return self._oRoles:GetRolesCount()
 end
 
 -- 获得指定的角色
 ---@return Role
-function User:GetRole(id_or_rid)
-	return self.oRoles:GetRole(id_or_rid)
+function User:GetRole(idOrRid)
+	return self._oRoles:GetRole(idOrRid)
 end
 
 -- 清除所有角色
 function User:ClearRoles()
-	self.oRoles:ClearRoles()
+	self._oRoles:ClearRoles()
 end
 
 function User:CheckAddRole(role)
 	return self:OnCheckAddRole(role) and role:OnCheckAddRole(self)
 end
 
-function User:__AddRole(role)
+function User:_AddRole(role)
 	local env = role:GetEnv()
 	if env then
 		error2(string.format("%s still in %s", role, env))
 		return false
 	end
-	local list = self.oRoles:GetRoles_ToEdit()
+	local list = self._oRoles:GetRoles_ToEdit()
 	if table.ContainsValue(list, role) then
 		error2(string.format("%s already has role:%s", self, role))
 		return false
@@ -108,8 +113,8 @@ function User:CheckRemoveRole(role)
 	return self:OnCheckRemoveRole(role) and role:OnCheckRemoveRole(self)
 end
 
-function User:__RemoveRole(role)
-	local list = self.oRoles:GetRoles_ToEdit()
+function User:_RemoveRole(role)
+	local list = self._oRoles:GetRoles_ToEdit()
 	if not table.ContainsValue(list, role) then
 		error2(string.format("%s not contains role:%s", self, role))
 		return false
@@ -122,7 +127,10 @@ function User:__RemoveRole(role)
 	role:SetEnv(nil)
 	return true
 end
---------------------------OnXXX-------------------
+
+----------------------------------------------------------------------
+-- OnXXX
+----------------------------------------------------------------------
 function User:OnCheckAddRole(role)
 	return true
 end
@@ -139,14 +147,16 @@ function User:OnRemoveRole(role)
 	return true
 end
 
---------------------------------------Util------------------------------------------
+----------------------------------------------------------------------
+-- Util
+----------------------------------------------------------------------
 ---@return Role
-function User:AddRole(id_or_rid)
-	local role = global.client.roleFactory:NewDoer(id_or_rid)
+function User:AddRole(idOrRid)
+	local role = global.client.roleFactory:NewDoer(idOrRid)
 	if not self:CheckAddRole(role) then
 		return nil
 	end
-	if not self:__AddRole(role) then
+	if not self:_AddRole(role) then
 		role:Destruct()
 		return nil
 	end
@@ -163,7 +173,7 @@ function User:RemoveRole(idOrRid, isNotNeedDestruct)
 	if not self:CheckRemoveRole(role) then
 		return nil
 	end
-	if not self:__RemoveRole(role) then
+	if not self:_RemoveRole(role) then
 		return nil
 	end
 	if not isNotNeedDestruct then
@@ -171,41 +181,41 @@ function User:RemoveRole(idOrRid, isNotNeedDestruct)
 	end
 	return role
 end
---endregion
 
---region Mission
-----------------------Mission----------------------------------
+----------------------------------------------------------------------
+-- Mission
+----------------------------------------------------------------------
 function User:GetMissions(id)
-	return self.oMissions:GetMissions(id)
+	return self._oMissions:GetMissions(id)
 end
 
 -- 可以直接插入删除
 function User:GetMissions_ToEdit()
-	return self.oMissions:GetMissions_ToEdit()
+	return self._oMissions:GetMissions_ToEdit()
 end
 
 function User:HasMissions()
-	return self.oMissions:HasMissions()
+	return self._oMissions:HasMissions()
 end
 
 function User:HasMission(id)
-	return self.oMissions:GetMission(id) ~= nil
+	return self._oMissions:GetMission(id) ~= nil
 end
 
 function User:GetMissionsCount()
-	return self.oMissions:GetMissionsCount()
+	return self._oMissions:GetMissionsCount()
 end
 
-function User:GetMission(id_or_rid)
-	return self.oMissions:GetMission(id_or_rid)
+function User:GetMission(idOrRid)
+	return self._oMissions:GetMission(idOrRid)
 end
 
 function User:ClearMissions()
-	return self.oMissions:ClearMissions()
+	return self._oMissions:ClearMissions()
 end
 
 function User:GetFinishedMissionIds()
-	return self:GetOrAdd("finished_mission_ids", function()
+	return self:GetOrAdd("finishedMissionIds", function()
 		return {}
 	end)
 end
@@ -253,7 +263,6 @@ function User:AcceptMission(missionOrMissionId, owner)
 	end
 end
 
----@param mission Mission
 function User:FinishMission(missionOrMissionId, owner)
 	if IsString(missionOrMissionId) then
 		self:FinishMission(self:GetMission(missionOrMissionId), owner)
@@ -279,7 +288,6 @@ function User:FinishMission(missionOrMissionId, owner)
 
 end
 
----@param mission Mission
 function User:GiveUpMission(missionOrMissionId, owner)
 	if IsString(missionOrMissionId) then
 		self:GiveUpMission(self:GetMission(missionOrMissionId), owner)
@@ -313,47 +321,46 @@ function User:CheckAutoFinishMissions()
 		end
 	end
 end
---endregion
 
-
---region 背包
-----------------------背包----------------------------------
+----------------------------------------------------------------------
+-- 背包
+----------------------------------------------------------------------
 function User:GetItems(id)
-	return self.oItemBag:GetItems(id)
+	return self._oItemBag:GetItems(id)
 end
 
 function User:GetItem(idOrRid)
-	return self.oItemBag:GetItem(idOrRid)
+	return self._oItemBag:GetItem(idOrRid)
 end
 
 function User:GetItemsOfTypes(type1, type2)
-	return self.oItemBag:GetItemsOfTypes(type1, type2)
+	return self._oItemBag:GetItemsOfTypes(type1, type2)
 end
 
 function User:GetItemIds()
-	return self.oItemBag:GetItemIds()
+	return self._oItemBag:GetItemIds()
 end
 
 function User:GetItemCount(id)
-	return self.oItemBag:GetItemCount(id)
+	return self._oItemBag:GetItemCount(id)
 end
 
 function User:HasItem(id)
-	return self.oItemBag:HasItem(id)
+	return self._oItemBag:HasItem(id)
 end
 
 -- 放入物品
 -- 对于可折叠物品则会替代已存在的物品对象并数量叠加
 -- 对于不可折叠物品则直接加入到对象列表
 function User:AddItems(id, count)
-	local items = self.oItemBag:AddItems(id, count)
+	local items = self._oItemBag:AddItems(id, count)
 	for _, item in ipairs(items) do
 		self:OnAddItem(item)
 	end
 end
 
 function User:RemoveItems(id, count)
-	local items = self.oItemBag:RemoveItems(id, count)
+	local items = self._oItemBag:RemoveItems(id, count)
 	for _, item in ipairs(items) do
 		self:OnRemoveItem(item)
 	end
@@ -370,12 +377,12 @@ function User:TryRemoveItems(id, count)
 end
 
 function User:AddItem(item)
-	self.oItemBag:AddItem(item)
+	self._oItemBag:AddItem(item)
 	self:OnAddItem(item)
 end
 
 function User:RemoveItem(itemOrRid)
-	local item = self.oItemBag:RemoveItem(itemOrRid)
+	local item = self._oItemBag:RemoveItem(itemOrRid)
 	if item then
 		self:OnRemoveItem(item)
 	end
@@ -383,26 +390,31 @@ function User:RemoveItem(itemOrRid)
 end
 
 function User:CanRemoveItems(id, count)
-	return self.oItemBag:CanRemoveItems(id, count)
+	return self._oItemBag:CanRemoveItems(id, count)
 end
 
 function User:ClearItems()
-	self.oItemBag:ClearItems()
+	self._oItemBag:ClearItems()
 end
---------------------------OnXXX-------------------
+
+----------------------------------------------------------------------
+-- OnXXX
+----------------------------------------------------------------------
 function User:OnAddItem(item)
 end
 
 function User:OnRemoveItem(item)
 end
 
---------------------------------------Util------------------------------------------
+----------------------------------------------------------------------
+-- Util
+----------------------------------------------------------------------
 --可以增加或者删除物品(count是负数的时候),添加物品的时候可以在数量后面加"xxAttr1:4,xxAttr2:5"添加该物品的附加属性
----@param item_dict table<string,string>
+---@param itemDict table<string,string>
 ---@param doerAttrParser DoerAttrParser
-function User:DealItems(item_dict, doerAttrParser)
+function User:DealItems(itemDict, doerAttrParser)
 	doerAttrParser = doerAttrParser or DoerAttrParser.New(self)
-	for itemId, value in pairs(item_dict) do
+	for itemId, value in pairs(itemDict) do
 		local addAttrDict = {} -- 带属性
 		local leftC1 = "\""
 		local rightC1 = "\""
@@ -439,7 +451,7 @@ function User:DealItems(item_dict, doerAttrParser)
 				end
 				item:AddAll(addAttrDict)
 			end
-			local isCanFold = item:CanFold()
+			local isCanFold = item:IsCanFold()
 			if isCanFold then
 				item:SetCount(count)
 				self:AddItem(item)
@@ -462,7 +474,7 @@ function User:UseItem(idOrRid, target)
 	if not target:CheckUseItem(item) then
 		return false
 	end
-	if item:CanFold() then
+	if item:IsCanFold() then
 		item = self:RemoveItems(item:GetId(), 1)[1]
 	else
 		item = self:RemoveItem(item)
@@ -476,7 +488,9 @@ function User:UseItem(idOrRid, target)
 	return true
 end
 
-------------------------装备--------------------------
+----------------------------------------------------------------------
+-- 装备
+----------------------------------------------------------------------
 ---@param target Critter
 function User:PutOnEquip(idOrRid, target)
 	local item = self:GetItem(idOrRid)
@@ -494,7 +508,7 @@ function User:PutOnEquip(idOrRid, target)
 	if not target:CheckPutOnEquip(item) then
 		return false
 	end
-	if item:CanFold() then
+	if item:IsCanFold() then
 		item = self:RemoveItems(item:GetId(), 1)[1]
 	else
 		item = self:RemoveItem(item)
@@ -529,7 +543,9 @@ function User:TakeOffEquip(equip, target)
 	return true
 end
 
-------------------------镶嵌物--------------------------
+----------------------------------------------------------------------
+-- 镶嵌物
+----------------------------------------------------------------------
 function User:EmbedOn(itemOrIdOrRid, embedOrIdOrRid)
 	---@type Item
 	local item
@@ -606,7 +622,5 @@ function User:EmbedOff(itemOrRid, embedOrRid)
 	self:AddItem(embed)
 	return true
 end
---endregion
-
 
 return User

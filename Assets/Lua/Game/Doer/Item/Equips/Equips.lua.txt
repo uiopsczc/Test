@@ -1,15 +1,19 @@
 ---@class Equips
 local Equips = Class("Equips")
-------------------------装备容器------------------------------
+----------------------------------------------------------------------
+-- 装备容器
+----------------------------------------------------------------------
 function Equips:Init(parentDoer, subDoerKey)
 	---@type Critter
-	self.parentDoer = parentDoer
-	self.subDoerKey = subDoerKey
+	self._parentDoer = parentDoer
+	self._subDoerKey = subDoerKey
 end
-------------------------DoXXX--------------------------------
+----------------------------------------------------------------------
+-- DoXXX
+----------------------------------------------------------------------
 -- 卸载
 function Equips:DoRelease()
-	SubDoerUtil1.DoReleaseSubDoer(self.parentDoer, self.subDoerKey)
+	SubDoerUtil1.DoReleaseSubDoer(self._parentDoer, self._subDoerKey)
 end
 
 -- 保存
@@ -20,7 +24,7 @@ function Equips:DoSave(dict, dictTmp, saveKey)
 	local dictEquipsTmp = {}
 	for i = 1, #equips do
 		local equip = equips[i]
-		if equip:CanFold() then
+		if equip:IsCanFold() then
 			-- 可折叠
 			table.insert(dictEquips, equip:GetId())
 		else
@@ -60,48 +64,49 @@ function Equips:DoRestore(dict, dictTmp, restoreKey)
 				local dictEquip = value
 				local rid = table.Remove_Dict(dictEquip, "rid")
 				item = global.client.itemFactory:NewDoer(rid)
-				item:SetEnv(self.parentDoer)
+				item:SetEnv(self._parentDoer)
 				local dictEquipTmp
 				if dictEquipsTmp then
 					dictEquipTmp = dictEquipsTmp[rid]
 				end
 				item:FinishRestore(dictEquip, dictEquipTmp)
 			end
-			item:SetEnv(self.parentDoer)
+			item:SetEnv(self._parentDoer)
 			item:SetIsPutOn(true)
 			table.insert(equips, item)
 		end
 	end
 end
---------------------------OnXXX-------------------
+----------------------------------------------------------------------
+-- OnXXX
+----------------------------------------------------------------------
 
----------------------------------------------
 -- 获得指定的装备
 ---@param id string
 ---@return Item[]
 function Equips:GetEquips(id)
-	return SubDoerUtil1.GetSubDoers(self.parentDoer, self.subDoerKey, id)
+	return SubDoerUtil1.GetSubDoers(self._parentDoer, self._subDoerKey, id)
 end
 
 ---@return Item[]
 function Equips:GetEquips_ToEdit()
 	-- 可以直接插入删除
-	return SubDoerUtil1.GetSubDoers_ToEdit(self.parentDoer, self.subDoerKey)
+	return SubDoerUtil1.GetSubDoers_ToEdit(self._parentDoer, self._subDoerKey)
 end
 
 -- 是否有装备
-function Equips:HasEquips()
-	return SubDoerUtil1.HasSubDoers(self.parentDoer, self.subDoerKey)
+function Equips:IsHasEquips()
+	return SubDoerUtil1.IsHasSubDoers(self._parentDoer, self._subDoerKey)
 end
 
 function Equips:GetEquipsCount()
-	return SubDoerUtil1.GetSubDoersCount(self.parentDoer, self.subDoerKey)
+	return SubDoerUtil1.GetSubDoersCount(self._parentDoer, self._subDoerKey)
 end
 
 ---@param equip Item
 ---@param type1 string
 ---@param type2 string
-function Equips:__FilterType(equip, type1, type2)
+function Equips:_FilterType(equip, type1, type2)
 	if equip:GetType1() == type1 and (not type2 or type2 == equip:GetType2()) then
 		return true
 	end
@@ -112,25 +117,25 @@ end
 ---@param type2 string
 ---@return Item[]
 function Equips:GetEquipsOfTypes(type1, type2)
-	return SubDoerUtil1.GetSubDoers(self.parentDoer, self.subDoerKey, nil, function(equip)
-		return self:__FilterType(equip, type1, type2)
+	return SubDoerUtil1.GetSubDoers(self._parentDoer, self._subDoerKey, nil, function(equip)
+		return self:_FilterType(equip, type1, type2)
 	end)
 end
 
 -- 是否有指定种类装备
 ---@param type1 string
 ---@param type2 string
-function Equips:HasEquipsOfTypes(type1, type2)
-	return SubDoerUtil1.HasSubDoers(self.parentDoer, self.subDoerKey, nil, function(equip)
-		self:__FilterType(equip, type1, type2)
+function Equips:IsHasEquipsOfTypes(type1, type2)
+	return SubDoerUtil1.IsHasSubDoers(self._parentDoer, self._subDoerKey, nil, function(equip)
+		self:_FilterType(equip, type1, type2)
 	end)
 end
 
 ---@param type1 string
 ---@param type2 string
 function Equips:GetEquipsCountOfTypes(type1, type2)
-	return SubDoerUtil1.GetSubDoersCount(self.parentDoer, self.subDoerKey, nil, function(equip)
-		self:__FilterType(equip, type1, type2)
+	return SubDoerUtil1.GetSubDoersCount(self._parentDoer, self._subDoerKey, nil, function(equip)
+		self:_FilterType(equip, type1, type2)
 	end)
 end
 
@@ -140,7 +145,7 @@ end
 ---@param idOrRid string
 ---@return Item
 function Equips:GetEquip(idOrRid)
-	return SubDoerUtil1.GetSubDoer(self.parentDoer, self.subDoerKey, idOrRid)
+	return SubDoerUtil1.GetSubDoer(self._parentDoer, self._subDoerKey, idOrRid)
 end
 
 
@@ -157,8 +162,8 @@ end
 
 -- 清除所有装备
 function Equips:ClearEquips()
-	return SubDoerUtil1.ClearSubDoers(self.parentDoer, self.subDoerKey, function(equip)
-		self.parentDoer:TakeOffEquip(equip)
+	return SubDoerUtil1.ClearSubDoers(self._parentDoer, self._subDoerKey, function(equip)
+		self._parentDoer:TakeOffEquip(equip)
 	end)
 end
 

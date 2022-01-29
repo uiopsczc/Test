@@ -275,9 +275,9 @@ end
 function DoerAttrSetter:SetObjectValue_User_AddAttrEquip(user, key, objectValue, isAdd)
 	local isBreak = false
 	local value = objectValue
-	if string.StartsWith(key, "add_attr_equip.") then
+	if string.StartsWith(key, "addAttrEquip.") then
 		-- 增加带属性道具
-		local itemId = string.Trim(string.sub(key, string.len("add_attr_equip.") + 1))
+		local itemId = string.Trim(string.sub(key, string.len("addAttrEquip.") + 1))
 		local pos = string.IndexOf(value, ";") -- count;pz:2,jl:3
 		if pos ~= -1 then
 			local countString = string.Trim(string.sub(value, pos - 1))

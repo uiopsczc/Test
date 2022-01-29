@@ -285,7 +285,9 @@ function DoerAttrParser:Replace(expression)
 	return self:ConvertValue("", typeString)
 end
 
-------------------------------------------GetDoerValue------------------------------
+----------------------------------------------------------------------
+-- GetDoerValue
+----------------------------------------------------------------------
 ---@param typeString string
 ---@param doer Doer
 ---@param key string

@@ -4,11 +4,11 @@ local AttachEffectComponent = Class("AttachEffectComponent", EffectComponent)
 ---@param attachEntityIPosition IPosition
 function AttachEffectComponent:Init(attachEntityIPosition, forceEulerAngles, sectorAngle)
 	AttachEffectComponent.super.Init()
-	attachEntityIPosition:SetSocketName(self.effectEntity.cfgEffectData.socket_name_1)
+	attachEntityIPosition:SetSocketName(self._effectEntity._cfgEffectData.socket_name_1)
 	---@type CS.UnityEngine.Transform
-	self.attachEntityTransform = attachEntityIPosition:GetTransform()
-	self.forceEulerAngles = forceEulerAngles
-	self.sectorAngle = sectorAngle or 0
+	self._attachEntityTransform = attachEntityIPosition:GetTransform()
+	self._forceEulerAngles = forceEulerAngles
+	self._sectorAngle = sectorAngle or 0
 
 	self:AddListener(string.ToEventName(ECSEventNameConst.OnAllAssetsLoadDone, self._entity), function()
 		self:OnAllAssetsLoadDone()
@@ -28,40 +28,40 @@ function AttachEffectComponent:DeAttach()
 end
 
 function AttachEffectComponent:ChangeAttach(isAttach)
-	if not self.effectEntity._graphicComponent._gameObject then
+	if not self._effectEntity:GetGraphicComponent():GetGameObject() then
 		return
 	end
-	if self.isAttach == isAttach then
+	if self._isAttach == isAttach then
 		return
 	end
 
 	if isAttach then
-		local socketTransform = self.attachEntityTransform
-		self.effectEntity._graphicComponent:SetParentTransform(socketTransform)
-		self.effectEntity._graphicComponent._transform.localPosition = Vector3.zero
-		self.effectEntity._graphicComponent._transform.localRotation = Quaternion.identity
-		if self.forceEulerAngles then
-			self.effectEntity._graphicComponent._transform.eulerAngles = self.forceEulerAngles
+		local socketTransform = self._attachEntityTransform
+		self._effectEntity:GetGraphicComponent():SetParentTransform(socketTransform)
+		self._effectEntity:GetGraphicComponent():GetTransform().localPosition = Vector3.zero
+		self._effectEntity:GetGraphicComponent():GetTransform().localRotation = Quaternion.identity
+		if self._forceEulerAngles then
+			self._effectEntity:GetGraphicComponent():GetTransform().eulerAngles = self._forceEulerAngles
 		end
 		self:SetSector()
-		self.isAttach = true
+		self._isAttach = true
 	else
-		self.effectEntity._graphicComponent:SetParentTransform(global.client.combat.effectManager._graphicComponent._transform)
-		self.isAttach = false
-		self.effectEntity._graphicComponent:SetIsShow(false)
+		self._effectEntity:GetGraphicComponent():SetParentTransform(global.client.combat._effectManager:GetGraphicComponent():GetTransform())
+		self._isAttach = false
+		self._effectEntity:GetGraphicComponent():SetIsShow(false)
 	end
 end
 
 function AttachEffectComponent:SetSector()
-	if self.sectorAngle ~= 0 then
-		local sectorSideLeft = self.effectEntity._graphicComponent._transform:Find("sector/side_left")
-		local sectorSideRight = self.effectEntity._graphicComponent._transform:Find("sector/side_right")
-		local sectorCenter = self.effectEntity._graphicComponent._transform:Find("sector/center")
+	if self._sectorAngle ~= 0 then
+		local sectorSideLeft = self._effectEntity:GetGraphicComponent():GetTransform():Find("sector/side_left")
+		local sectorSideRight = self._effectEntity:GetGraphicComponent():GetTransform():Find("sector/side_right")
+		local sectorCenter = self._effectEntity:GetGraphicComponent():GetTransform():Find("sector/center")
 		---@type CS.UnityEngine.Material
 		local sectorCenterMat = sectorCenter:GetComponent(typeof(CS.UnityEngine.MeshRenderer)).material
-		sectorCenterMat:SetFloat("_AngleCos", math.cos(math.Deg2Rad * (self.sectorAngle / 2))) --扇形的角度大小
-		sectorSideLeft.localRotation = Quaternion.Euler(0, (self.sectorAngle + 2) / 2, 0) -- 左边界的位置
-		sectorSideRight.localRotation = Quaternion.Euler(0, -(self.sectorAngle + 2) / 2, 0) -- 右边界的位置
+		sectorCenterMat:SetFloat("_AngleCos", math.cos(math.Deg2Rad * (self._sectorAngle / 2))) --扇形的角度大小
+		sectorSideLeft.localRotation = Quaternion.Euler(0, (self._sectorAngle + 2) / 2, 0) -- 左边界的位置
+		sectorSideRight.localRotation = Quaternion.Euler(0, -(self._sectorAngle + 2) / 2, 0) -- 右边界的位置
 	end
 end
 

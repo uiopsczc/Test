@@ -67,6 +67,18 @@ function ResLoad:CancelLoadAllCallbacks(assetCat)
 	end
 end
 
+----------------------------------------------------------------------
+-- SetGet相关
+----------------------------------------------------------------------
+function ResLoad:SetIsNotCheckDestroy(isNotCheckDestroy)
+	self._isNotCheckDestroy = isNotCheckDestroy
+end
+
+function ResLoad:IsNotCheckDestroy()
+	return self._isNotCheckDestroy
+end
+
+
 function ResLoad:Reset()
 	for _, resLoadDataInfo in pairs(self._resLoadDataInfoDict) do
 		resLoadDataInfo:Destroy()

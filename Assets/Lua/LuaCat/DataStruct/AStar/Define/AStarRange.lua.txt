@@ -11,6 +11,22 @@ function AStarRange:SetRange(leftBottomX, leftBottomY, rightTopX, rightTopY)
 	self._rightTopY = math.max(leftBottomY, rightTopY)
 end
 
+function AStarRange:GetLeftBottomX()
+	return self._leftBottomX
+end
+
+function AStarRange:GetLeftBottomY()
+	return self._leftBottomY
+end
+
+function AStarRange:GetRightTopX()
+	return self._rightTopX
+end
+
+function AStarRange:GetRightTopY()
+	return self._rightTopY
+end
+
 ---@return Vector2
 function AStarRange:GetCenter()
 	return Vector2.New((self._leftBottomX + self._rightTopX) / 2, (self._leftBottomY + self._rightTopY) / 2)

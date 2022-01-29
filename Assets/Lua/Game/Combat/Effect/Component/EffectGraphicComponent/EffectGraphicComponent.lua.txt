@@ -2,43 +2,43 @@
 local EffectGraphicComponent = Class("EffectGraphicComponent", GraphicComponent)
 
 function EffectGraphicComponent:Init()
-	EffectGraphicComponent.super.Init(self, global.client.combat.effectManager._resLoadComponent)
+	EffectGraphicComponent.super.Init(self, global.client.combat._effectManager:GetResLoadComponent())
 	---@type EffectEntity
-	self.effectEntity = self._entity
+	self._effectEntity = self._entity
 end
 
 function EffectGraphicComponent:OnAllAssetsLoadDone()
 	EffectGraphicComponent.super.OnAllAssetsLoadDone(self)
-	self:ApplyToTransform(self.effectEntity.transformComponent:GetPosition(), self.effectEntity.transformComponent:GetEulerAngles())
+	self:ApplyToTransform(self._effectEntity:GetTransformComponent():GetPosition(), self._effectEntity:GetTransformComponent():GetEulerAngles())
 end
 
 ---@param position Vector3
 ---@param eulerAngles Vector3
 function EffectGraphicComponent:ApplyToTransform(position, eulerAngles)
-	if self._transform == nil then
+	if self:GetTransform() == nil then
 		return
 	end
 	if position then
-		self._transform.position = position
+		sel:GetTransform().position = position
 	end
 	if eulerAngles then
-		self._transform.eulerAngles = eulerAngles
+		self:GetTransform().eulerAngles = eulerAngles
 	end
 end
 
 function EffectGraphicComponent:DestroyGameObject()
-	if self._gameObject then
-		PoolCatManagerUtil.DespawnGameObject(self._gameObject)
+	if self:GetGameObject() then
+		PoolCatManagerUtil.DespawnGameObject(self:GetGameObject())
 	end
 end
 
 function EffectGraphicComponent:GetEffectGameObjectPoolName()
-	return EffectManagerConst.Pool_Name .. "_" .. self.effectEntity.effectId
+	return EffectManagerConst.Pool_Name .. "_" .. self._effectEntity:GetEffectId()
 end
 
 ---@param prefab CS.UnityEngine.GameObject
 function EffectGraphicComponent:GetEffectGameObjectPool(prefab)
-	return PoolCatManagerUtil.GetOrAddGameObjectPool(self:GetEffectGameObjectPoolName(), prefab, EffectManagerConst.Pool_Name .. "/" .. self.effectEntity.effectId)
+	return PoolCatManagerUtil.GetOrAddGameObjectPool(self:GetEffectGameObjectPoolName(), prefab, EffectManagerConst.Pool_Name .. "/" .. self._effectEntity:GetEffectId())
 end
 
 ---@param prefab CS.UnityEngine.GameObject
@@ -51,8 +51,13 @@ function EffectGraphicComponent:IsCanUpdate()
 end
 
 function EffectGraphicComponent:_Update(deltaTime, unscaledDeltaTime)
-	EffectGraphicComponent.super.__Update(self, deltaTime, unscaledDeltaTime)
-	self:ApplyToTransform(self.effectEntity.transformComponent:GetPosition(), self.effectEntity.transformComponent:GetEulerAngles())
+	EffectGraphicComponent.super._Update(self, deltaTime, unscaledDeltaTime)
+	self:ApplyToTransform(self._effectEntity:GetTransformComponent():GetPosition(), self._effectEntity:GetTransformComponent():GetEulerAngles())
 end
+
+function EffectGraphicComponent:GetEffectEntity()
+	return self._effectEntity
+end
+
 
 return EffectGraphicComponent

@@ -1,7 +1,9 @@
 ---@class HuiFuJi:Item
 local HuiFuJi = Class("HuiFuJi", Item)
 
---------------------------OnXXX-------------------
+----------------------------------------------------------------------
+-- OnXXX
+----------------------------------------------------------------------
 
 ---@param critter Critter
 function HuiFuJi:OnUseItem(critter)

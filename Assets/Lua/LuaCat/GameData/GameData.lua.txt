@@ -45,13 +45,13 @@ function GameData:RestoreUser()
 	---@type User
 	local user = global.client.userFactory:NewDoer(userId)
 	user:DoRestore(dictUser, dictTmpUser)
-	if not user.mainRole then
-		user.mainRole = user:AddRole("1")
+	if not user._mainRole then
+		user._mainRole = user:AddRole("1")
 	end
 	---@type User
 	global.client.user = user
 	---@type Role
-	global.client.mainRole = user.mainRole
+	global.client.mainRole = user._mainRole
 end
 
 return GameData

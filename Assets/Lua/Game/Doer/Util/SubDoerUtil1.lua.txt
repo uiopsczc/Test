@@ -1,8 +1,12 @@
 ---@class SubDoerUtil1
 local SubDoerUtil1 = Class("SubDoerUtil1")
 
---********************************里面的结构是  List<Doer>****************************
-------------------------DoXXX--------------------------------
+----------------------------------------------------------------------
+-- 里面的结构是  List<Doer>
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+-- DoXXX
+----------------------------------------------------------------------
 -- 卸载doer中的sub_doer_key子doers
 ---@param parentDoer Doer
 ---@param releaseSubDoerFunc fun(subDoer:Doer)
@@ -17,7 +21,9 @@ function SubDoerUtil1.DoReleaseSubDoer(parentDoer, subDoerKey, releaseSubDoerFun
 	end
 	table.RemoveAll_Array(SubDoerUtil1.GetSubDoers_ToEdit(parentDoer, subDoerKey))
 end
------------------容器---------------------
+----------------------------------------------------------------------
+-- 容器
+----------------------------------------------------------------------
 -- 获取doer中的sub_doer_key子doers  没有id一层的包裹
 ---@param parentDoer Doer
 ---@param filterFunc fun(subDoer:Doer)
@@ -59,7 +65,7 @@ end
 -- doer中sub_doer_key的子doers
 ---@param parentDoer Doer
 ---@param filterFunc fun(sub_doer:Doer)
-function SubDoerUtil1.HasSubDoers(parentDoer, subDoerKey, id, filterFunc)
+function SubDoerUtil1.IsHasSubDoers(parentDoer, subDoerKey, id, filterFunc)
 	return not table.IsNilOrEmpty(SubDoerUtil1.GetSubDoers(parentDoer, subDoerKey, id, filterFunc))
 end
 

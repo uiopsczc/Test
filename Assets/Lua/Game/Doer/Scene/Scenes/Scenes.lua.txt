@@ -1,15 +1,20 @@
 ---@class Scenes
 local Scenes = Class("Scenes")
-------------------------场景容器------------------------------
+----------------------------------------------------------------------
+-- 场景容器
+----------------------------------------------------------------------
 function Scenes:Init(parentDoer, subDoerKey)
 	---@type Scene
-	self.parentDoer = parentDoer
-	self.subDoerKey = subDoerKey
+	self._parentDoer = parentDoer
+	self._subDoerKey = subDoerKey
 end
-------------------------DoXXX--------------------------------
+
+----------------------------------------------------------------------
+-- DoXXX
+----------------------------------------------------------------------
 -- 卸载
 function Scenes:DoRelease()
-	SubDoerUtil3.DoReleaseSubDoer(self.parentDoer, self.subDoerKey)
+	SubDoerUtil3.DoReleaseSubDoer(self._parentDoer, self._subDoerKey)
 end
 
 -- 保存
@@ -42,7 +47,7 @@ function Scenes:DoRestore(dict, dictTmp, restoreKey)
 			local dictScene = dictScenes[rid]
 			---@type Scene
 			local scene = global.client.sceneFactory:NewDoer(rid)
-			scene:SetEnv(self.parentDoer)
+			scene:SetEnv(self._parentDoer)
 			local dictSceneTmp
 			if dictScenesTmp then
 				dictSceneTmp = dictScenesTmp[rid]
@@ -52,29 +57,30 @@ function Scenes:DoRestore(dict, dictTmp, restoreKey)
 		end
 	end
 end
---------------------------OnXXX-------------------
+----------------------------------------------------------------------
+-- OnXXX
+----------------------------------------------------------------------
 
---------------------------------------------------
----@param filterFunc fun(sub_doer:Doer)
+---@param filterFunc fun(subDoer:Doer)
 ---@return Scene[]
 function Scenes:GetScenes(id, filterFunc)
-	return SubDoerUtil3.GetSubDoers(self.parentDoer, self.subDoerKey, id, filterFunc)
+	return SubDoerUtil3.GetSubDoers(self._parentDoer, self._subDoerKey, id, filterFunc)
 end
 
 -- 可以直接插入删除
 ---@return table<string,Scene>
 function Scenes:GetSceneDict_ToEdit()
-	return SubDoerUtil3.GetSubDoerDict_ToEdit(self.parentDoer, self.subDoerKey)
+	return SubDoerUtil3.GetSubDoerDict_ToEdit(self._parentDoer, self._subDoerKey)
 end
 
 ---@param idOrRid string
 ---@return Scene
 function Scenes:GetScene(idOrRid)
-	return SubDoerUtil3.GetSubDoer(self.parentDoer, self.subDoerKey, idOrRid)
+	return SubDoerUtil3.GetSubDoer(self._parentDoer, self._subDoerKey, idOrRid)
 end
 
 function Scenes:ClearScenes()
-	SubDoerUtil3.ClearSubDoers(self.parentDoer, self.subDoerKey)
+	SubDoerUtil3.ClearSubDoers(self._parentDoer, self._subDoerKey)
 end
 
 return Scenes

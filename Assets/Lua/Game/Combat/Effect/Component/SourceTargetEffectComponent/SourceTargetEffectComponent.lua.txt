@@ -1,59 +1,59 @@
 ---@class SourceTargetEffectComponent:EffectComponent
----@field sourceIPosition IPosition
----@field targetIPosition IPosition
+---@field _sourceIPosition IPosition
+---@field _targetIPosition IPosition
 local SourceTargetEffectComponent = Class("SourceTargetEffectComponent", EffectComponent)
 
 function SourceTargetEffectComponent:Init()
 	SourceTargetEffectComponent.super.Init(self)
-	self.onReachCallbackList = {}
+	self._onReachCallbackList = {}
 end
 
 function SourceTargetEffectComponent:AddOnReachCallback(callback)
-	table.insert(self.onReachCallbackList, callback)
+	table.insert(self._onReachCallbackList, callback)
 end
 
 function SourceTargetEffectComponent:SetSocket()
-	self.sourceSocketName = self.effectEntity.cfgEffectData.socketName1 or "missile"
-	self.targetSocketName = self.effectEntity.cfgEffectData.socketName2 or "chest"
+	self._sourceSocketName = self:GetEffectEntity():GetCfgEffectData().socketName1 or "missile"
+	self._targetSocketName = self:GetEffectEntity():GetCfgEffectData().socketName2 or "chest"
 
-	if self.sourceIPosition then
-		self.sourceIPosition:SetSocketName(self.sourceSocketName)
+	if self._sourceIPosition then
+		self._sourceIPosition:SetSocketName(self._sourceSocketName)
 	end
-	if self.targetIPosition then
-		self.targetIPosition:SetSocketName(self.targetSocketName)
+	if self._targetIPosition then
+		self._targetIPosition:SetSocketName(self._targetSocketName)
 	end
 end
 
 function SourceTargetEffectComponent:Calculate(deltaTime)
-	self.sourcePosition = self.sourceIPosition:GetPosition()
-	self.targetPosition = self.targetIPosition:GetPosition()
-	self.currentPosition = self.sourcePosition
+	self._sourcePosition = self._sourceIPosition:GetPosition()
+	self._targetPosition = self._targetIPosition:GetPosition()
+	self._currentPosition = self._sourcePosition
 	self:CalculateEulerAngles()
 end
 
 function SourceTargetEffectComponent:CalculateEulerAngles()
-	local diff = self.targetPosition - self.currentPosition
+	local diff = self._targetPosition - self._currentPosition
 	if diff == Vector3.zero then
-		self.currentEulerAngles = Vector3.zero
+		self._currentEulerAngles = Vector3.zero
 	else
-		self.currentEulerAngles = Quaternion.LookRotation(diff, Vector3.up):ToEulerAngles()
+		self._currentEulerAngles = Quaternion.LookRotation(diff, Vector3.up):ToEulerAngles()
 	end
 end
 
 function SourceTargetEffectComponent:OnEffectReach()
-	DelegateUtil.InvokeCallback(self.onReachCallbackList)
-	self.effectEntity:OnEffectReach()
+	DelegateUtil.InvokeCallback(self._onReachCallbackList)
+	self:GetEffectEntity():OnEffectReach()
 end
 
 function SourceTargetEffectComponent:_Update(deltaTime, unscaledDeltaTime)
-	SourceTargetEffectComponent.super.__Update(self, deltaTime, unscaledDeltaTime)
+	SourceTargetEffectComponent.super._Update(self, deltaTime, unscaledDeltaTime)
 	self:Calculate(deltaTime)
-	self.effectEntity:ApplyToTransformComponent(self.currentPosition, self.currentEulerAngles)
+	self:GetEffectEntity():ApplyToTransformComponent(self._currentPosition, self._currentEulerAngles)
 end
 
-function SourceTargetEffectComponent:__Destroy()
-	SourceTargetEffectComponent.super.__Destroy(self)
-	self.onReachCallbackList = nil
+function SourceTargetEffectComponent:_Destroy()
+	SourceTargetEffectComponent.super._Destroy(self)
+	self._onReachCallbackList = nil
 end
 
 return SourceTargetEffectComponent

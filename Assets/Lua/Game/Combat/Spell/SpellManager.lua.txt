@@ -4,21 +4,21 @@ local SpellManager = Class("SpellManager", TickObject)
 function SpellManager:Init()
 	SpellManager.super.Init(self)
 	---@type table<string,SpellListenerInfo[]>
-	self.listenerDict = {
-		on_start = {}, -- 技能Start之后触发  OnSpellStart
-		on_cast = {}, -- 技能OnCast之后触发  OnSpellCast
-		on_hurt = {}, -- 被伤害（任何形式）  OnHurt
-		on_hurt_target = {}, --  伤害目标（任何形式） OnHurt
-		be_hit = {}, -- 被技能打后  OnHit
-		on_hit = {}, -- 用技能打目标后  OnHit
-		on_cur_spell_hit = {}, -- 用技能打目标后只有是相同的技能才触发  OnHit
-		normal_attack = {}, --  放普攻后  OnHit
-		before_dead = {}, --  死亡前 BeforeDead
-		before_hit = {}, --  用技能打目标前  BeforeHit
-		before_be_hit = {}, --  被技能打前  BeforeBeHit
-		on_kill_target = {}, -- 杀死目标后 OnKillTarget
-		on_hp_change = {}, -- 目标血量改变时 OnHpChange
-		on_missile_reach = {}, -- 当子弹到达
+	self._listenerDict = {
+		onStart = {}, -- 技能Start之后触发  OnSpellStart
+		onCast = {}, -- 技能OnCast之后触发  OnSpellCast
+		onHurt = {}, -- 被伤害（任何形式）  OnHurt
+		onHurtTarget = {}, --  伤害目标（任何形式） OnHurt
+		onBeHit = {}, -- 被技能打后  OnHit
+		onHit = {}, -- 用技能打目标后  OnHit
+		onCurSpellHit = {}, -- 用技能打目标后只有是相同的技能才触发  OnHit
+		onNormalAttack = {}, --  放普攻后  OnHit
+		onBeforeDead = {}, --  死亡前 BeforeDead
+		onBeforeHit = {}, --  用技能打目标前  BeforeHit
+		onBeforeBeHit = {}, --  被技能打前  BeforeBeHit
+		onKillTarget = {}, -- 杀死目标后 OnKillTarget
+		onHpChange = {}, -- 目标血量改变时 OnHpChange
+		onMissileReach = {}, -- 当子弹到达
 	}
 
 	self:AddListener(SpellEventNameConst.On_Spell_Start, function(...)
@@ -36,7 +36,7 @@ function SpellManager:Init()
 	self:AddListener(UnitEventNameConst.On_Unit_Hurt, function(...)
 		self:OnHurt(...)
 	end)
-	self:AddListener(UnitEventNameConst.Before_Unit_Dead, function(...)
+	self:AddListener(UnitEventNameConst.On_Before_Unit_Dead, function(...)
 		self:BeforeDead(...)
 	end)
 	self:AddListener(UnitEventNameConst.On_Unit_Kill_Target, function(source_unit, target_unit, spell, ...)
@@ -47,8 +47,8 @@ function SpellManager:Init()
 	self:AddListener(UnitEventNameConst.On_Unit_Hit, function(...)
 		self:OnHit(...)
 	end) --
-	self:AddListener(UnitEventNameConst.Before_Unit_Hit, function(...)
-		self:BeforeHit(...)
+	self:AddListener(UnitEventNameConst.On_Before_Unit_Hit, function(...)
+		self:OnBeforeHit(...)
 	end) --
 
 	self:AddListener(UnitEventNameConst.On_Unit_Destroy, function(...)
@@ -73,8 +73,8 @@ function SpellManager:CastSpell(sourceUnit, spellId, targetUnit, argDict, isCont
 	if cfgSpellData.castType == "正常" then
 		-- 当玩家是手动操作释放技能时，技能方向就以玩家的输入为准（但如果有目标则会以目标方向释放技能，无视输入）
 		-- 当释放的技能类型是正常的话，则需停下来施法
-		if sourceUnit.currentAttack then
-			self:BreakSpell(sourceUnit.currentAttack:GetGuid())
+		if sourceUnit._currentAttack then
+			self:BreakSpell(sourceUnit._currentAttack:GetGuid())
 		end
 		local rotation = nil
 		local isNotFaceToTarget = argDict and argDict.isNotFaceToTarget
@@ -90,7 +90,7 @@ function SpellManager:CastSpell(sourceUnit, spellId, targetUnit, argDict, isCont
 		if not cfgSpellData.isCanMoveWhileCast or not isControl then
 			sourceUnit:MoveStop(rotation)
 		end
-		sourceUnit.currentAttack = spell
+		sourceUnit._currentAttack = spell
 		sourceUnit:UpdateMixedStates()
 	end
 	if cfgSpellData.type == "普攻" then
@@ -129,7 +129,7 @@ function SpellManager:CheckIsCanCast(sourceUnit, spellId, targetUnit, isControl)
 		if not targetUnit then
 			return false
 		end
-		if not global.client.combat.unitManager:__CheckUnit(targetUnit, sourceUnit, { mode = "circle", radius = cfgSpellData.range }, sourceUnit:GetFaction(), scope, isOnlyAttackable) then
+		if not global.client.combat._unitManager:_CheckUnit(targetUnit, sourceUnit, { mode = "circle", radius = cfgSpellData.range }, sourceUnit:GetFaction(), scope, isOnlyAttackable) then
 			return false
 		end
 	end
@@ -161,13 +161,13 @@ function SpellManager:RecommendCast(sourceUnit, spellId, targetUnitList, isContr
 	end
 	if targetUnitList and IsUnit(targetUnitList) then
 		local targetUnit = targetUnitList
-		if self:__IsUnitMatchCondition(sourceUnit, targetUnit, isControl, cfgSpellData, spellClass) then
+		if self:_IsUnitMatchCondition(sourceUnit, targetUnit, isControl, cfgSpellData, spellClass) then
 			return { targetUnit }
 		end
 	end
 	local newTargetUnitList = {}
 	for _, target in ipairs(targetUnitList) do
-		if self:__IsUnitMatchCondition(sourceUnit, target, isControl, cfgSpellData, spellClass) then
+		if self:_IsUnitMatchCondition(sourceUnit, target, isControl, cfgSpellData, spellClass) then
 			table.insert(newTargetUnitList, target)
 		end
 	end
@@ -209,7 +209,7 @@ function SpellManager:RecommendSpellRule(sourceUnit, targetUnit, cfgSpellData, o
 		scope = scope,
 		rangeInfo = { mode = "circle", radius = cfgSpellData.range }
 	}
-	targetUnitList = targetUnitList or global.client.combat.unitManager:SelectUnit(conditionDict)
+	targetUnitList = targetUnitList or global.client.combat._unitManager:SelectUnit(conditionDict)
 
 	local count = selectUnitCount
 	local newTargetList = {}
@@ -228,7 +228,7 @@ end
 ---@param sourceUnit Unit
 ---@param cfgSpellData CfgSpellData
 ---@param targetUnit Unit
-function SpellManager:__IsUnitMatchCondition(sourceUnit, targetUnit, isControl, cfgSpellData, spellClass)
+function SpellManager:_IsUnitMatchCondition(sourceUnit, targetUnit, isControl, cfgSpellData, spellClass)
 	--肯定有target
 	if targetUnit:IsDead() then
 		return false
@@ -238,7 +238,7 @@ function SpellManager:__IsUnitMatchCondition(sourceUnit, targetUnit, isControl, 
 			return false
 		end
 		if cfgSpellData.targetType and cfgSpellData.targetType ~= "all" then
-			if not global.client.combat.unitManager:CheckFaction(sourceUnit:GetFaction(), targetUnit:GetFaction(), cfgSpellData.targetType) then
+			if not global.client.combat._unitManager:CheckFaction(sourceUnit:GetFaction(), targetUnit:GetFaction(), cfgSpellData.targetType) then
 				return false
 			end
 		end
@@ -255,41 +255,41 @@ end
 ---@param type string
 ---@param unit Unit
 function SpellManager:RegisterListener(type, unit, obj, tag, func)
-	if not self.listenerDict[type] then
+	if not self._listenerDict[type] then
 		Error("Register Listener with undefine type()!", type)
 		return
 	end
 	---@type SpellListenerInfo
 	local spellListenerInfo = SpellListenerInfo.New()
-	spellListenerInfo.type = type
-	spellListenerInfo.unit = unit
-	spellListenerInfo.obj = obj
-	spellListenerInfo.tag = tag
-	spellListenerInfo.func = func
-	table.insert(self.listenerDict[type], spellListenerInfo)
+	spellListenerInfo:SetType(type)
+	spellListenerInfo:SetUnit(unit)
+	spellListenerInfo:SetObj(obj)
+	spellListenerInfo:SetTag(tag)
+	spellListenerInfo:SetFunc(func)
+	table.insert(self._listenerDict[type], spellListenerInfo)
 end
 
 ---@param type string
 ---@param unit Unit
 function SpellManager:UnRegisterListener(type, unit, obj, tag)
-	if not self.listenerDict[type] then
+	if not self._listenerDict[type] then
 		ErrorFormat("Unregister Listener with undefine type(%s)!", type)
 		return
 	end
-	for index, listenerInfo in ipairs(self.listenerDict[type]) do
-		if listenerInfo.unit == unit and
-			listenerInfo.obj == obj and
-			listenerInfo.tag == tag then
-			table.remove(self.listenerDict[type], index)
+	for index, listenerInfo in ipairs(self._listenerDict[type]) do
+		if listenerInfo:GetUnit() == unit and
+			listenerInfo:GetObj() == obj and
+			listenerInfo:GetTag() == tag then
+			table.remove(self._listenerDict[type], index)
 			break
 		end
 	end
 end
 
 function SpellManager:RemoveListenersByObj(obj)
-	for _, listeners in pairs(self.listenerDict) do
+	for _, listeners in pairs(self._listenerDict) do
 		for i = #listeners, 1, -1 do
-			if listeners[i].obj == obj then
+			if listeners[i]:GetObj() == obj then
 				table.remove(listeners, i)
 			end
 		end
@@ -298,17 +298,17 @@ end
 
 ---@param listener SpellListenerInfo
 function SpellManager:ListenerCallback(listener, sourceUnit, ...)
-	listener.func(sourceUnit, ...)
+	listener:GetFunc()(sourceUnit, ...)
 end
 
-function SpellManager:BeforeHit(sourceUnit, targetUnit, ...)
-	for k, listener in ipairs(self.listenerDict.beforeHit) do
-		if listener.unit == sourceUnit then
+function SpellManager:OnBeforeHit(sourceUnit, targetUnit, ...)
+	for k, listener in ipairs(self._listenerDict.onBeforeHit) do
+		if listener:GetUnit() == sourceUnit then
 			self:ListenerCallback(listener, sourceUnit, targetUnit, ...)
 		end
 	end
-	for k, listener in ipairs(self.listenerDict.before_be_hit) do
-		if listener.unit == targetUnit then
+	for k, listener in ipairs(self._listenerDict.onBeforeBeHit) do
+		if listener:GetUnit() == targetUnit then
 			self:ListenerCallback(listener, sourceUnit, targetUnit, ...)
 		end
 	end
@@ -316,25 +316,25 @@ end
 
 ---@param spell SpellBase
 function SpellManager:OnHit(sourceUnit, targetUnit, spell, ...)
-	for k, listener in ipairs(self.listenerDict.be_hit) do
-		if listener.unit == targetUnit then
+	for k, listener in ipairs(self._listenerDict.onBeHit) do
+		if listener:GetUnit() == targetUnit then
 			self:ListenerCallback(listener, sourceUnit, targetUnit, spell, ...)
 		end
 	end
 	-- !注意：触发回调的过程中可能再次插入或者remove listener
-	for k, listener in ipairs(self.listenerDict.on_hit) do
-		if listener.unit == sourceUnit then
+	for k, listener in ipairs(self._listenerDict.onHit) do
+		if listener:GetUnit() == sourceUnit then
 			self:ListenerCallback(listener, sourceUnit, targetUnit, spell, ...)
 		end
 	end
-	for k, listener in ipairs(self.listenerDict.on_cur_spell_hit) do
-		if listener.unit == sourceUnit and spell == listener.obj then
+	for k, listener in ipairs(self._listenerDict.onCurSpellHit) do
+		if listener:GetUnit() == sourceUnit and spell == listener:GetObj() then
 			self:ListenerCallback(listener, sourceUnit, targetUnit, spell, ...)
 		end
 	end
-	if spell.cfgSpellData.type == "普攻" then
-		for k, listener in ipairs(self.listenerDict.normal_attack) do
-			if listener.unit == sourceUnit then
+	if spell._cfgSpellData.type == "普攻" then
+		for k, listener in ipairs(self._listenerDict.onNormalAttack) do
+			if listener:GetUnit() == sourceUnit then
 				self:ListenerCallback(listener, sourceUnit, targetUnit, spell, ...)
 			end
 		end
@@ -342,61 +342,61 @@ function SpellManager:OnHit(sourceUnit, targetUnit, spell, ...)
 end
 
 function SpellManager:OnKillTarget(sourceUnit, targetUnit, spell, ...)
-	for k, listener in ipairs(self.listenerDict.on_kill_target) do
-		if listener.unit == sourceUnit then
+	for k, listener in ipairs(self._listenerDict.onKillTarget) do
+		if listener:GetUnit() == sourceUnit then
 			self:ListenerCallback(listener, sourceUnit, targetUnit, spell, ...)
 		end
 	end
 end
 
 function SpellManager:BeforeDead(sourceUnit, deadUnit, ...)
-	for k, listener in ipairs(self.listenerDict.before_dead) do
-		if listener.unit == deadUnit then
+	for k, listener in ipairs(self._listenerDict.onBeforeDead) do
+		if listener:GetUnit() == deadUnit then
 			self:ListenerCallback(listener, sourceUnit, deadUnit, ...)
 		end
 	end
 end
 
 function SpellManager:OnHurt(sourceUnit, targetUnit, ...)
-	for k, listener in ipairs(self.listenerDict.on_hurt) do
-		if listener.unit == targetUnit then
+	for k, listener in ipairs(self._listenerDict.onHurt) do
+		if listener:GetUnit() == targetUnit then
 			self:ListenerCallback(listener, sourceUnit, targetUnit, ...)
 		end
 	end
-	for k, listener in ipairs(self.listenerDict.on_hurt_target) do
-		if listener.unit == sourceUnit then
+	for k, listener in ipairs(self._listenerDict.onHurtTarget) do
+		if listener:GetUnit() == sourceUnit then
 			self:ListenerCallback(listener, sourceUnit, targetUnit, ...)
 		end
 	end
 end
 
 function SpellManager:OnHpChange(sourceUnit, targetUnit, ...)
-	for k, listener in ipairs(self.listenerDict.on_hp_change) do
-		if listener.unit == targetUnit then
+	for k, listener in ipairs(self._listenerDict.onHpChange) do
+		if listener:GetUnit() == targetUnit then
 			self:ListenerCallback(listener, sourceUnit, targetUnit, ...)
 		end
 	end
 end
 
 function SpellManager:OnSpellStart(sourceUnit, targetUnit, spell)
-	for k, listener in ipairs(self.listenerDict.on_start) do
-		if listener.unit == sourceUnit and listener.obj == spell then
+	for k, listener in ipairs(self._listenerDict.onStart) do
+		if listener:GetUnit() == sourceUnit and listener:GetUnit() == spell then
 			self:ListenerCallback(listener, sourceUnit, targetUnit, spell)
 		end
 	end
 end
 
 function SpellManager:OnSpellCast(sourceUnit, targetUnit, spell)
-	for k, listener in ipairs(self.listenerDict.on_cast) do
-		if listener.unit == sourceUnit and listener.obj == spell then
+	for k, listener in ipairs(self._listenerDict.onCast) do
+		if listener:GetUnit() == sourceUnit and listener:GetObj() == spell then
 			self:ListenerCallback(listener, sourceUnit, targetUnit, spell)
 		end
 	end
 end
 
 function SpellManager:OnMissileReach(sourceUnit, missile, spell)
-	for k, listener in ipairs(self.listenerDict.on_missile_reach) do
-		if listener.unit == sourceUnit and listener.obj == spell then
+	for k, listener in ipairs(self._listenerDict.onMissileReach) do
+		if listener:GetUnit() == sourceUnit and listener:GetObj() == spell then
 			self:ListenerCallback(listener, sourceUnit, missile, spell)
 		end
 	end
@@ -441,12 +441,12 @@ end
 
 ---@param spell SpellBase
 function SpellManager:OnSpellAnimationFinished(spell)
-	if spell.sourceUnit.currentAttack == spell then
-		if spell.sourceUnit.isNormalAttacking then
-			spell.sourceUnit:NormalAttackFinish()
+	if spell._sourceUnit:GetCurrentAttack() == spell then
+		if spell._sourceUnit:IsNormalAttacking() then
+			spell._sourceUnit:NormalAttackFinish()
 		end
-		spell.sourceUnit.currentAttack = nil
-		spell.sourceUnit:UpdateMixedStates()
+		spell._sourceUnit:SetCurrentAttack(nil)
+		spell._sourceUnit:UpdateMixedStates()
 	end
 end
 

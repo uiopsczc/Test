@@ -1,9 +1,50 @@
 ---@class SpellListenerInfo
----@field type string
----@field unit Unit
----@field obj
----@field tag string
----@field func
+---@field _type string
+---@field _unit Unit
+---@field _obj
+---@field _tag string
+---@field _func
 local SpellListenerInfo = Class("SpellListenerInfo")
+
+function SpellListenerInfo:SetType(type)
+	self._type = type
+end
+
+function SpellListenerInfo:GetSpellId()
+	return self._type
+end
+
+function SpellListenerInfo:SetUnit(_unit)
+	self._unit = _unit
+end
+
+function SpellListenerInfo:GetUnit()
+	return self._unit
+end
+
+function SpellListenerInfo:SetObj(_obj)
+	self._obj = _obj
+end
+
+function SpellListenerInfo:GetObj()
+	return self._obj
+end
+
+function SpellListenerInfo:SetTag(_tag)
+	self._tag = _tag
+end
+
+function SpellListenerInfo:GetTag()
+	return self._tag
+end
+
+function SpellListenerInfo:SetFunc(_func)
+	self._func = _func
+end
+
+function SpellListenerInfo:GetFunc()
+	return self._func
+end
+
 
 return SpellListenerInfo

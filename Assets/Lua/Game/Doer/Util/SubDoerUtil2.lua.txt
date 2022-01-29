@@ -1,8 +1,12 @@
 ---@class SubDoerUtil2
 local SubDoerUtil2 = Class("SubDoerUtil2")
 
---************************** 里面的结构是  dict<id = List<Doer>>***********************
-------------------------DoXXX--------------------------------
+----------------------------------------------------------------------
+-- 里面的结构是  dict<id = List<Doer>>
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+-- DoXXX
+----------------------------------------------------------------------
 -- 卸载doer中的sub_doer_key子doers
 ---@param parentDoer Doer
 ---@param releaseSubDoerFunc fun(sub_doer:Doer)
@@ -17,7 +21,10 @@ function SubDoerUtil2.DoReleaseSubDoer(parentDoer, subDoerKey, releaseSubDoerFun
 	end
 	table.RemoveAll_Dict(SubDoerUtil2.GetSubDoerDict_ToEdit(parentDoer, subDoerKey))
 end
------------------容器---------------------
+
+----------------------------------------------------------------------
+-- 容器
+----------------------------------------------------------------------
 -- 获取doer中的sub_doer_key子doers  有id一层的包裹
 ---@param parentDoer Doer
 ---@param filterFunc fun(sub_doer:Doer)
@@ -132,7 +139,7 @@ end
 function SubDoerUtil2.AddSubDoers(parentDoer, subDoerKey, addSubDoer)
 	local id = addSubDoer:GetId()
 	addSubDoer:SetOwner(parentDoer)
-	local isCanFold = addSubDoer:CanFold()
+	local isCanFold = addSubDoer:IsCanFold()
 	local subDoers = SubDoerUtil2.GetSubDoers_ToEdit(parentDoer, subDoerKey, id)
 	if isCanFold then
 		-- 可以折叠的
@@ -200,7 +207,7 @@ function SubDoerUtil2.RemoveSubDoers(parentDoer, subDoerKey, id, count, subDoerF
 	return result
 end
 
-function SubDoerUtil2.CanRemoveSubDoers(parentDoer, subDoerKey, id, count)
+function SubDoerUtil2.IsCanRemoveSubDoers(parentDoer, subDoerKey, id, count)
 	local currentCount = SubDoerUtil2.GetSubDoerCount(parentDoer, subDoerKey, id)
 	if currentCount >= count then
 		return true

@@ -4,9 +4,12 @@ local Mission = Class("Mission", Doer)
 function Mission:GetCfgMissionData()
 	return CfgMission.get_by_id(self:GetId())
 end
-------------------------DoXXX--------------------------------
-
---------------------------OnXXX-------------------
+----------------------------------------------------------------------
+-- DoXXX
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+-- OnXXX
+----------------------------------------------------------------------
 function Mission:OnAccept(user)
 	local onAcceptDoerEventId = self:GetCfgMissionData().onAcceptDoerEventId
 	if not string.IsNilOrWhiteSpace(onAcceptDoerEventId) then

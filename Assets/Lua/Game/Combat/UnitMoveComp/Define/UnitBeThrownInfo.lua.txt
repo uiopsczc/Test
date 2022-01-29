@@ -1,32 +1,62 @@
 ---@class UnitBeThrownInfo
 ---@field startPos Vector3 @开始位置
----@field endPos Vector3 @结束位置
----@field height number
----@field max_height number
----@field animationName string
----@field orgHeight number
----@field duration number
----@field remainDuration number
----@field interp number
----@field heightSpeed number
----@field heightAccelerate number
----@field rotateDuration number
----@field rotateRemainDuration number
----@field startRotation Quaternion
----@field endRotation Quaternion
----@field calcHeightFunc fun(beThrownInfo:UnitBeThrownInfo)
----@field isNotStopAnimation boolean
----@field isBackToGround boolean
+---@field _endPos Vector3 @结束位置
+---@field _height number
+---@field _maxHeight number
+---@field _animationName string
+---@field _orgHeight number
+---@field _duration number
+---@field _remainDuration number
+---@field _interp number
+---@field _heightSpeed number
+---@field _heightAccelerate number
+---@field _rotateDuration number
+---@field _rotateRemainDuration number
+---@field _startRotation Quaternion
+---@field _endRotation Quaternion
+---@field _calcHeightFunc fun(beThrownInfo:UnitBeThrownInfo)
+---@field _isNotStopAnimation boolean
+---@field _isBackToGround boolean
 local UnitBeThrownInfo = Class("UnitBeThrownInfo")
 
 function UnitBeThrownInfo:Init()
-	self.interp = 1
-	self.isBackToGround = true
-	self.animationName = AnimationNameConst.beThrown
+	self._interp = 1
+	self._isBackToGround = true
+	self._animationName = AnimationNameConst.beThrown
 end
 
 function UnitBeThrownInfo:IsHasAnimationName()
-	return not string.IsNilOrWhiteSpace(self.animationName)
+	return not string.IsNilOrWhiteSpace(self._animationName)
 end
+
+----------------------------------------------------------------------
+-- SetGet相关
+----------------------------------------------------------------------
+function UnitBeThrownInfo:GetEndPos()
+	return self._endPos
+end
+
+function UnitBeThrownInfo:SetEndPos(endPos)
+	self._endPos = endPos
+end
+
+function UnitBeThrownInfo:GetDuration()
+	return self._duration
+end
+
+function UnitBeThrownInfo:SetDuration(duration)
+	self._duration = duration
+end
+
+function UnitBeThrownInfo:GetHeight()
+	return self._height
+end
+
+function UnitBeThrownInfo:SetHeight(height)
+	self._height = height
+end
+
+
+
 
 return UnitBeThrownInfo

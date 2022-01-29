@@ -1,8 +1,12 @@
 ---@class SubDoerUtil3
 local SubDoerUtil3 = Class("SubDoerUtil3")
 
---********************************里面的结构是  Dict<rid,Doer>****************************
-------------------------DoXXX--------------------------------
+----------------------------------------------------------------------
+-- 里面的结构是  Dict<rid,Doer>
+----------------------------------------------------------------------
+----------------------------------------------------------------------
+-- DoXXX
+----------------------------------------------------------------------
 -- 卸载doer中的sub_doer_key子doers
 ---@param parentDoer Doer
 ---@param releaseSubDoerFunc fun(sub_doer:Doer)
@@ -17,10 +21,13 @@ function SubDoerUtil3.DoReleaseSubDoer(parentDoer, subDoerKey, releaseSubDoerFun
 	end
 	table.RemoveAll_Dict(SubDoerUtil3.GetSubDoerDict_ToEdit(parentDoer, subDoerKey))
 end
------------------容器---------------------
+
+----------------------------------------------------------------------
+-- 容器
+----------------------------------------------------------------------
 -- 获取doer中的sub_doer_key子doers  没有id一层的包裹
 ---@param parentDoer Doer
----@param filterFunc fun(sub_doer:Doer)
+---@param filterFunc fun(subDoer:Doer)
 ---@return Doer[]
 function SubDoerUtil3.GetSubDoers(parentDoer, subDoerKey, id, filterFunc)
 	---@type Doer[]

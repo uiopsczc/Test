@@ -30,7 +30,7 @@ end
 function PropertyComp:AddPropSet(propSet, key, subKey)
 	local propertyKey = string.Combine(PropertyComp.split, key, subKey)
 	self.propSetDict[propertyKey] = propSet
-	self:__CalculateProp()
+	self:_CalculateProp()
 end
 
 ---@param key string
@@ -38,10 +38,10 @@ end
 function PropertyComp:RemovePropSet(key, subKey)
 	local propertyKey = string.Combine(PropertyComp.split, key, subKey)
 	self.propSetDict[propertyKey] = nil
-	self:__CalculateProp()
+	self:_CalculateProp()
 end
 
-function PropertyComp:__CalculateProp()
+function PropertyComp:_CalculateProp()
 	if self.isChanging then
 		return
 	end
@@ -78,7 +78,7 @@ end
 
 function PropertyComp:EndChange()
 	self.isChanging = false
-	self:__CalculateProp()
+	self:_CalculateProp()
 end
 
 function PropertyComp:CalculateOriginalDamageValue(argDict)

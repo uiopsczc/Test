@@ -7,7 +7,9 @@ function Critter:Init()
 	self.oEquips = Equips.New(self, "o_equips")
 end
 
-------------------------DoXXX--------------------------------
+----------------------------------------------------------------------
+-- DoXXX
+----------------------------------------------------------------------
 -- 卸载
 function Critter:DoRelease()
 	--销毁装备
@@ -29,8 +31,9 @@ function Critter:DoRestore(dict, dictTmp)
 	Critter.super.DoRestore(self, dict, dictTmp)
 end
 
---region 装备
------------------装备-----------------------------
+----------------------------------------------------------------------
+-- 装备
+----------------------------------------------------------------------
 -- 获得指定的装备
 ---@return Item[]
 function Critter:GetEquips(id)
@@ -38,8 +41,8 @@ function Critter:GetEquips(id)
 end
 
 -- 是否有装备
-function Critter:HasEquips()
-	return self.oEquips:HasEquips()
+function Critter:IsHasEquips()
+	return self.oEquips:IsHasEquips()
 end
 
 -- 获得指定的装备
@@ -49,7 +52,7 @@ function Critter:GetEquipsOfTypes(type1, type2)
 end
 
 function Critter:HasEquipsOfTypes(type1, type2)
-	return self.oEquips:HasEquipsOfTypes(type1, type2)
+	return self.oEquips:IsHasEquipsOfTypes(type1, type2)
 end
 
 -- 获得指定的装备
@@ -63,10 +66,6 @@ end
 function Critter:GetEquipOfTypes(type1, type2)
 	return self.oEquips:GetEquipOfTypes(type1, type2)
 end
-
-
-
-
 
 -- 清除所有装备
 function Critter:ClearEquips()
@@ -124,7 +123,10 @@ function Critter:TakeOffEquip(equip)
 	equip:SetEnv(nil)
 	return true
 end
---------------------------OnXXX-------------------
+
+----------------------------------------------------------------------
+-- OnXXX
+----------------------------------------------------------------------
 function Critter:OnCheckPutOnEquip(equip)
 	return true
 end
@@ -140,10 +142,10 @@ end
 function Critter:OnTakeOffEquip(equip)
 	return true
 end
---endregion
 
---region Item
---------------------------Item-------------------------------------------
+----------------------------------------------------------------------
+-- Item
+----------------------------------------------------------------------
 ---@param item Item
 function Critter:CheckUseItem(item)
 	return self:OnCheckUseItem(item) and item:OnCheckUseItem(self)
@@ -159,7 +161,9 @@ function Critter:UseItem(item)
 	return self:OnUseItem(item) and item:OnUseItem(self)
 end
 
---------------------------OnXXX-------------------
+----------------------------------------------------------------------
+-- OnXXX
+----------------------------------------------------------------------
 function Critter:OnCheckUseItem(item)
 	return true
 end
@@ -167,10 +171,5 @@ end
 function Critter:OnUseItem(item)
 	return true
 end
---endregion
-
-
-
-
 
 return Critter

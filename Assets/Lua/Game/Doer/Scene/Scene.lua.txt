@@ -4,27 +4,29 @@ local Scene = Class("Scene", Thing)
 function Scene:Init()
 	Scene.super.Init(self)
 	---@type Scenes
-	self.oChildScenes = Scenes.New(self, "o_child_scenes")
+	self._oChildScenes = Scenes.New(self, "o_childScenes")
 	---@type SceneItems
-	self.oSceneItems = SceneItems.New(self, "o_sceneItems")
+	self._oSceneItems = SceneItems.New(self, "o_sceneItems")
 end
 
 function Scene:GetCfgSceneData()
 	return CfgScene.get_by_id(self:GetId())
 end
 
--------------------------DoXXX---------------------------
+----------------------------------------------------------------------
+-- DoXXX
+----------------------------------------------------------------------
 ---@param thing Thing
 function Scene:DoEnter(thing)
 	xpcall(function()
 		self:OnEnter(thing)
-	end, function(error_msg)
-		error2(string.format("to.OnEnter error! [%s->%s]:%s", self, thing, error_msg))
+	end, function(errorMsg)
+		error2(string.format("to.OnEnter error! [%s->%s]:%s", self, thing, errorMsg))
 	end)
 	xpcall(function()
 		thing:OnEnterScene(self)
-	end, function(error_msg)
-		error2(string.format("to.OnEnterScene error! [%s->%s]:%s", self, thing, error_msg))
+	end, function(errorMsg)
+		error2(string.format("to.OnEnterScene error! [%s->%s]:%s", self, thing, errorMsg))
 	end)
 end
 
@@ -32,13 +34,13 @@ end
 function Scene:DoLeave(thing)
 	xpcall(function()
 		self:OnLeave(thing)
-	end, function(error_msg)
-		error2(string.format("to.OnLeave error! [%s->%s]:%s", self, thing, error_msg))
+	end, function(errorMsg)
+		error2(string.format("to.OnLeave error! [%s->%s]:%s", self, thing, errorMsg))
 	end)
 	xpcall(function()
 		thing:OnLeaveScene(self)
-	end, function(error_msg)
-		error2(string.format("to.OnLeaveScene error! [%s->%s]:%s", self, thing, error_msg))
+	end, function(errorMsg)
+		error2(string.format("to.OnLeaveScene error! [%s->%s]:%s", self, thing, errorMsg))
 	end)
 end
 
@@ -51,14 +53,14 @@ end
 function Scene:DoMove(thing, fromPos, toPos, trackList, type)
 	xpcall(function()
 		self:OnMoveThing(thing, fromPos, toPos, trackList, type)
-	end, function(error_msg)
-		error2(string.format("to.OnMoveThing error! [%s->%s]:%s", self, thing, error_msg))
+	end, function(errorMsg)
+		error2(string.format("to.OnMoveThing error! [%s->%s]:%s", self, thing, errorMsg))
 	end)
 
 	xpcall(function()
 		thing:OnMove(self, fromPos, toPos, trackList, type)
-	end, function(error_msg)
-		error2(string.format("to.OnMove error! [%s,%s->(%s->%s]:%s", self, thing, fromPos, toPos, error_msg))
+	end, function(errorMsg)
+		error2(string.format("to.OnMove error! [%s,%s->(%s->%s]:%s", self, thing, fromPos, toPos, errorMsg))
 	end)
 end
 
@@ -71,13 +73,15 @@ end
 function Scene:DoShift(thing, fromPos, childScene, toPos, type)
 	xpcall(function()
 		self:OnShift(thing, fromPos, childScene, toPos, type)
-	end, function(error_msg)
+	end, function(errorMsg)
 		error2(string.format("env.OnShift error! [%s,%s->(%s->%s]:%s", self, thing, fromPos, toPos,
-			error_msg))
+			errorMsg))
 	end)
 end
 
----------------------OnXXX----------------------------
+----------------------------------------------------------------------
+-- OnXXX
+----------------------------------------------------------------------
 function Scene:OnSave(dict, dictTmp)
 	Scene.super.OnSave(self, dict, dictTmp)
 end
@@ -112,7 +116,9 @@ end
 function Scene:OnShift(thing, fromPos, childScene, toPos, type)
 end
 
---region 子场景
+----------------------------------------------------------------------
+-- 子场景
+----------------------------------------------------------------------
 function Scene:CheckParentCall()
 	if self:IsChildScene() then
 		error("请使用父级场景调用此方法")
@@ -142,7 +148,7 @@ function Scene:ClearProjectGrids(baseOnParentPos, childScene)
 					local py = self:ToParentY(baseOnParentPos, offsetPos, y)
 					if mapPath:IsValidPoint(px, py) then
 						-- 父场景无效区域不投影
-						mapPath._projectGrids[px][py] = 0
+						mapPath:GetProjectGrids()[px][py] = 0
 					end
 				end
 			end
@@ -157,7 +163,7 @@ end
 function Scene:SetProjectGrids(baseOnParentPos, childScene)
 	self:CheckParentCall()
 	local mapPath = self:GetMapPath()
-	if mapPath == nil or mapPath._grids == nil then
+	if mapPath == nil or mapPath:GetGrids() == nil then
 		return
 	end
 	local projectGrids
@@ -177,7 +183,7 @@ function Scene:SetProjectGrids(baseOnParentPos, childScene)
 					local py = self:ToParentY(baseOnParentPos, offsetPos, y)
 					if mapPath:IsValidPoint(px, py) then
 						-- 父场景无效区域不投影
-						mapPath._projectGrids[px][py] = v
+						mapPath:GetProjectGrids()[px][py] = v
 					end
 				end
 			end
@@ -189,12 +195,12 @@ end
 function Scene:ClearAllProjectGrids()
 	self:CheckParentCall()
 	local mapPath = self:GetMapPath()
-	if mapPath == nil or mapPath._projectGrids == nil then
+	if mapPath == nil or mapPath:GetProjectGrids() == nil then
 		return
 	end
-	for x = 1, #mapPath._projectGrids do
-		for y = 1, #mapPath._projectGrids[x] do
-			mapPath._projectGrids[x][y] = 0
+	for x = 1, #mapPath:GetProjectGrids() do
+		for y = 1, #mapPath:GetProjectGrids()[x] do
+			mapPath:GetProjectGrids()[x][y] = 0
 		end
 	end
 end
@@ -210,15 +216,17 @@ function Scene:ResetAllProjectGrids()
 	end
 end
 
----------------------子场景容器---------------------
+----------------------------------------------------------------------
+-- 子场景容器
+----------------------------------------------------------------------
 ---@param id string
 ---@param belong string
 ---@return Scene[]
 function Scene:GetChildScenes(id, belong)
 	if belong == nil and id == nil then
-		return self.oChildScenes:GetScenes()
+		return self._oChildScenes:GetScenes()
 	else
-		return self.oChildScenes:GetScenes(nil, function(scene)
+		return self._oChildScenes:GetScenes(nil, function(scene)
 			if belong ~= nil and not scene:GetBelong() == belong then
 				return false
 			end
@@ -237,11 +245,11 @@ function Scene:GetChildScene(idOrRid, belong)
 	if IdUtil.IsRid(idOrRid) then
 		-- rid的情况
 		local rid = idOrRid
-		if not self.oChildScenes:GetSceneDict_ToEdit()[rid] then
+		if not self._oChildScenes:GetSceneDict_ToEdit()[rid] then
 			return nil
 		end
 		---@type Scene
-		local childScene = self.oChildScenes.GetSceneDict_ToEdit()[rid]
+		local childScene = self._oChildScenes.GetSceneDict_ToEdit()[rid]
 		if belong ~= nil and not childScene:GetBelong() == belong then
 			return nil
 		end
@@ -268,7 +276,7 @@ function Scene:AddChildScene(pos, childScene)
 	self:CheckParentCall()
 	childScene:SetEnv(self)
 	childScene:SetPos(pos)
-	self.oChildScenes:GetSceneDict_ToEdit()[childScene:GetRid()] = childScene
+	self._oChildScenes:GetSceneDict_ToEdit()[childScene:GetRid()] = childScene
 	--处理子场景障碍投影
 	if not childScene:IsInAir() then
 		self:SetProjectGrids(pos, childScene)
@@ -281,8 +289,8 @@ end
 ---@param childScene Scene
 function Scene:RemoveChildScene(childScene)
 	self:CheckParentCall()
-	local isContain = self.oChildScenes:GetSceneDict_ToEdit()[childScene:GetRid()] ~= nil
-	self.oChildScenes:GetSceneDict_ToEdit()[childScene:GetRid()] = nil
+	local isContain = self._oChildScenes:GetSceneDict_ToEdit()[childScene:GetRid()] ~= nil
+	self._oChildScenes:GetSceneDict_ToEdit()[childScene:GetRid()] = nil
 	if isContain then
 		--  处理子场景障碍投影
 		if not childScene:IsInAir() then
@@ -297,7 +305,7 @@ end
 -- 移除子场景（仅供父级场景调用）
 ---@param rid string
 function Scene:RemoveChildScene(rid)
-	local childScene = self.oChildScenes:GetScene(rid)
+	local childScene = self._oChildScenes:GetScene(rid)
 	self:RemoveChildScene(childScene)
 end
 
@@ -310,8 +318,8 @@ function Scene:MoveChildScene(scene, toPos, trackList, type)
 	self:CheckParentCall()
 	local fromPos = scene:GetPos()
 	scene:SetPos(toPos)
-	scene:SetTmp("last_move_time", DateTimeUtil.Now())
-	scene:SetTmp("last_move_track_list", trackList)
+	scene:SetTmp("lastMoveTime", DateTimeUtil.Now())
+	scene:SetTmp("lastMoveTrackList", trackList)
 	--处理子场景障碍投影
 	if not scene:IsInAir() then
 		self:ClearProjectGrids(fromPos, scene)
@@ -341,7 +349,7 @@ end
 ---@param belong string
 ---@return Scene[]
 function Scene:GetViewingScenes(pos, belong)
-	return self:__GetViewingScenes(pos, pos, belong)
+	return self:_GetViewingScenes(pos, pos, belong)
 end
 
 -- 获得视图内所有子场景（仅供父级场景调用）
@@ -349,7 +357,7 @@ end
 ---@param pos2 Vector2
 ---@param belong string
 ---@return Scene[]
-function Scene:__GetViewingScenes(pos1, pos2, belong)
+function Scene:_GetViewingScenes(pos1, pos2, belong)
 	self:CheckParentCall()
 	return self:GetRangeScenes(AStarUtil.GetViewingRange(pos1, pos2), belong)
 end
@@ -377,7 +385,7 @@ end
 function Scene:GetItems(id, belong, isNotIncludeChildScene)
 	local result = {}
 	if belong == nil then
-		local currentSceneItemList = self.oSceneItems:GetItems(id)
+		local currentSceneItemList = self._oSceneItems:GetItems(id)
 		table.InsertRange_Array(result, currentSceneItemList)
 		if not isNotIncludeChildScene then
 			for _, childScene in ipairs(self:GetChildScenes()) do
@@ -420,7 +428,7 @@ end
 function Scene:AddItem(pos, item)
 	item:SetEnv(self)
 	item:SetPos(pos)
-	self.oSceneItems:GetItemDict_ToEdit()[item:GetRid()] = item
+	self._oSceneItems:GetItemDict_ToEdit()[item:GetRid()] = item
 	-- 触发进入事件
 	self:DoEnter(item)
 end
@@ -430,18 +438,18 @@ end
 function Scene:RemoveItem(itemOrRid)
 	if IsString(itemOrRid) then
 		local rid = itemOrRid
-		if not self.oSceneItems:GetItemDict_ToEdit()[rid] then
+		if not self._oSceneItems:GetItemDict_ToEdit()[rid] then
 			return nil
 		end
-		local result = self.oSceneItems:GetItemDict_ToEdit()[rid]
+		local result = self._oSceneItems:GetItemDict_ToEdit()[rid]
 		return self:RemoveItem(result)
 	end
 	---@type Item
 	local item = itemOrRid
-	if not self.oSceneItems:GetItemDict_ToEdit()[item:GetRid()] then
+	if not self._oSceneItems:GetItemDict_ToEdit()[item:GetRid()] then
 		return
 	end
-	self.oSceneItems:GetItemDict_ToEdit()[item:GetRid()] = nil
+	self._oSceneItems:GetItemDict_ToEdit()[item:GetRid()] = nil
 
 	-- 触发离开事件
 	self:DoLeave(item)
@@ -458,11 +466,11 @@ end
 ---@param trackList Vector2[]
 ---@param type number
 function Scene:MoveItem(item, toPos, trackList, type)
-	local from_pos = item:GetPos()
+	local fromPos = item:GetPos()
 	item:SetPos(toPos)
 
 	-- 触发移动事件
-	self:DoMove(item, from_pos, toPos, trackList, type)
+	self:DoMove(item, fromPos, toPos, trackList, type)
 end
 
 -- 将物品转移到指定子场景的指定位置
@@ -471,23 +479,23 @@ end
 ---@param toPos Vector2
 ---@param type number
 function Scene:ShiftItem(item, childScene, toPos, type)
-	local from_pos = item:GetPos()
-	self.oSceneItems:GetItemDict_ToEdit()[item:GetRid()] = nil
+	local fromPos = item:GetPos()
+	self._oSceneItems:GetItemDict_ToEdit()[item:GetRid()] = nil
 	item:SetEnv(childScene)
 	item:SetPos(toPos)
-	childScene.oSceneItems:GetItemDict_ToEdit()[item:GetRid()] = item
-	self:DoShift(item, from_pos, childScene, toPos, type)
+	childScene._oSceneItems:GetItemDict_ToEdit()[item:GetRid()] = item
+	self:DoShift(item, fromPos, childScene, toPos, type)
 end
 
 -- 清除所有物品
 function Scene:ClearItems(isNotIncludeChildScene)
-	for rid, item in pairs(self.oSceneItems:GetItemDict_ToEdit()) do
+	for rid, item in pairs(self._oSceneItems:GetItemDict_ToEdit()) do
 		-- 触发离开事件
 		self:DoLeave(item)
 		item:SetEnv(nil)
 		item:Destruct()
 	end
-	table.RemoveAll_Dict(self.oSceneItems:GetItemDict_ToEdit())
+	table.RemoveAll_Dict(self._oSceneItems:GetItemDict_ToEdit())
 	if not isNotIncludeChildScene then
 		for _, childScene in ipairs(self:GetChildScenes()) do
 			childScene:ClearItems(isNotIncludeChildScene)
@@ -568,8 +576,9 @@ function Scene:GetGroupItemCount(group, belong, isNotIncludeChildScene)
 	return #self:GetGroupItems(group, belong, isNotIncludeChildScene)
 end
 
---endregion
-------------------------Util------------------------
+----------------------------------------------------------------------
+-- Util
+----------------------------------------------------------------------
 function Scene:IsChildScene()
 	return self:GetEnv() ~= nil
 end
@@ -589,12 +598,12 @@ function Scene:IsChildSceneOf(toTopParentScene)
 end
 
 function Scene:SetIsInAir(isInAir)
-	self:SetTmp("o_is_in_air", isInAir)
+	self:SetTmp("o_isInAir", isInAir)
 end
 
 --是否在空中
 function Scene:IsInAir()
-	return self:GetTmp("o_is_in_air", false)
+	return self:GetTmp("o_isInAir", false)
 end
 
 function Scene:SetGroup(group)
@@ -612,26 +621,26 @@ function Scene:SetMapType(mapType)
 		parentScene:ClearProjectGrids(self:GetPos(), self)
 		parentScene:SetProjectGrids(self:GetPos(), self)
 	end
-	self:Set("map_type", mapType)
+	self:Set("mapType", mapType)
 end
 
 function Scene:GetMapType()
-	return self:Get("map_type")
+	return self:Get("mapType")
 end
 
 function Scene:SetOrgPos(pos)
-	self:SetTmp("org_pos", pos)
+	self:SetTmp("orgPos", pos)
 end
 
 ---@return Vector2
 function Scene:GetOrgPos()
-	return self:GetTmp("org_pos")
+	return self:GetTmp("orgPos")
 end
 
 ---@return SceneMapInfo
 function Scene:GetSceneMapInfo()
 	local sceneMapInfo
-	if self:Get("is_dynamic_map", false) then
+	if self:Get("isDynamicMap", false) then
 		local src = self:Get("src", "")
 		if not string.IsNilOrWhiteSpace(src) then
 			sceneMapInfo = CfgSceneDataUtil.GetSceneMapInfo(CfgScene.get_by_id(src))
@@ -647,7 +656,7 @@ end
 function Scene:GetGrids()
 	local sceneMapInfo = self:GetSceneMapInfo()
 	if sceneMapInfo ~= nil then
-		return sceneMapInfo.grids
+		return sceneMapInfo:GetGrids()
 	end
 	return nil
 end
@@ -657,7 +666,7 @@ end
 function Scene:GetProjectGrids()
 	local sceneMapInfo = self:GetSceneMapInfo()
 	if sceneMapInfo ~= nil then
-		return sceneMapInfo.projectGrids
+		return sceneMapInfo:GetProjectGrids()
 	end
 	return nil
 end
@@ -684,7 +693,7 @@ end
 function Scene:GetOffsetPos()
 	local sceneMapInfo = self:GetSceneMapInfo()
 	if sceneMapInfo ~= nil then
-		return sceneMapInfo.offsetPos
+		return sceneMapInfo._offsetPos
 	end
 	return Vector2.zero
 end
@@ -699,7 +708,7 @@ end
 function Scene:UpdateMapPath()
 	local sceneMapInfo = self:GetSceneMapInfo()
 	if sceneMapInfo ~= nil then
-		local mapPath = AStarMapPath.New(sceneMapInfo.grids)
+		local mapPath = AStarMapPath.New(sceneMapInfo._grids)
 		self:SetTmp("mapPath", mapPath)
 	end
 end
@@ -726,7 +735,7 @@ end
 ---@param offsetPos Vector2
 ---@param pos Vector2
 ---@return Vector2
-function Scene:__ToParentPos(baseOnParentPos, offsetPos, pos)
+function Scene:_ToParentPos(baseOnParentPos, offsetPos, pos)
 	return Vector2.New(self:ToParentX(baseOnParentPos, offsetPos, pos.x),
 		self:ToParentY(baseOnParentPos, offsetPos, pos.y))
 end
@@ -740,7 +749,7 @@ function Scene:ToParentPos(pos, toTopParentScene)
 	if isChildScene then
 		local baseOnParentPos = self:GetPos()
 		local offsetPos = self:GetOffsetPos()
-		pos = self:__ToParentPos(baseOnParentPos, offsetPos, pos)
+		pos = self:_ToParentPos(baseOnParentPos, offsetPos, pos)
 	end
 	if toTopParentScene ~= self:GetEnv() then
 		if isChildScene then
@@ -768,8 +777,8 @@ end
 ---@param toTopParentScene Scene
 ---@return AStarRange
 function Scene:ToParentRange(range, toTopParentScene)
-	local leftBottom = self:ToParentPos(Vector2.New(range._leftBottomX, range._leftBottomY), toTopParentScene)
-	local rightTop = self:ToParentPos(Vector2.New(range._rightTopX, range._rightTopY), toTopParentScene)
+	local leftBottom = self:ToParentPos(Vector2.New(range:GetLeftBottomX(), range:GetLeftBottomY()), toTopParentScene)
+	local rightTop = self:ToParentPos(Vector2.New(range:GetRightTopX(), range:GetRightTopY()), toTopParentScene)
 	return AStarRange.New(leftBottom.x, leftBottom.y, rightTop.x, rightTop.y)
 end
 
@@ -795,7 +804,7 @@ end
 ---@param offsetPos Vector2
 ---@param pos Vector2
 ---@return Vector2
-function Scene:__FromParentPos(baseOnParentPos, offsetPos, pos)
+function Scene:_FromParentPos(baseOnParentPos, offsetPos, pos)
 	return Vector2.New(self:FromParentX(baseOnParentPos, offsetPos, pos.x),
 		self:FromParentY(baseOnParentPos, offsetPos, pos.y))
 end
@@ -807,7 +816,7 @@ function Scene:FromParentPos(pos)
 	if self:IsChildScene() then
 		local baseOnParentPos = self:GetPos()
 		local offsetPos = self:GetOffsetPos()
-		return self:__FromParentPos(baseOnParentPos, offsetPos, pos)
+		return self:_FromParentPos(baseOnParentPos, offsetPos, pos)
 	else
 		return pos
 	end
@@ -830,8 +839,8 @@ end
 ---@return AStarRange
 function Scene:FromParentRange(range)
 	if self:IsChildScene() then
-		local leftBottom = self:FromParentPos(Vector2.New(range._leftBottomX, range._leftBottomY))
-		local rightTop = self:FromParentPos(Vector2.New(range._rightTopX, range._rightTopY))
+		local leftBottom = self:FromParentPos(Vector2.New(range:GetLeftBottomX(), range:GetLeftBottomY()))
+		local rightTop = self:FromParentPos(Vector2.New(range:GetRightTopX(), range:GetRightTopY()))
 		return AStarRange.New(leftBottom.x, leftBottom.y, rightTop.x, rightTop.y)
 	else
 		return range

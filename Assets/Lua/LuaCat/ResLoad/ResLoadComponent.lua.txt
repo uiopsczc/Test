@@ -41,6 +41,13 @@ function ResLoadComponent:CancelLoadAllCallbacks(assetCat)
 	self._resLoad:CancelLoadAllCallbacks(assetCat)
 end
 
+----------------------------------------------------------------------
+-- SetGet相关
+----------------------------------------------------------------------
+function ResLoadComponent:GetResLoad()
+	return self._resLoad
+end
+
 function ResLoadComponent:_Reset()
 	ResLoadComponent.super._Reset(self)
 	self._resLoad:Reset()

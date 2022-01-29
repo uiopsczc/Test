@@ -4,16 +4,16 @@ local LineEffectGraphicComponent = Class("LineEffectGraphicComponent", EffectGra
 function LineEffectGraphicComponent:OnAllAssetsLoadDone()
 	LineEffectGraphicComponent.super.OnAllAssetsLoadDone(self)
 	---@type CS.CsCat.XLineRenderer[]
-	self.xlineRendererList = table.ConvertCSArray2LuaTable(self._transform:GetComponent(typeof(CS.CsCat.XLineRenderer)))
+	self._xLineRendererList = table.ConvertCSArray2LuaTable(self:GetTransform():GetComponent(typeof(CS.CsCat.XLineRenderer)))
 end
 
 function LineEffectGraphicComponent:_Update(deltaTime, unscaledDeltaTime)
-	LineEffectGraphicComponent.super.__Update(self, deltaTime, unscaledDeltaTime)
-	self._transform.position = self.effectEntity.transformComponent:GetPosition()
-	self._transform.eulerAngles = self.effectEntity.transformComponent:GetEulerAngles()
-	for _, xlineRenderer in ipairs(self.xlineRendererList) do
-		xlineRenderer.target.position = self.effectEntity:GetComponentByType(LineEffectComponent).target_position
-		xlineRenderer.target.eulerAngles = self.effectEntity.transformComponent:GetEulerAngles()
+	LineEffectGraphicComponent.super._Update(self, deltaTime, unscaledDeltaTime)
+	self:GetTransform().position = self:GetEffectEntity():GetTransformComponent():GetPosition()
+	self:GetTransform().eulerAngles = self:GetEffectEntity():GetTransformComponent():GetEulerAngles()
+	for _, xLineRenderer in ipairs(self._xLineRendererList) do
+		xLineRenderer.target.position = self:GetEffectEntity():GetComponentByType(LineEffectComponent).targetPosition
+		xLineRenderer.target.eulerAngles = self:GetEffectEntity():GetTransformComponent():GetEulerAngles()
 	end
 end
 

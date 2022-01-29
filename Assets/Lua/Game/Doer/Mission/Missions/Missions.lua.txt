@@ -1,15 +1,20 @@
 ---@class Missions
 local Missions = Class("Missions")
-------------------------背包容器------------------------------
+----------------------------------------------------------------------
+-- 背包容器
+----------------------------------------------------------------------
 function Missions:Init(parentDoer, subDoerKey)
 	---@type Doer
-	self.parentDoer = parentDoer
-	self.subDoerKey = subDoerKey
+	self._parentDoer = parentDoer
+	self._subDoerKey = subDoerKey
 end
-------------------------DoXXX--------------------------------
+
+----------------------------------------------------------------------
+-- DoXXX
+----------------------------------------------------------------------
 -- 卸载
 function Missions:DoRelease()
-	SubDoerUtil1.DoReleaseSubDoer(self.parentDoer, self.subDoerKey)
+	SubDoerUtil1.DoReleaseSubDoer(self._parentDoer, self._subDoerKey)
 end
 
 -- 保存
@@ -47,7 +52,7 @@ function Missions:DoRestore(dict, dictTmp, restoreKey)
 			for _, dictMission in ipairs(listMissions) do
 				local rid = table.Remove_Dict(dictMission, "rid")
 				mission = global.client.itemFactory:NewDoer(rid)
-				mission:SetEnv(self.parentDoer)
+				mission:SetEnv(self._parentDoer)
 				local dictMissionTmp
 				if dictMissionsTmp then
 					dictMissionTmp = dictMissionsTmp[rid]
@@ -58,38 +63,39 @@ function Missions:DoRestore(dict, dictTmp, restoreKey)
 		end
 	end
 end
---------------------------OnXXX-------------------
+----------------------------------------------------------------------
+-- OnXXX
+----------------------------------------------------------------------
 
---------------------------------------------------
 ---@param id string
 ---@return Mission[]
 function Missions:GetMissions(id)
-	return SubDoerUtil1.GetSubDoers(self.parentDoer, self.subDoerKey, id)
+	return SubDoerUtil1.GetSubDoers(self._parentDoer, self._subDoerKey, id)
 end
 
 -- 可以直接插入删除
 ---@param id string
 ---@return Mission[]
 function Missions:GetMissions_ToEdit(id)
-	return SubDoerUtil1.GetSubDoers_ToEdit(self.parentDoer, self.subDoerKey, id)
+	return SubDoerUtil1.GetSubDoers_ToEdit(self._parentDoer, self._subDoerKey, id)
 end
 
 function Missions:HasMissions()
-	return SubDoerUtil1.HasSubDoers(self.parentDoer, self.subDoerKey)
+	return SubDoerUtil1.IsHasSubDoers(self._parentDoer, self._subDoerKey)
 end
 
 function Missions:GetMissionsCount()
-	return SubDoerUtil1.GetSubDoersCount(self.parentDoer, self.subDoerKey)
+	return SubDoerUtil1.GetSubDoersCount(self._parentDoer, self._subDoerKey)
 end
 
 ---@param id_or_rid string
 ---@return Mission
 function Missions:GetMission(id_or_rid)
-	return SubDoerUtil1.GetSubDoer(self.parentDoer, self.subDoerKey, id_or_rid)
+	return SubDoerUtil1.GetSubDoer(self._parentDoer, self._subDoerKey, id_or_rid)
 end
 
 function Missions:ClearMissions()
-	return SubDoerUtil1.ClearSubDoers(self.parentDoer, self.subDoerKey, function(mission)
+	return SubDoerUtil1.ClearSubDoers(self._parentDoer, self._subDoerKey, function(mission)
 	end)
 end
 

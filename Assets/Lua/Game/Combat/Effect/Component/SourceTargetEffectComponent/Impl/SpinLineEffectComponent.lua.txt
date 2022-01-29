@@ -11,25 +11,25 @@ local SpinLineEffectComponent = Class("SpinLineEffectComponent", SourceTargetEff
 function SpinLineEffectComponent:Init(startPosition, spinDir, startSpinAngle, spinSpeed, spinLength, forwardDir, forwardSpeed)
 	SpinLineEffectComponent.super.Init(self)
 
-	self.spinSpeed = spinSpeed
-	self.forwardDir = forwardDir
-	self.forwardSpeed = forwardSpeed or 0
-	self.spinDir = spinDir
-	self.startPosition = startPosition
-	self.startSpinAngle = startSpinAngle
-	self.spinLength = spinLength
-	self.elapsedDuration = 0
+	self._spinSpeed = spinSpeed
+	self._forwardDir = forwardDir
+	self._forwardSpeed = forwardSpeed or 0
+	self._spinDir = spinDir
+	self._startPosition = startPosition
+	self._startSpinAngle = startSpinAngle
+	self._spinLength = spinLength
+	self._elapsedDuration = 0
 
 	self:Calculate(0)
-	self.effectEntity:ApplyToTransformComponent(self.currentPosition, self.currentEulerAngles)
+	self._effectEntity:ApplyToTransformComponent(self._currentPosition, self._currentEulerAngles)
 end
 
 function SpinLineEffectComponent:Calculate(deltaTime)
-	self.elapsedDuration = self.elapsedDuration + deltaTime
-	local forwardDistance = self.forwardSpeed * self.elapsedDuration * self.forwardDir
-	local arcDir = Quaternion.AngleAxis(self.startSpinAngle + self.spinSpeed * self.elapsedDuration, Vector3.up) * self.spinDir-- 电弧当前朝向
-	self.currentPosition = self.startPosition + forwardDistance + arcDir * self.spinLength -- 电弧当前结束位置
-	self.currentEulerAngles = Vector3.zero
+	self._elapsedDuration = self._elapsedDuration + deltaTime
+	local forwardDistance = self._forwardSpeed * self._elapsedDuration * self._forwardDir
+	local arcDir = Quaternion.AngleAxis(self._startSpinAngle + self._spinSpeed * self._elapsedDuration, Vector3.up) * self._spinDir-- 电弧当前朝向
+	self._currentPosition = self._startPosition + forwardDistance + arcDir * self._spinLength -- 电弧当前结束位置
+	self._currentEulerAngles = Vector3.zero
 end
 
 return SpinLineEffectComponent

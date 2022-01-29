@@ -267,6 +267,11 @@ function GameEntity:GetGraphicComponent()
 	return self._graphicComponent
 end
 
+function GameEntity:GetResLoadComponent()
+	return self._resLoadComponent
+end
+
+
 ----------------------------------------------------------------------
 -- __Destroy
 ----------------------------------------------------------------------

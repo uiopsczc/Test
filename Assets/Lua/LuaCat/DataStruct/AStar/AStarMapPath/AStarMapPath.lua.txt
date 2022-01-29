@@ -9,6 +9,14 @@ function AStarMapPath:Init(grids)
 	self._projectGrids = table.InitArrays(self:Height())
 end
 
+function AStarMapPath:GetGrids()
+	return self._grids
+end
+
+function AStarMapPath:GetProjectGrids()
+	return self._projectGrids
+end
+
 function AStarMapPath:GetFinalGrids()
 	if not self._finalGrids then
 		self:UpdateFinalGrids()

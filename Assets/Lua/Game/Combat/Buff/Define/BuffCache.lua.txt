@@ -1,9 +1,49 @@
 ---@class BuffCache:Class
----@field duration
----@field remainDuration
----@field sourceUnit Unit
----@field sourceSpell SpellBase
----@field argDict
+---@field _duration
+---@field _remainDuration
+---@field _sourceUnit Unit
+---@field _sourceSpell SpellBase
+---@field _argDict
 local BuffCache = Class("BuffCache")
+
+function BuffCache:SetDuration(duration)
+	self._duration = duration
+end
+
+function BuffCache:GetDuration()
+	return self._duration
+end
+
+function BuffCache:SetRemainDuration(remainDuration)
+	self._remainDuration = remainDuration
+end
+
+function BuffCache:GetRemainDuration()
+	return self._remainDuration
+end
+
+function BuffCache:SetSourceUnit(sourceUnit)
+	self._sourceUnit = sourceUnit
+end
+
+function BuffCache:GetSourceUnit()
+	return self._sourceUnit
+end
+
+function BuffCache:SetSourceSpell(sourceSpell)
+	self._sourceSpell = sourceSpell
+end
+
+function BuffCache:GetSourceSpell()
+	return self._sourceSpell
+end
+
+function BuffCache:SetArgDict(argDict)
+	self._argDict = argDict
+end
+
+function BuffCache:GetArgDict()
+	return self._argDict
+end
 
 return BuffCache

@@ -5,31 +5,31 @@ local LineEffectComponent = Class("LineEffectComponent", SourceTargetEffectCompo
 ---@param targetIPosition IPosition
 function LineEffectComponent:Init(sourceIPosition, targetIPosition, staySourceDuration, speed, accSpeed)
 	LineEffectComponent.super.Init(self)
-	self.sourceIPosition = sourceIPosition
-	self.targetIPosition = targetIPosition
+	self._sourceIPosition = sourceIPosition
+	self._targetIPosition = targetIPosition
 	self:SetSocket()
-	self.speed = speed or 0
-	self.accSpeed = accSpeed or 0
-	self.staySourceDuration = staySourceDuration or 0
+	self._speed = speed or 0
+	self._accSpeed = accSpeed or 0
+	self._staySourceDuration = staySourceDuration or 0
 
 	self:Calculate(0)
-	self.effectEntity:ApplyToTransformComponent(self.currentPosition, self.currentEulerAngles)
+	self._effectEntity:ApplyToTransformComponent(self._currentPosition, self._currentEulerAngles)
 end
 
 function LineEffectComponent:Calculate(deltaTime)
-	self.staySourceDuration = self.staySourceDuration - deltaTime
-	if self.staySourceDuration >= 0 then
-		self.sourcePosition = self.sourceIPosition:GetPosition()
-		self.targetPosition = self.targetIPosition:GetPosition()
-		self.currentPosition = self.sourcePosition
+	self._staySourceDuration = self._staySourceDuration - deltaTime
+	if self._staySourceDuration >= 0 then
+		self._sourcePosition = self._sourceIPosition:GetPosition()
+		self._targetPosition = self._targetIPosition:GetPosition()
+		self._currentPosition = self._sourcePosition
 		self:CalculateEulerAngles()
 		return
 	end
 
-	self.speed = self.speed + self.accSpeed
-	local remainDuration = Vector3.Distance(self.currentPosition, self.targetPosition) / self.speed
+	self._speed = self._speed + self._accSpeed
+	local remainDuration = Vector3.Distance(self._currentPosition, self._targetPosition) / self._speed
 	local pct = math.Clamp01(deltaTime / remainDuration)
-	self.currentPosition = Vector3.Lerp(self.currentPosition, self.targetPosition, pct)
+	self._currentPosition = Vector3.Lerp(self._currentPosition, self._targetPosition, pct)
 
 	self:CalculateEulerAngles()
 	if pct == 1 then
