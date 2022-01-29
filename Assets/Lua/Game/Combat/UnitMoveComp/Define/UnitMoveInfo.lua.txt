@@ -34,16 +34,36 @@ function UnitMoveInfo:SetEndRotation(endRotation)
 	self._endRotation = endRotation
 end
 
+function UnitMoveInfo:GetEndRotation()
+	return self._endRotation
+end
+
+function UnitMoveInfo:SetAnimationName(animationName)
+	self._animationName = animationName
+end
+
 function UnitMoveInfo:GetAnimationName()
 	return self._animationName
+end
+
+function UnitMoveInfo:SetAnimationSpeed(animationSpeed)
+	self._animationSpeed = animationSpeed
 end
 
 function UnitMoveInfo:GetAnimationSpeed()
 	return self._animationSpeed
 end
 
+function UnitMoveInfo:SetSpeed(speed)
+	self._speed = speed
+end
+
 function UnitMoveInfo:GetSpeed()
 	return self._speed
+end
+
+function UnitMoveInfo:SetRotateRemainDuration(rotateRemainDuration)
+	self._rotateRemainDuration = rotateRemainDuration
 end
 
 function UnitMoveInfo:GetRotateRemainDuration()
@@ -54,9 +74,38 @@ function UnitMoveInfo:GetTargetPos()
 	return self._targetPos
 end
 
+function UnitMoveInfo:SetRemainDuration(remainDuration)
+	self._remainDuration = remainDuration
+end
+
 function UnitMoveInfo:GetRemainDuration()
 	return self._remainDuration
 end
+
+function UnitMoveInfo:SetPath(path)
+	self._path = path
+end
+
+function UnitMoveInfo:GetPath()
+	return self._path
+end
+
+function UnitMoveInfo:SetTargetIndexInPath(targetIndexInPath)
+	self._targetIndexInPath = targetIndexInPath
+end
+
+function UnitMoveInfo:GetTargetIndexInPath()
+	return self._targetIndexInPath
+end
+
+function UnitMoveInfo:SetLookAtUnit(lookAtUnit)
+	self._lookAtUnit = lookAtUnit
+end
+
+function UnitMoveInfo:GetLookAtUnit()
+	return self._lookAtUnit
+end
+
 
 
 

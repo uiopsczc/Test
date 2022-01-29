@@ -10,8 +10,8 @@ function Buff:Init(buffManager, buffId)
 	self._cfgBuffData = CfgBuff.get_by_id(buffId)
 	---@type BuffCache[]
 	self._buffCacheList = {} -- 因为有些buff可以同时存在多个，但效果只有一个生效,效果不累加
-	---@field EffectBase[]
-	self._effectList = {} -- 一个buff可能有多个特效
+	---@type EffectEntity[]
+	self._effectEntityList = {} -- 一个buff可能有多个特效
 end
 
 function Buff:CreateBuffCache(duration, sourceUnit, sourceSpell, argDict)
@@ -50,8 +50,8 @@ end
 function Buff:RemoveBuffCache(sourceUnitGuid, sourceSpellGuid)
 	for i = #self._buffCacheList, 1, -1 do
 		local buffCache = self._buffCacheList[i]
-		local isThisUnit = not sourceUnitGuid or (buffCache._sourceUnit and buffCache._sourceUnit:GetGuid() == sourceUnitGuid)
-		local isThisSpell = not sourceSpellGuid or (buffCache._sourceSpell and buffCache._sourceSpell:GetGuid() == sourceSpellGuid)
+		local isThisUnit = not sourceUnitGuid or (buffCache:GetSourceUnit() and buffCache:GetSourceUnit():GetGuid() == sourceUnitGuid)
+		local isThisSpell = not sourceSpellGuid or (buffCache:GetSourceSpell() and buffCache:GetSourceSpell():GetGuid() == sourceSpellGuid)
 		if isThisUnit and isThisSpell then
 			table.remove(self._buffCacheList, i)
 		end
@@ -68,21 +68,21 @@ function Buff:AddEffects()
 	end
 	for _, effectId in ipairs(effectIds) do
 		local cfgEffectData = CfgEffect.get_by_id(effectId)
-		local effect = global.client.combat._effectManager:CreateAttachEffect(effectId, self._buffManager._unit, cfgEffectData.duration) -- TODO 如何初始化effectBase
-		table.insert(self._effectList, effect)
+		local effect = global.client.combat:GetEffectManager():CreateAttachEffect(effectId, self._buffManager:GetUnit(), cfgEffectData.duration) -- TODO 如何初始化effectBase
+		table.insert(self._effectEntityList, effect)
 	end
 end
 
 function Buff:RemoveEffects()
-	for _, effect in ipairs(self._effectList) do
-		global.client.combat._effectManager:RemoveEffectEntity(effect.key)
+	for _, effectEntity in ipairs(self._effectEntityList) do
+		global.client.combat:GetEffectManager():RemoveEffect(effectEntity:GetKey())
 	end
 end
 
 function Buff:AddPropertyDict()
 	local newPropertyDict = self._cfgBuffData.propertyDict and DoerAttrParserUtil.ConvertTableWithTypeString(self._cfgBuffData.property_dict) or {}
 	if table.Count(newPropertyDict) > 0 then
-		local propertyComp = self._buffManager._unit._propertyComp
+		local propertyComp = self._buffManager:GetUnit():GetPropertyComp()
 		propertyComp:StartChange()
 		propertyComp:AddPropSet(newPropertyDict, "buff", self:GetGuid())
 		propertyComp:EndChange()
@@ -120,6 +120,13 @@ function Buff:RemoveTriggerSpell()
 		end
 		global.client.combat:GetSpellManager():RemoveSpell(self._triggerSpellGuid)
 	end
+end
+
+----------------------------------------------------------------------
+-- TODO相关
+----------------------------------------------------------------------
+function Buff:GetBuffId()
+	return self._buffId
 end
 
 function Buff:_Destroy()

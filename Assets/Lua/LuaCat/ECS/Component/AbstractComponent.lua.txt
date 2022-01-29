@@ -165,13 +165,12 @@ function AbstractComponent:IsKeyUsingParentIdPool()
 	return self._isKeyUsingParentIdPool
 end
 
-----------------------------------------------------------------------
--- Destroy相关
-----------------------------------------------------------------------
 function AbstractComponent:IsDestroyed()
 	return self._isDestroyed or false
 end
-
+----------------------------------------------------------------------
+-- Destroy相关
+----------------------------------------------------------------------
 function AbstractComponent:Destroy()
 	if self:IsDestroyed() then
 		return

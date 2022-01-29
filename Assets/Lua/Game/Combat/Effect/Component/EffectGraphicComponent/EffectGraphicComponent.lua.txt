@@ -2,9 +2,9 @@
 local EffectGraphicComponent = Class("EffectGraphicComponent", GraphicComponent)
 
 function EffectGraphicComponent:Init()
-	EffectGraphicComponent.super.Init(self, global.client.combat._effectManager:GetResLoadComponent())
+	EffectGraphicComponent.super.Init(self, global.client.combat:GetEffectManager():GetResLoadComponent())
 	---@type EffectEntity
-	self._effectEntity = self._entity
+	self._effectEntity = self:GetEntity()
 end
 
 function EffectGraphicComponent:OnAllAssetsLoadDone()

@@ -160,14 +160,14 @@ function SpellBase:Start()
 		self:CounterIncrease()  -- 被动默认不被消耗
 	end
 	self:CounterIncrease()
-	self.targetUnitList = global.client.combat._spellManager:RecommendSpellRule(self._sourceUnit, self._targetUnit, self._cfgSpellData, self._originPosition)
+	self.targetUnitList = global.client.combat:GetSpellManager():RecommendSpellRule(self._sourceUnit, self._targetUnit, self._cfgSpellData, self._originPosition)
 	self._targetUnit = self.targetUnitList[1]
 	if self.OnStart then
 		self:OnStart()
 	end
 	self:RegisterTriggerSpell()
 	self:Broadcast(SpellEventNameConst.On_Spell_Start, self._sourceUnit, self._targetUnit, self)
-	global.client.combat._spellManager:UnRegisterListener("onStart", self._sourceUnit, self, "RegisterTriggerSpell")
+	global.client.combat:GetSpellManager():UnRegisterListener("onStart", self._sourceUnit, self, "RegisterTriggerSpell")
 	if self._cfgSpellData.actionName then
 		if not self._sourceUnit:GetActionDict() or
 			not self._sourceUnit:GetActionDict()[self._cfgSpellData.actionName] then
@@ -206,7 +206,7 @@ function SpellBase:_OnCast()
 		self:OnCast()
 	end
 	self:Broadcast(SpellEventNameConst.On_Spell_Cast, self._sourceUnit, self._targetUnit, self)
-	global.client.combat._spellManager:UnRegisterListener("onCast", self._sourceUnit, self, "RegisterTriggerSpell")
+	global.client.combat:GetSpellManager():UnRegisterListener("onCast", self._sourceUnit, self, "RegisterTriggerSpell")
 end
 
 function SpellBase:RegisterTriggerSpell()
@@ -237,7 +237,7 @@ function SpellBase:_RegisterTriggerSpell(newSpellTriggerId)
 		triggerArgDict.triggerId = newSpellTriggerId
 		local triggerFunc = function()
 			-- 启动技能时需要把新技能需要的参数传进去，如果当前技能没有提供这样的方法，则说明当前技能不能启动目标技能
-			global.client.combat._spellManager:CastSpell(self._sourceUnit, triggerSpellId, targetUnit, triggerArgDict)
+			global.client.combat:GetSpellManager():CastSpell(self._sourceUnit, triggerSpellId, targetUnit, triggerArgDict)
 		end
 		if triggerSpellDelayDuration then
 			self:CounterIncrease()
@@ -308,7 +308,7 @@ function SpellBase:OnSpellAnimationFinished()
 		return
 	end
 	self._isSpellAnimationFinished = true
-	global.client.combat._spellManager:OnSpellAnimationFinished(self)
+	global.client.combat:GetSpellManager():OnSpellAnimationFinished(self)
 	if self.counter:GetCount() <= 0 then
 		self:RemoveSelf()
 	end
@@ -327,7 +327,7 @@ function SpellBase:FilterUnit(unit, spell_id, target_unit, cfgSpellData)
 	return true
 end
 
----@param missileEffect MissileEffect
+---@param missileEffect MissileEffectEntity
 function SpellBase:OnMissileReach(missileEffect)
 	self:Broadcast(SpellEventNameConst.On_Missile_Reach, self._sourceUnit, missileEffect, self)
 	self:CounterDecrease()
@@ -427,7 +427,7 @@ function SpellBase:RemoveBuff(buffList, unit)
 	end
 	unit = unit or self._sourceUnit
 	for _, buff in ipairs(buffList) do
-		unit:GetBuffManager():RemoveBuff(buff._buffId, nil, self:GetGuid())
+		unit:GetBuffManager():RemoveBuff(buff:GetBuffId(), nil, self:GetGuid())
 	end
 end
 
@@ -456,7 +456,7 @@ function SpellBase:CreateHandEffect(duration)
 	end
 	local effectIds, guidList = self._cfgSpellData.handEffectIds, {}
 	for _, effectId in ipairs(effectIds) do
-		local effect = global.client.combat._effectManager:CreateAttachEffect(effectId, self._sourceUnit, duration)
+		local effect = global.client.combat:GetEffectManager():CreateAttachEffect(effectId, self._sourceUnit, duration)
 		table.insert(guidList, effect:GetGuid())
 	end
 	return guidList
@@ -469,7 +469,7 @@ function SpellBase:CreateGoEffect(duration)
 	end
 	local effectIds, guidList = self._cfgSpellData.goEffectIds, {}
 	for _, effectId in ipairs(effectIds) do
-		local effect = global.client.combat._effectManager:CreateAttachEffect(effectId, self._sourceUnit, duration)
+		local effect = global.client.combat:GetEffectManager():CreateAttachEffect(effectId, self._sourceUnit, duration)
 		table.insert(guidList, effect:GetGuid())
 	end
 	return guidList
@@ -489,7 +489,7 @@ function SpellBase:CreateHitEffect(sourceUnit, targetUnit, duration, sectorAngle
 	local effectIds, guidList = forceEffectIdList or self._cfgSpellData.hitEffectIds, {}
 
 	for _, effectId in ipairs(effectIds) do
-		local effect = global.client.combat._effectManager:CreateAttachEffect(effectId, self._sourceUnit, duration, forceDir, sectorAngle)
+		local effect = global.client.combat:GetEffectManager():CreateAttachEffect(effectId, self._sourceUnit, duration, forceDir, sectorAngle)
 		table.insert(guidList, effect:GetGuid())
 	end
 	return guidList
@@ -504,10 +504,10 @@ function SpellBase:CreateGroundEffect(position, eulerAngles, duration, forceEffe
 	eulerAngles = eulerAngles or QuaternionUtil.GetValueOrDefault(Quaternion.LookRotation(position - self._sourceUnit:GetPosition())):ToEulerAngles()
 	local effectIds, guidList = forceEffectIds or self._cfgSpellData.ground_effect_ids, {}
 	if not forcePosition then
-		position = global.client.combat._pathManager:GetGroundPos(position)
+		position = global.client.combat:GetPathManager():GetGroundPos(position)
 	end
 	for _, effectId in ipairs(effectIds) do
-		local effect = global.client.combat._effectManager:CreateGroundEffect(effectId, self._sourceUnit, position, eulerAngles, duration, isHide)
+		local effect = global.client.combat:GetEffectManager():CreateGroundEffect(effectId, self._sourceUnit, position, eulerAngles, duration, isHide)
 		table.insert(guidList, effect:GetGuid())
 	end
 	return guidList
@@ -520,7 +520,7 @@ function SpellBase:CreateLineEffect(target, speed, accSpeed)
 	end
 	local effectIds, guids = self._cfgSpellData.lineEffectIds, {}
 	for _, effectId in ipairs(effectIds) do
-		local guid = global.client.combat._effectManager:CreateLineEffect(effectId, self._sourceUnit, self._sourceUnit, target, speed, accSpeed)
+		local guid = global.client.combat:GetEffectManager():CreateLineEffect(effectId, self._sourceUnit, self._sourceUnit, target, speed, accSpeed)
 		table.insert(guids, guid)
 	end
 	return guids
@@ -532,10 +532,10 @@ function SpellBase:RemoveEffect(effectGuidList)
 	end
 	if IsString(effectGuidList) then
 		local effectGuid = effectGuidList
-		global.client.combat._effectManager:RemoveEffectEntity(effectGuid)
+		global.client.combat:GetEffectManager():RemoveEffect(effectGuid)
 	else
 		for _, effectGuid in ipairs(effectGuidList) do
-			global.client.combat._effectManager:RemoveEffectEntity(effectGuid)
+			global.client.combat:GetEffectManager():RemoveEffect(effectGuid)
 		end
 	end
 end
@@ -547,19 +547,28 @@ function SpellBase:IsPastBreakTime()
 	return self._isPastBreakTime
 end
 
+function SpellBase:GetSpellId()
+	return self._spellId
+end
+
+function SpellBase:GetCfgSpellData()
+	return self._cfgSpellData
+end
+
+
 ----------------------------------------------------------------------
 --
 ----------------------------------------------------------------------
 function SpellBase:RemoveSelf()
-	global.client.combat._spellManager:RemoveSpell(self:GetGuid())
+	global.client.combat:GetSpellManager():RemoveSpell(self:GetGuid())
 end
 
 function SpellBase:_Destroy()
 	SpellBase.super._Destroy(self)
 	if not self._isSpellAnimationFinished then
-		global.client.combat._spellManager:OnSpellAnimationFinished(self)
+		global.client.combat:GetSpellManager():OnSpellAnimationFinished(self)
 	end
-	global.client.combat._spellManager:RemoveListenersByObj(self)
+	global.client.combat:GetSpellManager():RemoveListenersByObj(self)
 end
 
 return SpellBase

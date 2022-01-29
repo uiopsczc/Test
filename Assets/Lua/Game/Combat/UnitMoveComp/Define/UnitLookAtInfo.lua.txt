@@ -15,12 +15,58 @@ function UnitLookAtInfo:IsHasLookAt()
 	return self.IsLookAtDir() or self.IsLookAtUnit()
 end
 
+function UnitLookAtInfo:SetLookAtDir(lookAtDir)
+	self._lookAtDir = lookAtDir
+end
+
 function UnitLookAtInfo:IsLookAtDir()
 	return self._lookAtDir ~= nil
+end
+
+function UnitLookAtInfo:SetLookAtUnit(lookAtUnit)
+	self._lookAtUnit = lookAtUnit
 end
 
 function UnitLookAtInfo:IsLookAtUnit()
 	return self._lookAtUnit ~= nil
 end
+
+function UnitLookAtInfo:SetIsRotateXArrived(isRotateXArrived)
+	self._isRotateXArrived = isRotateXArrived
+end
+
+function UnitLookAtInfo:IsRotateXArrived()
+	return self._isRotateXArrived
+end
+
+function UnitLookAtInfo:SetIsRotateYArrived(isRotateYArrived)
+	self._isRotateYArrived = isRotateYArrived
+end
+
+
+function UnitLookAtInfo:IsRotateYArrived()
+	return self._isRotateYArrived
+end
+
+function UnitLookAtInfo:SetIsLocked(isLocked)
+	self._isLocked = isLocked
+end
+
+function UnitLookAtInfo:IsLocked()
+	return self._isLocked
+end
+
+function UnitLookAtInfo:SetMode(mode)
+	self._mode = mode
+end
+
+function UnitLookAtInfo:GetMode()
+	return self._mode
+end
+
+
+
+
+
 
 return UnitLookAtInfo

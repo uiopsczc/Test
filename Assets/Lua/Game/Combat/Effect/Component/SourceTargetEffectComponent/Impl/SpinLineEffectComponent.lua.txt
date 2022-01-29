@@ -21,7 +21,7 @@ function SpinLineEffectComponent:Init(startPosition, spinDir, startSpinAngle, sp
 	self._elapsedDuration = 0
 
 	self:Calculate(0)
-	self._effectEntity:ApplyToTransformComponent(self._currentPosition, self._currentEulerAngles)
+	self:GetEffectEntity():ApplyToTransformComponent(self._currentPosition, self._currentEulerAngles)
 end
 
 function SpinLineEffectComponent:Calculate(deltaTime)

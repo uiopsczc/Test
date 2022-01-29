@@ -73,8 +73,8 @@ function SpellManager:CastSpell(sourceUnit, spellId, targetUnit, argDict, isCont
 	if cfgSpellData.castType == "正常" then
 		-- 当玩家是手动操作释放技能时，技能方向就以玩家的输入为准（但如果有目标则会以目标方向释放技能，无视输入）
 		-- 当释放的技能类型是正常的话，则需停下来施法
-		if sourceUnit._currentAttack then
-			self:BreakSpell(sourceUnit._currentAttack:GetGuid())
+		if sourceUnit:GetCurrentAttack() then
+			self:BreakSpell(sourceUnit:GetCurrentAttack():GetGuid())
 		end
 		local rotation = nil
 		local isNotFaceToTarget = argDict and argDict.isNotFaceToTarget
@@ -90,7 +90,7 @@ function SpellManager:CastSpell(sourceUnit, spellId, targetUnit, argDict, isCont
 		if not cfgSpellData.isCanMoveWhileCast or not isControl then
 			sourceUnit:MoveStop(rotation)
 		end
-		sourceUnit._currentAttack = spell
+		sourceUnit:SetCurrentAttack(spell)
 		sourceUnit:UpdateMixedStates()
 	end
 	if cfgSpellData.type == "普攻" then
@@ -129,7 +129,7 @@ function SpellManager:CheckIsCanCast(sourceUnit, spellId, targetUnit, isControl)
 		if not targetUnit then
 			return false
 		end
-		if not global.client.combat._unitManager:_CheckUnit(targetUnit, sourceUnit, { mode = "circle", radius = cfgSpellData.range }, sourceUnit:GetFaction(), scope, isOnlyAttackable) then
+		if not global.client.combat:GetUnitManager():_CheckUnit(targetUnit, sourceUnit, { mode = "circle", radius = cfgSpellData.range }, sourceUnit:GetFaction(), scope, isOnlyAttackable) then
 			return false
 		end
 	end
@@ -209,7 +209,7 @@ function SpellManager:RecommendSpellRule(sourceUnit, targetUnit, cfgSpellData, o
 		scope = scope,
 		rangeInfo = { mode = "circle", radius = cfgSpellData.range }
 	}
-	targetUnitList = targetUnitList or global.client.combat._unitManager:SelectUnit(conditionDict)
+	targetUnitList = targetUnitList or global.client.combat:GetUnitManager():SelectUnit(conditionDict)
 
 	local count = selectUnitCount
 	local newTargetList = {}
@@ -238,7 +238,7 @@ function SpellManager:_IsUnitMatchCondition(sourceUnit, targetUnit, isControl, c
 			return false
 		end
 		if cfgSpellData.targetType and cfgSpellData.targetType ~= "all" then
-			if not global.client.combat._unitManager:CheckFaction(sourceUnit:GetFaction(), targetUnit:GetFaction(), cfgSpellData.targetType) then
+			if not global.client.combat:GetUnitManager():CheckFaction(sourceUnit:GetFaction(), targetUnit:GetFaction(), cfgSpellData.targetType) then
 				return false
 			end
 		end
@@ -422,9 +422,10 @@ function SpellManager:RemoveSpell(guid)
 	self:RemoveChild(guid)
 end
 
+---@param unit Unit
 function SpellManager:OnUnitDestroy(unit)
-	if unit.current_attack then
-		self:BreakSpell(unit.current_attack:GetGuid())
+	if unit:GetCurrentAttack() then
+		self:BreakSpell(unit:GetCurrentAttack():GetGuid())
 	end
 end
 

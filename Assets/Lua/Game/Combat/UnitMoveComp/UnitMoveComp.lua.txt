@@ -46,7 +46,7 @@ function UnitMoveComp:OnBuildOk()
 		if self._unitMoveInfo:IsHasAnimationName() and self._isMoveWithMoveAnimation then
 			unit:PlayAnimation(self._unitMoveInfo:GetAnimationName(), 0, self._unitMoveInfo:GetAnimationSpeed())
 		end
-		unit:_MoveTo(self._unitMoveInfo:GetTargetPos(), self._unitMoveInfo:GetRemainDuration())
+		unit:MoveTo(self._unitMoveInfo:GetTargetPos(), self._unitMoveInfo:GetRemainDuration())
 	end
 end
 
@@ -56,47 +56,48 @@ end
 function UnitMoveComp:Move(targetPos, speed, animationName)
 	self:MoveByPath({ targetPos }, speed, animationName)
 end
+
 function UnitMoveComp:MoveByPath(path, speed, animationName)
 	local unit = self._unit
 	if not unit:IsCanMove() then
 		return
 	end
 	self._moveType = "move"
-	if path[1] and not unit._isInSight then
+	if path[1] and not unit:IsInSight() then
 		unit:SetPosition(path[1])
 	end
-	self._unitMoveInfo._path = path
+	self._unitMoveInfo:SetPath(path)
 	if speed then
-		self._unitMoveInfo._speed = speed
+		self._unitMoveInfo:SetSpeed(speed)
 	end
 	if animationName then
-		self._unitMoveInfo._animationName = animationName
+		self._unitMoveInfo:SetAnimationName(animationName)
 	end
-	local lastMoveAnimationSpeed = self._unitMoveInfo._animationSpeed
-	self._unitMoveInfo._animationSpeed = self._unitMoveInfo._speed / self._walkStepLength
+	local lastMoveAnimationSpeed = self._unitMoveInfo:GetAnimationSpeed()
+	self._unitMoveInfo:SetAnimationSpeed(self._unitMoveInfo:GetSpeed() / self._walkStepLength)
 	if self._unitMoveInfo:IsHasAnimationName()
 		and self._isMoveWithMoveAnimation
-		and math.abs(self._unitMoveInfo._animationSpeed - lastMoveAnimationSpeed) > 0.2 then
-		unit:PlayAnimation(self._unitMoveInfo._animationName, 0.2, self._unitMoveInfo._animationSpeed)
+		and math.abs(self._unitMoveInfo:GetAnimationSpeed() - lastMoveAnimationSpeed) > 0.2 then
+		unit:PlayAnimation(self._unitMoveInfo:GetAnimationName(), 0.2, self._unitMoveInfo:GetAnimationSpeed())
 	end
-	self:__MoveNextTarget(2)
+	self:_MoveNextTarget(2)
 end
 
-function UnitMoveComp:__MoveNextTarget(index)
+function UnitMoveComp:_MoveNextTarget(index)
 	local unit = self._unit
 	if index then
-		self._unitMoveInfo._targetIndexInPath = index
+		self._unitMoveInfo:SetTargetIndexInPath(index)
 	else
-		self._unitMoveInfo._targetIndexInPath = self._unitMoveInfo._targetIndexInPath + 1
+		self._unitMoveInfo:SetTargetIndexInPath(self._unitMoveInfo:GetTargetIndexInPath() + 1)
 	end
-	self._unitMoveInfo._targetPos = self._unitMoveInfo._path[self._unitMoveInfo._targetIndexInPath]
-	if self._unitMoveInfo._targetPos then
-		local originPos = self._unitMoveInfo._path[self._unitMoveInfo._targetIndexInPath - 1]
-		local distance = Vector3.Distance(self._unitMoveInfo._targetPos, originPos)
-		self._unitMoveInfo._remainDuration = distance / self._unitMoveInfo._speed
-		unit:_MoveTo(self._unitMoveInfo._targetPos, self._unitMoveInfo._remainDuration)
-		self._unitMoveInfo._endRotation = Quaternion.LookRotation(self._unitMoveInfo._targetPos - unit:GetPosition()) or unit:GetRotation()
-		self._unitMoveInfo._rotateRemainDuration = Quaternion.Angle(self._unitMoveInfo._endRotation, unit:GetRotation()) / 1080
+	self._unitMoveInfo:SetTargetPos(self._unitMoveInfo:GetPath()[self._unitMoveInfo:GetTargetIndexInPath()])
+	if self._unitMoveInfo:GetTargetPos() then
+		local originPos = self._unitMoveInfo:GetPath()[self._unitMoveInfo:GetTargetIndexInPath() - 1]
+		local distance = Vector3.Distance(self._unitMoveInfo:GetTargetPos(), originPos)
+		self._unitMoveInfo:SetRemainDuration(distance / self._unitMoveInfo:GetSpeed())
+		unit:MoveTo(self._unitMoveInfo:GetTargetPos(), self._unitMoveInfo:GetRemainDuration())
+		self._unitMoveInfo:SetEndRotation(Quaternion.LookRotation(self._unitMoveInfo:GetTargetPos() - unit:GetPosition()) or unit:GetRotation())
+		self._unitMoveInfo:SetRotateRemainDuration(Quaternion.Angle(self._unitMoveInfo:GetEndRotation(), unit:GetRotation()) / 1080)
 	else
 		self:MoveStop()
 	end
@@ -105,13 +106,13 @@ end
 function UnitMoveComp:MoveStop(rotation, pos)
 	local unit = self._unit
 	if pos and
-		(not unit._isInSight or
-			(unit._position - pos):SqrMagnitude() > self._adjustDistSqr) then
+		(not unit:IsInSight() or
+			(unit:GetPosition() - pos):SqrMagnitude() > self._adjustDistSqr) then
 		unit:SetPosition(pos)
 	end
 	if rotation then
-		self._unitMoveInfo._endRotation = rotation
-		self._unitMoveInfo._rotateRemainDuration = Quaternion.Angle(rotation, unit._rotation) / 720
+		self._unitMoveInfo:SetEndRotation(rotation)
+		self._unitMoveInfo:SetRotateRemainDuration(Quaternion.Angle(rotation, unit:GetRotation()) / 720)
 	end
 	if not self._moveType then
 		return
@@ -119,15 +120,15 @@ function UnitMoveComp:MoveStop(rotation, pos)
 	if self._moveType == "move"
 		and self._isMoveWithMoveAnimation
 		and self._unitMoveInfo:IsHasAnimationName() then
-		if IsNotNil(unit._animation) then
-			unit:StopAnimation(self._unitMoveInfo._animationName, 0.2)  -- animation动画是层叠的，停掉walk自动就播放idle
+		if IsNotNil(unit:GetAnimation()) then
+			unit:StopAnimation(self._unitMoveInfo:GetAnimationName(), 0.2)  -- animation动画是层叠的，停掉walk自动就播放idle
 		else
 			unit._animatorComp:PlayAnimation(AnimationNameConst.idle, true)
 		end
 	end
 	self._moveType = nil
-	self._unitMoveInfo._remainDuration = 0
-	self._unitMoveInfo._animationSpeed = -1
+	self._unitMoveInfo:SetRemainDuration(0)
+	self._unitMoveInfo:SetAnimationSpeed(-1)
 	unit:StopMoveTo()
 end
 
@@ -136,45 +137,45 @@ function UnitMoveComp:_UpdateMove(deltaTime)
 	local deltaTimeRemainDuration = deltaTime
 	while self._moveType == "move" and deltaTimeRemainDuration > 0 do
 		local newPos
-		if self._unitMoveInfo._remainDuration > deltaTimeRemainDuration then
-			newPos = Vector3.Lerp(unit:GetPosition(), self._unitMoveInfo._targetPos, deltaTimeRemainDuration / self._unitMoveInfo._remainDuration)
-			self._unitMoveInfo._remainDuration = self._unitMoveInfo._remainDuration - deltaTimeRemainDuration
+		if self._unitMoveInfo:GetRemainDuration() > deltaTimeRemainDuration then
+			newPos = Vector3.Lerp(unit:GetPosition(), self._unitMoveInfo:GetTargetPos(), deltaTimeRemainDuration / self._unitMoveInfo:GetRemainDuration())
+			self._unitMoveInfo:SetRemainDuration(self._unitMoveInfo:GetRemainDuration() - deltaTimeRemainDuration)
 			deltaTimeRemainDuration = 0
 		else
-			newPos = self._unitMoveInfo._targetPos
-			deltaTimeRemainDuration = deltaTimeRemainDuration - self._unitMoveInfo._remainDuration
+			newPos = self._unitMoveInfo:GetTargetPos()
+			deltaTimeRemainDuration = deltaTimeRemainDuration - self._unitMoveInfo:GetRemainDuration()
 		end
 		local lookDir
-		if unit._unitLockTargetInfo:IsHasLockTarget() then
-			lookDir = unit._unitLockTargetInfo:GetLockTargetPosition() - unit:GetPosition()
+		if unit:GetUnitLockTargetInfo():IsHasLockTarget() then
+			lookDir = unit:GetUnitLockTargetInfo():GetLockTargetPosition() - unit:GetPosition()
 		else
 			lookDir = newPos - unit:GetPosition()
 		end
 		unit:OnlyFaceToDir(lookDir)
 		unit:SetPosition(newPos)
 		if deltaTimeRemainDuration > 0 then
-			self:__MoveNextTarget()
+			self:_MoveNextTarget()
 		end
 	end
-	if self._unitMoveInfo._lookAtUnit then
-		if self._unitMoveInfo._lookAtUnit:IsDead() then
+	if self._unitMoveInfo:GetLookAtUnit() then
+		if self._unitMoveInfo:GetLookAtUnit():IsDead() then
 			self.lookAtUnit = nil
 			return
 		end
-		local dir = self._unitMoveInfo._lookAtUnit:GetPosition() - unit:GetPosition()
+		local dir = self._unitMoveInfo:GetLookAtUnit():GetPosition() - unit:GetPosition()
 		local angle = Vector3.Angle(unit:GetRotation():Forward(), dir)
 		if angle > 5 then
-			local targetRotation = Quaternion.LookRotation(dir) or unit._rotation
+			local targetRotation = Quaternion.LookRotation(dir) or unit:GetRotation()
 			unit:SetRotation(Quaternion.Slerp(unit:GetRotation(), targetRotation, 0.3))
 		end
 	else
-		if self._unitMoveInfo._rotateRemainDuration > 0 then
-			if self._unitMoveInfo._rotateRemainDuration <= deltaTime then
-				unit:SetRotation(self._unitMoveInfo._endRotation)
-				self._unitMoveInfo._rotateRemainDuration = 0
+		if self._unitMoveInfo:GetRotateRemainDuration() > 0 then
+			if self._unitMoveInfo:GetRotateRemainDuration() <= deltaTime then
+				unit:SetRotation(self._unitMoveInfo:GetEndRotation())
+				self._unitMoveInfo:SetRotateRemainDuration(0)
 			else
-				unit:SetRotation(Quaternion.Slerp(unit:GetRotation(), self._unitMoveInfo._endRotation, deltaTime / self._unitMoveInfo._rotateRemainDuration))
-				self._unitMoveInfo._rotateRemainDuration = self._unitMoveInfo._rotateRemainDuration - deltaTime
+				unit:SetRotation(Quaternion.Slerp(unit:GetRotation(), self._unitMoveInfo:GetEndRotation(), deltaTime / self._unitMoveInfo:GetRotateRemainDuration()))
+				self._unitMoveInfo:SetRotateRemainDuration(self._unitMoveInfo:GetRotateRemainDuration() - deltaTime)
 			end
 		end
 	end
@@ -186,24 +187,24 @@ end
 ----------------------------------------------------------------------
 ---@param unitBeThrownInfo UnitBeThrownInfo
 function UnitMoveComp:BeThrown(unitBeThrownInfo)
-	local endPos = unitBeThrownInfo._endPos
-	local duration = unitBeThrownInfo._duration
-	local height = unitBeThrownInfo._height
-	local endRotation = unitBeThrownInfo._endRotation
-	local rotateDuration = unitBeThrownInfo._rotateDuration
+	local endPos = unitBeThrownInfo:GetEndPos()
+	local duration = unitBeThrownInfo:GetDuration()
+	local height = unitBeThrownInfo:GetHeight()
+	local endRotation = unitBeThrownInfo:GetEndRotation()
+	local rotateDuration = unitBeThrownInfo:GetRotateDuration()
 	if self._moveType == "beThrown" then
 		return
 	end
 	local unit = self._unit
 	self._moveType = "beThrown"
-	if unitBeThrownInfo:IsHasAnimationName() and IsNotNil(unit._animation) then
-		self._unit:PlayAnimation(unitBeThrownInfo._animationName)
+	if unitBeThrownInfo:IsHasAnimationName() and IsNotNil(unit:GetAnimation()) then
+		self._unit:PlayAnimation(unitBeThrownInfo:GetAnimationName())
 	end
 	self._unitBeThrownInfo = unitBeThrownInfo
 	self._unit:UpdateMixedStates()
-	self._unitBeThrownInfo._orgHeight = unit:GetPosition().y
-	self._unitBeThrownInfo.startPos = unit:GetPosition()
-	self._unitBeThrownInfo._remainDuration = duration
+	self._unitBeThrownInfo:SetOrgHeight(unit:GetPosition().y)
+	self._unitBeThrownInfo:SetStartPos(unit:GetPosition())
+	self._unitBeThrownInfo:SetRemainDuration(duration)
 	local deltaHeight = endPos.y - unit:GetPosition().y
 	-- 起点和落点，取最高的，加上height，为真正的最高高度
 	local maxHeight
@@ -212,32 +213,32 @@ function UnitMoveComp:BeThrown(unitBeThrownInfo)
 	else
 		maxHeight = height
 	end
-	self._unitBeThrownInfo._maxHeight = maxHeight
+	self._unitBeThrownInfo:SetMaxHeight(maxHeight)
 	if maxHeight == 0 then
-		self._unitBeThrownInfo._heightAccelerate = deltaHeight * 2 / (duration * duration)
-		self._unitBeThrownInfo._heightSpeed = 0
+		self._unitBeThrownInfo:SetHeightAccelerate(deltaHeight * 2 / (duration * duration))
+		self._unitBeThrownInfo:SetHeightSpeed(0)
 	else
 		local hTime = duration / (math.sqrt(1 - deltaHeight / maxHeight) + 1)
-		self._unitBeThrownInfo._heightAccelerate = -2 * maxHeight / (hTime * hTime)
-		self._unitBeThrownInfo._heightSpeed = -self._unitBeThrownInfo._heightAccelerate * hTime
+		self._unitBeThrownInfo:SetHeightAccelerate(-2 * maxHeight / (hTime * hTime))
+		self._unitBeThrownInfo:SetHeightSpeed(self._unitBeThrownInfo:GetHeightAccelerate() * hTime)
 	end
 	if endRotation and rotateDuration then
-		self._unitBeThrownInfo._rotateRemainDuration = rotateDuration
-		self._unitBeThrownInfo._startRotation = unit:GetRotation()
+		self._unitBeThrownInfo:SetRotateRemainDuration(rotateDuration)
+		self._unitBeThrownInfo:SetStartRotation(unit:GetRotation())
 	end
 end
 
 function UnitMoveComp:StopBeThrown(isEnd)
 	if isEnd then
 		if self._unitBeThrownInfo then
-			self._unitBeThrownInfo._remainDuration = 0.02
+			self._unitBeThrownInfo:SetRemainDuration(0.02)
 			self:_UpdateBeThrown(0.02)
 		end
 		return
 	end
 
-	if self._unitBeThrownInfo and not self._unitBeThrownInfo._isNotStopAnimation and self._unitBeThrownInfo:IsHasAnimationName() then
-		self._unit:StopAnimation(self._unitBeThrownInfo._animationName, 0.2)
+	if self._unitBeThrownInfo and not self._unitBeThrownInfo:IsNotStopAnimation() and self._unitBeThrownInfo:IsHasAnimationName() then
+		self._unit:StopAnimation(self._unitBeThrownInfo:GetAnimationName(), 0.2)
 	end
 
 	local isBackToGround = self._unitBeThrownInfo and self._unitBeThrownInfo._isBackToGround or false
@@ -248,10 +249,10 @@ function UnitMoveComp:StopBeThrown(isEnd)
 	if isBackToGround then
 		---@type UnitBeThrownInfo
 		local unitBeThrownInfo = UnitBeThrownInfo.New()
-		unitBeThrownInfo._endPos = global.client.combat._pathManager:GetGroundPos(self._unit:GetPosition())
-		unitBeThrownInfo._duration = 0.1
-		unitBeThrownInfo._height = 0
-		unitBeThrownInfo._isBackToGround = false
+		unitBeThrownInfo:SetEndPos(global.client.combat:GetPathManager():GetGroundPos(self._unit:GetPosition()))
+		unitBeThrownInfo:SetDuration(0.1)
+		unitBeThrownInfo:SetHeight(0)
+		unitBeThrownInfo:SetIsBackToGround(false)
 		self:BeThrown(unitBeThrownInfo)
 	end
 end
@@ -259,34 +260,34 @@ end
 -- 更新beThrown
 function UnitMoveComp:_UpdateBeThrown(deltaTime)
 	local unit = self._unit
-	self._unitBeThrownInfo._remainDuration = self._unitBeThrownInfo._remainDuration - deltaTime
-	if self._unitBeThrownInfo._remainDuration <= 0 then
+	self._unitBeThrownInfo:SetRemainDuration(self._unitBeThrownInfo:GetRemainDuration() - deltaTime)
+	if self._unitBeThrownInfo:GetRemainDuration() <= 0 then
 		self:StopBeThrown()
 		return
 	end
-	local passedDuration = self._unitBeThrownInfo._duration - self._unitBeThrownInfo._remainDuration -- 已经运行的时间
+	local passedDuration = self._unitBeThrownInfo:GetDuration() - self._unitBeThrownInfo:GetRemainDuration() -- 已经运行的时间
 	-- 计算高度
 	local curHeight
-	if self._unitBeThrownInfo._calcHeightFunc then
-		curHeight = self._unitBeThrownInfo._orgHeight + self._unitBeThrownInfo._calcHeightFunc(self._unitBeThrownInfo)
+	if self._unitBeThrownInfo:GetCalcHeightFunc() then
+		curHeight = self._unitBeThrownInfo:GetOrgHeight() + self._unitBeThrownInfo:GetCalcHeightFunc()(self._unitBeThrownInfo)
 	else
-		curHeight = self._unitBeThrownInfo._orgHeight + self._unitBeThrownInfo._heightSpeed * passedDuration + self._unitBeThrownInfo._heightAccelerate * passedDuration * passedDuration * 0.5
+		curHeight = self._unitBeThrownInfo:GetOrgHeight() + self._unitBeThrownInfo:GetHeightSpeed() * passedDuration + self._unitBeThrownInfo:GetHeightAccelerate() * passedDuration * passedDuration * 0.5
 	end
 	-- 计算水平位置
-	local interp = math.pow((1 - passedDuration / self._unitBeThrownInfo._duration), self._unitBeThrownInfo._interp)
-	local new_pos = self._unitBeThrownInfo.startPos * interp + self._unitBeThrownInfo._endPos * (1 - interp)
+	local interp = math.pow((1 - passedDuration / self._unitBeThrownInfo:GetDuration()), self._unitBeThrownInfo:GetInterp())
+	local newPos = self._unitBeThrownInfo:GetStartPos() * interp + self._unitBeThrownInfo:GetEndPos() * (1 - interp)
 
-	new_pos.y = curHeight
-	unit:SetPosition(new_pos)
+	newPos.y = curHeight
+	unit:SetPosition(newPos)
 
-	if self._unitBeThrownInfo._rotateDuration and self._unitBeThrownInfo._rotateRemainDuration then
-		self._unitBeThrownInfo._rotateRemainDuration = self._unitBeThrownInfo._rotateRemainDuration - deltaTime
-		if self._unitBeThrownInfo._rotateRemainDuration <= 0 then
-			self._unitBeThrownInfo._rotateDuration = nil
-			self._unitBeThrownInfo._rotateRemainDuration = nil
-			unit:SetRotation(self._unitBeThrownInfo._endRotation)
+	if self._unitBeThrownInfo:GetRotateDuration() and self._unitBeThrownInfo:GetRotateRemainDuration() then
+		self._unitBeThrownInfo:SetRotateRemainDuration(self._unitBeThrownInfo:GetRotateRemainDuration() - deltaTime)
+		if self._unitBeThrownInfo:GetRotateRemainDuration() <= 0 then
+			self._unitBeThrownInfo:SetRotateDuration(nil)
+			self._unitBeThrownInfo:SetRotateRemainDuration(nil)
+			unit:SetRotation(self._unitBeThrownInfo:GetEndRotation())
 		else
-			unit:SetRotation(Quaternion.Slerp(self._unitBeThrownInfo._startRotation, self._unitBeThrownInfo._endRotation, self._unitBeThrownInfo._rotateRemainDuration / self._unitBeThrownInfo._rotateDuration))
+			unit:SetRotation(Quaternion.Slerp(self._unitBeThrownInfo:GetStartRotation(), self._unitBeThrownInfo:GetEndRotation(), self._unitBeThrownInfo:GetRotateRemainDuration() / self._unitBeThrownInfo:GetRotateDuration()))
 		end
 	end
 end
@@ -297,31 +298,31 @@ end
 -- 在不需占据LookAt时，需传入unlock解锁
 ---@param unitOrEulerAngle Unit|Vector3
 function UnitMoveComp:LookAt(unitOrEulerAngle, mode)
-	self._unitLookAtInfo._isRotateXArrived = false
-	self._unitLookAtInfo._isRotateYArrived = false
-	if mode == "stop_look_at" then
-		self._unitLookAtInfo._lookAtUnit = nil
-		self._unitLookAtInfo._lookAtDir = nil
+	self._unitLookAtInfo:SetIsRotateXArrived(false)
+	self._unitLookAtInfo:SetIsRotateYArrived(false)
+	if mode == "stopLookAt" then
+		self._unitLookAtInfo:SetLookAtUnit(nil)
+		self._unitLookAtInfo:SetLookAtDir(nil)
 		return
 	end
 	if mode == "unlock" then
 		self._unitLookAtInfo._isLocked = false
 		return
 	end
-	if mode ~= "force" and self._unitLookAtInfo._isLocked then
+	if mode ~= "force" and self._unitLookAtInfo:IsLocked() then
 		return
 	end
-	self._unitLookAtInfo._mode = mode or "idle"
+	self._unitLookAtInfo:SetMode(mode or "idle")
 	if mode == "lock" then
-		self._unitLookAtInfo._isLocked = true
+		self._unitLookAtInfo:SetIsLocked(true)
 	end
 	if unitOrEulerAngle then
 		if IsUnit(unitOrEulerAngle) then
-			self._unitLookAtInfo._lookAtUnit = unitOrEulerAngle
-			self._unitLookAtInfo._lookAtDir = nil
+			self._unitLookAtInfo:SetLookAtUnit(unitOrEulerAngle)
+			self._unitLookAtInfo:SetLookAtDir(nil)
 		else
-			self._unitLookAtInfo._lookAtDir = unitOrEulerAngle
-			self._unitLookAtInfo._lookAtUnit = nil
+			self._unitLookAtInfo:SetLookAtDir(unitOrEulerAngle)
+			self._unitLookAtInfo:SetLookAtUnit(nil)
 		end
 	end
 end
@@ -329,19 +330,19 @@ end
 ----------------------------------------------------------------------
 -- Util相关
 ----------------------------------------------------------------------
-function UnitMoveComp:OnSpeedChange(old_value, new_value)
+function UnitMoveComp:OnSpeedChange(oldValue, newValue)
 	local unit = self._unit
-	local factor = new_value / old_value
-	self._unitMoveInfo._speed = self._unitMoveInfo._speed * factor
+	local factor = newValue / oldValue
+	self._unitMoveInfo:SetSpeed(self._unitMoveInfo:GetSpeed() * factor)
 	if self._moveType == "move" then
-		self._unitMoveInfo._remainDuration = self._unitMoveInfo._remainDuration / factor
-		local oldMoveAnimationSpeed = self._unitMoveInfo._animationSpeed
-		self._unitMoveInfo._animationSpeed = self._unitMoveInfo._animationSpeed * factor
-		if unit._graphicComponent._transform then
-			unit:_MoveTo(self._unitMoveInfo._targetPos, self._unitMoveInfo._remainDuration)
+		self._unitMoveInfo:SetRemainDuration(self._unitMoveInfo:GetRemainDuration() / factor)
+		local oldMoveAnimationSpeed = self._unitMoveInfo:GetAnimationSpeed()
+		self._unitMoveInfo:SetAnimationSpeed(self._unitMoveInfo:GetAnimationSpeed() * factor)
+		if unit:GetTransform() then
+			unit:MoveTo(self._unitMoveInfo:GetTargetPos(), self._unitMoveInfo:GetRemainDuration())
 			if self._unitMoveInfo:IsHasAnimationName() and self._isMoveWithMoveAnimation and
-				math.abs(self._unitMoveInfo._animationSpeed - oldMoveAnimationSpeed) > 0.2 then
-				unit:PlayAnimation(self._unitMoveInfo._animationName, 0.2, self._unitMoveInfo._animationSpeed)
+				math.abs(self._unitMoveInfo:GetAnimationSpeed() - oldMoveAnimationSpeed) > 0.2 then
+				unit:PlayAnimation(self._unitMoveInfo:GetAnimationName(), 0.2, self._unitMoveInfo:GetAnimationSpeed())
 			end
 		end
 	end
@@ -353,10 +354,10 @@ function UnitMoveComp:SetIsMoveWithMoveAnimation(isMoveWithMoveAnimation)
 	if self._moveType == "move" then
 		if isMoveWithMoveAnimation then
 			if self._unitMoveInfo:IsHasAnimationName() then
-				unit:PlayAnimation(self._unitMoveInfo._animationName, 0, self._unitMoveInfo._animationSpeed)
+				unit:PlayAnimation(self._unitMoveInfo:GetAnimationName(), 0, self._unitMoveInfo:GetAnimationSpeed())
 			end
 		else
-			unit:StopAnimation(self._unitMoveInfo._animationName, 0.2)
+			unit:StopAnimation(self._unitMoveInfo:GetAnimationName(), 0.2)
 		end
 	end
 end

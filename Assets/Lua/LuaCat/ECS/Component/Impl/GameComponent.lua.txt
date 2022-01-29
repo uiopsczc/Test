@@ -192,19 +192,18 @@ function GameComponent:_SetIsPaused(isPaused)
 end
 
 ----------------------------------------------------------------------
--- __Reset
+-- _Reset
 ----------------------------------------------------------------------
 function GameComponent:_Reset()
 	GameComponent.super._Reset(self)
 	self:StopAllCoroutines()
 	self:RemoveAllDOTweens()
 	self:RemoveAllTimers()
-
 	self:RemoveAllListeners()
 end
 
 ----------------------------------------------------------------------
--- __Destroy
+-- _Destroy
 ----------------------------------------------------------------------
 function GameComponent:_Destroy()
 	GameComponent.super._Destroy(self)

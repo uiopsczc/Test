@@ -11,4 +11,32 @@ function GameObjectEntity:GetTransformComponent()
 	return self._transformComponent
 end
 
+function GameObjectEntity:GetGameObject()
+	return self:GetGraphicComponent():GetGameObject()
+end
+
+function GameObjectEntity:GetTransform()
+	return self:GetGraphicComponent():GetTransform()
+end
+
+function GameObjectEntity:GetRectTransform()
+	return self:GetGraphicComponent():GetRectTransform()
+end
+
+function GameObjectEntity:SetParentTransform(parentTransform)
+	return self:GetGraphicComponent():SetParentTransform(parentTransform)
+end
+
+function GameObjectEntity:GetParentTransform()
+	return self:GetGraphicComponent():GetParentTransform()
+end
+
+function GameObjectEntity:SetIsShow(isShow)
+	return self:GetGraphicComponent():SetIsShow(isShow)
+end
+
+function GameObjectEntity:IsShow()
+	return self:GetGraphicComponent():IsShow()
+end
+
 return GameObjectEntity

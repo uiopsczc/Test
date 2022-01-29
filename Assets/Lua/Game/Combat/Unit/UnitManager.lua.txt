@@ -123,12 +123,12 @@ function UnitManager:CheckFaction(faction1, faction2, checkState)
 		local factionState = self._factionStateDict[faction1][faction2]
 		-- 找敌人
 		if checkState == "enemy" then
-			if faction1 ~= faction2 and factionState.isCanAttack then
+			if faction1 ~= faction2 and factionState:IsCanAttack() then
 				return true
 			end
 		elseif checkState == "friend" then
 			-- 找自己人
-			if faction1 == faction2 or factionState.isCanHelp then
+			if faction1 == faction2 or factionState:IsCanHelp() then
 				return true
 			end
 		else

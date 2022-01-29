@@ -4,7 +4,7 @@ local AttachEffectComponent = Class("AttachEffectComponent", EffectComponent)
 ---@param attachEntityIPosition IPosition
 function AttachEffectComponent:Init(attachEntityIPosition, forceEulerAngles, sectorAngle)
 	AttachEffectComponent.super.Init()
-	attachEntityIPosition:SetSocketName(self._effectEntity._cfgEffectData.socket_name_1)
+	attachEntityIPosition:SetSocketName(self:GetEffectEntity():GetCfgEffectData().socket_name_1)
 	---@type CS.UnityEngine.Transform
 	self._attachEntityTransform = attachEntityIPosition:GetTransform()
 	self._forceEulerAngles = forceEulerAngles
@@ -28,7 +28,7 @@ function AttachEffectComponent:DeAttach()
 end
 
 function AttachEffectComponent:ChangeAttach(isAttach)
-	if not self._effectEntity:GetGraphicComponent():GetGameObject() then
+	if not self:GetEffectEntity():GetGameObject() then
 		return
 	end
 	if self._isAttach == isAttach then
@@ -37,26 +37,26 @@ function AttachEffectComponent:ChangeAttach(isAttach)
 
 	if isAttach then
 		local socketTransform = self._attachEntityTransform
-		self._effectEntity:GetGraphicComponent():SetParentTransform(socketTransform)
-		self._effectEntity:GetGraphicComponent():GetTransform().localPosition = Vector3.zero
-		self._effectEntity:GetGraphicComponent():GetTransform().localRotation = Quaternion.identity
+		self._effectEntity:SetParentTransform(socketTransform)
+		self._effectEntity:GetTransform().localPosition = Vector3.zero
+		self._effectEntity:GetTransform().localRotation = Quaternion.identity
 		if self._forceEulerAngles then
-			self._effectEntity:GetGraphicComponent():GetTransform().eulerAngles = self._forceEulerAngles
+			self._effectEntity:GetTransform().eulerAngles = self._forceEulerAngles
 		end
 		self:SetSector()
 		self._isAttach = true
 	else
-		self._effectEntity:GetGraphicComponent():SetParentTransform(global.client.combat._effectManager:GetGraphicComponent():GetTransform())
+		self._effectEntity:SetParentTransform(global.client.combat._effectManager:GetGraphicComponent():GetTransform())
 		self._isAttach = false
-		self._effectEntity:GetGraphicComponent():SetIsShow(false)
+		self._effectEntity:SetIsShow(false)
 	end
 end
 
 function AttachEffectComponent:SetSector()
 	if self._sectorAngle ~= 0 then
-		local sectorSideLeft = self._effectEntity:GetGraphicComponent():GetTransform():Find("sector/side_left")
-		local sectorSideRight = self._effectEntity:GetGraphicComponent():GetTransform():Find("sector/side_right")
-		local sectorCenter = self._effectEntity:GetGraphicComponent():GetTransform():Find("sector/center")
+		local sectorSideLeft = self._effectEntity:GetTransform():Find("sector/side_left")
+		local sectorSideRight = self._effectEntity:GetTransform():Find("sector/side_right")
+		local sectorCenter = self._effectEntity:GetTransform():Find("sector/center")
 		---@type CS.UnityEngine.Material
 		local sectorCenterMat = sectorCenter:GetComponent(typeof(CS.UnityEngine.MeshRenderer)).material
 		sectorCenterMat:SetFloat("_AngleCos", math.cos(math.Deg2Rad * (self._sectorAngle / 2))) --扇形的角度大小

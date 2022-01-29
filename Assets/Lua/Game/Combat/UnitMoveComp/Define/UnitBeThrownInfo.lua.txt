@@ -1,5 +1,5 @@
 ---@class UnitBeThrownInfo
----@field startPos Vector3 @开始位置
+---@field _startPos Vector3 @开始位置
 ---@field _endPos Vector3 @结束位置
 ---@field _height number
 ---@field _maxHeight number
@@ -32,28 +32,144 @@ end
 ----------------------------------------------------------------------
 -- SetGet相关
 ----------------------------------------------------------------------
-function UnitBeThrownInfo:GetEndPos()
-	return self._endPos
-end
-
 function UnitBeThrownInfo:SetEndPos(endPos)
 	self._endPos = endPos
 end
 
-function UnitBeThrownInfo:GetDuration()
-	return self._duration
+function UnitBeThrownInfo:GetEndPos()
+	return self._endPos
 end
 
 function UnitBeThrownInfo:SetDuration(duration)
 	self._duration = duration
 end
 
-function UnitBeThrownInfo:GetHeight()
-	return self._height
+function UnitBeThrownInfo:GetDuration()
+	return self._duration
 end
 
 function UnitBeThrownInfo:SetHeight(height)
 	self._height = height
+end
+
+function UnitBeThrownInfo:GetHeight()
+	return self._height
+end
+
+function UnitBeThrownInfo:SetRotateDuration(rotateDuration)
+	self._rotateDuration = rotateDuration
+end
+
+function UnitBeThrownInfo:GetRotateDuration()
+	return self._rotateDuration
+end
+
+function UnitBeThrownInfo:SetOrgHeight(orgHeight)
+	self._orgHeight = orgHeight
+end
+
+function UnitBeThrownInfo:GetOrgHeight()
+	return self._orgHeight
+end
+
+function UnitBeThrownInfo:SetStartPos(startPos)
+	self._startPos = startPos
+end
+
+function UnitBeThrownInfo:GetStartPos()
+	return self._startPos
+end
+
+function UnitBeThrownInfo:SetRemainDuration(remainDuration)
+	self._remainDuration = remainDuration
+end
+
+function UnitBeThrownInfo:GetRemainDuration()
+	return self._remainDuration
+end
+
+function UnitBeThrownInfo:SetRemainDuration(remainDuration)
+	self._remainDuration = remainDuration
+end
+
+function UnitBeThrownInfo:SetMaxHeight(maxHeight)
+	self._maxHeight = maxHeight
+end
+
+function UnitBeThrownInfo:GetMaxHeight()
+	return self._maxHeight
+end
+
+function UnitBeThrownInfo:SetHeightAccelerate(heightAccelerate)
+	self._heightAccelerate = heightAccelerate
+end
+
+function UnitBeThrownInfo:GetHeightAccelerate()
+	return self._heightAccelerate
+end
+
+function UnitBeThrownInfo:SetHeightSpeed(heightSpeed)
+	self._heightSpeed = heightSpeed
+end
+
+function UnitBeThrownInfo:GetHeightSpeed()
+	return self._heightSpeed
+end
+
+function UnitBeThrownInfo:SetStartRotation(startRotation)
+	self._startRotation = startRotation
+end
+
+function UnitBeThrownInfo:GetStartRotation()
+	return self._startRotation
+end
+
+function UnitBeThrownInfo:SetIsNotStopAnimation(isNotStopAnimation)
+	self._isNotStopAnimation = isNotStopAnimation
+end
+
+function UnitBeThrownInfo:IsNotStopAnimation()
+	return self._isNotStopAnimation
+end
+
+function UnitBeThrownInfo:SetAnimationName(animationName)
+	self._animationName = animationName
+end
+
+function UnitBeThrownInfo:GetAnimationName()
+	return self._animationName
+end
+
+function UnitBeThrownInfo:SetIsBackToGround(isBackToGround)
+	self._isBackToGround = isBackToGround
+end
+
+function UnitBeThrownInfo:IsBackToGround()
+	return self._isBackToGround
+end
+
+function UnitBeThrownInfo:SetCalcHeightFunc(calcHeightFunc)
+	self._calcHeightFunc = calcHeightFunc
+end
+
+function UnitBeThrownInfo:GetCalcHeightFunc()
+	return self._calcHeightFunc
+end
+
+function UnitBeThrownInfo:SetInterp(interp)
+	self._interp = interp
+end
+
+function UnitBeThrownInfo:GetInterp()
+	return self._interp
+end
+
+function UnitBeThrownInfo:SetEndRotation(endRotation)
+	self._endRotation = endRotation
+end
+
+function UnitBeThrownInfo:GetEndRotation()
+	return self._endRotation
 end
 
 

@@ -110,6 +110,21 @@ function CombatBase:GetUnitManager()
 	return self._unitManager
 end
 
+function CombatBase:GetEffectManager()
+	return self._effectManager
+end
 
+function CombatBase:GetPathManager()
+	return self._pathManager
+end
+
+
+function CombatBase:GetTime()
+	return self._time
+end
+
+function CombatBase:GetFrame()
+	return self._frame
+end
 
 return CombatBase

@@ -1,6 +1,6 @@
 ---@class FactionState:Class
----@field isCanAttack boolean @能否攻击
----@field isCanHelp boolean @能否加血
+---@field _isCanAttack boolean @能否攻击
+---@field _isCanHelp boolean @能否加血
 local FactionState = Class("FactionState")
 
 function FactionState:SetIsCanAttack(isCanAttack)

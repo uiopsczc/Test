@@ -53,10 +53,10 @@ end
 ---@param duration number
 ---@param isHide boolean
 ---@return EffectEntity
-function EffectManager:CreateGroundEffectEntity(effectId, unit, position, eulerAngles, duration, isHide)
+function EffectManager:CreateGroundEffect(effectId, unit, position, eulerAngles, duration, isHide)
 	local effectEntity = self:CreateEffectEntity(effectId, unit, position, eulerAngles)
 	effectEntity:AddComponent(nil, DurationEffectComponent, duration)
-	effectEntity:GetGraphicComponent():SetIsShow(not isHide)
+	effectEntity:SetIsShow(not isHide)
 	return effectEntity
 end
 
@@ -66,7 +66,7 @@ end
 ---@param speed number
 ---@param accSpeed number
 ---@return EffectEntity
-function EffectManager:CreateLineEffectEntity(effectId, unit, sourceIPosition, targetIPosition, speed, accSpeed)
+function EffectManager:CreateLineEffect(effectId, unit, sourceIPosition, targetIPosition, speed, accSpeed)
 	local effectEntity = self:CreateEffectEntity(effectId, unit)
 	effectEntity:AddComponent(nil, LineEffectComponent, sourceIPosition, targetIPosition, 0, speed, accSpeed)
 	return effectEntity
@@ -93,7 +93,7 @@ end
 ---@param gravity Vector3
 ---@param startAngle number
 ---@return EffectEntity
-function EffectManager:CreateMortarMissileEffectEntity(effectId, unit, sourceIPosition, targetIPosition, gravity, startAngle)
+function EffectManager:CreateMortarMissileEffect(effectId, unit, sourceIPosition, targetIPosition, gravity, startAngle)
 	local effectEntity = self:CreateEffectEntity(effectId, unit)
 	effectEntity:AddComponent(nil, MortarEffectComponent, sourceIPosition, targetIPosition, gravity, startAngle)
 	return effectEntity
@@ -102,12 +102,12 @@ end
 ----------------------------------------------------------------------
 --
 ----------------------------------------------------------------------
-function EffectManager:RemoveEffectEntity(key)
+function EffectManager:RemoveEffect(key)
 	self:RemoveChild(key)
 end
 
 ---@return EffectEntity
-function EffectManager:GetEffectEntity(key)
+function EffectManager:GetEffect(key)
 	return self:GetChild(key)
 end
 
@@ -115,7 +115,7 @@ end
 function EffectManager:DestroyByUnit(unit)
 	for _, child in self:ForeachChildOfType(EffectEntity) do
 		if child:GetUnit() == unit then
-			self:RemoveEffectEntity(child:GetKey())
+			self:RemoveEffect(child:GetKey())
 		end
 	end
 end

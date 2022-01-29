@@ -1,0 +1,13 @@
+---@class UnitGraphicComponent
+local UnitGraphicComponent = Class("UnitGraphicComponent", GraphicComponent)
+
+function UnitGraphicComponent:Init()
+	GraphicComponent.super.Init(self, global.client.combat:GetEffectManager():GetResLoadComponent())
+end
+
+
+
+
+
+
+return UnitGraphicComponent

@@ -67,7 +67,7 @@ end
 ---@param buff Buff
 function BuffManager:RemoveBuffByBuff(buff)
 	self._buffDict[buff:GetKey()] = nil
-	table.RemoveByValue_Array(self._buffListDict[buff._buffId], buff)
+	table.RemoveByValue_Array(self._buffListDict[buff:GetBuffId()], buff)
 	self:RemoveChild(buff:GetKey())
 end
 

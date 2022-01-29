@@ -802,6 +802,41 @@ function AbstractEntity:_OnDespawn_Enable()
 end
 
 ----------------------------------------------------------------------
+-- SetGet相关
+----------------------------------------------------------------------
+function AbstractEntity:GetKey()
+	return self._key
+end
+
+function AbstractEntity:SetKey(key)
+	self._key = key
+end
+
+function AbstractEntity:SetIsKeyUsingParentIdPool(isKeyUsingParentIdPool)
+	self._isKeyUsingParentIdPool = isKeyUsingParentIdPool
+end
+
+function AbstractEntity:IsKeyUsingParentIdPool()
+	return self._isKeyUsingParentIdPool
+end
+
+function AbstractEntity:SetParent(parent)
+	self._parent = parent
+end
+
+function AbstractEntity:SetIsNotDeleteChildRelationShipImmediately(isNotDeleteChildRelationShipImmediately)
+	self._isNotDeleteChildRelationShipImmediately = isNotDeleteChildRelationShipImmediately
+end
+
+function AbstractEntity:SetIsNotDeleteComponentRelationShipImmediately(isNotDeleteComponentRelationShipImmediately)
+	self._isNotDeleteComponentRelationShipImmediately = isNotDeleteComponentRelationShipImmediately
+end
+
+function AbstractEntity:GetParent()
+	return self._parent
+end
+
+----------------------------------------------------------------------
 -- Reset相关
 ----------------------------------------------------------------------
 ---@param isLoopChildren boolean
@@ -836,40 +871,6 @@ end
 
 function AbstractEntity:_OnDespawn_Reset()
 	self._resetCallback = nil
-end
-----------------------------------------------------------------------
--- SetGet相关
-----------------------------------------------------------------------
-function AbstractEntity:GetKey()
-	return self._key
-end
-
-function AbstractEntity:SetKey(key)
-	self._key = key
-end
-
-function AbstractEntity:SetIsKeyUsingParentIdPool(isKeyUsingParentIdPool)
-	self._isKeyUsingParentIdPool = isKeyUsingParentIdPool
-end
-
-function AbstractEntity:IsKeyUsingParentIdPool()
-	return self._isKeyUsingParentIdPool
-end
-
-function AbstractEntity:SetParent(parent)
-	self._parent = parent
-end
-
-function AbstractEntity:SetIsNotDeleteChildRelationShipImmediately(isNotDeleteChildRelationShipImmediately)
-	self._isNotDeleteChildRelationShipImmediately = isNotDeleteChildRelationShipImmediately
-end
-
-function AbstractEntity:SetIsNotDeleteComponentRelationShipImmediately(isNotDeleteComponentRelationShipImmediately)
-	self._isNotDeleteComponentRelationShipImmediately = isNotDeleteComponentRelationShipImmediately
-end
-
-function AbstractEntity:GetParent()
-	return self._parent
 end
 
 ----------------------------------------------------------------------

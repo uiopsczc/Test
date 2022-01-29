@@ -1,17 +1,15 @@
----@class Unit:TickObject
+---@class Unit:GameObjectEntity
 ---@field _position Vector3
 ---@field _rotation Quaternion
 ---@field _scale number
 ---@field _buildOkAnimationName string
 ---@field _currentAttack SpellBase
-local Unit = Class("Unit", TickObject)
+local Unit = Class("Unit", GameObjectEntity)
 
 function Unit:Init()
 	Unit.super.Init(self)
 	self._isInSight = true -- 是否在视野内，用于优化，由unitManager设置
 end
-
-
 
 function Unit:UpdateUnit(argDict)
 	for key, value in pairs(argDict) do
@@ -37,7 +35,6 @@ end
 -- 构建模型相关
 ----------------------------------------------------------------------
 function Unit:Build(argDict)
-
 	---@type UnitLockTargetInfo
 	self._unitLockTargetInfo = UnitLockTargetInfo.New()
 	---@type ComboInfo
@@ -62,7 +59,7 @@ function Unit:Build(argDict)
 	self._showNameOffset = argDict.showNameOffset
 	self._isNotShowHeadBlood = argDict.isNotShowHeadBlood
 	if argDict.ownerUnitGuid then
-		self._ownerUnit = global.client.combat._unitManager:GetUnit(argDict.ownerUnitGuid)
+		self._ownerUnit = global.client.combat:GetUnitManager():GetUnit(argDict.ownerUnitGuid)
 	end
 	-- 创建时播放的动画
 	self._buildOkAnimationName = argDict.buildOkAnimationName
@@ -114,7 +111,7 @@ function Unit:Build(argDict)
 	self._animatorComp:OnBuild()
 	self._propertyComp:OnBuild(self)
 
-	if argDict.hp_pct then
+	if argDict.hpPct then
 		self:SetHp(self:GetMaxHp() * argDict.hpPct, true)
 	else
 		self:SetHp(argDict.hp or self:GetMaxHp(), true)
@@ -205,21 +202,21 @@ end
 function Unit:_OnBuildOK()
 	self:SetPosition(self._position)
 	self:SetRotation(self._rotation)
-	self.originalTransformScale = self:GetGraphicComponent():GetTransform().localScale
-	self:GetGraphicComponent():GetTransform().localScale = self.originalTransformScale * (self._scale or 1)
+	self._originalTransformScale = self:GetTransform().localScale
+	self:GetTransform().localScale = self._originalTransformScale * (self._scale or 1)
 
 	self:InitAnimation()
 	self:InitMaterial()
 
 	self._unitMoveComp:OnBuildOk()
-	self._animatorComp:OnBuildOk(self:GetGraphicComponent():GetGameObject())
+	self._animatorComp:OnBuildOk(self:GetGameObject())
 	self:Broadcast(UnitEventNameConst.On_Unit_Build_Ok, self)
 
 end
 
 function Unit:InitAnimation()
 	---@type CS.UnityEngine.Animation
-	self._animation = self:GetGraphicComponent():GetGameObject():GetComponentInChildren(typeof(CS.UnityEngine.Animation))
+	self._animation = self:GetGameObject():GetComponentInChildren(typeof(CS.UnityEngine.Animation))
 	if self._animationCullingType then
 		self:SetAnimationCullingType(self._animationCullingType)
 		---@type CS.UnityEngine.AnimationCullingType
@@ -249,7 +246,7 @@ function Unit:InitAnimation()
 			self:PlayAnimation(self._buildOkAnimationName)
 			---@type CS.UnityEngine.AnimationState
 			local buildOkAnimationState = self._animation:get_Item(self._buildOkAnimationName)
-			self._graphicComponent._transform.position = Vector3(0.01, 0.01, 0.01)
+			self:GetTransform().position = Vector3(0.01, 0.01, 0.01)
 			self:AddTimer(function()
 				self:SetPosition(self._position)
 				self:SetRotation(self._rotation)
@@ -279,7 +276,7 @@ function Unit:InitMaterial()
 		end
 	end
 	---@type table<string,Color> @key是tag
-	self.changeColorDict = {}
+	self._changeColorDict = {}
 end
 
 function Unit:_FinishChangeModel()
@@ -312,15 +309,15 @@ end
 
 ---@return CS.UnityEngine.Transform
 function Unit:GetSocketTransform(socketName, isIgnoreError)
-	if IsNil(self:GetGraphicComponent():GetGameObject()) then
+	if IsNil(self:GetGameObject()) then
 		return nil
 	end
 	if not socketName or socketName == "" or socketName == "main" then
-		return self._graphicComponent._transform
+		return self:GetTransform()
 	end
 	local socketTransform = self._socketTransformDict[socketName]
 	if not socketTransform then
-		socketTransform = self:GetGraphicComponent():GetTransform():FindChildRecursive(socketName)
+		socketTransform = self:GetTransform():FindChildRecursive(socketName)
 		if socketTransform then
 			self._socketTransformDict[socketName] = socketTransform
 		end
@@ -331,7 +328,7 @@ function Unit:GetSocketTransform(socketName, isIgnoreError)
 		else
 			WarnFormat("Can't find socket(%s) in unit(%s)", socketName, self._unitId)
 		end
-		return self:GetGraphicComponent():GetTransform()
+		return self:GetTransform()
 	end
 	return socketTransform
 end
@@ -403,13 +400,13 @@ end
 
 function Unit:__SetHideMode(mode)
 	if mode == "隐身状态被显隐" then
-		self:GetGraphicComponent():SetIsShow(true)
+		self:SetIsShow(true)
 		self:ChangeColor("隐身", Color.New(1, 0.2, 1, 0.5)) -- 紫色透明
 	elseif mode == "隐身状态没有显隐" then
-		self:GetGraphicComponent():SetIsShow(false)
+		self:SetIsShow(false)
 		self:ChangeColor("隐身", nil)
 	elseif mode == "非隐形状态" then
-		self:GetGraphicComponent():SetIsShow(true)
+		self:SetIsShow(true)
 		self:ChangeColor("隐身", nil)
 	end
 end
@@ -424,7 +421,7 @@ function Unit:OnKilled(sourceUnit, spell, isPlayDeadAnimation, isWaitingRebirth,
 		self._unitMoveComp:SetIsGetCaught(false)
 		---@type UnitBeThrownInfo
 		local unitBeThrownInfo = UnitBeThrownInfo.New()
-		unitBeThrownInfo:SetEndPos(global.client.combat._pathManager:GetGroundPos(self._position))
+		unitBeThrownInfo:SetEndPos(global.client.combat:GetPathManager():GetGroundPos(self._position))
 		unitBeThrownInfo:SetDuration(0.1)
 		unitBeThrownInfo:SetHeight(0)
 		self:BeThrown(unitBeThrownInfo)
@@ -445,7 +442,7 @@ function Unit:OnKilled(sourceUnit, spell, isPlayDeadAnimation, isWaitingRebirth,
 		if deathEffectId then
 			local cfgEffectData = CfgEffect.get_by_id(deathEffectId)
 			local groundEffectPos = self:GetSocketPosition(cfgEffectData.socketName1)
-			global.client.combat._effectManager:CreateGroundEffect(deathEffectId, self, groundEffectPos, self:GetRotation():ToEulerAngles(), cfgEffectData.duration)
+			global.client.combat:GetEffectManager():CreateGroundEffect(deathEffectId, self, groundEffectPos, self:GetRotation():ToEulerAngles(), cfgEffectData.duration)
 		end
 		if IsNotNil(self._animation) then
 			---@type CS.UnityEngine.AnimationState
@@ -466,7 +463,7 @@ function Unit:OnKilled(sourceUnit, spell, isPlayDeadAnimation, isWaitingRebirth,
 			end, nil, deadBodyDelay)
 		end
 	else
-		global.client.combat._unitManager:RemoveUnit(self._key)
+		global.client.combat:GetUnitManager():RemoveUnit(self:GetKey())
 	end
 end
 
@@ -485,7 +482,7 @@ function Unit:_OnDieOver()
 end
 
 function Unit:_OnDieBuryOver()
-	global.client.combat._unitManager:RemoveUnit(self._key)
+	global.client.combat:GetUnitManager():RemoveUnit(self:GetKey())
 end
 
 ----------------------------------------------------------------------
@@ -524,7 +521,7 @@ function Unit:OnPropertyChanged(oldCalcPropDict, newCalcPropDict, calcPropDictDi
 end
 
 function Unit:GetCalcPropValue(propertyKey)
-	return self._propertyComp.calcPropDict[propertyKey]
+	return self._propertyComp:GetCalcPropDict()[propertyKey]
 end
 
 
@@ -532,7 +529,7 @@ end
 ----------------------------------------------------------------------
 -- Buff,State相关
 ----------------------------------------------------------------------
-function Unit:HasBuff(buffId)
+function Unit:IsHasBuff(buffId)
 	return self._buffManager:IsHasBuff(buffId)
 end
 
@@ -544,14 +541,13 @@ function Unit:GetDebuffCount()
 	return self._buffManager:GetDebuffCount()
 end
 
-function Unit:HasState(stateName)
+function Unit:IsHasState(stateName)
 	return self._buffManager:IsHasState(stateName)
 end
 
 -- 混合状态
 function Unit:InitMixedStates()
 	self._isDead = false
-
 	self._isCanMove = true
 	self._isCanAttack = true
 	self._isCanCastSkill = true
@@ -568,12 +564,12 @@ function Unit:UpdateMixedStates()
 		not self._unitMoveComp:GetUnitBeThrownInfo() and
 		not self._unitMoveComp:IsGetCaught() and true or false
 	local newIsCanMove = isCommonState and
-		not self:HasState(StateConst.CanNotMove) and
+		not self:IsHasState(StateConst.CanNotMove) and
 		(not self._currentAttack or
 			self._currentAttack:IsPastBreakTime() or
 			self._currentAttack._cfgSpellData.isCanMoveWhileCast) and true or false
 	local newIsCanAttack = isCommonState and
-		(not self:HasState(StateConst.CanNotAttack)) and
+		(not self:IsHasState(StateConst.CanNotAttack)) and
 		(not self._currentAttack or
 			self._currentAttack:IsPastBreakTime()) and true or false
 	local newIsSilent = self:IsSilent()
@@ -598,15 +594,15 @@ function Unit:UpdateMixedStates()
 	if self._isCanCastSkill ~= newIsCanCastSkill then
 		self._isCanCastSkill = newIsCanCastSkill
 		self:Broadcast(UnitEventNameConst.On_Unit_Is_Can_Cast_Skill_Change, self, not self._isCanCastSkill, self._isCanCastSkill)
-		if not self._isCanCastSkill and (self._currentAttack and table.ContainsValue(self._skillIdList, self._currentAttack._spellId)) then
-			global.client.combat._spellManager:BreakSpell(self._currentAttack:GetGuid())
+		if not self._isCanCastSkill and (self._currentAttack and table.ContainsValue(self._skillIdList, self._currentAttack:GetSpellId())) then
+			global.client.combat:GetSpellManager():BreakSpell(self._currentAttack:GetGuid())
 		end
 	end
 	if self._isCanNormalAttack ~= newIsCanNormalAttack then
 		self._isCanNormalAttack = newIsCanNormalAttack
 		self:Broadcast(UnitEventNameConst.On_Unit_Is_Can_Normal_Attack_Change, self, not self._isCanNormalAttack, self._isCanNormalAttack)
-		if not self._isCanNormalAttack and (self._currentAttack and table.ContainsValue(self._normalAttackIdList, self._currentAttack._spellId)) then
-			global.client.combat._spellManager:BreakSpell(self._currentAttack:GetGuid())
+		if not self._isCanNormalAttack and (self._currentAttack and table.ContainsValue(self._normalAttackIdList, self._currentAttack:GetSpellId())) then
+			global.client.combat:GetSpellManager():BreakSpell(self._currentAttack:GetGuid())
 		end
 	end
 
@@ -623,19 +619,19 @@ end
 ----------------------------------------------------------------------
 ---@param moveToTargetPos Vector3
 ---@param duration number
-function Unit:_MoveTo(moveToTargetPos, duration)
+function Unit:MoveTo(moveToTargetPos, duration)
 	if not self:GetGraphicComponent():GetTransform() then
 		return
 	end
 	moveToTargetPos = self._cfgUnitData.offsetY and (moveToTargetPos + Vector3(0, self._cfgUnitData.offsetY, 0)) or moveToTargetPos
-	global.client.moveManager:MoveTo(self._graphicComponent._transform, moveToTargetPos, duration)
+	global.client.moveManager:MoveTo(self:GetTransform(), moveToTargetPos, duration)
 end
 
 function Unit:StopMoveTo()
-	if not self:GetGraphicComponent():GetTransform() then
+	if not self:GetTransform() then
 		return
 	end
-	global.client.moveManager:StopMoveTo(self._graphicComponent._transform)
+	global.client.moveManager:StopMoveTo(self:GetTransform())
 end
 
 function Unit:Move(targetPos, speed)
@@ -672,25 +668,25 @@ function Unit:SetIsMoveWithMoveAnimation(isMoveWithMoveAnimation)
 end
 
 function Unit:FaceTo(rotation)
-	if not self:GetGraphicComponent():GetTransform() then
+	if not self:GetTransform() then
 		return
 	end
 end
 
 function Unit:OnlyFaceTo(rotation)
-	if not self:GetGraphicComponent():GetTransform() then
+	if not self:GetTransform() then
 		return
 	end
 end
 
 function Unit:FaceToDir(dir)
-	if not self:GetGraphicComponent():GetTransform() then
+	if not self:GetTransform() then
 		return
 	end
 end
 
 function Unit:OnlyFaceToDir(dir)
-	if not self:GetGraphicComponent():GetTransform() then
+	if not self:GetTransform() then
 		return
 	end
 end
@@ -803,18 +799,18 @@ function Unit:ChangeColor(tag, color)
 		return
 	end
 
-	self.changeColorDict[tag] = color
+	self._changeColorDict[tag] = color
 	self:_UpdateColor()
 end
 
 function Unit:_UpdateColor()
 	local currentColor = Color.white
-	for k, color in pairs(self.changeColorDict) do
+	for k, color in pairs(self._changeColorDict) do
 		currentColor = currentColor * color
 	end
 
-	for k, unitMaterialInfo in ipairs(self._unitMaterialInfoList) do
-		unitMaterialInfo._material.color = unitMaterialInfo._color * currentColor
+	for _, unitMaterialInfo in ipairs(self._unitMaterialInfoList) do
+		unitMaterialInfo:GetMaterial().color = unitMaterialInfo:GetColor() * currentColor
 	end
 end
 
@@ -843,7 +839,7 @@ end
 ---@param targetUnit Unit
 function Unit:NormalAttack(targetUnit)
 	local normalAttackId = self:GetNormalAttackId()
-	local normalAttack = global.client.combat._spellManager:CastSpell(self, normalAttackId, targetUnit, nil, true)
+	local normalAttack = global.client.combat:GetSpellManager():CastSpell(self, normalAttackId, targetUnit, nil, true)
 	if normalAttack then
 		self._lastAttackId = normalAttackId
 	end
@@ -852,7 +848,7 @@ end
 
 function Unit:NormalAttackStart()
 	self._normalAttackComboInfo:SetNextTime(CombatUtil.GetTime() + ComboConst.Normal_Attack_Combo_Max_Duration) -- 1秒间隔触发combo
-	self._normalAttackComboInfo:SetNextIndex(self._normalAttackComboInfo._nextIndex + 1)
+	self._normalAttackComboInfo:SetNextIndex(self._normalAttackComboInfo:GetNextIndex() + 1)
 	self._isNormalAttacking = true
 end
 
@@ -917,7 +913,7 @@ function Unit:SetSpellInfoCoolDown(spellId, coolDownPct)
 	local cfgSpellData = CfgSpell.get_by_id(spellId)
 	local spellInfo = self._spellInfoDict[spellId]
 	spellInfo:SetCoolDownRate(self:GetSpellCoolDownRate(spellId))
-	spellInfo:SetCoolDownRemainDuration(cfgSpellData.coolDownDuration * spellInfo._coolDownRate * coolDownPct)
+	spellInfo:SetCoolDownRemainDuration(cfgSpellData.coolDownDuration * spellInfo:GetCoolDownRate() * coolDownPct)
 end
 
 function Unit:AddPassiveBuffOfSpell(spellId)
@@ -992,7 +988,7 @@ end
 function Unit:ReduceSpellCoolDown(deltaTime)
 	for _, spellInfo in pairs(self._spellInfoDict) do
 		if spellInfo:GetCoolDownRemainDuration() > 0 then
-			spellInfo:SetCoolDownRemainDuration(math.max(0, spellInfo._coolDownRemainDuration - deltaTime))
+			spellInfo:SetCoolDownRemainDuration(math.max(0, spellInfo:GetCoolDownRemainDuration() - deltaTime))
 		end
 	end
 end
@@ -1007,7 +1003,7 @@ end
 ---@param targetUnit Unit
 ---@param isControl @是否是控制类技能
 function Unit:CastSpell(spellId, targetUnit, isControl)
-	local spell = global.client.combat._spellManager:CastSpell(self, spellId, targetUnit, nil, isControl)
+	local spell = global.client.combat:GetSpellManager():CastSpell(self, spellId, targetUnit, nil, isControl)
 	if spell then
 		self._lastAttackId = spellId
 	end
@@ -1020,7 +1016,7 @@ function Unit:CanBreakCurrentSpell(newSpellId, newCfgSpellData)
 		return true
 	end
 	newCfgSpellData = newCfgSpellData or CfgSpell.get_by_id(newSpellId)
-	if (newCfgSpellData.type == "法术" and self._currentAttack._cfgSpellData.type == "普攻") -- 法术可以打断普攻
+	if (newCfgSpellData.type == "法术" and self._currentAttack:GetCfgSpellData().type == "普攻") -- 法术可以打断普攻
 		or newCfgSpellData.castType == "触发" then
 		return true
 	else
@@ -1053,8 +1049,8 @@ end
 -- Util相关
 ----------------------------------------------------------------------
 function Unit:SetPosition(pos)
-	if self:GetGraphicComponent():GetTransform() then
-		self:GetGraphicComponent():GetTransform().position = self._cfgUnitData.offsetY and (pos + Vector3(0, self._cfgUnitData.offsetY, 0)) or pos
+	if self:GetTransform() then
+		self:GetTransform().position = self._cfgUnitData.offsetY and (pos + Vector3(0, self._cfgUnitData.offsetY, 0)) or pos
 	end
 	self._position = pos
 end
@@ -1064,8 +1060,8 @@ function Unit:GetPosition()
 end
 
 function Unit:SetRotation(rotation)
-	if self:GetGraphicComponent():GetTransform() then
-		self:GetGraphicComponent():GetTransform().rotation = rotation
+	if self:GetTransform() then
+		self:GetTransform().rotation = rotation
 	end
 	self._rotation = rotation
 end
@@ -1076,8 +1072,8 @@ end
 
 ---@param scale number
 function Unit:SetScale(scale)
-	if self:GetGraphicComponent():GetTransform() then
-		self:GetGraphicComponent():GetTransform().localScale = self.originalTransformScale * scale
+	if self:GetTransform() then
+		self:GetTransform().localScale = self._originalTransformScale * scale
 	end
 	self._scale = scale
 	self._radius = self._originalRadius * scale
@@ -1089,7 +1085,7 @@ end
 
 function Unit:SetLevel(level)
 	self._level = level
-	self._propertyComp:_CalculateProp()
+	self._propertyComp:CalculateProp()
 end
 
 function Unit:GetLevel()
@@ -1125,11 +1121,11 @@ function Unit:GetMaxHp()
 end
 
 function Unit:SetHp(hp, isNotBroadcast)
-	local oldValue = self.hp
+	local oldValue = self._hp
 	hp = math.fmod(hp) -- 取整
-	self.hp = math.min(hp, self:GetMaxHp())
+	self._hp = math.min(hp, self:GetMaxHp())
 	if not isNotBroadcast then
-		self:OnHpChange(nil, oldValue, self.hp)
+		self:OnHpChange(nil, oldValue, self._hp)
 	end
 end
 
@@ -1142,7 +1138,7 @@ function Unit:OnMaxHpChange(oldValue, newValue)
 end
 
 function Unit:GetHp()
-	return self.hp
+	return self._hp
 end
 
 function Unit:GetSpeed()
@@ -1181,52 +1177,52 @@ end
 
 -- 是否混乱状态
 function Unit:IsConfused ()
-	return self:HasState(StateConst.Confused)
+	return self:IsHasState(StateConst.Confused)
 end
 
 -- 是否无敌
 function Unit:IsInvincible()
-	return self:HasState(StateConst.Invincible)
+	return self:IsHasState(StateConst.Invincible)
 end
 
 -- 是否昏眩状态
 function Unit:IsStun()
-	return self:HasState(StateConst.Stun)
+	return self:IsHasState(StateConst.Stun)
 end
 
 -- 是否冰冻状态
 function Unit:IsFreeze()
-	return self:HasState(StateConst.Freeze)
+	return self:IsHasState(StateConst.Freeze)
 end
 
 -- 是否沉默状态
 function Unit:IsSilent()
-	return self:HasState(StateConst.Silent)
+	return self:IsHasState(StateConst.Silent)
 end
 
 -- 是否免控状态
 function Unit:IsImmuneControl()
-	return self:HasState(StateConst.ImmuneControl)
+	return self:IsHasState(StateConst.ImmuneControl)
 end
 
 -- 是否不受伤害状态
 function Unit:IsCanNotBeTakeDamage()
-	return self:HasState(StateConst.CanNotBeTakeDamage)
+	return self:IsHasState(StateConst.CanNotBeTakeDamage)
 end
 
 -- 是否不能被治疗状态
 function Unit:IsCanNotBeHeal ()
-	return self:HasState(StateConst.CanNotBeHeal)
+	return self:IsHasState(StateConst.CanNotBeHeal)
 end
 
 -- 是否隐身状态
 function Unit:IsHide()
-	return self:HasState(StateConst.Hide)
+	return self:IsHasState(StateConst.Hide)
 end
 
 -- 是否反隐状态
 function Unit:IsExpose()
-	return self:HasState(StateConst.Expose)
+	return self:IsHasState(StateConst.Expose)
 end
 
 -- 是否死亡
@@ -1255,8 +1251,8 @@ function Unit:GetPropertyComp()
 	return self._propertyComp
 end
 
-function Unit:SetActionDict(_actionDict)
-	self._actionDict = _actionDict
+function Unit:SetActionDict(actionDict)
+	self._actionDict = actionDict
 end
 
 function Unit:GetActionDict()
@@ -1282,6 +1278,20 @@ end
 function Unit:IsMoveOccupy()
 	return self._isMoveOccupy
 end
+
+function Unit:IsInSight()
+	return self._isInSight
+end
+
+function Unit:GetUnitLockTargetInfo()
+	return self._unitLockTargetInfo
+end
+
+function Unit:GetAnimation()
+	return self._animation
+end
+
+
 
 function Unit:_Destroy()
 	Unit.super._Destroy(self)
