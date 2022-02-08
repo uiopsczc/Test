@@ -1,10 +1,10 @@
 ---@class Buff:TickObject
 local Buff = Class("Buff", TickObject)
 
----@param buffManager BuffManager
+---@param buffManager BuffsComponent
 function Buff:Init(buffManager, buffId)
 	Buff.super.Init(self)
-	---@type BuffManager
+	---@type BuffsComponent
 	self._buffManager = buffManager
 	self._buffId = buffId
 	self._cfgBuffData = CfgBuff.get_by_id(buffId)
@@ -82,7 +82,7 @@ end
 function Buff:AddPropertyDict()
 	local newPropertyDict = self._cfgBuffData.propertyDict and DoerAttrParserUtil.ConvertTableWithTypeString(self._cfgBuffData.property_dict) or {}
 	if table.Count(newPropertyDict) > 0 then
-		local propertyComp = self._buffManager:GetUnit():GetPropertyComp()
+		local propertyComp = self._buffManager:GetUnit():GetPropertyComponent()
 		propertyComp:StartChange()
 		propertyComp:AddPropSet(newPropertyDict, "buff", self:GetGuid())
 		propertyComp:EndChange()
@@ -92,7 +92,7 @@ end
 function Buff:RemovePropertyDict()
 	local newPropertyDict = self._cfgBuffData.propertyDict and DoerAttrParserUtil.ConvertTableWithTypeString(self._cfgBuffData.propertyDict) or {}
 	if table.Count(newPropertyDict) > 0 then
-		local propertyComp = self._buffManager:GetUnit():GetPropertyComp()
+		local propertyComp = self._buffManager:GetUnit():GetPropertyComponent()
 		propertyComp:StartChange()
 		propertyComp:RemovePropSet("buff", self:GetGuid())
 		propertyComp:EndChange()

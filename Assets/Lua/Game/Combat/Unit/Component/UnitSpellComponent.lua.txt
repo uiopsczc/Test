@@ -1,0 +1,278 @@
+---@class UnitSpellComponent : GameComponent
+local UnitSpellComponent = Class("UnitSpellComponent", GameComponent)
+
+function UnitSpellComponent:Init()
+	UnitSpellComponent.super.Init(self)
+
+	---@type Unit
+	self._unit = self:GetEntity()
+
+	---@type ComboInfo
+	self._normalAttackComboInfo = ComboInfo.New()
+
+	---@type table<string,SpellInfo>
+	self._spellInfoDict = { }
+
+	-- 普攻相关
+	---@type string[]
+	self._normalAttackIdList = self:GetGetCfgUnitData().normalAttackIds and table.Clone(self:GetGetCfgUnitData().normalAttackIds) or {}
+	for _, normalAttackId in ipairs(self._normalAttackIdList) do
+		self:AddNormalAttack(normalAttackId)
+	end
+
+	-- 技能相关
+	---@type string[]
+	self._skillIdList = self:GetGetCfgUnitData().skillIds and table.Clone(self:GetGetCfgUnitData().skillIds) or {}
+	for _, skillId in ipairs(self._skillIdList) do
+		self:AddSkill(skillId)
+	end
+end
+
+----------------------------------------------------------------------
+-- 普攻相关
+----------------------------------------------------------------------
+function UnitSpellComponent:AddNormalAttack(normalAttackId)
+	if not normalAttackId then
+		return
+	end
+	table.insert(self._normalAttackIdList, normalAttackId)
+	self:InitSpellInfo(normalAttackId)
+	self:AddPassiveBuffOfSpell(normalAttackId)
+end
+
+function UnitSpellComponent:GetNormalAttackId()
+	local nextIndex = self._normalAttackComboInfo:GetNextIndex()
+	if CombatUtil.GetTime() > self._normalAttackComboInfo:GetNextTime() or
+		not self._normalAttackIdList[self._normalAttackComboInfo:GetNextIndex()] then
+		nextIndex = 1
+	end
+	local normalAttackId = self._normalAttackIdList[nextIndex]
+	return normalAttackId
+end
+
+---@param targetUnit Unit
+function UnitSpellComponent:NormalAttack(targetUnit)
+	local normalAttackId = self:GetNormalAttackId()
+	local normalAttack = global.client.combat:GetSpellManager():CastSpell(self, normalAttackId, targetUnit, nil, true)
+	if normalAttack then
+		self._lastAttackId = normalAttackId
+	end
+	return normalAttack
+end
+
+function UnitSpellComponent:NormalAttackStart()
+	self._normalAttackComboInfo:SetNextTime(CombatUtil.GetTime() + ComboConst.Normal_Attack_Combo_Max_Duration) -- 1秒间隔触发combo
+	self._normalAttackComboInfo:SetNextIndex(self._normalAttackComboInfo:GetNextIndex() + 1)
+	self._isNormalAttacking = true
+end
+
+function UnitSpellComponent:NormalAttackFinish()
+	self._normalAttackComboInfo:SetNextTime(CombatUtil.GetTime() + 0.2)
+	self._isNormalAttacking = true
+end
+
+----------------------------------------------------------------------
+-- 技能相关
+----------------------------------------------------------------------
+function UnitSpellComponent:AddSkill(skillId)
+	if not skillId then
+		return
+	end
+	table.insert(self._skillIdList, skillId)
+	self:InitSpellInfo(skillId)
+	self:AddPassiveBuffOfSpell(skillId)
+end
+
+---@param targetUnit Unit
+---@param isControl @是否是控制类技能
+function UnitSpellComponent:CastSkillByIndex(index, targetUnit, isControl)
+	local skillId = self._skillIdList[index]
+	if not skillId then
+		Error("index error ", index)
+		return
+	end
+	return self:CastSpell(skillId, targetUnit, isControl)
+end
+
+----------------------------------------------------------------------
+-- spell相关
+----------------------------------------------------------------------
+function UnitSpellComponent:InitSpellInfo(spellId, coolDownPct)
+	---@type SpellInfo
+	local spellInfo = SpellInfo.New()
+	self._spellInfoDict[spellId] = spellInfo
+	self:SetSpellInfoCoolDown(spellId, coolDownPct)
+end
+
+function UnitSpellComponent:GetSpellCoolDownRate(spellId)
+	local cfgSpellData = CfgSpell.get_by_id(spellId)
+	if cfgSpellData.type == "普攻" then
+		return 1 / (1 + self:GetCalcPropValue("攻击速度"))
+	else
+		return 1 - self:GetCalcPropValue("技能冷却减少百分比")
+	end
+end
+
+function UnitSpellComponent:GetSpellIdList(spell_id)
+	local cfgSpellData = CfgSpell.get_by_id(spell_id)
+	if cfgSpellData.type == "普攻" then
+		return self._normalAttackIdList
+	else
+		return self._skillIdList
+	end
+end
+
+function UnitSpellComponent:SetSpellInfoCoolDown(spellId, coolDownPct)
+	coolDownPct = coolDownPct or 0
+	local cfgSpellData = CfgSpell.get_by_id(spellId)
+	local spellInfo = self._spellInfoDict[spellId]
+	spellInfo:SetCoolDownRate(self:GetSpellCoolDownRate(spellId))
+	spellInfo:SetCoolDownRemainDuration(cfgSpellData.coolDownDuration * spellInfo:GetCoolDownRate() * coolDownPct)
+end
+
+function UnitSpellComponent:AddPassiveBuffOfSpell(spellId)
+	local cfgSpellData = CfgSpell.get_by_id(spellId)
+	local passiveBuffIds = cfgSpellData.passiveBuffIds
+	if passiveBuffIds then
+		for _, passiveBuffId in ipairs(passiveBuffIds) do
+			self._unit:GetBuffsComponent():AddBuff(passiveBuffId, self._unit)
+		end
+	end
+end
+
+function UnitSpellComponent:RemoveSpell(spellId)
+	local spellIdList = self:GetSpellIdList(spellId)
+	table.RemoveByValue_Array(spellIdList, spellId)
+	self._spellInfoDict[spellId] = nil
+	self:RemovePassiveBuffOfSpell(spellId)
+end
+
+function UnitSpellComponent:RemovePassiveBuffOfSpell(spellId)
+	local cfgSpellData = CfgSpell.get_by_id(spellId)
+	local passiveBuffIds = cfgSpellData.passiveBuffIds
+	if passiveBuffIds then
+		self._unit:GetBuffsComponent():RemoveBuff(passiveBuffIds, self._unit:GetGuid())
+	end
+end
+
+--  替换单位spell
+function UnitSpellComponent:ReplaceSpell(oldSpellId, newSpellId, isResetCoolDownRemainDuration)
+	local spellIdList = self:GetSpellIdList(oldSpellId)
+	local index = table.IndexOf_Array(spellIdList, oldSpellId)
+	spellIdList[index] = newSpellId
+
+	-- 更新coolDown
+	local coolDownCurPct = 0
+	if not isResetCoolDownRemainDuration then
+		coolDownCurPct = self._spellInfoDict[oldSpellId]:GetCoolDownPct()
+	end
+	self:InitSpellInfo(newSpellId, coolDownCurPct)
+	self._spellInfoDict[oldSpellId] = nil
+
+
+	--  删除原技能被动buff
+	self:RemovePassiveBuffOfSpell(oldSpellId)
+	--  添加新技能被动buff
+	self:AddPassiveBuffOfSpell(newSpellId)
+
+end
+
+--  改变技能CD
+function UnitSpellComponent:OnSpellCoolDownRateChange()
+	for spellId, spellInfo in pairs(self._spellInfoDict) do
+		local cfgSpellData = CfgSpell.get_by_id(spellId)
+		local coolDownOldRate = spellInfo:GetCoolDownRate()
+		local coolDownDuration = cfgSpellData.coolDownDuration or 0
+		if coolDownDuration > 0 then
+			local newRate = self:GetSpellCoolDownRate(spellId)
+			if spellInfo:GetCoolDownRemainDuration() <= 0 then
+				spellInfo:SetCoolDownRemainDuration(0)
+			else
+				--local coolDown_cur_pct = spellInfo.coolDown_remain_duration/(coolDown_duration * coolDown_last_rate)
+				--local coolDown_remain_duration = coolDown_cur_pct * (coolDown_duration * new_rate)
+				spellInfo:SetCoolDownRemainDuration(spellInfo:GetCoolDownRemainDuration() * newRate / coolDownOldRate)
+			end
+			spellInfo:SetCoolDownRate(newRate)
+		end
+	end
+end
+
+function UnitSpellComponent:ReduceSpellCoolDown(deltaTime)
+	for _, spellInfo in pairs(self._spellInfoDict) do
+		if spellInfo:GetCoolDownRemainDuration() > 0 then
+			spellInfo:SetCoolDownRemainDuration(math.max(0, spellInfo:GetCoolDownRemainDuration() - deltaTime))
+		end
+	end
+end
+
+function UnitSpellComponent:IsSpellCoolDownOk(spellId)
+	if self._spellInfoDict[spellId]:GetCoolDownRemainDuration() == 0 then
+		return true
+	end
+	return false
+end
+
+---@param targetUnit Unit
+---@param isControl @是否是控制类技能
+function UnitSpellComponent:CastSpell(spellId, targetUnit, isControl)
+	local spell = global.client.combat:GetSpellManager():CastSpell(self, spellId, targetUnit, nil, isControl)
+	if spell then
+		self._lastAttackId = spellId
+	end
+	return spell
+end
+
+---@param newCfgSpellData CfgSpellData
+function UnitSpellComponent:CanBreakCurrentSpell(newSpellId, newCfgSpellData)
+	if not self._currentAttack then
+		return true
+	end
+	newCfgSpellData = newCfgSpellData or CfgSpell.get_by_id(newSpellId)
+	if (newCfgSpellData.type == "法术" and self._currentAttack:GetCfgSpellData().type == "普攻") -- 法术可以打断普攻
+		or newCfgSpellData.castType == "触发" then
+		return true
+	else
+		return self._currentAttack:IsPastBreakTime()
+	end
+end
+
+
+--  检查是否到时间可以放技能1、是否能打断当前技能2、技能cd是否到
+function UnitSpellComponent:IsTimeToCastSpell(spellId)
+	local cfgSpellData = CfgSpell.get_by_id(spellId)
+	if not self:CanBreakCurrentSpell(spellId, cfgSpellData) then
+		return false
+	end
+	if not self:IsSpellCoolDownOk(spellId) then
+		return false
+	end
+	return true
+end
+
+function UnitSpellComponent:IsInSpellRange(target, spellId)
+	local cfgSpellData = CfgSpell.get_by_id(spellId)
+	if not cfgSpellData.range then
+		return false
+	end
+	return cfgSpellData.range >= self:Distance(target)
+end
+
+---@param currentAttack SpellBase
+function UnitSpellComponent:SetCurrentAttack(currentAttack)
+	self._currentAttack = currentAttack
+end
+
+function UnitSpellComponent:GetCurrentAttack()
+	return self._currentAttack
+end
+
+function UnitSpellComponent:IsNormalAttacking()
+	return self._isNormalAttacking
+end
+
+function UnitSpellComponent:GetSkillIdList()
+	return self._skillIdList
+end
+
+
+return UnitSpellComponent

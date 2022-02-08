@@ -1,0 +1,203 @@
+---@class UnitStateComponent : GameComponent
+local UnitStateComponent = Class("UnitSpellComponent", GameComponent)
+
+function UnitStateComponent:Init()
+	UnitStateComponent.super.Init(self)
+	---@type Unit
+	self._unit = self:GetEntity()
+end
+
+-- 混合状态
+function UnitStateComponent:InitMixedStates()
+	self._isDead = false
+	self._isCanMove = true
+	self._isCanAttack = true
+	self._isCanCastSkill = true
+	self._isCanNormalAttack = true
+	self._isCanControl = true
+end
+
+-- 混合状态
+function UnitStateComponent:UpdateMixedStates()
+	local currentAttack = self._unit:GetUnitSpellComponent():GetCurrentAttack()
+	-- 是否是正常状态
+	local isCommonState = not self:IsDead() and
+		not self:IsStun() and
+		not self:IsFreeze() and
+		not self._unit:GetUnitMoveComp():GetUnitBeThrownInfo() and
+		not self._unit:GetUnitMoveComp():IsGetCaught() and true or false
+	local newIsCanMove = isCommonState and
+		not self:IsHasState(StateConst.CanNotMove) and
+		(not currentAttack or
+			currentAttack:IsPastBreakTime() or
+			currentAttack:GetCfgSpellData().isCanMoveWhileCast) and true or false
+	local newIsCanAttack = isCommonState and
+		(not self:IsHasState(StateConst.CanNotAttack)) and
+		(not currentAttack or
+			currentAttack:IsPastBreakTime()) and true or false
+	local newIsSilent = self:IsSilent()
+	local newIsCanCastSkill = newIsCanAttack and not newIsSilent and true or false
+	local newIsCanNormalAttack = newIsCanAttack and true or false
+
+	local newIsConfused = self:IsConfused() and true or false
+	local newIsCanOperate = isCommonState and not newIsConfused and true or false
+	local newIsCanControl = (newIsCanMove or newIsCanAttack) and newIsCanOperate and true or false
+	-- 检查混合状态变化
+	if self._isCanMove ~= newIsCanMove then
+		self._isCanMove = newIsCanMove
+		self:Broadcast(UnitEventNameConst.On_Unit_Is_Can_Move_Change, self, not self._isCanMove, self._isCanMove)
+		if not self._isCanMove then
+			self:MoveStop()
+		end
+	end
+	if self._isCanAttack ~= newIsCanAttack then
+		self._isCanAttack = newIsCanAttack
+		self:Broadcast(UnitEventNameConst.On_Unit_Is_Can_Attack_Change, self, not self._isCanAttack, self._isCanAttack)
+	end
+	if self._isCanCastSkill ~= newIsCanCastSkill then
+		self._isCanCastSkill = newIsCanCastSkill
+		self:Broadcast(UnitEventNameConst.On_Unit_Is_Can_Cast_Skill_Change, self, not self._isCanCastSkill, self._isCanCastSkill)
+		if not self._isCanCastSkill and (currentAttack and table.ContainsValue(self._skillIdList, self._currentAttack:GetSpellId())) then
+			global.client.combat:GetSpellManager():BreakSpell(currentAttack:GetGuid())
+		end
+	end
+	if self._isCanNormalAttack ~= newIsCanNormalAttack then
+		self._isCanNormalAttack = newIsCanNormalAttack
+		self:Broadcast(UnitEventNameConst.On_Unit_Is_Can_Normal_Attack_Change, self, not self._isCanNormalAttack, self._isCanNormalAttack)
+		if not self._isCanNormalAttack and (self._currentAttack and table.ContainsValue(self._normalAttackIdList, self._currentAttack:GetSpellId())) then
+			global.client.combat:GetSpellManager():BreakSpell(self._currentAttack:GetGuid())
+		end
+	end
+
+	if self._isCanControl ~= newIsCanControl then
+		self._isCanControl = newIsCanControl
+		self:Broadcast(UnitEventNameConst.On_Unit_Is_Can_Control_Change, self, not self._isCanControl, self._isCanControl)
+	end
+end
+
+----------------------------------------------------------------------
+-- 隐身 显隐相关
+----------------------------------------------------------------------
+function UnitStateComponent:UpdateHideState()
+	if self:IsHide() then
+		if self:IsExpose() then
+			self:_SetHideMode("隐身状态被显隐")
+		else
+			self:_SetHideMode("隐身状态没有显隐")
+		end
+	else
+		self:_SetHideMode("非隐形状态")
+	end
+end
+
+function UnitStateComponent:_SetHideMode(mode)
+	if not self._isLoadOk then
+		table.insert(self._loadOkListenList, function()
+			self:__SetHideMode(mode)
+		end)
+		return
+	end
+	self:__SetHideMode(mode)
+end
+
+function UnitStateComponent:__SetHideMode(mode)
+	if mode == "隐身状态被显隐" then
+		self._unit:SetIsShow(true)
+		self._unit:GetUnitGraphicComponent():ChangeColor("隐身", Color.New(1, 0.2, 1, 0.5)) -- 紫色透明
+	elseif mode == "隐身状态没有显隐" then
+		self:SetIsShow(false)
+		self._unit:GetUnitGraphicComponent():ChangeColor("隐身", nil)
+	elseif mode == "非隐形状态" then
+		self:SetIsShow(true)
+		self._unit:GetUnitGraphicComponent():ChangeColor("隐身", nil)
+	end
+end
+
+-- 能否移动
+function UnitStateComponent:IsCanMove()
+	return self._isCanMove
+end
+
+-- 能否攻击（包括普攻和技能）
+function UnitStateComponent:IsCanAttack()
+	return self._isCanAttack
+end
+
+-- 能否普攻
+function UnitStateComponent:IsCanNormalAttack()
+	return self._isCanNormalAttack
+end
+
+-- 能否释放技能
+function UnitStateComponent:IsCanCastSkill()
+	return self._isCanCastSkill
+end
+
+-- 能否被控制
+function UnitStateComponent:IsCanControl ()
+	return self._isCanControl
+end
+
+-- 是否混乱状态
+function UnitStateComponent:IsConfused ()
+	return self:IsHasState(StateConst.Confused)
+end
+
+-- 是否无敌
+function UnitStateComponent:IsInvincible()
+	return self:IsHasState(StateConst.Invincible)
+end
+
+-- 是否昏眩状态
+function UnitStateComponent:IsStun()
+	return self:IsHasState(StateConst.Stun)
+end
+
+-- 是否冰冻状态
+function UnitStateComponent:IsFreeze()
+	return self:IsHasState(StateConst.Freeze)
+end
+
+-- 是否沉默状态
+function UnitStateComponent:IsSilent()
+	return self:IsHasState(StateConst.Silent)
+end
+
+-- 是否免控状态
+function UnitStateComponent:IsImmuneControl()
+	return self:IsHasState(StateConst.ImmuneControl)
+end
+
+-- 是否不受伤害状态
+function UnitStateComponent:IsCanNotBeTakeDamage()
+	return self:IsHasState(StateConst.CanNotBeTakeDamage)
+end
+
+-- 是否不能被治疗状态
+function UnitStateComponent:IsCanNotBeHeal ()
+	return self:IsHasState(StateConst.CanNotBeHeal)
+end
+
+-- 是否隐身状态
+function UnitStateComponent:IsHide()
+	return self:IsHasState(StateConst.Hide)
+end
+
+-- 是否反隐状态
+function UnitStateComponent:IsExpose()
+	return self:IsHasState(StateConst.Expose)
+end
+
+function UnitStateComponent:SetIsDead(isDead)
+	self._isDead = isDead
+end
+
+-- 是否死亡
+function UnitStateComponent:IsDead()
+	return self._isDead
+end
+
+
+
+
+return UnitStateComponent

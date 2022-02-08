@@ -1,12 +1,12 @@
 ---@class BuffTest
 local BuffTest = {}
 
----@param buffManager BuffManager
+---@param buffManager BuffsComponent
 function BuffTest.Test1(buffManager)
 	buffManager:AddBuff("1")
 end
 
----@param buffManager BuffManager
+---@param buffManager BuffsComponent
 function BuffTest.Test2(buffManager)
 	buffManager:RemoveBuff("1")
 end

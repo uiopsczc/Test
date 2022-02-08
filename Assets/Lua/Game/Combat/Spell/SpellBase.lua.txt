@@ -80,10 +80,10 @@ function SpellBase:TakeDamage(sourceUnit, targetUnit, damageFactor, forceDamageV
 	-- 计算原始伤害值
 	local damageValue = forceDamageValue
 	if not forceDamageValue then
-		damageValue, specialEffectDict = sourceUnit:GetPropertyComp():CalculateOriginalDamageValue({ damageFactor = damageFactor,
-																								 curHpPct = sourceUnit:GetHp() / sourceUnit:GetMaxHp() })
+		damageValue, specialEffectDict = sourceUnit:GetPropertyComponent():CalculateOriginalDamageValue({ damageFactor = damageFactor,
+																										  curHpPct = sourceUnit:GetHp() / sourceUnit:GetMaxHp() })
 		--计算减伤
-		damageValue = sourceUnit:GetPropertyComp():CalculateRealDamageValue(damageValue, targetUnit)
+		damageValue = sourceUnit:GetPropertyComponent():CalculateRealDamageValue(damageValue, targetUnit)
 	end
 	--伤害前的回调
 	self:Broadcast(UnitEventNameConst.On_Before_Unit_Hit, sourceUnit, targetUnit, self, damageValue)
@@ -106,11 +106,11 @@ function SpellBase:Heal(sourceUnit, targetUnit, forceHealValue, healFactor)
 	if forceHealValue then
 		healValue = forceHealValue
 	else
-		healValue, specialEffectDict = sourceUnit:GetPropertyComp():CalculateOriginalHealValue({
+		healValue, specialEffectDict = sourceUnit:GetPropertyComponent():CalculateOriginalHealValue({
 			healFactor = healFactor,
 			damageType = self._cfgSpellData.damageType
 		})
-		healValue = sourceUnit:GetPropertyComp():CalculateRealHealValue(healValue, targetUnit)
+		healValue = sourceUnit:GetPropertyComponent():CalculateRealHealValue(healValue, targetUnit)
 	end
 	targetUnit:Heal(healValue, sourceUnit)
 	return healValue, specialEffectDict
@@ -415,7 +415,7 @@ function SpellBase:AddBuff(buffId, targetUnit, forceDuration, argDict)
 	end
 	argDict = argDict or {}
 	argDict.sourceSpell = self
-	targetUnit:GetBuffManager():AddBuff(buffId, self._sourceUnit, forceDuration, argDict)
+	targetUnit:GetBuffsComponent():AddBuff(buffId, self._sourceUnit, forceDuration, argDict)
 end
 
 --  移除传入具体的buff
@@ -427,7 +427,7 @@ function SpellBase:RemoveBuff(buffList, unit)
 	end
 	unit = unit or self._sourceUnit
 	for _, buff in ipairs(buffList) do
-		unit:GetBuffManager():RemoveBuff(buff:GetBuffId(), nil, self:GetGuid())
+		unit:GetBuffsComponent():RemoveBuff(buff:GetBuffId(), nil, self:GetGuid())
 	end
 end
 
@@ -438,10 +438,10 @@ function SpellBase:RemoveBuffById(buffIdList, unit, forceSpellGuid)
 	end
 	if IsString(buffIdList) then
 		local buffId = buffIdList
-		unit:GetBuffManager():RemoveBuff(buffId, self._sourceUnit:GetGuid(), forceSpellGuid or self:GetGuid())
+		unit:GetBuffsComponent():RemoveBuff(buffId, self._sourceUnit:GetGuid(), forceSpellGuid or self:GetGuid())
 	elseif buffIdList then
 		for _, buffId in ipairs(buffIdList) do
-			unit:GetBuffManager():RemoveBuff(buffId, self._sourceUnit:GetGuid(), forceSpellGuid or self:GetGuid())
+			unit:GetBuffsComponent():RemoveBuff(buffId, self._sourceUnit:GetGuid(), forceSpellGuid or self:GetGuid())
 		end
 	end
 end

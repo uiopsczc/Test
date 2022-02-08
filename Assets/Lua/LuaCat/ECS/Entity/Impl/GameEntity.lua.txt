@@ -3,31 +3,12 @@ local GameEntity = Class("GameEntity", AbstractEntity)
 
 function GameEntity:Init(...)
 	GameEntity.super.Init(self, ...)
-	self._allAssetsLoadDoneCallback = {}
-
-	---@type ResLoadComponent
-	self._resLoadComponent = self:AddComponent(nil, ResLoadComponent, ResLoad.New())
 	---@type TimerManagerPluginComponent
 	self._timerManagerPluginComponent = self:AddComponent(nil, TimerManagerPluginComponent, TimerManagerPlugin.New(self:GetTimerManager()))
 	---@type CoroutinePluginComponent
 	self._coroutinePluginComponent = self:AddComponent(nil, CoroutinePluginComponent, CoroutinePlugin.New(self:GetTimerManager()))
 	---@type DOTweenPluginComponent
 	self._dotweenPluginComponent = self:AddComponent(nil, DOTweenPluginComponent, DOTweenPlugin.New())
-
-	---@type GraphicComponent
-	self._graphicComponent = self:CreateGraphicComponent()
-end
-
----@return GraphicComponent
-function GameEntity:CreateGraphicComponent()
-	return self:AddComponent(nil, GraphicComponent, self._resLoadComponent)
-end
-
-function GameEntity:PostInit()
-	GameEntity.super.PostInit(self)
-	self._graphicComponent:LoadPrefabPath()
-	self:PreLoadAssets()
-	self:CheckIsAllAssetsLoadDone()
 end
 
 function GameEntity:GetGuid()
@@ -196,54 +177,6 @@ function GameEntity:RemoveAllTimers()
 end
 
 ----------------------------------------------------------------------
--- Assets
-----------------------------------------------------------------------
---- 只会被触发一次
-function GameEntity:InvokeAfterAllAssetsLoadDone(callback)
-	if self._isAllAssetsLoadDone then
-		callback()
-	else
-		table.insert(self._allAssetsLoadDoneCallback, callback)
-	end
-end
-
-function GameEntity:PreLoadAssets()
-	--self.resLoadComponent.LoadAssetAsync("resPath")
-end
-
-function GameEntity:CheckIsAllAssetsLoadDone()
-	self:StartCoroutine(nil, function()
-		self:WaitUntil(function()
-			return self._resLoadComponent:IsAllLoadDone()
-		end)
-		if not string.IsNilOrEmpty(self._graphicComponent._prefabPath) then
-			self:WaitUntil(function()
-				return self._graphicComponent:IsLoadDone()
-			end)
-		end
-		self:OnAllAssetsLoadDone()
-	end)
-end
-
-function GameEntity:OnAllAssetsLoadDone()
-	self:Broadcast(string.ToEventName(ECSEventNameConst.OnAllAssetsLoadDone, self))
-	self._isAllAssetsLoadDone = true
-	DelegateUtil.InvokeCallback(self._allAssetsLoadDoneCallback)
-	self._allAssetsLoadDoneCallback = nil
-end
-
-----------------------------------------------------------------------
--- gameObject
-----------------------------------------------------------------------
-function GameEntity:InstantiateGameObject(prefab)
-	return GameObject.Instantiate(prefab)
-end
-
-function GameEntity:InitGameObjectChildren()
-end
-
-
-----------------------------------------------------------------------
 -- Pause
 ----------------------------------------------------------------------
 ---@param isPaused boolean
@@ -257,20 +190,11 @@ end
 function GameEntity:_Reset()
 	GameEntity.super._Reset(self)
 	self:RemoveAllListeners()
-	self._allAssetsLoadDoneCallback = {}
 end
 
 ----------------------------------------------------------------------
 -- SetGet相关
 ----------------------------------------------------------------------
-function GameEntity:GetGraphicComponent()
-	return self._graphicComponent
-end
-
-function GameEntity:GetResLoadComponent()
-	return self._resLoadComponent
-end
-
 
 ----------------------------------------------------------------------
 -- __Destroy
@@ -280,13 +204,8 @@ function GameEntity:_Destroy()
 	self:RemoveAllListeners()
 
 	self._parent = nil
-	self._resLoadComponent = nil
 	self._coroutinePluginComponent = nil
 	self._timerManagerPluginComponent = nil
-	self._graphicComponent = nil
-
-	self._isAllAssetsLoadDone = false
-	self._allAssetsLoadDoneCallback = {}
 end
 
 return GameEntity

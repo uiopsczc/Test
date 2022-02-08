@@ -1,9 +1,9 @@
----@class BuffManager:TickObject
-local BuffManager = Class("BuffManager", TickObject)
+---@class BuffsComponent:GameComponent
+local BuffsComponent = Class("BuffManager", GameComponent)
 
 ---@param unit Unit
-function BuffManager:Init(unit)
-	BuffManager.super.Init(self)
+function BuffsComponent:Init(unit)
+	BuffsComponent.super.Init(self)
 	self._unit = unit
 	---@type table<string,number>
 	self._stateDict = {}
@@ -14,7 +14,7 @@ function BuffManager:Init(unit)
 end
 
 ---@param sourceUnit Unit
-function BuffManager:AddBuff(buffId, sourceUnit, forceDuration, argDict)
+function BuffsComponent:AddBuff(buffId, sourceUnit, forceDuration, argDict)
 	local cfgBuffData = CfgBuff.get_by_id(buffId)
 	local duration = forceDuration or (not cfgBuffData.duration or cfgBuffData.duration == 0) and math.huge or cfgBuffData.duration
 	local sourceSpell = argDict.sourceSpell
@@ -32,7 +32,7 @@ function BuffManager:AddBuff(buffId, sourceUnit, forceDuration, argDict)
 		self._buffListDict[buffId][1]:CreateBuffCache(duration, sourceUnit, sourceSpell, argDict)
 	else
 		---@type Buff
-		local buff = self:AddChild(nil, Buff, self, buffId)
+		local buff = Buff.New(self, buffId)
 		buff:CreateBuffCache(duration, sourceUnit, sourceSpell, argDict)
 		self._buffDict[buff:GetKey()] = buff
 		local buffList = table.GetOrAddDefault_Dict(self._buffListDict, buffId, function()
@@ -42,7 +42,14 @@ function BuffManager:AddBuff(buffId, sourceUnit, forceDuration, argDict)
 	end
 end
 
-function BuffManager:RemoveBuff(buffIdList, sourceUnitGuid, spellGuid)
+function BuffsComponent:_Update(deltaTime, unscaledDeltaTime)
+	GameComponent._Update(self, deltaTime, unscaledDeltaTime)
+	for buffId, buff in pairs(self._buffDict) do
+		buff:Update(deltaTime, unscaledDeltaTime)
+	end
+end
+
+function BuffsComponent:RemoveBuff(buffIdList, sourceUnitGuid, spellGuid)
 	local curBuffIdList
 	if IsString(buffIdList) then
 		curBuffIdList = { buffIdList }
@@ -55,7 +62,7 @@ function BuffManager:RemoveBuff(buffIdList, sourceUnitGuid, spellGuid)
 end
 
 --  可能删除多个buff
-function BuffManager:_RemoveBuff(buffId, sourceUnitGuid, sourceSpellGuid)
+function BuffsComponent:_RemoveBuff(buffId, sourceUnitGuid, sourceSpellGuid)
 	if not self._buffListDict[buffId] then
 		return
 	end
@@ -65,13 +72,13 @@ function BuffManager:_RemoveBuff(buffId, sourceUnitGuid, sourceSpellGuid)
 end
 
 ---@param buff Buff
-function BuffManager:RemoveBuffByBuff(buff)
+function BuffsComponent:RemoveBuffByBuff(buff)
 	self._buffDict[buff:GetKey()] = nil
 	table.RemoveByValue_Array(self._buffListDict[buff:GetBuffId()], buff)
 	self:RemoveChild(buff:GetKey())
 end
 
-function BuffManager:IsHasBuff(buffId)
+function BuffsComponent:IsHasBuff(buffId)
 	if not self._buffListDict[buffId] then
 		return false
 	end
@@ -81,11 +88,11 @@ function BuffManager:IsHasBuff(buffId)
 	return true
 end
 
-function BuffManager:GetBuffCount()
+function BuffsComponent:GetBuffCount()
 	return table.Count(self._buffDict)
 end
 
-function BuffManager:GetDebuffCount()
+function BuffsComponent:GetDebuffCount()
 	local count = 0
 	for _, buff in pairs(self._buffDict) do
 		if buff._cfgBuffData.type1 == "debuff" then
@@ -95,7 +102,7 @@ function BuffManager:GetDebuffCount()
 	return count
 end
 
-function BuffManager:IsHasState(stateName)
+function BuffsComponent:IsHasState(stateName)
 	if string.IsNilOrWhiteSpace(stateName) then
 		return false
 	end
@@ -105,7 +112,7 @@ function BuffManager:IsHasState(stateName)
 	return currentValue > 0
 end
 
-function BuffManager:AddState(stateName)
+function BuffsComponent:AddState(stateName)
 	if string.IsNilOrWhiteSpace(stateName) then
 		return
 	end
@@ -136,7 +143,7 @@ function BuffManager:AddState(stateName)
 	end
 end
 
-function BuffManager:RemoveState(stateName)
+function BuffsComponent:RemoveState(stateName)
 	if string.IsNilOrWhiteSpace(stateName) then
 		return
 	end
@@ -169,7 +176,7 @@ function BuffManager:RemoveState(stateName)
 end
 
 -- 去掉控制类型的buff
-function BuffManager:RemoveControlBuff()
+function BuffsComponent:RemoveControlBuff()
 	for _, buffGuid in ipairs(table.Keys_Dict(self._buffDict)) do
 		local buff = self._buffDict[buffGuid]
 		if not buff:IsDestroyed() and buff._cfgBuffData.type2 == "控制" then
@@ -181,15 +188,15 @@ end
 ----------------------------------------------------------------------
 -- SetGet相关
 ----------------------------------------------------------------------
-function BuffManager:GetUnit()
+function BuffsComponent:GetUnit()
 	return self._unit
 end
 
-function BuffManager:_Destroy()
-	BuffManager.super._Destroy(self)
-	for _, buff_id in ipairs(table.Keys_Dict(self._buffDict)) do
-		self:RemoveBuff(buff_id)
+function BuffsComponent:_Destroy()
+	BuffsComponent.super._Destroy(self)
+	for _, buffId in ipairs(table.Keys_Dict(self._buffDict)) do
+		self:RemoveBuff(buffId)
 	end
 end
 
-return BuffManager
+return BuffsComponent

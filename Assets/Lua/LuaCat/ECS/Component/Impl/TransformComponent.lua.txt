@@ -9,8 +9,22 @@ function TransformComponent:Init(...)
 	self._localEulerAngles = Vector3.zero
 	self._localRotation = Quaternion.identity
 	self._localScale = Vector3.one
+	self._parentTransform = nil
+	self._isShow = nil
 end
 
+---@param toApplyTransform CS.UnityEngine.Transform
+function TransformComponent:ApplyToTransform(toApplyTransform)
+	toApplyTransform.position = self:GetPosition()
+	toApplyTransform.eulerAngles = self:GetEulerAngles()
+	toApplyTransform.localScale = self:GetLocalScale()
+	toApplyTransform.gameObject:SetActive(self._isShow or false)
+	toApplyTransform:SetParent(self._parentTransform, toApplyTransform.gameObject.layer ~= LayerMask.NameToLayer("UI"))
+end
+
+----------------------------------------------------------------------
+-- SetGet相关
+----------------------------------------------------------------------
 ---@param localPosition Vector3
 function TransformComponent:SetLocalPosition(localPosition)
 	self._localPosition = localPosition
@@ -38,9 +52,9 @@ function TransformComponent:SetLocalRotation(localRotation)
 	self._localEulerAngles = localRotation:ToEulerAngles()
 end
 
----@return Vector3
-function TransformComponent:GetLocalEulerAngles()
-	return self._localEulerAngles
+---@return Quaternion
+function TransformComponent:GetLocalRotation()
+	return self._localRotation
 end
 
 ---@param localScale Vector3
@@ -82,9 +96,9 @@ function TransformComponent:SetRotation(rotation)
 	self:SetLocalEulerAngles(rotation)
 end
 
----@return Vector3
-function TransformComponent:GetEulerAngles()
-	return self:GetLocalEulerAngles()
+---@return Quaternion
+function TransformComponent:GetRotation()
+	return self:GetLocalRotation()
 end
 
 ---@param scale Vector3
@@ -95,6 +109,49 @@ end
 ---@return Vector3
 function TransformComponent:GetScale()
 	return self:GetLocalScale()
+end
+
+----------------------------------------------------------------------
+--
+----------------------------------------------------------------------
+---@param parentTransform CS.UnityEngine.Transform
+function TransformComponent:SetParentTransform(parentTransform)
+	self._parentTransform = parentTransform
+end
+
+---@return CS.UnityEngine.Transform
+function TransformComponent:GetParentTransform()
+	return self._parentTransform
+end
+
+---@param isShow boolean
+function TransformComponent:SetIsShow(isShow)
+	self._isShow = isShow
+end
+
+---@return CS.UnityEngine.Transform
+function TransformComponent:IsShow()
+	return self._isShow
+end
+----------------------------------------------------------------------
+-- _Reset
+----------------------------------------------------------------------
+function TransformComponent:_Rest()
+	TransformComponent.super._Reset(self)
+	self._localPosition = Vector3.zero
+	self._localEulerAngles = Vector3.zero
+	self._localRotation = Quaternion.identity
+	self._localScale = Vector3.one
+	self._parentTransform = nil
+end
+
+function TransformComponent:_Destroy()
+	TransformComponent.super._Destroy(self)
+	self._localPosition = Vector3.zero
+	self._localEulerAngles = Vector3.zero
+	self._localRotation = Quaternion.identity
+	self._localScale = Vector3.one
+	self._parentTransform = nil
 end
 
 return TransformComponent

@@ -1,12 +1,12 @@
----@class UnitMoveComp:TickObject
+---@class UnitMoveComponent:TickObject
 ---@field _unitMoveInfo UnitMoveInfo
 ---@field _unitBeThrownInfo UnitBeThrownInfo
 ---@field _isGetCaught boolean
-local UnitMoveComp = Class("UnitMoveComp", TickObject)
+local UnitMoveComponent = Class("UnitMoveComp", TickObject)
 
 ---@param unit Unit
-function UnitMoveComp:Init(unit)
-	UnitMoveComp.super.Init(self, unit)
+function UnitMoveComponent:Init(unit)
+	UnitMoveComponent.super.Init(self, unit)
 	self._unit = unit
 	self._walkStepLength = unit._cfgUnitData.walkStepLength or 1
 	self._moveType = nil  -- move beThrown
@@ -21,8 +21,8 @@ function UnitMoveComp:Init(unit)
 	self._unitLookAtInfo = UnitLookAtInfo.New()
 end
 
-function UnitMoveComp:_Update(deltaTime, unscaledDeltaTime)
-	UnitMoveComp.super._Update(self, deltaTime, unscaledDeltaTime)
+function UnitMoveComponent:_Update(deltaTime, unscaledDeltaTime)
+	UnitMoveComponent.super._Update(self, deltaTime, unscaledDeltaTime)
 	self:_UpdateMove(deltaTime)
 	--if self.unitLookAtInfo:HasLookAt() then
 	--  self:__UpdateLookAt(deltaTime)
@@ -32,32 +32,24 @@ function UnitMoveComp:_Update(deltaTime, unscaledDeltaTime)
 	end
 end
 
-function UnitMoveComp:_Destroy()
-	UnitMoveComp.super._Destroy(self)
-	self._unit = nil
-end
 
-function UnitMoveComp:OnBuild()
-end
-
-function UnitMoveComp:OnBuildOk()
-	local unit = self._unit
+function UnitMoveComponent:OnBuildDone()
 	if self._moveType == "move" then
 		if self._unitMoveInfo:IsHasAnimationName() and self._isMoveWithMoveAnimation then
-			unit:PlayAnimation(self._unitMoveInfo:GetAnimationName(), 0, self._unitMoveInfo:GetAnimationSpeed())
+			self._unit:PlayAnimation(self._unitMoveInfo:GetAnimationName(), 0, self._unitMoveInfo:GetAnimationSpeed())
 		end
-		unit:MoveTo(self._unitMoveInfo:GetTargetPos(), self._unitMoveInfo:GetRemainDuration())
+		self._unit:MoveTo(self._unitMoveInfo:GetTargetPos(), self._unitMoveInfo:GetRemainDuration())
 	end
 end
 
 ----------------------------------------------------------------------
 -- Move相关
 ----------------------------------------------------------------------
-function UnitMoveComp:Move(targetPos, speed, animationName)
+function UnitMoveComponent:Move(targetPos, speed, animationName)
 	self:MoveByPath({ targetPos }, speed, animationName)
 end
 
-function UnitMoveComp:MoveByPath(path, speed, animationName)
+function UnitMoveComponent:MoveByPath(path, speed, animationName)
 	local unit = self._unit
 	if not unit:IsCanMove() then
 		return
@@ -83,7 +75,7 @@ function UnitMoveComp:MoveByPath(path, speed, animationName)
 	self:_MoveNextTarget(2)
 end
 
-function UnitMoveComp:_MoveNextTarget(index)
+function UnitMoveComponent:_MoveNextTarget(index)
 	local unit = self._unit
 	if index then
 		self._unitMoveInfo:SetTargetIndexInPath(index)
@@ -103,7 +95,7 @@ function UnitMoveComp:_MoveNextTarget(index)
 	end
 end
 
-function UnitMoveComp:MoveStop(rotation, pos)
+function UnitMoveComponent:MoveStop(rotation, pos)
 	local unit = self._unit
 	if pos and
 		(not unit:IsInSight() or
@@ -132,7 +124,7 @@ function UnitMoveComp:MoveStop(rotation, pos)
 	unit:StopMoveTo()
 end
 
-function UnitMoveComp:_UpdateMove(deltaTime)
+function UnitMoveComponent:_UpdateMove(deltaTime)
 	local unit = self._unit
 	local deltaTimeRemainDuration = deltaTime
 	while self._moveType == "move" and deltaTimeRemainDuration > 0 do
@@ -186,7 +178,7 @@ end
 -- beThrown相关
 ----------------------------------------------------------------------
 ---@param unitBeThrownInfo UnitBeThrownInfo
-function UnitMoveComp:BeThrown(unitBeThrownInfo)
+function UnitMoveComponent:BeThrown(unitBeThrownInfo)
 	local endPos = unitBeThrownInfo:GetEndPos()
 	local duration = unitBeThrownInfo:GetDuration()
 	local height = unitBeThrownInfo:GetHeight()
@@ -228,7 +220,7 @@ function UnitMoveComp:BeThrown(unitBeThrownInfo)
 	end
 end
 
-function UnitMoveComp:StopBeThrown(isEnd)
+function UnitMoveComponent:StopBeThrown(isEnd)
 	if isEnd then
 		if self._unitBeThrownInfo then
 			self._unitBeThrownInfo:SetRemainDuration(0.02)
@@ -258,7 +250,7 @@ function UnitMoveComp:StopBeThrown(isEnd)
 end
 
 -- 更新beThrown
-function UnitMoveComp:_UpdateBeThrown(deltaTime)
+function UnitMoveComponent:_UpdateBeThrown(deltaTime)
 	local unit = self._unit
 	self._unitBeThrownInfo:SetRemainDuration(self._unitBeThrownInfo:GetRemainDuration() - deltaTime)
 	if self._unitBeThrownInfo:GetRemainDuration() <= 0 then
@@ -297,7 +289,7 @@ end
 -- 模式为lock时，可以占据LookAt， 其他地方调用LookAt将不起作用，除非mode为force强行LookAt
 -- 在不需占据LookAt时，需传入unlock解锁
 ---@param unitOrEulerAngle Unit|Vector3
-function UnitMoveComp:LookAt(unitOrEulerAngle, mode)
+function UnitMoveComponent:LookAt(unitOrEulerAngle, mode)
 	self._unitLookAtInfo:SetIsRotateXArrived(false)
 	self._unitLookAtInfo:SetIsRotateYArrived(false)
 	if mode == "stopLookAt" then
@@ -330,7 +322,7 @@ end
 ----------------------------------------------------------------------
 -- Util相关
 ----------------------------------------------------------------------
-function UnitMoveComp:OnSpeedChange(oldValue, newValue)
+function UnitMoveComponent:OnSpeedChange(oldValue, newValue)
 	local unit = self._unit
 	local factor = newValue / oldValue
 	self._unitMoveInfo:SetSpeed(self._unitMoveInfo:GetSpeed() * factor)
@@ -348,7 +340,7 @@ function UnitMoveComp:OnSpeedChange(oldValue, newValue)
 	end
 end
 
-function UnitMoveComp:SetIsMoveWithMoveAnimation(isMoveWithMoveAnimation)
+function UnitMoveComponent:SetIsMoveWithMoveAnimation(isMoveWithMoveAnimation)
 	local unit = self._unit
 	self._isMoveWithMoveAnimation = isMoveWithMoveAnimation
 	if self._moveType == "move" then
@@ -365,28 +357,31 @@ end
 ----------------------------------------------------------------------
 -- SetGet相关
 ----------------------------------------------------------------------
-function UnitMoveComp:GetMoveType()
+function UnitMoveComponent:GetMoveType()
 	return self._moveType
 end
 
-function UnitMoveComp:SetMoveType(moveType)
+function UnitMoveComponent:SetMoveType(moveType)
 	self._moveType = moveType
 end
 
-function UnitMoveComp:IsGetCaught()
+function UnitMoveComponent:IsGetCaught()
 	return self._isGetCaught
 end
 
-function UnitMoveComp:SetIsGetCaught(isGetCaught)
+function UnitMoveComponent:SetIsGetCaught(isGetCaught)
 	self._isGetCaught = isGetCaught
 end
 
-function UnitMoveComp:GetUnitBeThrownInfo()
+function UnitMoveComponent:GetUnitBeThrownInfo()
 	return self._unitBeThrownInfo
 end
 
 
+function UnitMoveComponent:_Destroy()
+	UnitMoveComponent.super._Destroy(self)
+	self._unit = nil
+end
 
-
-return UnitMoveComp
+return UnitMoveComponent
 --endregion

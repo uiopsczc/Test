@@ -1,11 +1,355 @@
----@class UnitGraphicComponent
+---@class UnitGraphicComponent : GraphicComponent
 local UnitGraphicComponent = Class("UnitGraphicComponent", GraphicComponent)
 
-function UnitGraphicComponent:Init()
-	GraphicComponent.super.Init(self, global.client.combat:GetEffectManager():GetResLoadComponent())
+function UnitGraphicComponent:Init(resLoadComponent)
+	UnitGraphicComponent.super.Init(self, resLoadComponent)
+	---@type Unit
+	self._unit = self:GetEntity()
 end
 
+function UnitGraphicComponent:Build(argDict)
+	self._argDict = argDict
+	self._loadDoneListenList = {}
+	self._socketTransformDict = {}
+	---@type table<string,UnitModelInfo>  @第一个key是tag
+	self._unitModelInfoDict = {}
+	self._animation = nil
+	---@type table<string,CS.UnityEngine.Transform>
+	self._socketTransformDict = {}
+	self._unitMaterialInfoList = {}
+	---@type AnimatorComp
+	self._animatorComp = AnimatorComp.New()
+	local modelPath = self._unit:GetModelPath()
+	self:_ClearEffects()
+	self:_BuildModel(modelPath)
+end
 
+function UnitGraphicComponent:_BuildModel(modelPath)
+	if not modelPath then
+		return
+	end
+	self:_StartChangeModel()
+	self:_SetModel("main", modelPath)
+	self:_FinishChangeModel()
+end
+
+function UnitGraphicComponent:_ClearEffects()
+	global.client.combat:GetEffectManager():DeAttach(self:GetEntity())
+end
+
+function UnitGraphicComponent:_FinishChangeModel()
+	self._isSettingModelPath = false
+	self:_CheckLoadDone()
+end
+
+function UnitGraphicComponent:_StartChangeModel()
+	self._isSettingModelPath = true
+	self._isLoadDone = false
+end
+
+function UnitGraphicComponent:_SetModel(tag, modelPath, modelType)
+	modelType = modelType or typeof(CS.UnityEngine.GameObject)
+	if modelPath == nil then
+		self._unitModelInfoDict[tag] = nil
+		return
+	end
+	if not self._unitModelInfoDict[tag] then
+		self._unitModelInfoDict[tag] = UnitModelInfo.New()
+	end
+	local unitModelInfo = self._unitModelInfoDict[tag]
+	if unitModelInfo:GetPath() == modelPath then
+		return
+	end
+	unitModelInfo:SetPath(modelPath)
+	unitModelInfo:SetPrefab(nil)
+	self:GetResLoadComponentPlugin():GetOrLoadAsset(modelPath, function(assetCat)
+		local prefab = assetCat:Get(string.GetSubAssetPath(modelPath), modelType)
+		self:_OnLoadDone(prefab, tag)
+	end)
+end
+
+function UnitGraphicComponent:_OnLoadDone(prefab, tag)
+	local unitModelInfo = self._unitModelInfoDict[tag]
+	if not unitModelInfo then
+		return
+	end
+	unitModelInfo:SetPrefab(prefab)
+	self:_CheckLoadDone()
+end
+
+function UnitGraphicComponent:_CheckLoadDone()
+	if self._isSettingModelPath or self:GetGameObject() then
+		return
+	end
+	for tag, unitModelInfo in pairs(self._unitModelInfoDict) do
+		if not unitModelInfo:GetPrefab() then
+			return
+		end
+	end
+
+	local unitModelInfo = self._unitModelInfoDict["main"]
+	local clone = GameObject.Instantiate(unitModelInfo:GetPrefab(), self:GetPosition(), self:GetRotation(), self:GetParent():GetTransform())
+	clone.name = string.format("%s:%s", self._unitId, self:GetKey())
+	self:SetGameObject(clone)
+	self:_OnBuildDone()
+	self._isLoadDone = true
+	self:_OnLoadDoneListen()
+end
+
+function UnitGraphicComponent:_OnBuildDone()
+	self:SetUnitScale(self._unitScale or 1)
+	self:InitAnimation()
+	self:InitMaterial()
+	self._unit:GetUnitMoveComp():OnBuildDone()
+	self._animatorComp:OnBuildDone(self:GetGameObject())
+	self:Broadcast(UnitEventNameConst.On_Unit_Build_Done, self)
+end
+
+function UnitGraphicComponent:_OnLoadDoneListen()
+	for k, loadOkListen in ipairs(self._loadDoneListenList) do
+		loadOkListen()
+	end
+	self._loadDoneListenList = {}
+end
+
+----------------------------------------------------------------------
+-- Socket相关
+----------------------------------------------------------------------
+---@return Vector3
+function UnitGraphicComponent:GetSocketPosition(socketName, isIgnoreError)
+	local socketTransform = self:GetSocketTransform(socketName, isIgnoreError)
+	if socketTransform then
+		return socketTransform.position
+	else
+		return self:GetPosition()
+	end
+end
+
+---@return Quaternion
+function UnitGraphicComponent:GetSocketRotation(socketName, isIgnoreError)
+	local socketTransform = self:GetSocketTransform(socketName, isIgnoreError)
+	if socketTransform then
+		return socketTransform.rotation
+	else
+		return self:GetRotation()
+	end
+end
+
+---@return CS.UnityEngine.Transform
+function UnitGraphicComponent:GetSocketTransform(socketName, isIgnoreError)
+	if IsNil(self:GetGameObject()) then
+		return nil
+	end
+	if not socketName or socketName == "" or socketName == "main" then
+		return self:GetTransform()
+	end
+	local socketTransform = self._socketTransformDict[socketName]
+	if not socketTransform then
+		socketTransform = self:GetTransform():FindChildRecursive(socketName)
+		if socketTransform then
+			self._socketTransformDict[socketName] = socketTransform
+		end
+	end
+	if not socketTransform then
+		if not isIgnoreError then
+			ErrorFormat("Can't find socket(%s) in unit(%s)", socketName, self._unitId)
+		else
+			WarnFormat("Can't find socket(%s) in unit(%s)", socketName, self._unitId)
+		end
+		return self:GetTransform()
+	end
+	return socketTransform
+end
+
+function UnitGraphicComponent:InitAnimation()
+	---@type CS.UnityEngine.Animation
+	self._animation = self:GetGameObject():GetComponentInChildren(typeof(CS.UnityEngine.Animation))
+	if self._animationCullingType then
+		self:SetAnimationCullingType(self._animationCullingType)
+		---@type CS.UnityEngine.AnimationCullingType
+		self._animationCullingType = nil
+	end
+	if IsNotNil(self._animation) then
+		---@type CS.UnityEngine.AnimationState
+		local walkAnimationState = self._animation:get_Item(AnimationNameConst.walk)
+		if walkAnimationState then
+			walkAnimationState.wrapMode = CS.UnityEngine.WrapMode.Loop
+		end
+		---@type CS.UnityEngine.AnimationState
+		local idleAnimationState = self._animation:get_Item(AnimationNameConst.idle)
+		if idleAnimationState then
+			idleAnimationState.wrapMode = UnityEngine.WrapMode.Loop
+			if not self._actionManager then
+				idleAnimationState.layer = -1
+			end
+		end
+		---@type CS.UnityEngine.AnimationState
+		local dieAnimationState = self._animation:get_Item(AnimationNameConst.die)
+		if dieAnimationState then
+			dieAnimationState.wrapMode = UnityEngine.WrapMode.ClampForever
+		end
+		self:PlayAnimation(AnimationNameConst.idle)
+	end
+end
+
+function UnitGraphicComponent:InitMaterial()
+	-- 获取所有材质(MeshRenderer、SkinnedMeshRenderer)
+	---@type UnitMaterialInfo[]
+	self._unitMaterialInfoList = {}
+	local rendererTypeList = { typeof(CS.UnityEngine.MeshRenderer), typeof(CS.UnityEngine.SkinnedMeshRenderer) }
+	for k, rendererType in ipairs(rendererTypeList) do
+		local renderList = self:GetGameObject():GetComponentsInChildren(rendererType)
+		for i = 0, renderList.Length - 1 do
+			local material = renderList[i].material
+			if material:HasProperty("_Color") then
+				---@type UnitMaterialInfo
+				local unitMaterialInfo = UnitMaterialInfo.New()
+				unitMaterialInfo:SetMaterial(material)
+				unitMaterialInfo:SetColor(material.color)
+				table.insert(self._unitMaterialInfoList, unitMaterialInfo)
+			end
+		end
+	end
+	---@type table<string,Color> @key是tag
+	self._changeColorDict = {}
+end
+
+----------------------------------------------------------------------
+-- 变色相关
+----------------------------------------------------------------------
+-- 改变一个物体上MeshRenderer、SkinMeshRenderer材质的颜色
+function UnitGraphicComponent:ChangeColor(tag, color)
+	if not self._unitMaterialInfoList or #self._unitMaterialInfoList < 1 then
+		return
+	end
+
+	self._changeColorDict[tag] = color
+	self:_UpdateColor()
+end
+
+function UnitGraphicComponent:_UpdateColor()
+	local currentColor = Color.white
+	for k, color in pairs(self._changeColorDict) do
+		currentColor = currentColor * color
+	end
+
+	for _, unitMaterialInfo in ipairs(self._unitMaterialInfoList) do
+		unitMaterialInfo:GetMaterial().color = unitMaterialInfo:GetColor() * currentColor
+	end
+end
+
+----------------------------------------------------------------------
+-- Animation相关
+----------------------------------------------------------------------
+function UnitGraphicComponent:SetAnimationCullingType(animationCullingType)
+	if not self._animation then
+		self._animationCullingType = animationCullingType
+		return
+	end
+	self._animation.cullingType = animationCullingType
+end
+
+function UnitGraphicComponent:PlayAnimation(animationName, blendTime, speed, faceToPosition, isNotMoveStop)
+	blendTime = blendTime or 0.1
+	speed = speed or 1
+	if IsNotNil(self._animation) then
+		if self._curAnimationName == AnimationNameConst.die then
+			return
+		end
+		if self._actionManager then
+			if animationName == AnimationNameConst.walk and self._curAnimationName then
+				self._actionManager:Stop(self._curAnimationName)
+				self._curAnimationName = nil
+			end
+			if animationName == AnimationNameConst.idle then
+				self._actionManager:Play(animationName, speed, -1, false)
+			elseif animationName == AnimationNameConst.walk then
+				self._actionManager:Play(animationName, speed, 0, false)
+			else
+				self._actionManager:Play(animationName, speed, 0, true)
+				self._curAnimationName = animationName
+				if animationName == AnimationNameConst.die then
+					self._actionManager:Stop(AnimationNameConst.idle)
+				end
+			end
+		else
+			if animationName == AnimationNameConst.walk and self._curAnimationName then
+				self._animation:Blend(self._curAnimationName, 0, blendTime)
+				self._curAnimationName = nil
+			end
+			local animationState = self._animation:get_Item(animationName)
+			if not animationState then
+				ErrorFormat("animation is no exist: %s , %s", animationName, self._unitId)
+			end
+			local speedThreshold = 0.5
+			if animationName == AnimationNameConst.walk and speed < speedThreshold then
+				animationState.speed = speedThreshold
+				self._animation:CrossFade(animationName, blendTime)
+				self._animation:Blend(animationName, speed / speedThreshold, blendTime)
+			else
+				animationState.speed = speed
+				self._animation:CrossFade(animationName, blendTime)
+			end
+			if not (animationName == AnimationNameConst.idle or animationName == AnimationNameConst.walk) then
+				if self._curAnimationName == animationName then
+					self._animation:get_Item(animationName).time = 0
+				end
+				self._curAnimationName = animationName
+			end
+		end
+	else
+		self._animatorComp:PlayAnimation(animationName, true, speed)
+	end
+
+	if faceToPosition then
+		local rotation = Quaternion.LookRotation(faceToPosition - self:GetPosition())
+		if rotation and not isNotMoveStop then
+			self:MoveStop(rotation)
+		end
+	end
+end
+
+function UnitGraphicComponent:StopAnimation(animationName, blendTime)
+	--Warn("Unit:StopAnim", anim_name, blend_time);
+	blendTime = blendTime or 0.1
+	if IsNotNil(self._animation) then
+		if self._actionManager then
+			self._actionManager:Stop(animationName)
+		else
+			animationName = animationName or self._curAnimationName
+			self._animation:Blend(animationName, 0, blendTime)
+		end
+	end
+end
+
+----------------------------------------------------------------------
+-- SetGet相关
+----------------------------------------------------------------------
+---@param unitScale number
+function UnitGraphicComponent:SetUnitScale(unitScale)
+	self:SetScale(Vector3.one * unitScale)
+	self._unitScale = unitScale
+	self:OnSetUnitScale()
+end
+
+function UnitGraphicComponent:OnSetUnitScale()
+	self._unit:SetRadius(self._unitScale)
+end
+
+function UnitGraphicComponent:GetAnimation()
+	return self._animation
+end
+
+function UnitGraphicComponent:GetAnimatorComp()
+	return self._animatorComp
+end
+
+function UnitGraphicComponent:_Destroy()
+	GraphicComponent._Destroy(self)
+	if self._animatorComp then
+		self._animatorComp:Destroy()
+	end
+end
 
 
 

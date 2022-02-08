@@ -7,7 +7,7 @@ function EffectGraphicComponent:Init()
 	self._effectEntity = self:GetEntity()
 end
 
-function EffectGraphicComponent:OnAllAssetsLoadDone()
+function EffectGraphicComponent:OnAssetsLoadDone()
 	EffectGraphicComponent.super.OnAllAssetsLoadDone(self)
 	self:ApplyToTransform(self._effectEntity:GetTransformComponent():GetPosition(), self._effectEntity:GetTransformComponent():GetEulerAngles())
 end

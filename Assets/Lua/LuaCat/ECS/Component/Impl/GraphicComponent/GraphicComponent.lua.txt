@@ -5,16 +5,13 @@ local GraphicComponent = Class("GraphicComponent", GameComponent)
 ---@param resLoadComponent ResLoadComponent
 function GraphicComponent:Init(resLoadComponent)
 	GraphicComponent.super.Init(self)
-	---@type GameEntity
-	self._gameEntity = self:GetEntity()
+	---@type GameObjectEntity
+	self._gameObjectEntity = self:GetEntity()
 	---@type ResLoadComponentPlugin
 	self._resLoadComponentPlugin = ResLoadComponentPlugin.New(resLoadComponent)
 	if self:GetEntity()._className == "Client" then
 		return
 	end
-	self:AddListener(string.ToEventName(ECSEventNameConst.OnAllAssetsLoadDone, self:GetEntity()), function()
-		self:OnAllAssetsLoadDone()
-	end)
 end
 
 
@@ -26,12 +23,12 @@ function GraphicComponent:InstantiateGameObject(prefab)
 end
 
 function GraphicComponent:InitGameObjectChildren()
-	self._gameEntity:InitGameObjectChildren()
+	self._gameObjectEntity:InitGameObjectChildren()
 end
 
 function GraphicComponent:OnSetGameObjectFinished()
 	self:InitGameObjectChildren()
-	self:SetIsShow(not self._isHide)
+	self._gameObjectEntity:ApplyTransformComponent()
 end
 
 function GraphicComponent:DestroyGameObject()
@@ -44,25 +41,36 @@ end
 ----------------------------------------------------------------------
 -- prefab相关
 ----------------------------------------------------------------------
-function GraphicComponent:LoadPrefabPath()
+function GraphicComponent:LoadPrefab()
 	if self._prefabPath then
+		self._isLoadDone = false
 		self._prefabAssetCat = self._resLoadComponentPlugin:GetOrLoadAsset(self._prefabPath, nil, nil, function()
 			self._isLoadDone = true
 		end, self)
+	else
+		self._isLoadDone = true
 	end
 end
 
-function GraphicComponent:OnAllAssetsLoadDone()
+function GraphicComponent:CheckIsLoadDone()
+	self:StartCoroutine("loadPrefab", function()
+		self:WaitUntil(function()
+			return self:IsLoadDone()
+		end)
+		self:OnAssetsLoadDone()
+	end)
+end
+
+function GraphicComponent:OnAssetsLoadDone()
 	if self._prefabPath then
 		self._prefab = self._prefabAssetCat:Get(string.GetSubAssetPath(self._prefabPath))
-		local clone = self:InstantiateGameObject(self._prefab)
-		clone.name = self._prefab.name
-		clone.transform:CopyFrom(self._prefab.transform)
-		self:SetGameObject(clone)
-	end
-
-	if self._parentTransform then
-		self:SetParentTransform(self._parentTransform)
+		if IsGameObject(self._prefab) then
+			self._gameObjectEntity:SetIsShow(self._prefab.activeSelf)
+			local clone = self:InstantiateGameObject(self._prefab)
+			clone.name = self._prefab.name
+			clone.transform:CopyFrom(self._prefab.transform)
+			self:SetGameObject(clone)
+		end
 	end
 end
 
@@ -81,15 +89,10 @@ function GraphicComponent:GetRectTransform()
 	return self._rectTransform
 end
 
-function GraphicComponent:GetParentTransform()
-	return self._parentTransform
-end
-
 ---@param parentTransform CS.UnityEngine.Transform
 function GraphicComponent:SetParentTransform(parentTransform)
-	self._parentTransform = parentTransform
 	if self._transform then
-		self._transform:SetParent(self._parentTransform, self._gameObject.layer ~= LayerMask.NameToLayer("UI"))
+		self._transform:SetParent(parentTransform, self._gameObject.layer ~= LayerMask.NameToLayer("UI"))
 	end
 end
 
@@ -118,19 +121,81 @@ end
 
 function GraphicComponent:SetPrefabPath(prefabPath)
 	self._prefabPath = prefabPath
+	self:OnSetPrefabPath()
+end
+
+function GraphicComponent:OnSetPrefabPath()
 	self._isLoadDone = self._prefabPath == nil
 end
 
+function GraphicComponent:GetPrefabPath()
+	return self._prefabPath
+end
+
 function GraphicComponent:SetIsShow(isShow)
-	self._isHide = not isShow
 	if self._gameObject then
-		self._gameObject:SetActive(not self._isHide)
+		self._gameObject:SetActive(isShow)
 	end
 end
 
-function GraphicComponent:IsShow()
-	return self._isHide
+function GraphicComponent:SetPosition(pos)
+	if self._transform then
+		self._transform.position = pos
+	end
 end
+
+function GraphicComponent:SetEulerAngles(eulerAngles)
+	if self._transform then
+		self._transform.eulerAngles = eulerAngles
+	end
+end
+
+function GraphicComponent:SetRotation(rotation)
+	if self._transform then
+		self._transform.rotation = rotation
+	end
+end
+
+---@param scale number
+function GraphicComponent:SetScale(scale)
+	if self._transform then
+		self._transform.scale = scale
+	end
+end
+
+function GraphicComponent:SetLocalPosition(localPosition)
+	if self._transform then
+		self._transform.localPosition = localPosition
+	end
+end
+
+function GraphicComponent:SetLocalEulerAngles(localEulerAngles)
+	if self._transform then
+		self._transform.localEulerAngles = localEulerAngles
+	end
+end
+
+function GraphicComponent:SetLocalRotation(localRotation)
+	if self._transform then
+		self._transform.localRotation = localRotation
+	end
+end
+
+---@param localScale number
+function GraphicComponent:SetLocalScale(localScale)
+	if self._transform then
+		self._transform.localScale = localScale
+	end
+end
+
+function GraphicComponent:GetResLoadComponentPlugin()
+	return self._resLoadComponentPlugin
+end
+
+function GraphicComponent:GetGameObjectEntity()
+	return self._gameObjectEntity
+end
+
 ----------------------------------------------------------------------
 -- _Reset
 ----------------------------------------------------------------------
@@ -150,7 +215,6 @@ function GraphicComponent:_Destroy()
 
 	self._resLoadComponentPlugin = nil
 
-	self._parentTransform = nil
 	self._gameObject = nil
 	self._transform = nil
 	self._rectTransform = nil
@@ -160,7 +224,6 @@ function GraphicComponent:_Destroy()
 	self._prefabAssetCat = nil
 
 	self._isLoadDone = false
-	self._isHide = false
 end
 
 return GraphicComponent

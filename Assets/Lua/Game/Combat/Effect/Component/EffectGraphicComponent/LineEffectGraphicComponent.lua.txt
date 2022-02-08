@@ -1,7 +1,7 @@
 ---@class LineEffectGraphicComponent:EffectGraphicComponent
 local LineEffectGraphicComponent = Class("LineEffectGraphicComponent", EffectGraphicComponent)
 
-function LineEffectGraphicComponent:OnAllAssetsLoadDone()
+function LineEffectGraphicComponent:OnAssetsLoadDone()
 	LineEffectGraphicComponent.super.OnAllAssetsLoadDone(self)
 	---@type CS.CsCat.XLineRenderer[]
 	self._xLineRendererList = table.ConvertCSArray2LuaTable(self:GetTransform():GetComponent(typeof(CS.CsCat.XLineRenderer)))

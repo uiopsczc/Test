@@ -13,10 +13,7 @@ function AnimatorComp:Destroy()
 	self._curAnimationName = nil
 end
 
-function AnimatorComp:OnBuild()
-end
-
-function AnimatorComp:OnBuildOk(gameObject)
+function AnimatorComp:OnBuildDone(gameObject)
 	local animators = gameObject:GetComponentsInChildren(typeof(CS.UnityEngine.Animator))
 	for i = 0, animators.Length - 1 do
 		local animator = animators[i]

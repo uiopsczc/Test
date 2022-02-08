@@ -1,14 +1,99 @@
 ---@class GameObjectEntity:TickObject
-local GameObjectEntity = Class("GameObjectEntity", TickObject)
+local GameObjectEntity = Class("GameObjectEntity", GameEntity)
 
 function GameObjectEntity:Init(...)
 	GameObjectEntity.super.Init(self, ...)
+	self._allAssetsLoadDoneCallback = {}
+	---@type ResLoadComponent
+	self._resLoadComponent = self:AddComponent(nil, ResLoadComponent, ResLoad.New())
 	---@type TransformComponent
 	self._transformComponent = self:AddComponent(nil, TransformComponent)
+	---@type GraphicComponent
+	self._graphicComponent = self:CreateGraphicComponent()
 end
 
+---@return GraphicComponent
+function GameObjectEntity:CreateGraphicComponent()
+	return self:AddComponent(nil, GraphicComponent, self._resLoadComponent)
+end
+
+function GameObjectEntity:ApplyTransformComponent(transformComponent)
+	transformComponent = transformComponent or self._transformComponent
+	self:GetGraphicComponent():ApplyTransformComponent(self._transformComponent)
+end
+
+function GameObjectEntity:PostInit()
+	GameObjectEntity.super.PostInit(self)
+	self._graphicComponent:LoadPrefab()
+	self:PreLoadAssets()
+	self:CheckIsAllAssetsLoadDone()
+end
+
+----------------------------------------------------------------------
+-- Assets
+----------------------------------------------------------------------
+--- 只会被触发一次
+function GameObjectEntity:InvokeAfterAllAssetsLoadDone(callback)
+	if self._isAllAssetsLoadDone then
+		callback()
+	else
+		table.insert(self._allAssetsLoadDoneCallback, callback)
+	end
+end
+
+function GameObjectEntity:PreLoadAssets()
+	--self.resLoadComponent.LoadAssetAsync("resPath")
+end
+
+function GameObjectEntity:CheckIsAllAssetsLoadDone()
+	if self._graphicComponent:IsLoadDone() and self._resLoadComponent:IsAllLoadDone() then
+		self:OnAllAssetsLoadDone()
+		return
+	end
+	-- 需要等待load资源的情况
+	self:StartCoroutine(nil, function()
+		self:WaitUntil(function()
+			return self._resLoadComponent:IsAllLoadDone()
+		end)
+		if not string.IsNilOrEmpty(self._graphicComponent:GetPrefabPath()) then
+			self:WaitUntil(function()
+				return self._graphicComponent:IsLoadDone()
+			end)
+		end
+		self:OnAllAssetsLoadDone()
+	end)
+end
+
+function GameObjectEntity:OnAllAssetsLoadDone()
+	self:Broadcast(string.ToEventName(ECSEventNameConst.OnAllAssetsLoadDone, self))
+	self._isAllAssetsLoadDone = true
+	DelegateUtil.InvokeCallback(self._allAssetsLoadDoneCallback)
+	self._allAssetsLoadDoneCallback = {}
+end
+
+----------------------------------------------------------------------
+-- gameObject
+----------------------------------------------------------------------
+function GameObjectEntity:InstantiateGameObject(prefab)
+	return GameObject.Instantiate(prefab)
+end
+
+function GameObjectEntity:InitGameObjectChildren()
+end
+
+----------------------------------------------------------------------
+-- SetGet相关
+----------------------------------------------------------------------
 function GameObjectEntity:GetTransformComponent()
 	return self._transformComponent
+end
+
+function GameObjectEntity:GetResLoadComponent()
+	return self._resLoadComponent
+end
+
+function GameObjectEntity:GetGraphicComponent()
+	return self._graphicComponent
 end
 
 function GameObjectEntity:GetGameObject()
@@ -23,20 +108,126 @@ function GameObjectEntity:GetRectTransform()
 	return self:GetGraphicComponent():GetRectTransform()
 end
 
+---@param localPosition Vector3
+function GameObjectEntity:SetLocalPosition(localPosition)
+	self._transformComponent:SetLocalPosition(localPosition)
+	self._graphicComponent:SetLocalPosition(localPosition)
+end
+
+---@return Vector3
+function GameObjectEntity:GetLocalPosition()
+	return self._transformComponent:GetLocalPosition()
+end
+
+---@param localEulerAngles Vector3
+function GameObjectEntity:SetLocalEulerAngles(localEulerAngles)
+	self._transformComponent:SetLocalEulerAngles(localEulerAngles)
+	self._graphicComponent:SetLocalEulerAngles(localEulerAngles)
+end
+
+---@return Vector3
+function GameObjectEntity:GetLocalEulerAngles()
+	return self._transformComponent:GetLocalEulerAngles()
+end
+
+---@param localRotation Quaternion
+function GameObjectEntity:SetLocalRotation(localRotation)
+	self._transformComponent:SetLocalRotation(localRotation)
+	self._graphicComponent:SetLocalRotation(localRotation)
+end
+
+---@return Quaternion
+function GameObjectEntity:GetLocalRotation()
+	return self._transformComponent:GetLocalRotation()
+end
+
+---@param localScale Vector3
+function GameObjectEntity:SetLocalScale(localScale)
+	self._transformComponent:SetLocalScale(localScale)
+	self._graphicComponent:SetLocalScale(localScale)
+end
+
+---@return Vector3
+function GameObjectEntity:GetLocalScale()
+	return self._transformComponent:GetLocalScale()
+end
+
+---@param position Vector3
+function GameObjectEntity:SetPosition(position)
+	self._transformComponent:SetPosition(position)
+	self._graphicComponent:SetPosition(position)
+end
+
+---@return Vector3
+function GameObjectEntity:GetPosition()
+	return self._transformComponent:GetPosition()
+end
+
+---@param eulerAngles Vector3
+function GameObjectEntity:SetEulerAngles(eulerAngles)
+	self._transformComponent:SetEulerAngles(eulerAngles)
+	self._graphicComponent:SetEulerAngles(eulerAngles)
+end
+
+---@return Vector3
+function GameObjectEntity:GetEulerAngles()
+	return self._transformComponent:GetEulerAngles()
+end
+
+---@param rotation Quaternion
+function GameObjectEntity:SetRotation(rotation)
+	self._transformComponent:SetRotation(rotation)
+	self._graphicComponent:SetRotation(rotation)
+end
+
+---@return Quaternion
+function GameObjectEntity:GetRotation()
+	return self._transformComponent:GetRotation()
+end
+
+---@param scale Vector3
+function GameObjectEntity:SetScale(scale)
+	self._transformComponent:SetScale(scale)
+	self._graphicComponent:SetScale(scale)
+end
+
+---@return Vector3
+function GameObjectEntity:GetScale()
+	return self._transformComponent:GetScale()
+end
+
+----------------------------------------------------------------------
+--
+----------------------------------------------------------------------
+---@param parentTransform CS.UnityEngine.Transform
 function GameObjectEntity:SetParentTransform(parentTransform)
-	return self:GetGraphicComponent():SetParentTransform(parentTransform)
+	self._transformComponent:SetParentTransform(parentTransform)
+	self._graphicComponent:SetParentTransform(parentTransform)
 end
 
+---@return CS.UnityEngine.Transform
 function GameObjectEntity:GetParentTransform()
-	return self:GetGraphicComponent():GetParentTransform()
+	return self._transformComponent:GetParentTransform()
 end
 
+---@param isShow boolean
 function GameObjectEntity:SetIsShow(isShow)
-	return self:GetGraphicComponent():SetIsShow(isShow)
+	self._transformComponent:SetIsShow(isShow)
+	self._graphicComponent:SetIsShow(isShow)
 end
 
+---@return CS.UnityEngine.Transform
 function GameObjectEntity:IsShow()
-	return self:GetGraphicComponent():IsShow()
+	return self._transformComponent:IsShow()
 end
+----------------------------------------------------------------------
+-- _Reset相关
+----------------------------------------------------------------------
+function GameObjectEntity:_Reset()
+	GameObjectEntity.super._Reset(self)
+	self._isAllAssetsLoadDone = false
+	self._allAssetsLoadDoneCallback = {}
+end
+
 
 return GameObjectEntity
