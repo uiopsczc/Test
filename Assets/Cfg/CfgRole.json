@@ -1,0 +1,17 @@
+{
+  "data_list": [
+    {
+      "id": "1",
+      "name": "小星",
+      "classPathLua": "",
+      "classPathCs": ""
+    }
+  ],
+  "index_dict": {
+    "unique": {
+      "id": {
+        "1": 0
+      }
+    }
+  }
+}

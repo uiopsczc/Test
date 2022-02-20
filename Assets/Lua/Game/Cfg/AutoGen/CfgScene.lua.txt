@@ -1,9 +1,10 @@
 --AutoGen. DO NOT EDIT!!!
+--ExportFrom CJ场景表.xlsx[场景表]
 ---@class CfgSceneData
 ---@field id
 ---@field name
----@field class_path_lua
----@field class_path_cs
+---@field classPathLua
+---@field classPathCs
 local _
 
 
@@ -13,8 +14,8 @@ local data_list = {
   {
     id = [=[1]=],
     name = [=[场景1]=],
-    class_path_lua = [=[]=],
-    class_path_cs = [=[]=],
+    classPathLua = [=[]=],
+    classPathCs = [=[]=],
   },
 }
 
@@ -38,12 +39,12 @@ function cfg.Get(index)
   return data_list[index]
 end
 
-function cfg.get_by_id(id)
+function cfg.GetById(id)
   local key = tostring(id)
   return cfg.Get(index_dict.unique.id[key])
 end
 
-function cfg.contain_key_by_id(id)
+function cfg.IsContainsKeyById(id)
   local key = tostring(id)
   return index_dict.unique.id[key] ~= nil
 end

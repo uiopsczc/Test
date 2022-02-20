@@ -207,11 +207,10 @@ class ExportXlsxUtil(object):
     return "%sIndexData" % (ExportXlsxUtil.GetCfgName(sheet))
 
   def GetCfgDataName(sheet):
-    return "%sData" % (ExportXlsxUtil.GetCfgName(sheet))
+    return "%sData" % ExportXlsxUtil.GetCfgName(sheet)
 
   def GetCfgRootName(sheet):
     return "%sRoot" % (ExportXlsxUtil.GetCfgName(sheet))
 
   def GetCfgName(sheet):
-    return "%s%s" % (
-      ExportXlsxConst.Sheet_Cfg_Tag, StringUtil.UpperFirstLetter(ExportXlsxUtil.GetExportSheetName(sheet)))
+    return ExportXlsxUtil.GetExportSheetName(sheet)

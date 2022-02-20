@@ -1,18 +1,19 @@
 --AutoGen. DO NOT EDIT!!!
+--ExportFrom RW任务表.xlsx[任务表]
 ---@class CfgMissionData
 ---@field id
 ---@field name
----@field class_path_lua
----@field class_path_cs
----@field type_1
----@field type_2
----@field finish_condition
----@field is_auto_check_finish
----@field onAccept_doerEvent_id
----@field onFinish_doerEvent_id
----@field onGiveUp_doerEvent_id
----@field reward_dict
----@field find_item_dict
+---@field classPathLua
+---@field classPathCs
+---@field type1
+---@field type2
+---@field finishCondition
+---@field isAutoCheckFinish
+---@field onAcceptDoerEventId
+---@field onFinishDoerEventId
+---@field onGiveUpDoerEventId
+---@field rewardDict
+---@field findItemDict
 local _
 
 
@@ -22,17 +23,17 @@ local data_list = {
   {
     id = [=[1]=],
     name = [=[任务1]=],
-    class_path_lua = [=[]=],
-    class_path_cs = [=[]=],
-    type_1 = [=[]=],
-    type_2 = [=[]=],
-    finish_condition = [=[{@eval(${u.cp}>0)}]=],
-    is_auto_check_finish = false,
-    onAccept_doerEvent_id = [=[1]=],
-    onFinish_doerEvent_id = [=[]=],
-    onGiveUp_doerEvent_id = [=[]=],
-    reward_dict = json:decode([=[{}]=]),
-    find_item_dict = json:decode([=[{}]=]),
+    classPathLua = [=[]=],
+    classPathCs = [=[]=],
+    type1 = [=[]=],
+    type2 = [=[]=],
+    finishCondition = [=[{@eval(${u.cp}>0)}]=],
+    isAutoCheckFinish = false,
+    onAcceptDoerEventId = [=[1]=],
+    onFinishDoerEventId = [=[]=],
+    onGiveUpDoerEventId = [=[]=],
+    rewardDict = json:decode([=[{}]=]),
+    findItemDict = json:decode([=[{}]=]),
   },
 }
 
@@ -56,12 +57,12 @@ function cfg.Get(index)
   return data_list[index]
 end
 
-function cfg.get_by_id(id)
+function cfg.GetById(id)
   local key = tostring(id)
   return cfg.Get(index_dict.unique.id[key])
 end
 
-function cfg.contain_key_by_id(id)
+function cfg.IsContainsKeyById(id)
   local key = tostring(id)
   return index_dict.unique.id[key] ~= nil
 end

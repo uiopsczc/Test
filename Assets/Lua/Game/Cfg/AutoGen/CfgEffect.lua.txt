@@ -1,11 +1,12 @@
 --AutoGen. DO NOT EDIT!!!
+--ExportFrom TX特效表.xlsx[特效表]
 ---@class CfgEffectData
 ---@field id
 ---@field name
----@field prefab_path
+---@field prefabPath
 ---@field duration
----@field socket_name_1
----@field socket_name_2
+---@field socketName1
+---@field socketName2
 local _
 
 
@@ -15,18 +16,18 @@ local data_list = {
   {
     id = [=[1]=],
     name = [=[特效1]=],
-    prefab_path = [=[Assets/ccc.prefab]=],
+    prefabPath = [=[Assets/ccc.prefab]=],
     duration = 0.0,
-    socket_name_1 = [=[]=],
-    socket_name_2 = [=[]=],
+    socketName1 = [=[]=],
+    socketName2 = [=[]=],
   },
   {
     id = [=[2]=],
     name = [=[特效2]=],
-    prefab_path = [=[Assets/Resources/common/effect/4/10010720.prefab]=],
+    prefabPath = [=[Assets/Resources/common/effect/4/10010720.prefab]=],
     duration = 0.0,
-    socket_name_1 = [=[]=],
-    socket_name_2 = [=[]=],
+    socketName1 = [=[]=],
+    socketName2 = [=[]=],
   },
 }
 
@@ -53,12 +54,12 @@ function cfg.Get(index)
   return data_list[index]
 end
 
-function cfg.get_by_id(id)
+function cfg.GetById(id)
   local key = tostring(id)
   return cfg.Get(index_dict.unique.id[key])
 end
 
-function cfg.contain_key_by_id(id)
+function cfg.IsContainsKeyById(id)
   local key = tostring(id)
   return index_dict.unique.id[key] ~= nil
 end

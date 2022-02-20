@@ -1,8 +1,9 @@
 --AutoGen. DO NOT EDIT!!!
+--ExportFrom PZ品质表.xlsx[Sheet1]
 ---@class CfgQualityData
 ---@field id
 ---@field name
----@field icon_path
+---@field iconPath
 local _
 
 
@@ -12,27 +13,27 @@ local data_list = {
   {
     id = [=[1]=],
     name = [=[白色品质]=],
-    icon_path = [=[Assets/Resources/common/ui/texture/bb_icon_wpk1.png:bb_icon_wpk1]=],
+    iconPath = [=[Assets/Resources/common/ui/texture/bb_icon_wpk1.png:bb_icon_wpk1]=],
   },
   {
     id = [=[2]=],
     name = [=[]=],
-    icon_path = [=[Assets/Resources/common/ui/texture/bb_icon_wpk2.png:bb_icon_wpk2]=],
+    iconPath = [=[Assets/Resources/common/ui/texture/bb_icon_wpk2.png:bb_icon_wpk2]=],
   },
   {
     id = [=[3]=],
     name = [=[]=],
-    icon_path = [=[Assets/Resources/common/ui/texture/bb_icon_wpk3.png:bb_icon_wpk3]=],
+    iconPath = [=[Assets/Resources/common/ui/texture/bb_icon_wpk3.png:bb_icon_wpk3]=],
   },
   {
     id = [=[4]=],
     name = [=[]=],
-    icon_path = [=[Assets/Resources/common/ui/texture/bb_icon_wpk4.png:bb_icon_wpk4]=],
+    iconPath = [=[Assets/Resources/common/ui/texture/bb_icon_wpk4.png:bb_icon_wpk4]=],
   },
   {
     id = [=[5]=],
     name = [=[]=],
-    icon_path = [=[Assets/Resources/common/ui/texture/bb_icon_wpk5.png:bb_icon_wpk5]=],
+    iconPath = [=[Assets/Resources/common/ui/texture/bb_icon_wpk5.png:bb_icon_wpk5]=],
   },
 }
 
@@ -68,12 +69,12 @@ function cfg.Get(index)
   return data_list[index]
 end
 
-function cfg.get_by_id(id)
+function cfg.GetById(id)
   local key = tostring(id)
   return cfg.Get(index_dict.unique.id[key])
 end
 
-function cfg.contain_key_by_id(id)
+function cfg.IsContainsKeyById(id)
   local key = tostring(id)
   return index_dict.unique.id[key] ~= nil
 end

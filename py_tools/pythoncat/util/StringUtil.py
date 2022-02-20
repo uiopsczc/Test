@@ -57,3 +57,11 @@ class StringUtil(object):
     if indent == 0:
       return ""
     return " " *(indent* space_count)
+
+  @staticmethod
+  def UpperFirstLetterOfArray(array):
+    new_array = []
+    for org_element in array:
+      new_element = StringUtil.UpperFirstLetter(org_element)
+      new_array.append(new_element)
+    return new_array

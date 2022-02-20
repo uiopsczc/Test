@@ -1,9 +1,10 @@
 --AutoGen. DO NOT EDIT!!!
+--ExportFrom Test\CS测试表.xlsx[测试表]
 ---@class CfgTestData
 ---@field id
 ---@field name
 ---@field country
----@field age_dict
+---@field ageDict
 local _
 
 
@@ -14,19 +15,19 @@ local data_list = {
     id = [=[3]=],
     name = [=[chenzhiquan]=],
     country = [=[china]=],
-    age_dict = json:decode([=[{}]=]),
+    ageDict = json:decode([=[{}]=]),
   },
   {
     id = [=[2]=],
     name = [=[uiopsczc]=],
     country = [=[usa]=],
-    age_dict = json:decode([=[{"星哥": [1, 2, 3]}]=]),
+    ageDict = json:decode([=[{"星哥": [1, 2, 3]}]=]),
   },
   {
     id = [=[1]=],
     name = [=[dadaxing]=],
     country = [=[sb]=],
-    age_dict = json:decode([=[{"星仔不不": [4, 5, 6]}]=]),
+    ageDict = json:decode([=[{"星仔不不": [4, 5, 6]}]=]),
   },
 }
 
@@ -56,12 +57,12 @@ function cfg.Get(index)
   return data_list[index]
 end
 
-function cfg.get_by_id(id)
+function cfg.GetById(id)
   local key = tostring(id)
   return cfg.Get(index_dict.unique.id[key])
 end
 
-function cfg.contain_key_by_id(id)
+function cfg.IsContainsKeyById(id)
   local key = tostring(id)
   return index_dict.unique.id[key] ~= nil
 end

@@ -1,4 +1,5 @@
 --AutoGen. DO NOT EDIT!!!
+--ExportFrom YY语言表.xlsx[语言表]
 ---@class CfgLangData
 ---@field id
 ---@field english
@@ -94,12 +95,12 @@ function cfg.Get(index)
   return data_list[index]
 end
 
-function cfg.get_by_id(id)
+function cfg.GetById(id)
   local key = tostring(id)
   return cfg.Get(index_dict.unique.id[key])
 end
 
-function cfg.contain_key_by_id(id)
+function cfg.IsContainsKeyById(id)
   local key = tostring(id)
   return index_dict.unique.id[key] ~= nil
 end

@@ -7,10 +7,10 @@ class ExportXlsx2Json(object):
   @staticmethod
   def ResetAll():
     FileUtil.RemoveDir(ExportXlsxConst.Export_2_Json_Dir_Path)
-    FileUtil.RemoveFile(ExportXlsxConst.Export_2_JsonFilePathes_File_Path)
+    FileUtil.RemoveFile(ExportXlsxConst.Export_2_JsonFilePaths_File_Path)
 
   @staticmethod
-  def ExportSheet(sheet, export_relative_dir_path):
+  def ExportSheet(sheet, export_relative_dir_path, export_relative_file_path):
     export_file_path = ExportXlsxConst.Export_2_Json_Dir_Path + export_relative_dir_path + ExportXlsxUtil.GetExportSheetName(sheet) +".json"
     json_dict = {}
     json_dict["data_list"] = ExportXlsx2Json.ExportDataList(sheet)
@@ -23,10 +23,10 @@ class ExportXlsx2Json(object):
 
   @staticmethod
   def WriteToJsonFilePathes(json_file_path):
-    if os.path.exists(ExportXlsxConst.Export_2_JsonFilePathes_File_Path):
-      FileUtil.WriteFile(ExportXlsxConst.Export_2_JsonFilePathes_File_Path,"\n"+json_file_path,"a")
+    if os.path.exists(ExportXlsxConst.Export_2_JsonFilePaths_File_Path):
+      FileUtil.WriteFile(ExportXlsxConst.Export_2_JsonFilePaths_File_Path, "\n" + json_file_path, "a")
     else:
-      FileUtil.WriteFile(ExportXlsxConst.Export_2_JsonFilePathes_File_Path, json_file_path)
+      FileUtil.WriteFile(ExportXlsxConst.Export_2_JsonFilePaths_File_Path, json_file_path)
 
   @staticmethod
   def ExportDataList(sheet):

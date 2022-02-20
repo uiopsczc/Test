@@ -1,9 +1,10 @@
 --AutoGen. DO NOT EDIT!!!
+--ExportFrom JN技能表.xlsx[技能]
 ---@class CfgSpellData
 ---@field id
 ---@field name
----@field class_path_lua
----@field class_path_cs
+---@field classPathLua
+---@field classPathCs
 ---@field isCanMoveWhileCast
 ---@field range
 ---@field damageFactor
@@ -17,17 +18,17 @@
 ---@field handEffectIds
 ---@field goEffectIds
 ---@field hitEffectIds
----@field ground_effect_ids
+---@field groundEffectIds
 ---@field lineEffectIds
 ---@field isNotFaceToTarget
 ---@field castTime
 ---@field breakTime
 ---@field newSpellTriggerIds
----@field is_need_target
----@field coolDown_duration
----@field passive_buff_ids
----@field select_unit_arg_dict
----@field arg_dict
+---@field isNeedTarget
+---@field cooldownDuration
+---@field passiveBuffIds
+---@field selectUnitArgDict
+---@field argDict
 local _
 
 
@@ -37,32 +38,32 @@ local data_list = {
   {
     id = [=[1]=],
     name = [=[技能1]=],
-    class_path_lua = [=[]=],
-    class_path_cs = [=[]=],
-    is_can_move_while_cast = false,
+    classPathLua = [=[]=],
+    classPathCs = [=[]=],
+    isCanMoveWhileCast = false,
     range = 0.0,
-    damage_factor = 0.0,
+    damageFactor = 0.0,
     type = [=[]=],
-    target_type = [=[]=],
-    damage_type = [=[]=],
-    cast_type = [=[]=],
-    action_name = [=[]=],
-    animation_name = [=[]=],
-    animation_duration = 0.0,
-    hand_effect_ids = json:decode([=[[]]=]),
-    go_effect_ids = json:decode([=[[]]=]),
-    hit_effect_ids = json:decode([=[[]]=]),
-    ground_effect_ids = json:decode([=[[]]=]),
-    line_effect_ids = json:decode([=[[]]=]),
-    is_not_face_to_target = false,
-    cast_time = 0.0,
-    break_time = 0.0,
-    new_spell_trigger_ids = json:decode([=[[]]=]),
-    is_need_target = false,
-    coolDown_duration = 0.0,
-    passive_buff_ids = json:decode([=[[]]=]),
-    select_unit_arg_dict = json:decode([=[{}]=]),
-    arg_dict = json:decode([=[{}]=]),
+    targetType = [=[]=],
+    damageType = [=[]=],
+    castType = [=[]=],
+    actionName = [=[]=],
+    animationName = [=[]=],
+    animationDuration = 0.0,
+    handEffectIds = json:decode([=[[]]=]),
+    goEffectIds = json:decode([=[[]]=]),
+    hitEffectIds = json:decode([=[[]]=]),
+    groundEffectIds = json:decode([=[[]]=]),
+    lineEffectIds = json:decode([=[[]]=]),
+    isNotFaceToTarget = false,
+    castTime = 0.0,
+    breakTime = 0.0,
+    newSpellTriggerIds = json:decode([=[[]]=]),
+    isNeedTarget = false,
+    cooldownDuration = 0.0,
+    passiveBuffIds = json:decode([=[[]]=]),
+    selectUnitArgDict = json:decode([=[{}]=]),
+    argDict = json:decode([=[{}]=]),
   },
 }
 
@@ -86,12 +87,12 @@ function cfg.Get(index)
   return data_list[index]
 end
 
-function cfg.get_by_id(id)
+function cfg.GetById(id)
   local key = tostring(id)
   return cfg.Get(index_dict.unique.id[key])
 end
 
-function cfg.contain_key_by_id(id)
+function cfg.IsContainsKeyById(id)
   local key = tostring(id)
   return index_dict.unique.id[key] ~= nil
 end

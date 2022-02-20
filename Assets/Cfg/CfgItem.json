@@ -1,0 +1,88 @@
+{
+  "data_list": [
+    {
+      "id": "1",
+      "name": "金币",
+      "classPathLua": "",
+      "classPathCs": "",
+      "type1": "",
+      "type2": "",
+      "isCanFold": true,
+      "qualityId": "1",
+      "bgPath": "",
+      "iconPath": "Assets/Resources/common/ui/texture/zj1_wq_jjq.png:zj1_wq_jjq"
+    },
+    {
+      "id": "2",
+      "name": "钻石",
+      "classPathLua": "",
+      "classPathCs": "",
+      "type1": "",
+      "type2": "",
+      "isCanFold": true,
+      "qualityId": "1",
+      "bgPath": "",
+      "iconPath": "Assets/Resources/common/ui/texture/zj1_wq_jjq.png:zj1_wq_jjq"
+    },
+    {
+      "id": "3",
+      "name": "体力",
+      "classPathLua": "",
+      "classPathCs": "",
+      "type1": "",
+      "type2": "",
+      "isCanFold": true,
+      "qualityId": "1",
+      "bgPath": "",
+      "iconPath": "Assets/Resources/common/ui/texture/zj1_wq_jjq.png:zj1_wq_jjq"
+    },
+    {
+      "id": "4",
+      "name": "回复剂",
+      "classPathLua": "game.doer.item.impl.HuiFuJi",
+      "classPathCs": "HuiFuJi",
+      "type1": "物品",
+      "type2": "",
+      "isCanFold": true,
+      "qualityId": "1",
+      "bgPath": "",
+      "iconPath": "Assets/Resources/common/ui/texture/zj1_wq_jjq.png:zj1_wq_jjq"
+    },
+    {
+      "id": "5",
+      "name": "小刀",
+      "classPathLua": "",
+      "classPathCs": "",
+      "type1": "装备",
+      "type2": "武器",
+      "isCanFold": false,
+      "qualityId": "1",
+      "bgPath": "",
+      "iconPath": "Assets/Resources/common/ui/texture/zj1_wq_jjq.png:zj1_wq_jjq"
+    },
+    {
+      "id": "6",
+      "name": "大弓",
+      "classPathLua": "",
+      "classPathCs": "",
+      "type1": "装备",
+      "type2": "武器",
+      "isCanFold": false,
+      "qualityId": "1",
+      "bgPath": "",
+      "iconPath": "Assets/Resources/common/ui/texture/zj1_wq_jjq.png:zj1_wq_jjq"
+    }
+  ],
+  "index_dict": {
+    "unique": {
+      "id": {
+        "1": 0,
+        "2": 1,
+        "3": 2,
+        "4": 3,
+        "5": 4,
+        "6": 5
+      }
+    }
+  }
+}

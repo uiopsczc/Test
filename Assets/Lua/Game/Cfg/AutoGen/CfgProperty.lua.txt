@@ -1,8 +1,9 @@
 --AutoGen. DO NOT EDIT!!!
+--ExportFrom SX属性表.xlsx[属性表]
 ---@class CfgPropertyData
 ---@field id
 ---@field name
----@field is_pct
+---@field isPct
 local _
 
 
@@ -12,7 +13,7 @@ local data_list = {
   {
     id = [=[力量]=],
     name = [=[力量]=],
-    is_pct = false,
+    isPct = false,
   },
 }
 
@@ -36,12 +37,12 @@ function cfg.Get(index)
   return data_list[index]
 end
 
-function cfg.get_by_id(id)
+function cfg.GetById(id)
   local key = tostring(id)
   return cfg.Get(index_dict.unique.id[key])
 end
 
-function cfg.contain_key_by_id(id)
+function cfg.IsContainsKeyById(id)
   local key = tostring(id)
   return index_dict.unique.id[key] ~= nil
 end

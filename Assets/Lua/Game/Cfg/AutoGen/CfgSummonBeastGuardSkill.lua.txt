@@ -1,0 +1,235 @@
+--AutoGen. DO NOT EDIT!!!
+--ExportFrom ZHS召唤兽.xlsx[召唤兽加护技能表]
+---@class CfgSummonBeastGuardSkillData
+---@field id
+---@field summonBeastId
+---@field star
+---@field starFighting
+---@field skillDescLang1
+---@field skillDescArgs1
+---@field skillDescLang2
+---@field skillDescArgs2
+---@field skillDescLang3
+---@field skillDescArgs3
+---@field skillDescLang4
+---@field skillDescArgs4
+local _
+
+
+
+---@type CfgSummonBeastGuardSkillData[]
+local data_list = {
+  {
+    id = [=[1]=],
+    summonBeastId = 411001,
+    star = 0,
+    starFighting = 1000,
+    skillDescLang1 = [=[]=],
+    skillDescArgs1 = json:decode([=[[]]=]),
+    skillDescLang2 = [=[]=],
+    skillDescArgs2 = json:decode([=[[1, 2, 3]]=]),
+    skillDescLang3 = [=[]=],
+    skillDescArgs3 = json:decode([=[{}]=]),
+    skillDescLang4 = [=[]=],
+    skillDescArgs4 = json:decode([=[[]]=]),
+  },
+  {
+    id = [=[2]=],
+    summonBeastId = 411001,
+    star = 1,
+    starFighting = 2000,
+    skillDescLang1 = [=[]=],
+    skillDescArgs1 = json:decode([=[[]]=]),
+    skillDescLang2 = [=[]=],
+    skillDescArgs2 = json:decode([=[["hello", "world"]]=]),
+    skillDescLang3 = [=[]=],
+    skillDescArgs3 = json:decode([=[{}]=]),
+    skillDescLang4 = [=[]=],
+    skillDescArgs4 = json:decode([=[[]]=]),
+  },
+  {
+    id = [=[3]=],
+    summonBeastId = 411001,
+    star = 2,
+    starFighting = 3000,
+    skillDescLang1 = [=[]=],
+    skillDescArgs1 = json:decode([=[[]]=]),
+    skillDescLang2 = [=[]=],
+    skillDescArgs2 = json:decode([=[[]]=]),
+    skillDescLang3 = [=[]=],
+    skillDescArgs3 = json:decode([=[{"ab": "cd", "ef": 6}]=]),
+    skillDescLang4 = [=[]=],
+    skillDescArgs4 = json:decode([=[[]]=]),
+  },
+  {
+    id = [=[4]=],
+    summonBeastId = 411002,
+    star = 0,
+    starFighting = 4000,
+    skillDescLang1 = [=[]=],
+    skillDescArgs1 = json:decode([=[[]]=]),
+    skillDescLang2 = [=[]=],
+    skillDescArgs2 = json:decode([=[[]]=]),
+    skillDescLang3 = [=[]=],
+    skillDescArgs3 = json:decode([=[{}]=]),
+    skillDescLang4 = [=[]=],
+    skillDescArgs4 = json:decode([=[[]]=]),
+  },
+  {
+    id = [=[5]=],
+    summonBeastId = 411001,
+    star = 5,
+    starFighting = 1000,
+    skillDescLang1 = [=[陈智权]=],
+    skillDescArgs1 = json:decode([=[[]]=]),
+    skillDescLang2 = [=[]=],
+    skillDescArgs2 = json:decode([=[[]]=]),
+    skillDescLang3 = [=[]=],
+    skillDescArgs3 = json:decode([=[{}]=]),
+    skillDescLang4 = [=[]=],
+    skillDescArgs4 = json:decode([=[[]]=]),
+  },
+}
+
+local index_dict = {
+  unique = {
+    id = {
+      [
+        [=[1]=]
+      ] = 1,
+      [
+        [=[2]=]
+      ] = 2,
+      [
+        [=[3]=]
+      ] = 3,
+      [
+        [=[4]=]
+      ] = 4,
+      [
+        [=[5]=]
+      ] = 5,
+    },
+    summonBeastId_and_star = {
+      [
+        [=[411001.0]=]
+      ] = 1,
+      [
+        [=[411001.1]=]
+      ] = 2,
+      [
+        [=[411001.2]=]
+      ] = 3,
+      [
+        [=[411002.0]=]
+      ] = 4,
+      [
+        [=[411001.5]=]
+      ] = 5,
+    },
+  },
+  multiple = {
+    summonBeastId = {
+      [
+        [=[411001]=]
+      ] = {
+        1,
+        2,
+        3,
+        5,
+      },
+      [
+        [=[411002]=]
+      ] = {
+        4,
+      },
+    },
+    summonBeastId_and_starFighting = {
+      [
+        [=[411001.1000]=]
+      ] = {
+        1,
+        5,
+      },
+      [
+        [=[411001.2000]=]
+      ] = {
+        2,
+      },
+      [
+        [=[411001.3000]=]
+      ] = {
+        3,
+      },
+      [
+        [=[411002.4000]=]
+      ] = {
+        4,
+      },
+    },
+  },
+}
+
+local cfg = {}
+
+function cfg.All()
+  return data_list
+end
+
+function cfg.Get(index)
+  return data_list[index]
+end
+
+function cfg.GetById(id)
+  local key = tostring(id)
+  return cfg.Get(index_dict.unique.id[key])
+end
+
+function cfg.IsContainsKeyById(id)
+  local key = tostring(id)
+  return index_dict.unique.id[key] ~= nil
+end
+
+function cfg.GetBySummonBeastIdAndStar(summonBeastId,star)
+  local keys = {tostring(summonBeastId),tostring(star)}
+  local key = table.concat(keys, ".")
+  return cfg.Get(index_dict.unique.summonBeastId_and_star[key])
+end
+
+function cfg.IsContainsKeyBySummonBeastIdAndStar(summonBeastId,star)
+  local keys = {tostring(summonBeastId),tostring(star)}
+  local key = table.concat(keys, ".")
+  return index_dict.unique.summonBeastId_and_star[key] ~= nil
+end
+
+function cfg.GetBySummonBeastId(summonBeastId)
+  local key = tostring(summonBeastId)
+  ---@type CfgSummonBeastGuardSkillData[]
+  local result = {}
+  local indexes = index_dict.multiple.summonBeastId[key]
+  for _,index in ipairs(indexes) do  table.insert(result, cfg.Get(index)) end
+  return result
+end
+
+function cfg.IsContainsKeyBySummonBeastId(summonBeastId)
+  local key = tostring(summonBeastId)
+  return index_dict.multiple.summonBeastId[key] ~= nil
+end
+
+function cfg.GetBySummonBeastIdAndStarFighting(summonBeastId,starFighting)
+  local keys = {tostring(summonBeastId),tostring(starFighting)}
+  local key = table.concat(keys, ".")
+  ---@type CfgSummonBeastGuardSkillData[]
+  local result = {}
+  local indexes = index_dict.multiple.summonBeastId_and_starFighting[key]
+  for _,index in ipairs(indexes) do  table.insert(result, cfg.Get(index)) end
+  return result
+end
+
+function cfg.IsContainsKeyBySummonBeastIdAndStarFighting(summonBeastId,starFighting)
+  local keys = {tostring(summonBeastId),tostring(starFighting)}
+  local key = table.concat(keys, ".")
+  return index_dict.multiple.summonBeastId_and_starFighting[key] ~= nil
+end
+
+return cfg

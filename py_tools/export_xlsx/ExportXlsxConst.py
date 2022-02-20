@@ -1,13 +1,14 @@
 class ExportXlsxConst(object):
+  Is_Export_Cs = True
   Xlsx_Dir_Path = r"..\..\Excels\\"
   CsCat_Namespace = "CsCat"
-  Export_2_Cs_Dir_Path = r"..\..\Assets\CsCat\Script\game\Cfg\AutoGen\\"
+  Export_2_Cs_Dir_Path = r"..\..\Assets\CsCat\Script\Game\Cfg\AutoGen\\"
   Export_2_Json_Dir_Path = r"..\..\Assets\Cfg\\"
-  Export_2_Lua_Dir_Path = r"..\..\Assets\Lua\game\Cfg\AutoGen\\"
-  Export_2_Lua_Require_Root_Dir_Path = r"game.Cfg.AutoGen."
-  Export_2_Lua_RequireCfgPathes = Export_2_Lua_Dir_Path + "RequireCfgPathes.lua.txt"
+  Export_2_Lua_Dir_Path = r"..\..\Assets\Lua\Game\Cfg\AutoGen\\"
+  Export_2_Lua_Require_Root_Dir_Path = r"Game.Cfg.AutoGen."
+  Export_2_Lua_RequireCfgPaths = Export_2_Lua_Dir_Path + "RequireCfgPaths.lua.txt"
 
-  Export_2_JsonFilePathes_File_Path = r"..\..\Assets\Cfg\JsonFilePathes.txt"
+  Export_2_JsonFilePaths_File_Path = r"..\..\Assets\Cfg\JsonFilePaths.txt"
 
   Sheet_CfgName_Cell_Row = 1
   Sheet_CfgName_Cell_Column = 2

@@ -1,21 +1,22 @@
 --AutoGen. DO NOT EDIT!!!
+--ExportFrom DW单位表.xlsx[单位表]
 ---@class CfgUnitData
 ---@field id
 ---@field name
 ---@field type
----@field offset_y
+---@field offsetYy
 ---@field radius
 ---@field scale
----@field walk_step_length
----@field model_path
----@field normal_attack_ids
----@field skill_ids
----@field ai_class_path_lua
----@field ai_class_path_cs
----@field is_keep_dead_body
----@field dead_body_dealy
----@field death_effect_id
----@field passive_buff_ids
+---@field walkStepLength
+---@field modelPath
+---@field normalAttackIds
+---@field skillIds
+---@field aiClassPathLua
+---@field aiClassPathCs
+---@field isKeepDeadBody
+---@field deadBodyDealy
+---@field deathEffectId
+---@field passiveBuffIds
 local _
 
 
@@ -26,19 +27,19 @@ local data_list = {
     id = [=[1]=],
     name = [=[单位1]=],
     type = [=[]=],
-    offset_y = 0.0,
+    offsetYy = 0.0,
     radius = 0.0,
     scale = 0.0,
-    walk_step_length = 0.0,
-    model_path = [=[]=],
-    normal_attack_ids = json:decode([=[[]]=]),
-    skill_ids = json:decode([=[[]]=]),
-    ai_class_path_lua = [=[]=],
-    ai_class_path_cs = [=[]=],
-    is_keep_dead_body = false,
-    dead_body_dealy = 0.0,
-    death_effect_id = [=[]=],
-    passive_buff_ids = json:decode([=[[]]=]),
+    walkStepLength = 0.0,
+    modelPath = [=[]=],
+    normalAttackIds = json:decode([=[[]]=]),
+    skillIds = json:decode([=[[]]=]),
+    aiClassPathLua = [=[]=],
+    aiClassPathCs = [=[]=],
+    isKeepDeadBody = false,
+    deadBodyDealy = 0.0,
+    deathEffectId = [=[]=],
+    passiveBuffIds = json:decode([=[[]]=]),
   },
 }
 
@@ -62,12 +63,12 @@ function cfg.Get(index)
   return data_list[index]
 end
 
-function cfg.get_by_id(id)
+function cfg.GetById(id)
   local key = tostring(id)
   return cfg.Get(index_dict.unique.id[key])
 end
 
-function cfg.contain_key_by_id(id)
+function cfg.IsContainsKeyById(id)
   local key = tostring(id)
   return index_dict.unique.id[key] ~= nil
 end

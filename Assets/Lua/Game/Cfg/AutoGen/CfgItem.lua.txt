@@ -1,15 +1,16 @@
 --AutoGen. DO NOT EDIT!!!
+--ExportFrom WP物品表.xlsx[物品表]
 ---@class CfgItemData
 ---@field id
 ---@field name
----@field class_path_lua
----@field class_path_cs
----@field type_1
----@field type_2
----@field can_fold
----@field quality_id
----@field bg_path
----@field icon_path
+---@field classPathLua
+---@field classPathCs
+---@field type1
+---@field type2
+---@field isCanFold
+---@field qualityId
+---@field bgPath
+---@field iconPath
 local _
 
 
@@ -19,74 +20,74 @@ local data_list = {
   {
     id = [=[1]=],
     name = [=[金币]=],
-    class_path_lua = [=[]=],
-    class_path_cs = [=[]=],
-    type_1 = [=[]=],
-    type_2 = [=[]=],
-    can_fold = true,
-    quality_id = [=[1]=],
-    bg_path = [=[]=],
-    icon_path = [=[Assets/Resources/common/ui/texture/zj1_wq_jjq.png:zj1_wq_jjq]=],
+    classPathLua = [=[]=],
+    classPathCs = [=[]=],
+    type1 = [=[]=],
+    type2 = [=[]=],
+    isCanFold = true,
+    qualityId = [=[1]=],
+    bgPath = [=[]=],
+    iconPath = [=[Assets/Resources/common/ui/texture/zj1_wq_jjq.png:zj1_wq_jjq]=],
   },
   {
     id = [=[2]=],
     name = [=[钻石]=],
-    class_path_lua = [=[]=],
-    class_path_cs = [=[]=],
-    type_1 = [=[]=],
-    type_2 = [=[]=],
-    can_fold = true,
-    quality_id = [=[1]=],
-    bg_path = [=[]=],
-    icon_path = [=[Assets/Resources/common/ui/texture/zj1_wq_jjq.png:zj1_wq_jjq]=],
+    classPathLua = [=[]=],
+    classPathCs = [=[]=],
+    type1 = [=[]=],
+    type2 = [=[]=],
+    isCanFold = true,
+    qualityId = [=[1]=],
+    bgPath = [=[]=],
+    iconPath = [=[Assets/Resources/common/ui/texture/zj1_wq_jjq.png:zj1_wq_jjq]=],
   },
   {
     id = [=[3]=],
     name = [=[体力]=],
-    class_path_lua = [=[]=],
-    class_path_cs = [=[]=],
-    type_1 = [=[]=],
-    type_2 = [=[]=],
-    can_fold = true,
-    quality_id = [=[1]=],
-    bg_path = [=[]=],
-    icon_path = [=[Assets/Resources/common/ui/texture/zj1_wq_jjq.png:zj1_wq_jjq]=],
+    classPathLua = [=[]=],
+    classPathCs = [=[]=],
+    type1 = [=[]=],
+    type2 = [=[]=],
+    isCanFold = true,
+    qualityId = [=[1]=],
+    bgPath = [=[]=],
+    iconPath = [=[Assets/Resources/common/ui/texture/zj1_wq_jjq.png:zj1_wq_jjq]=],
   },
   {
     id = [=[4]=],
     name = [=[回复剂]=],
-    class_path_lua = [=[game.doer.item.impl.HuiFuJi]=],
-    class_path_cs = [=[HuiFuJi]=],
-    type_1 = [=[物品]=],
-    type_2 = [=[]=],
-    can_fold = true,
-    quality_id = [=[1]=],
-    bg_path = [=[]=],
-    icon_path = [=[Assets/Resources/common/ui/texture/zj1_wq_jjq.png:zj1_wq_jjq]=],
+    classPathLua = [=[game.doer.item.impl.HuiFuJi]=],
+    classPathCs = [=[HuiFuJi]=],
+    type1 = [=[物品]=],
+    type2 = [=[]=],
+    isCanFold = true,
+    qualityId = [=[1]=],
+    bgPath = [=[]=],
+    iconPath = [=[Assets/Resources/common/ui/texture/zj1_wq_jjq.png:zj1_wq_jjq]=],
   },
   {
     id = [=[5]=],
     name = [=[小刀]=],
-    class_path_lua = [=[]=],
-    class_path_cs = [=[]=],
-    type_1 = [=[装备]=],
-    type_2 = [=[武器]=],
-    can_fold = false,
-    quality_id = [=[1]=],
-    bg_path = [=[]=],
-    icon_path = [=[Assets/Resources/common/ui/texture/zj1_wq_jjq.png:zj1_wq_jjq]=],
+    classPathLua = [=[]=],
+    classPathCs = [=[]=],
+    type1 = [=[装备]=],
+    type2 = [=[武器]=],
+    isCanFold = false,
+    qualityId = [=[1]=],
+    bgPath = [=[]=],
+    iconPath = [=[Assets/Resources/common/ui/texture/zj1_wq_jjq.png:zj1_wq_jjq]=],
   },
   {
     id = [=[6]=],
     name = [=[大弓]=],
-    class_path_lua = [=[]=],
-    class_path_cs = [=[]=],
-    type_1 = [=[装备]=],
-    type_2 = [=[武器]=],
-    can_fold = false,
-    quality_id = [=[1]=],
-    bg_path = [=[]=],
-    icon_path = [=[Assets/Resources/common/ui/texture/zj1_wq_jjq.png:zj1_wq_jjq]=],
+    classPathLua = [=[]=],
+    classPathCs = [=[]=],
+    type1 = [=[装备]=],
+    type2 = [=[武器]=],
+    isCanFold = false,
+    qualityId = [=[1]=],
+    bgPath = [=[]=],
+    iconPath = [=[Assets/Resources/common/ui/texture/zj1_wq_jjq.png:zj1_wq_jjq]=],
   },
 }
 
@@ -125,12 +126,12 @@ function cfg.Get(index)
   return data_list[index]
 end
 
-function cfg.get_by_id(id)
+function cfg.GetById(id)
   local key = tostring(id)
   return cfg.Get(index_dict.unique.id[key])
 end
 
-function cfg.contain_key_by_id(id)
+function cfg.IsContainsKeyById(id)
   local key = tostring(id)
   return index_dict.unique.id[key] ~= nil
 end

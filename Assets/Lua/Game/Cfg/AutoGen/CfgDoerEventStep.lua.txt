@@ -1,22 +1,23 @@
 --AutoGen. DO NOT EDIT!!!
+--ExportFrom DDoerEvent表.xlsx[DoerEvent子步骤表]
 ---@class CfgDoerEventStepData
 ---@field id
 ---@field name
----@field trigger_condition
----@field trigger_desc
----@field can_not_trigger_desc
----@field execute_condition
----@field execute_desc
----@field can_not_execute_desc
----@field is_stop_here
----@field set_attr_dict
----@field add_attr_dict
----@field deal_item_dict
----@field give_up_mission_ids
----@field accept_mission_ids
----@field finish_mission_ids
----@field add_finished_mission_ids
----@field remove_finished_mission_ids
+---@field triggerCondition
+---@field triggerDesc
+---@field isCanNotTriggerDesc
+---@field executeCondition
+---@field executeDesc
+---@field isCanNotExecuteDesc
+---@field isStopHere
+---@field setAttrDict
+---@field addAttrDict
+---@field dealItemDict
+---@field giveUpMissionIds
+---@field acceptMissionIds
+---@field finishMissionIds
+---@field addFinishedMissionIds
+---@field removeFinishedMissionIds
 local _
 
 
@@ -26,21 +27,21 @@ local data_list = {
   {
     id = [=[1]=],
     name = [=[事件子步骤1]=],
-    trigger_condition = [=[{@eval(${u.mp}==0)}]=],
-    trigger_desc = [=[触发事件子步骤1]=],
-    can_not_trigger_desc = [=[不触发事件子步骤1]=],
-    execute_condition = [=[{@eval(${u.tp}==0)}]=],
-    execute_desc = [=[执行事件子步骤1]=],
-    can_not_execute_desc = [=[执行事件子步骤1]=],
-    is_stop_here = false,
-    set_attr_dict = json:decode([=[{}]=]),
-    add_attr_dict = json:decode([=[{"u.cp": "2", "u.dp": "4"}]=]),
-    deal_item_dict = json:decode([=[{"5": "1(atk:5,def:6)"}]=]),
-    give_up_mission_ids = json:decode([=[[]]=]),
-    accept_mission_ids = json:decode([=[[]]=]),
-    finish_mission_ids = json:decode([=[[]]=]),
-    add_finished_mission_ids = json:decode([=[[]]=]),
-    remove_finished_mission_ids = json:decode([=[[]]=]),
+    triggerCondition = [=[{@eval(${u.mp}==0)}]=],
+    triggerDesc = [=[触发事件子步骤1]=],
+    isCanNotTriggerDesc = [=[不触发事件子步骤1]=],
+    executeCondition = [=[{@eval(${u.tp}==0)}]=],
+    executeDesc = [=[执行事件子步骤1]=],
+    isCanNotExecuteDesc = [=[执行事件子步骤1]=],
+    isStopHere = false,
+    setAttrDict = json:decode([=[{}]=]),
+    addAttrDict = json:decode([=[{"u.cp": "2", "u.dp": "4"}]=]),
+    dealItemDict = json:decode([=[{"5": "1(atk:5,def:6)"}]=]),
+    giveUpMissionIds = json:decode([=[[]]=]),
+    acceptMissionIds = json:decode([=[[]]=]),
+    finishMissionIds = json:decode([=[[]]=]),
+    addFinishedMissionIds = json:decode([=[[]]=]),
+    removeFinishedMissionIds = json:decode([=[[]]=]),
   },
 }
 
@@ -64,12 +65,12 @@ function cfg.Get(index)
   return data_list[index]
 end
 
-function cfg.get_by_id(id)
+function cfg.GetById(id)
   local key = tostring(id)
   return cfg.Get(index_dict.unique.id[key])
 end
 
-function cfg.contain_key_by_id(id)
+function cfg.IsContainsKeyById(id)
   local key = tostring(id)
   return index_dict.unique.id[key] ~= nil
 end

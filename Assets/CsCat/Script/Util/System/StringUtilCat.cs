@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+
 namespace CsCat
 {
 	public class StringUtilCat
@@ -98,6 +100,20 @@ namespace CsCat
 		public static string RoundBrackets(string arg)
 		{
 			return string.Format(StringConst.String_Format_RoundBrackets, arg);
+		}
+
+		public static int CheckInsertLine(string content, int startCheckInsertIndex, List<string> lineList)
+		{
+			content = content.Trim(new[] {'\r', '\n'});
+			int insertLineIndex = lineList.IndexOf(content, startCheckInsertIndex);
+			//如果lineList中没有content的内容的行，则直接插入
+			if (insertLineIndex < 0)
+			{
+				lineList.Insert(startCheckInsertIndex, content);
+				insertLineIndex = startCheckInsertIndex;
+			}
+
+			return insertLineIndex;
 		}
 	}
 }

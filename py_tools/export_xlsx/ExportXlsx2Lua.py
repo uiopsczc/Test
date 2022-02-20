@@ -10,11 +10,12 @@ class ExportXlsx2Lua(object):
 
 
   @staticmethod
-  def ExportSheet(sheet, json_dict, export_relative_dir_path):
+  def ExportSheet(sheet, json_dict, export_relative_dir_path, export_relative_file_path):
     export_file_path = ExportXlsxConst.Export_2_Lua_Dir_Path + export_relative_dir_path + ExportXlsx2Lua.GetCfgName(sheet) + ".lua.txt"
     indent = 0
     content = ""
     content += "--AutoGen. DO NOT EDIT!!!\n"
+    content += "--ExportFrom %s[%s]\n" % (export_relative_file_path, sheet.title)
     content += ExportXlsx2Lua.ExportCfgDataComments(sheet, indent)
     content += "\n\n\n"
     content += ExportXlsx2Lua.ExportDataList(sheet, json_dict["data_list"], indent)
@@ -30,11 +31,11 @@ class ExportXlsx2Lua(object):
   def Export2CfgRequire(sheet, export_relative_dir_path):
     require_path = ExportXlsxConst.Export_2_Lua_Require_Root_Dir_Path + export_relative_dir_path.replace("\\\\","\\").replace("\\",".")+ ExportXlsxUtil.GetCfgName(sheet)
     require_path = "%s = require(\"%s\")"%(ExportXlsxUtil.GetCfgName(sheet), require_path)
-    if os.path.exists(ExportXlsxConst.Export_2_Lua_RequireCfgPathes):
-      FileUtil.WriteFile(ExportXlsxConst.Export_2_Lua_RequireCfgPathes,"\n"+require_path,"a")
+    if os.path.exists(ExportXlsxConst.Export_2_Lua_RequireCfgPaths):
+      FileUtil.WriteFile(ExportXlsxConst.Export_2_Lua_RequireCfgPaths, "\n" + require_path, "a")
     else:
       require_path = "--AutoGen. DO NOT EDIT!!!\n" + require_path
-      FileUtil.WriteFile(ExportXlsxConst.Export_2_Lua_RequireCfgPathes, require_path)
+      FileUtil.WriteFile(ExportXlsxConst.Export_2_Lua_RequireCfgPaths, require_path)
 
 
 
@@ -125,6 +126,7 @@ class ExportXlsx2Lua(object):
     for index_group in index_dict.keys():
       for index_specific_key in index_dict[index_group].keys():
         index_specific_keys = index_specific_key.split("_and_")
+        index_specific_keys_of_method_name = "And".join(StringUtil.UpperFirstLetterOfArray(index_specific_keys))
         args = ""
         keys = ""
         for arg_key in index_specific_keys:
@@ -133,9 +135,9 @@ class ExportXlsx2Lua(object):
           keys += "tostring(%s)," % (fieldInfo["name"])
         args = args[0:len(args) - 1]
         keys = keys[0:len(keys) - 1]
-        # get_by_xxxxx
-        content += "%sfunction cfg.get_by_%s(%s)\n" % (
-          StringUtil.GetSpace(indent), index_specific_key, args)
+        # GetByXXX
+        content += "%sfunction cfg.GetBy%s(%s)\n" % (
+          StringUtil.GetSpace(indent), index_specific_keys_of_method_name, args)
         indent += 1
         if len(index_specific_keys) > 1:
           content += "%slocal keys = {%s}\n" % (StringUtil.GetSpace(indent), keys)
@@ -159,7 +161,7 @@ class ExportXlsx2Lua(object):
         content += "%s\n" % (StringUtil.GetSpace(indent))
 
         # contain_key_by_xxxxx
-        content += "%sfunction cfg.contain_key_by_%s(%s)\n" % (StringUtil.GetSpace(indent), index_specific_key, args)
+        content += "%sfunction cfg.IsContainsKeyBy%s(%s)\n" % (StringUtil.GetSpace(indent), index_specific_keys_of_method_name, args)
         indent += 1
         if len(index_specific_keys) > 1:
           content += "%slocal keys = {%s}\n" % (StringUtil.GetSpace(indent), keys)
@@ -182,6 +184,6 @@ class ExportXlsx2Lua(object):
 
   @staticmethod
   def GetCfgName(sheet):
-    return "%s%s" % (ExportXlsxConst.Sheet_Cfg_Tag , StringUtil.UpperFirstLetter(ExportXlsxUtil.GetExportSheetName(sheet)))
+    return ExportXlsxUtil.GetExportSheetName(sheet)
 
 

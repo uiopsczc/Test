@@ -9,11 +9,14 @@ class ExportXlsx2Cs(object):
     FileUtil.RemoveDir(ExportXlsxConst.Export_2_Cs_Dir_Path)
 
   @staticmethod
-  def ExportSheet(sheet, json_dict, export_relative_dir_path):
+  def ExportSheet(sheet, json_dict, export_relative_dir_path, export_relative_file_path):
+    if not ExportXlsxConst.Is_Export_Cs:
+      return
     export_file_path = ExportXlsxConst.Export_2_Cs_Dir_Path + export_relative_dir_path + ExportXlsxUtil.GetCfgName(sheet) + ".cs"
     indent = 0
     content = ""
     content += "//AutoGen. DO NOT EDIT!!!\n"
+    content += "//ExportFrom %s[%s]\n" % (export_relative_file_path, sheet.title)
     content += "using System;\n"
     content += "using System.Collections.Generic;\n"
     content += "using LitJson;\n"
@@ -54,6 +57,7 @@ class ExportXlsx2Cs(object):
         cs_data_type = "List<%s>"%(ExportXlsxUtil.GetCfgDataName(sheet))
       for index_specific_key in index_dict[index_group].keys():
         index_specific_keys = index_specific_key.split("_and_")
+        index_specific_keys_of_method_name = "And".join(StringUtil.UpperFirstLetterOfArray(index_specific_keys))
         args_with_type = ""
         keys = ""
         for arg_key in index_specific_keys:
@@ -62,9 +66,9 @@ class ExportXlsx2Cs(object):
           keys += "%s.ToString()," % (fieldInfo["name"])
         args_with_type = args_with_type[0:len(args_with_type) - 1]
         keys = keys[0:len(keys) - 1]
-        # get_by_xxxxx
-        content += "%spublic %s get_by_%s(%s){\n" % (
-        StringUtil.GetSpace(indent), cs_data_type, index_specific_key, args_with_type)
+        # GetByXXX
+        content += "%spublic %s GetBy%s(%s){\n" % (
+        StringUtil.GetSpace(indent), cs_data_type, index_specific_keys_of_method_name, args_with_type)
         indent += 1
         if len(index_specific_keys)>1:
           content += "%sstring[] keys = {%s};\n" % (StringUtil.GetSpace(indent), keys)
@@ -84,7 +88,7 @@ class ExportXlsx2Cs(object):
         content += "%s}\n" % (StringUtil.GetSpace(indent))
 
         # contain_key_by_xxxxx
-        content += "%spublic bool contain_key_by_%s(%s){\n" % (StringUtil.GetSpace(indent), index_specific_key, args_with_type)
+        content += "%spublic bool IsContainsKeyBy%s(%s){\n" % (StringUtil.GetSpace(indent), index_specific_keys_of_method_name, args_with_type)
         indent += 1
         if len(index_specific_keys) > 1:
           content += "%sstring[] keys = {%s};\n" % (StringUtil.GetSpace(indent), keys)

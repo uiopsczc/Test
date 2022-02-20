@@ -1,0 +1,20 @@
+{
+  "data_list": [
+    {
+      "id": "1",
+      "name": "技能触发1",
+      "triggerType": "",
+      "triggerSpellId": "",
+      "triggerSpellDelayDuration": 0.0,
+      "checkTarget": "",
+      "condition": ""
+    }
+  ],
+  "index_dict": {
+    "unique": {
+      "id": {
+        "1": 0
+      }
+    }
+  }
+}

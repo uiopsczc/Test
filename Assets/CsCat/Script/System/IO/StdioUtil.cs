@@ -324,6 +324,11 @@ namespace CsCat
 			WriteTextFile(new FileInfo(fileName), content, isWriteLine, isAppend);
 		}
 
+		public static void WriteTextFile(string fileName, List<string> contentList, bool isAppend = false)
+		{
+			WriteTextFile(new FileInfo(fileName), contentList, isAppend);
+		}
+
 		/// <summary>
 		/// 向文件file写入content内容(append:是否追加到文件末尾)
 		/// </summary>
