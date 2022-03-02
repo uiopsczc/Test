@@ -4,20 +4,20 @@ namespace CsCat
 {
 	public class Equips
 	{
-		private Doer parentDoer;
-		private string subDoerKey;
+		private readonly Doer _parentDoer;
+		private readonly string _subDoerKey;
 
 		public Equips(Doer parentDoer, string subDoerKey)
 		{
-			this.parentDoer = parentDoer;
-			this.subDoerKey = subDoerKey;
+			this._parentDoer = parentDoer;
+			this._subDoerKey = subDoerKey;
 		}
 
 		////////////////////DoXXX/////////////////////////////////
 		//卸载
 		public void DoRelease()
 		{
-			SubDoerUtil1.DoReleaseSubDoer<Item>(this.parentDoer, this.subDoerKey);
+			SubDoerUtil1.DoReleaseSubDoer<Item>(this._parentDoer, this._subDoerKey);
 		}
 
 		//保存
@@ -30,7 +30,7 @@ namespace CsCat
 			for (var i = 0; i < equips.Length; i++)
 			{
 				var equip = equips[i];
-				if (equip.CanFold()) // 可折叠
+				if (equip.IsCanFold()) // 可折叠
 					dictEquips.Add(equip.GetId());
 				else // 不可折叠，需存储数据
 				{
@@ -75,14 +75,14 @@ namespace CsCat
 						var dictEquip = value as Hashtable;
 						var rid = dictEquip.Remove3<string>("rid");
 						item = Client.instance.itemFactory.NewDoer(rid) as Item;
-						item.SetEnv(this.parentDoer);
+						item.SetEnv(this._parentDoer);
 						Hashtable dictEquipTmp = null;
 						if (dictEquipsTmp != null && dictEquipsTmp.ContainsKey(rid))
 							dictEquipTmp = dictEquipsTmp[rid] as Hashtable;
 						item.FinishRestore(dictEquip, dictEquipTmp);
 					}
 
-					item.SetEnv(this.parentDoer);
+					item.SetEnv(this._parentDoer);
 					item.SetIsPutOn(true);
 					equips.Add(item);
 				}
@@ -95,26 +95,26 @@ namespace CsCat
 		//获得指定的装备
 		public Item[] GetEquips(string id = null)
 		{
-			return SubDoerUtil1.GetSubDoers<Item>(this.parentDoer, this.subDoerKey, id, null);
+			return SubDoerUtil1.GetSubDoers<Item>(this._parentDoer, this._subDoerKey, id, null);
 		}
 
 		public ArrayList GetEquips_ToEdit() //可以直接插入删除
 		{
-			return SubDoerUtil1.GetSubDoers_ToEdit(this.parentDoer, this.subDoerKey);
+			return SubDoerUtil1.GetSubDoers_ToEdit(this._parentDoer, this._subDoerKey);
 		}
 
 		//是否有装备
 		public bool HasEquips()
 		{
-			return SubDoerUtil1.HasSubDoers<Item>(this.parentDoer, this.subDoerKey);
+			return SubDoerUtil1.HasSubDoers<Item>(this._parentDoer, this._subDoerKey);
 		}
 
 		public int GetEquipsCount()
 		{
-			return SubDoerUtil1.GetSubDoersCount<Item>(this.parentDoer, this.subDoerKey);
+			return SubDoerUtil1.GetSubDoersCount<Item>(this._parentDoer, this._subDoerKey);
 		}
 
-		public bool __FilterType(Item equip, string type1, string type2 = null)
+		public bool _FilterType(Item equip, string type1, string type2 = null)
 		{
 			return equip.GetType1() == type1 && (type2 == null || type2.Equals(equip.GetType2()));
 		}
@@ -122,29 +122,29 @@ namespace CsCat
 		//获得指定种类的装备
 		public Item[] GetEquipsOfTypes(string type1, string type2 = null)
 		{
-			return SubDoerUtil1.GetSubDoers<Item>(this.parentDoer, this.subDoerKey, null,
-			  (equip) => this.__FilterType(equip, type1, type2));
+			return SubDoerUtil1.GetSubDoers<Item>(this._parentDoer, this._subDoerKey, null,
+			  (equip) => this._FilterType(equip, type1, type2));
 		}
 
 		//是否有指定种类装备
-		public bool HasEquipsOfTypes(string type1, string type2 = null)
+		public bool IsHasEquipsOfTypes(string type1, string type2 = null)
 		{
-			return SubDoerUtil1.HasSubDoers<Item>(this.parentDoer, this.subDoerKey, null,
-			  (equip) => this.__FilterType(equip, type1, type2));
+			return SubDoerUtil1.HasSubDoers<Item>(this._parentDoer, this._subDoerKey, null,
+			  (equip) => this._FilterType(equip, type1, type2));
 		}
 
 
 		//是否有指定种类装备
 		public int GetEquipsCountOfTypes(string type1, string type2 = null)
 		{
-			return SubDoerUtil1.GetSubDoersCount<Item>(this.parentDoer, this.subDoerKey, null,
-			  (equip) => this.__FilterType(equip, type1, type2));
+			return SubDoerUtil1.GetSubDoersCount<Item>(this._parentDoer, this._subDoerKey, null,
+			  (equip) => this._FilterType(equip, type1, type2));
 		}
 
 		//获得指定的装备
 		public Item GetEquip(string idOrRid)
 		{
-			return SubDoerUtil1.GetSubDoer<Item>(this.parentDoer, this.subDoerKey, idOrRid);
+			return SubDoerUtil1.GetSubDoer<Item>(this._parentDoer, this._subDoerKey, idOrRid);
 		}
 
 		//获得指定的装备
@@ -157,8 +157,8 @@ namespace CsCat
 		//清除所有镶物
 		public void ClearEquips()
 		{
-			SubDoerUtil1.ClearSubDoers<Item>(this.parentDoer, this.subDoerKey,
-			  (equip) => { ((Critter)this.parentDoer).TakeOffEquip(equip); });
+			SubDoerUtil1.ClearSubDoers<Item>(this._parentDoer, this._subDoerKey,
+			  (equip) => { ((Critter)this._parentDoer).TakeOffEquip(equip); });
 		}
 	}
 }

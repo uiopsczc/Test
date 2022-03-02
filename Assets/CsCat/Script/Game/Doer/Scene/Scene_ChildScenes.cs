@@ -40,18 +40,17 @@ namespace CsCat
 		}
 
 		// 设置子场景投影障碍到主场景（仅供父级场景调用）
-		public void SetProjectGrids(Vector2Int baseOnParentPos, Scene child_scene)
+		public void SetProjectGrids(Vector2Int baseOnParentPos, Scene childScene)
 		{
 			CheckParentCall();
 
 			AStarMapPath mapPath = GetMapPath();
-			if (mapPath == null || mapPath.grids == null)
+			if (mapPath?.grids == null)
 				return;
-			int[][] projectGrids;
-			projectGrids = child_scene.GetMapType() == 1 ? child_scene.GetGrids() : child_scene.GetProjectGrids();
+			var projectGrids = childScene.GetMapType() == 1 ? childScene.GetGrids() : childScene.GetProjectGrids();
 			if (projectGrids != null)
 			{
-				Vector2Int offsetPos = child_scene.GetOffsetPos();
+				Vector2Int offsetPos = childScene.GetOffsetPos();
 				for (int x = 0; x < projectGrids.Length; x++)
 				{
 					for (int y = 0; y < projectGrids[x].Length; y++)
@@ -75,7 +74,7 @@ namespace CsCat
 			CheckParentCall();
 
 			AStarMapPath mapPath = GetMapPath();
-			if (mapPath == null || mapPath.projectGrids == null)
+			if (mapPath?.projectGrids == null)
 				return;
 			for (int x = 0; x < mapPath.projectGrids.Length; x++)
 			{
@@ -110,9 +109,7 @@ namespace CsCat
 			{
 				if (belong != null && !scene.GetBelong().Equals(belong))
 					return false;
-				if (id != null && !scene.GetId().Equals(id))
-					return false;
-				return true;
+				return id == null || scene.GetId().Equals(id);
 			});
 		}
 
@@ -128,12 +125,10 @@ namespace CsCat
 					return null;
 				return childScene;
 			}
-			else // id的情况
-			{
-				string id = idOrRid;
-				Scene[] childScenes = GetChildScenes(id, belong);
-				return childScenes.Length == 0 ? null : childScenes[0];
-			}
+			// id的情况
+			string id = idOrRid;
+			Scene[] childScenes = GetChildScenes(id, belong);
+			return childScenes.Length == 0 ? null : childScenes[0];
 		}
 
 		//获得场景内所有子场景数量（仅供父级场景调用）
@@ -196,8 +191,8 @@ namespace CsCat
 
 			Vector2Int fromPos = scene.GetPos();
 			scene.SetPos(toPos);
-			scene.SetTmp("last_move_time", DateTimeUtil.NowTicks());
-			scene.SetTmp("last_move_track_list", trackList);
+			scene.SetTmp("lastMoveTime", DateTimeUtil.NowTicks());
+			scene.SetTmp("lastMoveTrackList", trackList);
 
 			// 处理子场景障碍投影
 			if (!scene.IsInAir())

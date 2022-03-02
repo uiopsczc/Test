@@ -7,7 +7,7 @@ namespace CsCat
 		//////////////////////////////////////////////////
 		public bool HasBuff(string buffId)
 		{
-			return this.buffManager.HasBuff(buffId);
+			return this.buffManager.IsHasBuff(buffId);
 		}
 
 		public int GetBuffCount()
@@ -25,17 +25,17 @@ namespace CsCat
 		//////////////////////////////////////////////////
 		public bool HasState(string stateName)
 		{
-			return this.buffManager.HasState(stateName);
+			return this.buffManager.IsHasState(stateName);
 		}
 
 		private void InitMixedStates()
 		{
-			this.isDead = false;
+			this._isDead = false;
 
-			this.isCanMove = true;
-			this.isCanAttack = true;
+			this._isCanMove = true;
+			this._isCanAttack = true;
 			this.isCanCastSkill = true;
-			this.isCanNormalAttack = true;
+			this._isCanNormalAttack = true;
 			this.isCanControl = true;
 		}
 
@@ -52,7 +52,7 @@ namespace CsCat
 								   !this.HasState(StateConst.CanNotMove) &&
 								   (this.currentAttack == null ||
 									this.currentAttack.isPastBreakTime ||
-									this.currentAttack.cfgSpellData.is_can_move_while_cast);
+									this.currentAttack.cfgSpellData.isCanMoveWhileCast);
 			bool newIsCanAttack = isCommonState &&
 									 (!this.HasState(StateConst.CanNotAttack)) &&
 									 (this.currentAttack == null || this.currentAttack.isPastBreakTime);
@@ -65,18 +65,18 @@ namespace CsCat
 			bool newIsCanControl = (newIsCanMove || newIsCanAttack) && newIsCanOperate;
 
 			//检查混合状态变化
-			if (this.isCanMove != newIsCanMove)
+			if (this._isCanMove != newIsCanMove)
 			{
-				this.isCanMove = newIsCanMove;
-				this.Broadcast(null, UnitEventNameConst.On_Unit_Is_Can_Move_Change, this, !this.isCanMove, this.isCanMove);
-				if (!this.isCanMove)
+				this._isCanMove = newIsCanMove;
+				this.Broadcast(null, UnitEventNameConst.On_Unit_Is_Can_Move_Change, this, !this._isCanMove, this._isCanMove);
+				if (!this._isCanMove)
 					this.MoveStop();
 			}
 
-			if (this.isCanAttack != newIsCanAttack)
+			if (this._isCanAttack != newIsCanAttack)
 			{
-				this.isCanAttack = newIsCanAttack;
-				this.Broadcast(null, UnitEventNameConst.On_Unit_Is_Can_Attack_Change, this, !this.isCanAttack, this.isCanAttack);
+				this._isCanAttack = newIsCanAttack;
+				this.Broadcast(null, UnitEventNameConst.On_Unit_Is_Can_Attack_Change, this, !this._isCanAttack, this._isCanAttack);
 			}
 
 			if (this.isCanCastSkill != newIsCanCastSkill)
@@ -88,12 +88,12 @@ namespace CsCat
 					Client.instance.combat.spellManager.BreakSpell(this.currentAttack.GetGuid());
 			}
 
-			if (this.isCanNormalAttack != newIsCanNormalAttack)
+			if (this._isCanNormalAttack != newIsCanNormalAttack)
 			{
-				this.isCanNormalAttack = newIsCanNormalAttack;
-				this.Broadcast(null, UnitEventNameConst.On_Unit_Is_Can_Normal_Attack_Change, this, !this.isCanNormalAttack, this.isCanNormalAttack);
-				if (!this.isCanNormalAttack && (this.currentAttack != null &&
-												   this.normalAttackIdList.Contains(this.currentAttack.spellId)))
+				this._isCanNormalAttack = newIsCanNormalAttack;
+				this.Broadcast(null, UnitEventNameConst.On_Unit_Is_Can_Normal_Attack_Change, this, !this._isCanNormalAttack, this._isCanNormalAttack);
+				if (!this._isCanNormalAttack && (this.currentAttack != null &&
+												   this._normalAttackIdList.Contains(this.currentAttack.spellId)))
 					Client.instance.combat.spellManager.BreakSpell(this.currentAttack.GetGuid());
 			}
 

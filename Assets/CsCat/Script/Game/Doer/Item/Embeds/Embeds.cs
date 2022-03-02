@@ -4,26 +4,26 @@ namespace CsCat
 {
 	public class Embeds
 	{
-		private Doer parentDoer;
-		private string subDoerKey;
+		private readonly Doer _parentDoer;
+		private readonly string _subDoerKey;
 
 		public Embeds(Doer parentDoer, string subDoerKey)
 		{
-			this.parentDoer = parentDoer;
-			this.subDoerKey = subDoerKey;
+			this._parentDoer = parentDoer;
+			this._subDoerKey = subDoerKey;
 		}
 
 		////////////////////DoXXX/////////////////////////////////
 		//卸载
 		public void DoRelease()
 		{
-			SubDoerUtil1.DoReleaseSubDoer<Item>(this.parentDoer, this.subDoerKey);
+			SubDoerUtil1.DoReleaseSubDoer<Item>(this._parentDoer, this._subDoerKey);
 		}
 
 		//保存
 		public void DoSave(Hashtable dict, Hashtable dictTmp, string saveKey = null)
 		{
-			saveKey = saveKey ?? "embed_ids";
+			saveKey = saveKey ?? "embedIds";
 			var embeds = this.GetEmbeds();
 
 			var dictEmbedIds = new ArrayList();
@@ -40,7 +40,7 @@ namespace CsCat
 		//还原
 		public void DoRestore(Hashtable dict, Hashtable dictTmp, string restoreKey = null)
 		{
-			restoreKey = restoreKey ?? "embed_ids";
+			restoreKey = restoreKey ?? "embedIds";
 			this.ClearEmbeds();
 			var dictEmbedIds = dict.Remove3<ArrayList>(restoreKey);
 			if (!dictEmbedIds.IsNullOrEmpty())
@@ -50,8 +50,8 @@ namespace CsCat
 				{
 					var curEmbedId = dictEmbedIds[i];
 					var embedId = curEmbedId as string;
-					var embed = this.parentDoer.factory.NewDoer(embedId) as Item;
-					embed.SetEnv(this.parentDoer);
+					var embed = this._parentDoer.factory.NewDoer(embedId) as Item;
+					embed.SetEnv(this._parentDoer);
 					embeds.Add(embed);
 				}
 			}
@@ -63,35 +63,35 @@ namespace CsCat
 		//获得指定的镶物
 		public Item[] GetEmbeds(string id = null)
 		{
-			return SubDoerUtil1.GetSubDoers<Item>(this.parentDoer, this.subDoerKey, id, null);
+			return SubDoerUtil1.GetSubDoers<Item>(this._parentDoer, this._subDoerKey, id, null);
 		}
 
 		public ArrayList GetEmbeds_ToEdit() //可以直接插入删除
 		{
-			return SubDoerUtil1.GetSubDoers_ToEdit(this.parentDoer, this.subDoerKey);
+			return SubDoerUtil1.GetSubDoers_ToEdit(this._parentDoer, this._subDoerKey);
 		}
 
-		public bool HasEmbeds()
+		public bool IsHasEmbeds()
 		{
-			return SubDoerUtil1.HasSubDoers<Item>(this.parentDoer, this.subDoerKey);
+			return SubDoerUtil1.HasSubDoers<Item>(this._parentDoer, this._subDoerKey);
 		}
 
 		public int GetEmbedsCount()
 		{
-			return SubDoerUtil1.GetSubDoersCount<Item>(this.parentDoer, this.subDoerKey);
+			return SubDoerUtil1.GetSubDoersCount<Item>(this._parentDoer, this._subDoerKey);
 		}
 
 		//获得指定的镶物
 		public Item GetEmbed(string idOrRid)
 		{
-			return SubDoerUtil1.GetSubDoer<Item>(this.parentDoer, this.subDoerKey, idOrRid);
+			return SubDoerUtil1.GetSubDoer<Item>(this._parentDoer, this._subDoerKey, idOrRid);
 		}
 
 		//清除所有镶物
 		public void ClearEmbeds()
 		{
-			SubDoerUtil1.ClearSubDoers<Item>(this.parentDoer, this.subDoerKey,
-			  (embed) => { ((Item)this.parentDoer).EmbedOff(embed); });
+			SubDoerUtil1.ClearSubDoers<Item>(this._parentDoer, this._subDoerKey,
+			  (embed) => { ((Item)this._parentDoer).EmbedOff(embed); });
 		}
 	}
 }

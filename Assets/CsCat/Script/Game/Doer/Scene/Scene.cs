@@ -13,7 +13,7 @@ namespace CsCat
 		public override void Init()
 		{
 			base.Init();
-			this.oChildScenes = new Scenes(this, "o_child_scenes");
+			this.oChildScenes = new Scenes(this, "o_childScenes");
 			this.oSceneItems = new SceneItems(this, "o_sceneItems");
 		}
 
@@ -25,7 +25,7 @@ namespace CsCat
 
 		public CfgSceneData GetCfgSceneData()
 		{
-			return CfgScene.Instance.get_by_id(this.GetId());
+			return CfgScene.Instance.GetById(this.GetId());
 		}
 
 		//////////////////////DoXXX/////////////////////////////////////
@@ -175,13 +175,13 @@ namespace CsCat
 
 		public void SetIsInAir(bool isInAir)
 		{
-			SetTmp("o_is_in_air", isInAir);
+			SetTmp("o_isInAir", isInAir);
 		}
 
 		//是否在空中
 		public bool IsInAir()
 		{
-			return GetTmp("o_is_in_air", false);
+			return GetTmp("o_isInAir", false);
 		}
 
 		public void SetGroup(string group)
@@ -203,34 +203,34 @@ namespace CsCat
 				parentScene.SetProjectGrids(GetPos(), this);
 			}
 
-			Set("map_type", map_type);
+			Set("mapType", map_type);
 		}
 
 		public int GetMapType()
 		{
-			return Get<int>("map_type");
+			return Get<int>("mapType");
 		}
 
 		public void SetOrgPos(Vector2Int pos)
 		{
-			SetTmp("org_pos", pos);
+			SetTmp("orgPos", pos);
 		}
 
 		public Vector2Int GetOrgPos()
 		{
-			return GetTmp<Vector2Int>("org_pos");
+			return GetTmp<Vector2Int>("orgPos");
 		}
 
 
 		public SceneMapInfo GetSceneMapInfo()
 		{
 			SceneMapInfo sceneMapInfo = null;
-			if (Get<bool>("is_dynamic_map"))
+			if (Get<bool>("isDynamicMap"))
 			{
 				string src = Get<string>("src", "");
 				if (src.Length > 0)
 				{
-					var cfgSceneData = CfgScene.Instance.get_by_id(src);
+					var cfgSceneData = CfgScene.Instance.GetById(src);
 					sceneMapInfo = cfgSceneData.GetSceneMapInfo();
 				}
 			}

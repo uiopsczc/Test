@@ -18,9 +18,7 @@ namespace CsCat
 				Key other = obj as Key;
 				if (other == null)
 					return false;
-				if (ObjectUtil.Equals(other.key, key) && ObjectUtil.Equals(other.subKey, subKey))
-					return true;
-				return false;
+				return ObjectUtil.Equals(other.key, key) && ObjectUtil.Equals(other.subKey, subKey);
 			}
 
 			public override int GetHashCode()

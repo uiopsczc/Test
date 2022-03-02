@@ -18,22 +18,22 @@ namespace CsCat
 			dict["center"] = center.ToString();
 			ArrayList atkBoxArrayList = atkBoxList.DoSaveList((atkBox, subDict) => atkBox.DoSave(subDict));
 			ArrayList hitBoxArrayList = hitBoxList.DoSaveList((hitBox, subDict) => hitBox.DoSave(subDict));
-			dict["atk_box_arrayList"] = atkBoxArrayList;
-			dict["hit_box_arrayList"] = hitBoxArrayList;
+			dict["atkBoxArrayList"] = atkBoxArrayList;
+			dict["hitBoxArrayList"] = hitBoxArrayList;
 		}
 
 		public void DoRestore(Hashtable dict)
 		{
 			center = dict["center"].ToString().ToVector3();
 
-			atkBoxList.DoRestoreList(dict["atk_box_arrayList"] as ArrayList, (subDict) =>
+			atkBoxList.DoRestoreList(dict["atkBoxArrayList"] as ArrayList, (subDict) =>
 			{
 				AABBBox atkBox = new AABBBox();
 				atkBox.DoRestore(subDict);
 				return atkBox;
 			});
 
-			hitBoxList.DoRestoreList(dict["hit_box_arrayList"] as ArrayList, (subDict) =>
+			hitBoxList.DoRestoreList(dict["hitBoxArrayList"] as ArrayList, (subDict) =>
 			{
 				AABBBox hitBox = new AABBBox();
 				hitBox.DoRestore(subDict);

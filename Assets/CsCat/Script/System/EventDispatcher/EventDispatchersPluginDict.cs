@@ -6,7 +6,7 @@ namespace CsCat
 {
 	public class EventDispatchersPluginDict
 	{
-		private Dictionary<EventDispatchers, EventDispatchersPlugin> dict = new Dictionary<EventDispatchers, EventDispatchersPlugin>();
+		private readonly Dictionary<EventDispatchers, EventDispatchersPlugin> dict = new Dictionary<EventDispatchers, EventDispatchersPlugin>();
 
 		public EventDispatchersPlugin GetEventDispatchersPlugin(EventDispatchers eventDispatchers)
 		{
@@ -82,8 +82,11 @@ namespace CsCat
 
 		public void RemoveAllListeners()
 		{
-			foreach (var eventDispatchersPlugin in dict.Values)
+			foreach (var keyValue in dict)
+			{
+				var eventDispatchersPlugin = keyValue.Value;
 				eventDispatchersPlugin.RemoveAllListeners();
+			}
 			dict.Clear();
 		}
 	}

@@ -6,13 +6,13 @@ namespace CsCat
 
 		protected override string GetClassPath(string id)
 		{
-			return this.GetCfgRoleData(id).classPathCS.IsNullOrWhiteSpace() ? base.GetClassPath(id) : GetCfgRoleData(id).classPathCS;
+			return this.GetCfgRoleData(id).classPathCs.IsNullOrWhiteSpace() ? base.GetClassPath(id) : GetCfgRoleData(id).classPathCs;
 		}
 
 
 		public CfgRoleData GetCfgRoleData(string id)
 		{
-			return CfgRole.Instance.get_by_id(id);
+			return CfgRole.Instance.GetById(id);
 		}
 
 		protected override DBase _NewDBase(string idOrRid)

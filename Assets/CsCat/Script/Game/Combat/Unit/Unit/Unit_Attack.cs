@@ -6,13 +6,14 @@ namespace CsCat
 {
 	public partial class Unit
 	{
-		private string lastAttackId;
-		private ComboInfo normalAttackComboInfo;
-		private List<string> normalAttackIdList;
-		public List<string> skillIdList;
-		private Dictionary<string, SpellInfo> spellInfoDict = new Dictionary<string, SpellInfo>();
+		private string _lastAttackId;
+		private ComboInfo _normalAttackComboInfo;
+		private List<string> _normalAttackIdList;
+		private readonly Dictionary<string, SpellInfo> spellInfoDict = new Dictionary<string, SpellInfo>();
+
 		public SpellBase currentAttack;
 		public bool isNormalAttacking;
+		public List<string> skillIdList;
 
 		//////////////////////////////////////////////////////////////////////
 		// 普攻相关
@@ -21,20 +22,20 @@ namespace CsCat
 		{
 			if (normalAttackId.IsNullOrWhiteSpace())
 				return;
-			normalAttackIdList.Add(normalAttackId);
+			_normalAttackIdList.Add(normalAttackId);
 			this.InitSpellInfo(normalAttackId);
 			this.AddPassiveBuffOfSpell(normalAttackId);
 		}
 
 		public string GetNormalAttackId()
 		{
-			var nextIndex = this.normalAttackComboInfo.nextIndex;
-			if (CombatUtil.GetTime() > this.normalAttackComboInfo.nextTime ||
-				!this.normalAttackIdList.ContainsIndex(this.normalAttackComboInfo.nextIndex)
+			var nextIndex = this._normalAttackComboInfo.nextIndex;
+			if (CombatUtil.GetTime() > this._normalAttackComboInfo.nextTime ||
+				!this._normalAttackIdList.ContainsIndex(this._normalAttackComboInfo.nextIndex)
 			)
 				nextIndex = 0;
 
-			var normalAttackId = this.normalAttackIdList[nextIndex];
+			var normalAttackId = this._normalAttackIdList[nextIndex];
 			return normalAttackId;
 		}
 
@@ -45,21 +46,21 @@ namespace CsCat
 			var normalAttack =
 			  Client.instance.combat.spellManager.CastSpell(this, normalAttackId, targetUnit, null, true);
 			if (normalAttack != null)
-				this.lastAttackId = normalAttackId;
+				this._lastAttackId = normalAttackId;
 			return normalAttack;
 		}
 
 		public void NormalAttackStart()
 		{
-			this.normalAttackComboInfo.nextTime =
+			this._normalAttackComboInfo.nextTime =
 			  CombatUtil.GetTime() + ComboConst.Normal_Attack_Combo_Max_Duration; // 1秒间隔触发combo
-			this.normalAttackComboInfo.nextIndex = this.normalAttackComboInfo.nextIndex + 1;
+			this._normalAttackComboInfo.nextIndex = this._normalAttackComboInfo.nextIndex + 1;
 			this.isNormalAttacking = true;
 		}
 
 		public void NormalAttackFinish()
 		{
-			this.normalAttackComboInfo.nextTime = CombatUtil.GetTime() + 0.2f;
+			this._normalAttackComboInfo.nextTime = CombatUtil.GetTime() + 0.2f;
 			this.isNormalAttacking = true;
 		}
 
@@ -101,7 +102,7 @@ namespace CsCat
 
 		public float GetSpellCooldownRate(string spellId)
 		{
-			var cfgSpellData = CfgSpell.Instance.get_by_id(spellId);
+			var cfgSpellData = CfgSpell.Instance.GetById(spellId);
 			if ("普攻".Equals(cfgSpellData.type))
 				return 1 / (1 + this.GetCalcPropValue("攻击速度"));
 			return 1 - this.GetCalcPropValue("技能冷却减少百分比");
@@ -109,25 +110,25 @@ namespace CsCat
 
 		public List<string> GetSpellIdList(string spellId)
 		{
-			var cfgSpellData = CfgSpell.Instance.get_by_id(spellId);
+			var cfgSpellData = CfgSpell.Instance.GetById(spellId);
 			if ("普攻".Equals(cfgSpellData.type))
-				return this.normalAttackIdList;
+				return this._normalAttackIdList;
 			return this.skillIdList;
 		}
 
 
 		public void SetSpellInfoCooldown(string spellId, float cooldownPct = 0)
 		{
-			var cfgSpellData = CfgSpell.Instance.get_by_id(spellId);
+			var cfgSpellData = CfgSpell.Instance.GetById(spellId);
 			var spellInfo = this.spellInfoDict[spellId];
 			spellInfo.cooldownRate = this.GetSpellCooldownRate(spellId);
-			spellInfo.cooldownRemainDuration = cfgSpellData.cooldown_duration * spellInfo.cooldownRate * cooldownPct;
+			spellInfo.cooldownRemainDuration = cfgSpellData.cooldownDuration * spellInfo.cooldownRate * cooldownPct;
 		}
 
 		public void AddPassiveBuffOfSpell(string spellId)
 		{
-			var cfgSpellData = CfgSpell.Instance.get_by_id(spellId);
-			var passiveBuffIds = cfgSpellData._passive_buff_ids;
+			var cfgSpellData = CfgSpell.Instance.GetById(spellId);
+			var passiveBuffIds = cfgSpellData._passiveBuffIds;
 			if (!passiveBuffIds.IsNullOrEmpty())
 			{
 				for (var i = 0; i < passiveBuffIds.Length; i++)
@@ -148,8 +149,8 @@ namespace CsCat
 
 		public void RemovePassiveBuffOfSpell(string spellId)
 		{
-			var cfgSpellData = CfgSpell.Instance.get_by_id(spellId);
-			var passiveBuffIds = cfgSpellData._passive_buff_ids;
+			var cfgSpellData = CfgSpell.Instance.GetById(spellId);
+			var passiveBuffIds = cfgSpellData._passiveBuffIds;
 			if (!passiveBuffIds.IsNullOrEmpty())
 			{
 				for (var i = 0; i < passiveBuffIds.Length; i++)
@@ -187,9 +188,9 @@ namespace CsCat
 			{
 				var spellId = keyValue.Key;
 				var spellInfo = spellInfoDict[spellId];
-				var cfgSpellData = CfgSpell.Instance.get_by_id(spellId);
+				var cfgSpellData = CfgSpell.Instance.GetById(spellId);
 				var cooldownOldRate = spellInfo.cooldownRate;
-				var cooldownDuration = cfgSpellData.cooldown_duration;
+				var cooldownDuration = cfgSpellData.cooldownDuration;
 				if (cooldownDuration > 0)
 				{
 					var newRate = this.GetSpellCooldownRate(spellId);
@@ -228,7 +229,7 @@ namespace CsCat
 		{
 			var spell = Client.instance.combat.spellManager.CastSpell(this, spellId, targetUnit, null, isControl);
 			if (spell != null)
-				this.lastAttackId = spellId;
+				this._lastAttackId = spellId;
 			return spell;
 		}
 
@@ -237,9 +238,9 @@ namespace CsCat
 			if (this.currentAttack == null)
 				return true;
 
-			newCfgSpellData = newCfgSpellData ?? CfgSpell.Instance.get_by_id(newSpellId);
+			newCfgSpellData = newCfgSpellData ?? CfgSpell.Instance.GetById(newSpellId);
 			if (("法术".Equals(newCfgSpellData.type) && "普攻".Equals(this.currentAttack.cfgSpellData.type)) //法术可以打断普攻
-				|| "触发".Equals(newCfgSpellData.cast_type))
+				|| "触发".Equals(newCfgSpellData.castType))
 				return true;
 			return this.currentAttack.isPastBreakTime;
 		}
@@ -247,7 +248,7 @@ namespace CsCat
 		//检查是否到时间可以放技能1、是否能打断当前技能2、技能cd是否到
 		public bool IsTimeToCastSpell(string spellId)
 		{
-			var cfgSpellData = CfgSpell.Instance.get_by_id(spellId);
+			var cfgSpellData = CfgSpell.Instance.GetById(spellId);
 			if (!this.CanBreakCurrentSpell(spellId, cfgSpellData))
 				return false;
 			if (!this.IsSpellCooldownOk(spellId))
@@ -257,7 +258,7 @@ namespace CsCat
 
 		public bool IsInSpellRange(Unit target, string spellId)
 		{
-			var cfgSpellData = CfgSpell.Instance.get_by_id(spellId);
+			var cfgSpellData = CfgSpell.Instance.GetById(spellId);
 			if (cfgSpellData.range == 0)
 				return false;
 			return cfgSpellData.range >= this.Distance(target);
@@ -265,7 +266,7 @@ namespace CsCat
 
 		public bool IsInSpellRange(Transform target, string spellId)
 		{
-			var cfgSpellData = CfgSpell.Instance.get_by_id(spellId);
+			var cfgSpellData = CfgSpell.Instance.GetById(spellId);
 			if (cfgSpellData.range == 0)
 				return false;
 			return cfgSpellData.range >= this.Distance(target);
@@ -273,7 +274,7 @@ namespace CsCat
 
 		public bool IsInSpellRange(Vector3 target, string spellId)
 		{
-			var cfgSpellData = CfgSpell.Instance.get_by_id(spellId);
+			var cfgSpellData = CfgSpell.Instance.GetById(spellId);
 			if (cfgSpellData.range == 0)
 				return false;
 			return cfgSpellData.range >= this.Distance(target);
@@ -281,7 +282,7 @@ namespace CsCat
 
 		public bool IsInSpellRange(IPosition targetIPosition, string spellId)
 		{
-			var cfgSpellData = CfgSpell.Instance.get_by_id(spellId);
+			var cfgSpellData = CfgSpell.Instance.GetById(spellId);
 			if (cfgSpellData.range == 0)
 				return false;
 			return cfgSpellData.range >= this.Distance(targetIPosition);

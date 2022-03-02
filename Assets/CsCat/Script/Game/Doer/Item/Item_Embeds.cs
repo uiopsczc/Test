@@ -12,9 +12,9 @@ namespace CsCat
 		}
 
 		//是否有镶物
-		public bool HasEmbeds()
+		public bool IsHasEmbeds()
 		{
-			return this.oEmbeds.HasEmbeds();
+			return this.oEmbeds.IsHasEmbeds();
 		}
 
 		public int GetEmbedsCount()

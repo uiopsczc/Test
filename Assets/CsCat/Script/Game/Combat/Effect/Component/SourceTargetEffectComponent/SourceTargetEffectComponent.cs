@@ -8,6 +8,7 @@ namespace CsCat
 	{
 		protected string sourceSocketName;
 		protected string targetSocketName;
+
 		public Vector3 sourcePosition;
 		public Vector3 targetPosition;
 		public IPosition sourceIPosition;
@@ -15,15 +16,12 @@ namespace CsCat
 		public Vector3 currentPosition;
 		public Vector3 currentEulerAngles;
 
-
 		public Action onReachCallback;
-
-
-
+		
 		public void SetSocket()
 		{
-			this.sourceSocketName = this.effectEntity.cfgEffectData.socket_name_1 ?? "missile";
-			this.targetSocketName = this.effectEntity.cfgEffectData.socket_name_2 ?? "chest";
+			this.sourceSocketName = this.effectEntity.cfgEffectData.socketName1 ?? "missile";
+			this.targetSocketName = this.effectEntity.cfgEffectData.socketName2 ?? "chest";
 
 			sourceIPosition?.SetSocketName(this.sourceSocketName);
 			targetIPosition?.SetSocketName(this.targetSocketName);

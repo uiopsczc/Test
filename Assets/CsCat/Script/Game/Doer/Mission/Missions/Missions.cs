@@ -4,20 +4,20 @@ namespace CsCat
 {
 	public class Missions
 	{
-		private Doer parentDoer;
-		private string subDoerKey;
+		private readonly Doer _parentDoer;
+		private readonly string _subDoerKey;
 
 		public Missions(Doer parentDoer, string subDoerKey)
 		{
-			this.parentDoer = parentDoer;
-			this.subDoerKey = subDoerKey;
+			this._parentDoer = parentDoer;
+			this._subDoerKey = subDoerKey;
 		}
 
 		////////////////////DoXXX/////////////////////////////////
 		//卸载
 		public void DoRelease()
 		{
-			SubDoerUtil1.DoReleaseSubDoer<Mission>(this.parentDoer, this.subDoerKey);
+			SubDoerUtil1.DoReleaseSubDoer<Mission>(this._parentDoer, this._subDoerKey);
 		}
 
 		//保存
@@ -62,7 +62,7 @@ namespace CsCat
 					var dictMission = (Hashtable) listMissions[i];
 					string rid = dictMission.Remove3<string>("rid");
 					var mission = Client.instance.missionFactory.NewDoer(rid) as Mission;
-					mission.SetEnv(this.parentDoer);
+					mission.SetEnv(this._parentDoer);
 					Hashtable dictMissionTmp = null;
 					if (dictMissionsTmp != null)
 						dictMissionTmp = dictMissionsTmp[rid] as Hashtable;
@@ -76,32 +76,32 @@ namespace CsCat
 		////////////////////////////////////////////////////////////////////////////
 		public Mission[] GetMissions(string id = null)
 		{
-			return SubDoerUtil1.GetSubDoers<Mission>(this.parentDoer, this.subDoerKey, id, null);
+			return SubDoerUtil1.GetSubDoers<Mission>(this._parentDoer, this._subDoerKey, id, null);
 		}
 
 		public ArrayList GetMissions_ToEdit() //可以直接插入删除
 		{
-			return SubDoerUtil1.GetSubDoers_ToEdit(this.parentDoer, this.subDoerKey);
+			return SubDoerUtil1.GetSubDoers_ToEdit(this._parentDoer, this._subDoerKey);
 		}
 
-		public bool HasMissions()
+		public bool IsHasMissions()
 		{
-			return SubDoerUtil1.HasSubDoers<Mission>(this.parentDoer, this.subDoerKey);
+			return SubDoerUtil1.HasSubDoers<Mission>(this._parentDoer, this._subDoerKey);
 		}
 
 		public int GetMissionsCount()
 		{
-			return SubDoerUtil1.GetSubDoersCount<Mission>(this.parentDoer, this.subDoerKey);
+			return SubDoerUtil1.GetSubDoersCount<Mission>(this._parentDoer, this._subDoerKey);
 		}
 
 		public Mission GetMission(string idOrRid)
 		{
-			return SubDoerUtil1.GetSubDoer<Mission>(this.parentDoer, this.subDoerKey, idOrRid);
+			return SubDoerUtil1.GetSubDoer<Mission>(this._parentDoer, this._subDoerKey, idOrRid);
 		}
 
 		public void ClearMissions()
 		{
-			SubDoerUtil1.ClearSubDoers<Mission>(this.parentDoer, this.subDoerKey, (mission) => { });
+			SubDoerUtil1.ClearSubDoers<Mission>(this._parentDoer, this._subDoerKey, (mission) => { });
 		}
 	}
 }

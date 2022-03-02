@@ -45,20 +45,20 @@ namespace CsCat
 			this.itemId = itemId;
 			this.itemCount = itemCount;
 
-			this.cfgItemData = CfgItem.Instance.get_by_id(itemId);
-			this.cfgQualityData = cfgItemData.quality_id == null
+			this.cfgItemData = CfgItem.Instance.GetById(itemId);
+			this.cfgQualityData = cfgItemData.qualityId == null
 			  ? null
-			  : CfgQuality.Instance.get_by_id(cfgItemData.quality_id);
+			  : CfgQuality.Instance.GetById(cfgItemData.qualityId);
 
-			if (!cfgItemData.bg_path.IsNullOrWhiteSpace())
-				this.SetImageAsync(this.contentBgImage, cfgItemData.bg_path, null, false);
-			if (this.cfgQualityData != null && !this.cfgQualityData.icon_path.IsNullOrWhiteSpace())
-				this.SetImageAsync(this.contentQualityImage, cfgQualityData.icon_path, null, false);
+			if (!cfgItemData.bgPath.IsNullOrWhiteSpace())
+				this.SetImageAsync(this.contentBgImage, cfgItemData.bgPath, null, false);
+			if (this.cfgQualityData != null && !this.cfgQualityData.iconPath.IsNullOrWhiteSpace())
+				this.SetImageAsync(this.contentQualityImage, cfgQualityData.iconPath, null, false);
 			else
 				this.contentBgImage.gameObject.SetActive(false);
 			//    LogCat.LogWarning(this.content_icon_image);
 			//    LogCat.LogWarning(itemData.icon_path);
-			this.SetImageAsync(this.contentIconImage, cfgItemData.icon_path, null, false);
+			this.SetImageAsync(this.contentIconImage, cfgItemData.iconPath, null, false);
 			this.contentCountText.text = (itemCount == 0 || itemCount == 1) ? "" : string.Format("x{0}", itemCount);
 			this.nameText.text = cfgItemData.name;
 

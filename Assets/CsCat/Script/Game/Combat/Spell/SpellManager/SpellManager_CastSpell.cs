@@ -18,17 +18,17 @@ namespace CsCat
 			//开始释放技能
 			var spell = this.AddChild(null, spellClass, sourceUnit, spellId, targetUnit, cfgSpellData,
 			  instanceArgDict) as SpellBase;
-			if ("正常".Equals(cfgSpellData.cast_type))
+			if ("正常".Equals(cfgSpellData.castType))
 			{
 				//当玩家是手动操作释放技能时，技能方向就以玩家的输入为准（但如果有目标则会以目标方向释放技能，无视输入）
 				//当释放的技能类型是正常的话，则需停下来施法
 				if (sourceUnit.currentAttack != null)
 					this.BreakSpell(sourceUnit.currentAttack.GetGuid());
 				Quaternion? rotation = null;
-				var is_not_face_to_target =
-				  instanceArgDict?.Get<bool>("is_not_face_to_target") ?? cfgSpellData.is_not_face_to_target;
+				var isNotFaceToTarget =
+				  instanceArgDict?.Get<bool>("isNotFaceToTarget") ?? cfgSpellData.isNotFaceToTarget;
 				var targetPosition = instanceArgDict?.Get<Vector3>("position") ?? targetUnit.GetPosition();
-				if (targetUnit != null && (!is_not_face_to_target || !isControl))
+				if (targetUnit != null && (!isNotFaceToTarget || !isControl))
 				{
 					var dir = targetPosition - sourceUnit.GetPosition();
 					rotation = Quaternion.LookRotation(dir);
@@ -36,7 +36,7 @@ namespace CsCat
 						sourceUnit.FaceTo(rotation.Value);
 				}
 
-				if (!cfgSpellData.is_can_move_while_cast || !isControl)
+				if (!cfgSpellData.isCanMoveWhileCast || !isControl)
 					sourceUnit.MoveStop(rotation);
 				sourceUnit.currentAttack = spell;
 				sourceUnit.UpdateMixedStates();
@@ -52,7 +52,7 @@ namespace CsCat
 		public (bool isCanCast, CfgSpellData cfgSpellData, Type spellClass) CheckIsCanCast(Unit sourceUnit,
 		  string spellId, Unit targetUnit, bool isControl)
 		{
-			var cfgSpellData = CfgSpell.Instance.get_by_id(spellId);
+			var cfgSpellData = CfgSpell.Instance.GetById(spellId);
 			Type spellClass = null;
 			if (cfgSpellData == null)
 			{
@@ -60,31 +60,29 @@ namespace CsCat
 				return (false, null, null);
 			}
 
-			if (sourceUnit == null || (sourceUnit.IsDead() && !"触发".Equals(cfgSpellData.cast_type)))
+			if (sourceUnit == null || (sourceUnit.IsDead() && !"触发".Equals(cfgSpellData.castType)))
 				return (false, null, null);
 			if (!sourceUnit.IsSpellCooldownOk(spellId))
 				return (false, null, null);
 			if (!sourceUnit.CanBreakCurrentSpell(spellId, cfgSpellData))
 				return (false, null, null);
-			var scope = cfgSpellData.target_type ?? "enemy";
+			var scope = cfgSpellData.targetType ?? "enemy";
 			//如果是混乱则找任何可以攻击的人
 			if (sourceUnit.IsConfused())
 				scope = "all";
 			var isOnlyAttackable = !"friend".Equals(scope);
-			if (cfgSpellData.is_need_target)
+			if (cfgSpellData.isNeedTarget)
 			{
 				if (targetUnit == null)
 					return (false, null, null);
-				Hashtable rangeInfo = new Hashtable();
-				rangeInfo["mode"] = "circle";
-				rangeInfo["radius"] = cfgSpellData.range;
-				if (!Client.instance.combat.unitManager.__CheckUnit(targetUnit,
+				Hashtable rangeInfo = new Hashtable {["mode"] = "circle", ["radius"] = cfgSpellData.range};
+				if (!Client.instance.combat.unitManager.CheckUnit(targetUnit,
 				  sourceUnit.ToUnitPosition(), rangeInfo, sourceUnit.GetFaction(), scope,
 				  isOnlyAttackable))
 					return (false, null, null);
 			}
 
-			spellClass = TypeUtil.GetType(cfgSpellData.class_path_cs);
+			spellClass = TypeUtil.GetType(cfgSpellData.classPathCs);
 			if (spellClass.IsHasMethod("CheckIsCanCast") &&
 				!spellClass.InvokeMethod<bool>("CheckIsCanCast", false, sourceUnit, spellId, targetUnit, cfgSpellData,
 				  isControl)
@@ -99,15 +97,15 @@ namespace CsCat
 				return null;
 			if (targetUnit == null)
 				return null;
-			var cfgSpellData = CfgSpell.Instance.get_by_id(spellId);
-			var spellClass = TypeUtil.GetType(cfgSpellData.class_path_cs);
+			var cfgSpellData = CfgSpell.Instance.GetById(spellId);
+			var spellClass = TypeUtil.GetType(cfgSpellData.classPathCs);
 			if (spellClass == null)
 			{
-				LogCat.error("spell code is not exist: ", cfgSpellData.class_path_cs);
+				LogCat.error("spell code is not exist: ", cfgSpellData.classPathCs);
 				return null;
 			}
 
-			return this.__IsUnitMatchCondition(sourceUnit, targetUnit, isControl, cfgSpellData, spellClass) ? new List<Unit>() { targetUnit } : null;
+			return this._IsUnitMatchCondition(sourceUnit, targetUnit, isControl, cfgSpellData, spellClass) ? new List<Unit>() { targetUnit } : null;
 		}
 
 		public List<Unit> RecommendCast(Unit sourceUnit, string spellId, List<Unit> targetUnitList, bool isControl)
@@ -116,11 +114,11 @@ namespace CsCat
 				return null;
 			if (targetUnitList == null)
 				return null;
-			var cfgSpellData = CfgSpell.Instance.get_by_id(spellId);
-			var spellClass = TypeUtil.GetType(cfgSpellData.class_path_cs);
+			var cfgSpellData = CfgSpell.Instance.GetById(spellId);
+			var spellClass = TypeUtil.GetType(cfgSpellData.classPathCs);
 			if (spellClass == null)
 			{
-				LogCat.error("spell code is not exist: ", cfgSpellData.class_path_cs);
+				LogCat.error("spell code is not exist: ", cfgSpellData.classPathCs);
 				return null;
 			}
 
@@ -128,7 +126,7 @@ namespace CsCat
 			for (var i = 0; i < targetUnitList.Count; i++)
 			{
 				var targetUnit = targetUnitList[i];
-				if (this.__IsUnitMatchCondition(sourceUnit, targetUnit, isControl, cfgSpellData, spellClass))
+				if (this._IsUnitMatchCondition(sourceUnit, targetUnit, isControl, cfgSpellData, spellClass))
 					newTargetUnitList.Add(targetUnit);
 			}
 
@@ -150,12 +148,12 @@ namespace CsCat
 			//场上所有人(不分敌友)
 			if (targetUnit == null)
 				return null;
-			if (cfgSpellData._select_unit_arg_dict.IsNullOrEmpty())
+			if (cfgSpellData._selectUnitArgDict.IsNullOrEmpty())
 				return targetUnitList ?? new List<Unit>() { targetUnit };
 
-			var selectUnitArgDict = DoerAttrParserUtil.ConvertTableWithTypeString(cfgSpellData._select_unit_arg_dict);
-			var selectUnitFaction = selectUnitArgDict.Get<string>("select_unit_faction");
-			var selectUnitCount = selectUnitArgDict.GetOrGetDefault2<int>("select_unit_count", () => 1000);
+			var selectUnitArgDict = DoerAttrParserUtil.ConvertTableWithTypeString(cfgSpellData._selectUnitArgDict);
+			var selectUnitFaction = selectUnitArgDict.Get<string>("selectUnitFaction");
+			var selectUnitCount = selectUnitArgDict.GetOrGetDefault2<int>("selectUnitCount", () => 1000);
 			var scope = SpellConst.Select_Unit_Faction_Dict[selectUnitFaction];
 
 			var rangeInfo = new Hashtable();
@@ -167,7 +165,7 @@ namespace CsCat
 			conditionDict["origin"] = originPosition;
 			conditionDict["faction"] = sourceUnit.GetFaction();
 			conditionDict["scope"] = scope;
-			conditionDict["range_info"] = rangeInfo;
+			conditionDict["rangeInfo"] = rangeInfo;
 			targetUnitList = targetUnitList ?? Client.instance.combat.unitManager.SelectUnit(conditionDict);
 
 			var count = selectUnitCount;
@@ -178,7 +176,7 @@ namespace CsCat
 			return newTargetList.Count == 0 ? new List<Unit>() { targetUnit } : newTargetList;
 		}
 
-		public bool __IsUnitMatchCondition(Unit sourceUnit, Unit targetUnit, bool isControl,
+		public bool _IsUnitMatchCondition(Unit sourceUnit, Unit targetUnit, bool isControl,
 		  CfgSpellData cfgSpellData,
 		  Type spellClass)
 		{
@@ -186,11 +184,11 @@ namespace CsCat
 				return false;
 			if (!sourceUnit.IsConfused())
 			{
-				if ("enemy".Equals(cfgSpellData.target_type) && targetUnit.IsInvincible())
+				if ("enemy".Equals(cfgSpellData.targetType) && targetUnit.IsInvincible())
 					return false;
-				if (cfgSpellData.target_type.IsNullOrWhiteSpace() && !"all".Equals(cfgSpellData.target_type))
+				if (cfgSpellData.targetType.IsNullOrWhiteSpace() && !"all".Equals(cfgSpellData.targetType))
 					if (!Client.instance.combat.unitManager.CheckFaction(sourceUnit.GetFaction(), targetUnit.GetFaction(),
-					  cfgSpellData.target_type))
+					  cfgSpellData.targetType))
 						return false;
 			}
 

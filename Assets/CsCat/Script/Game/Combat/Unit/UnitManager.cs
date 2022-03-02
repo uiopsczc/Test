@@ -6,7 +6,7 @@ namespace CsCat
 {
 	public partial class UnitManager : TickObject
 	{
-		private Dictionary<string, Unit> unitDict = new Dictionary<string, Unit>();
+		private readonly Dictionary<string, Unit> _unitDict = new Dictionary<string, Unit>();
 
 		public override void Init()
 		{
@@ -23,7 +23,7 @@ namespace CsCat
 		protected override void _Update(float deltaTime = 0, float unscaledDeltaTime = 0)
 		{
 			base._Update(deltaTime, unscaledDeltaTime);
-			foreach (var keyValue in this.unitDict)
+			foreach (var keyValue in this._unitDict)
 			{
 				var unit = keyValue.Value;
 				if (!unit.IsDead() && !unit.IsDestroyed())
@@ -39,10 +39,10 @@ namespace CsCat
 				this.RemoveUnit(oldUnit.GetGuid());
 			Unit unit = this.AddChild<Unit>(guid);
 			unit.Build(argDict);
-			this.unitDict[unit.key] = unit;
-			this.factionUnitDict[unit.GetFaction()][unit.GetGuid()] = unit;
-			if (!unit.cfgUnitData.aiClassPathCS.IsNullOrWhiteSpace())
-				unit.RunAI(unit.cfgUnitData.aiClassPathCS);
+			this._unitDict[unit.key] = unit;
+			this._factionUnitDict[unit.GetFaction()][unit.GetGuid()] = unit;
+			if (!unit.cfgUnitData.aiClassPathCs.IsNullOrWhiteSpace())
+				unit.RunAI(unit.cfgUnitData.aiClassPathCs);
 			return unit;
 		}
 
@@ -64,7 +64,7 @@ namespace CsCat
 
 		public Dictionary<string, Unit> GetUnitDict()
 		{
-			return this.unitDict;
+			return this._unitDict;
 		}
 
 		public void RemoveUnit(string guid)
@@ -73,9 +73,9 @@ namespace CsCat
 			if (unit != null)
 			{
 				this.RemoveChild(guid);
-				this.unitDict.Remove(guid);
+				this._unitDict.Remove(guid);
 				if (!unit.GetFaction().IsNullOrWhiteSpace())
-					this.factionUnitDict[unit.GetFaction()].Remove(guid);
+					this._factionUnitDict[unit.GetFaction()].Remove(guid);
 			}
 		}
 
@@ -84,11 +84,11 @@ namespace CsCat
 			Unit unit = this.GetUnit(oldGuid);
 			if (unit != null && !oldGuid.Equals(newGuid))
 			{
-				this.unitDict.Remove(oldGuid);
+				this._unitDict.Remove(oldGuid);
 				this.keyToChildDict.Remove(oldGuid);
 				int index = this.childKeyList.IndexOf(oldGuid);
 
-				this.unitDict[newGuid] = unit;
+				this._unitDict[newGuid] = unit;
 				this.keyToChildDict[newGuid] = unit;
 				this.childKeyList[index] = newGuid;
 			}

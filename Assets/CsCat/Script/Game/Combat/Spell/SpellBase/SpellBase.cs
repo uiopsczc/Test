@@ -32,14 +32,14 @@ namespace CsCat
 			this.instanceArgDict = instanceArgDict;
 
 			this.originPosition =
-			  this.instanceArgDict.GetOrGetDefault2<Vector3>("origin_position", () => this.sourceUnit.GetPosition());
-			this.transmitArgDict = this.instanceArgDict.GetOrGetDefault2("transmit_arg_dict", () => new Hashtable());
+			  this.instanceArgDict.GetOrGetDefault2("originPosition", () => this.sourceUnit.GetPosition());
+			this.transmitArgDict = this.instanceArgDict.GetOrGetDefault2("transmitArgDict", () => new Hashtable());
 			this.attackDir = this.transmitArgDict.Get<Vector3>(attackDir);
-			this.newSpellTriggerId = this.transmitArgDict.Get<string>("new_spell_trigger_id"); // 通过哪个trigger_id启动的技能
+			this.newSpellTriggerId = this.transmitArgDict.Get<string>("newSpellTriggerId"); // 通过哪个trigger_id启动的技能
 
-			this.argDict = DoerAttrParserUtil.ConvertTableWithTypeString(this.cfgSpellData._arg_dict);
-			this.isCanMoveWhileCast = this.cfgSpellData.is_can_move_while_cast;
-			this.isSpellAnimationFinished = "触发".Equals(this.cfgSpellData.cast_type);
+			this.argDict = DoerAttrParserUtil.ConvertTableWithTypeString(this.cfgSpellData._argDict);
+			this.isCanMoveWhileCast = this.cfgSpellData.isCanMoveWhileCast;
+			this.isSpellAnimationFinished = "触发".Equals(this.cfgSpellData.castType);
 
 			if (this.isCanMoveWhileCast && this.sourceUnit != null && !this.sourceUnit.IsDead())
 				this.sourceUnit.SetIsMoveWithMoveAnimation(false);
@@ -59,7 +59,7 @@ namespace CsCat
 				//      end
 				this.ProcessAnimationEvent(deltaTime);
 			}
-			else if ("触发".Equals(this.cfgSpellData.cast_type))
+			else if ("触发".Equals(this.cfgSpellData.castType))
 				this.ProcessAnimationEvent(deltaTime);
 		}
 

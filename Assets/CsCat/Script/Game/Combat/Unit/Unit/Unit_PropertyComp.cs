@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 
 namespace CsCat
@@ -9,8 +10,9 @@ namespace CsCat
 		public void OnPropertyChanged(Dictionary<string, float> oldCalcPropDict,
 		  Dictionary<string, float> newCalcPropDict, LinkedHashtable calcPropDictDiff)
 		{
-			foreach (var key in calcPropDictDiff.Keys)
+			foreach (DictionaryEntry keyValue in calcPropDictDiff)
 			{
+				var key = keyValue.Key;
 				if (key.Equals("技能冷却减少百分比") || key.Equals("攻击速度"))
 					this.OnSpellCooldownRateChange();
 				else if (key.Equals("移动速度"))

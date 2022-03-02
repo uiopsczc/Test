@@ -13,7 +13,7 @@ namespace CsCat
 		{
 			base.Init();
 			this.oRoles = new Roles(this, "o_roles");
-			this.oItemBag = new ItemBag(this, "o_item_bag");
+			this.oItemBag = new ItemBag(this, "o_itemBag");
 			this.oMissions = new Missions(this, "o_missions");
 		}
 
@@ -38,7 +38,7 @@ namespace CsCat
 			//存储任务
 			this.oMissions.DoSave(dict, dictTmp);
 			if (this.mainRole != null)
-				dict["main_role_rid"] = this.mainRole.GetRid();
+				dict["mainRoleRid"] = this.mainRole.GetRid();
 		}
 
 		//还原
@@ -51,7 +51,7 @@ namespace CsCat
 			//还原任务
 			this.oMissions.DoRestore(dict, dictTmp);
 
-			string mainRoleRid = dict.Remove3<string>("main_role_rid");
+			string mainRoleRid = dict.Remove3<string>("mainRoleRid");
 			this.mainRole = this.GetRole(mainRoleRid);
 
 			base.DoRestore(dict, dictTmp);

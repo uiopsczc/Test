@@ -4,20 +4,20 @@ namespace CsCat
 {
 	public class Roles
 	{
-		private Doer parentDoer;
-		private string subDoerKey;
+		private readonly Doer _parentDoer;
+		private readonly string _subDoerKey;
 
 		public Roles(Doer parentDoer, string subDoerKey)
 		{
-			this.parentDoer = parentDoer;
-			this.subDoerKey = subDoerKey;
+			this._parentDoer = parentDoer;
+			this._subDoerKey = subDoerKey;
 		}
 
 		////////////////////DoXXX/////////////////////////////////
 		//卸载
 		public void DoRelease()
 		{
-			SubDoerUtil1.DoReleaseSubDoer<Role>(this.parentDoer, this.subDoerKey);
+			SubDoerUtil1.DoReleaseSubDoer<Role>(this._parentDoer, this._subDoerKey);
 		}
 
 		//保存
@@ -62,7 +62,7 @@ namespace CsCat
 					var dictRole = curDictRole as Hashtable;
 					var rid = dictRole.Remove3<string>("rid");
 					Role role = Client.instance.roleFactory.NewDoer(rid) as Role;
-					role.SetEnv(this.parentDoer);
+					role.SetEnv(this._parentDoer);
 					Hashtable dictRoleTmp = null;
 					if (dictRolesTmp != null && dictRolesTmp.ContainsKey(rid))
 						dictRoleTmp = dictRolesTmp[rid] as Hashtable;
@@ -78,30 +78,30 @@ namespace CsCat
 		//获得指定的角色
 		public Role[] GetRoles(string id = null)
 		{
-			return SubDoerUtil1.GetSubDoers<Role>(this.parentDoer, this.subDoerKey, id, null);
+			return SubDoerUtil1.GetSubDoers<Role>(this._parentDoer, this._subDoerKey, id, null);
 		}
 
 		public ArrayList GetRoles_ToEdit() //可以直接插入删除
 		{
-			return SubDoerUtil1.GetSubDoers_ToEdit(this.parentDoer, this.subDoerKey);
+			return SubDoerUtil1.GetSubDoers_ToEdit(this._parentDoer, this._subDoerKey);
 		}
 
 		public int GetRolesCount()
 		{
-			return SubDoerUtil1.GetSubDoersCount<Role>(this.parentDoer, this.subDoerKey);
+			return SubDoerUtil1.GetSubDoersCount<Role>(this._parentDoer, this._subDoerKey);
 		}
 
 		//获得指定的角色
 		public Role GetRole(string idOrRid)
 		{
-			return SubDoerUtil1.GetSubDoer<Role>(this.parentDoer, this.subDoerKey, idOrRid);
+			return SubDoerUtil1.GetSubDoer<Role>(this._parentDoer, this._subDoerKey, idOrRid);
 		}
 
 		//清除所有角色
 		public void ClearRoles()
 		{
-			SubDoerUtil1.ClearSubDoers<Role>(this.parentDoer, this.subDoerKey,
-			  (role) => { ((User)this.parentDoer).RemoveRole(role); });
+			SubDoerUtil1.ClearSubDoers<Role>(this._parentDoer, this._subDoerKey,
+			  (role) => { ((User)this._parentDoer).RemoveRole(role); });
 		}
 	}
 }

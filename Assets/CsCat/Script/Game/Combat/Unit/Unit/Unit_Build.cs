@@ -9,50 +9,50 @@ namespace CsCat
 	public partial class Unit
 	{
 		//构建模型相关
-		private bool isSettingModelPath;
-		private bool isLoadOk;
-		private string buildOkAnimationName;
-		private List<UnitMaterialInfo> unitMaterialInfoList = new List<UnitMaterialInfo>();
-		private Dictionary<string, UnitModelInfo> unitModelInfoDict = new Dictionary<string, UnitModelInfo>();
-		private Hashtable argDict;
+		private bool _isSettingModelPath;
+		private bool _isLoadOk;
+		private string _buildOkAnimationName;
+		private readonly List<UnitMaterialInfo> _unitMaterialInfoList = new List<UnitMaterialInfo>();
+		private readonly Dictionary<string, UnitModelInfo> _unitModelInfoDict = new Dictionary<string, UnitModelInfo>();
+		private Hashtable _argDict;
 
 		public void Build(Hashtable argDict)
 		{
 			this.unitLockTargetInfo = new UnitLockTargetInfo();
-			this.normalAttackComboInfo = new ComboInfo();
-			this.unitModelInfoDict.Clear();
-			this.loadOkListenList.Clear();
-			this.socketTransformDict.Clear();
+			this._normalAttackComboInfo = new ComboInfo();
+			this._unitModelInfoDict.Clear();
+			this._loadOkListenList.Clear();
+			this._socketTransformDict.Clear();
 
-			this.argDict = argDict;
+			this._argDict = argDict;
 			this.InitMixedStates();
 
-			this.cfgUnitData = CfgUnit.Instance.get_by_id(this.unitId);
+			this.cfgUnitData = CfgUnit.Instance.GetById(this.unitId);
 			this.name = this.cfgUnitData.name;
 			this.type = this.cfgUnitData.type;
-			this.radius = this.cfgUnitData.radius;
-			this.originalRadius = this.radius;
+			this._radius = this.cfgUnitData.radius;
+			this._originalRadius = this._radius;
 
-			this.level = argDict.Get<int>("level");
-			this.unitId = argDict.Get<string>("unit_id");
-			this.playerName = argDict.Get<string>("player_name");
-			this.showNameOffset = argDict.Get<Vector2>("show_name_offset");
-			this.isNotShowHeadBlood = argDict.Get<bool>("is_not_show_headBlood");
-			if (argDict.ContainsKey("owner_unit_guid"))
-				this.ownerUnit = Client.instance.combat.unitManager.GetUnit(argDict.Get<string>("owner_unit_guid"));
+			this._level = argDict.Get<int>("level");
+			this.unitId = argDict.Get<string>("unitId");
+			this.playerName = argDict.Get<string>("playerName");
+			this.showNameOffset = argDict.Get<Vector2>("showNameOffset");
+			this._isNotShowHeadBlood = argDict.Get<bool>("isNotShowHeadBlood");
+			if (argDict.ContainsKey("ownerUnitGuid"))
+				this.ownerUnit = Client.instance.combat.unitManager.GetUnit(argDict.Get<string>("ownerUnitGuid"));
 			//创建时播放的动画
-			this.buildOkAnimationName = argDict.Get<string>("build_ok_animation_name");
+			this._buildOkAnimationName = argDict.Get<string>("buildOkAnimationName");
 			//是否需要保持尸体
 			this.isKeepDeadBody =
-			  argDict.GetOrGetDefault2("is_keep_dead_body", () => this.cfgUnitData.is_keep_dead_body);
+			  argDict.GetOrGetDefault2("isKeepDeadBody", () => this.cfgUnitData.isKeepDeadBody);
 
 
 			this.faction = argDict.Get<string>("faction");
-			this.position = argDict.Get<Vector3>("position");
-			this.rotation = argDict.Get<Quaternion>("rotation");
-			this.scale =
+			this._position = argDict.Get<Vector3>("position");
+			this._rotation = argDict.Get<Quaternion>("rotation");
+			this._scale =
 			  argDict.GetOrGetDefault2<float>("scale", () => this.cfgUnitData.scale == 0 ? 1 : this.cfgUnitData.scale);
-			this.SetScale(this.scale);
+			this.SetScale(this._scale);
 
 
 			this.propertyComp = new PropertyComp(argDict);
@@ -63,7 +63,7 @@ namespace CsCat
 			this.spellInfoDict.Clear();
 
 			//技能相关
-			this.skillIdList = this.cfgUnitData._skill_ids.ToList();
+			this.skillIdList = this.cfgUnitData._skillIds.ToList();
 			for (var i = 0; i < this.skillIdList.Count; i++)
 			{
 				var skillId = this.skillIdList[i];
@@ -71,32 +71,32 @@ namespace CsCat
 			}
 
 			//普攻相关
-			this.normalAttackIdList = this.cfgUnitData._normal_attack_ids.ToList();
-			for (var i = 0; i < this.normalAttackIdList.Count; i++)
+			this._normalAttackIdList = this.cfgUnitData._normalAttackIds.ToList();
+			for (var i = 0; i < this._normalAttackIdList.Count; i++)
 			{
-				var normalAttackId = this.normalAttackIdList[i];
+				var normalAttackId = this._normalAttackIdList[i];
 				this.AddNormalAttack(normalAttackId);
 			}
 
 			//添加被动buff
-			if (!this.cfgUnitData._passive_buff_ids.IsNullOrEmpty())
+			if (!this.cfgUnitData._passiveBuffIds.IsNullOrEmpty())
 			{
-				for (var i = 0; i < cfgUnitData._passive_buff_ids.Length; i++)
+				for (var i = 0; i < cfgUnitData._passiveBuffIds.Length; i++)
 				{
-					var passiveBuffId = cfgUnitData._passive_buff_ids[i];
+					var passiveBuffId = cfgUnitData._passiveBuffIds[i];
 					this.buffManager.AddBuff(passiveBuffId, this);
 				}
 			}
 
-			if (!this.cfgUnitData.model_path.IsNullOrWhiteSpace())
-				this.BuildModel(this.cfgUnitData.model_path);
+			if (!this.cfgUnitData.modelPath.IsNullOrWhiteSpace())
+				this.BuildModel(this.cfgUnitData.modelPath);
 
 			this.unitMoveComp.OnBuild();
 			this.animatorComp.OnBuild();
 			this.propertyComp.OnBuild(this);
 
-			if (argDict.ContainsKey("hp_pct"))
-				this.SetHp((int)(this.GetMaxHp() * argDict.Get<float>("hp_pct")), true);
+			if (argDict.ContainsKey("hpPct"))
+				this.SetHp((int)(this.GetMaxHp() * argDict.Get<float>("hpPct")), true);
 			else
 				this.SetHp(argDict.GetOrGetDefault2("hp", () => this.GetMaxHp()), true);
 
@@ -107,41 +107,41 @@ namespace CsCat
 		private void BuildModel(string model_path)
 		{
 			//      Client.instance.combat.effectManager.DeAttach(this);
-			this.__ClearModel();
-			this.__StartChangeModel();
-			this.__SetModel("main", model_path);
-			this.__FinishChangeModel();
+			this._ClearModel();
+			this._StartChangeModel();
+			this._SetModel("main", model_path);
+			this._FinishChangeModel();
 		}
 
-		private void __ClearModel()
+		private void _ClearModel()
 		{
 			if (graphicComponent.gameObject != null)
 				graphicComponent.gameObject.Destroy();
 			graphicComponent.SetGameObject(null, null);
 			this.animation = null;
-			this.socketTransformDict.Clear();
+			this._socketTransformDict.Clear();
 			;
-			this.unitMaterialInfoList.Clear();
+			this._unitMaterialInfoList.Clear();
 		}
 
-		private void __StartChangeModel()
+		private void _StartChangeModel()
 		{
-			this.isSettingModelPath = true;
-			this.isLoadOk = false;
+			this._isSettingModelPath = true;
+			this._isLoadOk = false;
 		}
 
-		private void __SetModel(string tag, string modelPath, Type modelType = null)
+		private void _SetModel(string tag, string modelPath, Type modelType = null)
 		{
 			modelType = modelType == null ? typeof(GameObject) : modelType;
 			if (modelPath == null)
 			{
-				this.unitModelInfoDict.Remove(tag);
+				this._unitModelInfoDict.Remove(tag);
 				return;
 			}
 
-			if (!unitModelInfoDict.ContainsKey(tag))
-				this.unitModelInfoDict[tag] = new UnitModelInfo();
-			var unitModelInfo = this.unitModelInfoDict[tag];
+			if (!_unitModelInfoDict.ContainsKey(tag))
+				this._unitModelInfoDict[tag] = new UnitModelInfo();
+			var unitModelInfo = this._unitModelInfoDict[tag];
 			if (modelPath.Equals(unitModelInfo.path))
 				return;
 			unitModelInfo.path = modelPath;
@@ -149,53 +149,57 @@ namespace CsCat
 			this.resLoadComponent.GetOrLoadAsset(modelPath, (assetCat) =>
 			{
 				var prefab = assetCat.Get(modelPath.GetSubAssetPath(), modelType);
-				this.__OnLoadOK(prefab, tag);
+				this._OnLoadOK(prefab, tag);
 			}, null, null, this);
 		}
 
-		private void __OnLoadOK(Object prefab, string tag)
+		private void _OnLoadOK(Object prefab, string tag)
 		{
-			if (!this.unitModelInfoDict.ContainsKey(tag))
+			if (!this._unitModelInfoDict.ContainsKey(tag))
 				return;
-			var unitModelInfo = this.unitModelInfoDict[tag];
+			var unitModelInfo = this._unitModelInfoDict[tag];
 			unitModelInfo.prefab = prefab;
-			this.__CheckAllLoadOK();
+			this._CheckAllLoadOK();
 		}
 
-		private void __CheckAllLoadOK()
+		private void _CheckAllLoadOK()
 		{
-			if (this.isSettingModelPath || graphicComponent.gameObject != null)
+			if (this._isSettingModelPath || graphicComponent.gameObject != null)
 				return;
-			foreach (var keyValue in this.unitModelInfoDict)
+			foreach (var keyValue in this._unitModelInfoDict)
 			{
 				var curUnitModelInfo = keyValue.Value;
 				if (curUnitModelInfo.prefab == null)
 					return;
 			}
 
-			var unitModelInfo = this.unitModelInfoDict["main"];
+			var unitModelInfo = this._unitModelInfoDict["main"];
 			var clone = GameObject.Instantiate(unitModelInfo.prefab, this.GetPosition(), this.GetRotation(),
 			  this.parent.graphicComponent.transform) as GameObject;
 			clone.name = string.Format("{0}:{1}", this.unitId, this.key);
 			graphicComponent.SetGameObject(clone, false);
-			this.__OnBuildOK();
-			this.isLoadOk = true;
-			this.__OnLoadOKListen();
+			this._OnBuildOK();
+			this._isLoadOk = true;
+			this._OnLoadOKListen();
 		}
 
-		public void __OnLoadOKListen()
+		public void _OnLoadOKListen()
 		{
-			foreach (var action in this.loadOkListenList)
+			for (var i = 0; i < this._loadOkListenList.Count; i++)
+			{
+				var action = this._loadOkListenList[i];
 				action();
-			this.loadOkListenList.Clear();
+			}
+
+			this._loadOkListenList.Clear();
 		}
 
-		private void __OnBuildOK()
+		private void _OnBuildOK()
 		{
-			this.SetPosition(this.position);
-			this.SetRotation(this.rotation);
-			this.orginalTransformScale = graphicComponent.transform.localScale;
-			graphicComponent.transform.localScale = this.orginalTransformScale * this.scale;
+			this.SetPosition(this._position);
+			this.SetRotation(this._rotation);
+			this._orginalTransformScale = graphicComponent.transform.localScale;
+			graphicComponent.transform.localScale = this._orginalTransformScale * this._scale;
 
 			this.InitAnimation();
 			this.InitMaterial();
@@ -230,16 +234,16 @@ namespace CsCat
 				var dieAnimationState = this.animation[AnimationNameConst.die];
 				if (dieAnimationState != null)
 					dieAnimationState.wrapMode = WrapMode.ClampForever;
-				if (!this.buildOkAnimationName.IsNullOrWhiteSpace() && this.animation[this.buildOkAnimationName])
+				if (!this._buildOkAnimationName.IsNullOrWhiteSpace() && this.animation[this._buildOkAnimationName])
 				{
 					this.PlayAnimation(AnimationNameConst.idle);
-					this.PlayAnimation(this.buildOkAnimationName);
-					var buildOkAnimationState = this.animation[buildOkAnimationName];
+					this.PlayAnimation(this._buildOkAnimationName);
+					var buildOkAnimationState = this.animation[_buildOkAnimationName];
 					graphicComponent.transform.position = new Vector3(0.01f, 0.01f, 0.01f);
 					this.AddTimer((arg) =>
 					{
-						this.SetPosition(this.position);
-						this.SetRotation(this.rotation);
+						this.SetPosition(this._position);
+						this.SetRotation(this._rotation);
 						return false;
 					}, buildOkAnimationState.length);
 				}
@@ -250,7 +254,7 @@ namespace CsCat
 
 		private void InitMaterial()
 		{
-			this.unitMaterialInfoList.Clear();
+			this._unitMaterialInfoList.Clear();
 			var rendererTypeList = new List<Type> { typeof(MeshRenderer), typeof(SkinnedMeshRenderer) };
 			for (var m = 0; m < rendererTypeList.Count; m++)
 			{
@@ -265,18 +269,18 @@ namespace CsCat
 						var unitMaterialInfo = new UnitMaterialInfo();
 						unitMaterialInfo.material = material;
 						unitMaterialInfo.color = material.color;
-						this.unitMaterialInfoList.Add(unitMaterialInfo);
+						this._unitMaterialInfoList.Add(unitMaterialInfo);
 					}
 				}
 			}
 
-			this.changeColorDict.Clear();
+			this._changeColorDict.Clear();
 		}
 
-		private void __FinishChangeModel()
+		private void _FinishChangeModel()
 		{
-			this.isSettingModelPath = false;
-			this.__CheckAllLoadOK();
+			this._isSettingModelPath = false;
+			this._CheckAllLoadOK();
 		}
 	}
 }

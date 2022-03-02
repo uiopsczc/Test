@@ -15,8 +15,8 @@ namespace CsCat
 			base.Init();
 			this.effectId = effectId;
 			this.unit = unit;
-			cfgEffectData = CfgEffect.Instance.get_by_id(this.effectId);
-			graphicComponent.SetPrefabPath(cfgEffectData.prefab_path);
+			cfgEffectData = CfgEffect.Instance.GetById(this.effectId);
+			graphicComponent.SetPrefabPath(cfgEffectData.prefabPath);
 		}
 
 		protected override GraphicComponent CreateGraphicComponent()

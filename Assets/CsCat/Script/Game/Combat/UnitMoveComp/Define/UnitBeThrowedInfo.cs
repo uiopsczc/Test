@@ -14,7 +14,7 @@ namespace CsCat
 		public float duration;
 		public float remainDuration;
 		public float interp = 1;
-		public float height_speed;
+		public float heightSpeed;
 		public float heightAccelerate;
 		public float? rotateDuration;
 		public float? rotateRemainDuration;

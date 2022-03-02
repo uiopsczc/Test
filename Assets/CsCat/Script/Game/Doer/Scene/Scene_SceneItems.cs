@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -112,8 +113,9 @@ namespace CsCat
 		// 清除所有物品
 		public void ClearItems(bool isNotIncludeChildScene = false)
 		{
-			foreach (Item item in oSceneItems.GetItemDict_ToEdit().Values)
+			foreach (DictionaryEntry keyValue in oSceneItems.GetItemDict_ToEdit())
 			{
+				Item item = (Item) keyValue.Value;
 				// 触发离开事件
 				DoLeave(item);
 				item.SetEnv(null);
@@ -190,7 +192,7 @@ namespace CsCat
 			for (var i = 0; i < items.Length; i++)
 			{
 				Item item = items[i];
-				if (item.GetGroup().Equals(@group))
+				if (item.GetGroup().Equals(group))
 					result.Add(item);
 			}
 

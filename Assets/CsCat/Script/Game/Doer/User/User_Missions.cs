@@ -12,9 +12,9 @@ namespace CsCat
 			return this.oMissions.GetMissions(id);
 		}
 
-		public bool HasMissions()
+		public bool IsHasMissions()
 		{
-			return this.oMissions.HasMissions();
+			return this.oMissions.IsHasMissions();
 		}
 
 		public bool IsHasMission(string id)
@@ -41,7 +41,7 @@ namespace CsCat
 
 		public ArrayList GetFinishedMissionIds()
 		{
-			return GetOrAdd("finished_mission_ids", () => new ArrayList());
+			return GetOrAdd("finishedMissionIds", () => new ArrayList());
 		}
 
 		public void AddFinishedMissionId(string missionId)

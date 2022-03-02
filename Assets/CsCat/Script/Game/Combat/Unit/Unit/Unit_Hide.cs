@@ -7,23 +7,23 @@ namespace CsCat
 		public void UpdateHideState()
 		{
 			if (this.IsHide())
-				this.__SetHideMode(this.IsExpose() ? "隐身状态被显隐" : "隐身状态没有显隐");
+				this._SetHideMode(this.IsExpose() ? "隐身状态被显隐" : "隐身状态没有显隐");
 			else
-				this.__SetHideMode("非隐形状态");
+				this._SetHideMode("非隐形状态");
 		}
 
-		private void __SetHideMode(string mode)
+		private void _SetHideMode(string mode)
 		{
-			if (!this.isLoadOk)
+			if (!this._isLoadOk)
 			{
-				this.loadOkListenList.Add(() => { this.____SetHideMode(mode); });
+				this._loadOkListenList.Add(() => { this.__SetHideMode(mode); });
 				return;
 			}
 
-			this.____SetHideMode(mode);
+			this.__SetHideMode(mode);
 		}
 
-		private void ____SetHideMode(string mode)
+		private void __SetHideMode(string mode)
 		{
 			if ("隐身状态被显隐".Equals(mode))
 			{

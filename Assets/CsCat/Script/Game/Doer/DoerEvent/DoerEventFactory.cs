@@ -7,18 +7,18 @@ namespace CsCat
 	{
 		protected override string defaultDoerClassPath => "CsCat.DoerEvent";
 
-		private Dictionary<string, DoerEvent> doerEventDict = new Dictionary<string, DoerEvent>();
+		private readonly Dictionary<string, DoerEvent> _doerEventDict = new Dictionary<string, DoerEvent>();
 
 		protected override string GetClassPath(string id)
 		{
-			return this.GetCfgDoerEventData(id).classPathCS.IsNullOrWhiteSpace()
+			return this.GetCfgDoerEventData(id).classPathCs.IsNullOrWhiteSpace()
 				? base.GetClassPath(id)
-				: GetCfgDoerEventData(id).classPathCS;
+				: GetCfgDoerEventData(id).classPathCs;
 		}
 
 		public CfgDoerEventData GetCfgDoerEventData(string id)
 		{
-			return CfgDoerEvent.Instance.get_by_id(id);
+			return CfgDoerEvent.Instance.GetById(id);
 		}
 
 		protected override DBase _NewDBase(string idOrRid)
@@ -30,8 +30,12 @@ namespace CsCat
 		public override void Init()
 		{
 			base.Init();
-			foreach (var cfgDoerEventData in CfgDoerEvent.Instance.All())
+			var cfgDoerEventDataList = CfgDoerEvent.Instance.All();
+			for (var i = 0; i < cfgDoerEventDataList.Count; i++)
+			{
+				var cfgDoerEventData = cfgDoerEventDataList[i];
 				LoadDoerEvent(cfgDoerEventData.id);
+			}
 		}
 
 		private void LoadDoerEvent(string id)
@@ -46,12 +50,12 @@ namespace CsCat
 			doerEvent.Init();
 			doerEvent.PostInit();
 			doerEvent.SetIsEnabled(true, false);
-			doerEventDict[id] = doerEvent;
+			_doerEventDict[id] = doerEvent;
 		}
 
 		public DoerEvent GetDoerEvent(string id)
 		{
-			return doerEventDict.ContainsKey(id) ? this.doerEventDict[id] : null;
+			return _doerEventDict.ContainsKey(id) ? this._doerEventDict[id] : null;
 		}
 	}
 }

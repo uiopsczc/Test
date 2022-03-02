@@ -5,13 +5,13 @@ namespace CsCat
 {
 	public partial class EffectManager
 	{
-		private HashSet<string> gameObjectPoolNameList = new HashSet<string>(); //用于销毁的时候，清理对应的gameObjectPool
+		private HashSet<string> _gameObjectPoolNameList = new HashSet<string>(); //用于销毁的时候，清理对应的gameObjectPool
 
 		public EffectEntity CreateEffectEntity(string effectId, Unit unit, Vector3? pos = null,
 		  Vector3? eulerAngles = null)
 		{
 			var effectEntity = AddChild<EffectEntity>(null, effectId, unit);
-			gameObjectPoolNameList.Add((effectEntity.graphicComponent as EffectGraphicComponent)
+			_gameObjectPoolNameList.Add((effectEntity.graphicComponent as EffectGraphicComponent)
 			  .GetEffectGameObjectPoolName());
 			if (pos != null)
 				effectEntity.transformComponent.position = pos.Value;

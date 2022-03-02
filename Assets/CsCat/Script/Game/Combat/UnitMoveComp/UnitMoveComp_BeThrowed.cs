@@ -14,14 +14,14 @@ namespace CsCat
 			float height = unitBeThrowedInfo.height;
 			var endRotation = unitBeThrowedInfo.endRotation;
 			var rotateDuration = unitBeThrowedInfo.rotateDuration;
-			if ("be_throwed".Equals(this.moveType))
+			if ("beThrowed".Equals(this.moveType))
 				return;
-			var unit = this.unit;
-			this.moveType = "be_throwed";
+			var unit = this._unit;
+			this.moveType = "beThrowed";
 			if (unitBeThrowedInfo.IsHasAnimationName() && unit.animation != null)
-				this.unit.PlayAnimation(unitBeThrowedInfo.animationName);
+				this._unit.PlayAnimation(unitBeThrowedInfo.animationName);
 			this.unitBeThrowedInfo = unitBeThrowedInfo;
-			this.unit.UpdateMixedStates();
+			this._unit.UpdateMixedStates();
 			this.unitBeThrowedInfo.orgHeight = unit.GetPosition().y;
 			this.unitBeThrowedInfo.startPos = unit.GetPosition();
 			this.unitBeThrowedInfo.remainDuration = duration;
@@ -32,13 +32,13 @@ namespace CsCat
 			if (maxHeight == 0)
 			{
 				this.unitBeThrowedInfo.heightAccelerate = deltaHeight * 2 / (duration * duration);
-				this.unitBeThrowedInfo.height_speed = 0;
+				this.unitBeThrowedInfo.heightSpeed = 0;
 			}
 			else
 			{
 				float hTime = duration / ((float)Math.Sqrt(1 - deltaHeight / maxHeight) + 1);
 				this.unitBeThrowedInfo.heightAccelerate = -2 * maxHeight / (hTime * hTime);
-				this.unitBeThrowedInfo.height_speed = -this.unitBeThrowedInfo.heightAccelerate * hTime;
+				this.unitBeThrowedInfo.heightSpeed = -this.unitBeThrowedInfo.heightAccelerate * hTime;
 			}
 
 			if (endRotation != null && rotateDuration != null)
@@ -56,7 +56,7 @@ namespace CsCat
 				if (this.unitBeThrowedInfo != null)
 				{
 					this.unitBeThrowedInfo.remainDuration = 0.02f;
-					this.__UpdateBeThrowed(0.02f);
+					this._UpdateBeThrowed(0.02f);
 				}
 
 				return;
@@ -64,17 +64,17 @@ namespace CsCat
 
 			if (this.unitBeThrowedInfo != null && !this.unitBeThrowedInfo.isNotStopAnimation &&
 				this.unitBeThrowedInfo.IsHasAnimationName())
-				this.unit.StopAnimation(this.unitBeThrowedInfo.animationName, 0.2f);
+				this._unit.StopAnimation(this.unitBeThrowedInfo.animationName, 0.2f);
 
 			var isBackToGround = unitBeThrowedInfo?.isBackToGround ?? false;
 			this.unitBeThrowedInfo = null;
 			this.moveType = null;
-			this.unit.UpdateMixedStates();
+			this._unit.UpdateMixedStates();
 
 			if (isBackToGround)
 			{
 				var unitBeThrowedInfo = new UnitBeThrowedInfo();
-				unitBeThrowedInfo.endPos = Client.instance.combat.pathManager.GetGroundPos(this.unit.GetPosition());
+				unitBeThrowedInfo.endPos = Client.instance.combat.pathManager.GetGroundPos(this._unit.GetPosition());
 				unitBeThrowedInfo.duration = 0.1f;
 				unitBeThrowedInfo.height = 0f;
 				unitBeThrowedInfo.isBackToGround = false;
@@ -82,9 +82,9 @@ namespace CsCat
 			}
 		}
 
-		public void __UpdateBeThrowed(float deltaTime)
+		public void _UpdateBeThrowed(float deltaTime)
 		{
-			var unit = this.unit;
+			var unit = this._unit;
 			this.unitBeThrowedInfo.remainDuration = this.unitBeThrowedInfo.remainDuration - deltaTime;
 			if (this.unitBeThrowedInfo.remainDuration <= 0)
 			{
@@ -99,7 +99,7 @@ namespace CsCat
 				curHeight = this.unitBeThrowedInfo.orgHeight +
 							 this.unitBeThrowedInfo.calcHeightFunc(this.unitBeThrowedInfo);
 			else
-				curHeight = this.unitBeThrowedInfo.orgHeight + this.unitBeThrowedInfo.height_speed * passedDuration +
+				curHeight = this.unitBeThrowedInfo.orgHeight + this.unitBeThrowedInfo.heightSpeed * passedDuration +
 							 this.unitBeThrowedInfo.heightAccelerate * passedDuration * passedDuration * 0.5f;
 			//计算水平位置
 			float interp = (float)Math.Pow((1 - passedDuration / this.unitBeThrowedInfo.duration),

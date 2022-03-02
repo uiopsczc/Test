@@ -121,7 +121,7 @@ namespace CsCat
 
 			if (!target.CheckUseItem(item))
 				return false;
-			item = item.CanFold() ? this.RemoveItems(item.GetId(), 1)[0] : this.RemoveItem(item);
+			item = item.IsCanFold() ? this.RemoveItems(item.GetId(), 1)[0] : this.RemoveItem(item);
 			if (!target.UseItem(item))
 			{
 				//失败，加回去
@@ -137,8 +137,9 @@ namespace CsCat
 		public bool DealItems(Dictionary<string, string> itemDict, DoerAttrParser doerAttrParser = null)
 		{
 			doerAttrParser = doerAttrParser ?? new DoerAttrParser(this);
-			foreach (var itemId in itemDict.Keys)
+			foreach (var keyValue in itemDict)
 			{
+				var itemId = keyValue.Key;
 				string value = itemDict[itemId];
 				Hashtable addAttrDict = new Hashtable(); //带属性
 				int pos = value.IndexOf("(");
@@ -172,14 +173,14 @@ namespace CsCat
 							var list = new ArrayList(addAttrDict.Keys);
 							for (var j = 0; j < list.Count; j++)
 							{
-								var attrName = (string) list[j];
+								var attrName = (string)list[j];
 								addAttrDict[attrName] = doerAttrParser.Parse(addAttrDict[attrName] as string);
 							}
 
 							item.AddAll(addAttrDict);
 						}
 
-						bool isCanFold = item.CanFold();
+						bool isCanFold = item.IsCanFold();
 						if (isCanFold)
 						{
 							item.SetCount(count);
@@ -213,7 +214,7 @@ namespace CsCat
 
 			if (!target.CheckPutOnEquip(item))
 				return false;
-			item = item.CanFold() ? this.RemoveItems(item.GetId(), 1)[0] : this.RemoveItem(item);
+			item = item.IsCanFold() ? this.RemoveItems(item.GetId(), 1)[0] : this.RemoveItem(item);
 			if (item == null)
 			{
 				LogCat.error(string.Format("PutOnEquip error:{0} do not has item:{1}", this, idOrRid));

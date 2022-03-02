@@ -9,8 +9,8 @@ namespace CsCat
 	{
 		public List<Unit> SelectUnit(Hashtable conditionDict)
 		{
-			var rangeInfo = conditionDict.Get<Hashtable>("range_info");
-			IPosition originIPosition = conditionDict.Get<IPosition>("origin_iposition");
+			var rangeInfo = conditionDict.Get<Hashtable>("rangeInfo");
+			IPosition originIPosition = conditionDict.Get<IPosition>("originIPosition");
 			var startPosition = originIPosition.GetPosition();
 			var scope = conditionDict.Get<string>("scope");
 			float maxDistance = rangeInfo.Get<float>("radius");
@@ -22,9 +22,9 @@ namespace CsCat
 
 			string order = conditionDict.Get<string>("order");
 			string faction = conditionDict.Get<string>("faction");
-			var candidateList = conditionDict.Get<List<Unit>>("candidate_list");
-			var isOnlyAttackable = conditionDict.Get<bool>("is_only_attackable");
-			var isCanSelectHideUnit = conditionDict.Get<bool>("is_can_select_hide_unit");
+			var candidateList = conditionDict.Get<List<Unit>>("candidateList");
+			var isOnlyAttackable = conditionDict.Get<bool>("isOnlyAttackable");
+			var isCanSelectHideUnit = conditionDict.Get<bool>("isCanSelectHideUnit");
 
 			var targetUnitList = new List<Unit>();
 			var matchFactionList = this.GetMatchFactionList(faction, scope);
@@ -35,7 +35,7 @@ namespace CsCat
 			for (var i = 0; i < checkUnitList.Count; i++)
 			{
 				var unit = checkUnitList[i];
-				if (!unit.IsDestroyed() && !unit.IsDead() && this.__CheckUnit(unit, originIPosition, rangeInfo, faction,
+				if (!unit.IsDestroyed() && !unit.IsDead() && this.CheckUnit(unit, originIPosition, rangeInfo, faction,
 					scope,
 					isOnlyAttackable, isCanSelectHideUnit))
 					targetUnitList.Add(unit);
@@ -47,7 +47,7 @@ namespace CsCat
 		}
 
 
-		public bool __CheckUnit(Unit unit, IPosition originIPosition, Hashtable rangeInfo, string faction, string scope,
+		public bool CheckUnit(Unit unit, IPosition originIPosition, Hashtable rangeInfo, string faction, string scope,
 		  bool isOnlyAttackable, bool isCanSelectHideUnit = false)
 		{
 			if ("技能物体".Equals(unit.cfgUnitData.type))

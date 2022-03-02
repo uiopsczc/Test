@@ -6,14 +6,14 @@ namespace CsCat
 
 		protected override string GetClassPath(string id)
 		{
-			return this.GetCfgSceneData(id).class_path_cs.IsNullOrWhiteSpace()
+			return this.GetCfgSceneData(id).classPathCs.IsNullOrWhiteSpace()
 				? base.GetClassPath(id)
-				: GetCfgSceneData(id).class_path_cs;
+				: GetCfgSceneData(id).classPathCs;
 		}
 
 		public CfgSceneData GetCfgSceneData(string id)
 		{
-			return CfgScene.Instance.get_by_id(id);
+			return CfgScene.Instance.GetById(id);
 		}
 
 		protected override DBase _NewDBase(string idOrRid)

@@ -10,16 +10,16 @@ namespace CsCat
 			if (!base.OnAccept(user))
 				return false;
 			DoerAttrParser doerAttrParser = new DoerAttrParser(Client.instance.user, this, this.GetOwner(), null);
-			Dictionary<string, string> findItemDict = GetCfgMissionData()._find_item_dict;
+			Dictionary<string, string> findItemDict = GetCfgMissionData()._findItemDict;
 			Dictionary<string, int> curFindItemDict = new Dictionary<string, int>();
-			foreach (var itemId in findItemDict.Keys)
+			foreach (var keyValue in findItemDict)
 			{
+				var itemId = keyValue.Key;
 				string itemCountString = findItemDict[itemId];
 				int itemCount = doerAttrParser.ParseInt(itemCountString, 0);
 				curFindItemDict[itemId] = itemCount;
 			}
-
-			this.Set("find_item_dict", curFindItemDict);
+			this.Set("findItemDict", curFindItemDict);
 			return true;
 		}
 
@@ -27,26 +27,27 @@ namespace CsCat
 		{
 			if (base.IsReady())
 				return true;
-			Dictionary<string, int> findItemDict = this.Get<Dictionary<string, int>>("find_item_dict");
-			foreach (var itemId in findItemDict.Keys)
+			Dictionary<string, int> findItemDict = this.Get<Dictionary<string, int>>("findItemDict");
+			foreach (var keyValue in findItemDict)
 			{
+				var itemId = keyValue.Key;
 				var user = this.GetOwner() as User;
 				if (user.GetItemCount(itemId) < findItemDict[itemId])
 					return false;
 			}
-
-			return this.Get<bool>("is_ready");
+			return this.Get<bool>("isReady");
 		}
 
 		public override string GetStatusString()
 		{
 			var user = this.GetOwner() as User;
-			Dictionary<string, int> findItemDict = this.Get<Dictionary<string, int>>("find_item_dict");
+			Dictionary<string, int> findItemDict = this.Get<Dictionary<string, int>>("findItemDict");
 			bool isFinished = true;
 			StringBuilder stringBuilder = new StringBuilder();
-			foreach (var itemId in findItemDict.Keys)
+			foreach (var keyValue in findItemDict)
 			{
-				string itemName = CfgItem.Instance.get_by_id(itemId).name;
+				var itemId = keyValue.Key;
+				string itemName = CfgItem.Instance.GetById(itemId).name;
 				int curCount = user.GetItemCount(itemId);
 				int needCount = findItemDict[itemId];
 				if (curCount > needCount)

@@ -12,7 +12,7 @@ namespace CsCat
 			if (targetUnit == null || targetUnit.IsDead())
 				return;
 			argDict = argDict ?? new Hashtable();
-			argDict["source_spell"] = this;
+			argDict["sourceSpell"] = this;
 			targetUnit.buffManager.AddBuff(buffId, this.sourceUnit, forceDuration, argDict);
 		}
 

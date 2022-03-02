@@ -23,7 +23,7 @@ namespace CsCat
 
 		public bool HasEquipsOfTypes(string type1, string type2 = null)
 		{
-			return this.oEquips.HasEquipsOfTypes(type1, type2);
+			return this.oEquips.IsHasEquipsOfTypes(type1, type2);
 		}
 
 		//获得指定的装备

@@ -28,12 +28,12 @@ namespace CsCat
 
 		public virtual void DoSave(Hashtable dict)
 		{
-			dict["duration_tick"] = durationTick;
+			dict["durationTick"] = durationTick;
 		}
 
 		public virtual void DoRestore(Hashtable dict)
 		{
-			durationTick = dict["duration_tick"].ToIntOrToDefault();
+			durationTick = dict["durationTick"].ToIntOrToDefault();
 		}
 	}
 }

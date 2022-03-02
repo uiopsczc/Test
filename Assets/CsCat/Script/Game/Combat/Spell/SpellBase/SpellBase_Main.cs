@@ -7,7 +7,7 @@ namespace CsCat
 {
 	public partial class SpellBase
 	{
-		private List<Unit> targetUnitList;
+		private List<Unit> _targetUnitList;
 
 		public override void Start()
 		{
@@ -16,18 +16,18 @@ namespace CsCat
 				this.CounterIncrease(); // 被动默认不被消耗
 			this.CounterIncrease();
 
-			this.targetUnitList = Client.instance.combat.spellManager.RecommendSpellRule(this.sourceUnit,
+			this._targetUnitList = Client.instance.combat.spellManager.RecommendSpellRule(this.sourceUnit,
 				this.targetUnit,
 				this.cfgSpellData, this.originPosition.Value);
-			this.targetUnit = this.targetUnitList.IsNullOrEmpty() ? null : this.targetUnitList[0];
+			this.targetUnit = this._targetUnitList.IsNullOrEmpty() ? null : this._targetUnitList[0];
 			if (this.IsHasMethod("OnStart"))
 				this.InvokeMethod("OnStart", false);
 			this.RegisterTriggerSpell();
 			this.Broadcast<Unit, Unit, SpellBase>(null, SpellEventNameConst.On_Spell_Start, this.sourceUnit,
 				this.targetUnit, this);
-			Client.instance.combat.spellManager.UnRegisterListener("on_start", this.sourceUnit, this,
+			Client.instance.combat.spellManager.UnRegisterListener("onStart", this.sourceUnit, this,
 				"RegisterTriggerSpell");
-			if (!this.cfgSpellData.action_name.IsNullOrWhiteSpace())
+			if (!this.cfgSpellData.actionName.IsNullOrWhiteSpace())
 			{
 				//      if not self.source_unit.action_dict or
 				//      not self.source_unit.action_dict[self.cfgSpellData.action_name] then
@@ -42,18 +42,18 @@ namespace CsCat
 				if (this.IsHasMethod("OnCast"))
 				{
 					//起手前摇
-					var castTimePct = this.GetAnimationTimePct(this.cfgSpellData.cast_time, 0);
-					this.RegisterAnimationEvent(castTimePct, "__OnCast");
+					var castTimePct = this.GetAnimationTimePct(this.cfgSpellData.castTime, 0);
+					this.RegisterAnimationEvent(castTimePct, "_OnCast");
 				}
 
 				//可打断后摇
-				var breakTimePct = this.GetAnimationTimePct(this.cfgSpellData.break_time, 1);
+				var breakTimePct = this.GetAnimationTimePct(this.cfgSpellData.breakTime, 1);
 				this.RegisterAnimationEvent(breakTimePct
 					, "PassBreakTime");
-				if ("触发".Equals(this.cfgSpellData.cast_type))
+				if ("触发".Equals(this.cfgSpellData.castType))
 				{
-					var castTimePct = this.GetAnimationTimePct(this.cfgSpellData.cast_time, 0);
-					var breakTimePctValue = this.GetAnimationTimePct(this.cfgSpellData.break_time, 1);
+					var castTimePct = this.GetAnimationTimePct(this.cfgSpellData.castTime, 0);
+					var breakTimePctValue = this.GetAnimationTimePct(this.cfgSpellData.breakTime, 1);
 					if (breakTimePctValue < castTimePct)
 						LogCat.LogError("技能脱手时间比出手时间快");
 					this.RegisterAnimationEvent(breakTimePctValue, "OnSpellAnimationFinished");
@@ -65,25 +65,25 @@ namespace CsCat
 
 		private float GetAnimationTimePct(float time, float defaultValue)
 		{
-			if (this.cfgSpellData.animation_duration != 0)
-				return time / this.cfgSpellData.animation_duration;
+			if (this.cfgSpellData.animationDuration != 0)
+				return time / this.cfgSpellData.animationDuration;
 			return defaultValue;
 		}
 
-		protected void __OnCast()
+		protected void _OnCast()
 		{
 			if (this.IsHasMethod("OnCast"))
 				this.InvokeMethod("OnCast", false);
 			this.Broadcast<Unit, Unit, SpellBase>(null, SpellEventNameConst.On_Spell_Cast, this.sourceUnit,
 				this.targetUnit, this);
-			Client.instance.combat.spellManager.UnRegisterListener("on_cast", this.sourceUnit, this,
+			Client.instance.combat.spellManager.UnRegisterListener("onCast", this.sourceUnit, this,
 				"RegisterTriggerSpell");
 		}
 
 		protected void RegisterTriggerSpell()
 		{
 			//注册表里填的技能触发事件，由简单的技能按顺序触发组成复杂的技能
-			var newSpellTriggerIds = this.cfgSpellData._new_spell_trigger_ids;
+			var newSpellTriggerIds = this.cfgSpellData._newSpellTriggerIds;
 			if (newSpellTriggerIds.IsNullOrEmpty())
 				return;
 			for (var i = 0; i < newSpellTriggerIds.Length; i++)
@@ -95,20 +95,20 @@ namespace CsCat
 
 		public void __RegisterTriggerSpell(string newSpellTriggerId)
 		{
-			var cfgSpellTriggerData = CfgSpellTrigger.Instance.get_by_id(newSpellTriggerId);
-			var triggerType = cfgSpellTriggerData.trigger_type;
+			var cfgSpellTriggerData = CfgSpellTrigger.Instance.GetById(newSpellTriggerId);
+			var triggerType = cfgSpellTriggerData.triggerType;
 			triggerType = SpellConst.Trigger_Type_Dict[triggerType];
-			var triggerSpellId = cfgSpellTriggerData.trigger_spell_id; // 触发的技能id
-			var triggerSpellDelayDuration = cfgSpellTriggerData.trigger_spell_delay_duration;
+			var triggerSpellId = cfgSpellTriggerData.triggerSpellId; // 触发的技能id
+			var triggerSpellDelayDuration = cfgSpellTriggerData.triggerSpellDelayDuration;
 			Action<Unit, Unit, SpellBase> func = (sourceUnit, targetUnit, spell) =>
 			{
 				//这里可以添加是否满足其它触发条件判断
 				if (!this.CheckTriggerCondition(cfgSpellTriggerData, sourceUnit, targetUnit))
 					return;
 				var triggerArgDict = new Hashtable();
-				triggerArgDict["source_spell"] = this;
-				triggerArgDict["transmit_arg_dict"] = this.GetTransmitArgDict();
-				triggerArgDict["new_spell_trigger_id"] = newSpellTriggerId;
+				triggerArgDict["sourceSpell"] = this;
+				triggerArgDict["transmitArgDict"] = this.GetTransmitArgDict();
+				triggerArgDict["newSpellTriggerId"] = newSpellTriggerId;
 				Action triggerFunc = () =>
 				{
 					//启动技能时需要把新技能需要的参数传进去，如果当前技能没有提供这样的方法，则说明当前技能不能启动目标技能
@@ -150,8 +150,8 @@ namespace CsCat
 		public Hashtable GetTransmitArgDict()
 		{
 			Hashtable result = new Hashtable();
-			result["origin_position"] = this.GetOriginPosition();
-			result["attack_dir"] = this.GetAttackDir();
+			result["originPosition"] = this.GetOriginPosition();
+			result["attackDir"] = this.GetAttackDir();
 			return result;
 		}
 
@@ -182,7 +182,7 @@ namespace CsCat
 			Client.instance.combat.spellManager.OnSpellAnimationFinished(this);
 			if (this.counter.count <= 0)
 				this.RemoveSelf();
-			if (this.cfgSpellData.is_can_move_while_cast && this.sourceUnit != null && !this.sourceUnit.IsDead())
+			if (this.cfgSpellData.isCanMoveWhileCast && this.sourceUnit != null && !this.sourceUnit.IsDead())
 				this.sourceUnit.SetIsMoveWithMoveAnimation(true);
 		}
 

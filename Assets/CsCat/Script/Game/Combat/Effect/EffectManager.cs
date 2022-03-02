@@ -1,3 +1,5 @@
+using Boo.Lang;
+
 namespace CsCat
 {
 	public partial class EffectManager : TickObject
@@ -33,9 +35,9 @@ namespace CsCat
 		protected override void _Destroy()
 		{
 			base._Destroy();
-			foreach (var poolName in gameObjectPoolNameList) PoolCatManagerUtil.RemovePool(poolName);
+			foreach (var poolName in _gameObjectPoolNameList) PoolCatManagerUtil.RemovePool(poolName);
 
-			gameObjectPoolNameList.Clear();
+			_gameObjectPoolNameList.Clear();
 		}
 	}
 }

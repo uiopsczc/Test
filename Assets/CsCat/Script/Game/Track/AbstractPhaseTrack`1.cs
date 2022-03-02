@@ -55,21 +55,21 @@ namespace CsCat
 				durationTick += phase.durationTick;
 			});
 
-			dict["duration_tick"] = durationTick;
-			dict["is_loop"] = isLoop;
-			dict["phase_arrayList"] = phaseArrayList;
+			dict["durationTick"] = durationTick;
+			dict["isLoop"] = isLoop;
+			dict["phaseArrayList"] = phaseArrayList;
 		}
 
 		public virtual void DoRestore(Hashtable dict)
 		{
-			phaseList.DoRestoreList(dict["phase_arrayList"] as ArrayList, (subDict) =>
+			phaseList.DoRestoreList(dict["phaseArrayList"] as ArrayList, (subDict) =>
 			{
 				AbstractPhase<T> phase = new AbstractPhase<T>();
 				phase.DoRestore(subDict);
 				return phase;
 			});
-			durationTick = dict["duration_tick"].ToIntOrToDefault();
-			isLoop = dict["is_loop"].ToBoolOrToDefault();
+			durationTick = dict["durationTick"].ToIntOrToDefault();
+			isLoop = dict["isLoop"].ToBoolOrToDefault();
 
 		}
 	}

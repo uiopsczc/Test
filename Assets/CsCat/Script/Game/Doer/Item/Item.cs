@@ -20,7 +20,7 @@ namespace CsCat
 
 		public CfgItemData GetCfgItemData()
 		{
-			return CfgItem.Instance.get_by_id(this.GetId());
+			return CfgItem.Instance.GetById(this.GetId());
 		}
 
 		///////////////////////////////////////DoXXX//////////////////////////////
@@ -94,39 +94,39 @@ namespace CsCat
 			return this.IsWeapon() || this.IsArmor();
 		}
 
-		public bool IsType1(string type_1)
+		public bool IsType1(string type1)
 		{
-			return type_1.Equals(this.GetType1());
+			return type1.Equals(this.GetType1());
 		}
 
-		public bool IsType2(string type_2)
+		public bool IsType2(string type2)
 		{
-			return type_2.Equals(this.GetType2());
+			return type2.Equals(this.GetType2());
 		}
 
 		public bool IsPutOn()
 		{
-			return this.GetTmp("o_is_put_on", false);
+			return this.GetTmp("o_isPutOn", false);
 		}
 
-		public void SetIsPutOn(bool is_put_on)
+		public void SetIsPutOn(bool isPutOn)
 		{
-			this.SetTmp("o_is_put_on", is_put_on);
+			this.SetTmp("o_isPutOn", isPutOn);
 		}
 
 		public string GetType1()
 		{
-			return this.GetCfgItemData().type_1;
+			return this.GetCfgItemData().type1;
 		}
 
 		public string GetType2()
 		{
-			return this.GetCfgItemData().type_2;
+			return this.GetCfgItemData().type2;
 		}
 
-		public bool CanFold()
+		public bool IsCanFold()
 		{
-			return this.GetCfgItemData().can_fold;
+			return this.GetCfgItemData().isCanFold;
 		}
 
 		public string GetName()

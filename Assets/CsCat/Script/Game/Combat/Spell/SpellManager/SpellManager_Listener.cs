@@ -2,8 +2,6 @@ namespace CsCat
 {
 	public partial class SpellManager : TickObject
 	{
-
-
 		public void RegisterListener(string type, Unit unit, object obj, string tag, MethodInvoker methodInvoker)
 		{
 			if (!this.listenerDict.ContainsKey(type))
@@ -60,13 +58,13 @@ namespace CsCat
 
 		public void BeforeHit(Unit sourceUnit, Unit targetUnit, params object[] args)
 		{
-			foreach (var listenerInfo in this.listenerDict["before_hit"])
+			foreach (var listenerInfo in this.listenerDict["beforeHit"])
 			{
 				if (listenerInfo.unit == sourceUnit)
 					this.ListenerCallback(listenerInfo, targetUnit, args);
 			}
 
-			foreach (var listenerInfo in this.listenerDict["before_be_hit"])
+			foreach (var listenerInfo in this.listenerDict["beforeBeHit"])
 			{
 				if (listenerInfo.unit == targetUnit)
 					this.ListenerCallback(listenerInfo, targetUnit, args);
@@ -75,20 +73,20 @@ namespace CsCat
 
 		public void OnHit(Unit sourceUnit, Unit targetUnit, SpellBase spell, params object[] args)
 		{
-			foreach (var listenerInfo in this.listenerDict["be_hit"])
+			foreach (var listenerInfo in this.listenerDict["beHit"])
 			{
 				if (listenerInfo.unit == targetUnit)
 					this.ListenerCallback(listenerInfo, targetUnit, spell, args);
 			}
 
 			//!注意：触发回调的过程中可能再次插入或者remove listener
-			foreach (var listenerInfo in this.listenerDict["on_hit"])
+			foreach (var listenerInfo in this.listenerDict["onHit"])
 			{
 				if (listenerInfo.unit == sourceUnit)
 					this.ListenerCallback(listenerInfo, targetUnit, spell, args);
 			}
 
-			foreach (var listenerInfo in this.listenerDict["on_cur_spell_hit"])
+			foreach (var listenerInfo in this.listenerDict["onCurSpellHit"])
 			{
 				if (listenerInfo.unit == sourceUnit && spell == listenerInfo.obj)
 					this.ListenerCallback(listenerInfo, targetUnit, spell, args);
@@ -96,7 +94,7 @@ namespace CsCat
 
 			if ("普攻".Equals(spell.cfgSpellData.type))
 			{
-				foreach (var listenerInfo in this.listenerDict["normal_attack"])
+				foreach (var listenerInfo in this.listenerDict["normalAttack"])
 				{
 					if (listenerInfo.unit == sourceUnit)
 						this.ListenerCallback(listenerInfo, targetUnit, spell, args);
@@ -109,7 +107,7 @@ namespace CsCat
 		{
 			if (spell == null)
 				return;
-			foreach (var listenerInfo in this.listenerDict["on_kill_target"])
+			foreach (var listenerInfo in this.listenerDict["onKillTarget"])
 			{
 				if (listenerInfo.unit == sourceUnit)
 					this.ListenerCallback(listenerInfo, targetUnit, spell, args);
@@ -118,7 +116,7 @@ namespace CsCat
 
 		public void BeforeDead(Unit sourceUnit, Unit deadUnit, params object[] args)
 		{
-			foreach (var listenerInfo in this.listenerDict["before_dead"])
+			foreach (var listenerInfo in this.listenerDict["beforeDead"])
 			{
 				if (listenerInfo.unit == deadUnit)
 					this.ListenerCallback(listenerInfo, deadUnit, args);
@@ -127,13 +125,13 @@ namespace CsCat
 
 		public void OnHurt(Unit sourceUnit, Unit targetUnit, params object[] args)
 		{
-			foreach (var listenerInfo in this.listenerDict["on_hurt"])
+			foreach (var listenerInfo in this.listenerDict["onHurt"])
 			{
 				if (listenerInfo.unit == targetUnit)
 					this.ListenerCallback(listenerInfo, targetUnit, args);
 			}
 
-			foreach (var listenerInfo in this.listenerDict["on_hurt_target"])
+			foreach (var listenerInfo in this.listenerDict["onHurtTarget"])
 			{
 				if (listenerInfo.unit == sourceUnit)
 					this.ListenerCallback(listenerInfo, targetUnit, args);
@@ -143,7 +141,7 @@ namespace CsCat
 
 		public void OnHpChange(Unit sourceUnit, Unit targetUnit, params object[] args)
 		{
-			foreach (var listenerInfo in this.listenerDict["on_hp_change"])
+			foreach (var listenerInfo in this.listenerDict["onHpChange"])
 			{
 				if (listenerInfo.unit == targetUnit)
 					this.ListenerCallback(listenerInfo, targetUnit, args);
@@ -152,7 +150,7 @@ namespace CsCat
 
 		public void OnSpellStart(Unit sourceUnit, Unit targetUnit, SpellBase spell, params object[] args)
 		{
-			foreach (var listenerInfo in this.listenerDict["on_start"])
+			foreach (var listenerInfo in this.listenerDict["onStart"])
 			{
 				if (listenerInfo.unit == sourceUnit && listenerInfo.obj == spell)
 					this.ListenerCallback(listenerInfo, targetUnit, spell, args);
@@ -161,7 +159,7 @@ namespace CsCat
 
 		public void OnSpellCast(Unit sourceUnit, Unit targetUnit, SpellBase spell, params object[] args)
 		{
-			foreach (var listenerInfo in this.listenerDict["on_cast"])
+			foreach (var listenerInfo in this.listenerDict["onCast"])
 			{
 				if (listenerInfo.unit == sourceUnit && listenerInfo.obj == spell)
 					this.ListenerCallback(listenerInfo, targetUnit, spell, args);
@@ -170,7 +168,7 @@ namespace CsCat
 
 		public void OnMissileReach(Unit sourceUnit, EffectEntity missileEffect, SpellBase spell, params object[] args)
 		{
-			foreach (var listenerInfo in this.listenerDict["on_missile_reach"])
+			foreach (var listenerInfo in this.listenerDict["onMissileReach"])
 			{
 				if (listenerInfo.unit == sourceUnit && listenerInfo.obj == spell)
 					this.ListenerCallback(listenerInfo, sourceUnit, missileEffect, spell, args);

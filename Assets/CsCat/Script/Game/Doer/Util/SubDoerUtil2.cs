@@ -34,22 +34,24 @@ namespace CsCat
 			{
 				if (filterFunc == null)
 				{
-					foreach (var subDoerList in dict.Values)
+					foreach (DictionaryEntry keyValue in dict)
 					{
-						for (var i = 0; i < (subDoerList as ArrayList).Count; i++)
+						var subDoerList = keyValue.Value as ArrayList;
+						for (var i = 0; i < subDoerList.Count; i++)
 						{
-							var subDoer = (subDoerList as ArrayList)[i];
+							var subDoer = subDoerList[i];
 							result.Add(subDoer as T);
 						}
 					}
 				}
 				else
 				{
-					foreach (var subDoerList in dict.Values)
+					foreach (DictionaryEntry keyValue in dict)
 					{
-						for (var i = 0; i < (subDoerList as ArrayList).Count; i++)
+						var subDoerList = keyValue.Value as ArrayList;
+						for (var i = 0; i < subDoerList.Count; i++)
 						{
-							var subDoer = (subDoerList as ArrayList)[i];
+							var subDoer = subDoerList[i];
 							if (filterFunc(subDoer as T))
 								result.Add(subDoer as T);
 						}
@@ -137,8 +139,11 @@ namespace CsCat
 		{
 			var dict = GetSubDoerDict_ToEdit(parentDoer, subDoerKey);
 			List<string> result = new List<string>();
-			foreach (string id in dict.Keys)
+			foreach (DictionaryEntry keyVlaue in dict)
+			{
+				string id = (string)keyVlaue.Key;
 				result.Add(id);
+			}
 			return result.ToArray();
 		}
 
@@ -146,7 +151,7 @@ namespace CsCat
 		{
 			addSubDoer.SetOwner(parentDoer);
 			string id = addSubDoer.GetId();
-			bool canFold = addSubDoer.IsHasMethod("CanFold") && addSubDoer.InvokeMethod<bool>("CanFold");
+			bool canFold = addSubDoer.IsHasMethod("IsCanFold") && addSubDoer.InvokeMethod<bool>("IsCanFold");
 			var subDoers = GetSubDoers_ToEdit(parentDoer, subDoerKey, id);
 			if (canFold)
 			{
@@ -185,8 +190,8 @@ namespace CsCat
 				return result.ToArray();
 			}
 
-			bool canFold = (subDoers[0] as T).IsHasMethod("CanFold") &&
-			               (subDoers[0] as T).InvokeMethod<bool>("CanFold");
+			bool canFold = (subDoers[0] as T).IsHasMethod("IsCanFold") &&
+			               (subDoers[0] as T).InvokeMethod<bool>("IsCanFold");
 			for (int i = subDoers.Count - 1; i >= 0; i--)
 			{
 				var subDoer = subDoers[i] as T;
@@ -269,8 +274,9 @@ namespace CsCat
 			where T : Doer
 		{
 			var dict = GetSubDoerDict_ToEdit(parentDoer, subDoerKey);
-			foreach (ArrayList subDoerList in dict.Values)
+			foreach (DictionaryEntry keyValue in dict)
 			{
+				ArrayList subDoerList = (ArrayList) keyValue.Value;
 				for (int i = subDoerList.Count - 1; i >= 0; i--)
 				{
 					var subDoer = subDoerList[i] as T;

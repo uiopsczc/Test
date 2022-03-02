@@ -7,7 +7,7 @@ namespace CsCat
 	//里面的结构是  Dict<rid,Doer>
 	public class SubDoerUtil3
 	{
-		public static void DoReleaseSubDoer<T>(Doer parentDoer, string subDoerKey, Action<T> relaseSubDoerFunc = null)
+		public static void DoReleaseSubDoer<T>(Doer parentDoer, string subDoerKey, Action<T> releaseSubDoerFunc = null)
 		  where T : Doer
 		{
 			//销毁
@@ -15,7 +15,7 @@ namespace CsCat
 			for (int i = subDoers.Length - 1; i >= 0; i--)
 			{
 				var subDoer = subDoers[i];
-				relaseSubDoerFunc?.Invoke(subDoer);
+				releaseSubDoerFunc?.Invoke(subDoer);
 				subDoer.SetEnv(null);
 				subDoer.Destruct();
 			}
@@ -31,24 +31,24 @@ namespace CsCat
 			List<T> result = new List<T>();
 			if (id == null)
 			{
-				foreach (var subDoer in dict.Values)
+				foreach (DictionaryEntry keyValue in dict)
 				{
+					var subDoer = keyValue.Value;
 					if (filterFunc == null || filterFunc(subDoer as T))
 						result.Add(subDoer as T);
 				}
-
 				return result.ToArray();
 			}
 
-			foreach (T subDoer in dict.Values)
+			foreach (DictionaryEntry keyValue in dict)
 			{
+				T subDoer = (T)keyValue.Value;
 				if (subDoer.GetId().Equals(id))
 				{
 					if (filterFunc == null || filterFunc(subDoer))
 						result.Add(subDoer);
 				}
 			}
-
 			return result.ToArray();
 		}
 

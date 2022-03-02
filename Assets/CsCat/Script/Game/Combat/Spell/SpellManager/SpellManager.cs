@@ -10,21 +10,21 @@ namespace CsCat
 		public override void Init()
 		{
 			base.Init();
-			this.listenerDict["on_start"] = new List<SpellListenerInfo>(); //技能Start之后触发  OnSpellStart
-			this.listenerDict["on_cast"] = new List<SpellListenerInfo>(); //技能OnCast之后触发  OnSpellCast
-			this.listenerDict["on_hurt"] = new List<SpellListenerInfo>(); //被伤害（任何形式）  OnHurt
-			this.listenerDict["on_hurt_target"] = new List<SpellListenerInfo>(); //技能Start之后触发  OnSpellStart
-			this.listenerDict["on_start"] = new List<SpellListenerInfo>(); //伤害目标（任何形式） OnHurt
-			this.listenerDict["be_hit"] = new List<SpellListenerInfo>(); //被技能打后  OnHit
-			this.listenerDict["on_hit"] = new List<SpellListenerInfo>(); //用技能打目标后  OnHit
-			this.listenerDict["on_cur_spell_hit"] = new List<SpellListenerInfo>(); //用技能打目标后只有是相同的技能才触发  OnHit
-			this.listenerDict["normal_attack"] = new List<SpellListenerInfo>(); //放普攻后  OnHit
-			this.listenerDict["before_dead"] = new List<SpellListenerInfo>(); //死亡前 BeforeDead
-			this.listenerDict["before_hit"] = new List<SpellListenerInfo>(); //用技能打目标前  BeforeHit
-			this.listenerDict["before_be_hit"] = new List<SpellListenerInfo>(); //被技能打前  BeforeHit
-			this.listenerDict["on_kill_target"] = new List<SpellListenerInfo>(); //杀死目标后 OnKillTarget
-			this.listenerDict["on_hp_change"] = new List<SpellListenerInfo>(); //目标血量改变时 OnHpChange
-			this.listenerDict["on_missile_reach"] = new List<SpellListenerInfo>(); //当子弹到达
+			this.listenerDict["onStart"] = new List<SpellListenerInfo>(); //技能Start之后触发  OnSpellStart
+			this.listenerDict["onCast"] = new List<SpellListenerInfo>(); //技能OnCast之后触发  OnSpellCast
+			this.listenerDict["onHurt"] = new List<SpellListenerInfo>(); //被伤害（任何形式）  OnHurt
+			this.listenerDict["onHurtTarget"] = new List<SpellListenerInfo>(); //技能Start之后触发  OnSpellStart
+			this.listenerDict["onStart"] = new List<SpellListenerInfo>(); //伤害目标（任何形式） OnHurt
+			this.listenerDict["beHit"] = new List<SpellListenerInfo>(); //被技能打后  OnHit
+			this.listenerDict["onHit"] = new List<SpellListenerInfo>(); //用技能打目标后  OnHit
+			this.listenerDict["onCurSpellHit"] = new List<SpellListenerInfo>(); //用技能打目标后只有是相同的技能才触发  OnHit
+			this.listenerDict["normalAttack"] = new List<SpellListenerInfo>(); //放普攻后  OnHit
+			this.listenerDict["beforeDead"] = new List<SpellListenerInfo>(); //死亡前 BeforeDead
+			this.listenerDict["beforeHit"] = new List<SpellListenerInfo>(); //用技能打目标前  BeforeHit
+			this.listenerDict["beforeBeHit"] = new List<SpellListenerInfo>(); //被技能打前  BeforeHit
+			this.listenerDict["onKillTarget"] = new List<SpellListenerInfo>(); //杀死目标后 OnKillTarget
+			this.listenerDict["onHpChange"] = new List<SpellListenerInfo>(); //目标血量改变时 OnHpChange
+			this.listenerDict["onMissileReach"] = new List<SpellListenerInfo>(); //当子弹到达
 
 			this.AddListener<Unit, Unit, SpellBase>(null, SpellEventNameConst.On_Spell_Start,
 			  (sourceUnit, targetUnit, spell) => this.OnSpellStart(sourceUnit, targetUnit, spell));

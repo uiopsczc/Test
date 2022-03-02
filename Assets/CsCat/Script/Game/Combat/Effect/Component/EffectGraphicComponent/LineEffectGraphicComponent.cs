@@ -5,7 +5,7 @@ namespace CsCat
 	//弹道
 	public class LineEffectGraphicComponent : EffectGraphicComponent
 	{
-		private List<XLineRenderer> xlineRendererList = new List<XLineRenderer>();
+		private readonly List<XLineRenderer> _xlineRendererList = new List<XLineRenderer>();
 
 		public override void OnAllAssetsLoadDone()
 		{
@@ -14,7 +14,7 @@ namespace CsCat
 			for (var i = 0; i < children.Length; i++)
 			{
 				var xlineRenderer = children[i];
-				xlineRendererList.Add(xlineRenderer);
+				_xlineRendererList.Add(xlineRenderer);
 			}
 		}
 
@@ -23,9 +23,9 @@ namespace CsCat
 			base._Update(deltaTime, unscaledDeltaTime);
 			transform.position = this.effectEntity.transformComponent.position;
 			transform.eulerAngles = this.effectEntity.transformComponent.eulerAngles;
-			for (var i = 0; i < xlineRendererList.Count; i++)
+			for (var i = 0; i < _xlineRendererList.Count; i++)
 			{
-				var line = xlineRendererList[i];
+				var line = _xlineRendererList[i];
 				line.target.position = effectEntity.GetComponent<LineEffectComponent>().targetPosition;
 				line.target.eulerAngles = this.effectEntity.transformComponent.eulerAngles;
 			}

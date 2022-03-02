@@ -12,7 +12,7 @@ namespace CsCat
 
 		public CfgMissionData GetCfgMissionData()
 		{
-			return CfgMission.Instance.get_by_id(this.GetId());
+			return CfgMission.Instance.GetById(this.GetId());
 		}
 
 		public override void OnInit()
@@ -33,11 +33,11 @@ namespace CsCat
 		//owner 发放任务的npc
 		public virtual bool OnAccept(User user)
 		{
-			string onAcceptDoerEventId = this.GetCfgMissionData().onAccept_doerEvent_id;
+			string onAcceptDoerEventId = this.GetCfgMissionData().onAcceptDoerEventId;
 			if (!onAcceptDoerEventId.IsNullOrWhiteSpace())
 			{
-				var cfgDoerEventData = CfgDoerEvent.Instance.get_by_id(onAcceptDoerEventId);
-				if (!cfgDoerEventData.is_not_open)
+				var cfgDoerEventData = CfgDoerEvent.Instance.GetById(onAcceptDoerEventId);
+				if (!cfgDoerEventData.isNotOpen)
 				{
 					if (!Client.instance.doerEventFactory.GetDoerEvent(onAcceptDoerEventId).Execute(
 					  string.Format("{0} 接受任务 {1}", user.GetShort(), this.GetShort()), this.GetOwner(),
@@ -52,12 +52,12 @@ namespace CsCat
 		//owner 发放任务的npc
 		public virtual void OnFinish(User user)
 		{
-			string onFinishDoerEventId = this.GetCfgMissionData().onFinish_doerEvent_id;
+			string onFinishDoerEventId = this.GetCfgMissionData().onFinishDoerEventId;
 			if (!onFinishDoerEventId.IsNullOrWhiteSpace())
 			{
 				var cfgDoerEventData =
-				  CfgDoerEvent.Instance.get_by_id(onFinishDoerEventId);
-				if (!cfgDoerEventData.is_not_open)
+				  CfgDoerEvent.Instance.GetById(onFinishDoerEventId);
+				if (!cfgDoerEventData.isNotOpen)
 				{
 					Client.instance.doerEventFactory.GetDoerEvent(onFinishDoerEventId).Execute(
 					  string.Format("{0} 完成任务 {1}", user.GetShort(), this.GetShort()), this.GetOwner(),
@@ -69,12 +69,12 @@ namespace CsCat
 		//owner 发放任务的npc
 		public void OnGiveUp(User user)
 		{
-			string onGiveUpDoerEventId = this.GetCfgMissionData().onGiveUp_doerEvent_id;
+			string onGiveUpDoerEventId = this.GetCfgMissionData().onGiveUpDoerEventId;
 			if (!onGiveUpDoerEventId.IsNullOrWhiteSpace())
 			{
 				var cfgDoerEventData =
-				  CfgDoerEvent.Instance.get_by_id(onGiveUpDoerEventId);
-				if (!cfgDoerEventData.is_not_open)
+				  CfgDoerEvent.Instance.GetById(onGiveUpDoerEventId);
+				if (!cfgDoerEventData.isNotOpen)
 				{
 					Client.instance.doerEventFactory.GetDoerEvent(onGiveUpDoerEventId).Execute(
 					  string.Format("{0} 放弃任务 {1}", user.GetShort(), this.GetShort()), this.GetOwner(),
@@ -90,7 +90,7 @@ namespace CsCat
 
 		public bool CheckFinishCondition()
 		{
-			string finishCondition = this.GetCfgMissionData().finish_condition;
+			string finishCondition = this.GetCfgMissionData().finishCondition;
 			if (!finishCondition.IsNullOrWhiteSpace()) // 未设置完成条件的办事任务不能根据派发任务处来完成，只能在设置了可完成任务的时候检测是否就绪
 			{
 				DoerAttrParser doerAttrParser = new DoerAttrParser(Client.instance.user, this, this.GetOwner());
@@ -110,11 +110,12 @@ namespace CsCat
 		{
 			Dictionary<string, int> result = new Dictionary<string, int>();
 
-			Dictionary<string, string> rewardDict = GetCfgMissionData()._reward_dict;
+			Dictionary<string, string> rewardDict = GetCfgMissionData()._rewardDict;
 			if (!rewardDict.IsNullOrEmpty())
 			{
-				foreach (string itemId in rewardDict.Keys)
+				foreach (var keyValue in rewardDict)
 				{
+					string itemId = keyValue.Key;
 					string curItemId = doerAttrParser.ParseString(itemId);
 					string countString = rewardDict[itemId];
 					int count = doerAttrParser.ParseInt(countString);

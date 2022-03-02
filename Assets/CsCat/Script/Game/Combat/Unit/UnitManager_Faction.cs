@@ -4,23 +4,23 @@ namespace CsCat
 {
 	public partial class UnitManager
 	{
-		private Dictionary<string, Dictionary<string, Unit>> factionUnitDict;
-		private Dictionary<string, Dictionary<string, FactionState>> factionStateDict;
+		private Dictionary<string, Dictionary<string, Unit>> _factionUnitDict;
+		private Dictionary<string, Dictionary<string, FactionState>> _factionStateDict;
 
 		private void InitFactionUnitDict()
 		{
-			this.factionUnitDict = new Dictionary<string, Dictionary<string, Unit>>();
+			this._factionUnitDict = new Dictionary<string, Dictionary<string, Unit>>();
 			for (var i = 0; i < FactionConst.Faction_List.Count; i++)
 			{
 				var faction = FactionConst.Faction_List[i];
-				factionUnitDict[faction] = new Dictionary<string, Unit>();
+				_factionUnitDict[faction] = new Dictionary<string, Unit>();
 			}
 		}
 
 		private void InitFactionStateInfoDict()
 		{
 			//初始化阵营间能否攻击，加血等
-			this.factionStateDict = new Dictionary<string, Dictionary<string, FactionState>>();
+			this._factionStateDict = new Dictionary<string, Dictionary<string, FactionState>>();
 
 			this.SetFactionStateIsCanAttack(FactionConst.A_Faction, FactionConst.A_Faction, false);
 			this.SetFactionStateIsCanHelp(FactionConst.A_Faction, FactionConst.A_Faction, true);
@@ -40,7 +40,7 @@ namespace CsCat
 		// 2. friend 判断是否自己人
 		public bool CheckFaction(string faction1, string faction2, string checkState)
 		{
-			var factionState = this.factionStateDict[faction1][faction2];
+			var factionState = this._factionStateDict[faction1][faction2];
 			//找敌人
 			if (checkState.Equals("enemy"))
 				return !faction1.Equals(faction2) && factionState.isCanAttack;
@@ -54,10 +54,10 @@ namespace CsCat
 		{
 			if (!faction1.IsNullOrWhiteSpace() && !faction2.IsNullOrWhiteSpace())
 			{
-				this.factionStateDict.GetOrAddDefault(faction1, () => new Dictionary<string, FactionState>());
-				this.factionStateDict[faction1].GetOrAddDefault(faction2, () => new FactionState());
+				this._factionStateDict.GetOrAddDefault(faction1, () => new Dictionary<string, FactionState>());
+				this._factionStateDict[faction1].GetOrAddDefault(faction2, () => new FactionState());
 
-				this.factionStateDict[faction1][faction2].SetFieldValue(stateKey, stateValue);
+				this._factionStateDict[faction1][faction2].SetFieldValue(stateKey, stateValue);
 
 				if (isBothSet)
 					SetFactionState(faction2, faction1, stateKey, stateValue);
@@ -67,13 +67,13 @@ namespace CsCat
 		public void SetFactionStateIsCanAttack(string faction1, string faction2, bool isCanAttack,
 			bool isBothSet = false)
 		{
-			this.SetFactionState(faction1, faction2, "is_can_attack", isCanAttack, isBothSet);
+			this.SetFactionState(faction1, faction2, "isCanAttack", isCanAttack, isBothSet);
 		}
 
 		public void SetFactionStateIsCanHelp(string faction1, string faction2, bool isCanHelp,
 			bool isBothSet = false)
 		{
-			this.SetFactionState(faction1, faction2, "is_can_help", isCanHelp, isBothSet);
+			this.SetFactionState(faction1, faction2, "isCanHelp", isCanHelp, isBothSet);
 		}
 
 		public void OnUnitFactionChange(string unitGuid, string oldFaction, string newFaction)
@@ -81,8 +81,8 @@ namespace CsCat
 			var unit = this.GetUnit(unitGuid);
 			if (unit != null && !oldFaction.Equals(newFaction))
 			{
-				this.factionUnitDict[oldFaction].Remove(unitGuid);
-				this.factionUnitDict[newFaction][unitGuid] = unit;
+				this._factionUnitDict[oldFaction].Remove(unitGuid);
+				this._factionUnitDict[newFaction][unitGuid] = unit;
 			}
 		}
 
@@ -105,7 +105,7 @@ namespace CsCat
 			for (var i = 0; i < factionList.Count; i++)
 			{
 				var faction = factionList[i];
-				foreach (var keyValue in this.factionUnitDict[faction])
+				foreach (var keyValue in this._factionUnitDict[faction])
 				{
 					var unit = keyValue.Value;
 					factionUnitList.Add(unit);

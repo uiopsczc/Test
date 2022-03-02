@@ -5,20 +5,20 @@ namespace CsCat
 {
 	public class Scenes
 	{
-		private Doer parentDoer;
-		private string subDoerKey;
+		private readonly Doer _parentDoer;
+		private readonly string _subDoerKey;
 
 		public Scenes(Doer parentDoer, string subDoerKey)
 		{
-			this.parentDoer = parentDoer;
-			this.subDoerKey = subDoerKey;
+			this._parentDoer = parentDoer;
+			this._subDoerKey = subDoerKey;
 		}
 
 		////////////////////DoXXX/////////////////////////////////
 		//卸载
 		public void DoRelease()
 		{
-			SubDoerUtil3.DoReleaseSubDoer<Scene>(this.parentDoer, this.subDoerKey);
+			SubDoerUtil3.DoReleaseSubDoer<Scene>(this._parentDoer, this._subDoerKey);
 		}
 
 		//保存
@@ -60,7 +60,7 @@ namespace CsCat
 					var sceneDict = this.GetSceneDict_ToEdit();
 					Hashtable dictScene = dictScenes[rid] as Hashtable;
 					Scene scene = Client.instance.sceneFactory.NewDoer(rid) as Scene;
-					scene.SetEnv(this.parentDoer);
+					scene.SetEnv(this._parentDoer);
 					Hashtable dictSceneTmp = null;
 					if (dictScenesTmp != null && dictScenesTmp.ContainsKey(rid))
 						dictSceneTmp = dictScenesTmp[rid] as Hashtable;
@@ -75,23 +75,23 @@ namespace CsCat
 		////////////////////////////////////////////////////////////////////////////
 		public Scene[] GetScenes(string id = null, Func<Scene, bool> filterFunc = null)
 		{
-			return SubDoerUtil3.GetSubDoers(parentDoer, subDoerKey, id, filterFunc);
+			return SubDoerUtil3.GetSubDoers(_parentDoer, _subDoerKey, id, filterFunc);
 		}
 
 		public Hashtable GetSceneDict_ToEdit() //可以直接插入删除
 		{
-			return SubDoerUtil3.GetSubDoerDict_ToEdit(parentDoer, subDoerKey);
+			return SubDoerUtil3.GetSubDoerDict_ToEdit(_parentDoer, _subDoerKey);
 		}
 
 
 		public Scene GetScene(string idOrRid)
 		{
-			return SubDoerUtil3.GetSubDoer<Scene>(parentDoer, subDoerKey, idOrRid);
+			return SubDoerUtil3.GetSubDoer<Scene>(_parentDoer, _subDoerKey, idOrRid);
 		}
 
 		public void ClearScenes()
 		{
-			SubDoerUtil3.ClearSubDoers<Scene>(this.parentDoer, this.subDoerKey, scene => { });
+			SubDoerUtil3.ClearSubDoers<Scene>(this._parentDoer, this._subDoerKey, scene => { });
 		}
 	}
 }

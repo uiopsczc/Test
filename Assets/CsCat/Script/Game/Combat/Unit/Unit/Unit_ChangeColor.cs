@@ -5,32 +5,32 @@ namespace CsCat
 {
 	public partial class Unit
 	{
-		private Dictionary<string, Color> changeColorDict = new Dictionary<string, Color>();
+		private readonly Dictionary<string, Color> _changeColorDict = new Dictionary<string, Color>();
 
 		//改变一个物体上MeshRenderer、SkinMeshRenderer材质的颜色
 		public void ChangeColor(string tag, Color? color)
 		{
-			if (this.unitMaterialInfoList.IsNullOrEmpty())
+			if (this._unitMaterialInfoList.IsNullOrEmpty())
 				return;
 			if (color != null)
-				this.changeColorDict[tag] = color.Value;
+				this._changeColorDict[tag] = color.Value;
 			else
-				this.changeColorDict.Remove(tag);
-			this.__UpdateColor();
+				this._changeColorDict.Remove(tag);
+			this._UpdateColor();
 		}
 
-		private void __UpdateColor()
+		private void _UpdateColor()
 		{
 			var currentColor = new Color(1, 1, 1, 1);
-			foreach (var keyValue in this.changeColorDict)
+			foreach (var keyValue in this._changeColorDict)
 			{
 				var changeColor = keyValue.Value;
 				currentColor = currentColor * changeColor;
 			}
 
-			for (var i = 0; i < this.unitMaterialInfoList.Count; i++)
+			for (var i = 0; i < this._unitMaterialInfoList.Count; i++)
 			{
-				var unitMaterialInfo = this.unitMaterialInfoList[i];
+				var unitMaterialInfo = this._unitMaterialInfoList[i];
 				unitMaterialInfo.material.color = unitMaterialInfo.color * currentColor;
 			}
 		}

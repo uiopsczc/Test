@@ -4,9 +4,9 @@ namespace CsCat
 {
 	public class LineEffectComponent : SourceTargetEffectComponent
 	{
-		private float speed;
-		private float accSpeed;
-		private float staySourceDuration;
+		private float _speed;
+		private float _accSpeed;
+		private float _staySourceDuration;
 
 
 		public void Init(IPosition sourceIPosition,
@@ -17,9 +17,9 @@ namespace CsCat
 			this.sourceIPosition = sourceIPosition;
 			this.targetIPosition = targetIPosition;
 			SetSocket();
-			this.speed = speed;
-			this.accSpeed = accSpeed;
-			this.staySourceDuration = staySourceDuration;
+			this._speed = speed;
+			this._accSpeed = accSpeed;
+			this._staySourceDuration = staySourceDuration;
 
 			Calculate(0);
 			this.effectEntity.ApplyToTransformComponent(this.currentPosition, this.currentEulerAngles);
@@ -29,9 +29,9 @@ namespace CsCat
 
 		protected override void Calculate(float deltaTime)
 		{
-			this.staySourceDuration = this.staySourceDuration - deltaTime;
+			this._staySourceDuration = this._staySourceDuration - deltaTime;
 
-			if (this.staySourceDuration >= 0)
+			if (this._staySourceDuration >= 0)
 			{
 				this.sourcePosition = this.sourceIPosition.GetPosition();
 				this.targetPosition = this.targetIPosition.GetPosition();
@@ -40,8 +40,8 @@ namespace CsCat
 				return;
 			}
 
-			this.speed += this.accSpeed;
-			float remainDuration = Vector3.Distance(this.currentPosition, this.targetPosition) / this.speed;
+			this._speed += this._accSpeed;
+			float remainDuration = Vector3.Distance(this.currentPosition, this.targetPosition) / this._speed;
 			float pct = Mathf.Clamp01(deltaTime / remainDuration);
 			this.currentPosition = Vector3.Lerp(this.currentPosition, this.targetPosition, pct);
 

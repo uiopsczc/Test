@@ -7,26 +7,22 @@ namespace CsCat
 {
 	public partial class Unit : TickObject
 	{
-		private bool isDead;
-		private bool isCanAttack;
-		private bool isCanNormalAttack;
-		public bool isCanCastSkill;
-		private bool isCanMove;
-		public bool isCanControl;
-
-		private int level;
-		private Vector3 position;
-		private Quaternion rotation;
-		private int hp;
-		private float radius;
-		private float originalRadius;
-		private float scale;
-		private Vector3 orginalTransformScale;
-		private bool isNotShowHeadBlood;
-		public BuffManager buffManager;
+		private bool _isDead;
+		private bool _isCanAttack;
+		private bool _isCanNormalAttack;
+		private bool _isCanMove;
+		private int _level;
+		private Vector3 _position;
+		private Quaternion _rotation;
+		private int _hp;
+		private float _radius;
+		private float _originalRadius;
+		private float _scale;
+		private Vector3 _orginalTransformScale;
+		private bool _isNotShowHeadBlood;
 		private bool isKeepDeadBody; //是否需要保持尸体
-		private List<Action> loadOkListenList = new List<Action>();
-		public bool isMoveOccupy;
+		private List<Action> _loadOkListenList = new List<Action>();
+		
 
 
 		public CfgUnitData cfgUnitData;
@@ -38,6 +34,10 @@ namespace CsCat
 		public Unit ownerUnit;
 		public bool isInSight = true; //是否在视野内，用于优化，由unitManager设置
 		public UnitLockTargetInfo unitLockTargetInfo;
+		public bool isCanControl;
+		public bool isCanCastSkill;
+		public BuffManager buffManager;
+		public bool isMoveOccupy;
 
 
 		protected override void _Destroy()
@@ -46,19 +46,20 @@ namespace CsCat
 			this.Broadcast<Unit>(null, UnitEventNameConst.On_Unit_Destroy, this);
 			animatorComp?.Destroy();
 			propertyComp?.Destroy();
-			this.unitModelInfoDict.Clear();
+			this._unitModelInfoDict.Clear();
 			this.animation = null;
 			this.actionManager = null;
-			this.socketTransformDict.Clear();
-			this.unitMaterialInfoList.Clear();
+			this._socketTransformDict.Clear();
+			this._unitMaterialInfoList.Clear();
 		}
 
 		public void UpdateUnit(Hashtable argDict)
 		{
-			foreach (string key in argDict.Keys)
+			foreach (DictionaryEntry keyValue in argDict)
 			{
+				var key = (string)keyValue.Key;
 				if (key.Equals("hp"))
-					this.SetHp(argDict.Get<int>(hp));
+					this.SetHp(argDict.Get<int>(_hp));
 				else if (key.Equals("faction"))
 					this.SetFaction(argDict.Get<string>("faction"));
 				else if (key.Equals("level"))
@@ -76,27 +77,27 @@ namespace CsCat
 		public void SetPosition(Vector3 pos)
 		{
 			if (graphicComponent.transform)
-				graphicComponent.transform.position = this.cfgUnitData.offset_y != 0
-				  ? (pos + new Vector3(0, this.cfgUnitData.offset_y, 0))
+				graphicComponent.transform.position = this.cfgUnitData.offsetYy != 0
+				  ? (pos + new Vector3(0, this.cfgUnitData.offsetYy, 0))
 				  : pos;
-			this.position = pos;
+			this._position = pos;
 		}
 
 		public Vector3 GetPosition()
 		{
-			return this.position;
+			return this._position;
 		}
 
 		public void SetRotation(Quaternion rotation)
 		{
 			if (graphicComponent.transform)
 				graphicComponent.transform.rotation = rotation;
-			this.rotation = rotation;
+			this._rotation = rotation;
 		}
 
 		public Quaternion GetRotation()
 		{
-			return this.rotation;
+			return this._rotation;
 		}
 
 		public UnitPosition ToUnitPosition()
@@ -107,53 +108,52 @@ namespace CsCat
 		public void SetScale(float scale)
 		{
 			if (graphicComponent.transform != null)
-				graphicComponent.transform.localScale = this.orginalTransformScale * scale;
-			this.scale = scale;
-			this.radius = this.originalRadius * this.scale;
+				graphicComponent.transform.localScale = this._orginalTransformScale * scale;
+			this._scale = scale;
+			this._radius = this._originalRadius * this._scale;
 		}
 
 		public float GetScale()
 		{
-			return this.scale;
+			return this._scale;
 		}
 
 		public void SetLevel(int level)
 		{
-			this.level = level;
-			this.propertyComp.__CalculateProp();
+			this._level = level;
+			this.propertyComp._CalculateProp();
 		}
 
 		public int GetLevel()
 		{
-			return this.level;
+			return this._level;
 		}
 
 		public float GetRadius()
 		{
-			return this.radius;
+			return this._radius;
 		}
 
 		public float Distance(Vector3 target)
 		{
-			return (target - this.GetPosition()).magnitude - this.radius;
+			return (target - this.GetPosition()).magnitude - this._radius;
 		}
 
 		public float Distance(Unit target)
 		{
-			return (target.GetPosition() - this.GetPosition()).magnitude - this.radius - target.radius;
+			return (target.GetPosition() - this.GetPosition()).magnitude - this._radius - target._radius;
 		}
 
 		public float Distance(Transform target)
 		{
-			return (target.position - this.GetPosition()).magnitude - this.radius;
+			return (target.position - this.GetPosition()).magnitude - this._radius;
 		}
 
-		public float Distance(IPosition target_iposition)
+		public float Distance(IPosition targetIposition)
 		{
-			if (target_iposition is UnitPosition)
-				return Distance(((UnitPosition)target_iposition).unit);
-			else
-				return Distance(target_iposition.GetPosition());
+			if (targetIposition is UnitPosition unitPosition)
+				return Distance(unitPosition.unit);
+			return Distance(targetIposition.GetPosition());
 		}
 
 		public int GetMaxHp()
@@ -161,18 +161,18 @@ namespace CsCat
 			return (int)this.GetCalcPropValue("生命上限");
 		}
 
-		public void SetHp(int hp, bool is_not_broadcast = false)
+		public void SetHp(int hp, bool isNotBroadcast = false)
 		{
-			var old_value = this.hp;
-			this.hp = (int)Math.Min(hp, this.GetMaxHp());
-			if (!is_not_broadcast)
-				this.OnHpChange(null, old_value, this.hp);
+			var oldValue = this._hp;
+			this._hp = (int)Math.Min(hp, this.GetMaxHp());
+			if (!isNotBroadcast)
+				this.OnHpChange(null, oldValue, this._hp);
 		}
 
-		protected void OnHpChange(Unit source_unit, int old_value, int new_value)
+		protected void OnHpChange(Unit sourceUnit, int oldValue, int newValue)
 		{
-			if (old_value != new_value)
-				this.Broadcast<Unit, Unit, int, int>(null, UnitEventNameConst.On_Unit_Hp_Change, source_unit, this, old_value, new_value);
+			if (oldValue != newValue)
+				this.Broadcast<Unit, Unit, int, int>(null, UnitEventNameConst.On_Unit_Hp_Change, sourceUnit, this, oldValue, newValue);
 		}
 
 		protected void OnMaxHpChange(int old_value, int new_value)
@@ -183,7 +183,7 @@ namespace CsCat
 
 		public int GetHp()
 		{
-			return this.hp;
+			return this._hp;
 		}
 
 		public float GetSpeed()
@@ -191,27 +191,27 @@ namespace CsCat
 			return this.GetCalcPropValue("移动速度");
 		}
 
-		private void OnSpeedChange(float old_value, float new_value)
+		private void OnSpeedChange(float oldValue, float newValue)
 		{
-			this.unitMoveComp.OnSpeedChange(old_value, new_value);
+			this.unitMoveComp.OnSpeedChange(oldValue, newValue);
 		}
 
 		//能否移动
 		public bool IsCanMove()
 		{
-			return this.isCanMove;
+			return this._isCanMove;
 		}
 
 		//能否攻击（包括普攻和技能）
 		public bool IsCanAttack()
 		{
-			return this.isCanAttack;
+			return this._isCanAttack;
 		}
 
 		//能否普攻
 		public bool IsCanNormalAttack()
 		{
-			return this.isCanNormalAttack;
+			return this._isCanNormalAttack;
 		}
 
 
@@ -294,7 +294,7 @@ namespace CsCat
 		//是否死亡
 		public bool IsDead()
 		{
-			return this.isDead;
+			return this._isDead;
 		}
 	}
 }

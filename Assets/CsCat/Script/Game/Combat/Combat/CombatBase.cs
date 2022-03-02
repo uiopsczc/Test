@@ -5,13 +5,14 @@ namespace CsCat
 {
 	public partial class CombatBase : TickObject
 	{
-		private bool isStarted;
-		private bool isFinished;
-		private Hashtable argDict;
-		private bool isFixedDurationUpdate = true;
+		private bool _isStarted;
+		private bool _isFinished;
+		private Hashtable _argDict;
+		private bool _isFixedDurationUpdate = true;
+		private float _fixedUpdateRemainDuration;
+
 		public float time;
 		public int frame;
-		private float fixedUpdateRemainDuration;
 		public GameLevelBase gameLevel;
 		public EffectManager effectManager;
 		public CameraManager cameraManager;
@@ -25,9 +26,9 @@ namespace CsCat
 		public void Init(Hashtable arg_dict)
 		{
 			base.Init();
-			this.argDict = arg_dict;
+			this._argDict = arg_dict;
 
-			randomManager.SetSeed(this.argDict.GetOrGetDefault2<int>("random_seed", () => (int)DateTime.Now.Ticks));
+			randomManager.SetSeed(this._argDict.GetOrGetDefault2("randomSeed", () => (int)DateTime.Now.Ticks));
 			effectManager = AddChild<EffectManager>("EffectManager");
 			cameraManager = AddChild<CameraManager>("CameraManager");
 			unitManager = AddChild<UnitManager>("UnitManager");
@@ -40,13 +41,13 @@ namespace CsCat
 			base.Start();
 			LogCat.log("=============== Combat:Start ===============");
 			this.time = 0;
-			this.isFinished = false;
-			this.fixedUpdateRemainDuration = CombatConst.Fixed_Update_Duration;
-			this.isStarted = true;
+			this._isFinished = false;
+			this._fixedUpdateRemainDuration = CombatConst.Fixed_Update_Duration;
+			this._isStarted = true;
 			var gameLevelClass =
-			  TypeUtil.GetType(argDict.GetOrGetDefault2<string>("gameLevel_class_path",
+			  TypeUtil.GetType(_argDict.GetOrGetDefault2("gameLevelClassPath",
 				() => typeof(GameLevelBase).ToString()));
-			this.gameLevel = this.AddChild(null, gameLevelClass) as GameLevelBase;
+			this.gameLevel = this.AddChild<GameLevelBase>(null, gameLevelClass);
 			this.gameLevel.Start();
 		}
 
@@ -57,7 +58,7 @@ namespace CsCat
 
 		public override void Update(float deltaTime = 0, float unscaledDeltaTime = 0)
 		{
-			if (!this.isFixedDurationUpdate)
+			if (!this._isFixedDurationUpdate)
 			{
 				this.frame = this.frame + 1;
 				this.time = this.time + deltaTime;
@@ -67,14 +68,14 @@ namespace CsCat
 			}
 			else
 			{
-				this.fixedUpdateRemainDuration = this.fixedUpdateRemainDuration - deltaTime;
+				this._fixedUpdateRemainDuration = this._fixedUpdateRemainDuration - deltaTime;
 				var deltaTimeValue = CombatConst.Fixed_Update_Duration;
 				var unscaledDeltaTimeValue = CombatConst.Fixed_Update_Duration;
-				while (this.fixedUpdateRemainDuration <= 0)
+				while (this._fixedUpdateRemainDuration <= 0)
 				{
 					this.frame = this.frame + 1;
 					this.time = this.time + deltaTime;
-					this.fixedUpdateRemainDuration = this.fixedUpdateRemainDuration + deltaTimeValue;
+					this._fixedUpdateRemainDuration = this._fixedUpdateRemainDuration + deltaTimeValue;
 					if (!this.IsCanUpdate())
 						return;
 					base.Update(deltaTimeValue, unscaledDeltaTimeValue);
@@ -103,17 +104,17 @@ namespace CsCat
 
 		public void SetIsFinished(bool isFinished)
 		{
-			this.isFinished = isFinished;
+			this._isFinished = isFinished;
 		}
 
 		public bool IsStarted()
 		{
-			return this.isStarted;
+			return this._isStarted;
 		}
 
 		public bool IsFinished()
 		{
-			return this.isFinished;
+			return this._isFinished;
 		}
 
 	}

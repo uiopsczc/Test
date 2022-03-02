@@ -5,7 +5,7 @@ namespace CsCat
 {
 	public partial class Unit
 	{
-		private Dictionary<string, Transform> socketTransformDict = new Dictionary<string, Transform>();
+		private readonly Dictionary<string, Transform> _socketTransformDict = new Dictionary<string, Transform>();
 
 		public Transform GetSocketTransform(string socketName, bool isIgnoreError = false)
 		{
@@ -14,11 +14,11 @@ namespace CsCat
 			if (socketName.IsNullOrWhiteSpace() || "main".Equals(socketName))
 				return graphicComponent.transform;
 			Transform socketTransform = null;
-			if (!this.socketTransformDict.ContainsKey(socketName))
+			if (!this._socketTransformDict.ContainsKey(socketName))
 			{
 				socketTransform = graphicComponent.transform.FindChildRecursive(socketName);
 				if (socketTransform != null)
-					this.socketTransformDict[socketName] = socketTransform;
+					this._socketTransformDict[socketName] = socketTransform;
 			}
 
 			if (socketTransform == null)
