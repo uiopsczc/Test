@@ -105,7 +105,7 @@ function UnitSpellComponent:InitSpellInfo(spellId, coolDownPct)
 end
 
 function UnitSpellComponent:GetSpellCoolDownRate(spellId)
-	local cfgSpellData = CfgSpell.get_by_id(spellId)
+	local cfgSpellData = CfgSpell.GetById(spellId)
 	if cfgSpellData.type == "普攻" then
 		return 1 / (1 + self:GetCalcPropValue("攻击速度"))
 	else
@@ -114,7 +114,7 @@ function UnitSpellComponent:GetSpellCoolDownRate(spellId)
 end
 
 function UnitSpellComponent:GetSpellIdList(spell_id)
-	local cfgSpellData = CfgSpell.get_by_id(spell_id)
+	local cfgSpellData = CfgSpell.GetById(spell_id)
 	if cfgSpellData.type == "普攻" then
 		return self._normalAttackIdList
 	else
@@ -124,14 +124,14 @@ end
 
 function UnitSpellComponent:SetSpellInfoCoolDown(spellId, coolDownPct)
 	coolDownPct = coolDownPct or 0
-	local cfgSpellData = CfgSpell.get_by_id(spellId)
+	local cfgSpellData = CfgSpell.GetById(spellId)
 	local spellInfo = self._spellInfoDict[spellId]
 	spellInfo:SetCoolDownRate(self:GetSpellCoolDownRate(spellId))
 	spellInfo:SetCoolDownRemainDuration(cfgSpellData.coolDownDuration * spellInfo:GetCoolDownRate() * coolDownPct)
 end
 
 function UnitSpellComponent:AddPassiveBuffOfSpell(spellId)
-	local cfgSpellData = CfgSpell.get_by_id(spellId)
+	local cfgSpellData = CfgSpell.GetById(spellId)
 	local passiveBuffIds = cfgSpellData.passiveBuffIds
 	if passiveBuffIds then
 		for _, passiveBuffId in ipairs(passiveBuffIds) do
@@ -148,7 +148,7 @@ function UnitSpellComponent:RemoveSpell(spellId)
 end
 
 function UnitSpellComponent:RemovePassiveBuffOfSpell(spellId)
-	local cfgSpellData = CfgSpell.get_by_id(spellId)
+	local cfgSpellData = CfgSpell.GetById(spellId)
 	local passiveBuffIds = cfgSpellData.passiveBuffIds
 	if passiveBuffIds then
 		self._unit:GetBuffsComponent():RemoveBuff(passiveBuffIds, self._unit:GetGuid())
@@ -180,7 +180,7 @@ end
 --  改变技能CD
 function UnitSpellComponent:OnSpellCoolDownRateChange()
 	for spellId, spellInfo in pairs(self._spellInfoDict) do
-		local cfgSpellData = CfgSpell.get_by_id(spellId)
+		local cfgSpellData = CfgSpell.GetById(spellId)
 		local coolDownOldRate = spellInfo:GetCoolDownRate()
 		local coolDownDuration = cfgSpellData.coolDownDuration or 0
 		if coolDownDuration > 0 then
@@ -227,7 +227,7 @@ function UnitSpellComponent:CanBreakCurrentSpell(newSpellId, newCfgSpellData)
 	if not self._currentAttack then
 		return true
 	end
-	newCfgSpellData = newCfgSpellData or CfgSpell.get_by_id(newSpellId)
+	newCfgSpellData = newCfgSpellData or CfgSpell.GetById(newSpellId)
 	if (newCfgSpellData.type == "法术" and self._currentAttack:GetCfgSpellData().type == "普攻") -- 法术可以打断普攻
 		or newCfgSpellData.castType == "触发" then
 		return true
@@ -239,7 +239,7 @@ end
 
 --  检查是否到时间可以放技能1、是否能打断当前技能2、技能cd是否到
 function UnitSpellComponent:IsTimeToCastSpell(spellId)
-	local cfgSpellData = CfgSpell.get_by_id(spellId)
+	local cfgSpellData = CfgSpell.GetById(spellId)
 	if not self:CanBreakCurrentSpell(spellId, cfgSpellData) then
 		return false
 	end
@@ -250,7 +250,7 @@ function UnitSpellComponent:IsTimeToCastSpell(spellId)
 end
 
 function UnitSpellComponent:IsInSpellRange(target, spellId)
-	local cfgSpellData = CfgSpell.get_by_id(spellId)
+	local cfgSpellData = CfgSpell.GetById(spellId)
 	if not cfgSpellData.range then
 		return false
 	end

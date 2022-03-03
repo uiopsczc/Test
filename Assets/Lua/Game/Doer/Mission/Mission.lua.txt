@@ -2,7 +2,7 @@
 local Mission = Class("Mission", Doer)
 
 function Mission:GetCfgMissionData()
-	return CfgMission.get_by_id(self:GetId())
+	return CfgMission.GetById(self:GetId())
 end
 ----------------------------------------------------------------------
 -- DoXXX
@@ -13,7 +13,7 @@ end
 function Mission:OnAccept(user)
 	local onAcceptDoerEventId = self:GetCfgMissionData().onAcceptDoerEventId
 	if not string.IsNilOrWhiteSpace(onAcceptDoerEventId) then
-		local cfgDoerEventData = CfgDoerEvent.get_by_id(onAcceptDoerEventId)
+		local cfgDoerEventData = CfgDoerEvent.GetById(onAcceptDoerEventId)
 		if not cfgDoerEventData.isNotOpen then
 			if not global.client.doerEventFactory:GetDoerEvent(onAcceptDoerEventId):Execute(string.format("%s 接受任务 %s", user:GetShort(), self:GetShort()), self:GetOwner(), DoerAttrParser.New(user, self, self:GetOwner())) then
 				return false
@@ -26,7 +26,7 @@ end
 function Mission:OnFinish(user)
 	local onFinishDoerEventId = self:GetCfgMissionData().onFinishDoerEventId
 	if not string.IsNilOrWhiteSpace(onFinishDoerEventId) then
-		local cfgDoerEventData = CfgDoerEvent.get_by_id(onFinishDoerEventId)
+		local cfgDoerEventData = CfgDoerEvent.GetById(onFinishDoerEventId)
 		if not cfgDoerEventData.isNotOpen then
 			if not global.client.doerEventFactory:GetDoerEvent(onFinishDoerEventId):Execute(string.format("%s 完成任务 %s", user:GetShort(), self:GetShort()), self:GetOwner(), DoerAttrParser.New(user, self, self:GetOwner())) then
 				return false
@@ -39,7 +39,7 @@ end
 function Mission:OnGiveUp(user)
 	local onGiveUpDoerEventId = self:GetCfgMissionData().onGiveUpDoerEventId
 	if not string.IsNilOrWhiteSpace(onGiveUpDoerEventId) then
-		local cfgDoerEventData = CfgDoerEvent.get_by_id(onGiveUpDoerEventId)
+		local cfgDoerEventData = CfgDoerEvent.GetById(onGiveUpDoerEventId)
 		if not cfgDoerEventData.isNotOpen then
 			if not global.client.doerEventFactory:GetDoerEvent(onGiveUpDoerEventId):Execute(string.format("%s 放弃任务 %s", user:GetShort(), self:GetShort()), self:GetOwner(), DoerAttrParser.New(user, self, self:GetOwner())) then
 				return false

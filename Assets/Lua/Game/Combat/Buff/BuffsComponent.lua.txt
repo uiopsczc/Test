@@ -15,7 +15,7 @@ end
 
 ---@param sourceUnit Unit
 function BuffsComponent:AddBuff(buffId, sourceUnit, forceDuration, argDict)
-	local cfgBuffData = CfgBuff.get_by_id(buffId)
+	local cfgBuffData = CfgBuff.GetById(buffId)
 	local duration = forceDuration or (not cfgBuffData.duration or cfgBuffData.duration == 0) and math.huge or cfgBuffData.duration
 	local sourceSpell = argDict.sourceSpell
 	local type1 = cfgBuffData.type1 -- buff or debuff

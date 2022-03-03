@@ -20,12 +20,12 @@ function UIItemBase:_InitUIExtensions()
 end
 
 function UIItemBase:GetCfgItemData(itemId)
-	return CfgItem.get_by_id(itemId)
+	return CfgItem.GetById(itemId)
 end
 
 function UIItemBase:GetCfgQualityData(itemId)
 	local cfgItemData = self:GetCfgItemData(itemId)
-	return cfgItemData.qualityId == nil and nil or CfgProperty.get_by_id(cfgItemData.qualityId)
+	return cfgItemData.qualityId == nil and nil or CfgProperty.GetById(cfgItemData.qualityId)
 end
 
 function UIItemBase:Show(itemId, itemCount)

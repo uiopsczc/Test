@@ -9,7 +9,7 @@ function Item:OnInit()
 end
 
 function Item:GetCfgItemData()
-	return CfgItem.get_by_id(self:GetId())
+	return CfgItem.GetById(self:GetId())
 end
 
 ----------------------------------------------------------------------

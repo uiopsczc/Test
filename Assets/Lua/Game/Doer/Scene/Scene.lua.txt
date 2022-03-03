@@ -10,7 +10,7 @@ function Scene:Init()
 end
 
 function Scene:GetCfgSceneData()
-	return CfgScene.get_by_id(self:GetId())
+	return CfgScene.GetById(self:GetId())
 end
 
 ----------------------------------------------------------------------
@@ -643,7 +643,7 @@ function Scene:GetSceneMapInfo()
 	if self:Get("isDynamicMap", false) then
 		local src = self:Get("src", "")
 		if not string.IsNilOrWhiteSpace(src) then
-			sceneMapInfo = CfgSceneDataUtil.GetSceneMapInfo(CfgScene.get_by_id(src))
+			sceneMapInfo = CfgSceneDataUtil.GetSceneMapInfo(CfgScene.GetById(src))
 		end
 	else
 		sceneMapInfo = self:Get("sceneMapInfo")

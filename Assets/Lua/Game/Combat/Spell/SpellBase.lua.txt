@@ -221,8 +221,8 @@ function SpellBase:RegisterTriggerSpell()
 end
 
 function SpellBase:_RegisterTriggerSpell(newSpellTriggerId)
-	local cfgSpellTriggerData = CfgSpellTrigger.get_by_id(newSpellTriggerId)
-	local triggerType = cfgSpellTriggerData.trigger_type
+	local cfgSpellTriggerData = CfgSpellTrigger.GetById(newSpellTriggerId)
+	local triggerType = cfgSpellTriggerData.triggerType
 	triggerType = SpellConst.Trigger_Type_Dict[triggerType]
 	local triggerSpellId = cfgSpellTriggerData.triggerSpellId -- 触发的技能id
 	local triggerSpellDelayDuration = cfgSpellTriggerData.triggerSpellDelayDuration
@@ -497,12 +497,12 @@ end
 
 -- 地面特效
 function SpellBase:CreateGroundEffect(position, eulerAngles, duration, forceEffectIds, forcePosition, isHide)
-	if not self._cfgSpellData.ground_effect_ids and not forceEffectIds then
+	if not self._cfgSpellData.groundEffectIds and not forceEffectIds then
 		return
 	end
 	position = forcePosition or position or self._sourceUnit:GetPosition()
 	eulerAngles = eulerAngles or QuaternionUtil.GetValueOrDefault(Quaternion.LookRotation(position - self._sourceUnit:GetPosition())):ToEulerAngles()
-	local effectIds, guidList = forceEffectIds or self._cfgSpellData.ground_effect_ids, {}
+	local effectIds, guidList = forceEffectIds or self._cfgSpellData.groundEffectIds, {}
 	if not forcePosition then
 		position = global.client.combat:GetPathManager():GetGroundPos(position)
 	end

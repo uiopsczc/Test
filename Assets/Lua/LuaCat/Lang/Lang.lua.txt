@@ -19,7 +19,7 @@ function Lang.GetText(content, ...)
 		return nil
 	end
 	local contentWithEscape = string.gsub(string.gsub(content, "\r\n", "\n"), "\r", "\n")
-	local cfgLangData = CfgLang.get_by_id(contentWithEscape)
+	local cfgLangData = CfgLang.GetById(contentWithEscape)
 	if cfgLangData and cfgLangData[language] then
 		return string.format(cfgLangData[language], ...)
 	end

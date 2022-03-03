@@ -7,11 +7,11 @@ function SceneFactory:Init()
 end
 
 function SceneFactory:GetClassPath(id)
-	return string.IsNilOrEmpty(self:GetCfgSceneData(id).class_path_lua) and self:GetDefaultDoerClassPath() or self:GetCfgSceneData(id).class_path_lua
+	return string.IsNilOrEmpty(self:GetCfgSceneData(id).classPathLua) and self:GetDefaultDoerClassPath() or self:GetCfgSceneData(id).classPathLua
 end
 
 function SceneFactory:GetCfgSceneData(id)
-	return CfgScene.get_by_id(id)
+	return CfgScene.GetById(id)
 end
 
 ---@return SceneDBase

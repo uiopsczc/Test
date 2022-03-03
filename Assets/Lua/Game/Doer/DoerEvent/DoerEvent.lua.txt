@@ -2,7 +2,7 @@
 local DoerEvent = Class("DoerEvent", Doer)
 
 function DoerEvent:GetCfgDoerEventData()
-	return CfgDoerEvent.get_by_id(self:GetId())
+	return CfgDoerEvent.GetById(self:GetId())
 end
 
 function DoerEvent:Execute(desc, owner, doerAttrParser)
@@ -22,7 +22,7 @@ function DoerEvent:Execute(desc, owner, doerAttrParser)
 	if not table.IsNilOrEmpty(stepIds) then
 		for i = 1, table.Count(stepIds) do
 			local stepId = stepIds[i]
-			local cfgDoerEventStepData = CfgDoerEventStep.get_by_id(stepId)
+			local cfgDoerEventStepData = CfgDoerEventStep.GetById(stepId)
 			ok = self:ExecuteStep(desc .. "步骤" .. i, stepId, owner, doerAttrParser, wordList)
 			if ok == 0 then
 				break
@@ -41,7 +41,7 @@ end
 
 ---@param doerAttrParser  DoerAttrParser
 function DoerEvent:CheckDoerEventTriggerCondition(doerAttrParser)
-	local cfgDoerEventData = CfgDoerEvent.get_by_id(self:GetId())
+	local cfgDoerEventData = CfgDoerEvent.GetById(self:GetId())
 	local isNotTalk = cfgDoerEventData.isNotTalk -- 不弹出talk
 	local triggerCondition = cfgDoerEventData.triggerCondition -- 触发条件
 	if not string.IsNilOrWhiteSpace(triggerCondition) and not doerAttrParser:ParseBoolean(triggerCondition) then
@@ -61,7 +61,7 @@ end
 
 ---@param doerAttrParser  DoerAttrParser
 function DoerEvent:ExecuteStep(desc, doerEventStepId, owner, doerAttrParser, wordList)
-	local cfgDoerEventStepData = CfgDoerEventStep.get_by_id(doerEventStepId)
+	local cfgDoerEventStepData = CfgDoerEventStep.GetById(doerEventStepId)
 	local triggerCondition = cfgDoerEventStepData.trigger_condition -- 触发条件
 	if not string.IsNilOrWhiteSpace(triggerCondition) and not doerAttrParser:ParseBoolean(triggerCondition) then
 		--不满足触发的情况

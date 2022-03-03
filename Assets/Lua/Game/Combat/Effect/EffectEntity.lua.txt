@@ -6,7 +6,7 @@ function EffectEntity:Init(effectId, unit)
 	EffectEntity.super.Init(self)
 	self._unit = unit
 	self._effectId = effectId
-	self._cfgEffectData = CfgEffect.get_by_id(effectId)
+	self._cfgEffectData = CfgEffect.GetById(effectId)
 	self:GetGraphicComponent():SetPrefabPath(self._cfgEffectData.prefabPath)
 end
 

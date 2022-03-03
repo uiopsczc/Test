@@ -7,11 +7,11 @@ function RoleFactory:Init()
 end
 
 function RoleFactory:GetClassPath(id)
-	return string.IsNilOrEmpty(self:GetCfgRoleData(id).class_path_lua) and self:GetDefaultDoerClassPath() or self:GetCfgRoleData(id).class_path_lua
+	return string.IsNilOrEmpty(self:GetCfgRoleData(id).classPathLua) and self:GetDefaultDoerClassPath() or self:GetCfgRoleData(id).classPathLua
 end
 
 function RoleFactory:GetCfgRoleData(id)
-	return CfgRole.get_by_id(id)
+	return CfgRole.GetById(id)
 end
 
 ---@return RoleDBase

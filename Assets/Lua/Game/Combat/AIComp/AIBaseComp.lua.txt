@@ -11,7 +11,7 @@ function AIBaseComp:Init(unit)
 end
 
 function AIBaseComp:_Update(deltaTime, unscaledDeltaTime)
-	AIBaseComp.super._Update(self, deltaTime, unscaledDeltaTime)
+	TickObject._Update(self, deltaTime, unscaledDeltaTime)
 	self:DoBehavior(deltaTime)
 end
 
@@ -64,7 +64,7 @@ function AIBaseComp:TryCastSkill(spellId, targetUnitList, isCanAttackWithoutSeei
 		return false
 	end
 
-	local cfgSpellData = CfgSpell.get_by_id(spellId)
+	local cfgSpellData = CfgSpell.GetById(spellId)
 	local attackRange = cfgSpellData.range
 	local targetUnit = global.client.combat:GetSpellManager():RecommendCast(self._unit, spellId, targetUnitList, isCanAttackWithoutSeeingTarget)[1]
 
@@ -92,7 +92,7 @@ function AIBaseComp:TryNormalAttack(targetUnitList, isCanAttackWithoutSeeingTarg
 	if not attackId or not self._unit:IsCanNormalAttack() then
 		return
 	end
-	local cfgSpellData = CfgSpell.get_by_id(attackId)
+	local cfgSpellData = CfgSpell.GetById(attackId)
 	local attackRange = cfgSpellData.range
 	local targetUnit = global.client.combat:GetSpellManager():RecommendCast(self._unit, attackId, targetUnitList, isCanAttackWithoutSeeingTarget)[1]
 

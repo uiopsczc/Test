@@ -53,7 +53,7 @@ end
 ----------------------------------------------------------------------
 function Unit:Build(argDict)
 	self._unitId = argDict.unitId
-	self._cfgUnitData = CfgUnit.get_by_id(self._unitId)
+	self._cfgUnitData = CfgUnit.GetById(self._unitId)
 	self._level = argDict.level
 	self._playerName = argDict.playerName
 	self._showNameOffset = argDict.showNameOffset
@@ -162,7 +162,7 @@ function Unit:OnKilled(sourceUnit, spell, isPlayDeadAnimation, isWaitingRebirth,
 		local deadBodyDelay = self._cfgUnitData.deadBodyDelay or 0.5
 		local deathEffectId = self:GetDeathEffectId()
 		if deathEffectId then
-			local cfgEffectData = CfgEffect.get_by_id(deathEffectId)
+			local cfgEffectData = CfgEffect.GetById(deathEffectId)
 			local groundEffectPos = self:GetSocketPosition(cfgEffectData.socketName1)
 			global.client.combat:GetEffectManager():CreateGroundEffect(deathEffectId, self, groundEffectPos, self:GetRotation():ToEulerAngles(), cfgEffectData.duration)
 		end

@@ -7,7 +7,7 @@ function Buff:Init(buffManager, buffId)
 	---@type BuffsComponent
 	self._buffManager = buffManager
 	self._buffId = buffId
-	self._cfgBuffData = CfgBuff.get_by_id(buffId)
+	self._cfgBuffData = CfgBuff.GetById(buffId)
 	---@type BuffCache[]
 	self._buffCacheList = {} -- 因为有些buff可以同时存在多个，但效果只有一个生效,效果不累加
 	---@type EffectEntity[]
@@ -67,7 +67,7 @@ function Buff:AddEffects()
 		return
 	end
 	for _, effectId in ipairs(effectIds) do
-		local cfgEffectData = CfgEffect.get_by_id(effectId)
+		local cfgEffectData = CfgEffect.GetById(effectId)
 		local effect = global.client.combat:GetEffectManager():CreateAttachEffect(effectId, self._buffManager:GetUnit(), cfgEffectData.duration) -- TODO 如何初始化effectBase
 		table.insert(self._effectEntityList, effect)
 	end
@@ -80,7 +80,7 @@ function Buff:RemoveEffects()
 end
 
 function Buff:AddPropertyDict()
-	local newPropertyDict = self._cfgBuffData.propertyDict and DoerAttrParserUtil.ConvertTableWithTypeString(self._cfgBuffData.property_dict) or {}
+	local newPropertyDict = self._cfgBuffData.propertyDict and DoerAttrParserUtil.ConvertTableWithTypeString(self._cfgBuffData.propertyDict) or {}
 	if table.Count(newPropertyDict) > 0 then
 		local propertyComp = self._buffManager:GetUnit():GetPropertyComponent()
 		propertyComp:StartChange()

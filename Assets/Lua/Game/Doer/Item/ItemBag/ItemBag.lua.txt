@@ -146,7 +146,7 @@ end
 ---@param count number
 ---@return Item[]
 function ItemBag:AddItems(id, count)
-	local cfgItemData = CfgItem.get_by_id(id)
+	local cfgItemData = CfgItem.GetById(id)
 	local isCanFold = cfgItemData.isCanFold
 	local item
 	local result = {}

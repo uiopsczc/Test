@@ -10,7 +10,7 @@ function Role:OnInit()
 end
 
 function Role:GetCfgRoleData()
-	CfgRole.get_by_id(self:GetId())
+	CfgRole.GetById(self:GetId())
 end
 
 ----------------------------------------------------------------------

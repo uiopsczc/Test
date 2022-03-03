@@ -1,0 +1,9 @@
+---@class CfgSummonBeastGuardSkillDataUtil
+local cfgData = {}
+
+---@param cfgSummonBeastGuardSkillData CfgSummonBeastGuardSkillData
+function cfgData.GetRid(cfgSummonBeastGuardSkillData)
+	return cfgSummonBeastGuardSkillData.id .. "@abcdef"
+end
+
+return cfgData

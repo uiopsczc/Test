@@ -54,9 +54,9 @@ end
 
 function AttachEffectComponent:SetSector()
 	if self._sectorAngle ~= 0 then
-		local sectorSideLeft = self._effectEntity:GetTransform():Find("sector/side_left")
-		local sectorSideRight = self._effectEntity:GetTransform():Find("sector/side_right")
-		local sectorCenter = self._effectEntity:GetTransform():Find("sector/center")
+		local sectorSideLeft = self._effectEntity:GetTransform():Find("Sector/SideLeft")
+		local sectorSideRight = self._effectEntity:GetTransform():Find("Sector/SideRight")
+		local sectorCenter = self._effectEntity:GetTransform():Find("Sector/Center")
 		---@type CS.UnityEngine.Material
 		local sectorCenterMat = sectorCenter:GetComponent(typeof(CS.UnityEngine.MeshRenderer)).material
 		sectorCenterMat:SetFloat("_AngleCos", math.cos(math.Deg2Rad * (self._sectorAngle / 2))) --扇形的角度大小

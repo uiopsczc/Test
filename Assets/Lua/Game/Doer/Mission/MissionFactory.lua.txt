@@ -7,11 +7,11 @@ function MissionFactory:Init()
 end
 
 function MissionFactory:GetClassPath(id)
-	return string.IsNilOrEmpty(CfgMission.get_by_id(id).class_path_lua) and self:GetDefaultDoerClassPath() or CfgMission.get_by_id(id).class_path_lua
+	return string.IsNilOrEmpty(CfgMission.GetById(id).classPathLua) and self:GetDefaultDoerClassPath() or CfgMission.GetById(id).classPathLua
 end
 
 function MissionFactory:GetCfgMissionData(id)
-	return CfgMission.get_by_id(id)
+	return CfgMission.GetById(id)
 end
 
 ---@return DoerEventDBase

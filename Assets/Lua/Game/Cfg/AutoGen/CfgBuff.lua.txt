@@ -51,6 +51,7 @@ function cfg.Get(index)
   return data_list[index]
 end
 
+---@return CfgBuffData
 function cfg.GetById(id)
   local key = tostring(id)
   return cfg.Get(index_dict.unique.id[key])

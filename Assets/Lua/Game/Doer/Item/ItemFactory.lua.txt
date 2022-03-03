@@ -7,11 +7,11 @@ function ItemFactory:Init()
 end
 
 function ItemFactory:GetClassPath(id)
-	return string.IsNilOrEmpty(self:GetCfgItemData(id).class_path_lua) and self:GetDefaultDoerClassPath() or self:GetCfgItemData(id).class_path_lua
+	return string.IsNilOrEmpty(self:GetCfgItemData(id).classPathLua) and self:GetDefaultDoerClassPath() or self:GetCfgItemData(id).classPathLua
 end
 
 function ItemFactory:GetCfgItemData(id)
-	return CfgItem.get_by_id(id)
+	return CfgItem.GetById(id)
 end
 
 ---@return ItemDBase

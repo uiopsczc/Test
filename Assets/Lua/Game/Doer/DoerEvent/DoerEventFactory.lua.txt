@@ -12,11 +12,11 @@ function DoerEventFactory:Init()
 end
 
 function DoerEventFactory:GetClassPath(id)
-	return string.IsNilOrEmpty(self:GetCfgDoerEventData(id).class_path_lua) and self:GetDefaultDoerClassPath() or self:GetCfgDoerEventData(id).class_path_lua
+	return string.IsNilOrEmpty(self:GetCfgDoerEventData(id).classPathLua) and self:GetDefaultDoerClassPath() or self:GetCfgDoerEventData(id).classPathLua
 end
 
 function DoerEventFactory:GetCfgDoerEventData(id)
-	return CfgDoerEvent.get_by_id(id)
+	return CfgDoerEvent.GetById(id)
 end
 
 ---@return DoerEventDBase

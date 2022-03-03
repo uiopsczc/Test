@@ -6,7 +6,7 @@
 local SpellInfo = Class("SpellInfo")
 
 function SpellInfo:GetCoolDownPct()
-	local cfgSpellData = CfgSpell.get_by_id(self._spellId)
+	local cfgSpellData = CfgSpell.GetById(self._spellId)
 	local coolDownDuration = cfgSpellData.coolDownDuration
 	return self._coolDownRemainDuration / (coolDownDuration * self._coolDownRate)
 end

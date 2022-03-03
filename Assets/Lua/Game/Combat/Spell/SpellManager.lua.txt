@@ -104,7 +104,7 @@ end
 ---@param targetUnit Unit
 ---@return boolean, CfgSpellData
 function SpellManager:CheckIsCanCast(sourceUnit, spellId, targetUnit, isControl)
-	local cfgSpellData = CfgSpell.get_by_id(spellId)
+	local cfgSpellData = CfgSpell.GetById(spellId)
 	if not cfgSpellData then
 		ErrorFormat("spell_id(%d) is not exist!", spellId)
 		return false
@@ -153,7 +153,7 @@ function SpellManager:RecommendCast(sourceUnit, spellId, targetUnitList, isContr
 	if not targetUnitList then
 		return {}
 	end
-	local cfgSpellData = CfgSpell.get_by_id(spellId)
+	local cfgSpellData = CfgSpell.GetById(spellId)
 	local spellClass = ClassLoadUtil.Load(cfgSpellData.classPathLua)
 	if not spellClass then
 		Error("spell code is not exist: ", cfgSpellData.classPathLua)
@@ -192,7 +192,7 @@ function SpellManager:RecommendSpellRule(sourceUnit, targetUnit, cfgSpellData, o
 	if not targetUnit then
 		return {}
 	end
-	local selectUnitArgDict = cfgSpellData.select_unit_arg_dict
+	local selectUnitArgDict = cfgSpellData.selectUnitArgDict
 	if not selectUnitArgDict then
 		return targetUnitList or { targetUnit }
 	end
@@ -430,7 +430,7 @@ function SpellManager:OnUnitDestroy(unit)
 end
 
 function SpellManager:GetSpellRange(spellId)
-	local cfgSpellData = CfgSpell.get_by_id(spellId)
+	local cfgSpellData = CfgSpell.GetById(spellId)
 	if not cfgSpellData then
 		ErrorFormat("spell_id(%s) is not exist!", spellId)
 		return false
