@@ -37,14 +37,17 @@ local index_dict = {
 
 local cfg = {}
 
+---@return CfgSpellTriggerData[]
 function cfg.All()
   return data_list
 end
 
+---@return CfgSpellTriggerData
 function cfg.Get(index)
   return data_list[index]
 end
 
+---@return CfgSpellTriggerData
 function cfg.GetById(id)
   local key = tostring(id)
   return cfg.Get(index_dict.unique.id[key])

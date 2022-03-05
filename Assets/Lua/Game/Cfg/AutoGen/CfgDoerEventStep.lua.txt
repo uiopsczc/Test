@@ -57,14 +57,17 @@ local index_dict = {
 
 local cfg = {}
 
+---@return CfgDoerEventStepData[]
 function cfg.All()
   return data_list
 end
 
+---@return CfgDoerEventStepData
 function cfg.Get(index)
   return data_list[index]
 end
 
+---@return CfgDoerEventStepData
 function cfg.GetById(id)
   local key = tostring(id)
   return cfg.Get(index_dict.unique.id[key])

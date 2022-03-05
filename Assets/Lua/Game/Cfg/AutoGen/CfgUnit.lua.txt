@@ -55,14 +55,17 @@ local index_dict = {
 
 local cfg = {}
 
+---@return CfgUnitData[]
 function cfg.All()
   return data_list
 end
 
+---@return CfgUnitData
 function cfg.Get(index)
   return data_list[index]
 end
 
+---@return CfgUnitData
 function cfg.GetById(id)
   local key = tostring(id)
   return cfg.Get(index_dict.unique.id[key])

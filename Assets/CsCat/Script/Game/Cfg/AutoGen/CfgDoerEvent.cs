@@ -45,12 +45,11 @@ namespace CsCat{
     /*classPathCs*/
     public string classPathCs { get; set; }
     /*子步骤ids*/
-    public LitJson.JsonData stepIds { get; set; }
-    private string[] __stepIds;
-    public string[] _stepIds {
+    private string[] _stepIds;
+    public string[] stepIds {
       get{
-        if(__stepIds == default(string[])) __stepIds = stepIds.To<string[]>();
-        return __stepIds;
+        if(_stepIds == default(string[])) _stepIds = stepIds.To<string[]>();
+        return _stepIds;
       }
     }
   }

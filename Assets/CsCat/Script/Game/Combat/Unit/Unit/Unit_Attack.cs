@@ -128,7 +128,7 @@ namespace CsCat
 		public void AddPassiveBuffOfSpell(string spellId)
 		{
 			var cfgSpellData = CfgSpell.Instance.GetById(spellId);
-			var passiveBuffIds = cfgSpellData._passiveBuffIds;
+			var passiveBuffIds = cfgSpellData.passiveBuffIds;
 			if (!passiveBuffIds.IsNullOrEmpty())
 			{
 				for (var i = 0; i < passiveBuffIds.Length; i++)
@@ -150,7 +150,7 @@ namespace CsCat
 		public void RemovePassiveBuffOfSpell(string spellId)
 		{
 			var cfgSpellData = CfgSpell.Instance.GetById(spellId);
-			var passiveBuffIds = cfgSpellData._passiveBuffIds;
+			var passiveBuffIds = cfgSpellData.passiveBuffIds;
 			if (!passiveBuffIds.IsNullOrEmpty())
 			{
 				for (var i = 0; i < passiveBuffIds.Length; i++)

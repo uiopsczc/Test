@@ -43,10 +43,12 @@ local index_dict = {
 
 local cfg = {}
 
+---@return CfgBuffData[]
 function cfg.All()
   return data_list
 end
 
+---@return CfgBuffData
 function cfg.Get(index)
   return data_list[index]
 end

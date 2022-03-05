@@ -63,7 +63,7 @@ namespace CsCat
 			this.spellInfoDict.Clear();
 
 			//技能相关
-			this.skillIdList = this.cfgUnitData._skillIds.ToList();
+			this.skillIdList = this.cfgUnitData.skillIds.ToList();
 			for (var i = 0; i < this.skillIdList.Count; i++)
 			{
 				var skillId = this.skillIdList[i];
@@ -71,7 +71,7 @@ namespace CsCat
 			}
 
 			//普攻相关
-			this._normalAttackIdList = this.cfgUnitData._normalAttackIds.ToList();
+			this._normalAttackIdList = this.cfgUnitData.normalAttackIds.ToList();
 			for (var i = 0; i < this._normalAttackIdList.Count; i++)
 			{
 				var normalAttackId = this._normalAttackIdList[i];
@@ -79,11 +79,11 @@ namespace CsCat
 			}
 
 			//添加被动buff
-			if (!this.cfgUnitData._passiveBuffIds.IsNullOrEmpty())
+			if (!this.cfgUnitData.passiveBuffIds.IsNullOrEmpty())
 			{
-				for (var i = 0; i < cfgUnitData._passiveBuffIds.Length; i++)
+				for (var i = 0; i < cfgUnitData.passiveBuffIds.Length; i++)
 				{
-					var passiveBuffId = cfgUnitData._passiveBuffIds[i];
+					var passiveBuffId = cfgUnitData.passiveBuffIds[i];
 					this.buffManager.AddBuff(passiveBuffId, this);
 				}
 			}

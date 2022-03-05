@@ -28,7 +28,7 @@ namespace CsCat
 			if (!triggerDesc.IsNullOrWhiteSpace())
 				wordList.Add(doerAttrParser.ParseString(triggerDesc));
 			int ok = 1; // 0-触发条件失败，1-触发成功，执行失败，2-触发成功，执行成功
-			string[] stepIds = cfgDoerEventData._stepIds;
+			string[] stepIds = cfgDoerEventData.stepIds;
 			if (!stepIds.IsNullOrEmpty())
 			{
 				for (int i = 0; i < stepIds.Length; i++)
@@ -109,10 +109,10 @@ namespace CsCat
 
 			DoerAttrSetter doerAttrSetter = new DoerAttrSetter(desc, doerAttrParser);
 			//设置属性、更改属性
-			Dictionary<string, string> setAttrDict = cfgDoerEventStepData._setAttrDict;
+			Dictionary<string, string> setAttrDict = cfgDoerEventStepData.setAttrDict;
 			foreach (var attrName in setAttrDict.Keys)
 				doerAttrSetter.Set(attrName, setAttrDict[attrName], false);
-			Dictionary<string, string> addAttrDict = cfgDoerEventStepData._addAttrDict;
+			Dictionary<string, string> addAttrDict = cfgDoerEventStepData.addAttrDict;
 			foreach (var attrName in addAttrDict.Keys)
 				doerAttrSetter.Set(attrName, addAttrDict[attrName], true);
 
@@ -127,17 +127,17 @@ namespace CsCat
 				user = Client.instance.user;
 
 			//添加或者删除物品
-			Dictionary<string, string> dealItemDict = cfgDoerEventStepData._dealItemDict;
+			Dictionary<string, string> dealItemDict = cfgDoerEventStepData.dealItemDict;
 			if (!dealItemDict.IsNullOrEmpty())
 				user.DealItems(dealItemDict, doerAttrParser);
 
 			// 接受任务
-			string[] accept_mission_ids = cfgDoerEventStepData._acceptMissionIds;
+			string[] accept_mission_ids = cfgDoerEventStepData.acceptMissionIds;
 			foreach (var accept_mission_id in accept_mission_ids)
 				user.AcceptMission(accept_mission_id, owner);
 
 			// 完成任务
-			string[] finishMissionIds = cfgDoerEventStepData._finishMissionIds;
+			string[] finishMissionIds = cfgDoerEventStepData.finishMissionIds;
 			for (var i = 0; i < finishMissionIds.Length; i++)
 			{
 				var finishMissionId = finishMissionIds[i];
@@ -145,7 +145,7 @@ namespace CsCat
 			}
 
 			// 放弃任务
-			string[] giveUpMissionIds = cfgDoerEventStepData._giveUpMissionIds;
+			string[] giveUpMissionIds = cfgDoerEventStepData.giveUpMissionIds;
 			for (var i = 0; i < giveUpMissionIds.Length; i++)
 			{
 				var giveUpMissionId = giveUpMissionIds[i];
@@ -153,7 +153,7 @@ namespace CsCat
 			}
 
 			// 添加已完成任务
-			string[] addFinishedMissionIds = cfgDoerEventStepData._addFinishedMissionIds;
+			string[] addFinishedMissionIds = cfgDoerEventStepData.addFinishedMissionIds;
 			for (var i = 0; i < addFinishedMissionIds.Length; i++)
 			{
 				var addFinishedMissionId = addFinishedMissionIds[i];
@@ -161,7 +161,7 @@ namespace CsCat
 			}
 
 			// 删除已完成任务
-			string[] removeFinishedMissionIds = cfgDoerEventStepData._removeFinishedMissionIds;
+			string[] removeFinishedMissionIds = cfgDoerEventStepData.removeFinishedMissionIds;
 			for (var i = 0; i < removeFinishedMissionIds.Length; i++)
 			{
 				var removeFinishedMissionId = removeFinishedMissionIds[i];

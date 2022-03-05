@@ -49,21 +49,19 @@ namespace CsCat{
     /*放弃时触发的事件id*/
     public string onGiveUpDoerEventId { get; set; }
     /*奖励*/
-    public LitJson.JsonData rewardDict { get; set; }
-    private Dictionary<string,string> __rewardDict;
-    public Dictionary<string,string> _rewardDict {
+    private Dictionary<string,string> _rewardDict;
+    public Dictionary<string,string> rewardDict {
       get{
-        if(__rewardDict == default(Dictionary<string,string>)) __rewardDict = rewardDict.To<Dictionary<string,string>>();
-        return __rewardDict;
+        if(_rewardDict == default(Dictionary<string,string>)) _rewardDict = rewardDict.To<Dictionary<string,string>>();
+        return _rewardDict;
       }
     }
     /*寻找物品*/
-    public LitJson.JsonData findItemDict { get; set; }
-    private Dictionary<string,string> __findItemDict;
-    public Dictionary<string,string> _findItemDict {
+    private Dictionary<string,string> _findItemDict;
+    public Dictionary<string,string> findItemDict {
       get{
-        if(__findItemDict == default(Dictionary<string,string>)) __findItemDict = findItemDict.To<Dictionary<string,string>>();
-        return __findItemDict;
+        if(_findItemDict == default(Dictionary<string,string>)) _findItemDict = findItemDict.To<Dictionary<string,string>>();
+        return _findItemDict;
       }
     }
   }

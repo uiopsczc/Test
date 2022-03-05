@@ -148,10 +148,10 @@ namespace CsCat
 			//场上所有人(不分敌友)
 			if (targetUnit == null)
 				return null;
-			if (cfgSpellData._selectUnitArgDict.IsNullOrEmpty())
+			if (cfgSpellData.selectUnitArgDict.IsNullOrEmpty())
 				return targetUnitList ?? new List<Unit>() { targetUnit };
 
-			var selectUnitArgDict = DoerAttrParserUtil.ConvertTableWithTypeString(cfgSpellData._selectUnitArgDict);
+			var selectUnitArgDict = DoerAttrParserUtil.ConvertTableWithTypeString(cfgSpellData.selectUnitArgDict);
 			var selectUnitFaction = selectUnitArgDict.Get<string>("selectUnitFaction");
 			var selectUnitCount = selectUnitArgDict.GetOrGetDefault2<int>("selectUnitCount", () => 1000);
 			var scope = SpellConst.Select_Unit_Faction_Dict[selectUnitFaction];

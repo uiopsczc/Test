@@ -55,48 +55,43 @@ namespace CsCat{
     /*动画时间*/
     public float animationDuration { get; set; }
     /*起手特效ids*/
-    public LitJson.JsonData handEffectIds { get; set; }
-    private string[] __handEffectIds;
-    public string[] _handEffectIds {
+    private string[] _handEffectIds;
+    public string[] handEffectIds {
       get{
-        if(__handEffectIds == default(string[])) __handEffectIds = handEffectIds.To<string[]>();
-        return __handEffectIds;
+        if(_handEffectIds == default(string[])) _handEffectIds = handEffectIds.To<string[]>();
+        return _handEffectIds;
       }
     }
     /*出手特效ids*/
-    public LitJson.JsonData goEffectIds { get; set; }
-    private string[] __goEffectIds;
-    public string[] _goEffectIds {
+    private string[] _goEffectIds;
+    public string[] goEffectIds {
       get{
-        if(__goEffectIds == default(string[])) __goEffectIds = goEffectIds.To<string[]>();
-        return __goEffectIds;
+        if(_goEffectIds == default(string[])) _goEffectIds = goEffectIds.To<string[]>();
+        return _goEffectIds;
       }
     }
     /*击中特效ids*/
-    public LitJson.JsonData hitEffectIds { get; set; }
-    private string[] __hitEffectIds;
-    public string[] _hitEffectIds {
+    private string[] _hitEffectIds;
+    public string[] hitEffectIds {
       get{
-        if(__hitEffectIds == default(string[])) __hitEffectIds = hitEffectIds.To<string[]>();
-        return __hitEffectIds;
+        if(_hitEffectIds == default(string[])) _hitEffectIds = hitEffectIds.To<string[]>();
+        return _hitEffectIds;
       }
     }
     /*地面特效ids*/
-    public LitJson.JsonData groundEffectIds { get; set; }
-    private string[] __groundEffectIds;
-    public string[] _groundEffectIds {
+    private string[] _groundEffectIds;
+    public string[] groundEffectIds {
       get{
-        if(__groundEffectIds == default(string[])) __groundEffectIds = groundEffectIds.To<string[]>();
-        return __groundEffectIds;
+        if(_groundEffectIds == default(string[])) _groundEffectIds = groundEffectIds.To<string[]>();
+        return _groundEffectIds;
       }
     }
     /*line特效ids*/
-    public LitJson.JsonData lineEffectIds { get; set; }
-    private string[] __lineEffectIds;
-    public string[] _lineEffectIds {
+    private string[] _lineEffectIds;
+    public string[] lineEffectIds {
       get{
-        if(__lineEffectIds == default(string[])) __lineEffectIds = lineEffectIds.To<string[]>();
-        return __lineEffectIds;
+        if(_lineEffectIds == default(string[])) _lineEffectIds = lineEffectIds.To<string[]>();
+        return _lineEffectIds;
       }
     }
     /*不强制面向攻击目标*/
@@ -106,12 +101,11 @@ namespace CsCat{
     /*可打断后摇时间*/
     public float breakTime { get; set; }
     /*新技能触发id*/
-    public LitJson.JsonData newSpellTriggerIds { get; set; }
-    private string[] __newSpellTriggerIds;
-    public string[] _newSpellTriggerIds {
+    private string[] _newSpellTriggerIds;
+    public string[] newSpellTriggerIds {
       get{
-        if(__newSpellTriggerIds == default(string[])) __newSpellTriggerIds = newSpellTriggerIds.To<string[]>();
-        return __newSpellTriggerIds;
+        if(_newSpellTriggerIds == default(string[])) _newSpellTriggerIds = newSpellTriggerIds.To<string[]>();
+        return _newSpellTriggerIds;
       }
     }
     /*是否需要目标*/
@@ -119,30 +113,27 @@ namespace CsCat{
     /*冷却CD*/
     public float cooldownDuration { get; set; }
     /*被动技能ids*/
-    public LitJson.JsonData passiveBuffIds { get; set; }
-    private string[] __passiveBuffIds;
-    public string[] _passiveBuffIds {
+    private string[] _passiveBuffIds;
+    public string[] passiveBuffIds {
       get{
-        if(__passiveBuffIds == default(string[])) __passiveBuffIds = passiveBuffIds.To<string[]>();
-        return __passiveBuffIds;
+        if(_passiveBuffIds == default(string[])) _passiveBuffIds = passiveBuffIds.To<string[]>();
+        return _passiveBuffIds;
       }
     }
     /*选择单位参数*/
-    public LitJson.JsonData selectUnitArgDict { get; set; }
-    private Dictionary<string,string> __selectUnitArgDict;
-    public Dictionary<string,string> _selectUnitArgDict {
+    private Dictionary<string,string> _selectUnitArgDict;
+    public Dictionary<string,string> selectUnitArgDict {
       get{
-        if(__selectUnitArgDict == default(Dictionary<string,string>)) __selectUnitArgDict = selectUnitArgDict.To<Dictionary<string,string>>();
-        return __selectUnitArgDict;
+        if(_selectUnitArgDict == default(Dictionary<string,string>)) _selectUnitArgDict = selectUnitArgDict.To<Dictionary<string,string>>();
+        return _selectUnitArgDict;
       }
     }
     /*参数*/
-    public LitJson.JsonData argDict { get; set; }
-    private Dictionary<string,string> __argDict;
-    public Dictionary<string,string> _argDict {
+    private Dictionary<string,string> _argDict;
+    public Dictionary<string,string> argDict {
       get{
-        if(__argDict == default(Dictionary<string,string>)) __argDict = argDict.To<Dictionary<string,string>>();
-        return __argDict;
+        if(_argDict == default(Dictionary<string,string>)) _argDict = argDict.To<Dictionary<string,string>>();
+        return _argDict;
       }
     }
   }

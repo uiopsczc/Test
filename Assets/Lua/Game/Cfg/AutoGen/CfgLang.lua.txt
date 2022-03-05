@@ -87,14 +87,17 @@ dk")dkd]=]
 
 local cfg = {}
 
+---@return CfgLangData[]
 function cfg.All()
   return data_list
 end
 
+---@return CfgLangData
 function cfg.Get(index)
   return data_list[index]
 end
 
+---@return CfgLangData
 function cfg.GetById(id)
   local key = tostring(id)
   return cfg.Get(index_dict.unique.id[key])

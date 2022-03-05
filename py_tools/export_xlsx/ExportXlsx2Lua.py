@@ -108,6 +108,7 @@ class ExportXlsx2Lua(object):
     content += "%slocal cfg = {}\n" % (StringUtil.GetSpace(indent))
     content += "%s\n"%(StringUtil.GetSpace(indent))
 
+    content += "%s---@return %s[]\n" % (StringUtil.GetSpace(indent), ExportXlsxUtil.GetCfgDataName(sheet))
     content += "%sfunction cfg.All()\n"%(StringUtil.GetSpace(indent))
     indent +=1
     content += "%sreturn data_list\n"%(StringUtil.GetSpace(indent))
@@ -115,6 +116,7 @@ class ExportXlsx2Lua(object):
     content += "%send\n" % (StringUtil.GetSpace(indent))
     content += "%s\n" % (StringUtil.GetSpace(indent))
 
+    content += "%s---@return %s\n" % (StringUtil.GetSpace(indent), ExportXlsxUtil.GetCfgDataName(sheet))
     content += "%sfunction cfg.Get(index)\n" % (StringUtil.GetSpace(indent))
     indent += 1
     content += "%sreturn data_list[index]\n" % (StringUtil.GetSpace(indent))
@@ -136,6 +138,11 @@ class ExportXlsx2Lua(object):
         args = args[0:len(args) - 1]
         keys = keys[0:len(keys) - 1]
         # GetByXXX
+        if index_group == ExportXlsxConst.Sheet_Unique_Tag:
+          content += "%s---@return %s\n" % (StringUtil.GetSpace(indent), ExportXlsxUtil.GetCfgDataName(sheet))
+        else:
+          content += "%s---@return %s[]\n" % (StringUtil.GetSpace(indent), ExportXlsxUtil.GetCfgDataName(sheet))
+
         content += "%sfunction cfg.GetBy%s(%s)\n" % (
           StringUtil.GetSpace(indent), index_specific_keys_of_method_name, args)
         indent += 1

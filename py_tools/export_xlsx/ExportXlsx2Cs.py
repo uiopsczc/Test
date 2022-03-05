@@ -6,6 +6,8 @@ from pythoncat.util.FileUtil import *
 class ExportXlsx2Cs(object):
   @staticmethod
   def ResetAll():
+    if not ExportXlsxConst.Is_Export_Cs:
+      return
     FileUtil.RemoveDir(ExportXlsxConst.Export_2_Cs_Dir_Path)
 
   @staticmethod
@@ -128,20 +130,24 @@ class ExportXlsx2Cs(object):
       fieldInfo_type = fieldInfo["type"]
       fieldInfo_name = fieldInfo["name"]
       content += "%s/*%s*/\n" % (StringUtil.GetSpace(indent), fieldInfo["name_chinese"])
-      content += "%spublic %s %s { get; set; }\n" % (StringUtil.GetSpace(indent),ExportXlsxUtil.GetExportCsType(fieldInfo_type) ,fieldInfo_name)
-      if ExportXlsxUtil.IsSpecialCsType(fieldInfo_type):
+      isSpecialCsType = ExportXlsxUtil.IsSpecialCsType(fieldInfo_type)
+      if isSpecialCsType:
         fieldInfo_speical_cs_type = ExportXlsxUtil.GetSpecialCsType(fieldInfo_type)
-        content += "%sprivate %s __%s;\n"%(StringUtil.GetSpace(indent),fieldInfo_speical_cs_type, fieldInfo_name)
-        content += "%spublic %s _%s {\n"%(StringUtil.GetSpace(indent),fieldInfo_speical_cs_type, fieldInfo_name)
+        content += "%sprivate %s _%s;\n" % (StringUtil.GetSpace(indent), fieldInfo_speical_cs_type, fieldInfo_name)
+        content += "%spublic %s %s {\n" % (StringUtil.GetSpace(indent), fieldInfo_speical_cs_type, fieldInfo_name)
         indent += 1
         content += "%sget{\n" % (StringUtil.GetSpace(indent))
         indent += 1
-        content += "%sif(__%s == default(%s)) __%s = %s.To<%s>();\n" % (StringUtil.GetSpace(indent), fieldInfo_name,fieldInfo_speical_cs_type,fieldInfo_name, fieldInfo_name, fieldInfo_speical_cs_type)
-        content += "%sreturn __%s;\n"%(StringUtil.GetSpace(indent), fieldInfo_name)
+        content += "%sif(_%s == default(%s)) _%s = %s.To<%s>();\n" % (
+        StringUtil.GetSpace(indent), fieldInfo_name, fieldInfo_speical_cs_type, fieldInfo_name, fieldInfo_name,
+        fieldInfo_speical_cs_type)
+        content += "%sreturn _%s;\n" % (StringUtil.GetSpace(indent), fieldInfo_name)
         indent -= 1
         content += "%s}\n" % (StringUtil.GetSpace(indent))
         indent -= 1
         content += "%s}\n" % (StringUtil.GetSpace(indent))
+      else:
+        content += "%spublic %s %s { get; set; }\n" % (StringUtil.GetSpace(indent),ExportXlsxUtil.GetExportCsType(fieldInfo_type) ,fieldInfo_name)
     indent -= 1
     content += "%s}\n" % (StringUtil.GetSpace(indent))
     return content

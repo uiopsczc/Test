@@ -77,7 +77,7 @@ namespace CsCat
 
 		private void AddEffects()
 		{
-			var effectIds = cfgBuffData._effectIds;
+			var effectIds = cfgBuffData.effectIds;
 			if (effectIds.IsNullOrEmpty())
 				return;
 			for (var i = 0; i < effectIds.Length; i++)
@@ -102,7 +102,7 @@ namespace CsCat
 
 		private void AddPropertyDict()
 		{
-			var newPropertyDict = DoerAttrParserUtil.ConvertTableWithTypeString(this.cfgBuffData._propertyDict).ToDict<string, float>();
+			var newPropertyDict = DoerAttrParserUtil.ConvertTableWithTypeString(this.cfgBuffData.propertyDict).ToDict<string, float>();
 			if (!newPropertyDict.IsNullOrEmpty())
 			{
 				var propertyComp = this._buffManager.unit.propertyComp;
@@ -114,7 +114,7 @@ namespace CsCat
 
 		private void RemovePropertyDict()
 		{
-			var newPropertyDict = DoerAttrParserUtil.ConvertTableWithTypeString(this.cfgBuffData._propertyDict).ToDict<string, float>();
+			var newPropertyDict = DoerAttrParserUtil.ConvertTableWithTypeString(this.cfgBuffData.propertyDict).ToDict<string, float>();
 			if (!newPropertyDict.IsNullOrEmpty())
 			{
 				var propertyComp = this._buffManager.unit.propertyComp;

@@ -83,7 +83,7 @@ namespace CsCat
 		protected void RegisterTriggerSpell()
 		{
 			//注册表里填的技能触发事件，由简单的技能按顺序触发组成复杂的技能
-			var newSpellTriggerIds = this.cfgSpellData._newSpellTriggerIds;
+			var newSpellTriggerIds = this.cfgSpellData.newSpellTriggerIds;
 			if (newSpellTriggerIds.IsNullOrEmpty())
 				return;
 			for (var i = 0; i < newSpellTriggerIds.Length; i++)

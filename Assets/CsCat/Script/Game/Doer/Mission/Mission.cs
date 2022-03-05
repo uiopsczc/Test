@@ -110,7 +110,7 @@ namespace CsCat
 		{
 			Dictionary<string, int> result = new Dictionary<string, int>();
 
-			Dictionary<string, string> rewardDict = GetCfgMissionData()._rewardDict;
+			Dictionary<string, string> rewardDict = GetCfgMissionData().rewardDict;
 			if (!rewardDict.IsNullOrEmpty())
 			{
 				foreach (var keyValue in rewardDict)

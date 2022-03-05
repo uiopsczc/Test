@@ -172,14 +172,17 @@ local index_dict = {
 
 local cfg = {}
 
+---@return CfgSummonBeastGuardSkillData[]
 function cfg.All()
   return data_list
 end
 
+---@return CfgSummonBeastGuardSkillData
 function cfg.Get(index)
   return data_list[index]
 end
 
+---@return CfgSummonBeastGuardSkillData
 function cfg.GetById(id)
   local key = tostring(id)
   return cfg.Get(index_dict.unique.id[key])
@@ -190,6 +193,7 @@ function cfg.IsContainsKeyById(id)
   return index_dict.unique.id[key] ~= nil
 end
 
+---@return CfgSummonBeastGuardSkillData
 function cfg.GetBySummonBeastIdAndStar(summonBeastId,star)
   local keys = {tostring(summonBeastId),tostring(star)}
   local key = table.concat(keys, ".")
@@ -202,6 +206,7 @@ function cfg.IsContainsKeyBySummonBeastIdAndStar(summonBeastId,star)
   return index_dict.unique.summonBeastId_and_star[key] ~= nil
 end
 
+---@return CfgSummonBeastGuardSkillData[]
 function cfg.GetBySummonBeastId(summonBeastId)
   local key = tostring(summonBeastId)
   ---@type CfgSummonBeastGuardSkillData[]
@@ -216,6 +221,7 @@ function cfg.IsContainsKeyBySummonBeastId(summonBeastId)
   return index_dict.multiple.summonBeastId[key] ~= nil
 end
 
+---@return CfgSummonBeastGuardSkillData[]
 function cfg.GetBySummonBeastIdAndStarFighting(summonBeastId,starFighting)
   local keys = {tostring(summonBeastId),tostring(starFighting)}
   local key = table.concat(keys, ".")

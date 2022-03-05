@@ -43,21 +43,19 @@ namespace CsCat{
     /*模型路径*/
     public string modelPath { get; set; }
     /*普攻ids*/
-    public LitJson.JsonData normalAttackIds { get; set; }
-    private string[] __normalAttackIds;
-    public string[] _normalAttackIds {
+    private string[] _normalAttackIds;
+    public string[] normalAttackIds {
       get{
-        if(__normalAttackIds == default(string[])) __normalAttackIds = normalAttackIds.To<string[]>();
-        return __normalAttackIds;
+        if(_normalAttackIds == default(string[])) _normalAttackIds = normalAttackIds.To<string[]>();
+        return _normalAttackIds;
       }
     }
     /*技能ids*/
-    public LitJson.JsonData skillIds { get; set; }
-    private string[] __skillIds;
-    public string[] _skillIds {
+    private string[] _skillIds;
+    public string[] skillIds {
       get{
-        if(__skillIds == default(string[])) __skillIds = skillIds.To<string[]>();
-        return __skillIds;
+        if(_skillIds == default(string[])) _skillIds = skillIds.To<string[]>();
+        return _skillIds;
       }
     }
     /*ai实现类(lua)*/
@@ -71,12 +69,11 @@ namespace CsCat{
     /*死亡时候触发的特效id*/
     public string deathEffectId { get; set; }
     /*被动buff ids*/
-    public LitJson.JsonData passiveBuffIds { get; set; }
-    private string[] __passiveBuffIds;
-    public string[] _passiveBuffIds {
+    private string[] _passiveBuffIds;
+    public string[] passiveBuffIds {
       get{
-        if(__passiveBuffIds == default(string[])) __passiveBuffIds = passiveBuffIds.To<string[]>();
-        return __passiveBuffIds;
+        if(_passiveBuffIds == default(string[])) _passiveBuffIds = passiveBuffIds.To<string[]>();
+        return _passiveBuffIds;
       }
     }
   }

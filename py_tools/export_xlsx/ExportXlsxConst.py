@@ -1,5 +1,6 @@
 class ExportXlsxConst(object):
   Is_Export_Cs = True
+  # Is_Export_Cs = False
   Xlsx_Dir_Path = r"..\..\Excels\\"
   CsCat_Namespace = "CsCat"
   Export_2_Cs_Dir_Path = r"..\..\Assets\CsCat\Script\Game\Cfg\AutoGen\\"

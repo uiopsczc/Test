@@ -39,12 +39,11 @@ namespace CsCat{
     /*持续时间*/
     public float duration { get; set; }
     /*特效ids*/
-    public LitJson.JsonData effectIds { get; set; }
-    private string[] __effectIds;
-    public string[] _effectIds {
+    private string[] _effectIds;
+    public string[] effectIds {
       get{
-        if(__effectIds == default(string[])) __effectIds = effectIds.To<string[]>();
-        return __effectIds;
+        if(_effectIds == default(string[])) _effectIds = effectIds.To<string[]>();
+        return _effectIds;
       }
     }
     /*状态*/
@@ -54,12 +53,11 @@ namespace CsCat{
     /*触发技能id*/
     public string triggerSpellId { get; set; }
     /*修改属性dict*/
-    public LitJson.JsonData propertyDict { get; set; }
-    private Dictionary<string,string> __propertyDict;
-    public Dictionary<string,string> _propertyDict {
+    private Dictionary<string,string> _propertyDict;
+    public Dictionary<string,string> propertyDict {
       get{
-        if(__propertyDict == default(Dictionary<string,string>)) __propertyDict = propertyDict.To<Dictionary<string,string>>();
-        return __propertyDict;
+        if(_propertyDict == default(Dictionary<string,string>)) _propertyDict = propertyDict.To<Dictionary<string,string>>();
+        return _propertyDict;
       }
     }
   }

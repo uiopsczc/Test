@@ -8,9 +8,9 @@ namespace CsCat
 		//起手特效
 		public List<string> CreateHandEffect(float duration)
 		{
-			if (this.cfgSpellData._handEffectIds.IsNullOrEmpty())
+			if (this.cfgSpellData.handEffectIds.IsNullOrEmpty())
 				return null;
-			var effectIds = this.cfgSpellData._handEffectIds;
+			var effectIds = this.cfgSpellData.handEffectIds;
 			var guidList = new List<string>();
 			for (var i = 0; i < effectIds.Length; i++)
 			{
@@ -26,9 +26,9 @@ namespace CsCat
 
 		public List<string> CreateGoEffect(float duration)
 		{
-			if (this.cfgSpellData._goEffectIds.IsNullOrEmpty())
+			if (this.cfgSpellData.goEffectIds.IsNullOrEmpty())
 				return null;
-			var effectIds = this.cfgSpellData._goEffectIds;
+			var effectIds = this.cfgSpellData.goEffectIds;
 			var guidList = new List<string>();
 			for (var i = 0; i < effectIds.Length; i++)
 			{
@@ -45,7 +45,7 @@ namespace CsCat
 		public List<string> CreateHitEffect(Unit sourceUnit, Unit targetUnit, float? duration = null,
 		  float sectorAngle = 0, List<string> forceEffectIdList = null)
 		{
-			if (this.cfgSpellData._hitEffectIds.IsNullOrEmpty() && forceEffectIdList.IsNullOrEmpty())
+			if (this.cfgSpellData.hitEffectIds.IsNullOrEmpty() && forceEffectIdList.IsNullOrEmpty())
 				return null;
 			Vector3? forceDir = null;
 			if (sourceUnit != null)
@@ -57,7 +57,7 @@ namespace CsCat
 
 			var effectIds = forceEffectIdList != null
 			  ? forceEffectIdList.ToArray()
-			  : this.cfgSpellData._hitEffectIds;
+			  : this.cfgSpellData.hitEffectIds;
 			var guidList = new List<string>();
 			for (var i = 0; i < effectIds.Length; i++)
 			{
@@ -76,7 +76,7 @@ namespace CsCat
 		public List<string> CreateGroundEffect(Vector3? position, Vector3? eulerAngles, float duration,
 		  List<string> forceEffectIdList = null, Vector3? forcePosition = null, bool isHide = false)
 		{
-			if (this.cfgSpellData._groundEffectIds.IsNullOrEmpty() && forceEffectIdList.IsNullOrEmpty())
+			if (this.cfgSpellData.groundEffectIds.IsNullOrEmpty() && forceEffectIdList.IsNullOrEmpty())
 				return null;
 			Vector3 positionValue = forcePosition.GetValueOrDefault(position.GetValueOrDefault(this.sourceUnit.GetPosition()));
 			Vector3 eulerAnglesValue =
@@ -84,7 +84,7 @@ namespace CsCat
 				.eulerAngles);
 			var effectIds = forceEffectIdList != null
 			  ? forceEffectIdList.ToArray()
-			  : this.cfgSpellData._groundEffectIds;
+			  : this.cfgSpellData.groundEffectIds;
 			var guidList = new List<string>();
 			if (forcePosition == null)
 				positionValue = Client.instance.combat.pathManager.GetGroundPos(positionValue);
@@ -104,11 +104,11 @@ namespace CsCat
 		//line特效
 		public List<string> CreateLineEffect(IPosition targetIPosition, float speed, float accSpeed)
 		{
-			if (this.cfgSpellData._lineEffectIds.IsNullOrEmpty())
+			if (this.cfgSpellData.lineEffectIds.IsNullOrEmpty())
 				return null;
 			if (targetIPosition == null || !targetIPosition.IsValid())
 				return null;
-			var effectIds = this.cfgSpellData._lineEffectIds;
+			var effectIds = this.cfgSpellData.lineEffectIds;
 			var guidList = new List<string>();
 			for (var i = 0; i < effectIds.Length; i++)
 			{

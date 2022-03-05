@@ -31,21 +31,19 @@ namespace CsCat{
     /*名字*/
     public string name { get; set; }
     /*国家*/
-    public string country { get; set; }
-    private string __country;
-    public string _country {
+    private string _country;
+    public string country {
       get{
-        if(__country == default(string)) __country = country.To<string>();
-        return __country;
+        if(_country == default(string)) _country = country.To<string>();
+        return _country;
       }
     }
     /*ageDict*/
-    public LitJson.JsonData ageDict { get; set; }
-    private Dictionary<string,int[]> __ageDict;
-    public Dictionary<string,int[]> _ageDict {
+    private Dictionary<string,int[]> _ageDict;
+    public Dictionary<string,int[]> ageDict {
       get{
-        if(__ageDict == default(Dictionary<string,int[]>)) __ageDict = ageDict.To<Dictionary<string,int[]>>();
-        return __ageDict;
+        if(_ageDict == default(Dictionary<string,int[]>)) _ageDict = ageDict.To<Dictionary<string,int[]>>();
+        return _ageDict;
       }
     }
   }

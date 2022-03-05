@@ -31,12 +31,11 @@ namespace CsCat{
     /*值*/
     public string value { get; set; }
     /*值dict*/
-    public LitJson.JsonData valueDict { get; set; }
-    private Dictionary<string,string> __valueDict;
-    public Dictionary<string,string> _valueDict {
+    private Dictionary<string,string> _valueDict;
+    public Dictionary<string,string> valueDict {
       get{
-        if(__valueDict == default(Dictionary<string,string>)) __valueDict = valueDict.To<Dictionary<string,string>>();
-        return __valueDict;
+        if(_valueDict == default(Dictionary<string,string>)) _valueDict = valueDict.To<Dictionary<string,string>>();
+        return _valueDict;
       }
     }
   }

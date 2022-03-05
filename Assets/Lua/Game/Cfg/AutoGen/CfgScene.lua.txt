@@ -31,14 +31,17 @@ local index_dict = {
 
 local cfg = {}
 
+---@return CfgSceneData[]
 function cfg.All()
   return data_list
 end
 
+---@return CfgSceneData
 function cfg.Get(index)
   return data_list[index]
 end
 
+---@return CfgSceneData
 function cfg.GetById(id)
   local key = tostring(id)
   return cfg.Get(index_dict.unique.id[key])
