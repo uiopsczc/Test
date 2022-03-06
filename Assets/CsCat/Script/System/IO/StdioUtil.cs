@@ -381,6 +381,22 @@ namespace CsCat
 			return ReadTextFile(new FileInfo(fileName));
 		}
 
+		public static List<string> ReadAsLineList(string fileName)
+		{
+			FileStream fileStream = new FileStream(fileName, FileMode.Open, FileAccess.Read, FileShare.None);
+			StreamReader reader = new StreamReader(fileStream);
+			List<string> lineList = new List<string>();
+			string line = reader.ReadLine();
+			while (line != null)
+			{
+				lineList.Add(line);
+				line = reader.ReadLine();
+			}
+			reader.Close();
+			fileStream.Close();
+			return lineList;
+		}
+
 		/// <summary>
 		/// 读取文件file，返回字符串内容
 		/// </summary>

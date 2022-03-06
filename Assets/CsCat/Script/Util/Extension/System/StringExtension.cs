@@ -226,6 +226,44 @@ namespace CsCat
 			return string.Format(format, args);
 		}
 
+		public static (string mainPart, string cfgPart) GetLineAutoGenLineInfoParts(this string mainPart, string cfgPartStartsWith)
+		{
+			if (cfgPartStartsWith == null)
+				return (mainPart, null);
+			var index = mainPart.IndexOf(cfgPartStartsWith);
+			if (index == -1)
+				return (mainPart, null);
+			return (mainPart.Substring(0, index), mainPart.Substring(index));
+		}
+
+		public static AutoGenLineInfo ToAutoGenLineInfo(this string mainPart, string cfgPartStartsWith = null, string uniqueKey = null, bool isDeleteIfNotExist = false)
+		{
+			if (cfgPartStartsWith == null || uniqueKey == null)
+				return new AutoGenLineInfo(mainPart, null);
+			var cfgInfo = new AutoGenLineCfgInfo(cfgPartStartsWith, uniqueKey,
+				isDeleteIfNotExist);
+			return new AutoGenLineInfo(mainPart, cfgInfo);
+		}
+
+		public static AutoGenLineInfo ParseAutoGenLineInfo(this string line, string cfgPartStartsWith)
+		{
+			(string mainPart, string cfgPart) autoGenLineInfo =
+				GetLineAutoGenLineInfoParts(line, cfgPartStartsWith);
+			return new AutoGenLineInfo(autoGenLineInfo.mainPart, autoGenLineInfo.cfgPart, cfgPartStartsWith);
+		}
+
+		public static AutoGenLineCfgInfo ParseAutoGenLineCfgInfo(this string cfgPart, string cfgPartStartsWith)
+		{
+			if (cfgPart == null)
+				return null;
+			var index = cfgPart.IndexOf(cfgPartStartsWith);
+			if (index == -1)
+				return null;
+			var result = new AutoGenLineCfgInfo();
+			result.Parse(cfgPart.Substring(0, index + cfgPartStartsWith.Length), cfgPart.Substring(index + cfgPartStartsWith.Length));
+			return result;
+		}
+
 		#region RichText
 
 		public static void SetRichTextColor(this string self, Color color)

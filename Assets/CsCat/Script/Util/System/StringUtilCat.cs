@@ -102,6 +102,9 @@ namespace CsCat
 			return string.Format(StringConst.String_Format_RoundBrackets, arg);
 		}
 
+		
+
+
 		public static int CheckInsertLine(string content, int startCheckInsertIndex, List<string> lineList)
 		{
 			content = content.Trim(new[] {'\r', '\n'});

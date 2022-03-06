@@ -4,13 +4,13 @@ using UnityEngine;
 
 namespace CsCat
 {
-	public partial class ComponentInfo
+	public class AutoGenComponentInfo
 	{
 		public string name;
 		public string type;
 		public string path;
 
-		public ComponentInfo(string name, string type, string path)
+		public AutoGenComponentInfo(string name, string type, string path)
 		{
 			this.name = name;
 			this.type = type;

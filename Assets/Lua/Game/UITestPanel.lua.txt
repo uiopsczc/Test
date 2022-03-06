@@ -1,0 +1,47 @@
+local UIObject = require("LuaCat.UI.UIObject")
+
+---@class UITestPanel:UIObject
+local UITestPanel = Class("UITestPanel", UIObject)
+
+function UITestPanel:Init(...)--LuaAutoGen:{uniqueKey:Init Start}
+	UIObject.Init(self, ...)--LuaAutoGen:{uniqueKey:UIObject.Init}
+end--LuaAutoGen:{uniqueKey:Init End}
+
+function UITestPanel:InitUI()--LuaAutoGen:{uniqueKey:InitUI Start}
+	UIObject.InitUI(self)
+	local rootTransform = self:GetGraphicComponent():GetTransform()
+	self._Btn_CombatTest = rootTransform:Find("Frame/Btn_CombatTest"):GetComponent("Button")--LuaAutoGen:{uniqueKey:Set self._,isDeleteIfNotExist:True}
+end--LuaAutoGen:{uniqueKey:InitUI End}
+
+function UITestPanel:DestroyUI()--LuaAutoGen:{uniqueKey:DestroyUI Start}
+	UIObject.DestroyUI(self)
+	self._Btn_CombatTest = nil--LuaAutoGen:{uniqueKey:Set Nil Of self._Btn_CombatTest,isDeleteIfNotExist:True}
+	self._Btn_GM = nil--LuaAutoGen:{uniqueKey:Set Nil Of self._Btn_GM,isDeleteIfNotExist:True}
+	self._Btn_Test = nil--LuaAutoGen:{uniqueKey:Set Nil Of self._Btn_Test,isDeleteIfNotExist:True}
+end--LuaAutoGen:{uniqueKey:DestroyUI End}
+
+function UITestPanel:AddUIEvents()--LuaAutoGen:{uniqueKey:AddUIEvents Start}
+	UIObject.AddUIEvents(self)
+	self:RegisterOnClick(self._Btn_CombatTest, function() self:OnClickBtn_CombatTest() end)--LuaAutoGen:{uniqueKey:Btn_CombatTest Register UIEvent,isDeleteIfNotExist:True}
+	self:RegisterOnClick(self._Btn_GM, function() self:OnClickBtn_GM() end)--LuaAutoGen:{uniqueKey:Btn_GM Register UIEvent,isDeleteIfNotExist:True}
+	self:RegisterOnClick(self._Btn_Test, function() self:OnClickBtn_Test() end)--LuaAutoGen:{uniqueKey:Btn_Test Register UIEvent,isDeleteIfNotExist:True}
+end--LuaAutoGen:{uniqueKey:AddUIEvents End}
+
+--Btn_CombatTest响应函数
+function UITestPanel:OnClickBtn_CombatTest()--LuaAutoGen:{uniqueKey:OnClickBtn_CombatTest Start}
+end--LuaAutoGen:{uniqueKey:OnClickBtn_CombatTest End}
+--Btn_GM响应函数
+function UITestPanel:OnClickBtn_GM()--LuaAutoGen:{uniqueKey:OnClickBtn_GM Start}
+end--LuaAutoGen:{uniqueKey:OnClickBtn_GM End}
+--Btn_Test响应函数
+function UITestPanel:OnClickBtn_Test()--LuaAutoGen:{uniqueKey:OnClickBtn_Test Start}
+end--LuaAutoGen:{uniqueKey:OnClickBtn_Test End}
+function UITestPanel:AddLogicEvents()--LuaAutoGen:{uniqueKey:AddLogicEvents Start}
+	UIObject.AddLogicEvents(self)
+end--LuaAutoGen:{uniqueKey:AddLogicEvents End}
+
+function UITestPanel:_Destroy()--LuaAutoGen:{uniqueKey:_Destroy Start}
+	UIObject._Destroy(self)
+end--LuaAutoGen:{uniqueKey:_Destroy End}
+
+return UITestPanel
