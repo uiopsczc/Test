@@ -118,10 +118,10 @@ namespace CsCat
 				}
 			}
 
-			for (int i = endIndex; i <= startIndex; i--)
+			for (int i = endIndex; i >= startIndex; i--)
 			{
 				var lineInfo = lineInfoList[i];
-				if (lineInfo.IsDeleteIfNotExist() && toInsertLineInfoList.IndexOf(lineInfo) == -1)
+				if (lineInfo.IsDeleteIfNotExist() && IndexOf(toInsertLineInfoList,lineInfo, 0) == -1)
 				{
 					lineInfoList.RemoveAt(i);
 					endIndex--;

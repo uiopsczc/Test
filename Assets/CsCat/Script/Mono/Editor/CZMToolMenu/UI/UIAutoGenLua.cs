@@ -94,10 +94,10 @@ namespace CsCat
 				var componentInfo = componentInfoList[i];
 				if (componentInfo.name.Contains("Nego_"))
 					toInsertLineInfoList.Add(string.Format("\tself._{0} = rootTransform:Find(\"{1}\")", componentInfo.name,
-						componentInfo.path).ToAutoGenLineInfo(cfgPartStartsWith, "Set self._"+ componentInfo.name), true);
+						componentInfo.path).ToAutoGenLineInfo(cfgPartStartsWith, string.Format("self._{0} = xxx",componentInfo.name)), true);
 				else
 					toInsertLineInfoList.Add(string.Format("\tself._{0} = rootTransform:Find(\"{1}\"):GetComponent(\"{2}\")",
-						componentInfo.name, componentInfo.path, componentInfo.type).ToAutoGenLineInfo(cfgPartStartsWith, "Set self._", true));
+						componentInfo.name, componentInfo.path, componentInfo.type).ToAutoGenLineInfo(cfgPartStartsWith, string.Format("self._{0} = xxx", componentInfo.name), true));
 			}
 
 			toInsertLineInfoList.Add("end".ToAutoGenLineInfo(cfgPartStartsWith, "InitUI End"));
@@ -116,7 +116,7 @@ namespace CsCat
 			for (int i = 0; i < this.componentInfoList.Count; i++)
 			{
 				var componentInfo = componentInfoList[i];
-				toInsertLineInfoList.Add(string.Format("\tself._{0} = nil", componentInfo.name).ToAutoGenLineInfo(cfgPartStartsWith, "Set Nil Of self._"+componentInfo.name, true));
+				toInsertLineInfoList.Add(string.Format("\tself._{0} = nil", componentInfo.name).ToAutoGenLineInfo(cfgPartStartsWith, string.Format("self._{0} = nil",componentInfo.name), true));
 			}
 
 			toInsertLineInfoList.Add("end".ToAutoGenLineInfo(cfgPartStartsWith, "DestroyUI End"));
@@ -158,21 +158,22 @@ namespace CsCat
 		public void GenOnClickFuncs()
 		{
 			List<AutoGenLineInfo> toInsertLineInfoList = new List<AutoGenLineInfo>();
+			toInsertLineInfoList.Add("--ClickFunctions Start".ToAutoGenLineInfo(cfgPartStartsWith, "ClickFunctions Start"));
 			for (int i = 0; i < this.componentInfoList.Count; i++)
 			{
 				var componentInfo = componentInfoList[i];
 				if (IsUIEventComponentType(componentInfo.type))
 				{
-					toInsertLineInfoList.Clear();
 					toInsertLineInfoList.Add(string.Format("--{0}ÏìÓ¦º¯Êý", componentInfo.name).ToAutoGenLineInfo());
 					toInsertLineInfoList.Add(string.Format("function {0}:OnClick{1}()", GetClassName(), componentInfo.name).ToAutoGenLineInfo(cfgPartStartsWith, "OnClick"+componentInfo.name + " Start"));
 					toInsertLineInfoList.Add("end".ToAutoGenLineInfo(cfgPartStartsWith, "OnClick" + componentInfo.name + " End"));
-					lastCheckedLineIndex = AutoGenLineInfoUtil.CheckInsert(toInsertLineInfoList,
-						this.lineInfoList, lastCheckedLineIndex + 1);
 				}
 			}
+			toInsertLineInfoList.Add("--ClickFunctions End".ToAutoGenLineInfo(cfgPartStartsWith, "ClickFunctions End"));
+			lastCheckedLineIndex = AutoGenLineInfoUtil.CheckInsert(toInsertLineInfoList,
+				this.lineInfoList, lastCheckedLineIndex + 1);
+			GenNewLine();
 
-			
 		}
 
 		public void GenAddLogicEvents()
