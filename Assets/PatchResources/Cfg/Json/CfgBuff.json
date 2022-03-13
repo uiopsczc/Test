@@ -1,0 +1,25 @@
+{
+  "dataList": [
+    {
+      "id": 1,
+      "name": "buff1",
+      "type1": "",
+      "type2": "",
+      "duration": 3,
+      "effectIds": [
+        "1"
+      ],
+      "state": "",
+      "isUnique": false,
+      "triggerSpellId": "",
+      "propertyDict": {}
+    }
+  ],
+  "indexDict": {
+    "uniqueIndexesList": {
+      "id": {
+        "1": 0
+      }
+    }
+  }
+}

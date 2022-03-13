@@ -1,0 +1,35 @@
+{
+  "dataList": [
+    {
+      "id": 1,
+      "name": "事件子步骤1",
+      "triggerCondition": "{@eval(${u.mp}==0)}",
+      "triggerDesc": "触发事件子步骤1",
+      "isCanNotTriggerDesc": "不触发事件子步骤1",
+      "executeCondition": "{@eval(${u.tp}==0)}",
+      "executeDesc": "执行事件子步骤1",
+      "isCanNotExecuteDesc": "执行事件子步骤1",
+      "isStopHere": false,
+      "setAttrDict": {},
+      "addAttrDict": {
+        "u.cp": "2",
+        "u.dp": "4"
+      },
+      "dealItemDict": {
+        "5": "1(atk:5,def:6)"
+      },
+      "giveUpMissionIds": [],
+      "acceptMissionIds": [],
+      "finishMissionIds": [],
+      "addFinishedMissionIds": [],
+      "removeFinishedMissionIds": []
+    }
+  ],
+  "indexDict": {
+    "uniqueIndexesList": {
+      "id": {
+        "1": 0
+      }
+    }
+  }
+}

@@ -10,54 +10,70 @@ namespace CsCat{
     protected static CfgSummonBeastGuardSkill instance = new CfgSummonBeastGuardSkill();
     protected CfgSummonBeastGuardSkillRoot root;
     public void Parse(string jsonStr) { this.root=JsonMapper.ToObject<CfgSummonBeastGuardSkillRoot>(jsonStr);}
-    public List<CfgSummonBeastGuardSkillData> All(){ return this.root.data_list; }
-    public CfgSummonBeastGuardSkillData Get(int index){ return this.root.data_list[index]; }
+    public List<CfgSummonBeastGuardSkillData> All(){ return this.root.dataList; }
+    public CfgSummonBeastGuardSkillData Get(int index){ return this.root.dataList[index]; }
     public CfgSummonBeastGuardSkillData GetById(string id){
       string key = id.ToString();
-      return this.Get(this.root.index_dict.unique.id[key]);
+      return this.Get(this.root.indexDict.uniqueIndexesList.id[key]);
     }
     public bool IsContainsKeyById(string id){
       string key = id.ToString();
-      return this.root.index_dict.unique.id.ContainsKey(key);
+      return this.root.indexDict.uniqueIndexesList.id.ContainsKey(key);
     }
     public CfgSummonBeastGuardSkillData GetBySummonBeastIdAndStar(int summonBeastId,int star){
       string[] keys = {summonBeastId.ToString(),star.ToString()};
       string key = string.Join(".", keys);
-      return this.Get(this.root.index_dict.unique.summonBeastId_and_star[key]);
+      return this.Get(this.root.indexDict.uniqueIndexesList.summonBeastId_and_star[key]);
     }
     public bool IsContainsKeyBySummonBeastIdAndStar(int summonBeastId,int star){
       string[] keys = {summonBeastId.ToString(),star.ToString()};
       string key = string.Join(".", keys);
-      return this.root.index_dict.unique.summonBeastId_and_star.ContainsKey(key);
+      return this.root.indexDict.uniqueIndexesList.summonBeastId_and_star.ContainsKey(key);
     }
+    private Dictionary<string, List<CfgSummonBeastGuardSkillData>> multiplyIndexesList_SummonBeastIdDict = new Dictionary<string, List<CfgSummonBeastGuardSkillData>>();
     public List<CfgSummonBeastGuardSkillData> GetBySummonBeastId(int summonBeastId){
       string key = summonBeastId.ToString();
+      if(multiplyIndexesList_SummonBeastIdDict.TryGetValue(key, out var cacheValue))
+        return cacheValue;
       List<CfgSummonBeastGuardSkillData> result = new List<CfgSummonBeastGuardSkillData>();
-      List<int> indexes = this.root.index_dict.multiple.summonBeastId[key];
-      foreach(int index in indexes) { result.Add(this.Get(index)); }
+      List<int> indexes = this.root.indexDict.multiplyIndexesList.summonBeastId[key];
+      for(int i = 1; i < indexes.Count; i++) 
+      {
+        var index = indexes[i];
+        result.Add(this.Get(index));
+      }
+      multiplyIndexesList_SummonBeastIdDict[key] = result;
       return result;
     }
     public bool IsContainsKeyBySummonBeastId(int summonBeastId){
       string key = summonBeastId.ToString();
-      return this.root.index_dict.multiple.summonBeastId.ContainsKey(key);
+      return this.root.indexDict.multiplyIndexesList.summonBeastId.ContainsKey(key);
     }
+    private Dictionary<string, List<CfgSummonBeastGuardSkillData>> multiplyIndexesList_SummonBeastIdAndStarFightingDict = new Dictionary<string, List<CfgSummonBeastGuardSkillData>>();
     public List<CfgSummonBeastGuardSkillData> GetBySummonBeastIdAndStarFighting(int summonBeastId,int starFighting){
       string[] keys = {summonBeastId.ToString(),starFighting.ToString()};
       string key = string.Join(".", keys);
+      if(multiplyIndexesList_SummonBeastIdAndStarFightingDict.TryGetValue(key, out var cacheValue))
+        return cacheValue;
       List<CfgSummonBeastGuardSkillData> result = new List<CfgSummonBeastGuardSkillData>();
-      List<int> indexes = this.root.index_dict.multiple.summonBeastId_and_starFighting[key];
-      foreach(int index in indexes) { result.Add(this.Get(index)); }
+      List<int> indexes = this.root.indexDict.multiplyIndexesList.summonBeastId_and_starFighting[key];
+      for(int i = 1; i < indexes.Count; i++) 
+      {
+        var index = indexes[i];
+        result.Add(this.Get(index));
+      }
+      multiplyIndexesList_SummonBeastIdAndStarFightingDict[key] = result;
       return result;
     }
     public bool IsContainsKeyBySummonBeastIdAndStarFighting(int summonBeastId,int starFighting){
       string[] keys = {summonBeastId.ToString(),starFighting.ToString()};
       string key = string.Join(".", keys);
-      return this.root.index_dict.multiple.summonBeastId_and_starFighting.ContainsKey(key);
+      return this.root.indexDict.multiplyIndexesList.summonBeastId_and_starFighting.ContainsKey(key);
     }
   }
   public class CfgSummonBeastGuardSkillRoot{
-    public List<CfgSummonBeastGuardSkillData> data_list { get; set; }
-    public CfgSummonBeastGuardSkillIndexData index_dict { get; set; }
+    public List<CfgSummonBeastGuardSkillData> dataList { get; set; }
+    public CfgSummonBeastGuardSkillIndexData indexDict { get; set; }
   }
   public partial class CfgSummonBeastGuardSkillData {
     /*id*/
@@ -86,14 +102,14 @@ namespace CsCat{
     public LitJson.JsonData skillDescArgs4 { get; set; }
   }
   public class CfgSummonBeastGuardSkillIndexData {
-    public CfgSummonBeastGuardSkillIndexUniqueData unique{ get; set; }
-    public CfgSummonBeastGuardSkillIndexMultipleData multiple{ get; set; }
+    public CfgSummonBeastGuardSkillIndexUniqueIndexesListData uniqueIndexesList{ get; set; }
+    public CfgSummonBeastGuardSkillIndexMultiplyIndexesListData multiplyIndexesList{ get; set; }
   }
-  public class CfgSummonBeastGuardSkillIndexUniqueData {
+  public class CfgSummonBeastGuardSkillIndexUniqueIndexesListData {
     public Dictionary<string, int> id { get; set; } 
     public Dictionary<string, int> summonBeastId_and_star { get; set; } 
   }
-  public class CfgSummonBeastGuardSkillIndexMultipleData {
+  public class CfgSummonBeastGuardSkillIndexMultiplyIndexesListData {
     public Dictionary<string,List<int>> summonBeastId { get; set; } 
     public Dictionary<string,List<int>> summonBeastId_and_starFighting { get; set; } 
   }

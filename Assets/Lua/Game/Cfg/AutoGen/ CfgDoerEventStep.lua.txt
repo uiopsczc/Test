@@ -1,0 +1,81 @@
+--AutoGen. DO NOT EDIT!!!
+--ExportFrom DDoerEvent表.xlsx[DoerEvent子步骤表]
+---@class  CfgDoerEventStepData
+---@field id
+---@field name
+---@field triggerCondition
+---@field triggerDesc
+---@field isCanNotTriggerDesc
+---@field executeCondition
+---@field executeDesc
+---@field isCanNotExecuteDesc
+---@field isStopHere
+---@field setAttrDict
+---@field addAttrDict
+---@field dealItemDict
+---@field giveUpMissionIds
+---@field acceptMissionIds
+---@field finishMissionIds
+---@field addFinishedMissionIds
+---@field removeFinishedMissionIds
+local _
+
+
+
+---@type  CfgDoerEventStepData[]
+local dataList = {
+  {
+    id = [=[1]=],
+    name = [=[事件子步骤1]=],
+    triggerCondition = [=[{@eval(${u.mp}==0)}]=],
+    triggerDesc = [=[触发事件子步骤1]=],
+    isCanNotTriggerDesc = [=[不触发事件子步骤1]=],
+    executeCondition = [=[{@eval(${u.tp}==0)}]=],
+    executeDesc = [=[执行事件子步骤1]=],
+    isCanNotExecuteDesc = [=[执行事件子步骤1]=],
+    isStopHere = false,
+    setAttrDict = json:decode([=[{}]=]),
+    addAttrDict = json:decode([=[{"u.cp": "2", "u.dp": "4"}]=]),
+    dealItemDict = json:decode([=[{"5": "1(atk:5,def:6)"}]=]),
+    giveUpMissionIds = json:decode([=[[]]=]),
+    acceptMissionIds = json:decode([=[[]]=]),
+    finishMissionIds = json:decode([=[[]]=]),
+    addFinishedMissionIds = json:decode([=[[]]=]),
+    removeFinishedMissionIds = json:decode([=[[]]=]),
+  },
+}
+
+local indexDict = {
+  uniqueIndexesList = {
+    id = {
+      [
+        [=[1]=]
+      ] = 1,
+    },
+  },
+}
+
+local cfg = {}
+
+---@return  CfgDoerEventStepData[]
+function cfg.All()
+  return dataList
+end
+
+---@return  CfgDoerEventStepData
+function cfg.Get(index)
+  return dataList[index]
+end
+
+---@return  CfgDoerEventStepData
+function cfg.GetById(id)
+  local key = tostring(id)
+  return cfg.Get(indexDict.uniqueIndexesList.id[key])
+end
+
+function cfg.IsContainsKeyById(id)
+  local key = tostring(id)
+  return indexDict.uniqueIndexesList.id[key] ~= nil
+end
+
+return cfg

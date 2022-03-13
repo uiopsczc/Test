@@ -10,57 +10,57 @@ class ExportXlsx2Lua(object):
 
 
   @staticmethod
-  def ExportSheet(sheet, json_dict, export_relative_dir_path, export_relative_file_path):
-    export_file_path = ExportXlsxConst.Export_2_Lua_Dir_Path + export_relative_dir_path + ExportXlsx2Lua.GetCfgName(sheet) + ".lua.txt"
+  def ExportSheet(sheet, jsonDict, sheetCfg, exportRelativeFilePath):
+    exportFilePath = ExportXlsxConst.Export_2_Lua_Dir_Path + sheetCfg.GetOutputDir() + sheetCfg.GetTableName() + ".lua.txt"
+    dataList = jsonDict[ExportXlsxConst.Name_DataList]
+    indexDict = jsonDict[ExportXlsxConst.Name_IndexDict]
     indent = 0
     content = ""
     content += "--AutoGen. DO NOT EDIT!!!\n"
-    content += "--ExportFrom %s[%s]\n" % (export_relative_file_path, sheet.title)
-    content += ExportXlsx2Lua.ExportCfgDataComments(sheet, indent)
+    content += "--ExportFrom %s[%s]\n" % (exportRelativeFilePath, sheet.title)
+    content += ExportXlsx2Lua.ExportCfgDataComments(sheetCfg, indent)
     content += "\n\n\n"
-    content += ExportXlsx2Lua.ExportDataList(sheet, json_dict["data_list"], indent)
+    content += ExportXlsx2Lua.ExportDataList(dataList, sheetCfg, indent)
     content += "\n"
-    content += ExportXlsx2Lua.ExportIndexDict(sheet, json_dict["index_dict"], indent)
+    content += ExportXlsx2Lua.ExportIndexDict(indexDict, indent)
     content += "\n"
 
-    content += ExportXlsx2Lua.ExportCfg(sheet,json_dict["index_dict"], indent)
-    FileUtil.WriteFile(export_file_path, content)
-    ExportXlsx2Lua.Export2CfgRequire(sheet, export_relative_dir_path)
+    content += ExportXlsx2Lua.ExportCfg(indexDict, sheetCfg, indent)
+    FileUtil.WriteFile(exportFilePath, content)
+    ExportXlsx2Lua.Export2CfgRequire(sheetCfg)
 
   @staticmethod
-  def Export2CfgRequire(sheet, export_relative_dir_path):
-    require_path = ExportXlsxConst.Export_2_Lua_Require_Root_Dir_Path + export_relative_dir_path.replace("\\\\","\\").replace("\\",".")+ ExportXlsxUtil.GetCfgName(sheet)
-    require_path = "%s = require(\"%s\")"%(ExportXlsxUtil.GetCfgName(sheet), require_path)
+  def Export2CfgRequire(sheetCfg):
+    requirePath = ExportXlsxConst.Export_2_Lua_Require_Root_Dir_Path + sheetCfg.GetOutputDir().replace("\\\\", "\\").replace("\\", ".").replace("/", ".") + sheetCfg.GetTableName()
+    requirePath = "%s = require(\"%s\")" % (sheetCfg.GetTableName(), requirePath)
     if os.path.exists(ExportXlsxConst.Export_2_Lua_RequireCfgPaths):
-      FileUtil.WriteFile(ExportXlsxConst.Export_2_Lua_RequireCfgPaths, "\n" + require_path, "a")
+      FileUtil.WriteFile(ExportXlsxConst.Export_2_Lua_RequireCfgPaths, "\n" + requirePath, "a")
     else:
-      require_path = "--AutoGen. DO NOT EDIT!!!\n" + require_path
-      FileUtil.WriteFile(ExportXlsxConst.Export_2_Lua_RequireCfgPaths, require_path)
-
-
+      requirePath = "--AutoGen. DO NOT EDIT!!!\n" + requirePath
+      FileUtil.WriteFile(ExportXlsxConst.Export_2_Lua_RequireCfgPaths, requirePath)
 
   @staticmethod
-  def ExportCfgDataComments(sheet, indent):
+  def ExportCfgDataComments(sheetCfg, indent):
     content = ""
-    fieldInfo_list = ExportXlsxUtil.GetExportSheetFiledInfoList(sheet)
-    content += "%s---@class %s\n" % (StringUtil.GetSpace(indent),ExportXlsxUtil.GetCfgDataName(sheet))
-    for fieldInfo in fieldInfo_list:
-      content += "%s---@field %s\n" % (StringUtil.GetSpace(indent),fieldInfo["name"])
-    content += "%slocal _\n"%(StringUtil.GetSpace(indent))
+    fieldInfoList = sheetCfg.GetFieldInfoList()
+    content += "%s---@class %s\n" % (StringUtil.GetSpace(indent), sheetCfg.GetCfgDataName())
+    for fieldInfo in fieldInfoList:
+      content += "%s---@field %s\n" % (StringUtil.GetSpace(indent), fieldInfo["name"])
+    content += "%slocal _\n" % (StringUtil.GetSpace(indent))
     return content
 
   @staticmethod
-  def ExportDataList(sheet, data_list, indent):
+  def ExportDataList(dataList, sheetCfg, indent):
     content = ""
-    fieldInfo_dict = ExportXlsxUtil.GetExportSheetFiledInfoDict(sheet)
-    content += "%s---@type %s[]\n"%(StringUtil.GetSpace(indent), ExportXlsxUtil.GetCfgDataName(sheet))
-    content += "%slocal data_list = {\n" % (StringUtil.GetSpace(indent))
-    indent+=1
-    for data in data_list:
-      content += "%s{\n"%(StringUtil.GetSpace(indent))
+    fieldInfoDict = sheetCfg.GetFieldInfoDict()
+    content += "%s---@type %s[]\n" % (StringUtil.GetSpace(indent), sheetCfg.GetCfgDataName())
+    content += "%slocal %s = {\n" % (StringUtil.GetSpace(indent), ExportXlsxConst.Name_DataList)
+    indent += 1
+    for data in dataList:
+      content += "%s{\n" % (StringUtil.GetSpace(indent))
       indent += 1
       for key in data.keys():
-        content +="%s%s = %s,\n"%(StringUtil.GetSpace(indent), key, ExportXlsxUtil.GetExportLuaValueOrDefault(data[key],fieldInfo_dict[key]["type"]))
+        content +="%s%s = %s,\n" % (StringUtil.GetSpace(indent), key, ExportXlsxUtil.GetExportLuaValueOrDefault(data[key], fieldInfoDict[key]["type"]))
       indent -= 1
       content += "%s},\n" % (StringUtil.GetSpace(indent))
     indent -= 1
@@ -68,129 +68,127 @@ class ExportXlsx2Lua(object):
     return content
 
   @staticmethod
-  def ExportIndexDict(sheet, index_dict, indent):
+  def ExportIndexDict(indexDict, indent):
     content = ""
-    content += "%slocal index_dict = {\n" % (StringUtil.GetSpace(indent))
+    content += "%slocal %s = {\n" % (StringUtil.GetSpace(indent), ExportXlsxConst.Name_IndexDict)
     indent += 1
-    for index_group in index_dict.keys():
-      content += "%s%s = {\n" % (StringUtil.GetSpace(indent), index_group)
+    for indexTag in indexDict.keys():
+      content += "%s%s = {\n" % (StringUtil.GetSpace(indent), indexTag)
       indent += 1
-      for specific_index_key in index_dict[index_group].keys():
-        if index_group == ExportXlsxConst.Sheet_Unique_Tag:
-          content += "%s%s = {\n"%(StringUtil.GetSpace(indent),specific_index_key)
+      for specificIndexKey in indexDict[indexTag].keys():
+        if indexTag == ExportXlsxConst.FieldName_Sheet_Cfg_UniqueIndexesList:
+          content += "%s%s = {\n" % (StringUtil.GetSpace(indent), specificIndexKey)
           indent += 1
-          for key in index_dict[index_group][specific_index_key].keys():
-            content += "%s[\n%s[=[%s]=]\n%s] = %s,\n"%(StringUtil.GetSpace(indent),StringUtil.GetSpace(indent+1), key,StringUtil.GetSpace(indent), index_dict[index_group][specific_index_key][key]+1)#lua是从1开始
+          for key in indexDict[indexTag][specificIndexKey].keys():
+            content += "%s[\n%s[=[%s]=]\n%s] = %s,\n" % (StringUtil.GetSpace(indent), StringUtil.GetSpace(indent+1), key, StringUtil.GetSpace(indent), indexDict[indexTag][specificIndexKey][key] + 1)#lua是从1开始
           indent -= 1
           content += "%s},\n" % (StringUtil.GetSpace(indent))
-        elif index_group == ExportXlsxConst.Sheet_Multiple_Tag:
-          content += "%s%s = {\n" % (StringUtil.GetSpace(indent), specific_index_key)
+        elif indexTag == ExportXlsxConst.FieldName_Sheet_Cfg_MultiplyIndexesList:
+          content += "%s%s = {\n" % (StringUtil.GetSpace(indent), specificIndexKey)
           indent += 1
-          for key in index_dict[index_group][specific_index_key].keys():
-            content += "%s[\n%s[=[%s]=]\n%s] = {\n" % (StringUtil.GetSpace(indent),StringUtil.GetSpace(indent+1), key,StringUtil.GetSpace(indent))
-            indent +=1
-            for index in index_dict[index_group][specific_index_key][key]:
-              content += "%s%s,\n"%(StringUtil.GetSpace(indent), index+1)#lua是从1开始
-            indent -=1
+          for key in indexDict[indexTag][specificIndexKey].keys():
+            content += "%s[\n%s[=[%s]=]\n%s] = {\n" % (StringUtil.GetSpace(indent), StringUtil.GetSpace(indent+1), key, StringUtil.GetSpace(indent))
+            indent += 1
+            for index in indexDict[indexTag][specificIndexKey][key]:
+              content += "%s%s,\n" % (StringUtil.GetSpace(indent), index+1)#lua是从1开始
+            indent -= 1
             content += "%s},\n" % (StringUtil.GetSpace(indent))
           indent -= 1
           content += "%s},\n" % (StringUtil.GetSpace(indent))
-      indent -=1
+      indent -= 1
       content += "%s},\n" % (StringUtil.GetSpace(indent))
     indent -= 1
     content += "%s}\n" % (StringUtil.GetSpace(indent))
-
     return content
 
   @staticmethod
-  def ExportCfg(sheet,index_dict, indent):
+  def ExportCfg(indexDict, sheetCfg, indent):
     content = ""
     content += "%slocal cfg = {}\n" % (StringUtil.GetSpace(indent))
-    content += "%s\n"%(StringUtil.GetSpace(indent))
+    content += "%s\n" % (StringUtil.GetSpace(indent))
 
-    content += "%s---@return %s[]\n" % (StringUtil.GetSpace(indent), ExportXlsxUtil.GetCfgDataName(sheet))
-    content += "%sfunction cfg.All()\n"%(StringUtil.GetSpace(indent))
-    indent +=1
-    content += "%sreturn data_list\n"%(StringUtil.GetSpace(indent))
+    content += "%s---@return %s[]\n" % (StringUtil.GetSpace(indent), sheetCfg.GetCfgDataName())
+    content += "%sfunction cfg.All()\n" % (StringUtil.GetSpace(indent))
+    indent += 1
+    content += "%sreturn %s\n" % (StringUtil.GetSpace(indent), ExportXlsxConst.Name_DataList)
     indent -= 1
     content += "%send\n" % (StringUtil.GetSpace(indent))
     content += "%s\n" % (StringUtil.GetSpace(indent))
 
-    content += "%s---@return %s\n" % (StringUtil.GetSpace(indent), ExportXlsxUtil.GetCfgDataName(sheet))
+    content += "%s---@return %s\n" % (StringUtil.GetSpace(indent), sheetCfg.GetCfgDataName())
     content += "%sfunction cfg.Get(index)\n" % (StringUtil.GetSpace(indent))
     indent += 1
-    content += "%sreturn data_list[index]\n" % (StringUtil.GetSpace(indent))
+    content += "%sreturn %s[index]\n" % (StringUtil.GetSpace(indent), ExportXlsxConst.Name_DataList)
     indent -= 1
     content += "%send\n" % (StringUtil.GetSpace(indent))
     content += "%s\n" % (StringUtil.GetSpace(indent))
 
-    fieldInfo_dict = ExportXlsxUtil.GetExportSheetFiledInfoDict(sheet)
-    for index_group in index_dict.keys():
-      for index_specific_key in index_dict[index_group].keys():
-        index_specific_keys = index_specific_key.split("_and_")
-        index_specific_keys_of_method_name = "And".join(StringUtil.UpperFirstLetterOfArray(index_specific_keys))
+    fieldInfoDict = sheetCfg.GetFieldInfoDict()
+    for indexTag in indexDict.keys():
+      for indexSpecificKey in indexDict[indexTag].keys():
+        indexSpecificKeys = indexSpecificKey.split("_and_")
+        indexSpecificKeysOfMethodName = "And".join(StringUtil.UpperFirstLetterOfArray(indexSpecificKeys))
         args = ""
         keys = ""
-        for arg_key in index_specific_keys:
-          fieldInfo = fieldInfo_dict[arg_key]
+        for argKey in indexSpecificKeys:
+          fieldInfo = fieldInfoDict[argKey]
           args += "%s," % (fieldInfo["name"])
           keys += "tostring(%s)," % (fieldInfo["name"])
         args = args[0:len(args) - 1]
         keys = keys[0:len(keys) - 1]
         # GetByXXX
-        if index_group == ExportXlsxConst.Sheet_Unique_Tag:
-          content += "%s---@return %s\n" % (StringUtil.GetSpace(indent), ExportXlsxUtil.GetCfgDataName(sheet))
-        else:
-          content += "%s---@return %s[]\n" % (StringUtil.GetSpace(indent), ExportXlsxUtil.GetCfgDataName(sheet))
+        if indexTag == ExportXlsxConst.FieldName_Sheet_Cfg_UniqueIndexesList:
+          content += "%s---@return %s\n" % (StringUtil.GetSpace(indent), sheetCfg.GetCfgDataName())
+        elif indexTag == ExportXlsxConst.FieldName_Sheet_Cfg_MultiplyIndexesList:
+          content += "%s---@return %s[]\n" % (StringUtil.GetSpace(indent), sheetCfg.GetCfgDataName())
 
         content += "%sfunction cfg.GetBy%s(%s)\n" % (
-          StringUtil.GetSpace(indent), index_specific_keys_of_method_name, args)
+          StringUtil.GetSpace(indent), indexSpecificKeysOfMethodName, args)
         indent += 1
-        if len(index_specific_keys) > 1:
+        if len(indexSpecificKeys) > 1:
           content += "%slocal keys = {%s}\n" % (StringUtil.GetSpace(indent), keys)
           content += "%slocal key = table.concat(keys, \".\")\n" % (StringUtil.GetSpace(indent))
         else:
-          content += "%slocal key = tostring(%s)\n" % (StringUtil.GetSpace(indent), index_specific_key)
+          content += "%slocal key = tostring(%s)\n" % (StringUtil.GetSpace(indent), indexSpecificKey)
 
-        if index_group == ExportXlsxConst.Sheet_Unique_Tag:
-          content += "%sreturn cfg.Get(index_dict.%s.%s[key])\n" % (
-            StringUtil.GetSpace(indent), index_group, index_specific_key)
-        elif index_group == ExportXlsxConst.Sheet_Multiple_Tag:
-          content += "%s---@type %s[]\n" %(StringUtil.GetSpace(indent),ExportXlsxUtil.GetCfgDataName(sheet))
+        if indexTag == ExportXlsxConst.FieldName_Sheet_Cfg_UniqueIndexesList:
+          content += "%sreturn cfg.Get(%s.%s.%s[key])\n" % (
+            StringUtil.GetSpace(indent), ExportXlsxConst.Name_IndexDict, indexTag, indexSpecificKey)
+        elif indexTag == ExportXlsxConst.FieldName_Sheet_Cfg_MultiplyIndexesList:
+          dictName = "_%s_%sDict" % (ExportXlsxConst.FieldName_Sheet_Cfg_MultiplyIndexesList, indexSpecificKeysOfMethodName)
+          content += "%sif not self.%s then\n" % (StringUtil.GetSpace(indent), dictName)
+          content += "%sself.%s = {}\n" % (StringUtil.GetSpace(indent + 1), dictName)
+          content += "%send\n" % (StringUtil.GetSpace(indent))
+          content += "%sif self.%s[key] then\n" % (StringUtil.GetSpace(indent), dictName)
+          content += "%sreturn self.%s[key]\n" % (StringUtil.GetSpace(indent + 1), dictName)
+          content += "%send\n" % (StringUtil.GetSpace(indent))
+          content += "%s---@type %s[]\n" % (StringUtil.GetSpace(indent), sheetCfg.GetCfgDataName())
           content += "%slocal result = {}\n" % (StringUtil.GetSpace(indent))
-          content += "%slocal indexes = index_dict.%s.%s[key]\n" % (
-          StringUtil.GetSpace(indent), index_group, index_specific_key)
-          content += "%sfor _,index in ipairs(indexes) do  table.insert(result, cfg.Get(index)) end\n" % (
-            StringUtil.GetSpace(indent))
-          content += "%sreturn result\n" % (StringUtil.GetSpace(indent))
+          content += "%slocal indexes = %s.%s.%s[key]\n" % (StringUtil.GetSpace(indent), ExportXlsxConst.Name_IndexDict, indexTag, indexSpecificKey)
+          content += "%sfor _, index in ipairs(indexes) do\n" % (StringUtil.GetSpace(indent))
+          content += "%stable.insert(result, cfg.Get(index))\n" % (StringUtil.GetSpace(indent + 1))
+          content += "%send\n" % (StringUtil.GetSpace(indent))
+          content += "%sself.%s[key] = result\n" % (StringUtil.GetSpace(indent), dictName)
+          content += "%sreturn self.%s[key]\n" % (StringUtil.GetSpace(indent), dictName)
         indent -= 1
         content += "%send\n" % (StringUtil.GetSpace(indent))
         content += "%s\n" % (StringUtil.GetSpace(indent))
 
         # contain_key_by_xxxxx
-        content += "%sfunction cfg.IsContainsKeyBy%s(%s)\n" % (StringUtil.GetSpace(indent), index_specific_keys_of_method_name, args)
+        content += "%sfunction cfg.IsContainsKeyBy%s(%s)\n" % (StringUtil.GetSpace(indent), indexSpecificKeysOfMethodName, args)
         indent += 1
-        if len(index_specific_keys) > 1:
+        if len(indexSpecificKeys) > 1:
           content += "%slocal keys = {%s}\n" % (StringUtil.GetSpace(indent), keys)
           content += "%slocal key = table.concat(keys, \".\")\n" % (StringUtil.GetSpace(indent))
         else:
-          content += "%slocal key = tostring(%s)\n" % (StringUtil.GetSpace(indent), index_specific_key)
+          content += "%slocal key = tostring(%s)\n" % (StringUtil.GetSpace(indent), indexSpecificKey)
 
-        content += "%sreturn index_dict.%s.%s[key] ~= nil\n" % (
-          StringUtil.GetSpace(indent), index_group, index_specific_key)
+        content += "%sreturn %s.%s.%s[key] ~= nil\n" % (StringUtil.GetSpace(indent), ExportXlsxConst.Name_IndexDict, indexTag, indexSpecificKey)
         indent -= 1
         content += "%send\n" % (StringUtil.GetSpace(indent))
         content += "%s\n" % (StringUtil.GetSpace(indent))
 
     content += "%sreturn cfg\n" % (StringUtil.GetSpace(indent))
     return content
-
-  @staticmethod
-  def GetDataName(sheet):
-    return "%sData"%(ExportXlsx2Lua.GetCfgName(sheet))
-
-  @staticmethod
-  def GetCfgName(sheet):
-    return ExportXlsxUtil.GetExportSheetName(sheet)
 
 

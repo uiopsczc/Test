@@ -3,6 +3,7 @@ from export_xlsx.ExportXlsxConst import *
 from pythoncat.util.FileUtil import *
 import json
 
+
 class ExportXlsx2Json(object):
   @staticmethod
   def ResetAll():
@@ -10,68 +11,72 @@ class ExportXlsx2Json(object):
     FileUtil.RemoveFile(ExportXlsxConst.Export_2_JsonFilePaths_File_Path)
 
   @staticmethod
-  def ExportSheet(sheet, export_relative_dir_path, export_relative_file_path):
-    export_file_path = ExportXlsxConst.Export_2_Json_Dir_Path + export_relative_dir_path + ExportXlsxUtil.GetExportSheetName(sheet) +".json"
-    json_dict = {}
-    json_dict["data_list"] = ExportXlsx2Json.ExportDataList(sheet)
-    json_dict["index_dict"] = ExportXlsx2Json.ExportIndexDict(sheet, json_dict["data_list"])
-    FileUtil.WriteFile(export_file_path, json.dumps(json_dict, ensure_ascii=False, indent=2))
+  def ExportSheet(sheet, sheetCfg):
+    exportFilePath = ExportXlsxConst.Export_2_Json_Dir_Path + sheetCfg.GetOutputDir() + sheetCfg.GetTableName() + ".json"
+    jsonDict = {}
+    dataList = ExportXlsx2Json.ExportDataList(sheet, sheetCfg)
+    jsonDict[ExportXlsxConst.Name_DataList] = dataList
+    jsonDict[ExportXlsxConst.Name_IndexDict] = ExportXlsx2Json.ExportIndexDict(sheetCfg, dataList)
+    FileUtil.WriteFile(exportFilePath, json.dumps(jsonDict, ensure_ascii=False, indent=2))
 
-    json_file_path = export_file_path.replace("..\\..\\","").replace("\\\\","/").replace("\\","/")
-    ExportXlsx2Json.WriteToJsonFilePathes(json_file_path)
-    return json_dict
+    jsonFilePath = exportFilePath.replace("..\\..\\", "").replace("\\\\", "/").replace("\\", "/")
+    ExportXlsx2Json.WriteToJsonFilePaths(jsonFilePath)
+    return jsonDict
 
   @staticmethod
-  def WriteToJsonFilePathes(json_file_path):
+  def WriteToJsonFilePaths(jsonFilePath):
     if os.path.exists(ExportXlsxConst.Export_2_JsonFilePaths_File_Path):
-      FileUtil.WriteFile(ExportXlsxConst.Export_2_JsonFilePaths_File_Path, "\n" + json_file_path, "a")
+      FileUtil.WriteFile(ExportXlsxConst.Export_2_JsonFilePaths_File_Path, "\n" + jsonFilePath, "a")
     else:
-      FileUtil.WriteFile(ExportXlsxConst.Export_2_JsonFilePaths_File_Path, json_file_path)
+      FileUtil.WriteFile(ExportXlsxConst.Export_2_JsonFilePaths_File_Path, jsonFilePath)
 
   @staticmethod
-  def ExportDataList(sheet):
-    max_row = sheet.max_row
-    fieldInfo_list = ExportXlsxUtil.GetExportSheetFiledInfoList(sheet)
-    data_list = []
-    for row in range(ExportXlsxConst.Sheet_Data_Start_Row, max_row + 1):
-      if sheet.cell(row,1).value is None:
+  def ExportDataList(sheet, sheetCfg):
+    maxRowIndex = sheet.max_row
+    fieldInfoList = sheetCfg.GetFieldInfoList()
+    dataStartRowIndex = sheetCfg.GetDataStartRowIndex()
+    dataList = []
+    for rowIndex in range(dataStartRowIndex, maxRowIndex + 1):
+      if sheet.cell(rowIndex, 1).value is None:
         continue
       data = {}
-      for fieldInfo in fieldInfo_list:
-        column = fieldInfo["column"]
-        fileInfo_type = fieldInfo["type"]
-        fileInfo_name = fieldInfo["name"]
-        cell_value = ExportXlsxUtil.GetExportJsonValueOrDefault(sheet, row,column, fileInfo_type)
+      for fieldInfo in fieldInfoList:
+        columnIndex = fieldInfo["columnIndex"]
+        fileInfoType = fieldInfo["type"]
+        fileInfoName = fieldInfo["name"]
+        cellValue = ExportXlsxUtil.GetExportJsonValueOrDefault(sheet, rowIndex, columnIndex, fileInfoType)
         try:
-          if fileInfo_type == ExportXlsxConst.Sheet_FieldInfo_Type_Array or fileInfo_type == ExportXlsxConst.Sheet_FieldInfo_Type_Json or fileInfo_type.endswith(ExportXlsxConst.Sheet_FieldInfo_Type_Ends_With_Array) or fileInfo_type.startswith(ExportXlsxConst.Sheet_FieldInfo_Type_Starts_With_Dict):
-              data[fileInfo_name] = json.loads(cell_value)
+          if fileInfoType == ExportXlsxConst.Sheet_FieldInfo_Type_Array or fileInfoType == ExportXlsxConst.Sheet_FieldInfo_Type_Json or fileInfoType.endswith(
+            ExportXlsxConst.Sheet_FieldInfo_Type_Ends_With_Array) or fileInfoType.startswith(
+            ExportXlsxConst.Sheet_FieldInfo_Type_Starts_With_Dict):
+            data[fileInfoName] = json.loads(cellValue)
           else:
-            data[fileInfo_name] = cell_value
+            data[fileInfoName] = cellValue
         except Exception as e:
-          print("cell[%s,%s] has error" % (row, column))
+          print("cell[%s,%s] has error" % (rowIndex, columnIndex))
           raise e
-      data_list.append(data)
-    return data_list
+      dataList.append(data)
+    return dataList
 
   @staticmethod
-  def ExportIndexDict(sheet, data_list):
-    json_index_dict = {}
-    index_dict = ExportXlsxUtil.GetExportSheetIndexDict(sheet)
-    for i in range(0, len(data_list)):
-      data = data_list[i]
-      for index_group in index_dict.keys():
-        for index_key_list in index_dict[index_group]:
-          index_field_key = "_and_".join(index_key_list)
-          specific_key_list = []
-          for index_key in index_key_list:
-            specific_key_list.append(str(data[index_key]))
-          specific_key = ".".join(specific_key_list)
-          if index_group == ExportXlsxConst.Sheet_Unique_Tag:
-            unique_dict = DictUtil.GetOrAddDefault(json_index_dict, ExportXlsxConst.Sheet_Unique_Tag, {})
-            unique_specific_dict = DictUtil.GetOrAddDefault(unique_dict, index_field_key, {})
-            unique_specific_dict[specific_key] = i
-          elif index_group == ExportXlsxConst.Sheet_Multiple_Tag:
-            multiple_dict = DictUtil.GetOrAddDefault(json_index_dict, ExportXlsxConst.Sheet_Multiple_Tag, {})
-            multiple_specific_dict = DictUtil.GetOrAddDefault(multiple_dict, index_field_key, {})
-            DictUtil.GetOrAddDefault(multiple_specific_dict, specific_key, []).append(i)
-    return json_index_dict
+  def ExportIndexDict(sheetCfg, dataList):
+    jsonIndexDict = {}
+    indexDict = sheetCfg.GetIndexDict()
+    for i in range(0, len(dataList)):
+      data = dataList[i]
+      for indexTag in indexDict.keys():
+        for indexes in indexDict[indexTag]:
+          combineIndexKey = "_and_".join(indexes)
+          specificKeyList = []
+          for index in indexes:
+            specificKeyList.append(str(data[index]))
+          specificKey = ".".join(specificKeyList)
+          if indexTag == ExportXlsxConst.FieldName_Sheet_Cfg_UniqueIndexesList:
+            uniqueDict = DictUtil.GetOrAddDefault(jsonIndexDict, ExportXlsxConst.FieldName_Sheet_Cfg_UniqueIndexesList, {})
+            uniqueSpecificDict = DictUtil.GetOrAddDefault(uniqueDict, combineIndexKey, {})
+            uniqueSpecificDict[specificKey] = i
+          elif indexTag == ExportXlsxConst.FieldName_Sheet_Cfg_MultiplyIndexesList:
+            multipleDict = DictUtil.GetOrAddDefault(jsonIndexDict, ExportXlsxConst.FieldName_Sheet_Cfg_MultiplyIndexesList, {})
+            multipleSpecificDict = DictUtil.GetOrAddDefault(multipleDict, combineIndexKey, {})
+            DictUtil.GetOrAddDefault(multipleSpecificDict, specificKey, []).append(i)
+    return jsonIndexDict

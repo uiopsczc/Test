@@ -1,12 +1,12 @@
 class DictUtil(object):
   @staticmethod
-  def GetOrAddDefault(dict, key, default_value):
+  def GetOrAddDefault(dict, key, defaultValue):
     if not (key in dict.keys()):
-      dict[key] = default_value
+      dict[key] = defaultValue
     return dict[key]
 
   @staticmethod
-  def GetOrGetDefault(dict, key, default_value):
+  def GetOrGetDefault(dict, key, defaultValue):
     if dict[key] is None:
-      return default_value
+      return defaultValue
     return dict[key]

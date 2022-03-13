@@ -1,0 +1,17 @@
+{
+  "dataList": [
+    {
+      "id": 1,
+      "name": "场景1",
+      "classPathLua": "",
+      "classPathCs": ""
+    }
+  ],
+  "indexDict": {
+    "uniqueIndexesList": {
+      "id": {
+        "1": 0
+      }
+    }
+  }
+}

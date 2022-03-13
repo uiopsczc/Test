@@ -1,0 +1,70 @@
+--AutoGen. DO NOT EDIT!!!
+--ExportFrom TX特效表.xlsx[特效表]
+---@class  CfgEffectData
+---@field id
+---@field name
+---@field prefabPath
+---@field duration
+---@field socketName1
+---@field socketName2
+local _
+
+
+
+---@type  CfgEffectData[]
+local dataList = {
+  {
+    id = [=[1]=],
+    name = [=[特效1]=],
+    prefabPath = [=[Assets/ccc.prefab]=],
+    duration = 0.0,
+    socketName1 = [=[]=],
+    socketName2 = [=[]=],
+  },
+  {
+    id = [=[2]=],
+    name = [=[特效2]=],
+    prefabPath = [=[Assets/Resources/common/effect/4/10010720.prefab]=],
+    duration = 0.0,
+    socketName1 = [=[]=],
+    socketName2 = [=[]=],
+  },
+}
+
+local indexDict = {
+  uniqueIndexesList = {
+    id = {
+      [
+        [=[1]=]
+      ] = 1,
+      [
+        [=[2]=]
+      ] = 2,
+    },
+  },
+}
+
+local cfg = {}
+
+---@return  CfgEffectData[]
+function cfg.All()
+  return dataList
+end
+
+---@return  CfgEffectData
+function cfg.Get(index)
+  return dataList[index]
+end
+
+---@return  CfgEffectData
+function cfg.GetById(id)
+  local key = tostring(id)
+  return cfg.Get(indexDict.uniqueIndexesList.id[key])
+end
+
+function cfg.IsContainsKeyById(id)
+  local key = tostring(id)
+  return indexDict.uniqueIndexesList.id[key] ~= nil
+end
+
+return cfg

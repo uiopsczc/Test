@@ -10,20 +10,20 @@ namespace CsCat{
     protected static CfgDoerEvent instance = new CfgDoerEvent();
     protected CfgDoerEventRoot root;
     public void Parse(string jsonStr) { this.root=JsonMapper.ToObject<CfgDoerEventRoot>(jsonStr);}
-    public List<CfgDoerEventData> All(){ return this.root.data_list; }
-    public CfgDoerEventData Get(int index){ return this.root.data_list[index]; }
+    public List<CfgDoerEventData> All(){ return this.root.dataList; }
+    public CfgDoerEventData Get(int index){ return this.root.dataList[index]; }
     public CfgDoerEventData GetById(string id){
       string key = id.ToString();
-      return this.Get(this.root.index_dict.unique.id[key]);
+      return this.Get(this.root.indexDict.uniqueIndexesList.id[key]);
     }
     public bool IsContainsKeyById(string id){
       string key = id.ToString();
-      return this.root.index_dict.unique.id.ContainsKey(key);
+      return this.root.indexDict.uniqueIndexesList.id.ContainsKey(key);
     }
   }
   public class CfgDoerEventRoot{
-    public List<CfgDoerEventData> data_list { get; set; }
-    public CfgDoerEventIndexData index_dict { get; set; }
+    public List<CfgDoerEventData> dataList { get; set; }
+    public CfgDoerEventIndexData indexDict { get; set; }
   }
   public partial class CfgDoerEventData {
     /*ID*/
@@ -54,9 +54,9 @@ namespace CsCat{
     }
   }
   public class CfgDoerEventIndexData {
-    public CfgDoerEventIndexUniqueData unique{ get; set; }
+    public CfgDoerEventIndexUniqueIndexesListData uniqueIndexesList{ get; set; }
   }
-  public class CfgDoerEventIndexUniqueData {
+  public class CfgDoerEventIndexUniqueIndexesListData {
     public Dictionary<string, int> id { get; set; } 
   }
 }

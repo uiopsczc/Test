@@ -77,8 +77,8 @@ namespace CsCat
 		public void SetPosition(Vector3 pos)
 		{
 			if (graphicComponent.transform)
-				graphicComponent.transform.position = this.cfgUnitData.offsetYy != 0
-				  ? (pos + new Vector3(0, this.cfgUnitData.offsetYy, 0))
+				graphicComponent.transform.position = this.cfgUnitData.offsetY != 0
+				  ? (pos + new Vector3(0, this.cfgUnitData.offsetY, 0))
 				  : pos;
 			this._position = pos;
 		}

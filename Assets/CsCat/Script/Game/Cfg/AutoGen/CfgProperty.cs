@@ -10,20 +10,20 @@ namespace CsCat{
     protected static CfgProperty instance = new CfgProperty();
     protected CfgPropertyRoot root;
     public void Parse(string jsonStr) { this.root=JsonMapper.ToObject<CfgPropertyRoot>(jsonStr);}
-    public List<CfgPropertyData> All(){ return this.root.data_list; }
-    public CfgPropertyData Get(int index){ return this.root.data_list[index]; }
+    public List<CfgPropertyData> All(){ return this.root.dataList; }
+    public CfgPropertyData Get(int index){ return this.root.dataList[index]; }
     public CfgPropertyData GetById(string id){
       string key = id.ToString();
-      return this.Get(this.root.index_dict.unique.id[key]);
+      return this.Get(this.root.indexDict.uniqueIndexesList.id[key]);
     }
     public bool IsContainsKeyById(string id){
       string key = id.ToString();
-      return this.root.index_dict.unique.id.ContainsKey(key);
+      return this.root.indexDict.uniqueIndexesList.id.ContainsKey(key);
     }
   }
   public class CfgPropertyRoot{
-    public List<CfgPropertyData> data_list { get; set; }
-    public CfgPropertyIndexData index_dict { get; set; }
+    public List<CfgPropertyData> dataList { get; set; }
+    public CfgPropertyIndexData indexDict { get; set; }
   }
   public partial class CfgPropertyData {
     /*id*/
@@ -34,9 +34,9 @@ namespace CsCat{
     public bool isPct { get; set; }
   }
   public class CfgPropertyIndexData {
-    public CfgPropertyIndexUniqueData unique{ get; set; }
+    public CfgPropertyIndexUniqueIndexesListData uniqueIndexesList{ get; set; }
   }
-  public class CfgPropertyIndexUniqueData {
+  public class CfgPropertyIndexUniqueIndexesListData {
     public Dictionary<string, int> id { get; set; } 
   }
 }

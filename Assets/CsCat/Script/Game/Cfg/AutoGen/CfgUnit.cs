@@ -10,20 +10,20 @@ namespace CsCat{
     protected static CfgUnit instance = new CfgUnit();
     protected CfgUnitRoot root;
     public void Parse(string jsonStr) { this.root=JsonMapper.ToObject<CfgUnitRoot>(jsonStr);}
-    public List<CfgUnitData> All(){ return this.root.data_list; }
-    public CfgUnitData Get(int index){ return this.root.data_list[index]; }
+    public List<CfgUnitData> All(){ return this.root.dataList; }
+    public CfgUnitData Get(int index){ return this.root.dataList[index]; }
     public CfgUnitData GetById(string id){
       string key = id.ToString();
-      return this.Get(this.root.index_dict.unique.id[key]);
+      return this.Get(this.root.indexDict.uniqueIndexesList.id[key]);
     }
     public bool IsContainsKeyById(string id){
       string key = id.ToString();
-      return this.root.index_dict.unique.id.ContainsKey(key);
+      return this.root.indexDict.uniqueIndexesList.id.ContainsKey(key);
     }
   }
   public class CfgUnitRoot{
-    public List<CfgUnitData> data_list { get; set; }
-    public CfgUnitIndexData index_dict { get; set; }
+    public List<CfgUnitData> dataList { get; set; }
+    public CfgUnitIndexData indexDict { get; set; }
   }
   public partial class CfgUnitData {
     /*ID*/
@@ -33,7 +33,7 @@ namespace CsCat{
     /*类型*/
     public string type { get; set; }
     /*y轴偏移*/
-    public float offsetYy { get; set; }
+    public float offsetY { get; set; }
     /*半径*/
     public float radius { get; set; }
     /*缩放*/
@@ -78,9 +78,9 @@ namespace CsCat{
     }
   }
   public class CfgUnitIndexData {
-    public CfgUnitIndexUniqueData unique{ get; set; }
+    public CfgUnitIndexUniqueIndexesListData uniqueIndexesList{ get; set; }
   }
-  public class CfgUnitIndexUniqueData {
+  public class CfgUnitIndexUniqueIndexesListData {
     public Dictionary<string, int> id { get; set; } 
   }
 }

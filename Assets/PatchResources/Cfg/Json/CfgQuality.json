@@ -1,0 +1,40 @@
+{
+  "dataList": [
+    {
+      "id": 1,
+      "name": "白色品质",
+      "iconPath": "Assets/Resources/common/ui/texture/bb_icon_wpk1.png:bb_icon_wpk1"
+    },
+    {
+      "id": 2,
+      "name": "",
+      "iconPath": "Assets/Resources/common/ui/texture/bb_icon_wpk2.png:bb_icon_wpk2"
+    },
+    {
+      "id": 3,
+      "name": "",
+      "iconPath": "Assets/Resources/common/ui/texture/bb_icon_wpk3.png:bb_icon_wpk3"
+    },
+    {
+      "id": 4,
+      "name": "",
+      "iconPath": "Assets/Resources/common/ui/texture/bb_icon_wpk4.png:bb_icon_wpk4"
+    },
+    {
+      "id": 5,
+      "name": "",
+      "iconPath": "Assets/Resources/common/ui/texture/bb_icon_wpk5.png:bb_icon_wpk5"
+    }
+  ],
+  "indexDict": {
+    "uniqueIndexesList": {
+      "id": {
+        "1": 0,
+        "2": 1,
+        "3": 2,
+        "4": 3,
+        "5": 4
+      }
+    }
+  }
+}

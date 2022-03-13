@@ -12,12 +12,12 @@ class StringUtil(object):
   # 与str.split类似，但忽略双引号中的的split
   # ignore_left,ignore_right注意转移字符，需要加上\,例如忽略",则需要输入\\\"
   @staticmethod
-  def SplitIgnore(content, split=",", ignore_left="\\\"", ignore_right=None):
+  def SplitIgnore(content, split=",", ignoreLeft="\\\"", ignoreRight=None):
     result = []
-    if ignore_right is None:
-      ignore_right = ignore_left
+    if ignoreRight is None:
+      ignoreRight = ignoreLeft
     pattern = "(%s)(?=([^%s]*%s[^%s]*%s)*[^%s]*$)" % (
-    split, ignore_left, ignore_left, ignore_right, ignore_right, ignore_right)
+      split, ignoreLeft, ignoreLeft, ignoreRight, ignoreRight, ignoreRight)
     index = 0
     for match in re.finditer(pattern, content):
       result.append(content[index:match.start()])
@@ -44,7 +44,7 @@ class StringUtil(object):
 
   @staticmethod
   def UpperFirstLetter(value):
-    result = (value[0:1]).upper()+ value[1:]
+    result = (value[0:1]).upper() + value[1:]
     return result
 
   @staticmethod
@@ -53,15 +53,15 @@ class StringUtil(object):
     return result
 
   def GetSpace(indent):
-    space_count = 2
+    spaceCount = 2
     if indent == 0:
       return ""
-    return " " *(indent* space_count)
+    return " " * (indent * spaceCount)
 
   @staticmethod
   def UpperFirstLetterOfArray(array):
-    new_array = []
-    for org_element in array:
-      new_element = StringUtil.UpperFirstLetter(org_element)
-      new_array.append(new_element)
-    return new_array
+    newArray = []
+    for orgElement in array:
+      newElement = StringUtil.UpperFirstLetter(orgElement)
+      newArray.append(newElement)
+    return newArray

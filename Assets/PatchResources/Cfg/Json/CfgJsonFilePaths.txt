@@ -1,0 +1,18 @@
+Assets/PatchResources/Cfg/Json/CfgBuff.json
+Assets/PatchResources/Cfg/Json/CfgBuffState.json
+Assets/PatchResources/Cfg/Json/CfgScene.json
+Assets/PatchResources/Cfg/Json/CfgDoerEvent.json
+Assets/PatchResources/Cfg/Json/ CfgDoerEventStep.json
+Assets/PatchResources/Cfg/Json/CfgUnit.json
+Assets/PatchResources/Cfg/Json/CfgPublic.json
+Assets/PatchResources/Cfg/Json/CfgSpell.json
+Assets/PatchResources/Cfg/Json/CfgSpellTrigger.json
+Assets/PatchResources/Cfg/Json/CfgRole.json
+Assets/PatchResources/Cfg/Json/CfgQuality.json
+Assets/PatchResources/Cfg/Json/CfgMission.json
+Assets/PatchResources/Cfg/Json/CfgProperty.json
+Assets/PatchResources/Cfg/Json/ CfgEffect.json
+Assets/PatchResources/Cfg/Json/CfgItem.json
+Assets/PatchResources/Cfg/Json/CfgLang.json
+Assets/PatchResources/Cfg/Json/CfgSummonBeastGuardSkill.json
+Assets/PatchResources/Cfg/Json/Test/CfgTest.json

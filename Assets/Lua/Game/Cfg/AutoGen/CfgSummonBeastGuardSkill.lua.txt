@@ -18,7 +18,7 @@ local _
 
 
 ---@type CfgSummonBeastGuardSkillData[]
-local data_list = {
+local dataList = {
   {
     id = [=[1]=],
     summonBeastId = 411001,
@@ -91,8 +91,8 @@ local data_list = {
   },
 }
 
-local index_dict = {
-  unique = {
+local indexDict = {
+  uniqueIndexesList = {
     id = {
       [
         [=[1]=]
@@ -128,7 +128,7 @@ local index_dict = {
       ] = 5,
     },
   },
-  multiple = {
+  multiplyIndexesList = {
     summonBeastId = {
       [
         [=[411001]=]
@@ -174,68 +174,86 @@ local cfg = {}
 
 ---@return CfgSummonBeastGuardSkillData[]
 function cfg.All()
-  return data_list
+  return dataList
 end
 
 ---@return CfgSummonBeastGuardSkillData
 function cfg.Get(index)
-  return data_list[index]
+  return dataList[index]
 end
 
 ---@return CfgSummonBeastGuardSkillData
 function cfg.GetById(id)
   local key = tostring(id)
-  return cfg.Get(index_dict.unique.id[key])
+  return cfg.Get(indexDict.uniqueIndexesList.id[key])
 end
 
 function cfg.IsContainsKeyById(id)
   local key = tostring(id)
-  return index_dict.unique.id[key] ~= nil
+  return indexDict.uniqueIndexesList.id[key] ~= nil
 end
 
 ---@return CfgSummonBeastGuardSkillData
 function cfg.GetBySummonBeastIdAndStar(summonBeastId,star)
   local keys = {tostring(summonBeastId),tostring(star)}
   local key = table.concat(keys, ".")
-  return cfg.Get(index_dict.unique.summonBeastId_and_star[key])
+  return cfg.Get(indexDict.uniqueIndexesList.summonBeastId_and_star[key])
 end
 
 function cfg.IsContainsKeyBySummonBeastIdAndStar(summonBeastId,star)
   local keys = {tostring(summonBeastId),tostring(star)}
   local key = table.concat(keys, ".")
-  return index_dict.unique.summonBeastId_and_star[key] ~= nil
+  return indexDict.uniqueIndexesList.summonBeastId_and_star[key] ~= nil
 end
 
 ---@return CfgSummonBeastGuardSkillData[]
 function cfg.GetBySummonBeastId(summonBeastId)
   local key = tostring(summonBeastId)
+  if not self._multiplyIndexesList_SummonBeastIdDict then
+    self._multiplyIndexesList_SummonBeastIdDict = {}
+  end
+  if self._multiplyIndexesList_SummonBeastIdDict[key] then
+    return self._multiplyIndexesList_SummonBeastIdDict[key]
+  end
   ---@type CfgSummonBeastGuardSkillData[]
   local result = {}
-  local indexes = index_dict.multiple.summonBeastId[key]
-  for _,index in ipairs(indexes) do  table.insert(result, cfg.Get(index)) end
-  return result
+  local indexes = indexDict.multiplyIndexesList.summonBeastId[key]
+  for _, index in ipairs(indexes) do
+    table.insert(result, cfg.Get(index))
+  end
+  self._multiplyIndexesList_SummonBeastIdDict[key] = result
+  return self._multiplyIndexesList_SummonBeastIdDict[key]
 end
 
 function cfg.IsContainsKeyBySummonBeastId(summonBeastId)
   local key = tostring(summonBeastId)
-  return index_dict.multiple.summonBeastId[key] ~= nil
+  return indexDict.multiplyIndexesList.summonBeastId[key] ~= nil
 end
 
 ---@return CfgSummonBeastGuardSkillData[]
 function cfg.GetBySummonBeastIdAndStarFighting(summonBeastId,starFighting)
   local keys = {tostring(summonBeastId),tostring(starFighting)}
   local key = table.concat(keys, ".")
+  if not self._multiplyIndexesList_SummonBeastIdAndStarFightingDict then
+    self._multiplyIndexesList_SummonBeastIdAndStarFightingDict = {}
+  end
+  if self._multiplyIndexesList_SummonBeastIdAndStarFightingDict[key] then
+    return self._multiplyIndexesList_SummonBeastIdAndStarFightingDict[key]
+  end
   ---@type CfgSummonBeastGuardSkillData[]
   local result = {}
-  local indexes = index_dict.multiple.summonBeastId_and_starFighting[key]
-  for _,index in ipairs(indexes) do  table.insert(result, cfg.Get(index)) end
-  return result
+  local indexes = indexDict.multiplyIndexesList.summonBeastId_and_starFighting[key]
+  for _, index in ipairs(indexes) do
+    table.insert(result, cfg.Get(index))
+  end
+  self._multiplyIndexesList_SummonBeastIdAndStarFightingDict[key] = result
+  return self._multiplyIndexesList_SummonBeastIdAndStarFightingDict[key]
 end
 
 function cfg.IsContainsKeyBySummonBeastIdAndStarFighting(summonBeastId,starFighting)
   local keys = {tostring(summonBeastId),tostring(starFighting)}
   local key = table.concat(keys, ".")
-  return index_dict.multiple.summonBeastId_and_starFighting[key] ~= nil
+  return indexDict.multiplyIndexesList.summonBeastId_and_starFighting[key] ~= nil
 end
 
 return cfg

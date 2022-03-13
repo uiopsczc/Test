@@ -10,20 +10,20 @@ namespace CsCat{
     protected static CfgSpell instance = new CfgSpell();
     protected CfgSpellRoot root;
     public void Parse(string jsonStr) { this.root=JsonMapper.ToObject<CfgSpellRoot>(jsonStr);}
-    public List<CfgSpellData> All(){ return this.root.data_list; }
-    public CfgSpellData Get(int index){ return this.root.data_list[index]; }
+    public List<CfgSpellData> All(){ return this.root.dataList; }
+    public CfgSpellData Get(int index){ return this.root.dataList[index]; }
     public CfgSpellData GetById(string id){
       string key = id.ToString();
-      return this.Get(this.root.index_dict.unique.id[key]);
+      return this.Get(this.root.indexDict.uniqueIndexesList.id[key]);
     }
     public bool IsContainsKeyById(string id){
       string key = id.ToString();
-      return this.root.index_dict.unique.id.ContainsKey(key);
+      return this.root.indexDict.uniqueIndexesList.id.ContainsKey(key);
     }
   }
   public class CfgSpellRoot{
-    public List<CfgSpellData> data_list { get; set; }
-    public CfgSpellIndexData index_dict { get; set; }
+    public List<CfgSpellData> dataList { get; set; }
+    public CfgSpellIndexData indexDict { get; set; }
   }
   public partial class CfgSpellData {
     /*ID*/
@@ -138,9 +138,9 @@ namespace CsCat{
     }
   }
   public class CfgSpellIndexData {
-    public CfgSpellIndexUniqueData unique{ get; set; }
+    public CfgSpellIndexUniqueIndexesListData uniqueIndexesList{ get; set; }
   }
-  public class CfgSpellIndexUniqueData {
+  public class CfgSpellIndexUniqueIndexesListData {
     public Dictionary<string, int> id { get; set; } 
   }
 }

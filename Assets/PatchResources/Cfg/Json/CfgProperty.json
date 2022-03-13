@@ -1,0 +1,16 @@
+{
+  "dataList": [
+    {
+      "id": "力量",
+      "name": "力量",
+      "isPct": false
+    }
+  ],
+  "indexDict": {
+    "uniqueIndexesList": {
+      "id": {
+        "力量": 0
+      }
+    }
+  }
+}

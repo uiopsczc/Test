@@ -1,0 +1,25 @@
+{
+  "dataList": [
+    {
+      "id": 1,
+      "name": "事件1",
+      "isNotOpen": false,
+      "isNotTalk": false,
+      "triggerCondition": "{@eval(${u.hp}==0)}",
+      "triggerDesc": "触发事件1",
+      "canNotTriggerDesc": "不能触发事件1",
+      "classPathLua": "",
+      "classPathCs": "",
+      "stepIds": [
+        "1"
+      ]
+    }
+  ],
+  "indexDict": {
+    "uniqueIndexesList": {
+      "id": {
+        "1": 0
+      }
+    }
+  }
+}

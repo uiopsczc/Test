@@ -7,56 +7,56 @@ detector = UniversalDetector()
 
 class FileUtil(object):
   @staticmethod
-  def GetFileEncoding(file_path):
-    with open(file_path, 'rb') as file:
-      encoding = chardet.detect(file.read())['encoding'] # 获取编码
+  def GetFileEncoding(filePath):
+    with open(filePath, 'rb') as file:
+      encoding = chardet.detect(file.read())['encoding']# 获取编码
     return encoding
 
 
 
   @staticmethod
-  def ReadFile(file_path):
-    file = open(file_path, 'r', encoding=FileUtil.GetFileEncoding(file_path), errors ='ignore')
+  def ReadFile(filePath):
+    file = open(filePath, 'r', encoding=FileUtil.GetFileEncoding(filePath), errors='ignore')
     content = file.read()
     file.close()
     return content
 
   @staticmethod
-  def ReadFileAsLineList(file_path):
-    file = open(file_path, 'r', encoding=FileUtil.GetFileEncoding(file_path), errors ='ignore')
-    line_list = file.readlines()
+  def ReadFileAsLineList(filePath):
+    file = open(filePath, 'r', encoding=FileUtil.GetFileEncoding(filePath), errors='ignore')
+    lineList = file.readlines()
     file.close()
-    return line_list
+    return lineList
 
   @staticmethod
-  def WriteFile(file_path, content,mode = 'w' , encoding ="utf-8" ): #mode w:替换 a:添加到末尾
-    dir_path = os.path.dirname(file_path)
-    if not StringUtil.IsNoneOrEmpty(dir_path) and not os.path.exists(dir_path): #检查文件夹是否存在,不存在则创建该目录
-      os.makedirs(dir_path)
+  def WriteFile(filePath, content, mode='w', encoding="utf-8"): #mode w:替换 a:添加到末尾
+    dirPath = os.path.dirname(filePath)
+    if not StringUtil.IsNoneOrEmpty(dirPath) and not os.path.exists(dirPath): #检查文件夹是否存在,不存在则创建该目录
+      os.makedirs(dirPath)
     # encoding = FileUtil.GetFileEncoding(file_path)
-    file = open(file_path, mode, encoding=encoding, errors ='ignore')
+    file = open(filePath, mode, encoding=encoding, errors='ignore')
     file.write(content)
     file.close()
 
   @staticmethod
-  #获取root_dir_path下的文件路径，如何该该文件路径在filter_func中返回true，则过滤掉
-  def GetFilePathList(root_dir_path, filter_func = None):
+  #获取rootDirPath下的文件路径，如何该该文件路径在filter_func中返回true，则过滤掉
+  def GetFilePathList(rootDirPath, filterFunc=None):
     result = []
-    for dir_path, dir_names, file_names in os.walk(root_dir_path):
-      for file_name in file_names:
-        full_file_path = os.path.join(dir_path, file_name)
-        if filter_func is not None and filter_func(full_file_path):
+    for dirPath, dirNames, fileNames in os.walk(rootDirPath):
+      for fileName in fileNames:
+        fullFilePath = os.path.join(dirPath, fileName)
+        if filterFunc is not None and filterFunc(fullFilePath):
           continue
-        result.append(full_file_path)
+        result.append(fullFilePath)
 
     return result
 
   @staticmethod
-  def RemoveDir(dir_path):
-    if os.path.exists(dir_path): #检查文件夹是否存在,不存在则创建该目录
-      shutil.rmtree(dir_path)  # 删除文件夹
+  def RemoveDir(dirPath):
+    if os.path.exists(dirPath): #检查文件夹是否存在,不存在则创建该目录
+      shutil.rmtree(dirPath)  # 删除文件夹
 
   @staticmethod
-  def RemoveFile(file_path):
-    if os.path.exists(file_path):
-      os.remove(file_path)
+  def RemoveFile(filePath):
+    if os.path.exists(filePath):
+      os.remove(filePath)

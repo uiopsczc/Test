@@ -10,20 +10,20 @@ namespace CsCat{
     protected static CfgPublic instance = new CfgPublic();
     protected CfgPublicRoot root;
     public void Parse(string jsonStr) { this.root=JsonMapper.ToObject<CfgPublicRoot>(jsonStr);}
-    public List<CfgPublicData> All(){ return this.root.data_list; }
-    public CfgPublicData Get(int index){ return this.root.data_list[index]; }
+    public List<CfgPublicData> All(){ return this.root.dataList; }
+    public CfgPublicData Get(int index){ return this.root.dataList[index]; }
     public CfgPublicData GetById(string id){
       string key = id.ToString();
-      return this.Get(this.root.index_dict.unique.id[key]);
+      return this.Get(this.root.indexDict.uniqueIndexesList.id[key]);
     }
     public bool IsContainsKeyById(string id){
       string key = id.ToString();
-      return this.root.index_dict.unique.id.ContainsKey(key);
+      return this.root.indexDict.uniqueIndexesList.id.ContainsKey(key);
     }
   }
   public class CfgPublicRoot{
-    public List<CfgPublicData> data_list { get; set; }
-    public CfgPublicIndexData index_dict { get; set; }
+    public List<CfgPublicData> dataList { get; set; }
+    public CfgPublicIndexData indexDict { get; set; }
   }
   public partial class CfgPublicData {
     /*id*/
@@ -40,9 +40,9 @@ namespace CsCat{
     }
   }
   public class CfgPublicIndexData {
-    public CfgPublicIndexUniqueData unique{ get; set; }
+    public CfgPublicIndexUniqueIndexesListData uniqueIndexesList{ get; set; }
   }
-  public class CfgPublicIndexUniqueData {
+  public class CfgPublicIndexUniqueIndexesListData {
     public Dictionary<string, int> id { get; set; } 
   }
 }

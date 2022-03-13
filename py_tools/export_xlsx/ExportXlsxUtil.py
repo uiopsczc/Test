@@ -1,4 +1,5 @@
 import json
+import types
 
 from export_xlsx.ExportXlsxConst import *
 from pythoncat.util.StringUtil import *
@@ -8,47 +9,109 @@ from pythoncat.util.NumberUtil import *
 
 class ExportXlsxUtil(object):
   @staticmethod
-  def IsExportSheet(sheet):
-    file_name = sheet.cell(row=ExportXlsxConst.Sheet_CfgName_Cell_Row,
-                           column=ExportXlsxConst.Sheet_CfgName_Cell_Column).value
-    if file_name is None:
+  def IsCellValueNone(cellValue):
+    if cellValue is None:
+      return True
+    return False
+
+  @staticmethod
+  def GetCellValue(sheet, rowIndex, columnIndex, backupColumnIndex):
+    cellValue = sheet.cell(row=rowIndex, column=columnIndex).value
+    if ExportXlsxUtil.IsCellValueNone(cellValue):
+      cellValue = sheet.cell(row=rowIndex, column=backupColumnIndex).value
+    return cellValue
+
+  @staticmethod
+  def IsExportSheet(sheet, languageType):
+    columnIndex = ExportXlsxUtil.GetSheetCfgColumnIndexByLanguageType(sheet, languageType)
+    if not columnIndex:
       return False
-    return file_name.find(ExportXlsxConst.Sheet_CfgName_Tag) != -1
+    return ExportXlsxUtil.GetSheetCfgIsOutput(sheet, languageType)
 
   @staticmethod
-  def GetExportSheetName(sheet):
-    file_name = sheet.cell(row=ExportXlsxConst.Sheet_CfgName_Cell_Row,
-                           column=ExportXlsxConst.Sheet_CfgName_Cell_Column).value
-    file_name = file_name.replace(ExportXlsxConst.Sheet_CfgName_Tag, "")
-    return file_name
+  def GetSheetCfgColumnIndexByLanguageType(sheet, languageType):
+    for columnIndex in range(1, ExportXlsxConst.Sheet_Cfg_FieldName_Max_Column_Index + 1):
+      curLanguageType = sheet.cell(row=ExportXlsxConst.Sheet_Export_Language_Type_Row_Index, column=columnIndex).value
+      if curLanguageType.lower() == languageType.lower():
+        return columnIndex
+    return None
 
   @staticmethod
-  def GetExportSheetFiledInfoList(sheet):
-    fieldInfo_list = []
-    max_column = sheet.max_column
-    for column in range(1, max_column + 1):
-      fieldInfo_type = sheet.cell(row=ExportXlsxConst.Sheet_FieldInfo_Type_Row, column=column).value
-      fieldInfo_name = sheet.cell(row=ExportXlsxConst.Sheet_FieldInfo_Name_Row, column=column).value
-      if StringUtil.IsNoneOrEmpty(fieldInfo_type) or StringUtil.IsNoneOrEmpty(fieldInfo_name):
+  def GetSheetCfgFieldNameRowIndex(sheet, fieldName):
+    for rowIndex in range(1, ExportXlsxConst.Sheet_Cfg_FieldName_Max_Row_Index + 1):
+      curValue = sheet.cell(row=rowIndex, column=ExportXlsxConst.Sheet_Cfg_FieldName_Column_Index).value
+      if curValue.lower() == fieldName.lower():
+        return rowIndex
+    return None
+
+  @staticmethod
+  def GetSheetCfgFieldValue(sheet, languageType, fieldName):
+    columnIndex = ExportXlsxUtil.GetSheetCfgColumnIndexByLanguageType(sheet, languageType)
+    if not columnIndex:
+      return None
+    return ExportXlsxUtil.GetSheetCfgFieldValueWithColumnIndex(sheet, fieldName)
+
+
+
+
+
+  @staticmethod
+  def GetSheetCfgDataStartRowIndex(sheet, languageType):
+    return ExportXlsxUtil.GetSheetCfgFieldValue(sheet, languageType, ExportXlsxConst.FieldName_Sheet_Cfg_DataStartRowIndex)
+
+  @staticmethod
+  def GetSheetCfgFieldInfoType(value):
+    if StringUtil.IsNoneOrEmpty(value):
+      return None
+    index1 = value.find(ExportXlsxConst.Sheet_Cfg_FieldInfoType_Left_Wrap_Char)
+    if index1 == -1:
+      return None
+    index2 = value.find(ExportXlsxConst.Sheet_Cfg_FieldInfoType_Right_Wrap_Char)
+    if index2 == -1:
+      return None
+    return value[index1 + 1:index2]
+
+  @staticmethod
+  def GetSheetCfgFieldInfoName(value):
+    if StringUtil.IsNoneOrEmpty(value):
+      return None
+    index1 = value.find(ExportXlsxConst.Sheet_Cfg_FieldInfoType_Left_Wrap_Char)
+    if index1 == -1:
+      return None
+    return value[:index1]
+
+  @staticmethod
+  def GetExportSheetFiledInfoList(sheet, languageType):
+    fieldInfoList = []
+    headCommentRowIndex = ExportXlsxUtil.GetSheetCfgHeadCommentRowIndex(languageType)
+    headRowIndex = ExportXlsxUtil.GetSheetCfgHeadRowIndex(languageType)
+    maxColumnIndex = sheet.max_column
+    for columnIndex in range(1, maxColumnIndex + 1):
+      headValue = sheet.cell(row=headRowIndex, column=columnIndex).value
+      fieldInfoType = ExportXlsxUtil.GetSheetCfgFieldInfoType(headValue)
+      if not fieldInfoType:
+        continue
+      fieldInfoName = ExportXlsxUtil.GetSheetCfgFieldInfoName(headValue)
+      if not fieldInfoName:
         continue
       fieldInfo = {}
-      fieldInfo["column"] = column
-      fieldInfo["type"] = fieldInfo_type.lower()
-      fieldInfo["name"] = fieldInfo_name
-      fieldInfo["name_chinese"] = sheet.cell(row=ExportXlsxConst.Sheet_FieldInfo_Name_Chinese_Row, column=column).value
-      fieldInfo_list.append(fieldInfo)
-    return fieldInfo_list
+      fieldInfo["columnIndex"] = columnIndex
+      fieldInfo["type"] = fieldInfoType
+      fieldInfo["name"] = fieldInfoName
+      fieldInfo["comment"] = sheet.cell(row=headCommentRowIndex, column=columnIndex).value
+      fieldInfoList.append(fieldInfo)
+    return fieldInfoList
 
   @staticmethod
   def GetExportSheetFiledInfoDict(sheet):
-    fieldInfo_list = ExportXlsxUtil.GetExportSheetFiledInfoList(sheet)
-    fieldInfo_dict = {}
-    for fieldInfo in fieldInfo_list:
-      fieldInfo_dict[fieldInfo["name"]] = fieldInfo
-    return fieldInfo_dict
+    fieldInfoList = ExportXlsxUtil.GetExportSheetFiledInfoList(sheet)
+    fieldInfoDict = {}
+    for fieldInfo in fieldInfoList:
+      fieldInfoDict[fieldInfo["name"]] = fieldInfo
+    return fieldInfoDict
 
   @staticmethod
-  def GetExportJsonTypeDefaultValue(cell,row, column, type):
+  def GetExportJsonTypeDefaultValue(cell, row, column, type):
     if type == ExportXlsxConst.Sheet_FieldInfo_Type_Int:
       return 0
     elif type == ExportXlsxConst.Sheet_FieldInfo_Type_Float:
@@ -68,7 +131,7 @@ class ExportXlsxUtil(object):
     elif type.startswith(ExportXlsxConst.Sheet_FieldInfo_Type_Starts_With_Dict):
       return "{}"
     else:
-      raise Exception(("error:cell[%s,%s] is not define default value for %s")%(row,column,type))
+      raise Exception(("error:cell[%s,%s] is not define default value for %s") % (row, column, type))
 
 
   # 是否是 特殊的Cs Type
@@ -138,6 +201,7 @@ class ExportXlsxUtil(object):
     else:
       raise Exception("not define CsType for %s"%(type))
 
+  @staticmethod
   def GetExportLuaValueOrDefault(value, type):
     if type == ExportXlsxConst.Sheet_FieldInfo_Type_Array:
       return "json:decode([=[%s]=])"%(json.dumps(value,ensure_ascii=False))
@@ -166,51 +230,10 @@ class ExportXlsxUtil(object):
     return False
 
   @staticmethod
-  def GetExportJsonValueOrDefault(sheet, row, column, target_type):
-    cell = sheet.cell(row = row, column = column)
+  def GetExportJsonValueOrDefault(sheet, row, column, targetType):
+    cell = sheet.cell(row=row, column=column)
     if cell.value is None:
-      return ExportXlsxUtil.GetExportJsonTypeDefaultValue(cell, row,column,  target_type)
-    if ExportXlsxUtil.IsStringType(target_type) and (NumberUtil.IsNumber(cell.value)):
-      return "%s" % (cell.value)
+      return ExportXlsxUtil.GetExportJsonTypeDefaultValue(cell, row, column, targetType)
+    # if ExportXlsxUtil.IsStringType(targetType) and (NumberUtil.IsNumber(cell.value)):
+    #   return cell.value
     return cell.value
-
-  @staticmethod
-  def GetExportSheetIndexDict(sheet):
-    index_dict = {}
-    max_column = sheet.max_column
-    for column in range(1, max_column + 1):
-      cell_value = sheet.cell(row=ExportXlsxConst.Sheet_Index_Row, column=column).value
-      if StringUtil.IsNoneOrEmpty(cell_value):
-        continue
-      if cell_value.find(ExportXlsxConst.Sheet_Index_Unique_Tag) != -1:
-        keys = cell_value.replace(ExportXlsxConst.Sheet_Index_Unique_Tag, "").split(" ")
-        list = DictUtil.GetOrAddDefault(index_dict, ExportXlsxConst.Sheet_Unique_Tag, [])
-        index_key_list = []
-        for key in keys:
-          index_key_list.append(key)
-        list.append(index_key_list)
-      elif cell_value.find(ExportXlsxConst.Sheet_Index_Multiple_Tag) != -1:
-        keys = cell_value.replace(ExportXlsxConst.Sheet_Index_Multiple_Tag, "").split(" ")
-        list = DictUtil.GetOrAddDefault(index_dict, ExportXlsxConst.Sheet_Multiple_Tag, [])
-        index_key_list = []
-        for key in keys:
-          index_key_list.append(key)
-        list.append(index_key_list)
-    return index_dict
-
-  @staticmethod
-  def GetCfgSpecificIndexDataName(sheet, specific_type):
-    return "%sIndex%sData" % (ExportXlsxUtil.GetCfgName(sheet), StringUtil.UpperFirstLetter(specific_type))
-
-  @staticmethod
-  def GetCfgIndexDataName(sheet):
-    return "%sIndexData" % (ExportXlsxUtil.GetCfgName(sheet))
-
-  def GetCfgDataName(sheet):
-    return "%sData" % ExportXlsxUtil.GetCfgName(sheet)
-
-  def GetCfgRootName(sheet):
-    return "%sRoot" % (ExportXlsxUtil.GetCfgName(sheet))
-
-  def GetCfgName(sheet):
-    return ExportXlsxUtil.GetExportSheetName(sheet)

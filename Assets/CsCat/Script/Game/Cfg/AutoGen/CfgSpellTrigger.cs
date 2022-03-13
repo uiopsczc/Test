@@ -10,20 +10,20 @@ namespace CsCat{
     protected static CfgSpellTrigger instance = new CfgSpellTrigger();
     protected CfgSpellTriggerRoot root;
     public void Parse(string jsonStr) { this.root=JsonMapper.ToObject<CfgSpellTriggerRoot>(jsonStr);}
-    public List<CfgSpellTriggerData> All(){ return this.root.data_list; }
-    public CfgSpellTriggerData Get(int index){ return this.root.data_list[index]; }
+    public List<CfgSpellTriggerData> All(){ return this.root.dataList; }
+    public CfgSpellTriggerData Get(int index){ return this.root.dataList[index]; }
     public CfgSpellTriggerData GetById(string id){
       string key = id.ToString();
-      return this.Get(this.root.index_dict.unique.id[key]);
+      return this.Get(this.root.indexDict.uniqueIndexesList.id[key]);
     }
     public bool IsContainsKeyById(string id){
       string key = id.ToString();
-      return this.root.index_dict.unique.id.ContainsKey(key);
+      return this.root.indexDict.uniqueIndexesList.id.ContainsKey(key);
     }
   }
   public class CfgSpellTriggerRoot{
-    public List<CfgSpellTriggerData> data_list { get; set; }
-    public CfgSpellTriggerIndexData index_dict { get; set; }
+    public List<CfgSpellTriggerData> dataList { get; set; }
+    public CfgSpellTriggerIndexData indexDict { get; set; }
   }
   public partial class CfgSpellTriggerData {
     /*ID*/
@@ -42,9 +42,9 @@ namespace CsCat{
     public string condition { get; set; }
   }
   public class CfgSpellTriggerIndexData {
-    public CfgSpellTriggerIndexUniqueData unique{ get; set; }
+    public CfgSpellTriggerIndexUniqueIndexesListData uniqueIndexesList{ get; set; }
   }
-  public class CfgSpellTriggerIndexUniqueData {
+  public class CfgSpellTriggerIndexUniqueIndexesListData {
     public Dictionary<string, int> id { get; set; } 
   }
 }

@@ -10,20 +10,20 @@ namespace CsCat{
     protected static CfgItem instance = new CfgItem();
     protected CfgItemRoot root;
     public void Parse(string jsonStr) { this.root=JsonMapper.ToObject<CfgItemRoot>(jsonStr);}
-    public List<CfgItemData> All(){ return this.root.data_list; }
-    public CfgItemData Get(int index){ return this.root.data_list[index]; }
+    public List<CfgItemData> All(){ return this.root.dataList; }
+    public CfgItemData Get(int index){ return this.root.dataList[index]; }
     public CfgItemData GetById(string id){
       string key = id.ToString();
-      return this.Get(this.root.index_dict.unique.id[key]);
+      return this.Get(this.root.indexDict.uniqueIndexesList.id[key]);
     }
     public bool IsContainsKeyById(string id){
       string key = id.ToString();
-      return this.root.index_dict.unique.id.ContainsKey(key);
+      return this.root.indexDict.uniqueIndexesList.id.ContainsKey(key);
     }
   }
   public class CfgItemRoot{
-    public List<CfgItemData> data_list { get; set; }
-    public CfgItemIndexData index_dict { get; set; }
+    public List<CfgItemData> dataList { get; set; }
+    public CfgItemIndexData indexDict { get; set; }
   }
   public partial class CfgItemData {
     /*id*/
@@ -48,9 +48,9 @@ namespace CsCat{
     public string iconPath { get; set; }
   }
   public class CfgItemIndexData {
-    public CfgItemIndexUniqueData unique{ get; set; }
+    public CfgItemIndexUniqueIndexesListData uniqueIndexesList{ get; set; }
   }
-  public class CfgItemIndexUniqueData {
+  public class CfgItemIndexUniqueIndexesListData {
     public Dictionary<string, int> id { get; set; } 
   }
 }

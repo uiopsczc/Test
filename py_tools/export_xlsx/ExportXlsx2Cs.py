@@ -6,100 +6,103 @@ from pythoncat.util.FileUtil import *
 class ExportXlsx2Cs(object):
   @staticmethod
   def ResetAll():
-    if not ExportXlsxConst.Is_Export_Cs:
-      return
     FileUtil.RemoveDir(ExportXlsxConst.Export_2_Cs_Dir_Path)
 
   @staticmethod
-  def ExportSheet(sheet, json_dict, export_relative_dir_path, export_relative_file_path):
-    if not ExportXlsxConst.Is_Export_Cs:
-      return
-    export_file_path = ExportXlsxConst.Export_2_Cs_Dir_Path + export_relative_dir_path + ExportXlsxUtil.GetCfgName(sheet) + ".cs"
+  def ExportSheet(sheet, jsonDict, sheetCfg, exportRelativeFilePath):
+    exportFilePath = ExportXlsxConst.Export_2_Cs_Dir_Path + sheetCfg.GetOutputDir() + sheetCfg.GetTableName() + ".cs"
     indent = 0
     content = ""
     content += "//AutoGen. DO NOT EDIT!!!\n"
-    content += "//ExportFrom %s[%s]\n" % (export_relative_file_path, sheet.title)
+    content += "//ExportFrom %s[%s]\n" % (exportRelativeFilePath, sheet.title)
     content += "using System;\n"
     content += "using System.Collections.Generic;\n"
     content += "using LitJson;\n"
     content += "namespace %s{\n" % (ExportXlsxConst.CsCat_Namespace)
     indent += 1
-    content += ExportXlsx2Cs.ExportCfg(sheet, json_dict["index_dict"], indent)
-    content += ExportXlsx2Cs.ExportCfgRoot(sheet, indent)
-    content += ExportXlsx2Cs.ExportCfgData(sheet, indent)
-    content += ExportXlsx2Cs.ExportCfgIndexDict(sheet, json_dict["index_dict"], indent)
+    indexDict = jsonDict[ExportXlsxConst.Name_IndexDict]
+    content += ExportXlsx2Cs.ExportCfg(indexDict, sheetCfg, indent)
+    content += ExportXlsx2Cs.ExportCfgRoot(sheetCfg, indent)
+    content += ExportXlsx2Cs.ExportCfgData(sheetCfg, indent)
+    content += ExportXlsx2Cs.ExportCfgIndexDict(sheet, indexDict, sheetCfg, indent)
     indent -= 1
     content += "}"
-    FileUtil.WriteFile(export_file_path, content)
+    FileUtil.WriteFile(exportFilePath, content)
 
   @staticmethod
-  def ExportCfg(sheet, index_dict, indent):
+  def ExportCfg(indexDict, sheetCfg, indent):
     content = ""
-    content += "%spublic class %s {\n" % (StringUtil.GetSpace(indent), ExportXlsxUtil.GetCfgName(sheet))
+    content += "%spublic class %s {\n" % (StringUtil.GetSpace(indent), sheetCfg.GetTableName())
     indent += 1
-    content += "%sprotected %s () {}\n" % (StringUtil.GetSpace(indent), ExportXlsxUtil.GetCfgName(sheet))
-    content += "%spublic static %s Instance => instance;\n" % (
-    StringUtil.GetSpace(indent), ExportXlsxUtil.GetCfgName(sheet))
-    content += "%sprotected static %s instance = new %s();\n" % (
-    StringUtil.GetSpace(indent), ExportXlsxUtil.GetCfgName(sheet), ExportXlsxUtil.GetCfgName(sheet))
-    content += "%sprotected %s root;\n" % (StringUtil.GetSpace(indent), ExportXlsxUtil.GetCfgRootName(sheet))
-    content += "%spublic void Parse(string jsonStr) { this.root=JsonMapper.ToObject<%s>(jsonStr);}\n" % (
-    StringUtil.GetSpace(indent), ExportXlsxUtil.GetCfgRootName(sheet))
-    content += "%spublic List<%s> All(){ return this.root.data_list; }\n" % (
-    StringUtil.GetSpace(indent), ExportXlsxUtil.GetCfgDataName(sheet))
-    content += "%spublic %s Get(int index){ return this.root.data_list[index]; }\n" % (
-    StringUtil.GetSpace(indent), ExportXlsxUtil.GetCfgDataName(sheet))
+    content += "%sprotected %s () {}\n" % (StringUtil.GetSpace(indent), sheetCfg.GetTableName())
+    content += "%spublic static %s Instance => instance;\n" % (StringUtil.GetSpace(indent), sheetCfg.GetTableName())
+    content += "%sprotected static %s instance = new %s();\n" % (StringUtil.GetSpace(indent), sheetCfg.GetTableName(), sheetCfg.GetTableName())
+    content += "%sprotected %s root;\n" % (StringUtil.GetSpace(indent), sheetCfg.GetCfgRootName())
 
-    fieldInfo_dict = ExportXlsxUtil.GetExportSheetFiledInfoDict(sheet)
-    for index_group in index_dict.keys():
-      cs_data_type = ""
-      if index_group == ExportXlsxConst.Sheet_Unique_Tag:
-        cs_data_type = ExportXlsxUtil.GetCfgDataName(sheet)
-      elif index_group == ExportXlsxConst.Sheet_Multiple_Tag:
-        cs_data_type = "List<%s>"%(ExportXlsxUtil.GetCfgDataName(sheet))
-      for index_specific_key in index_dict[index_group].keys():
-        index_specific_keys = index_specific_key.split("_and_")
-        index_specific_keys_of_method_name = "And".join(StringUtil.UpperFirstLetterOfArray(index_specific_keys))
-        args_with_type = ""
+    content += "%spublic void Parse(string jsonStr) { this.root=JsonMapper.ToObject<%s>(jsonStr);}\n" % (StringUtil.GetSpace(indent), sheetCfg.GetCfgRootName())
+    content += "%spublic List<%s> All(){ return this.root.%s; }\n" % (StringUtil.GetSpace(indent), sheetCfg.GetCfgDataName(), ExportXlsxConst.Name_DataList)
+    content += "%spublic %s Get(int index){ return this.root.%s[index]; }\n" % (StringUtil.GetSpace(indent), sheetCfg.GetCfgDataName(), ExportXlsxConst.Name_DataList)
+
+    fieldInfoDict = sheetCfg.GetFieldInfoDict()
+    for indexTag in indexDict.keys():
+      csDataType = ""
+      if indexTag == ExportXlsxConst.FieldName_Sheet_Cfg_UniqueIndexesList:
+        csDataType = sheetCfg.GetCfgDataName()
+      elif indexTag == ExportXlsxConst.FieldName_Sheet_Cfg_MultiplyIndexesList:
+        csDataType = "List<%s>" % (sheetCfg.GetCfgDataName())
+      for indexSpecificKey in indexDict[indexTag].keys():
+        indexSpecificKeys = indexSpecificKey.split("_and_")
+        indexSpecificKeysOfMethodName = "And".join(StringUtil.UpperFirstLetterOfArray(indexSpecificKeys))
+        argsWithType = ""
         keys = ""
-        for arg_key in index_specific_keys:
-          fieldInfo = fieldInfo_dict[arg_key]
-          args_with_type += "%s %s," % (ExportXlsxUtil.GetExportCsType(fieldInfo["type"]), fieldInfo["name"])
+        for argKey in indexSpecificKeys:
+          fieldInfo = fieldInfoDict[argKey]
+          argsWithType += "%s %s," % (ExportXlsxUtil.GetExportCsType(fieldInfo["type"]), fieldInfo["name"])
           keys += "%s.ToString()," % (fieldInfo["name"])
-        args_with_type = args_with_type[0:len(args_with_type) - 1]
+        argsWithType = argsWithType[0:len(argsWithType) - 1]
         keys = keys[0:len(keys) - 1]
         # GetByXXX
-        content += "%spublic %s GetBy%s(%s){\n" % (
-        StringUtil.GetSpace(indent), cs_data_type, index_specific_keys_of_method_name, args_with_type)
+        if indexTag == ExportXlsxConst.FieldName_Sheet_Cfg_MultiplyIndexesList:
+          dictName = "%s_%sDict" % (ExportXlsxConst.FieldName_Sheet_Cfg_MultiplyIndexesList, indexSpecificKeysOfMethodName)
+          dictType = "Dictionary<string, List<%s>>" % (sheetCfg.GetCfgDataName())
+          content += "%sprivate %s %s = new %s();\n" % (StringUtil.GetSpace(indent), dictType, dictName, dictType)
+        content += "%spublic %s GetBy%s(%s){\n" % (StringUtil.GetSpace(indent), csDataType, indexSpecificKeysOfMethodName, argsWithType)
         indent += 1
-        if len(index_specific_keys)>1:
+        if len(indexSpecificKeys) > 1:
           content += "%sstring[] keys = {%s};\n" % (StringUtil.GetSpace(indent), keys)
           content += "%sstring key = string.Join(\".\", keys);\n" % (StringUtil.GetSpace(indent))
         else:
-          content += "%sstring key = %s.ToString();\n" % (StringUtil.GetSpace(indent), index_specific_key)
+          content += "%sstring key = %s.ToString();\n" % (StringUtil.GetSpace(indent), indexSpecificKey)
 
-        if index_group == ExportXlsxConst.Sheet_Unique_Tag:
-          content += "%sreturn this.Get(this.root.index_dict.%s.%s[key]);\n" % (
-            StringUtil.GetSpace(indent), index_group,index_specific_key)
-        elif index_group == ExportXlsxConst.Sheet_Multiple_Tag:
-          content += "%sList<%s> result = new List<%s>();\n" % (StringUtil.GetSpace(indent), ExportXlsxUtil.GetCfgDataName(sheet), ExportXlsxUtil.GetCfgDataName(sheet))
-          content += "%sList<int> indexes = this.root.index_dict.%s.%s[key];\n" % (StringUtil.GetSpace(indent),index_group,index_specific_key)
-          content += "%sforeach(int index in indexes) { result.Add(this.Get(index)); }\n"%(StringUtil.GetSpace(indent))
-          content += "%sreturn result;\n"%(StringUtil.GetSpace(indent))
+        if indexTag == ExportXlsxConst.FieldName_Sheet_Cfg_UniqueIndexesList:
+          content += "%sreturn this.Get(this.root.%s.%s.%s[key]);\n" % (StringUtil.GetSpace(indent), ExportXlsxConst.Name_IndexDict, indexTag, indexSpecificKey)
+        elif indexTag == ExportXlsxConst.FieldName_Sheet_Cfg_MultiplyIndexesList:
+          content += "%sif(%s.TryGetValue(key, out var cacheValue))\n" % (StringUtil.GetSpace(indent), dictName)
+          content += "%sreturn cacheValue;\n" % (StringUtil.GetSpace(indent + 1))
+          content += "%sList<%s> result = new List<%s>();\n" % (StringUtil.GetSpace(indent), sheetCfg.GetCfgDataName(), sheetCfg.GetCfgDataName())
+          content += "%sList<int> indexes = this.root.%s.%s.%s[key];\n" % (StringUtil.GetSpace(indent), ExportXlsxConst.Name_IndexDict, indexTag, indexSpecificKey)
+          content += "%sfor(int i = 1; i < indexes.Count; i++) \n" % (StringUtil.GetSpace(indent))
+          content += "%s{\n" % (StringUtil.GetSpace(indent))
+          content += "%svar index = indexes[i];\n" % (StringUtil.GetSpace(indent + 1))
+          content += "%sresult.Add(this.Get(index));\n" % (StringUtil.GetSpace(indent + 1))
+          content += "%s}\n" % (StringUtil.GetSpace(indent))
+
+          # content += "%sforeach(int index in indexes) {  }\n" % (StringUtil.GetSpace(indent))
+          content += "%s%s[key] = result;\n" % (StringUtil.GetSpace(indent), dictName)
+          content += "%sreturn result;\n" % (StringUtil.GetSpace(indent))
         indent -= 1
         content += "%s}\n" % (StringUtil.GetSpace(indent))
 
         # contain_key_by_xxxxx
-        content += "%spublic bool IsContainsKeyBy%s(%s){\n" % (StringUtil.GetSpace(indent), index_specific_keys_of_method_name, args_with_type)
+        content += "%spublic bool IsContainsKeyBy%s(%s){\n" % (StringUtil.GetSpace(indent), indexSpecificKeysOfMethodName, argsWithType)
         indent += 1
-        if len(index_specific_keys) > 1:
+        if len(indexSpecificKeys) > 1:
           content += "%sstring[] keys = {%s};\n" % (StringUtil.GetSpace(indent), keys)
           content += "%sstring key = string.Join(\".\", keys);\n" % (StringUtil.GetSpace(indent))
         else:
-          content += "%sstring key = %s.ToString();\n" % (StringUtil.GetSpace(indent), index_specific_key)
+          content += "%sstring key = %s.ToString();\n" % (StringUtil.GetSpace(indent), indexSpecificKey)
 
-        content += "%sreturn this.root.index_dict.%s.%s.ContainsKey(key);\n" % (
-          StringUtil.GetSpace(indent), index_group, index_specific_key)
+        content += "%sreturn this.root.%s.%s.%s.ContainsKey(key);\n" % (StringUtil.GetSpace(indent), ExportXlsxConst.Name_IndexDict, indexTag, indexSpecificKey)
         indent -= 1
         content += "%s}\n" % (StringUtil.GetSpace(indent))
 
@@ -108,89 +111,80 @@ class ExportXlsx2Cs(object):
     return content
 
   @staticmethod
-  def ExportCfgRoot(sheet, indent):
+  def ExportCfgRoot(sheetCfg, indent):
     content = ""
-    content += "%spublic class %s{\n" % (StringUtil.GetSpace(indent), ExportXlsxUtil.GetCfgRootName(sheet))
+    content += "%spublic class %s{\n" % (StringUtil.GetSpace(indent), sheetCfg.GetCfgRootName())
     indent += 1
-    content += "%spublic List<%s> data_list { get; set; }\n" % (
-    StringUtil.GetSpace(indent), ExportXlsxUtil.GetCfgDataName(sheet))
-    content += "%spublic %s index_dict { get; set; }\n" % (
-    StringUtil.GetSpace(indent), ExportXlsxUtil.GetCfgIndexDataName(sheet))
+    content += "%spublic List<%s> %s { get; set; }\n" % (StringUtil.GetSpace(indent), sheetCfg.GetCfgDataName(), ExportXlsxConst.Name_DataList)
+    content += "%spublic %s %s { get; set; }\n" % (StringUtil.GetSpace(indent), sheetCfg.GetCfgIndexDataName(), ExportXlsxConst.Name_IndexDict)
     indent -= 1
     content += "%s}\n" % (StringUtil.GetSpace(indent))
     return content
 
   @staticmethod
-  def ExportCfgData(sheet, indent):
+  def ExportCfgData(sheetCfg, indent):
     content = ""
-    content += "%spublic partial class %s {\n" % (StringUtil.GetSpace(indent), ExportXlsxUtil.GetCfgDataName(sheet))
+    content += "%spublic partial class %s {\n" % (StringUtil.GetSpace(indent), sheetCfg.GetCfgDataName())
     indent += 1
-    fieldInfo_list = ExportXlsxUtil.GetExportSheetFiledInfoList(sheet)
-    for fieldInfo in fieldInfo_list:
-      fieldInfo_type = fieldInfo["type"]
-      fieldInfo_name = fieldInfo["name"]
-      content += "%s/*%s*/\n" % (StringUtil.GetSpace(indent), fieldInfo["name_chinese"])
-      isSpecialCsType = ExportXlsxUtil.IsSpecialCsType(fieldInfo_type)
+    fieldInfoList = sheetCfg.GetFieldInfoList()
+    for fieldInfo in fieldInfoList:
+      fieldInfoType = fieldInfo["type"]
+      fieldInfoName = fieldInfo["name"]
+      content += "%s/*%s*/\n" % (StringUtil.GetSpace(indent), fieldInfo["comment"])
+      isSpecialCsType = ExportXlsxUtil.IsSpecialCsType(fieldInfoType)
       if isSpecialCsType:
-        fieldInfo_speical_cs_type = ExportXlsxUtil.GetSpecialCsType(fieldInfo_type)
-        content += "%sprivate %s _%s;\n" % (StringUtil.GetSpace(indent), fieldInfo_speical_cs_type, fieldInfo_name)
-        content += "%spublic %s %s {\n" % (StringUtil.GetSpace(indent), fieldInfo_speical_cs_type, fieldInfo_name)
+        fieldInfoSpecialCsType = ExportXlsxUtil.GetSpecialCsType(fieldInfoType)
+        content += "%sprivate %s _%s;\n" % (StringUtil.GetSpace(indent), fieldInfoSpecialCsType, fieldInfoName)
+        content += "%spublic %s %s {\n" % (StringUtil.GetSpace(indent), fieldInfoSpecialCsType, fieldInfoName)
         indent += 1
         content += "%sget{\n" % (StringUtil.GetSpace(indent))
         indent += 1
-        content += "%sif(_%s == default(%s)) _%s = %s.To<%s>();\n" % (
-        StringUtil.GetSpace(indent), fieldInfo_name, fieldInfo_speical_cs_type, fieldInfo_name, fieldInfo_name,
-        fieldInfo_speical_cs_type)
-        content += "%sreturn _%s;\n" % (StringUtil.GetSpace(indent), fieldInfo_name)
+        content += "%sif(_%s == default(%s)) _%s = %s.To<%s>();\n" % (StringUtil.GetSpace(indent), fieldInfoName, fieldInfoSpecialCsType, fieldInfoName, fieldInfoName, fieldInfoSpecialCsType)
+        content += "%sreturn _%s;\n" % (StringUtil.GetSpace(indent), fieldInfoName)
         indent -= 1
         content += "%s}\n" % (StringUtil.GetSpace(indent))
         indent -= 1
         content += "%s}\n" % (StringUtil.GetSpace(indent))
       else:
-        content += "%spublic %s %s { get; set; }\n" % (StringUtil.GetSpace(indent),ExportXlsxUtil.GetExportCsType(fieldInfo_type) ,fieldInfo_name)
+        content += "%spublic %s %s { get; set; }\n" % (StringUtil.GetSpace(indent), ExportXlsxUtil.GetExportCsType(fieldInfoType),fieldInfoName)
     indent -= 1
     content += "%s}\n" % (StringUtil.GetSpace(indent))
     return content
 
   @staticmethod
-  def ExportCfgIndexDict(sheet, index_dict, indent):
+  def ExportCfgIndexDict(sheet, indexDict, sheetCfg, indent):
     content = ""
-    content += ExportXlsx2Cs.ExportCfgIndexData(sheet, index_dict, indent)
-    content += ExportXlsx2Cs.ExportCfgSpecificIndexData(sheet, index_dict, indent)
+    content += ExportXlsx2Cs.ExportCfgIndexData(indexDict, sheetCfg, indent)
+    content += ExportXlsx2Cs.ExportCfgSpecificIndexData(sheet, indexDict, sheetCfg, indent)
     return content
 
   @staticmethod
-  def ExportCfgIndexData(sheet, index_dict, indent):
+  def ExportCfgIndexData(indexDict, sheetCfg, indent):
     content = ""
-    content += "%spublic class %s {\n" % (StringUtil.GetSpace(indent), ExportXlsxUtil.GetCfgIndexDataName(sheet))
+    content += "%spublic class %s {\n" % (StringUtil.GetSpace(indent), sheetCfg.GetCfgIndexDataName())
     indent += 1
-    for index_group in index_dict.keys():
-      content += "%spublic %s %s{ get; set; }\n" % (
-        StringUtil.GetSpace(indent), ExportXlsxUtil.GetCfgSpecificIndexDataName(sheet, index_group), index_group)
+    for indexTag in indexDict.keys():
+      content += "%spublic %s %s{ get; set; }\n" % (StringUtil.GetSpace(indent), sheetCfg.GetCfgSpecificIndexDataName(indexTag), indexTag)
     indent -= 1
     content += "%s}\n" % (StringUtil.GetSpace(indent))
     return content
 
   @staticmethod
-  def ExportCfgSpecificIndexData(sheet, index_dict, indent):
+  def ExportCfgSpecificIndexData(sheet, indexDict, sheetCfg, indent):
     content = ""
-    for index_group in index_dict.keys():
-      if index_group == ExportXlsxConst.Sheet_Unique_Tag:
-        content += "%spublic class %s {\n" % (
-          StringUtil.GetSpace(indent), ExportXlsxUtil.GetCfgSpecificIndexDataName(sheet, ExportXlsxConst.Sheet_Unique_Tag))
+    for indexTag in indexDict.keys():
+      if indexTag == ExportXlsxConst.FieldName_Sheet_Cfg_UniqueIndexesList:
+        content += "%spublic class %s {\n" % (StringUtil.GetSpace(indent), sheetCfg.GetCfgSpecificIndexDataName(ExportXlsxConst.FieldName_Sheet_Cfg_UniqueIndexesList))
         indent += 1
-        for specific_index_key in index_dict[index_group].keys():
-          content += "%spublic Dictionary<string, int> %s { get; set; } \n" % (
-            StringUtil.GetSpace(indent), specific_index_key)
+        for specificIndexKey in indexDict[indexTag].keys():
+          content += "%spublic Dictionary<string, int> %s { get; set; } \n" % (StringUtil.GetSpace(indent), specificIndexKey)
         indent -= 1
         content += "%s}\n" % (StringUtil.GetSpace(indent))
-      elif index_group == ExportXlsxConst.Sheet_Multiple_Tag:
-        content += "%spublic class %s {\n" % (
-        StringUtil.GetSpace(indent), ExportXlsxUtil.GetCfgSpecificIndexDataName(sheet, ExportXlsxConst.Sheet_Multiple_Tag))
+      elif indexTag == ExportXlsxConst.FieldName_Sheet_Cfg_MultiplyIndexesList:
+        content += "%spublic class %s {\n" % (StringUtil.GetSpace(indent), sheetCfg.GetCfgSpecificIndexDataName(ExportXlsxConst.FieldName_Sheet_Cfg_MultiplyIndexesList))
         indent += 1
-        for specific_index_key in index_dict[index_group].keys():
-          content += "%spublic Dictionary<string,List<int>> %s { get; set; } \n" % (
-          StringUtil.GetSpace(indent), specific_index_key)
+        for specificIndexKey in indexDict[indexTag].keys():
+          content += "%spublic Dictionary<string,List<int>> %s { get; set; } \n" % (StringUtil.GetSpace(indent), specificIndexKey)
         indent -= 1
         content += "%s}\n" % (StringUtil.GetSpace(indent))
     return content

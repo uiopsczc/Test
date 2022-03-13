@@ -10,20 +10,20 @@ namespace CsCat{
     protected static CfgMission instance = new CfgMission();
     protected CfgMissionRoot root;
     public void Parse(string jsonStr) { this.root=JsonMapper.ToObject<CfgMissionRoot>(jsonStr);}
-    public List<CfgMissionData> All(){ return this.root.data_list; }
-    public CfgMissionData Get(int index){ return this.root.data_list[index]; }
+    public List<CfgMissionData> All(){ return this.root.dataList; }
+    public CfgMissionData Get(int index){ return this.root.dataList[index]; }
     public CfgMissionData GetById(string id){
       string key = id.ToString();
-      return this.Get(this.root.index_dict.unique.id[key]);
+      return this.Get(this.root.indexDict.uniqueIndexesList.id[key]);
     }
     public bool IsContainsKeyById(string id){
       string key = id.ToString();
-      return this.root.index_dict.unique.id.ContainsKey(key);
+      return this.root.indexDict.uniqueIndexesList.id.ContainsKey(key);
     }
   }
   public class CfgMissionRoot{
-    public List<CfgMissionData> data_list { get; set; }
-    public CfgMissionIndexData index_dict { get; set; }
+    public List<CfgMissionData> dataList { get; set; }
+    public CfgMissionIndexData indexDict { get; set; }
   }
   public partial class CfgMissionData {
     /*ID*/
@@ -66,9 +66,9 @@ namespace CsCat{
     }
   }
   public class CfgMissionIndexData {
-    public CfgMissionIndexUniqueData unique{ get; set; }
+    public CfgMissionIndexUniqueIndexesListData uniqueIndexesList{ get; set; }
   }
-  public class CfgMissionIndexUniqueData {
+  public class CfgMissionIndexUniqueIndexesListData {
     public Dictionary<string, int> id { get; set; } 
   }
 }

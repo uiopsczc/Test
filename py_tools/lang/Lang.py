@@ -16,149 +16,149 @@ sys.path.append(os.path.dirname(os.path.realpath(__file__ + "/..")))
 
 #收集需要转换的字符串
 def CollectLangIds():
-  lang_id_set = set()
-  CollectLangId(LangConst.Cs_Lang_Root_Dir_Path, FilterCSFile, LangConst.Cs_Match_Pattern_List, lang_id_set)
-  CollectLangId(LangConst.Lua_Lang_Root_Dir_Path, FilterLuaFile, LangConst.Lua_Match_Pattern_List, lang_id_set)
-  CollectExcelLangId(LangConst.Excel_Lang_Root_Dir_Path, FilterExcelFile, lang_id_set)
-  CollectPythonExcelLangIds(lang_id_set, LangConst.UI_String_File_Path)
-  CollectPythonExcelLangIds(lang_id_set, LangConst.Custom_String_File_Path)
-  return lang_id_set
+  langIdSet = set()
+  CollectLangId(LangConst.Cs_Lang_Root_Dir_Path, FilterCSFile, LangConst.Cs_Match_Pattern_List, langIdSet)
+  CollectLangId(LangConst.Lua_Lang_Root_Dir_Path, FilterLuaFile, LangConst.Lua_Match_Pattern_List, langIdSet)
+  CollectExcelLangId(LangConst.Excel_Lang_Root_Dir_Path, FilterExcelFile, langIdSet)
+  CollectPythonExcelLangIds(langIdSet, LangConst.UI_String_File_Path)
+  CollectPythonExcelLangIds(langIdSet, LangConst.Custom_String_File_Path)
+  return langIdSet
 
-def FilterCSFile(file_path):
-  if not file_path.endswith(".cs"):
+def FilterCSFile(filePath):
+  if not filePath.endswith(".cs"):
     return True
-  for ignore_lang_file_path in LangConst.Ignore_Lang_File_Path_Dict:
-    if file_path.find(ignore_lang_file_path) != -1:
+  for ignoreLangFilePath in LangConst.Ignore_Lang_File_Path_Dict:
+    if filePath.find(ignoreLangFilePath) != -1:
       return True
   return False
 
-def FilterLuaFile(file_path):
-  if not file_path.endswith(".lua.txt"):
+def FilterLuaFile(filePath):
+  if not filePath.endswith(".lua.txt"):
     return True
-  for ignore_lang_file_path in LangConst.Ignore_Lang_File_Path_Dict:
-    if file_path.find(ignore_lang_file_path) != -1:
+  for ignoreLangFilePath in LangConst.Ignore_Lang_File_Path_Dict:
+    if filePath.find(ignoreLangFilePath) != -1:
       return True
   return False
 
-def FilterExcelFile(file_path):
-  if not file_path.endswith(".xlsx") or os.path.basename(file_path).startswith("~$"):
+def FilterExcelFile(filePath):
+  if not filePath.endswith(".xlsx") or os.path.basename(filePath).startswith("~$"):
     return True
   return False
 
 #收集文件中需要转换的字符串
-def CollectLangId(lang_root_dir_path, FilterFile, match_pattern_list, lang_id_set):
-  file_path_list = FileUtil.GetFilePathList(lang_root_dir_path, FilterFile)
+def CollectLangId(langRootDirPath, FilterFile, matchPatternList, langIdSet):
+  filePathList = FileUtil.GetFilePathList(langRootDirPath, FilterFile)
   # print(file_path_list)
-  for file_path in file_path_list:
+  for filePath in filePathList:
     # if file_path.find("Assets\Lua\luacat\Client.lua.txt") ==-1:
     #   continue
-    content = FileUtil.ReadFile(file_path)
+    content = FileUtil.ReadFile(filePath)
     # print(content)
-    lang_id_list = GetLangIdList(content, match_pattern_list)
-    if(len(lang_id_list) == 0):
+    langIdList = GetLangIdList(content, matchPatternList)
+    if len(langIdList) == 0:
       continue
-    for lang_id in lang_id_list:
-      lang_id = StringUtil.Escape(lang_id)
-      lang_id_set.add(lang_id)
+    for langId in langIdList:
+      langId = StringUtil.Escape(langId)
+      langIdSet.add(langId)
   # print(lang_id_set)
 
 #收集Excel文件中需要转换的字符串
-def CollectExcelLangId(lang_root_dir_path, FilterFile, lang_id_set):
-  file_path_list = FileUtil.GetFilePathList(lang_root_dir_path, FilterFile)
+def CollectExcelLangId(langRootDirPath, FilterFile, langIdSet):
+  filePathList = FileUtil.GetFilePathList(langRootDirPath, FilterFile)
   # print(file_path_list)
-  fieldInfo_type_row = ExportXlsxConst.Sheet_FieldInfo_Type_Row
-  data_start_row = ExportXlsxConst.Sheet_Data_Start_Row
-  for file_path in file_path_list:
-    wrokbook = load_workbook(file_path, read_only=True, data_only=True)
-    sheet_count = len(wrokbook.sheetnames)
-    for sheet_index in range(0, sheet_count):
-      sheet = wrokbook.worksheets[sheet_index]
+  fieldInfoTypeRowIndex = ExportXlsxConst.Sheet_FieldInfo_Type_Row
+  dataStartRowIndex = ExportXlsxConst.Sheet_Data_Start_Row
+  for filePath in filePathList:
+    workbook = load_workbook(filePath, read_only=True, data_only=True)
+    sheetCount = len(workbook.sheetnames)
+    for sheetIndex in range(0, sheetCount):
+      sheet = workbook.worksheets[sheetIndex]
       if ExportXlsxUtil.IsExportSheet(sheet):
-        fieldInfo_type_line = ExcelUtil.ReadExcelAsLine(sheet, fieldInfo_type_row)
-        data_line_list = ExcelUtil.ReadExcelAsLineList(sheet, data_start_row)
-        for column in range(0, len(fieldInfo_type_line)):  # 列
-          type = fieldInfo_type_line[column]
+        fieldInfoTypeLine = ExcelUtil.ReadExcelAsLine(sheet, fieldInfoTypeRowIndex)
+        dataLineList = ExcelUtil.ReadExcelAsLineList(sheet, dataStartRowIndex)
+        for columnIndex in range(0, len(fieldInfoTypeLine)):  # 列
+          type = fieldInfoTypeLine[columnIndex]
           if type is None or str.lower(type) != ExportXlsxConst.Sheet_FieldInfo_Type_Lang:  # 只收集type为lang的字段
             continue
-          for row in range(0, len(data_line_list)):  # 行
-            field_value = data_line_list[row][column]
-            if field_value is None or StringUtil.IsNoneOrEmpty(field_value) or field_value == "none":
+          for rowIndex in range(0, len(dataLineList)):  # 行
+            fieldValue = dataLineList[rowIndex][columnIndex]
+            if fieldValue is None or StringUtil.IsNoneOrEmpty(fieldValue) or fieldValue == "none":
               continue
-            lang_id = field_value
-            lang_id_set.add(lang_id)
+            langId = fieldValue
+            langIdSet.add(langId)
 
 #用match_pattern_list收集content中的多语言字符串
-def GetLangIdList(content, match_pattern_list):
-  match_dict = {}
+def GetLangIdList(content, matchPatternList):
+  matchDict = {}
   length = len(content)
   index = 0
-  lang_id_list = []
+  langIdList = []
   #先搜索一次
-  for (key, pattern) in match_pattern_list:
+  for (key, pattern) in matchPatternList:
     match = pattern.search(content)
-    match_dict[key] = match
+    matchDict[key] = match
 
   while True:
-    min_match_key = None
-    min_match_start_index = length
-    for (key, pattern) in match_pattern_list:
-      match = match_dict[key]
+    minMatchKey = None
+    minMatchStartIndex = length
+    for (key, pattern) in matchPatternList:
+      match = matchDict[key]
 
       if not match:
         continue
       if match.start() < index:
         match = pattern.search(content,index)
-        match_dict[key] = match
-      if match and match.start() < min_match_start_index:
-        min_match_key = key
-        min_match_start_index = match.start()
-    if min_match_key:
-      min_match = match_dict[min_match_key]
-      index = min_match.end()
-      if min_match_key.startswith("str"):  #匹配到str开头的match_pattern
-        pure_str = min_match.group(1)
-        lang_id_list.append(pure_str)
+        matchDict[key] = match
+      if match and match.start() < minMatchStartIndex:
+        minMatchKey = key
+        minMatchStartIndex = match.start()
+    if minMatchKey:
+      minMatch = matchDict[minMatchKey]
+      index = minMatch.end()
+      if minMatchKey.startswith("str"):  #匹配到str开头的match_pattern
+        pure_str = minMatch.group(1)
+        langIdList.append(pure_str)
         # print(pure_str)
         # print("===========================")
       # print(content[min_match.start():min_match.end()])
       # print("=================================")
     else:
       break
-  return lang_id_list
+  return langIdList
 
 
 
-def CollectPythonExcelLangIds(lang_id_set, xx_string_file_path):
-  line_list = ExcelUtil.ReadExcelAsLineListFromFilePath(xx_string_file_path)
-  for line in line_list:
-    lang_id_set.add(line[0])
+def CollectPythonExcelLangIds(langIdSet, xxStringFilePath):
+  lineList = ExcelUtil.ReadExcelAsLineListFromFilePath(xxStringFilePath)
+  for line in lineList:
+    langIdSet.add(line[0])
 
 
 #将lang_ids导出到export_lang_file_path中
-def ExportLangIds(lang_ids):
-  data_start_row = ExportXlsxConst.Sheet_Data_Start_Row # 数据开始的行号
+def ExportLangIds(langIds):
+  dataStartRowIndex = ExportXlsxConst.Sheet_Data_Start_Row # 数据开始的行号
   workbook = load_workbook(LangConst.Export_Lang_File_Path, data_only=True)#data_only,读取公式的结果，而不是公式本身
   sheet = workbook.worksheets[0]
-  ExcelUtil.ClearExcelEmptyRows(sheet,data_start_row)
+  ExcelUtil.ClearExcelEmptyRows(sheet, dataStartRowIndex)
   row = sheet.max_row + 1
-  org_line_list = ExcelUtil.ReadExcelAsLineList(sheet, data_start_row)
+  orgLineList = ExcelUtil.ReadExcelAsLineList(sheet, dataStartRowIndex)
 
-  lang_dict = {}
-  for line in org_line_list:
-    lang_id = line[0]
-    lang_dict[lang_id] = True
+  langDict = {}
+  for line in orgLineList:
+    langId = line[0]
+    langDict[langId] = True
 
-  for lang_id in lang_ids:
-    if lang_id in lang_dict:
+  for langId in langIds:
+    if langId in langDict:
       continue
-    sheet.cell(row, 1).value = lang_id
-    lang_dict[lang_id] = True
+    sheet.cell(row, 1).value = langId
+    langDict[langId] = True
     row += 1
   workbook.save(LangConst.Export_Lang_File_Path)
 
 def main():
-  lang_id_set = CollectLangIds()
-  ExportLangIds(lang_id_set)
+  langIdSet = CollectLangIds()
+  ExportLangIds(langIdSet)
   os.system("explorer /select, " + LangConst.Export_Lang_File_Path)
   print("Lang Export finished")
 main()

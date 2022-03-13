@@ -10,20 +10,20 @@ namespace CsCat{
     protected static CfgQuality instance = new CfgQuality();
     protected CfgQualityRoot root;
     public void Parse(string jsonStr) { this.root=JsonMapper.ToObject<CfgQualityRoot>(jsonStr);}
-    public List<CfgQualityData> All(){ return this.root.data_list; }
-    public CfgQualityData Get(int index){ return this.root.data_list[index]; }
+    public List<CfgQualityData> All(){ return this.root.dataList; }
+    public CfgQualityData Get(int index){ return this.root.dataList[index]; }
     public CfgQualityData GetById(string id){
       string key = id.ToString();
-      return this.Get(this.root.index_dict.unique.id[key]);
+      return this.Get(this.root.indexDict.uniqueIndexesList.id[key]);
     }
     public bool IsContainsKeyById(string id){
       string key = id.ToString();
-      return this.root.index_dict.unique.id.ContainsKey(key);
+      return this.root.indexDict.uniqueIndexesList.id.ContainsKey(key);
     }
   }
   public class CfgQualityRoot{
-    public List<CfgQualityData> data_list { get; set; }
-    public CfgQualityIndexData index_dict { get; set; }
+    public List<CfgQualityData> dataList { get; set; }
+    public CfgQualityIndexData indexDict { get; set; }
   }
   public partial class CfgQualityData {
     /*id*/
@@ -34,9 +34,9 @@ namespace CsCat{
     public string iconPath { get; set; }
   }
   public class CfgQualityIndexData {
-    public CfgQualityIndexUniqueData unique{ get; set; }
+    public CfgQualityIndexUniqueIndexesListData uniqueIndexesList{ get; set; }
   }
-  public class CfgQualityIndexUniqueData {
+  public class CfgQualityIndexUniqueIndexesListData {
     public Dictionary<string, int> id { get; set; } 
   }
 }

@@ -1,0 +1,72 @@
+{
+  "dataList": [
+    {
+      "id": 3,
+      "name": "chenzhiquan",
+      "country": "china",
+      "ageDict": {}
+    },
+    {
+      "id": 2,
+      "name": "uiopsczc",
+      "country": "usa",
+      "ageDict": {
+        "星哥": [
+          1,
+          2,
+          3
+        ]
+      }
+    },
+    {
+      "id": 1,
+      "name": "dadaxing",
+      "country": "sb",
+      "ageDict": {
+        "星仔不不": [
+          4,
+          5,
+          6
+        ]
+      }
+    }
+  ],
+  "indexDict": {
+    "uniqueIndexesList": {
+      "id": {
+        "3": 0,
+        "2": 1,
+        "1": 2
+      },
+      "name": {
+        "chenzhiquan": 0,
+        "uiopsczc": 1,
+        "dadaxing": 2
+      }
+    },
+    "multiplyIndexesList": {
+      "id_and_name": {
+        "3.chenzhiquan": [
+          0
+        ],
+        "2.uiopsczc": [
+          1
+        ],
+        "1.dadaxing": [
+          2
+        ]
+      },
+      "name_and_country": {
+        "chenzhiquan.china": [
+          0
+        ],
+        "uiopsczc.usa": [
+          1
+        ],
+        "dadaxing.sb": [
+          2
+        ]
+      }
+    }
+  }
+}

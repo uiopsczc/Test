@@ -10,20 +10,20 @@ namespace CsCat{
     protected static CfgBuff instance = new CfgBuff();
     protected CfgBuffRoot root;
     public void Parse(string jsonStr) { this.root=JsonMapper.ToObject<CfgBuffRoot>(jsonStr);}
-    public List<CfgBuffData> All(){ return this.root.data_list; }
-    public CfgBuffData Get(int index){ return this.root.data_list[index]; }
+    public List<CfgBuffData> All(){ return this.root.dataList; }
+    public CfgBuffData Get(int index){ return this.root.dataList[index]; }
     public CfgBuffData GetById(string id){
       string key = id.ToString();
-      return this.Get(this.root.index_dict.unique.id[key]);
+      return this.Get(this.root.indexDict.uniqueIndexesList.id[key]);
     }
     public bool IsContainsKeyById(string id){
       string key = id.ToString();
-      return this.root.index_dict.unique.id.ContainsKey(key);
+      return this.root.indexDict.uniqueIndexesList.id.ContainsKey(key);
     }
   }
   public class CfgBuffRoot{
-    public List<CfgBuffData> data_list { get; set; }
-    public CfgBuffIndexData index_dict { get; set; }
+    public List<CfgBuffData> dataList { get; set; }
+    public CfgBuffIndexData indexDict { get; set; }
   }
   public partial class CfgBuffData {
     /*id*/
@@ -62,9 +62,9 @@ namespace CsCat{
     }
   }
   public class CfgBuffIndexData {
-    public CfgBuffIndexUniqueData unique{ get; set; }
+    public CfgBuffIndexUniqueIndexesListData uniqueIndexesList{ get; set; }
   }
-  public class CfgBuffIndexUniqueData {
+  public class CfgBuffIndexUniqueIndexesListData {
     public Dictionary<string, int> id { get; set; } 
   }
 }

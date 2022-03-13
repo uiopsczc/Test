@@ -19,7 +19,7 @@ local _
 
 
 ---@type CfgMissionData[]
-local data_list = {
+local dataList = {
   {
     id = [=[1]=],
     name = [=[任务1]=],
@@ -37,8 +37,8 @@ local data_list = {
   },
 }
 
-local index_dict = {
-  unique = {
+local indexDict = {
+  uniqueIndexesList = {
     id = {
       [
         [=[1]=]
@@ -51,23 +51,23 @@ local cfg = {}
 
 ---@return CfgMissionData[]
 function cfg.All()
-  return data_list
+  return dataList
 end
 
 ---@return CfgMissionData
 function cfg.Get(index)
-  return data_list[index]
+  return dataList[index]
 end
 
 ---@return CfgMissionData
 function cfg.GetById(id)
   local key = tostring(id)
-  return cfg.Get(index_dict.unique.id[key])
+  return cfg.Get(indexDict.uniqueIndexesList.id[key])
 end
 
 function cfg.IsContainsKeyById(id)
   local key = tostring(id)
-  return index_dict.unique.id[key] ~= nil
+  return indexDict.uniqueIndexesList.id[key] ~= nil
 end
 
 return cfg
