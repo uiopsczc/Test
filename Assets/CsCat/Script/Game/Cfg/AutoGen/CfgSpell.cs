@@ -57,42 +57,32 @@ namespace CsCat{
     /*起手特效ids*/
     private string[] _handEffectIds;
     public string[] handEffectIds {
-      get{
-        if(_handEffectIds == default(string[])) _handEffectIds = handEffectIds.To<string[]>();
-        return _handEffectIds;
-      }
+      set{ _handEffectIds = value; }
+      get{ return _handEffectIds; }
     }
     /*出手特效ids*/
     private string[] _goEffectIds;
     public string[] goEffectIds {
-      get{
-        if(_goEffectIds == default(string[])) _goEffectIds = goEffectIds.To<string[]>();
-        return _goEffectIds;
-      }
+      set{ _goEffectIds = value; }
+      get{ return _goEffectIds; }
     }
     /*击中特效ids*/
     private string[] _hitEffectIds;
     public string[] hitEffectIds {
-      get{
-        if(_hitEffectIds == default(string[])) _hitEffectIds = hitEffectIds.To<string[]>();
-        return _hitEffectIds;
-      }
+      set{ _hitEffectIds = value; }
+      get{ return _hitEffectIds; }
     }
     /*地面特效ids*/
     private string[] _groundEffectIds;
     public string[] groundEffectIds {
-      get{
-        if(_groundEffectIds == default(string[])) _groundEffectIds = groundEffectIds.To<string[]>();
-        return _groundEffectIds;
-      }
+      set{ _groundEffectIds = value; }
+      get{ return _groundEffectIds; }
     }
     /*line特效ids*/
     private string[] _lineEffectIds;
     public string[] lineEffectIds {
-      get{
-        if(_lineEffectIds == default(string[])) _lineEffectIds = lineEffectIds.To<string[]>();
-        return _lineEffectIds;
-      }
+      set{ _lineEffectIds = value; }
+      get{ return _lineEffectIds; }
     }
     /*不强制面向攻击目标*/
     public bool isNotFaceToTarget { get; set; }
@@ -103,10 +93,8 @@ namespace CsCat{
     /*新技能触发id*/
     private string[] _newSpellTriggerIds;
     public string[] newSpellTriggerIds {
-      get{
-        if(_newSpellTriggerIds == default(string[])) _newSpellTriggerIds = newSpellTriggerIds.To<string[]>();
-        return _newSpellTriggerIds;
-      }
+      set{ _newSpellTriggerIds = value; }
+      get{ return _newSpellTriggerIds; }
     }
     /*是否需要目标*/
     public bool isNeedTarget { get; set; }
@@ -115,26 +103,20 @@ namespace CsCat{
     /*被动技能ids*/
     private string[] _passiveBuffIds;
     public string[] passiveBuffIds {
-      get{
-        if(_passiveBuffIds == default(string[])) _passiveBuffIds = passiveBuffIds.To<string[]>();
-        return _passiveBuffIds;
-      }
+      set{ _passiveBuffIds = value; }
+      get{ return _passiveBuffIds; }
     }
     /*选择单位参数*/
     private Dictionary<string,string> _selectUnitArgDict;
     public Dictionary<string,string> selectUnitArgDict {
-      get{
-        if(_selectUnitArgDict == default(Dictionary<string,string>)) _selectUnitArgDict = selectUnitArgDict.To<Dictionary<string,string>>();
-        return _selectUnitArgDict;
-      }
+      set{ _selectUnitArgDict = value; }
+      get{ return _selectUnitArgDict; }
     }
     /*参数*/
     private Dictionary<string,string> _argDict;
     public Dictionary<string,string> argDict {
-      get{
-        if(_argDict == default(Dictionary<string,string>)) _argDict = argDict.To<Dictionary<string,string>>();
-        return _argDict;
-      }
+      set{ _argDict = value; }
+      get{ return _argDict; }
     }
   }
   public class CfgSpellIndexData {

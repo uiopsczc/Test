@@ -131,22 +131,20 @@ class ExportXlsx2Cs(object):
       fieldInfoType = fieldInfo["type"]
       fieldInfoName = fieldInfo["name"]
       content += "%s/*%s*/\n" % (StringUtil.GetSpace(indent), fieldInfo["comment"])
-      isSpecialCsType = ExportXlsxUtil.IsSpecialCsType(fieldInfoType)
-      if isSpecialCsType:
+      if ExportXlsxUtil.IsSpecialCsType(fieldInfoType):
         fieldInfoSpecialCsType = ExportXlsxUtil.GetSpecialCsType(fieldInfoType)
         content += "%sprivate %s _%s;\n" % (StringUtil.GetSpace(indent), fieldInfoSpecialCsType, fieldInfoName)
         content += "%spublic %s %s {\n" % (StringUtil.GetSpace(indent), fieldInfoSpecialCsType, fieldInfoName)
         indent += 1
-        content += "%sget{\n" % (StringUtil.GetSpace(indent))
-        indent += 1
-        content += "%sif(_%s == default(%s)) _%s = %s.To<%s>();\n" % (StringUtil.GetSpace(indent), fieldInfoName, fieldInfoSpecialCsType, fieldInfoName, fieldInfoName, fieldInfoSpecialCsType)
-        content += "%sreturn _%s;\n" % (StringUtil.GetSpace(indent), fieldInfoName)
-        indent -= 1
-        content += "%s}\n" % (StringUtil.GetSpace(indent))
+        content += "%sset{ _%s = value; }\n" % (StringUtil.GetSpace(indent), fieldInfoName)
+        if fieldInfoType != ExportXlsxConst.Sheet_FieldInfo_Type_Lang:
+          content += "%sget{ return _%s; }\n" % (StringUtil.GetSpace(indent), fieldInfoName)
+        else:
+          content += "%sget{ return Lang.GetText(_%s); }\n" % (StringUtil.GetSpace(indent), fieldInfoName)
         indent -= 1
         content += "%s}\n" % (StringUtil.GetSpace(indent))
       else:
-        content += "%spublic %s %s { get; set; }\n" % (StringUtil.GetSpace(indent), ExportXlsxUtil.GetExportCsType(fieldInfoType),fieldInfoName)
+        content += "%spublic %s %s { get; set; }\n" % (StringUtil.GetSpace(indent), ExportXlsxUtil.GetExportCsType(fieldInfoType), fieldInfoName)
     indent -= 1
     content += "%s}\n" % (StringUtil.GetSpace(indent))
     return content
@@ -184,7 +182,7 @@ class ExportXlsx2Cs(object):
         content += "%spublic class %s {\n" % (StringUtil.GetSpace(indent), sheetCfg.GetCfgSpecificIndexDataName(ExportXlsxConst.FieldName_Sheet_Cfg_MultiplyIndexesList))
         indent += 1
         for specificIndexKey in indexDict[indexTag].keys():
-          content += "%spublic Dictionary<string,List<int>> %s { get; set; } \n" % (StringUtil.GetSpace(indent), specificIndexKey)
+          content += "%spublic Dictionary<string, List<int>> %s { get; set; } \n" % (StringUtil.GetSpace(indent), specificIndexKey)
         indent -= 1
         content += "%s}\n" % (StringUtil.GetSpace(indent))
     return content

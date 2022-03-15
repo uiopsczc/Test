@@ -51,18 +51,14 @@ namespace CsCat{
     /*奖励*/
     private Dictionary<string,string> _rewardDict;
     public Dictionary<string,string> rewardDict {
-      get{
-        if(_rewardDict == default(Dictionary<string,string>)) _rewardDict = rewardDict.To<Dictionary<string,string>>();
-        return _rewardDict;
-      }
+      set{ _rewardDict = value; }
+      get{ return _rewardDict; }
     }
     /*寻找物品*/
     private Dictionary<string,string> _findItemDict;
     public Dictionary<string,string> findItemDict {
-      get{
-        if(_findItemDict == default(Dictionary<string,string>)) _findItemDict = findItemDict.To<Dictionary<string,string>>();
-        return _findItemDict;
-      }
+      set{ _findItemDict = value; }
+      get{ return _findItemDict; }
     }
   }
   public class CfgMissionIndexData {

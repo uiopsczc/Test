@@ -83,18 +83,14 @@ namespace CsCat{
     /*国家*/
     private string _country;
     public string country {
-      get{
-        if(_country == default(string)) _country = country.To<string>();
-        return _country;
-      }
+      set{ _country = value; }
+      get{ return Lang.GetText(_country); }
     }
     /*ageDict*/
     private Dictionary<string,int[]> _ageDict;
     public Dictionary<string,int[]> ageDict {
-      get{
-        if(_ageDict == default(Dictionary<string,int[]>)) _ageDict = ageDict.To<Dictionary<string,int[]>>();
-        return _ageDict;
-      }
+      set{ _ageDict = value; }
+      get{ return _ageDict; }
     }
   }
   public class CfgTestIndexData {
@@ -106,7 +102,7 @@ namespace CsCat{
     public Dictionary<string, int> name { get; set; } 
   }
   public class CfgTestIndexMultiplyIndexesListData {
-    public Dictionary<string,List<int>> id_and_name { get; set; } 
-    public Dictionary<string,List<int>> name_and_country { get; set; } 
+    public Dictionary<string, List<int>> id_and_name { get; set; } 
+    public Dictionary<string, List<int>> name_and_country { get; set; } 
   }
 }

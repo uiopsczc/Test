@@ -47,10 +47,8 @@ namespace CsCat{
     /*子步骤ids*/
     private string[] _stepIds;
     public string[] stepIds {
-      get{
-        if(_stepIds == default(string[])) _stepIds = stepIds.To<string[]>();
-        return _stepIds;
-      }
+      set{ _stepIds = value; }
+      get{ return _stepIds; }
     }
   }
   public class CfgDoerEventIndexData {

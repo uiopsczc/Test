@@ -47,66 +47,50 @@ namespace CsCat{
     /*设置属性*/
     private Dictionary<string,string> _setAttrDict;
     public Dictionary<string,string> setAttrDict {
-      get{
-        if(_setAttrDict == default(Dictionary<string,string>)) _setAttrDict = setAttrDict.To<Dictionary<string,string>>();
-        return _setAttrDict;
-      }
+      set{ _setAttrDict = value; }
+      get{ return _setAttrDict; }
     }
     /*增加属性*/
     private Dictionary<string,string> _addAttrDict;
     public Dictionary<string,string> addAttrDict {
-      get{
-        if(_addAttrDict == default(Dictionary<string,string>)) _addAttrDict = addAttrDict.To<Dictionary<string,string>>();
-        return _addAttrDict;
-      }
+      set{ _addAttrDict = value; }
+      get{ return _addAttrDict; }
     }
     /*增加或者删除物品*/
     private Dictionary<string,string> _dealItemDict;
     public Dictionary<string,string> dealItemDict {
-      get{
-        if(_dealItemDict == default(Dictionary<string,string>)) _dealItemDict = dealItemDict.To<Dictionary<string,string>>();
-        return _dealItemDict;
-      }
+      set{ _dealItemDict = value; }
+      get{ return _dealItemDict; }
     }
     /*放弃任务ids*/
     private string[] _giveUpMissionIds;
     public string[] giveUpMissionIds {
-      get{
-        if(_giveUpMissionIds == default(string[])) _giveUpMissionIds = giveUpMissionIds.To<string[]>();
-        return _giveUpMissionIds;
-      }
+      set{ _giveUpMissionIds = value; }
+      get{ return _giveUpMissionIds; }
     }
     /*接受任务ids*/
     private string[] _acceptMissionIds;
     public string[] acceptMissionIds {
-      get{
-        if(_acceptMissionIds == default(string[])) _acceptMissionIds = acceptMissionIds.To<string[]>();
-        return _acceptMissionIds;
-      }
+      set{ _acceptMissionIds = value; }
+      get{ return _acceptMissionIds; }
     }
     /*完成任务ids*/
     private string[] _finishMissionIds;
     public string[] finishMissionIds {
-      get{
-        if(_finishMissionIds == default(string[])) _finishMissionIds = finishMissionIds.To<string[]>();
-        return _finishMissionIds;
-      }
+      set{ _finishMissionIds = value; }
+      get{ return _finishMissionIds; }
     }
     /*增加已完成的任务ids*/
     private string[] _addFinishedMissionIds;
     public string[] addFinishedMissionIds {
-      get{
-        if(_addFinishedMissionIds == default(string[])) _addFinishedMissionIds = addFinishedMissionIds.To<string[]>();
-        return _addFinishedMissionIds;
-      }
+      set{ _addFinishedMissionIds = value; }
+      get{ return _addFinishedMissionIds; }
     }
     /*删除已完成的任务ids*/
     private string[] _removeFinishedMissionIds;
     public string[] removeFinishedMissionIds {
-      get{
-        if(_removeFinishedMissionIds == default(string[])) _removeFinishedMissionIds = removeFinishedMissionIds.To<string[]>();
-        return _removeFinishedMissionIds;
-      }
+      set{ _removeFinishedMissionIds = value; }
+      get{ return _removeFinishedMissionIds; }
     }
   }
   public class  CfgDoerEventStepIndexData {

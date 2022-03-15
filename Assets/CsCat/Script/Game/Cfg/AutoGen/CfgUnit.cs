@@ -45,18 +45,14 @@ namespace CsCat{
     /*普攻ids*/
     private string[] _normalAttackIds;
     public string[] normalAttackIds {
-      get{
-        if(_normalAttackIds == default(string[])) _normalAttackIds = normalAttackIds.To<string[]>();
-        return _normalAttackIds;
-      }
+      set{ _normalAttackIds = value; }
+      get{ return _normalAttackIds; }
     }
     /*技能ids*/
     private string[] _skillIds;
     public string[] skillIds {
-      get{
-        if(_skillIds == default(string[])) _skillIds = skillIds.To<string[]>();
-        return _skillIds;
-      }
+      set{ _skillIds = value; }
+      get{ return _skillIds; }
     }
     /*ai实现类(lua)*/
     public string aiClassPathLua { get; set; }
@@ -71,10 +67,8 @@ namespace CsCat{
     /*被动buff ids*/
     private string[] _passiveBuffIds;
     public string[] passiveBuffIds {
-      get{
-        if(_passiveBuffIds == default(string[])) _passiveBuffIds = passiveBuffIds.To<string[]>();
-        return _passiveBuffIds;
-      }
+      set{ _passiveBuffIds = value; }
+      get{ return _passiveBuffIds; }
     }
   }
   public class CfgUnitIndexData {

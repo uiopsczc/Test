@@ -107,6 +107,7 @@ namespace LitJson
 
 	public class JsonMapper
 	{
+
 		#region Fields
 		private static readonly int max_nesting_depth;
 

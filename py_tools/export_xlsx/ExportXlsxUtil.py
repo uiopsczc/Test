@@ -164,15 +164,14 @@ class ExportXlsxUtil(object):
     elif type == ExportXlsxConst.Sheet_FieldInfo_Type_Json:
       return "LitJson.JsonData"
     elif type.endswith(ExportXlsxConst.Sheet_FieldInfo_Type_Ends_With_Array):
-      sub_type = type[0:-2]
-      return "%s[]" % (ExportXlsxUtil.GetSpecialCsType(sub_type))
+      subType = type[0:-2]
+      return "%s[]" % (ExportXlsxUtil.GetSpecialCsType(subType))
     elif type.startswith(ExportXlsxConst.Sheet_FieldInfo_Type_Starts_With_Dict):
-      sub_type = type[4:]
-      pos = sub_type.index(",")
-      sub_key_type = sub_type[1:pos]
-      sub_value_type = sub_type[pos + 1:-1]
-      return "Dictionary<%s,%s>" % (
-      ExportXlsxUtil.GetSpecialCsType(sub_key_type), ExportXlsxUtil.GetSpecialCsType(sub_value_type))
+      subType = type[4:]
+      pos = subType.index(",")
+      subKeyType = subType[1:pos]
+      subValueType = subType[pos + 1:-1]
+      return "Dictionary<%s,%s>" % (ExportXlsxUtil.GetSpecialCsType(subKeyType), ExportXlsxUtil.GetSpecialCsType(subValueType))
     else:
       raise Exception("not define Special CsType for %s"%(type))
 
@@ -195,9 +194,15 @@ class ExportXlsxUtil(object):
     elif type == ExportXlsxConst.Sheet_FieldInfo_Type_Json:
       return "LitJson.JsonData"
     elif type.endswith(ExportXlsxConst.Sheet_FieldInfo_Type_Ends_With_Array):
-      return "LitJson.JsonData"
+      subType = type[0:-2]
+      return "%s[]" % (ExportXlsxUtil.GetSpecialCsType(subType))
     elif type.startswith(ExportXlsxConst.Sheet_FieldInfo_Type_Starts_With_Dict):
-      return "LitJson.JsonData"
+      subType = type[4:]
+      pos = subType.index(",")
+      subKeyType = subType[1:pos]
+      subValueType = subType[pos + 1:-1]
+      return "Dictionary<%s,%s>" % (
+      ExportXlsxUtil.GetSpecialCsType(subKeyType), ExportXlsxUtil.GetSpecialCsType(subValueType))
     else:
       raise Exception("not define CsType for %s"%(type))
 

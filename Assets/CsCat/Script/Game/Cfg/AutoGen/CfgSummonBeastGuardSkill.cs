@@ -110,7 +110,7 @@ namespace CsCat{
     public Dictionary<string, int> summonBeastId_and_star { get; set; } 
   }
   public class CfgSummonBeastGuardSkillIndexMultiplyIndexesListData {
-    public Dictionary<string,List<int>> summonBeastId { get; set; } 
-    public Dictionary<string,List<int>> summonBeastId_and_starFighting { get; set; } 
+    public Dictionary<string, List<int>> summonBeastId { get; set; } 
+    public Dictionary<string, List<int>> summonBeastId_and_starFighting { get; set; } 
   }
 }

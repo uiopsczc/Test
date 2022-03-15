@@ -1,5 +1,5 @@
 class ExportXlsxConst(object):
-  Is_Export_Lua = True
+  Is_Export_Lua = False
   Is_Export_Cs = True
   Xlsx_Dir_Path = r"..\..\Excels\\"
 

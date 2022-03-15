@@ -41,10 +41,8 @@ namespace CsCat{
     /*特效ids*/
     private string[] _effectIds;
     public string[] effectIds {
-      get{
-        if(_effectIds == default(string[])) _effectIds = effectIds.To<string[]>();
-        return _effectIds;
-      }
+      set{ _effectIds = value; }
+      get{ return _effectIds; }
     }
     /*状态*/
     public string state { get; set; }
@@ -55,10 +53,8 @@ namespace CsCat{
     /*修改属性dict*/
     private Dictionary<string,string> _propertyDict;
     public Dictionary<string,string> propertyDict {
-      get{
-        if(_propertyDict == default(Dictionary<string,string>)) _propertyDict = propertyDict.To<Dictionary<string,string>>();
-        return _propertyDict;
-      }
+      set{ _propertyDict = value; }
+      get{ return _propertyDict; }
     }
   }
   public class CfgBuffIndexData {

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using LitJson;
 using UnityEngine;
 
 namespace CsCat
@@ -7,6 +8,7 @@ namespace CsCat
 	{
 		void Start()
 		{
+
 		}
 	}
 }

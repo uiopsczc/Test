@@ -33,10 +33,8 @@ namespace CsCat{
     /*值dict*/
     private Dictionary<string,string> _valueDict;
     public Dictionary<string,string> valueDict {
-      get{
-        if(_valueDict == default(Dictionary<string,string>)) _valueDict = valueDict.To<Dictionary<string,string>>();
-        return _valueDict;
-      }
+      set{ _valueDict = value; }
+      get{ return _valueDict; }
     }
   }
   public class CfgPublicIndexData {
