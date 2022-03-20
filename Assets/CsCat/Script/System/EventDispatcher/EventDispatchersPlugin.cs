@@ -3,6 +3,7 @@ using System.Collections.Generic;
 
 namespace CsCat
 {
+	//单个eventDispatchers使用，但创建的时候需要指明是哪一个EventDispatchers，使用的时候就是对那个EventDispatchers进行事件监听
 	public class EventDispatchersPlugin
 	{
 		private readonly Dictionary<IEventDispatcher, Dictionary<string, List<Delegate>>> _listenerDict =

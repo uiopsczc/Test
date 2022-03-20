@@ -3,6 +3,8 @@ local GameEntity = Class("GameEntity", AbstractEntity)
 
 function GameEntity:Init(...)
 	GameEntity.super.Init(self, ...)
+	---@type EventDispatcherPluginDictComponent
+	self._eventDispatcherPluginDictComponent = self:AddComponent(nil, EventDispatcherPluginDictComponent)
 	---@type TimerManagerPluginComponent
 	self._timerManagerPluginComponent = self:AddComponent(nil, TimerManagerPluginComponent, TimerManagerPlugin.New(self:GetTimerManager()))
 	---@type CoroutinePluginComponent
@@ -101,19 +103,11 @@ end
 
 
 ----------------------------------------------------------------------
--- EventDispatcherPlugin
+-- EventDispatcherPluginDictComponent
 ----------------------------------------------------------------------
----@return EventDispatcherPlugin
-function GameEntity:GetEventDispatcherPlugin()
-	if not self._eventDispatcherPlugin then
-		self._eventDispatcherPlugin = EventDispatcherPlugin.New(global.client.eventDispatcher)
-	end
-	return self._eventDispatcherPlugin
-end
-
 ---@return EventListener
-function GameEntity:AddListener(eventName, handler)
-	return self:GetEventDispatcherPlugin():AddListener(eventName, handler)
+function GameEntity:AddListener(eventDispatcher, eventName, handler)
+	return self._eventDispatcherPluginDictComponent:AddListener(eventDispatcher, eventName, handler)
 end
 
 ---@return EventListener
@@ -121,16 +115,16 @@ end
 -- 情况1 只有一个listener
 -- 情况2 只有一个handler
 -- 情况3 有一个eventName和一个handler
-function GameEntity:RemoveListener(...)
-	return self:GetEventDispatcherPlugin():RemoveListener(...)
+function GameEntity:RemoveListener(eventDispatcher, ...)
+	return self._eventDispatcherPluginDictComponent:RemoveListener(eventDispatcher, ...)
 end
 
 function GameEntity:RemoveAllListeners()
-	self:GetEventDispatcherPlugin():RemoveAllListeners()
+	self._eventDispatcherPluginDictComponent:RemoveAllListeners()
 end
 
-function GameEntity:Broadcast(eventName, ...)
-	self:GetEventDispatcherPlugin():Broadcast(eventName, ...)
+function GameEntity:Broadcast(eventDispatcher, eventName, ...)
+	self._eventDispatcherPluginDictComponent:Broadcast(eventDispatcher, eventName, ...)
 end
 
 ----------------------------------------------------------------------

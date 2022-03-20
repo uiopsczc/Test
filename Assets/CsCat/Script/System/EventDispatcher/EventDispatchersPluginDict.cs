@@ -4,6 +4,7 @@ using System.Collections.Generic;
 
 namespace CsCat
 {
+	//多个eventDispatchers使用，使用的时候需要指明是那个eventDispatchers
 	public class EventDispatchersPluginDict
 	{
 		private readonly Dictionary<EventDispatchers, EventDispatchersPlugin> dict = new Dictionary<EventDispatchers, EventDispatchersPlugin>();

@@ -5,7 +5,7 @@ namespace CsCat
 {
 	public partial class Unit
 	{
-		private readonly Dictionary<string, Transform> _socketTransformDict = new Dictionary<string, Transform>();
+		
 
 		public Transform GetSocketTransform(string socketName, bool isIgnoreError = false)
 		{

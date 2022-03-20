@@ -1,0 +1,45 @@
+---@class EventDispatcherPluginDict
+local EventDispatcherPluginDict = Class("EventDispatcherPluginDict")
+
+function EventDispatcherPluginDict:Init()
+	---@type table<EventDispatcher, EventDispatcherPlugin>
+	self._dict = {}
+end
+
+---@return EventDispatcherPlugin
+function EventDispatcherPluginDict:GetEventDispatcherPlugin(eventDispatcher)
+	eventDispatcher = eventDispatcher or global.client.eventDispatcher
+	return table.GetOrAddDefault_Dict(eventDispatcher, function() return EventDispatcherPlugin:New(eventDispatcher) end)
+end
+
+---@return EventListener
+function EventDispatcherPluginDict:AddListener(eventDispatcher, eventName, handler)
+	return self:GetEventDispatcherPlugin(eventDispatcher):AddListener(eventName, handler)
+end
+
+---@return EventListener
+-- ... 包含3种情况
+-- 情况1 只有一个listener
+-- 情况2 只有一个handler
+-- 情况3 有一个eventName和一个handler
+function EventDispatcherPluginDict:RemoveListener(eventDispatcher, ...)
+	return self:GetEventDispatcherPlugin(eventDispatcher):RemoveListener(...)
+end
+
+function EventDispatcherPluginDict:RemoveAllListeners()
+	for _, eventDispatcherPlugin in pairs(self._dict) do
+		eventDispatcherPlugin:RemoveAllListeners()
+	end
+	self._dict = {}
+end
+
+function EventDispatcherPluginDict:Broadcast(eventDispatcher, eventName, ...)
+	self:GetEventDispatcherPlugin(eventDispatcher):Broadcast(eventName, ...)
+end
+
+function EventDispatcherPluginDict:Destroy()
+
+	self:RemoveAllListeners()
+end
+
+return EventDispatcherPluginDict

@@ -3,11 +3,13 @@ namespace CsCat
 	public partial class GraphicComponent : GameComponent
 	{
 		private ResLoadComponentPlugin resLoadComponentPlugin;
+		private GameObjectEntity _gameObjectEntity;
 
 		public void Init(ResLoadComponent resLoadComponent)
 		{
 			base.Init();
 			resLoadComponentPlugin = new ResLoadComponentPlugin(resLoadComponent);
+			this._gameObjectEntity = this.GetEntity<GameObjectEntity>();
 			this.AddListener(GetGameEntity().eventDispatchers, ECSEventNameConst.OnAllAssetsLoadDone,
 				OnAllAssetsLoadDone);
 		}

@@ -1,0 +1,42 @@
+local AbstractComponent = require("AbstractComponent")
+---@class EventDispatcherPluginDictComponent
+local EventDispatcherPluginDictComponent = Class("EventDispatcherPluginDictComponent", AbstractComponent)
+
+function EventDispatcherPluginDictComponent:Init()
+	---@type table<EventDispatcher, EventDispatcherPlugin>
+	self._eventDispatchersPluginDict = EventDispatcherPluginDict:New()
+end
+
+---@return EventListener
+function EventDispatcherPluginDictComponent:AddListener(eventDispatcher, eventName, handler)
+	return self._eventDispatchersPluginDict:AddListener(eventDispatcher, eventName, handler)
+end
+
+---@return EventListener
+-- ... 包含3种情况
+-- 情况1 只有一个listener
+-- 情况2 只有一个handler
+-- 情况3 有一个eventName和一个handler
+function EventDispatcherPluginDictComponent:RemoveListener(eventDispatcher, ...)
+	return self._eventDispatchersPluginDict:RemoveListener(eventDispatcher, ...)
+end
+
+function EventDispatcherPluginDictComponent:RemoveAllListeners()
+	return self._eventDispatchersPluginDict:RemoveAllListeners()
+end
+
+function EventDispatcherPluginDictComponent:Broadcast(eventDispatcher, eventName, ...)
+	self._eventDispatchersPluginDict:Broadcast(eventDispatcher, eventName, ...)
+end
+
+function EventDispatcherPluginDictComponent:_Reset()
+	AbstractComponent._Reset(self)
+	self:RemoveAllListeners()
+end
+
+function EventDispatcherPluginDictComponent:_Destroy()
+	AbstractComponent._Destroy(self)
+	self:RemoveAllListeners()
+end
+
+return EventDispatcherPluginDictComponent

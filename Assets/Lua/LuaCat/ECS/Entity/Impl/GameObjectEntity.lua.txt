@@ -19,7 +19,7 @@ end
 
 function GameObjectEntity:ApplyTransformComponent(transformComponent)
 	transformComponent = transformComponent or self._transformComponent
-	self:GetGraphicComponent():ApplyTransformComponent(self._transformComponent)
+	self:GetGraphicComponent():ApplyTransformComponent(transformComponent)
 end
 
 function GameObjectEntity:PostInit()
