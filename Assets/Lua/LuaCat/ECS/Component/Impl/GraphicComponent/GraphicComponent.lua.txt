@@ -38,6 +38,17 @@ function GraphicComponent:DestroyGameObject()
 	end
 end
 
+function GraphicComponent:ApplyTransformComponent(transformComponent)
+	if not self._transform then
+		return
+	end
+	self._transform:SetParent(transformComponent.parentTransform, self.gameObject.layer ~= LayerMask.NameToLayer("UI"))
+	self._transform.localPosition = transformComponent.localPosition
+	self._transform.localEulerAngles = transformComponent.localEulerAngles
+	self._transform.localScale = transformComponent.localScale
+end
+
+
 ----------------------------------------------------------------------
 -- prefab相关
 ----------------------------------------------------------------------
@@ -159,7 +170,7 @@ end
 ---@param scale number
 function GraphicComponent:SetScale(scale)
 	if self._transform then
-		self._transform.scale = scale
+		self._transform:SetLossyScale(scale)
 	end
 end
 

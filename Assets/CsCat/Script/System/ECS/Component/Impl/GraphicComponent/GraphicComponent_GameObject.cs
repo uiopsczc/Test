@@ -6,24 +6,24 @@ namespace CsCat
 {
 	public partial class GraphicComponent
 	{
-		public Transform parentTransform;
-		public GameObject gameObject;
-		private bool isHide = false;
-		private bool isNotDestroyGameObject;
+		private Transform _parentTransform;
+		private GameObject _gameObject;
+		private bool _isHide = false;
+		private bool _isNotDestroyGameObject;
+
+		public Transform _transform;
+
+		public RectTransform _rectTransform;
 
 
-		public Transform transform => cache.GetOrAddDefault(() => this.gameObject.transform);
-
-		public RectTransform rectTransform =>
-			cache.GetOrAddDefault(() => this.gameObject.GetComponent<RectTransform>());
 
 
 		public void SetParentTransform(Transform parentTransform)
 		{
-			this.parentTransform = parentTransform;
-			if (this.gameObject != null)
-				this.transform.SetParent(this.parentTransform,
-					!LayerMask.LayerToName(this.gameObject.layer).Equals("UI"));
+			this._parentTransform = parentTransform;
+			if (this._gameObject != null)
+				this._transform.SetParent(this._parentTransform,
+					!LayerMask.LayerToName(this._gameObject.layer).Equals("UI"));
 		}
 
 
@@ -34,9 +34,9 @@ namespace CsCat
 
 		public virtual void SetIsShow(bool isShow)
 		{
-			this.isHide = !isShow;
-			if (this.gameObject != null)
-				this.gameObject.SetActive(!this.isHide);
+			this._isHide = !isShow;
+			if (this._gameObject != null)
+				this._gameObject.SetActive(!this._isHide);
 		}
 
 		protected virtual void InitGameObjectChildren()
@@ -49,25 +49,95 @@ namespace CsCat
 		{
 			this.cache.Remove2(typeof(Transform).ToString());
 			this.cache.Remove2(typeof(RectTransform).ToString());
-			this.gameObject = gameObject;
+			this._gameObject = gameObject;
 			if (gameObject == null)
 				return;
 			if (isNotDestroyGameObject != null)
-				this.isNotDestroyGameObject = isNotDestroyGameObject.Value;
+				this._isNotDestroyGameObject = isNotDestroyGameObject.Value;
 			InitGameObjectChildren();
-			SetIsShow(!isHide);
+			SetIsShow(!_isHide);
 		}
 
 		public bool IsShow()
 		{
-			return !this.isHide;
+			return !this._isHide;
+		}
+
+		public Transform GetTransform()
+		{
+			_transform = cache.GetOrAddDefault(() => this._gameObject.transform);
+			return _transform;
+		}
+
+		public RectTransform GetRectTransform()
+		{
+			_rectTransform = cache.GetOrAddDefault(() => this._gameObject.GetComponent<RectTransform>());
+			return _rectTransform;
+		}
+
+		public Transform GetParentTransform()
+		{
+			return this._parentTransform;
+		}
+
+		public GameObject GetGameObject()
+		{
+			return this._gameObject;
+		}
+
+		public void SetPosition(Vector3 pos)
+		{
+			if (this._transform != null)
+				this._transform.position = pos;
+		}
+
+		public void SetEulerAngles(Vector3 eulerAngles)
+		{
+			if (this._transform != null)
+				this._transform.eulerAngles = eulerAngles;
+		}
+
+		public void SetRotation(Quaternion rotation)
+		{
+			if (this._transform != null)
+				this._transform.rotation = rotation;
 		}
 
 
+		public void SetScale(Vector3 scale)
+		{
+			if (this._transform != null)
+				this._transform.SetLossyScale(scale);
+		}
+
+		public void SetLocalPosition(Vector3 localPosition)
+		{
+			if (this._transform != null)
+				this._transform.localPosition = localPosition;
+		}
+
+		public void SetLocalEulerAngles(Vector3 localEulerAngles)
+		{
+			if (this._transform != null)
+				this._transform.localEulerAngles = localEulerAngles;
+		}
+
+		public void SetLocalRotation(Quaternion localRotation)
+		{
+			if (this._transform != null)
+				this._transform.localRotation = localRotation;
+		}
+
+		public void SetLocalScale(Vector3 localScale)
+		{
+			if (this._transform != null)
+				this._transform.localScale = localScale;
+		}
+
 		public virtual void DestroyGameObject()
 		{
-			if (this.gameObject != null && !isNotDestroyGameObject)
-				gameObject.Destroy();
+			if (this._gameObject != null && !_isNotDestroyGameObject)
+				_gameObject.Destroy();
 		}
 	}
 }

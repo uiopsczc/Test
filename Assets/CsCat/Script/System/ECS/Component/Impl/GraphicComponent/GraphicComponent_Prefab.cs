@@ -43,8 +43,8 @@ namespace CsCat
 				SetGameObject(clone, null);
 			}
 
-			if (this.parentTransform != null)
-				SetParentTransform(this.parentTransform);
+			if (this._parentTransform != null)
+				SetParentTransform(this._parentTransform);
 		}
 	}
 }

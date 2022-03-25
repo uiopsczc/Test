@@ -48,7 +48,7 @@ namespace CsCat
 			return this.transformComponent.GetLocalPosition();
 		}
 
-		public Vector3 SetLocalEulerAngles(Vector3 localEulerAngles)
+		public void SetLocalEulerAngles(Vector3 localEulerAngles)
 		{
 			this.transformComponent.SetLocalEulerAngles(localEulerAngles);
 			this.graphicComponent.SetLocalEulerAngles(localEulerAngles);
@@ -59,7 +59,7 @@ namespace CsCat
 			return this.transformComponent.GetLocalEulerAngles();
 		}
 
-		public void SetLocalRotation(Vector3 localRotation)
+		public void SetLocalRotation(Quaternion localRotation)
 		{
 			this.transformComponent.SetLocalRotation(localRotation);
 			this.graphicComponent.SetLocalRotation(localRotation);

@@ -30,8 +30,8 @@ namespace CsCat
 
 		public override void DestroyGameObject()
 		{
-			if (this.gameObject != null)
-				this.gameObject.Despawn();
+			if (this._gameObject != null)
+				this._gameObject.Despawn();
 		}
 
 		public GameObjectPoolCat GetEffectGameObjectPool(GameObject prefab)
@@ -52,7 +52,7 @@ namespace CsCat
 
 		public override bool IsCanUpdate()
 		{
-			return this.gameObject != null && base.IsCanUpdate();
+			return this._gameObject != null && base.IsCanUpdate();
 		}
 
 		protected override void _Update(float deltaTime = 0, float unscaledDeltaTime = 0)

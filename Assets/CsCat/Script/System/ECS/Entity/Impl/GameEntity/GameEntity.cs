@@ -46,15 +46,12 @@ namespace CsCat
 		protected override void _Reset()
 		{
 			base._Reset();
-			this.allAssetsLoadDoneCallback = null;
 		}
 
 
 		protected override void _Destroy()
 		{
 			base._Destroy();
-
-			eventDispatchers.RemoveAllListeners();
 			
 			coroutinePluginComponent = null;
 			pausableCoroutinePluginComponent = null;

@@ -183,7 +183,6 @@ end
 ----------------------------------------------------------------------
 function GameEntity:_Reset()
 	GameEntity.super._Reset(self)
-	self:RemoveAllListeners()
 end
 
 ----------------------------------------------------------------------
@@ -195,8 +194,6 @@ end
 ----------------------------------------------------------------------
 function GameEntity:_Destroy()
 	GameEntity.super._Destroy(self)
-	self:RemoveAllListeners()
-
 	self._parent = nil
 	self._coroutinePluginComponent = nil
 	self._timerManagerPluginComponent = nil

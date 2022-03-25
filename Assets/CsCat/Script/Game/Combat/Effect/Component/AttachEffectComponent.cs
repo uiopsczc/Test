@@ -40,7 +40,7 @@ namespace CsCat
 
 		void ChangeAttach(bool isAttach)
 		{
-			if (this.effectEntity.graphicComponent.gameObject == null)
+			if (this.effectEntity.graphicComponent._gameObject == null)
 				return;
 			if (this.isAttach == isAttach)
 				return;

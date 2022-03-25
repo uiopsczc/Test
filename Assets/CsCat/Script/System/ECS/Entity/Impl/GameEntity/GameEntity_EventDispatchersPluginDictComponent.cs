@@ -85,5 +85,10 @@ namespace CsCat
 		{
 			eventDispatchersPluginDictComponent.Broadcast(eventDispatchers, eventName, p0, p1, p2, p3);
 		}
+
+		public void RemoveAllListeners()
+		{
+			eventDispatchersPluginDictComponent.RemoveAllListeners();
+		}
 	}
 }

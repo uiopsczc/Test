@@ -550,6 +550,15 @@ namespace CsCat
 					: value / lossyScale.z);
 		}
 
+		public static void SetLossyScale(Transform transform, Vector3 value)
+		{
+			var lossyScale = GetLossyScaleOfParent(transform);
+			var valueX = Math.Abs(lossyScale.x) <= float.Epsilon ? 0 : value.x / lossyScale.x;
+			var valueY = Math.Abs(lossyScale.y) <= float.Epsilon ? 0 : value.y / lossyScale.y;
+			var valueZ = Math.Abs(lossyScale.z) <= float.Epsilon ? 0 : value.z / lossyScale.z;
+			transform.localScale = new Vector3(valueX, valueY, valueZ);
+		}
+
 		#endregion
 
 		#endregion

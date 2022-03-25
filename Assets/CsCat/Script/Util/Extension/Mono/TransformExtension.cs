@@ -533,11 +533,7 @@ namespace CsCat
 
 		public static void SetLossyScale(this Transform transform, Vector3 value)
 		{
-			Vector3 parentLossyScale = transform.GetLossyScaleOfParent();
-			transform.localScale = new Vector3(
-				Math.Abs(parentLossyScale.x) <= float.Epsilon ? 0 : value.x / parentLossyScale.x,
-				Math.Abs(parentLossyScale.y) <= float.Epsilon ? 0 : value.y / parentLossyScale.y,
-				Math.Abs(parentLossyScale.z) < float.Epsilon ? 0 : value.z / parentLossyScale.z);
+			TransformUtil.SetLossyScale(transform, value);
 		}
 
 		public static void CopyFrom(this Transform self, Transform from_transform,

@@ -10,8 +10,8 @@ namespace CsCat
 		public TransformComponent transformComponent;
 		public ResLoadComponent resLoadComponent;
 		public GraphicComponent graphicComponent;
-		public bool isAllAssetsLoadDone;
-		public Action allAssetsLoadDoneCallback;
+		private bool _isAllAssetsLoadDone;
+		private Action _allAssetsLoadDoneCallback;
 
 		public override void Init()
 		{
@@ -43,10 +43,10 @@ namespace CsCat
 
 		public void InvokeAfterAllAssetsLoadDone(Action callback)
 		{
-			if (isAllAssetsLoadDone)
+			if (_isAllAssetsLoadDone)
 				callback();
 			else
-				allAssetsLoadDoneCallback += callback;
+				_allAssetsLoadDoneCallback += callback;
 		}
 
 		// 通过resLoadComponent操作reload的东西
@@ -71,9 +71,9 @@ namespace CsCat
 		public virtual void OnAllAssetsLoadDone()
 		{
 			this.Broadcast(this.eventDispatchers, ECSEventNameConst.OnAllAssetsLoadDone);
-			isAllAssetsLoadDone = true;
-			allAssetsLoadDoneCallback?.Invoke();
-			allAssetsLoadDoneCallback = null;
+			_isAllAssetsLoadDone = true;
+			_allAssetsLoadDoneCallback?.Invoke();
+			_allAssetsLoadDoneCallback = null;
 		}
 
 		public GameObject InstantiateGameObject(GameObject prefab)
@@ -111,8 +111,8 @@ namespace CsCat
 		protected  override void _Reset()
 		{
 			base._Reset();
-			this.isAllAssetsLoadDone = false;
-			allAssetsLoadDoneCallback = null;
+			this._isAllAssetsLoadDone = false;
+			_allAssetsLoadDoneCallback = null;
 		}
 	}
 }

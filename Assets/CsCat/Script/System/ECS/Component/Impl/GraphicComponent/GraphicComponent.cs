@@ -1,3 +1,5 @@
+using UnityEngine;
+
 namespace CsCat
 {
 	public partial class GraphicComponent : GameComponent
@@ -12,6 +14,17 @@ namespace CsCat
 			this._gameObjectEntity = this.GetEntity<GameObjectEntity>();
 			this.AddListener(GetGameEntity().eventDispatchers, ECSEventNameConst.OnAllAssetsLoadDone,
 				OnAllAssetsLoadDone);
+		}
+
+		public void ApplyTransformComponent(TransformComponent transformComponent)
+		{
+			if (this._transform == null)
+				return;
+			this._transform.SetParent(transformComponent.GetParentTransform(),
+				this._gameObject.layer != LayerMask.NameToLayer("UI"));
+			this._transform.localPosition = transformComponent.GetLocalPosition();
+			this._transform.localEulerAngles = transformComponent.GetLocalEulerAngles();
+			this._transform.localScale = transformComponent.GetLocalScale();
 		}
 
 		protected override void _Reset()
@@ -30,14 +43,14 @@ namespace CsCat
 
 			resLoadComponentPlugin = null;
 
-			parentTransform = null;
-			gameObject = null;
-			isNotDestroyGameObject = false;
+			_parentTransform = null;
+			_gameObject = null;
+			_isNotDestroyGameObject = false;
 			prefab = null;
 			_prefabPath = null;
 			prefabAssetCat = null;
 			isLoadDone = false;
-			isHide = false;
+			_isHide = false;
 		}
 	}
 }
