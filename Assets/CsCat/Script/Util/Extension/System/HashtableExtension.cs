@@ -8,8 +8,12 @@ namespace CsCat
 		public static Dictionary<K, V> ToDict<K, V>(this Hashtable self)
 		{
 			Dictionary<K, V> dict = new Dictionary<K, V>();
-			foreach (var key in self.Keys)
-				dict[key.To<K>()] = self[key].To<V>();
+			foreach (DictionaryEntry dictionaryEntry in self)
+			{
+				var key = dictionaryEntry.Key.To<K>();
+				var value = dictionaryEntry.Value.To<V>();
+				dict[key] = value;
+			}
 			return dict;
 		}
 	}

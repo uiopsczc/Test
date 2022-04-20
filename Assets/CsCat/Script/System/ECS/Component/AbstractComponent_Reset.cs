@@ -4,11 +4,18 @@ namespace CsCat
 {
 	public partial class AbstractComponent
 	{
-		public Action resetCallback;
+		public Action preResetCallback;
+		public Action postResetCallback;
+
+		protected  virtual  void _PreReset()
+		{
+			preResetCallback?.Invoke();
+		}
 
 
 		public void Reset()
 		{
+			_PreReset();
 			_Reset();
 			_PostReset();
 		}
@@ -19,14 +26,15 @@ namespace CsCat
 
 		protected virtual void _PostReset()
 		{
-			resetCallback?.Invoke();
-			this.resetCallback = null;
+			postResetCallback?.Invoke();
+			this.postResetCallback = null;
 		}
 
 
 		void _OnDespawn_Reset()
 		{
-			resetCallback = null;
+			preResetCallback = null;
+			postResetCallback = null;
 		}
 	}
 }

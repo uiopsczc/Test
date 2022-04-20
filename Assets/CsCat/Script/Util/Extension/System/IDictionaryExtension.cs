@@ -6,6 +6,10 @@ namespace CsCat
 {
 	public static class IDictionaryExtension
 	{
+		public static T Get<T>(this IDictionary self, object key)
+		{
+			return self.Contains(key) ? self[key].To<T>() : default;
+		}
 
 		/// <summary>
 		///例子
@@ -21,8 +25,9 @@ namespace CsCat
 		public static V GetOrAddDefault2<V>(this IDictionary self, object key, Func<V> defaultValueFunc = null)
 		{
 			if (self.Contains(key)) return (V)self[key];
-			self[key] = defaultValueFunc == null ? default : defaultValueFunc();
-			return (V)self[key];
+			var result = defaultValueFunc == null ? default : defaultValueFunc();
+			self[key] = result;
+			return result;
 		}
 
 		public static V Remove3<V>(this IDictionary self, object key)
@@ -54,9 +59,10 @@ namespace CsCat
 		public static void Trim(this IDictionary self)
 		{
 			List<object> toRemoveKeyList = new List<object>();
-			foreach (var key in self.Keys)
+			foreach (DictionaryEntry dictionaryEntry in self)
 			{
-				var value = self[key];
+				var key = dictionaryEntry.Key;
+				var value = dictionaryEntry.Value;
 				switch (value)
 				{
 					//删除值为null的数值
@@ -64,39 +70,46 @@ namespace CsCat
 						toRemoveKeyList.Add(key);
 						break;
 					default:
-						{
-							if (value.IsNumber() && value.To<double>() == 0) //删除值为0的数值
-								toRemoveKeyList.Add(key);
-							else if (value.IsBool() && (bool)value == false) //删除值为false的逻辑值
-								toRemoveKeyList.Add(key);
-							else if (value.IsString() && ((string)value).IsNullOrWhiteSpace()) //删除值为空的字符串
-								toRemoveKeyList.Add(key);
-							else if (value is ICollection collection && collection.Count == 0) //删除为null的collection
-								toRemoveKeyList.Add(key);
-							else if (value is IDictionary dictionary)
-								Trim(dictionary);
-							break;
-						}
+					{
+						if (value.IsNumber() && value.To<double>() == 0) //删除值为0的数值
+							toRemoveKeyList.Add(key);
+						else if (value.IsBool() && (bool)value == false) //删除值为false的逻辑值
+							toRemoveKeyList.Add(key);
+						else if (value.IsString() && ((string)value).IsNullOrWhiteSpace()) //删除值为空的字符串
+							toRemoveKeyList.Add(key);
+						else if (value is ICollection collection && collection.Count == 0) //删除为null的collection
+							toRemoveKeyList.Add(key);
+						else if (value is IDictionary dictionary)
+							Trim(dictionary);
+						break;
+					}
 				}
 			}
 
-			foreach (var toRemoveKey in toRemoveKeyList)
+			for (var i = 0; i < toRemoveKeyList.Count; i++)
+			{
+				var toRemoveKey = toRemoveKeyList[i];
 				self.Remove(toRemoveKey);
+			}
 		}
 
 		//删除值为null值、0数值、false逻辑值、空字符串、空集合等数据项
 		public static Hashtable ToHashtable(this IDictionary self)
 		{
 			Hashtable result = new Hashtable();
-			foreach (var key in self.Keys)
+			foreach (DictionaryEntry dictionaryEntry in self)
+			{
+				var key = dictionaryEntry;
 				result[key] = self[key];
+			}
 			return result;
 		}
 
 		public static void Combine(this IDictionary self, IDictionary another)
 		{
-			foreach (var anotherKey in another.Keys)
+			foreach (DictionaryEntry anotherDictionaryEntry in another)
 			{
+				var anotherKey = anotherDictionaryEntry.Key;
 				if (!self.Contains(anotherKey))
 					self[anotherKey] = another[anotherKey];
 			}
@@ -105,14 +118,19 @@ namespace CsCat
 		public static void RemoveByFunc(this IDictionary self, Func<object, object, bool> func)
 		{
 			List<object> toRemoveKeyList = new List<object>();
-			foreach (var key in self.Keys)
+			foreach (DictionaryEntry dictionaryEntry in self)
 			{
-				if (func(key, self[key]))
+				var key = dictionaryEntry.Key;
+				var value = dictionaryEntry.Value;
+				if (func(key, value))
 					toRemoveKeyList.Add(key);
 			}
 
-			foreach (var toRemoveKey in toRemoveKeyList)
+			for (var i = 0; i < toRemoveKeyList.Count; i++)
+			{
+				var toRemoveKey = toRemoveKeyList[i];
 				self.Remove(toRemoveKey);
+			}
 		}
 
 		//////////////////////////////////////////////////////////////////////

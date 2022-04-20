@@ -18,35 +18,53 @@ namespace CsCat
 			var diff = new LinkedHashtable();
 			foreach (DictionaryEntry dictionaryEntry in newDict)
 			{
-				var newK = dictionaryEntry.Key;
-				var newV = dictionaryEntry.Value;
-				if (newV is IDictionary newVDict)
+				var newKey = dictionaryEntry.Key;
+				var newValue = dictionaryEntry.Value;
+				bool isOldDictContainsNewKey = oldDict.Contains(newKey);
+				var oldValue = isOldDictContainsNewKey ? oldDict[newKey] : null;
+				if (newValue is IDictionary newValueDict)
 				{
-					switch (newVDict.Count)
+					int newValueDictCount = newValueDict.Count;
+					if (newValueDictCount == 0)
 					{
-						case 0 when (!oldDict.Contains(newK) || oldDict[newK].GetType() != newVDict.GetType() ||
-									 (oldDict[newK] is IDictionary &&
-									  ((IDictionary)oldDict[newK]).Count != 0)):
-							diff[newK] = StringConst.String_New_In_Table + newVDict.GetType();
-							break;
-						default:
-							{
-								if (oldDict.Contains(newK) && oldDict[newK] is IDictionary)
-									diff[newK] = GetDiff((IDictionary)oldDict[newK], newVDict);
-								else if (!oldDict.Contains(newK) || !newVDict.Equals(oldDict[newK]))
-									diff[newK] = CloneUtil.CloneDeep(newV);
-								break;
-							}
+						if ((!isOldDictContainsNewKey) || oldValue.GetType() != newValueDict.GetType() ||
+						    (oldValue is IDictionary oldValueDict &&
+						     (oldValueDict.Count != 0)))
+						{
+							diff[newKey] = StringConst.String_New_In_Table + newValueDict.GetType();
+							continue;
+						}
+					}
+
+					if (isOldDictContainsNewKey && oldValue is IDictionary oldValueDict2)
+					{
+						diff[newKey] = GetDiff(oldValueDict2, newValueDict);
+						continue;
+					}
+
+					if (!isOldDictContainsNewKey || !newValueDict.Equals(oldValue))
+					{
+						diff[newKey] = CloneUtil.CloneDeep(newValue);
+						continue;
 					}
 				}
-				else if (newV is IList list && oldDict.Contains(newK) && oldDict[newK] is IList)
-					diff[newK] = ListUtil.GetDiff((IList)oldDict[newK], list);
-				else if (!oldDict.Contains(newK) || !newV.Equals(oldDict[newK]))
-					diff[newK] = newV;
+
+				if (newValue is IList list && isOldDictContainsNewKey && oldValue is IList oldValueList)
+				{
+					diff[newKey] = ListUtil.GetDiff(oldValueList, list);
+					continue;
+				}
+
+				if (!isOldDictContainsNewKey || !newValue.Equals(oldValue))
+				{
+					diff[newKey] = newValue;
+					continue;
+				}
 			}
 
-			foreach (var key in oldDict.Keys)
+			foreach (DictionaryEntry oldDictionaryEntry in oldDict)
 			{
+				var key = oldDictionaryEntry.Key;
 				if (!newDict.Contains(key))
 					diff[key] = StringConst.String_Nil_In_Table;
 			}
@@ -67,22 +85,40 @@ namespace CsCat
 
 			foreach (DictionaryEntry dictionaryEntry in diffDict)
 			{
-				var k = dictionaryEntry.Key;
-				var v = dictionaryEntry.Value;
-				if (v.Equals(StringConst.String_Nil_In_Table))
-					oldDict.Remove(k);
-				else if (v.ToString().StartsWith(StringConst.String_New_In_Table))
+				var key = dictionaryEntry.Key;
+				var value = dictionaryEntry.Value;
+				if (StringConst.String_Nil_In_Table.Equals(value))
 				{
-					string typeString = v.ToString().Substring(StringConst.String_New_In_Table.Length);
-					Type type = TypeUtil.GetType(typeString);
-					oldDict[k] = type.CreateInstance<object>();
+					oldDict.Remove(key);
+					continue;
 				}
-				else if (oldDict.Contains(k) && oldDict[k] is IDictionary && v is LinkedHashtable hashtable)
-					ApplyDiff((IDictionary)oldDict[k], hashtable);
-				else if (oldDict.Contains(k) && oldDict[k] is IList && v is LinkedHashtable linkedHashtable)
-					oldDict[k] = ListUtil.ApplyDiff((IList)oldDict[k], linkedHashtable);
-				else
-					oldDict[k] = v;
+
+				var valueString = value.ToString();
+				if (valueString.StartsWith(StringConst.String_New_In_Table))
+				{
+					string typeString = valueString.Substring(StringConst.String_New_In_Table.Length);
+					Type type = TypeUtil.GetType(typeString);
+					oldDict[key] = type.CreateInstance<object>();
+					continue;
+				}
+
+				if (oldDict.Contains(key))
+				{
+					var oldValue = oldDict[key];
+					if (oldValue is IDictionary oldValueDict && value is LinkedHashtable hashtable)
+					{
+						ApplyDiff(oldValueDict, hashtable);
+						continue;
+					}
+
+					if (oldValue is IList oldValueList && value is LinkedHashtable linkedHashtable)
+					{
+						oldDict[key] = ListUtil.ApplyDiff(oldValueList, linkedHashtable);
+						continue;
+					}
+				}
+
+				oldDict[key] = value;
 			}
 		}
 
@@ -102,10 +138,11 @@ namespace CsCat
 					diff[newK] = newV;
 				else
 				{
-					if (newV is IDictionary dictionary && oldDict[newK] is IDictionary)
-						diff[newK] = GetNotExist((IDictionary)oldDict[newK], dictionary);
-					else if (newV is IList list && oldDict[newK] is IList)
-						diff[newK] = ListUtil.GetNotExist((IList)oldDict[newK], list);
+					var oldValue = oldDict[newK];
+					if (newV is IDictionary dictionary && oldValue is IDictionary dictionary1)
+						diff[newK] = GetNotExist(dictionary1, dictionary);
+					else if (newV is IList list && oldValue is IList list1)
+						diff[newK] = ListUtil.GetNotExist(list1, list);
 					//其他情况不用处理
 				}
 			}
@@ -116,8 +153,9 @@ namespace CsCat
 		//两个table是否不一样
 		public static bool IsDiff(IDictionary oldDict, IDictionary newDict)
 		{
-			foreach (var key in oldDict.Keys)
+			foreach (DictionaryEntry dictionaryEntry in oldDict)
 			{
+				var key = dictionaryEntry.Key;
 				if (!newDict.Contains(key))
 					return true;
 			}
@@ -128,26 +166,27 @@ namespace CsCat
 				var newValue = dictionaryEntry.Value;
 				if (!oldDict.Contains(newKey))
 					return false;
+				var oldValue = oldDict[newKey];
 				switch (newValue)
 				{
-					case IDictionary dictionary when !(oldDict[newKey] is IDictionary):
+					case IDictionary _ when !(oldValue is IDictionary):
 						return false;
-					case IDictionary dictionary when IsDiff((IDictionary)oldDict[newKey], dictionary):
+					case IDictionary dictionary when IsDiff((IDictionary) oldValue, dictionary):
 						return true;
-					case IDictionary dictionary:
+					case IDictionary _:
 						break;
-					case IList list when !(oldDict[newKey] is IList):
+					case IList _ when !(oldValue is IList):
 						return false;
-					case IList list when ListUtil.IsDiff(oldDict[newKey] as IList, list):
+					case IList list when ListUtil.IsDiff(oldValue as IList, list):
 						return true;
-					case IList list:
+					case IList _:
 						break;
 					default:
-						{
-							if (!newValue.Equals(oldDict[newKey]))
-								return true;
-							break;
-						}
+					{
+						if (!newValue.Equals(oldDict[newKey]))
+							return true;
+						break;
+					}
 				}
 			}
 

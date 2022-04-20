@@ -55,15 +55,16 @@ namespace CsCat
 
 				if (self is IDictionary dictionary)
 				{
-					foreach (var key in dictionary.Keys)
+					foreach (DictionaryEntry dictionaryEntry in dictionary)
 					{
+						var key = dictionaryEntry.Key;
+						var value = dictionaryEntry.Value;
 						if (isFirst)
 							isFirst = false;
 						else
 							scope.stringBuilder.Append(StringConst.String_Comma);
 						scope.stringBuilder.Append(key.ToString2(isFillStringWithDoubleQuote));
 						scope.stringBuilder.Append(StringConst.String_Colon);
-						object value = dictionary[key];
 						scope.stringBuilder.Append(value.ToString2(isFillStringWithDoubleQuote));
 					}
 				}

@@ -1,7 +1,5 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Windows.Forms.VisualStyles;
 
 namespace CsCat
 {
@@ -20,7 +18,8 @@ namespace CsCat
 		/// <returns></returns>
 		public static V GetOrAddDefault<K, V>(this IDictionary<K, V> self, K key, Func<V> defaultValueFunc = null)
 		{
-			if (self.ContainsKey(key)) return self[key];
+			if (self.TryGetValue(key, out var result))
+				return result;
 			self[key] = defaultValueFunc == null ? default : defaultValueFunc();
 			return self[key];
 		}
@@ -35,23 +34,27 @@ namespace CsCat
 		/// <returns></returns>
 		public static V GetOrGetDefault<K, V>(this IDictionary<K, V> self, K key, Func<V> defaultValueFunc = null)
 		{
-			return self == null || !self.ContainsKey(key)
-				? defaultValueFunc == null ? default : defaultValueFunc()
-				: self[key];
+			if (self != null && self.TryGetValue(key, out var result))
+				return result;
+			return defaultValueFunc == null ? default : defaultValueFunc();
 		}
 
 
 		public static void RemoveByFunc<K, V>(this IDictionary<K, V> self, Func<K, V, bool> func)
 		{
 			List<K> toRemoveKeyList = new List<K>();
-			foreach (var key in self.Keys)
+			foreach (var keyValue in self)
 			{
-				if (func(key, self[key]))
+				var key = keyValue.Key;
+				var value = keyValue.Value;
+				if (func(key, value))
 					toRemoveKeyList.Add(key);
 			}
-
-			foreach (var toRemoveKey in toRemoveKeyList)
+			for (var i = 0; i < toRemoveKeyList.Count; i++)
+			{
+				var toRemoveKey = toRemoveKeyList[i];
 				self.Remove(toRemoveKey);
+			}
 		}
 
 		public static void RemoveByValue<K, V>(this IDictionary<K, V> self, V value, bool isAll = false)
@@ -60,53 +63,53 @@ namespace CsCat
 			if (isAll == false)
 			{
 				K toRemoveKey = default;
-				foreach (var key in self.Keys)
+				foreach (var keyValue in self)
 				{
-					if (!ObjectUtil.Equals(self[key], value)) continue;
+					if (!ObjectUtil.Equals(keyValue.Value, value)) continue;
 					isHasRemoveKey = true;
-					toRemoveKey = key;
+					toRemoveKey = keyValue.Key;
 					break;
 				}
-
 				if (isHasRemoveKey)
 					self.Remove(toRemoveKey);
 				return;
 			}
-			List<K> toRemoveKeyList = new List<K>(self.Count);
-			foreach (var key in self.Keys)
+			List<K> toRemoveKeyList = new List<K>();
+			foreach (var keyValue in self)
 			{
-				if (ObjectUtil.Equals(self[key], value))
-					toRemoveKeyList.Add(key);
+				if (ObjectUtil.Equals(keyValue.Value, value))
+					toRemoveKeyList.Add(keyValue.Key);
 			}
-			foreach (var toRemoveKey in toRemoveKeyList)
+			for (var i = 0; i < toRemoveKeyList.Count; i++)
+			{
+				var toRemoveKey = toRemoveKeyList[i];
 				self.Remove(toRemoveKey);
+			}
 		}
 
 		public static void RemoveAllAndClear<K, V>(this IDictionary<K, V> self, Action<K, V> onRemoveAction)
 		{
-			foreach (var key in self.Keys)
-				onRemoveAction(key, self[key]);
+			foreach (var keyValue in self)
+				onRemoveAction(keyValue.Key, keyValue.Value);
 			self.Clear();
 		}
 
 
 		public static V Remove2<K, V>(this IDictionary<K, V> self, K key)
 		{
-			if (!self.ContainsKey(key))
-				return default;
-
-			V result = self[key];
-			self.Remove(key);
-			return result;
+			if (self.TryGetValue(key, out var result))
+			{
+				self.Remove(key);
+				return result;
+			}
+			return default;
 		}
-
-
-
 
 		public static void Combine<K, V>(this IDictionary<K, V> self, IDictionary<K, V> another)
 		{
-			foreach (var anotherKey in another.Keys)
+			foreach (var anotherKeyValue in another)
 			{
+				var anotherKey = anotherKeyValue.Key;
 				if (!self.ContainsKey(anotherKey))
 					self[anotherKey] = another[anotherKey];
 			}
@@ -125,20 +128,13 @@ namespace CsCat
 			return self.RandomList(1, false, randomManager)[0];
 		}
 
-		public static T Get<T>(this IDictionary self, object key)
-		{
-			return self.Contains(key) ? self[key].To<T>() : default;
-		}
-
-
-
-
 		public static K FindKey<K, V>(this IDictionary<K, V> self, K key)
 		{
-			foreach (var k in self.Keys)
-				if (k.Equals(key))
-					return k;
-
+			foreach (var keyValue in self)
+			{
+				if (keyValue.Key.Equals(key))
+					return keyValue.Key;
+			}
 			return default;
 		}
 	}

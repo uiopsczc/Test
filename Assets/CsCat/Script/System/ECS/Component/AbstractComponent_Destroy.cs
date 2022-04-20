@@ -5,13 +5,18 @@ namespace CsCat
 	public partial class AbstractComponent
 	{
 		private bool _isDestroyed;
-		public Action destroyCallback;
+		public Action preDestroyCallback;
+		public Action postDestroyCallback;
 
 		public bool IsDestroyed()
 		{
 			return this._isDestroyed;
 		}
 
+		public void _PreDestroy()
+		{
+			preDestroyCallback?.Invoke();
+		}
 
 		public void Destroy()
 		{
@@ -19,20 +24,20 @@ namespace CsCat
 				return;
 			SetIsEnabled(false);
 			SetIsPaused(false);
+			_PreDestroy();
 			_Destroy();
-			_isDestroyed = true;
 			_PostDestroy();
+			_isDestroyed = true;
 			cache.Clear();
+		}
+
+		protected  virtual  void _PostDestroy()
+		{
+			postDestroyCallback?.Invoke();
 		}
 
 		protected virtual void _Destroy()
 		{
-		}
-
-		protected virtual void _PostDestroy()
-		{
-			destroyCallback?.Invoke();
-			destroyCallback = null;
 		}
 
 
@@ -48,7 +53,8 @@ namespace CsCat
 		void _OnDespawn_Destroy()
 		{
 			_isDestroyed = false;
-			destroyCallback = null;
+			preDestroyCallback = null;
+			postDestroyCallback = null;
 		}
 	}
 }

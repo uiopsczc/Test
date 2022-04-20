@@ -211,8 +211,9 @@ namespace CsCat
 				return self;
 			}
 
-			foreach (var element in list)
+			for (var i = 0; i < list.Count; i++)
 			{
+				var element = list[i];
 				if (self.Contains(element))
 					continue;
 				self.Add(element);
@@ -229,8 +230,9 @@ namespace CsCat
 				return self;
 			}
 
-			foreach (var element in array)
+			for (var i = 0; i < array.Length; i++)
 			{
+				var element = array[i];
 				if (self.Contains(element))
 					continue;
 				self.Add(element);
@@ -392,8 +394,9 @@ namespace CsCat
 			where T : ICopyable
 		{
 			destList.Clear();
-			foreach (var element in self)
+			for (var i = 0; i < self.Count; i++)
 			{
+				var element = self[i];
 				var destElement = typeof(T).CreateInstance<T>(constructArgs);
 				destList.Add(destElement);
 				element.CopyTo(destElement);
@@ -404,8 +407,9 @@ namespace CsCat
 			where T : ICopyable
 		{
 			self.Clear();
-			foreach (var element in sourceList)
+			for (var i = 0; i < sourceList.Count; i++)
 			{
+				var element = sourceList[i];
 				var selfElement = typeof(T).CreateInstance<T>(constructArgs);
 				self.Add(selfElement);
 				selfElement.CopyFrom(element);
@@ -415,8 +419,9 @@ namespace CsCat
 		public static ArrayList DoSaveList<T>(this List<T> self, Action<T, Hashtable> doSaveCallback)
 		{
 			ArrayList result = new ArrayList();
-			foreach (var element in self)
+			for (var i = 0; i < self.Count; i++)
 			{
+				var element = self[i];
 				Hashtable elementDict = new Hashtable();
 				result.Add(elementDict);
 				doSaveCallback(element, elementDict);
@@ -428,8 +433,9 @@ namespace CsCat
 		public static void DoRestoreList<T>(this List<T> self, ArrayList arrayList,
 			Func<Hashtable, T> doRestoreCallback)
 		{
-			foreach (var element in arrayList)
+			for (var i = 0; i < arrayList.Count; i++)
 			{
+				var element = arrayList[i];
 				var elementDict = element as Hashtable;
 				T elementT = doRestoreCallback(elementDict);
 				self.Add(elementT);
