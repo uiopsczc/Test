@@ -6,24 +6,37 @@ namespace CsCat
 	public partial class AbstractEntity
 	{
 		private bool _isDestroyed;
-		public Action destroyCallback;
+		public Action preDestroyCallback;
+		public Action postDestroyCallback;
 
 		public bool IsDestroyed()
 		{
 			return _isDestroyed;
 		}
 
-		public void Destroy()
+		public void DoDestroy()
 		{
 			if (IsDestroyed())
 				return;
+			PreDestroy();
+			Destroy();
+			PostDestroy();
+		}
+
+		protected void PreDestroy()
+		{
+			preDestroyCallback?.Invoke();
+			preDestroyCallback = null;
+		}
+
+		protected void Destroy()
+		{
 			RemoveAllChildren();
 			SetIsEnabled(false, false);
 			SetIsPaused(false, false);
 			RemoveAllComponents();
 			_Destroy();
 			_isDestroyed = true;
-			_PostDestroy();
 			cache.Clear();
 		}
 
@@ -31,27 +44,19 @@ namespace CsCat
 		{
 		}
 
-		protected virtual void _PostDestroy()
+		protected void PostDestroy()
 		{
-			destroyCallback?.Invoke();
-			destroyCallback = null;
+			postDestroyCallback?.Invoke();
+			postDestroyCallback = null;
 		}
 
-		public virtual void OnDespawn()
-		{
-			_OnDespawn_();
-			_OnDespawn_Child();
-			_OnDespawn_Component();
-			_OnDespawn_Destroy();
-			_OnDespawn_Enable();
-			_OnDespawn_Pause();
-			_OnDespawn_Reset();
-		}
+		
 
 		void _OnDespawn_Destroy()
 		{
 			_isDestroyed = false;
-			destroyCallback = null;
+			preDestroyCallback = null;
+			postDestroyCallback = null;
 		}
 	}
 }

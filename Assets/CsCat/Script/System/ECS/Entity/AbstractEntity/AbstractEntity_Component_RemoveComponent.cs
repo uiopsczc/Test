@@ -5,57 +5,57 @@ namespace CsCat
 {
 	public partial class AbstractEntity
 	{
-		public AbstractComponent RemoveComponent(AbstractComponent component)
+		public bool RemoveComponent(AbstractComponent component)
 		{
 			if (component.IsDestroyed())
-				return null;
-			component.Destroy();
-			if (!this.isNotDeleteComponentRelationShipImmediately)
-			{
-				_RemoveComponentRelationship(component);
-				_DespawnComponentKey(component);
-				component.Despawn();
-			}
-			else
-				this._MarkHasDestroyedComponent();
-
-			return component;
+				return false;
+			component.DoDestroy();
+			_RemoveComponentRelationship(component);
+			_DespawnComponentKey(component);
+			component.Despawn();
+			return true;
 		}
 
-		public AbstractComponent RemoveComponent(string componentKey)
+		public bool RemoveComponent(string componentKey)
 		{
 			if (!this.keyToComponentDict.ContainsKey(componentKey))
-				return null;
+				return false;
 			return RemoveComponent(this.keyToComponentDict[componentKey]);
 		}
 
-		public AbstractComponent RemoveComponent(Type componentType)
+		public bool RemoveComponent(Type componentType)
 		{
 			var component = this.GetComponent(componentType);
 			if (component != null)
+			{
 				this.RemoveComponent(component);
-			return component;
+				return true;
+			}
+			return false;
 		}
 
-		public T RemoveComponent<T>() where T : AbstractComponent
+		public bool RemoveComponent<T>() where T : AbstractComponent
 		{
-			return RemoveComponent(typeof(T)) as T;
+			return RemoveComponent(typeof(T));
 		}
 
-		public AbstractComponent RemoveComponentStrictly(Type componentType)
+		public bool RemoveComponentStrictly(Type componentType)
 		{
 			var component = this.GetComponentStrictly(componentType);
 			if (component != null)
+			{
 				RemoveComponent(component);
-			return component;
+				return true;
+			}
+			return false;
 		}
 
-		public T RemoveComponentStrictly<T>() where T : AbstractComponent
+		public bool RemoveComponentStrictly<T>() where T : AbstractComponent
 		{
-			return (T)RemoveComponentStrictly(typeof(T));
+			return RemoveComponentStrictly(typeof(T));
 		}
 
-		public AbstractComponent[] RemoveComponents(Type componentType)
+		public bool RemoveComponents(Type componentType)
 		{
 			var components = this.GetComponents(componentType);
 			if (!components.IsNullOrEmpty())
@@ -65,18 +65,19 @@ namespace CsCat
 					var component = components[i];
 					this.RemoveComponent(component);
 				}
+				return true;
 			}
 
-			return components;
+			return false;
 		}
 
-		public T[] RemoveComponents<T>() where T : AbstractComponent
+		public bool RemoveComponents<T>() where T : AbstractComponent
 		{
-			return (T[])RemoveComponents(typeof(T));
+			return RemoveComponents(typeof(T));
 		}
 
 
-		public AbstractComponent[] RemoveComponentsStrictly(Type componentType)
+		public bool RemoveComponentsStrictly(Type componentType)
 		{
 			var components = this.GetComponentsStrictly(componentType);
 			if (!components.IsNullOrEmpty())
@@ -86,49 +87,28 @@ namespace CsCat
 					var component = components[i];
 					this.RemoveComponent(component);
 				}
+				return true;
 			}
-
-			return components;
+			return false;
 		}
 
-		public T[] RemoveComponentsStrictly<T>() where T : AbstractComponent
+		public bool RemoveComponentsStrictly<T>() where T : AbstractComponent
 		{
-			return (T[])RemoveComponentsStrictly(typeof(T));
+			return RemoveComponentsStrictly(typeof(T));
 		}
 
 		public void RemoveAllComponents()
 		{
-			var toRemoveComponentKeyList = PoolCatManagerUtil.Spawn<List<string>>();
-			toRemoveComponentKeyList.Capacity = this.componentKeyList.Count;
-			toRemoveComponentKeyList.AddRange(componentKeyList);
-			for (var i = 0; i < toRemoveComponentKeyList.Count; i++)
+			for (var i = 0; i < componentKeyList.Count; i++)
 			{
-				var componentKey = toRemoveComponentKeyList[i];
-				RemoveComponent(componentKey);
+				var componentKey = componentKeyList[i];
+				if (RemoveComponent(componentKey))
+					i--;
 			}
-
-			toRemoveComponentKeyList.Clear();
-			PoolCatManagerUtil.Despawn(toRemoveComponentKeyList);
 		}
 
 		////////////////////////////////////////////////////////////////////
-		private void _MarkHasDestroyedComponent()
-		{
-			if (!this.isHasDestroyedComponent)
-			{
-				this.isHasDestroyedComponent = true;
-				_parent?._MarkHasDestroyedChildComponent();
-			}
-		}
-
-		private void _MarkHasDestroyedChildComponent()
-		{
-			if (!this.isHasDestroyedChildComponent)
-			{
-				this.isHasDestroyedChildComponent = true;
-				_parent?._MarkHasDestroyedChildComponent();
-			}
-		}
+		
 
 		private void _RemoveComponentRelationship(AbstractComponent component)
 		{
@@ -148,14 +128,12 @@ namespace CsCat
 
 
 		//主要作用是将IsDestroyed的Component从component_list中删除,配合Foreach的GetComponents使用
-		private void __CheckDestroyedComponents()
+		private void _CheckDestroyedComponents()
 		{
-			string componentKey;
-			AbstractComponent component;
 			for (int i = componentKeyList.Count - 1; i >= 0; i--)
 			{
-				componentKey = componentKeyList[i];
-				component = keyToComponentDict[componentKey];
+				var componentKey = componentKeyList[i];
+				var component = keyToComponentDict[componentKey];
 				if (component.IsDestroyed())
 				{
 					_RemoveComponentRelationship(component);

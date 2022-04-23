@@ -15,12 +15,18 @@ namespace CsCat
 				return;
 			if (isLoopChildren)
 			{
-				foreach (var child in ForeachChild())
-					child.SetIsEnabled(isEnabled);
+				for (int i = 0; i < childKeyList.Count; i++)
+				{
+					var child = GetChild(childKeyList[i]);
+					child?.SetIsEnabled(isEnabled);
+				}
 			}
 
-			foreach (var component in ForeachComponent())
-				component.SetIsEnabled(isEnabled);
+			for (int i = 0; i < componentKeyList.Count; i++)
+			{
+				var component = GetComponent(componentKeyList[i]);
+				component?.SetIsEnabled(isEnabled);
+			}
 			_isEnabled = isEnabled;
 			_SetIsEnabled(isEnabled);
 			if (isEnabled)
@@ -39,6 +45,11 @@ namespace CsCat
 
 		protected virtual void OnDisable()
 		{
+		}
+
+		void _OnReset_Enable()
+		{
+			_isEnabled = false;
 		}
 
 		void _OnDespawn_Enable()

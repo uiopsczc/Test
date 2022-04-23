@@ -43,9 +43,7 @@ namespace CsCat
 				LogCat.error("duplicate add child:{0}", child.key, child.GetType());
 				return null;
 			}
-
-			child._parent = this;
-			__AddChildRelationship(child);
+			_AddChildRelationship(child);
 			return child;
 		}
 
@@ -66,8 +64,9 @@ namespace CsCat
 		}
 
 
-		void __AddChildRelationship(AbstractEntity child)
+		void _AddChildRelationship(AbstractEntity child)
 		{
+			child.parent = this;
 			keyToChildDict[child.key] = child;
 			typeToChildListDict.GetOrAddDefault(child.GetType(), () => PoolCatManagerUtil.Spawn<List<AbstractEntity>>())
 				.Add(child);

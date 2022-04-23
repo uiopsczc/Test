@@ -5,43 +5,65 @@ namespace CsCat
 {
 	public partial class AbstractEntity
 	{
-		public Action resetCallback;
+		public Action preResetCallback;
+		public Action postResetCallback;
 
+		public void DoReset(bool isLoopChildren = false)
+		{
+			PreReset();
+			Reset(isLoopChildren);
+			PostReset();
+		}
 
-		public void Reset(bool isLoopChildren = false)
+		protected virtual void PreReset()
+		{
+			preResetCallback?.Invoke();
+			preResetCallback = null;
+		}
+
+		protected void Reset(bool isLoopChildren = false)
 		{
 			if (isLoopChildren)
 				ResetAllChildren();
 			ResetAllComponents();
+			_OnReset_Enable();
+			_OnReset_Pause();
+			_OnReset_Update();
 			_Reset();
-			_PostReset();
 		}
 
 		protected virtual void _Reset()
 		{
 		}
 
-		protected virtual void _PostReset()
+		protected virtual void PostReset()
 		{
-			resetCallback?.Invoke();
-			resetCallback = null;
+			postResetCallback?.Invoke();
+			postResetCallback = null;
 		}
 
 		public void ResetAllChildren()
 		{
-			foreach (var child in ForeachChild())
-				child.Reset(true);
+			for (int i = 0; i < childKeyList.Count; i++)
+			{
+				var child = GetChild(childKeyList[i]);
+				child?.Reset(true);
+			}
 		}
 
 		public void ResetAllComponents()
 		{
-			foreach (var component in ForeachComponent())
-				component.Reset();
+			for (int i = 0; i < componentKeyList.Count; i++)
+			{
+				var component = GetComponent(componentKeyList[i]);
+				component?.DoReset();
+			}
 		}
 
 		void _OnDespawn_Reset()
 		{
-			resetCallback = null;
+			preResetCallback = null;
+			postResetCallback = null;
 		}
 	}
 }

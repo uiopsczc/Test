@@ -31,13 +31,13 @@ namespace CsCat
 		{
 			return GetEntity<GameEntity>();
 		}
+		
 
 		void _OnDespawn_()
 		{
 			key = null;
 			entity = null;
 			isKeyUsingParentIdPool = false;
-			cache.Clear();
 		}
 	}
 }

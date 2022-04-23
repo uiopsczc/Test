@@ -30,9 +30,6 @@ namespace CsCat
 
 			component.key = componentKey;
 			component.isKeyUsingParentIdPool = isKeyUsingParentIdPool;
-			component.entity = this;
-
-
 			_AddComponentRelationship(component);
 			return component;
 		}
@@ -59,13 +56,14 @@ namespace CsCat
 			return component;
 		}
 
-		public T AddComponent<T>(string componentKey, params object[] init_args) where T : AbstractComponent
+		public T AddComponent<T>(string componentKey, params object[] initArgs) where T : AbstractComponent
 		{
-			return AddComponent(componentKey, typeof(T), init_args) as T;
+			return AddComponent(componentKey, typeof(T), initArgs) as T;
 		}
 
 		void _AddComponentRelationship(AbstractComponent component)
 		{
+			component.entity = this;
 			keyToComponentDict[component.key] = component;
 			typeToComponentListDict.GetOrAddDefault(component.GetType(),
 					() => PoolCatManagerUtil.Spawn<List<AbstractComponent>>())

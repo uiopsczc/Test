@@ -5,60 +5,60 @@ namespace CsCat
 {
 	public partial class AbstractEntity
 	{
-		public AbstractEntity RemoveChild(AbstractEntity child)
+		public bool RemoveChild(AbstractEntity child)
 		{
 			if (child.IsDestroyed())
-				return null;
+				return false;
 
-			child.Destroy();
-			if (!this.isNotDeleteChildRelationshipImmediately)
-			{
-				_RemoveChildRelationship(child);
-				_DespawnChildKey(child);
-				child.Despawn();
-			}
-			else
-				_MarkHasDestroyedChild();
-
-			return child;
+			child.DoDestroy();
+			_RemoveChildRelationship(child);
+			_DespawnChildKey(child);
+			child.Despawn();
+			return true;
 		}
 
-		public AbstractEntity RemoveChild(string childKey)
+		public bool RemoveChild(string childKey)
 		{
 			if (!keyToChildDict.ContainsKey(childKey))
-				return null;
+				return false;
 			var child = keyToChildDict[childKey];
 			return RemoveChild(child);
 		}
 
 
-		public AbstractEntity RemoveChild(Type childType)
+		public bool RemoveChild(Type childType)
 		{
 			var child = this.GetChild(childType);
 			if (child != null)
+			{
 				this.RemoveChild(child);
-			return child;
+				return true;
+			}
+			return false;
 		}
 
-		public T RemoveChild<T>() where T : AbstractEntity
+		public bool RemoveChild<T>() where T : AbstractEntity
 		{
-			return RemoveChild(typeof(T)) as T;
+			return RemoveChild(typeof(T));
 		}
 
-		public AbstractEntity RemoveChildStrictly(Type childType)
+		public bool RemoveChildStrictly(Type childType)
 		{
 			var child = this.GetChildStrictly(childType);
 			if (child != null)
+			{
 				RemoveChild(child);
-			return child;
+				return true;
+			}
+			return false;
 		}
 
-		public T RemoveChildStrictly<T>() where T : AbstractEntity
+		public bool RemoveChildStrictly<T>() where T : AbstractEntity
 		{
-			return (T)RemoveChildStrictly(typeof(T));
+			return RemoveChildStrictly(typeof(T));
 		}
 
-		public AbstractEntity[] RemoveChildren(Type childType)
+		public bool RemoveChildren(Type childType)
 		{
 			var children = this.GetChildren(childType);
 			if (!children.IsNullOrEmpty())
@@ -68,20 +68,21 @@ namespace CsCat
 					var child = children[i];
 					this.RemoveChild(child);
 				}
+				return true;
 			}
 
-			return children;
+			return false;
 		}
 
-		public T[] RemoveChildren<T>() where T : AbstractEntity
+		public bool RemoveChildren<T>() where T : AbstractEntity
 		{
-			return (T[])RemoveChildren(typeof(T));
+			return RemoveChildren(typeof(T));
 		}
 
 
-		public AbstractEntity[] RemoveChildrenStrictly(Type child_type)
+		public bool RemoveChildrenStrictly(Type childType)
 		{
-			var children = this.GetChildrenStrictly(child_type);
+			var children = this.GetChildrenStrictly(childType);
 			if (!children.IsNullOrEmpty())
 			{
 				for (var i = 0; i < children.Length; i++)
@@ -89,41 +90,29 @@ namespace CsCat
 					var child = children[i];
 					this.RemoveChild(child);
 				}
+				return true;
 			}
 
-			return children;
+			return false;
 		}
 
-		public T[] RemoveChildrenStrictly<T>() where T : AbstractEntity
+		public bool RemoveChildrenStrictly<T>() where T : AbstractEntity
 		{
-			return (T[])RemoveChildrenStrictly(typeof(T));
+			return RemoveChildrenStrictly(typeof(T));
 		}
 
 
 		public void RemoveAllChildren()
 		{
-			var toRemoveChildKeyList = PoolCatManagerUtil.Spawn<List<string>>();
-			toRemoveChildKeyList.Capacity = this.childKeyList.Count;
-			toRemoveChildKeyList.AddRange(this.childKeyList);
-			for (var i = 0; i < toRemoveChildKeyList.Count; i++)
+			for (var i = 0; i < childKeyList.Count; i++)
 			{
-				var childKey = toRemoveChildKeyList[i];
+				var childKey = childKeyList[i];
 				RemoveChild(childKey);
 			}
-
-			toRemoveChildKeyList.Clear();
-			PoolCatManagerUtil.Despawn(toRemoveChildKeyList);
 		}
 
 		////////////////////////////////////////////////////////////////////
-		private void _MarkHasDestroyedChild()
-		{
-			if (!this.isHasDestroyedChild)
-			{
-				this.isHasDestroyedChild = true;
-				_parent?._MarkHasDestroyedChild();
-			}
-		}
+		
 
 		private void _RemoveChildRelationship(AbstractEntity child)
 		{
@@ -168,7 +157,7 @@ namespace CsCat
 
 			if (this.isHasDestroyedComponent)
 			{
-				__CheckDestroyedComponents();
+				_CheckDestroyedComponents();
 				isHasDestroyedComponent = false;
 			}
 		}

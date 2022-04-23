@@ -33,6 +33,11 @@ namespace CsCat
 		{
 		}
 
+		void _OnReset_Enable()
+		{
+			_isEnabled = true;
+		}
+
 		void _OnDespawn_Enable()
 		{
 			_isEnabled = false;

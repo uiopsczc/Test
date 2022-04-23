@@ -13,7 +13,7 @@ namespace CsCat
 			UINotifyPanel panel = Client.instance.uiManager.CreateChildPanel(null, default(UINotifyPanel), parent,
 			  isAddToChildPanelStack, desc);
 			uiNotifyPanelDict[panel.key] = true;
-			panel.destroyCallback += () => { uiNotifyPanelDict.Remove(panel.key); };
+			panel.postDestroyCallback += () => { uiNotifyPanelDict.Remove(panel.key); };
 		}
 
 		public void PreNotify()

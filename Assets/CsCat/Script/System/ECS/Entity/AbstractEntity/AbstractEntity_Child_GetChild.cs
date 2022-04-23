@@ -7,11 +7,13 @@ namespace CsCat
 	{
 		public AbstractEntity GetChild(string childKey)
 		{
-			if (!keyToChildDict.ContainsKey(childKey))
-				return null;
-			if (keyToChildDict[childKey].IsDestroyed())
-				return null;
-			return keyToChildDict[childKey];
+			if (keyToChildDict.TryGetValue(childKey, out var child))
+			{
+				if (!child.IsDestroyed())
+					return child;
+			}
+
+			return null;
 		}
 
 		public T GetChild<T>(string childKey) where T : AbstractEntity
@@ -21,8 +23,12 @@ namespace CsCat
 
 		public AbstractEntity GetChild(Type childType)
 		{
-			foreach (var child in ForeachChild(childType))
-				return child;
+			for (int i = 0; i < childKeyList.Count; i++)
+			{
+				var child = GetChild(childKeyList[i]);
+				if (child != null && childType.IsInstanceOfType(child))
+					return child;
+			}
 			return null;
 		}
 
@@ -32,11 +38,11 @@ namespace CsCat
 		}
 
 		//效率问题引入的
-		public AbstractEntity GetChildStrictly(Type child_type)
+		public AbstractEntity GetChildStrictly(Type childType)
 		{
-			if (!this.typeToChildListDict.ContainsKey(child_type))
+			if (!this.typeToChildListDict.ContainsKey(childType))
 				return null;
-			var childList = typeToChildListDict[child_type];
+			var childList = typeToChildListDict[childType];
 			for (var i = 0; i < childList.Count; i++)
 			{
 				var child = childList[i];
@@ -58,8 +64,12 @@ namespace CsCat
 			List<AbstractEntity> list = PoolCatManagerUtil.Spawn<List<AbstractEntity>>();
 			try
 			{
-				foreach (var child in ForeachChild(childType))
-					list.Add(child);
+				for (int i = 0; i < childKeyList.Count; i++)
+				{
+					var child = GetChild(childKeyList[i]);
+					if (child != null && childType.IsInstanceOfType(child))
+						list.Add(child);
+				}
 				return list.ToArray();
 			}
 			finally
@@ -89,7 +99,6 @@ namespace CsCat
 					if (!child.IsDestroyed())
 						list.Add(child);
 				}
-
 				return list.ToArray();
 			}
 			finally

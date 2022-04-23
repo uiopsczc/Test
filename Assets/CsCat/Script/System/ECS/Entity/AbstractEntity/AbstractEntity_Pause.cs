@@ -6,7 +6,7 @@ namespace CsCat
 	public partial class AbstractEntity
 	{
 		protected bool _isPaused;
-		public bool is_paused => _isPaused;
+		public bool isPaused => _isPaused;
 
 		public virtual void SetIsPaused(bool isPaused, bool isLoopChildren = false)
 		{
@@ -25,14 +25,25 @@ namespace CsCat
 
 		public void SetAllChildrenIsPaused(bool isPaused)
 		{
-			foreach (var child in ForeachChild())
-				child.SetIsPaused(isPaused, true);
+			for (int i = 0; i < childKeyList.Count; i++)
+			{
+				var child = GetChild(childKeyList[i]);
+				child?.SetIsPaused(isPaused, true);
+			}
 		}
 
 		public void SetAllComponentsIsPaused(bool isPaused)
 		{
-			foreach (var component in ForeachComponent())
-				component.SetIsPaused(isPaused);
+			for (int i = 0; i < componentKeyList.Count; i++)
+			{
+				var component = GetComponent(componentKeyList[i]);
+				component?.SetIsPaused(isPaused);
+			}
+		}
+
+		void _OnReset_Pause()
+		{
+			_isPaused = false;
 		}
 
 		void _OnDespawn_Pause()

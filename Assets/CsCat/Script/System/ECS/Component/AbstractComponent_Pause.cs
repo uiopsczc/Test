@@ -20,6 +20,11 @@ namespace CsCat
 		{
 		}
 
+		void _OnReset_Pause()
+		{
+			_isPaused = false;
+		}
+
 		void _OnDespawn_Pause()
 		{
 			_isPaused = false;

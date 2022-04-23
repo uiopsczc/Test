@@ -8,11 +8,12 @@ namespace CsCat
 	{
 		public AbstractComponent GetComponent(string componentKey)
 		{
-			if (!this.keyToComponentDict.ContainsKey(componentKey))
-				return null;
-			if (this.keyToComponentDict[componentKey].IsDestroyed())
-				return null;
-			return this.keyToComponentDict[componentKey];
+			if (this.keyToComponentDict.TryGetValue(componentKey, out var component))
+			{
+				if (!component.IsDestroyed())
+					return component;
+			}
+			return null;
 		}
 
 		public T GetComponent<T>(string componentKey) where T : AbstractComponent
@@ -22,8 +23,12 @@ namespace CsCat
 
 		public AbstractComponent GetComponent(Type componentType)
 		{
-			foreach (var component in ForeachComponent(componentType))
-				return component;
+			for (int i = 0; i < componentKeyList.Count; i++)
+			{
+				var component = GetComponent(componentKeyList[i]);
+				if (component != null && componentType.IsInstanceOfType(component))
+					return component;
+			}
 			return null;
 		}
 
@@ -37,8 +42,9 @@ namespace CsCat
 		{
 			if (!this.typeToComponentListDict.ContainsKey(componentType))
 				return null;
-			foreach (var component in typeToComponentListDict[componentType])
+			for (var i = 0; i < typeToComponentListDict[componentType].Count; i++)
 			{
+				var component = typeToComponentListDict[componentType][i];
 				if (!component.IsDestroyed())
 					return component;
 			}
@@ -55,8 +61,12 @@ namespace CsCat
 		public AbstractComponent[] GetComponents(Type componentType)
 		{
 			List<AbstractComponent> list = new List<AbstractComponent>();
-			foreach (var component in ForeachComponent(componentType))
-				list.Add(component);
+			for (int i = 0; i < componentKeyList.Count; i++)
+			{
+				var component = GetComponent(componentKeyList[i]);
+				if (component != null && componentType.IsInstanceOfType(component))
+					list.Add(component);
+			}
 			return list.ToArray();
 		}
 

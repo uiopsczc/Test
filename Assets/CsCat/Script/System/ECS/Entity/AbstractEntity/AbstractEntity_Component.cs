@@ -22,33 +22,29 @@ namespace CsCat
 		//按加入的顺序遍历
 		public IEnumerable<AbstractComponent> ForeachComponent()
 		{
-			AbstractComponent component;
 			for (int i = 0; i < componentKeyList.Count; i++)
 			{
-				component = GetComponent(componentKeyList[i]);
+				var component = GetComponent(componentKeyList[i]);
 				if (component != null)
 					yield return component;
 			}
 		}
 
-		public IEnumerable<AbstractComponent> ForeachComponent(Type component_type)
+		public IEnumerable<AbstractComponent> ForeachComponent(Type componentType)
 		{
-			AbstractComponent component = null;
 			for (int i = 0; i < componentKeyList.Count; i++)
 			{
-				component = GetComponent(componentKeyList[i]);
-				if (component != null && component_type.IsInstanceOfType(component))
+				var component = GetComponent(componentKeyList[i]);
+				if (component != null && componentType.IsInstanceOfType(component))
 					yield return component;
 			}
 		}
 
 		public IEnumerable<T> ForeachComponent<T>() where T : AbstractComponent
 		{
-			T component = null;
 			for (int i = 0; i < componentKeyList.Count; i++)
 			{
-				component = GetComponent(componentKeyList[i]) as T;
-				if (component != null)
+				if (GetComponent(componentKeyList[i]) is T component)
 					yield return component;
 			}
 		}
@@ -57,12 +53,12 @@ namespace CsCat
 		void _OnDespawn_Component()
 		{
 			keyToComponentDict.Clear();
-			foreach (var componentList in typeToComponentListDict.Values)
+			foreach (var keyValue in typeToComponentListDict)
 			{
+				var componentList = keyValue.Value;
 				componentList.Clear();
 				PoolCatManagerUtil.Despawn(componentList);
 			}
-
 			typeToComponentListDict.Clear();
 			componentKeyList.Clear();
 			componentTypeList.Clear();

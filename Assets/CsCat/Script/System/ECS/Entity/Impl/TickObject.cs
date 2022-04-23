@@ -6,7 +6,7 @@ namespace CsCat
 	{
 		private TickObject child;
 		private AbstractComponent component;
-		public bool isCanNotUpdate = false;
+		
 
 		protected override bool isNotDeleteChildRelationshipImmediately => true;
 
