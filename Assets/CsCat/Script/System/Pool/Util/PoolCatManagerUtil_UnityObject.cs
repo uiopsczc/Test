@@ -5,23 +5,18 @@ namespace CsCat
 {
 	public static partial class PoolCatManagerUtil
 	{
-		public static UnityObjectPoolCat AddUnityObjectPool(string poolName, Object prefab, string category = null)
+		public static UnityObjectPoolCat<T> AddUnityObjectPool<T>(string poolName, T prefab) where T : Object
 		{
-			var pool = new UnityObjectPoolCat(poolName, prefab, category);
+			var pool = new UnityObjectPoolCat<T>(poolName, prefab);
 			PoolCatManager.instance.AddPool(poolName, pool);
 			return pool;
 		}
 
-		public static UnityObjectPoolCat GetUnityObjectPool(string poolName)
+		public static UnityObjectPoolCat<T> GetOrAddUnityObjectPool<T>(string poolName, T prefab) where T : Object
 		{
-			return PoolCatManager.instance.GetPool(poolName) as UnityObjectPoolCat;
-		}
-
-		public static UnityObjectPoolCat GetOrAddUnityObjectPool(string poolName, Object prefab,
-			string category = null)
-		{
-			return PoolCatManager.instance.GetOrAddPool(typeof(UnityObjectPoolCat), poolName, prefab, category) as
-				UnityObjectPoolCat;
+			if (TryGetPool(poolName, out var pool))
+				return pool as UnityObjectPoolCat<T>;
+			return AddUnityObjectPool(poolName, prefab);
 		}
 	}
 }

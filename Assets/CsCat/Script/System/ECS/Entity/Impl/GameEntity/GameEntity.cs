@@ -6,8 +6,8 @@ namespace CsCat
 	{
 		public GameEntity parent => GetParent<GameEntity>();
 		public EventDispatchers eventDispatchers = new EventDispatchers();
-		public CoroutinePluginComponent coroutinePluginComponent;
-		public PausableCoroutinePluginComponent pausableCoroutinePluginComponent;
+		public CoroutineDictComponent CoroutineDictComponent;
+		public PausableCoroutineDictComponent PausableCoroutineDictComponent;
 		public DOTweenPluginComponent dotweenPluginComponent;
 		public TimerManagerPluginComponent timerManagerPluginComponent;
 		public EventDispatchersPluginDictComponent eventDispatchersPluginDictComponent;
@@ -17,10 +17,10 @@ namespace CsCat
 			base.Init();
 			eventDispatchersPluginDictComponent = this.AddComponent<EventDispatchersPluginDictComponent>(null);
 			
-			coroutinePluginComponent =
-				this.AddComponent<CoroutinePluginComponent>(null, new CoroutinePlugin(Main.instance));
-			pausableCoroutinePluginComponent =
-				this.AddComponent<PausableCoroutinePluginComponent>(null, new PausableCoroutinePlugin(Main.instance));
+			CoroutineDictComponent =
+				this.AddComponent<CoroutineDictComponent>(null, new CoroutineDict(Main.instance));
+			PausableCoroutineDictComponent =
+				this.AddComponent<PausableCoroutineDictComponent>(null, new PausableCoroutineDict(Main.instance));
 			dotweenPluginComponent = this.AddComponent<DOTweenPluginComponent>(null, new DOTweenPlugin());
 			timerManagerPluginComponent =
 				this.AddComponent<TimerManagerPluginComponent>(null, new TimerManagerPlugin(timerManager));
@@ -53,8 +53,8 @@ namespace CsCat
 		{
 			base._Destroy();
 			
-			coroutinePluginComponent = null;
-			pausableCoroutinePluginComponent = null;
+			CoroutineDictComponent = null;
+			PausableCoroutineDictComponent = null;
 			timerManagerPluginComponent = null;
 			eventDispatchersPluginDictComponent = null;
 

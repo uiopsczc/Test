@@ -941,11 +941,11 @@ namespace CsCat
 			return ReflectionUtil.InvokeGeneric<T>(self, methodName, genericTypes, isMissNotInvoke, parameters);
 		}
 
-		public static void InvokeGenericMethod(this object self, string methodName, Type[] genericTypes,
+		public static object InvokeGenericMethod(this object self, string methodName, Type[] genericTypes,
 			bool isMissNotInvoke = true,
 			params object[] parameters)
 		{
-			ReflectionUtil.InvokeGeneric<object>(self, methodName, genericTypes, isMissNotInvoke, parameters);
+			return ReflectionUtil.InvokeGeneric<object>(self, methodName, genericTypes, isMissNotInvoke, parameters);
 		}
 
 		//////////////////////////ExtensionMethod//////////////////////////////

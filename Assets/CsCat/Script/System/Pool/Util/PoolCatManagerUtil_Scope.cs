@@ -8,7 +8,7 @@ namespace CsCat
 	{
 		public static T SpawnScope<T>(Action<T> onSpawnCallback = null) where T : PoolScope
 		{
-			return Spawn(null, onSpawnCallback);
+			return Spawn(null, null, onSpawnCallback).GetValue();
 		}
 	}
 }

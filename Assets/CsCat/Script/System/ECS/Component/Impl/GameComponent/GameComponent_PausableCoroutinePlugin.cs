@@ -8,14 +8,14 @@ namespace CsCat
 {
 	public partial class GameComponent
 	{
-		protected PausableCoroutinePlugin pausableCoroutinePlugin => cache.GetOrAddDefault(() =>
-			new PausableCoroutinePlugin(GetGameEntity().GetComponent<PausableCoroutinePluginComponent>()
-				.pausableCoroutinePlugin.mono));
+		protected PausableCoroutineDict PausableCoroutineDict => cache.GetOrAddDefault(() =>
+			new PausableCoroutineDict(GetGameEntity().GetComponent<PausableCoroutineDictComponent>()
+				.pausableCoroutineDict._monoBehaviour));
 
 
 		public string StartPausableCoroutine(IEnumerator ie, string key = null)
 		{
-			return pausableCoroutinePlugin.StartCoroutine(ie, key);
+			return PausableCoroutineDict.StartCoroutine(ie, key);
 		}
 
 		/// <summary>
@@ -24,18 +24,18 @@ namespace CsCat
 		/// <param name="key"></param>
 		public void StopPausableCoroutine(string key)
 		{
-			pausableCoroutinePlugin.StopCoroutine(key);
+			PausableCoroutineDict.StopCoroutine(key);
 		}
 
 		public void StopAllPausableCoroutines()
 		{
-			if (cache.ContainsKey<PausableCoroutinePlugin>())
-				pausableCoroutinePlugin.StopAllCoroutines();
+			if (cache.ContainsKey<PausableCoroutineDict>())
+				PausableCoroutineDict.StopAllCoroutines();
 		}
 
 		public void SetIsPaused_PausableCoroutines(bool isPaused)
 		{
-			pausableCoroutinePlugin.SetIsPaused(isPaused);
+			PausableCoroutineDict.SetIsPaused(isPaused);
 		}
 	}
 }

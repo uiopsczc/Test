@@ -139,19 +139,19 @@ namespace CsCat
 
 		void GoStopActualRoutine(PausableCoroutine routine)
 		{
-			if (!coroutine_dict.ContainsKey(routine.routine_unique_hash)) return;
-			coroutine_owner_dict[routine.owner_unique_hash].Remove(routine.routine_unique_hash);
-			coroutine_dict.Remove(routine.routine_unique_hash);
+			if (!coroutine_dict.ContainsKey(routine.routineUniqueHash)) return;
+			coroutine_owner_dict[routine.ownerUniqueHash].Remove(routine.routineUniqueHash);
+			coroutine_dict.Remove(routine.routineUniqueHash);
 		}
 
 		void GoStopAllCoroutines(object this_reference)
 		{
 			PausableCoroutine coroutine = CreateCoroutine(null, this_reference);
-			if (!coroutine_owner_dict.ContainsKey(coroutine.owner_unique_hash)) return;
-			foreach (var couple in coroutine_owner_dict[coroutine.owner_unique_hash])
-				coroutine_dict.Remove(couple.Value.routine_unique_hash);
+			if (!coroutine_owner_dict.ContainsKey(coroutine.ownerUniqueHash)) return;
+			foreach (var couple in coroutine_owner_dict[coroutine.ownerUniqueHash])
+				coroutine_dict.Remove(couple.Value.routineUniqueHash);
 
-			coroutine_owner_dict.Remove(coroutine.owner_unique_hash);
+			coroutine_owner_dict.Remove(coroutine.ownerUniqueHash);
 		}
 
 		PausableCoroutine GoStartCoroutine(IEnumerator routine, object this_reference)
@@ -166,25 +166,25 @@ namespace CsCat
 
 		void GoStartCoroutine(PausableCoroutine coroutine)
 		{
-			if (!coroutine_dict.ContainsKey(coroutine.routine_unique_hash))
+			if (!coroutine_dict.ContainsKey(coroutine.routineUniqueHash))
 			{
 				List<PausableCoroutine> new_coroutine_list = new List<PausableCoroutine>();
-				coroutine_dict.Add(coroutine.routine_unique_hash, new_coroutine_list);
+				coroutine_dict.Add(coroutine.routineUniqueHash, new_coroutine_list);
 			}
 
-			coroutine_dict[coroutine.routine_unique_hash].Add(coroutine);
+			coroutine_dict[coroutine.routineUniqueHash].Add(coroutine);
 
-			if (!coroutine_owner_dict.ContainsKey(coroutine.owner_unique_hash))
+			if (!coroutine_owner_dict.ContainsKey(coroutine.ownerUniqueHash))
 			{
 				Dictionary<string, PausableCoroutine> new_coroutine_dict = new Dictionary<string, PausableCoroutine>();
-				coroutine_owner_dict.Add(coroutine.owner_unique_hash, new_coroutine_dict);
+				coroutine_owner_dict.Add(coroutine.ownerUniqueHash, new_coroutine_dict);
 			}
 
 			// If the method from the same owner has been stored before, it doesn't have to be stored anymore,
 			// One reference is enough in order for "StopAllCoroutines" to work
-			if (!coroutine_owner_dict[coroutine.owner_unique_hash].ContainsKey(coroutine.routine_unique_hash))
+			if (!coroutine_owner_dict[coroutine.ownerUniqueHash].ContainsKey(coroutine.routineUniqueHash))
 			{
-				coroutine_owner_dict[coroutine.owner_unique_hash].Add(coroutine.routine_unique_hash, coroutine);
+				coroutine_owner_dict[coroutine.ownerUniqueHash].Add(coroutine.routineUniqueHash, coroutine);
 			}
 
 			MoveNext(coroutine);
@@ -233,12 +233,12 @@ namespace CsCat
 				{
 					PausableCoroutine coroutine = coroutines[j];
 
-					if (coroutine.is_paused)
+					if (coroutine.isPaused)
 					{
 						continue;
 					}
 
-					if (!coroutine.current_yield.IsDone(deltaTime))
+					if (!coroutine.currentYield.IsDone(deltaTime))
 					{
 						continue;
 					}
@@ -246,13 +246,13 @@ namespace CsCat
 					if (!MoveNext(coroutine))
 					{
 						coroutines.RemoveAt(j);
-						coroutine.current_yield = null;
+						coroutine.currentYield = null;
 						coroutine.isFinished = true;
 					}
 
 					if (coroutines.Count == 0)
 					{
-						coroutine_dict.Remove(coroutine.owner_unique_hash);
+						coroutine_dict.Remove(coroutine.ownerUniqueHash);
 					}
 				}
 			}
@@ -274,40 +274,40 @@ namespace CsCat
 			object current = coroutine.routine.Current;
 			if (current == null)
 			{
-				coroutine.current_yield = new YieldDefault();
+				coroutine.currentYield = new YieldDefault();
 			}
 			else if (current is WaitForSeconds)
 			{
-				coroutine.current_yield = new YieldWaitForSeconds(current.GetFieldValue<float>("m_Seconds"));
+				coroutine.currentYield = new YieldWaitForSeconds(current.GetFieldValue<float>("m_Seconds"));
 			}
 			else if (current is CustomYieldInstruction customYield)
 			{
-				coroutine.current_yield = new YieldCustomYieldInstruction(customYield);
+				coroutine.currentYield = new YieldCustomYieldInstruction(customYield);
 			}
 			else if (current is WWW)
 			{
-				coroutine.current_yield = new YieldWWW((WWW)current);
+				coroutine.currentYield = new YieldWWW((WWW)current);
 			}
 			else if (current is WaitForFixedUpdate || current is WaitForEndOfFrame)
 			{
-				coroutine.current_yield = new YieldDefault();
+				coroutine.currentYield = new YieldDefault();
 			}
 			else if (current is AsyncOperation asyncOperation)
 			{
-				coroutine.current_yield = new YieldAsync(asyncOperation);
+				coroutine.currentYield = new YieldAsync(asyncOperation);
 			}
 			else if (current is PausableCoroutine co)
 			{
-				coroutine.current_yield = new YieldNestedCoroutine(co);
+				coroutine.currentYield = new YieldNestedCoroutine(co);
 			}
 			else
 			{
 				Debug.LogException(
-					new Exception("<" + coroutine.method_name + "> yielded an unknown or unsupported type! (" +
+					new Exception("<" + coroutine.methodName + "> yielded an unknown or unsupported type! (" +
 								  current.GetType() +
 								  ")"),
 					null);
-				coroutine.current_yield = new YieldDefault();
+				coroutine.currentYield = new YieldDefault();
 			}
 
 			return true;

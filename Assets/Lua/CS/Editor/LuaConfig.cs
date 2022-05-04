@@ -70,7 +70,7 @@ public static class LuaConfig
     typeof(AudioSourceExtension),
     typeof(TypeExtension),
     //////////////////////////////Interface////////////////////////////////////////
-    typeof(IDespawn),
+    typeof(IDeSpawn),
     //////////////////////////////Stand API////////////////////////////////////////
     typeof(File),
     typeof(Type),

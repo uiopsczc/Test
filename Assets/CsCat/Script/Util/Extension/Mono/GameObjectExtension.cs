@@ -123,23 +123,15 @@ namespace CsCat
 			return self.GetComponent<RectTransform>();
 		}
 
-		public static void Despawn(this GameObject self)
+		public static void DeSpawn(this GameObject self)
 		{
 			if (self == null)
 				return;
-			if (self.IsCacheContainsKey(PoolCatConst.Pool_Name))
+			if (self.IsCacheContainsKey(PoolCatConst.Pool_Object))
 			{
-				PoolCat pool = self.GetCache<PoolCat>(PoolCatConst.Pool_Name);
-				pool.Despawn(self);
+				IPoolObject poolObject = self.GetCache<IPoolObject>(PoolCatConst.Pool_Object);
+				poolObject.DeSpawn();
 			}
-
-			//      else if (self.IsCacheContainsKey(PoolCatConst.Lua_Pool_Name))//Lua端调用
-			//      {
-			//        LuaTable pool = self.GetCache<LuaTable>(PoolCatConst.Lua_Pool_Name);
-			//        pool.Get("Despawn", out LuaFunction despawnFunction);
-			//        despawnFunction.Action(pool, self);
-			//        despawnFunction.Dispose();
-			//      }
 		}
 
 		public static void SetCache(this GameObject self, string key, object obj)

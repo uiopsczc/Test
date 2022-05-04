@@ -3,35 +3,51 @@ using UnityEngine;
 
 namespace CsCat
 {
-	public class GameObjectPoolCat : UnityObjectPoolCat
+	public class GameObjectPoolCat : UnityObjectPoolCat<GameObject>
 	{
 		protected Transform rootTransform;
 		protected Transform categoryTransform;
 
-		public GameObjectPoolCat(string poolName, GameObject prefab, string category = null) : base(poolName, prefab,
-			category)
+		public GameObjectPoolCat(string poolName, GameObject prefab, string category = null) : base(poolName, prefab)
+		{
+			if (category.IsNullOrWhiteSpace())
+				category = prefab.name;
+			InitParentTransform(prefab, category);
+		}
+
+		public virtual void InitParentTransform(GameObject prefab, string category)
 		{
 		}
 
-		public GameObject GetPrefab()
+		public override PoolObject<GameObject> Spawn(Action<GameObject> onSpawnCallback = null)
 		{
-			return this.GetPrefab<GameObject>();
-		}
-
-		public override object Spawn(Action<object> onSpawnCallback = null)
-		{
-			GameObject cloneGameObject = base.Spawn(onSpawnCallback) as GameObject;
-			cloneGameObject.SetCache(PoolCatConst.Pool_Name, this);
+			var poolObject = base.Spawn(onSpawnCallback);
+			GameObject cloneGameObject = poolObject.GetValue();
+			cloneGameObject.SetCache(PoolCatConst.Pool_Object, poolObject);
 			cloneGameObject.SetActive(true);
 			cloneGameObject.transform.CopyFrom(GetPrefab().transform);
-			return cloneGameObject;
+			return poolObject;
 		}
 
-		public GameObject SpawnGameObject(Action<GameObject> onSpawnCallback = null)
+		public PoolObject<GameObject> SpawnGameObject(Action<GameObject> onSpawnCallback = null)
 		{
-			if (onSpawnCallback == null)
-				return Spawn() as GameObject;
-			return Spawn(obj => onSpawnCallback((GameObject)obj)) as GameObject;
+			return onSpawnCallback == null ? Spawn() : Spawn(onSpawnCallback);
+		}
+
+		public override void DeSpawn(PoolObject<GameObject> poolObject)
+		{
+			GameObject clone = poolObject.GetValue();
+			var components = clone.GetComponents<Component>();
+			for (var i = 0; i < components.Length; i++)
+			{
+				var cloneComponent = components[i];
+				var spawnable = cloneComponent as IDeSpawn;
+				spawnable?.OnDeSpawn();
+			}
+			clone.SetActive(false);
+			clone.transform.SetParent(categoryTransform);
+			clone.transform.CopyFrom(this.prefab.transform);
+			base.DeSpawn(poolObject);
 		}
 	}
 }

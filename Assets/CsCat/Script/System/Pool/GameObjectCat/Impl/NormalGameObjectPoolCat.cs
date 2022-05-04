@@ -1,5 +1,4 @@
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace CsCat
 {
@@ -10,26 +9,11 @@ namespace CsCat
 		{
 		}
 
-		public override void InitParent(Object prefab, string category)
+		public override void InitParentTransform(GameObject prefab, string category)
 		{
-			base.InitParent(prefab, category);
+			base.InitParentTransform(prefab, category);
 			rootTransform = GameObjectUtil.GetOrNewGameObject("Pools", null).transform;
 			categoryTransform = rootTransform.GetOrNewGameObject(category).transform;
-		}
-
-		public override void Despawn(object obj)
-		{
-			GameObject clone = obj as GameObject;
-			foreach (var cloneComponent in clone.GetComponents<Component>())
-			{
-				var spawnable = cloneComponent as IDespawn;
-				spawnable?.OnDespawn();
-			}
-
-			clone.SetActive(false);
-			clone.transform.SetParent(categoryTransform);
-			clone.transform.CopyFrom((prefab as GameObject).transform);
-			base.Despawn(obj);
 		}
 	}
 }

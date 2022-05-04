@@ -77,9 +77,9 @@ namespace CsCat
 			_resultInfo = null;
 		}
 
-		public override void OnDespawn()
+		public override void OnDeSpawn()
 		{
-			base.OnDespawn();
+			base.OnDeSpawn();
 			Reset();
 		}
 	}

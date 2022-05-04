@@ -5,7 +5,7 @@ namespace CsCat
 {
 	public static partial class PoolCatManagerUtil
 	{
-		public static PoolCat AddPool(string poolName, PoolCat pool)
+		public static IPoolCat AddPool(string poolName, IPoolCat pool)
 		{
 			return PoolCatManager.instance.AddPool(poolName, pool);
 		}
@@ -15,68 +15,49 @@ namespace CsCat
 			PoolCatManager.instance.RemovePool(poolName);
 		}
 
-		public static PoolCat GetPool(string poolName)
+		public static IPoolCat GetPool(string poolName)
 		{
 			return PoolCatManager.instance.GetPool(poolName);
 		}
 
-		public static PoolCat GetPool<T>()
+		public static bool TryGetPool(string poolName, out IPoolCat pool)
 		{
-			return PoolCatManager.instance.GetPool<T>();
+			return PoolCatManager.instance.TryGetPool(poolName, out pool);
 		}
 
-		public static bool IsContainsPool(string name)
+		public static IPoolCat GetPool<T>(string poolName = null)
 		{
-			return PoolCatManager.instance.IsContainsPool(name);
+			return PoolCatManager.instance.GetPool<T>(poolName);
 		}
 
-		public static PoolCat GetOrAddPool(Type poolType, params object[] poolConstructArgs)
+		public static bool IsContainsPool(string poolName)
+		{
+			return PoolCatManager.instance.IsContainsPool(poolName);
+		}
+
+		public static IPoolCat GetOrAddPool(Type poolType, params object[] poolConstructArgs)
 		{
 			return PoolCatManager.instance.GetOrAddPool(poolType, poolConstructArgs);
 		}
 
-		public static T GetOrAddPool<T>(params object[] poolConstructArgs) where T : PoolCat
+		public static PoolCat<T> GetOrAddPool<T>(params object[] poolConstructArgs)
 		{
 			return PoolCatManager.instance.GetOrAddPool<T>(poolConstructArgs);
 		}
 
-
-		public static void Despawn(object despawn, string poolName)
+		public static void DeSpawnAll(string poolName)
 		{
-			PoolCatManager.instance.Despawn(despawn, poolName);
+			PoolCatManager.instance.DeSpawnAll(poolName);
 		}
 
-		public static void Despawn(object o)
+		public static IPoolObject Spawn(Type type, string poolName = null)
 		{
-			PoolCatManager.instance.Despawn(o);
+			return PoolCatManager.instance.Spawn(type, poolName);
 		}
 
-		public static void DespawnAll(string poolName)
+		public static PoolObject<T> Spawn<T>(string poolName, Func<T> spawnFunc, Action<T> onSpawnCallback = null)
 		{
-			PoolCatManager.instance.DespawnAll(poolName);
-		}
-
-		public static object Spawn(Type type, string poolName = null, Action<object> onSpawnCallback = null)
-		{
-			return PoolCatManager.instance.Spawn(type, poolName, onSpawnCallback);
-		}
-
-		public static T Spawn<T>(string poolName = null, Action<T> onSpawnCallback = null)
-		{
-			if (onSpawnCallback == null)
-				return PoolCatManager.instance.Spawn<T>(poolName);
-			return PoolCatManager.instance.Spawn<T>(poolName, obj => onSpawnCallback(obj));
-		}
-
-
-		public static object Spawn(Func<object> spawnFunc, string poolName, Action<object> onSpawnCallback = null)
-		{
-			return PoolCatManager.instance.Spawn(spawnFunc, poolName, onSpawnCallback);
-		}
-
-		public static T Spawn<T>(Func<object> spawnFunc, string poolName = null, Action<T> onSpawnCallback = null)
-		{
-			return PoolCatManager.instance.Spawn<T>(spawnFunc, poolName, onSpawnCallback);
+			return PoolCatManager.instance.Spawn(poolName, spawnFunc, onSpawnCallback);
 		}
 	}
 }

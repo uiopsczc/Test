@@ -31,7 +31,7 @@ namespace CsCat
 		public override void DestroyGameObject()
 		{
 			if (this._gameObject != null)
-				this._gameObject.Despawn();
+				this._gameObject.DeSpawn();
 		}
 
 		public GameObjectPoolCat GetEffectGameObjectPool(GameObject prefab)

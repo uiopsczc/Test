@@ -4,19 +4,19 @@ using System.Collections.Generic;
 
 namespace CsCat
 {
-	public class PausableCoroutinePluginComponent : AbstractComponent
+	public class PausableCoroutineDictComponent : AbstractComponent
 	{
-		public PausableCoroutinePlugin pausableCoroutinePlugin;
+		public PausableCoroutineDict pausableCoroutineDict;
 
-		public void Init(PausableCoroutinePlugin pausableCoroutinePlugin)
+		public void Init(PausableCoroutineDict pausableCoroutineDict)
 		{
 			base.Init();
-			this.pausableCoroutinePlugin = pausableCoroutinePlugin;
+			this.pausableCoroutineDict = pausableCoroutineDict;
 		}
 
-		public string StartCoroutine(IEnumerator ie, string key = null)
+		public string StartCoroutine(IEnumerator iEnumerator, string key = null)
 		{
-			return pausableCoroutinePlugin.StartCoroutine(ie, key);
+			return pausableCoroutineDict.StartCoroutine(iEnumerator, key);
 		}
 
 		/// <summary>
@@ -25,18 +25,18 @@ namespace CsCat
 		/// <param name="key"></param>
 		public void StopCoroutine(string key)
 		{
-			pausableCoroutinePlugin.StopCoroutine(key);
+			pausableCoroutineDict.StopCoroutine(key);
 		}
 
 		public void StopAllCoroutines()
 		{
-			pausableCoroutinePlugin.StopAllCoroutines();
+			pausableCoroutineDict.StopAllCoroutines();
 		}
 
 		protected override void _SetIsPaused(bool isPaused)
 		{
 			base._SetIsPaused(isPaused);
-			pausableCoroutinePlugin.SetIsPaused(isPaused);
+			pausableCoroutineDict.SetIsPaused(isPaused);
 		}
 
 		protected override void _Reset()

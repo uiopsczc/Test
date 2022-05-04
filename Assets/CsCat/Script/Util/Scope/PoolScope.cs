@@ -10,7 +10,6 @@ namespace CsCat
 
 		public virtual void Dispose()
 		{
-			PoolCatManagerUtil.Despawn(this);
 		}
 	}
 }

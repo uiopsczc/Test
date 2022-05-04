@@ -19,7 +19,7 @@ namespace CsCat
 
 		public void DespawnOnFinish()
 		{
-			gameObject.Despawn();
+			gameObject.DeSpawn();
 		}
 
 		public void OnFinish()

@@ -4,19 +4,19 @@ using System.Collections.Generic;
 
 namespace CsCat
 {
-	public class CoroutinePluginComponent : AbstractComponent
+	public class CoroutineDictComponent : AbstractComponent
 	{
-		public CoroutinePlugin coroutinePlugin;
+		public CoroutineDict coroutineDict;
 
-		public void Init(CoroutinePlugin coroutinePlugin)
+		public void Init(CoroutineDict coroutineDict)
 		{
 			base.Init();
-			this.coroutinePlugin = coroutinePlugin;
+			this.coroutineDict = coroutineDict;
 		}
 
-		public string StartCoroutine(IEnumerator ie, string key = null)
+		public string StartCoroutine(IEnumerator iEnumerator, string key = null)
 		{
-			return coroutinePlugin.StartCoroutine(ie, key);
+			return coroutineDict.StartCoroutine(iEnumerator, key);
 		}
 
 		/// <summary>
@@ -25,12 +25,12 @@ namespace CsCat
 		/// <param name="key"></param>
 		public void StopCoroutine(string key)
 		{
-			coroutinePlugin.StopCoroutine(key);
+			coroutineDict.StopCoroutine(key);
 		}
 
 		public void StopAllCoroutines()
 		{
-			coroutinePlugin.StopAllCoroutines();
+			coroutineDict.StopAllCoroutines();
 		}
 
 		protected override void _Reset()

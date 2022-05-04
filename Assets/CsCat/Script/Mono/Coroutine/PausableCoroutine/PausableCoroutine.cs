@@ -4,47 +4,47 @@ namespace CsCat
 {
 	public class PausableCoroutine
 	{
-		public ICoroutineYield current_yield = new YieldDefault();
+		public ICoroutineYield currentYield = new YieldDefault();
 		public IEnumerator routine;
-		public string routine_unique_hash;
-		public string owner_unique_hash;
-		public string method_name = "";
+		public string routineUniqueHash;
+		public string ownerUniqueHash;
+		public string methodName = "";
 
-		public int owner_hash;
-		public string owner_type;
+		public int ownerHashCode;
+		public string ownerType;
 
 		public bool isFinished = false;
-		public bool is_paused = false;
+		public bool isPaused = false;
 
-		public PausableCoroutine(IEnumerator routine, int owner_hash, string owner_type)
+		public PausableCoroutine(IEnumerator routine, int ownerHashCode, string ownerType)
 		{
 			this.routine = routine;
-			this.owner_hash = owner_hash;
-			this.owner_type = owner_type;
-			owner_unique_hash = owner_hash + "_" + owner_type;
+			this.ownerHashCode = ownerHashCode;
+			this.ownerType = ownerType;
+			ownerUniqueHash = ownerHashCode + "_" + ownerType;
 
 			if (routine != null)
 			{
 				string[] split = routine.ToString().Split('<', '>');
 				if (split.Length == 3)
-					this.method_name = split[1];
+					this.methodName = split[1];
 			}
 
-			routine_unique_hash = owner_hash + "_" + owner_type + "_" + method_name;
+			routineUniqueHash = ownerHashCode + "_" + ownerType + "_" + methodName;
 		}
 
-		public PausableCoroutine(string methodName, int owner_hash, string owner_type)
+		public PausableCoroutine(string methodName, int ownerHashCode, string ownerType)
 		{
-			method_name = methodName;
-			this.owner_hash = owner_hash;
-			this.owner_type = owner_type;
-			owner_unique_hash = owner_hash + "_" + owner_type;
-			routine_unique_hash = owner_hash + "_" + owner_type + "_" + method_name;
+			this.methodName = methodName;
+			this.ownerHashCode = ownerHashCode;
+			this.ownerType = ownerType;
+			ownerUniqueHash = ownerHashCode + "_" + ownerType;
+			routineUniqueHash = ownerHashCode + "_" + ownerType + "_" + this.methodName;
 		}
 
-		public void SetIsPaused(bool is_paused)
+		public void SetIsPaused(bool isPaused)
 		{
-			this.is_paused = is_paused;
+			this.isPaused = isPaused;
 		}
 	}
 }

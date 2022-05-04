@@ -7,7 +7,7 @@ namespace CsCat
 	/// 有父timer    _parent
 	/// 也有子孩子timers children
 	/// </summary>
-	public class Timer : IDespawn
+	public class Timer : IDeSpawn
 	{
 		#region field
 
@@ -319,7 +319,7 @@ namespace CsCat
 
 		#endregion
 
-		public void OnDespawn()
+		public void OnDeSpawn()
 		{
 			_isUseUnscaledDeltaTime = false;
 			priority = 1;

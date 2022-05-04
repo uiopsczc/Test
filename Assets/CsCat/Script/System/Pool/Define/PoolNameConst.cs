@@ -1,7 +1,3 @@
-using System;
-using System.CodeDom;
-using System.Collections.Generic;
-
 namespace CsCat
 {
 	public static class PoolNameConst

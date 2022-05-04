@@ -2,44 +2,31 @@ using Object = UnityEngine.Object;
 
 namespace CsCat
 {
-	public class UnityObjectPoolCat : PoolCat
+	public class UnityObjectPoolCat<T> : PoolCat<T> where T: Object
 	{
-		public Object prefab;
+		public T prefab;
 
-		public UnityObjectPoolCat(string poolName, Object prefab, string category = null) : base(poolName,
-		  prefab.GetType())
+		public UnityObjectPoolCat(string poolName, T prefab) : base(poolName)
 		{
 			this.prefab = prefab;
-			if (category.IsNullOrWhiteSpace())
-				category = prefab.name;
-			InitParent(prefab, category);
 		}
 
-		public T GetPrefab<T>() where T : Object
+		public T GetPrefab()
 		{
-			return prefab as T;
+			return prefab;
 		}
 
-		public virtual void InitParent(Object prefab, string category)
+		protected override T _Spawn()
 		{
-		}
-
-		protected override object _Spawn()
-		{
-			Object clone = Object.Instantiate(prefab);
+			T clone = Object.Instantiate(prefab);
 			clone.name = prefab.name;
 			return clone;
 		}
 
-		protected override void _Trim(object despawnedObject)
+		protected override void OnDestroy(T value)
 		{
-			base._Trim(despawnedObject);
-			(despawnedObject as Object).Destroy();
-		}
-
-		public override void Destroy()
-		{
-			base.Destroy();
+			value.Destroy();
+			base.OnDestroy(value);
 		}
 	}
 }

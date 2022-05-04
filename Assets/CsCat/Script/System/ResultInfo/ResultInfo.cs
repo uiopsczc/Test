@@ -2,7 +2,7 @@ using System;
 
 namespace CsCat
 {
-	public class ResultInfo : IDespawn
+	public class ResultInfo : IDeSpawn
 	{
 		private bool _isSuccess;
 		private bool _isFail;
@@ -105,7 +105,7 @@ namespace CsCat
 		}
 
 
-		public void OnDespawn()
+		public void OnDeSpawn()
 		{
 			Reset();
 		}

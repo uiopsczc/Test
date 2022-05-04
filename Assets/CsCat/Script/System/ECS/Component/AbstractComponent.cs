@@ -2,7 +2,7 @@ using System;
 
 namespace CsCat
 {
-	public partial class AbstractComponent : IDespawn
+	public partial class AbstractComponent : IDeSpawn
 	{
 		public string key;
 		public AbstractEntity entity;

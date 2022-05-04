@@ -2,7 +2,7 @@ using System;
 
 namespace CsCat
 {
-	public class EventDispatcher : IDespawn, IEventDispatcher
+	public class EventDispatcher : IDeSpawn, IEventDispatcher
 	{
 		private readonly ValueListDictionary<string, KeyValuePairCat<Action, bool>> _listenerDict =
 			new ValueListDictionary<string, KeyValuePairCat<Action, bool>>();
@@ -95,7 +95,7 @@ namespace CsCat
 			}
 		}
 
-		public void OnDespawn()
+		public void OnDeSpawn()
 		{
 			RemoveAllListeners();
 		}

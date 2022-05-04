@@ -10,7 +10,7 @@ namespace CsCat
 	{
 		public string StartCoroutine(IEnumerator ie, string key = null)
 		{
-			return coroutinePluginComponent.StartCoroutine(ie, key);
+			return CoroutineDictComponent.StartCoroutine(ie, key);
 		}
 
 		/// <summary>
@@ -19,12 +19,12 @@ namespace CsCat
 		/// <param name="key"></param>
 		public void StopCoroutine(string key)
 		{
-			coroutinePluginComponent.StopCoroutine(key);
+			CoroutineDictComponent.StopCoroutine(key);
 		}
 
 		public void StopAllCoroutines()
 		{
-			coroutinePluginComponent.StopAllCoroutines();
+			CoroutineDictComponent.StopAllCoroutines();
 		}
 	}
 }

@@ -46,7 +46,7 @@ namespace CsCat
 		{
 			if (clone == null)
 				return;
-			clone.Despawn();
+			clone.DeSpawn();
 			if (parentTransform != null)
 				clone.transform.SetParent(parentTransform);
 		}

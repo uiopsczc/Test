@@ -5,7 +5,7 @@ namespace CsCat
 {
 	public partial class AbstractEntity
 	{
-		public virtual void OnDespawn()
+		public virtual void OnDeSpawn()
 		{
 			_OnDespawn_();
 			_OnDespawn_Child();
