@@ -23,7 +23,7 @@ namespace CsCat
 		public void Remove(SpawnType key)
 		{
 			if (_poolObjectDict.TryGetValue(key, out var value))
-				value.DeSpawn();
+				value.Despawn();
 			_poolObjectDict.Remove(key);
 		}
 
@@ -32,7 +32,7 @@ namespace CsCat
 			foreach (var keyValue in _poolObjectDict)
 			{
 				var value = keyValue.Value;
-				value.DeSpawn();
+				value.Despawn();
 			}
 			_poolObjectDict.Clear();
 		}

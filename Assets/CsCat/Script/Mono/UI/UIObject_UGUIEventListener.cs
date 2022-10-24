@@ -20,7 +20,7 @@ namespace CsCat
 		//////////////////////////////////////////////////////////////////////
 		// OnClick
 		//////////////////////////////////////////////////////////////////////
-		public Action<GameObject, PointerEventData> RegisterOnClick(Component component, Action action,
+		public Action<GameObject, PointerEventData> RegisterOnClick(UnityEngine.Component component, Action action,
 		  string soundPath = null)
 		{
 			return RegisterOnClick(component.gameObject, action, soundPath);
@@ -41,7 +41,7 @@ namespace CsCat
 			return result;
 		}
 
-		public void UnRegisterOnClick(Component component, Action<GameObject, BaseEventData> action)
+		public void UnRegisterOnClick(UnityEngine.Component component, Action<GameObject, BaseEventData> action)
 		{
 			UnRegisterOnClick(component.gameObject, action);
 		}
@@ -62,7 +62,7 @@ namespace CsCat
 			return result;
 		}
 
-		public void UnRegisterOnDrag(Component component, Action<GameObject, BaseEventData> action)
+		public void UnRegisterOnDrag(UnityEngine.Component component, Action<GameObject, BaseEventData> action)
 		{
 			UnRegisterOnDrag(component.gameObject, action);
 		}
@@ -84,7 +84,7 @@ namespace CsCat
 			return result;
 		}
 
-		public void UnRegisterOnPointerDown(Component component, Action<GameObject, BaseEventData> action)
+		public void UnRegisterOnPointerDown(UnityEngine.Component component, Action<GameObject, BaseEventData> action)
 		{
 			UnRegisterOnPointerDown(component.gameObject, action);
 		}
@@ -105,7 +105,7 @@ namespace CsCat
 			return result;
 		}
 
-		public void UnRegisterOnPointerUp(Component component, Action<GameObject, BaseEventData> action)
+		public void UnRegisterOnPointerUp(UnityEngine.Component component, Action<GameObject, BaseEventData> action)
 		{
 			UnRegisterOnPointerUp(component.gameObject, action);
 		}
@@ -118,7 +118,7 @@ namespace CsCat
 		//////////////////////////////////////////////////////////////////////
 		// UnRegister
 		//////////////////////////////////////////////////////////////////////
-		public void UnRegister(Component component)
+		public void UnRegister(UnityEngine.Component component)
 		{
 			UnRegister(component.gameObject);
 		}

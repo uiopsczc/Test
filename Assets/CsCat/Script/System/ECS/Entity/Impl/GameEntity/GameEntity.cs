@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace CsCat
 {
-	public partial class GameEntity : AbstractEntity
+	public partial class GameEntity : Entity
 	{
 		public GameEntity parent => GetParent<GameEntity>();
 		public EventDispatchers eventDispatchers = new EventDispatchers();

@@ -10,11 +10,11 @@ namespace CsCat
 				? sourceArray.GetType().GetElementType()
 				: toAdds.GetType().GetElementType();
 			var sourceArrayLength = sourceArray?.Length ?? 0;
-			var array = Array.CreateInstance(elementType, sourceArrayLength + 1);
+			var targetArray = Array.CreateInstance(elementType, sourceArrayLength + 1);
 			if (sourceArray != null && sourceArray.Length > 0)
-				Array.Copy(sourceArray, 0, array, toAdds.Length, sourceArrayLength);
-			Array.Copy(toAdds, 0, array, 0, toAdds.Length);
-			return array;
+				Array.Copy(sourceArray, 0, targetArray, toAdds.Length, sourceArrayLength);
+			Array.Copy(toAdds, 0, targetArray, 0, toAdds.Length);
+			return targetArray;
 		}
 
 

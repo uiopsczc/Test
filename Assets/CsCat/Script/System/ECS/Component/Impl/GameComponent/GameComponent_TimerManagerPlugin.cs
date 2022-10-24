@@ -22,10 +22,10 @@ namespace CsCat
 		public Timer AddTimer(Func<object[], bool> updateFunc, float delay = 0, float interval = 0,
 			int needRunCount = 0,
 			UpdateModeCat updateMode = UpdateModeCat.Update, bool isUseUnscaledDeltaTime = false, int priority = 1,
-			params object[] func_args)
+			params object[] funcArgs)
 		{
 			return timerManagerPlugin.AddTimer(updateFunc, delay, interval, needRunCount, updateMode,
-				isUseUnscaledDeltaTime, priority, func_args);
+				isUseUnscaledDeltaTime, priority, funcArgs);
 		}
 
 		public Timer AddTimer(Timer timer)

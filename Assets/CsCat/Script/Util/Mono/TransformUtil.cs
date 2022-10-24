@@ -34,10 +34,10 @@ namespace CsCat
 		/// <param name="transform"></param>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		public static Component[] FindComponentsInChildren(Transform transform, Type type, string name,
+		public static UnityEngine.Component[] FindComponentsInChildren(Transform transform, Type type, string name,
 			bool isRecursive = true, bool isStartWith = true)
 		{
-			List<Component> list = new List<Component>();
+			List<UnityEngine.Component> list = new List<UnityEngine.Component>();
 			for (int i = 0; i < transform.childCount; i++)
 			{
 				Transform child = transform.GetChild(i);
@@ -50,7 +50,7 @@ namespace CsCat
 					list.Add(child.GetComponent(type));
 
 				if (!isRecursive) continue;
-				Component[] components = FindComponentsInChildren(child, type, name, isRecursive, isStartWith);
+				UnityEngine.Component[] components = FindComponentsInChildren(child, type, name, isRecursive, isStartWith);
 				if (components == null || components.Length <= 0) continue;
 				list.AddRange(components);
 			}
@@ -59,13 +59,13 @@ namespace CsCat
 		}
 
 		public static T[] FindComponentsInChildren<T>(Transform transform, string name, bool isRecursive = true,
-			bool isStartWith = true) where T : Component
+			bool isStartWith = true) where T : UnityEngine.Component
 		{
-			Component[] components = FindComponentsInChildren(transform, typeof(T), name, isRecursive, isStartWith);
+			UnityEngine.Component[] components = FindComponentsInChildren(transform, typeof(T), name, isRecursive, isStartWith);
 			return components?.ToArray<T>();
 		}
 
-		public static Component FindComponentInChildren(Transform transform, Type type, string name,
+		public static UnityEngine.Component FindComponentInChildren(Transform transform, Type type, string name,
 			bool isRecursive = true, bool isStartWith = true)
 		{
 			if (name.IndexOf(CharConst.Char_Slash) != -1)
@@ -84,7 +84,7 @@ namespace CsCat
 
 				if (isRecursive)
 				{
-					Component t = FindComponentInChildren(child, type, name, isRecursive, isStartWith);
+					UnityEngine.Component t = FindComponentInChildren(child, type, name, isRecursive, isStartWith);
 					if (t != null)
 						return t;
 				}
@@ -94,12 +94,12 @@ namespace CsCat
 		}
 
 		public static T FindComponentInChildren<T>(Transform transform, string name, bool isRecursive = true,
-			bool isStartWith = true) where T : Component
+			bool isStartWith = true) where T : UnityEngine.Component
 		{
 			return FindComponentInChildren(transform, typeof(T), name, isRecursive, isStartWith) as T;
 		}
 
-		public static Component FindComponentWithTagInChildren(Transform transform, Type type, string tagName,
+		public static UnityEngine.Component FindComponentWithTagInChildren(Transform transform, Type type, string tagName,
 			bool isRecursive = true, bool isStartWith = true)
 		{
 			for (int i = 0; i < transform.childCount; i++)
@@ -114,7 +114,7 @@ namespace CsCat
 					return child.GetComponent(type);
 
 				if (!isRecursive) continue;
-				Component component = FindComponentWithTagInChildren(child, type, tagName, true, isStartWith);
+				UnityEngine.Component component = FindComponentWithTagInChildren(child, type, tagName, true, isStartWith);
 				if (component != null)
 					return component;
 			}
@@ -124,15 +124,15 @@ namespace CsCat
 
 		public static T FindComponentWithTagInChildren<T>(Transform transform, string tagName,
 			bool isRecursive = true,
-			bool isStartWith = true) where T : Component
+			bool isStartWith = true) where T : UnityEngine.Component
 		{
 			return FindComponentWithTagInChildren(transform, typeof(T), tagName, isRecursive, isStartWith) as T;
 		}
 
-		public static Component[] FindComponentsWithTagInChildren(Transform transform, Type type, string tagName,
+		public static UnityEngine.Component[] FindComponentsWithTagInChildren(Transform transform, Type type, string tagName,
 			bool isRecursive = true, bool isStartWith = true)
 		{
-			List<Component> list = new List<Component>();
+			List<UnityEngine.Component> list = new List<UnityEngine.Component>();
 			for (int i = 0; i < transform.childCount; i++)
 			{
 				Transform child = transform.GetChild(i);
@@ -145,7 +145,7 @@ namespace CsCat
 					list.Add(child.GetComponent(type));
 
 				if (!isRecursive) continue;
-				Component[] components =
+				UnityEngine.Component[] components =
 					FindComponentsWithTagInChildren(child, type, tagName, isRecursive, isStartWith);
 				if (components == null || components.Length <= 0) continue;
 				list.AddRange(components);
@@ -156,9 +156,9 @@ namespace CsCat
 
 		public static T[] FindComponentsWithTagInChildren<T>(Transform transform, string tagName,
 			bool isRecursive = true,
-			bool isStartWith = true) where T : Component
+			bool isStartWith = true) where T : UnityEngine.Component
 		{
-			Component[] components =
+			UnityEngine.Component[] components =
 				FindComponentsWithTagInChildren(transform, typeof(T), tagName, isRecursive, isStartWith);
 			return components?.ToArray<T>();
 		}
@@ -173,14 +173,14 @@ namespace CsCat
 		/// <param name="transform"></param>
 		/// <param name="name"></param>
 		/// <returns></returns>
-		public static Component[] FindComponentsInParent(Transform transform, Type type, string name,
+		public static UnityEngine.Component[] FindComponentsInParent(Transform transform, Type type, string name,
 			bool isStartWith = true)
 		{
-			List<Component> list = new List<Component>();
+			List<UnityEngine.Component> list = new List<UnityEngine.Component>();
 			Transform current = transform;
 			while (current != null)
 			{
-				Component component = current.GetComponent(type);
+				UnityEngine.Component component = current.GetComponent(type);
 				if (component != null)
 				{
 					if (isStartWith)
@@ -199,19 +199,19 @@ namespace CsCat
 		}
 
 		public static T[] FindComponentsInParent<T>(Transform transform, string name, bool isStartWith = true)
-			where T : Component
+			where T : UnityEngine.Component
 		{
-			Component[] components = FindComponentsInParent(transform, typeof(T), name, isStartWith);
+			UnityEngine.Component[] components = FindComponentsInParent(transform, typeof(T), name, isStartWith);
 			return components?.ToArray<T>();
 		}
 
-		public static Component FindComponentInParent(Transform transform, Type type, string name,
+		public static UnityEngine.Component FindComponentInParent(Transform transform, Type type, string name,
 			bool isStartWith = true)
 		{
 			Transform current = transform;
 			while (current != null)
 			{
-				Component component = current.GetComponent(type);
+				UnityEngine.Component component = current.GetComponent(type);
 				if (component != null)
 				{
 					if (isStartWith)
@@ -230,7 +230,7 @@ namespace CsCat
 		}
 
 		public static T FindComponentInParent<T>(Transform transform, string name, bool isStartWith = true)
-			where T : Component
+			where T : UnityEngine.Component
 		{
 			return FindComponentInParent(transform, typeof(T), name, isStartWith) as T;
 		}

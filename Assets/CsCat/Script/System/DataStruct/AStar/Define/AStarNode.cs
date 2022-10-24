@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace CsCat
 {
-	public class AStarNode : IDeSpawn
+	public class AStarNode : IDespawn
 	{
 		public Vector2Int pos;
 		public AStarNode parent;
@@ -18,7 +18,7 @@ namespace CsCat
 			this.pos = new Vector2Int(x, y);
 		}
 
-		public void OnDeSpawn()
+		public void OnDespawn()
 		{
 			pos = default;
 			parent = null;

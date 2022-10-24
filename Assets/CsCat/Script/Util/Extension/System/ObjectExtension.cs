@@ -1061,7 +1061,10 @@ namespace CsCat
 
 		public static void Despawn(this object self)
 		{
-			PoolCatManagerUtil.Despawn(self);
+			if (self is IDespawn spawn)
+			{
+				spawn.OnDespawn();
+			}
 		}
 
 		public static object GetNotNullKey(this object self)

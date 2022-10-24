@@ -2,7 +2,7 @@ using System;
 
 namespace CsCat
 {
-	public partial class GameComponent : AbstractComponent
+	public partial class GameComponent : Component
 	{
 		protected override void _Reset()
 		{

@@ -6,7 +6,7 @@ namespace CsCat
 {
 	//基类，该类不是组件供使用
 	public class AutoAssetRelease<TargetComponent, AssetObjectType> : AssetCatDisposable
-		where TargetComponent : Component where AssetObjectType : Object
+		where TargetComponent : UnityEngine.Component where AssetObjectType : Object
 	{
 		protected static void Set<TargetComponent_AssetObjectType>(TargetComponent component, AssetCat assetCat,
 			string assetPath) where TargetComponent_AssetObjectType : AutoAssetRelease<TargetComponent, AssetObjectType>

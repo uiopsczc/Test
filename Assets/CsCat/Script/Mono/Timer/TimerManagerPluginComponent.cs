@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace CsCat
 {
-	public class TimerManagerPluginComponent : AbstractComponent
+	public class TimerManagerPluginComponent : Component
 	{
 		public TimerManagerPlugin timerManagerPlugin;
 		public void Init(TimerManagerPlugin timerManagerPlugin)

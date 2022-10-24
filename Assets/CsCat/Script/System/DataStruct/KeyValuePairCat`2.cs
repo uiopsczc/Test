@@ -1,6 +1,6 @@
 namespace CsCat
 {
-	public class KeyValuePairCat<K, V> : IToString2, IDeSpawn
+	public class KeyValuePairCat<K, V> : IToString2, IDespawn
 	{
 		public K key { set; get; }
 		public V value { set; get; }
@@ -39,7 +39,7 @@ namespace CsCat
 			return string.Format("[{0},{1}]", key, value);
 		}
 
-		public void OnDeSpawn()
+		public void OnDespawn()
 		{
 			this.key = default;
 			this.value = default;

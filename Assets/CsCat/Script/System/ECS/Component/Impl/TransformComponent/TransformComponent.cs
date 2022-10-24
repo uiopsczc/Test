@@ -2,7 +2,7 @@ using UnityEngine;
 
 namespace CsCat
 {
-	public partial class TransformComponent : AbstractComponent
+	public partial class TransformComponent : Component
 	{
 		public Vector3 _localPosition;
 		private Vector3 _localEulerAngles;

@@ -1,24 +1,26 @@
-using System;
-using System.Collections.Generic;
-
 namespace CsCat
 {
-	public class PoolObject<T>: IPoolObject
+	public class PoolObject<T>:IPoolObject
 	{
 		private readonly T _value;
-		private bool _isDeSpawned;//是否回收了
-		private PoolObjectInfo _poolObjectInfo;
+		private bool _isDespawned;//是否回收了
+		private readonly PoolObjectIndex _poolObjectIndex;
 
-		public PoolObject(PoolCat<T> pool, int indexInPool, T value, bool isDeSpawned)
+		public PoolObject(PoolCat<T> pool, int indexInPool, T value, bool isDespawned)
 		{
-			this._poolObjectInfo = new PoolObjectInfo(pool, indexInPool);
+			this._poolObjectIndex = new PoolObjectIndex(pool, indexInPool);
 			this._value = value;
-			this._isDeSpawned = isDeSpawned;
+			this._isDespawned = isDespawned;
 		}
 
 		public int GetIndexInPool()
 		{
-			return this._poolObjectInfo.GetIndexInPool();
+			return this._poolObjectIndex.GetIndexInPool();
+		}
+
+		public PoolObjectIndex GetPoolObjectIndex()
+		{
+			return this._poolObjectIndex;
 		}
 
 		public T GetValue()
@@ -26,20 +28,20 @@ namespace CsCat
 			return this._value;
 		}
 
-		public void SetIsDeSpawned(bool isDeSpawned)
+		public void SetIsDespawned(bool isDespawned)
 		{
-			this._isDeSpawned = isDeSpawned;
+			this._isDespawned = isDespawned;
 		}
 
-		public bool IsDeSpawned()
+		public bool IsDespawned()
 		{
-			return this._isDeSpawned;
+			return this._isDespawned;
 		}
 
-		public void DeSpawn()
+		public void Despawn()
 		{
-			this._poolObjectInfo.GetPool().DeSpawn(this);
-			this._isDeSpawned = true;
+			this._poolObjectIndex.GetPool().InvokeMethod("Despawn", false, this);
+			this._isDespawned = true;
 		}
 	}
 }

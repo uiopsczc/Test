@@ -16,7 +16,7 @@ namespace CsCat
 		public MonoBehaviourCache monoBehaviourCache =>
 			_monoBehaviourCache ?? (_monoBehaviourCache = new MonoBehaviourCache(this));
 
-		public Component target_component
+		public UnityEngine.Component target_component
 		{
 			get
 			{

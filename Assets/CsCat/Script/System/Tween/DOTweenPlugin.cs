@@ -37,7 +37,7 @@ namespace CsCat
 				Tween tween = _dict[key];
 				if (tween.IsActive())
 					_dict[key].Kill();
-				_idPool.Despawn(key);
+				ObjectExtension.Despawn(_idPool, key);
 				_dict.Remove(key);
 			}
 		}

@@ -4,26 +4,23 @@ using XLua;
 
 namespace CsCat
 {
-	public partial class PoolCatManager : ISingleton
+	public partial class PoolCatManager
 	{
 		private readonly Dictionary<string, IPoolCat> poolDict = new Dictionary<string, IPoolCat>();
-		public static PoolCatManager instance => SingletonFactory.instance.Get<PoolCatManager>();
-
-		public void SingleInit()
-		{
-		}
+		
 
 		public IPoolCat AddPool(string poolName, IPoolCat pool)
 		{
 			poolDict[poolName] = pool;
+			pool.SetPoolManager(this);
 			return pool;
 		}
 
 		public void RemovePool(string poolName)
 		{
-			if (poolDict.ContainsKey(poolName))
+			if (poolDict.TryGetValue(poolName, out var pool))
 			{
-				poolDict[poolName].Destroy();
+				pool.Destroy();
 				poolDict.Remove(poolName);
 			}
 		}
@@ -33,15 +30,15 @@ namespace CsCat
 			return poolDict[poolName];
 		}
 
-		public bool TryGetPool(string poolName, out IPoolCat pool)
-		{
-			return this.poolDict.TryGetValue(poolName, out pool);
-		}
-
 		public PoolCat<T> GetPool<T>(string poolName = null)
 		{
 			poolName = poolName ?? typeof(T).FullName;
-			return (PoolCat<T>)poolDict[poolName];
+			return this.GetPool(poolName) as PoolCat<T>;
+		}
+
+		public bool TryGetPool(string poolName, out IPoolCat pool)
+		{
+			return this.poolDict.TryGetValue(poolName, out pool);
 		}
 
 		public bool IsContainsPool(string poolName)
@@ -51,35 +48,22 @@ namespace CsCat
 
 		public IPoolCat GetOrAddPool(Type poolType, params object[] poolConstructArgs)
 		{
-			string poolName = poolConstructArgs[0] as string;
-			if (!IsContainsPool(poolName))
-			{
-				var pool = poolType.CreateInstance(poolConstructArgs) as IPoolCat;
-				AddPool(poolName, pool);
+			if (poolConstructArgs.Length == 0)
+				poolConstructArgs = new[] {poolType.FullName};
+			string poolName = (string)poolConstructArgs[0];
+			if (this.TryGetPool(poolName, out var pool))
 				return pool;
-			}
-
-			poolName = poolName ?? poolType.FullName;
-			return GetPool(poolName);
+			pool = poolType.CreateInstance(poolConstructArgs) as IPoolCat;
+			AddPool(poolName, pool);
+			return pool;
 		}
 
-		public PoolCat<T> GetOrAddPool<T>(params object[] poolConstructArgs)
+		public void DespawnAll(string poolName)
 		{
-			string poolName = poolConstructArgs[0] as string;
-			if (!IsContainsPool(poolName))
+			if (poolDict.TryGetValue(poolName, out var pool))
 			{
-				var pool = typeof(PoolCat<T>).CreateInstance(poolConstructArgs) as PoolCat<T>;
-				AddPool(poolName, pool);
-				return pool;
+				pool.DespawnAll();
 			}
-			return GetPool<T>(poolName);
-		}
-
-		public void DeSpawnAll(string poolName)
-		{
-			if (!poolDict.ContainsKey(poolName))
-				return;
-			poolDict[poolName].DeSpawnAll();
 		}
 		
 
@@ -89,21 +73,21 @@ namespace CsCat
 			if (!poolDict.TryGetValue(poolName, out var pool))
 			{
 				pool = this.InvokeGenericMethod("Spawn", new[] { spawnType }, false, poolName, null, null) as IPoolCat;
-				poolDict[poolName] = pool;
+				this.AddPool(poolName, pool);
 			}
-			var poolObject = pool.Spawn();
+			var poolObject = pool.InvokeMethod<IPoolObject>("Spawn");
 			return poolObject;
 		}
 
 
 		public PoolObject<T> Spawn<T>(string poolName, Func<T> spawnFunc, Action<T> onSpawnCallback = null)
 		{
+			poolName = poolName ?? typeof(T).FullName;
 			if (!poolDict.TryGetValue(poolName, out var pool))
 			{
 				pool = new PoolCat<T>(poolName, spawnFunc);
-				poolDict[poolName] = pool;
+				this.AddPool(poolName, pool);
 			}
-
 			var poolObject = ((PoolCat<T>)pool).Spawn(onSpawnCallback);
 			return poolObject;
 		}

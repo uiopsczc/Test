@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace CsCat
 {
-	public class PausableCoroutineDictComponent : AbstractComponent
+	public class PausableCoroutineDictComponent : Component
 	{
 		public PausableCoroutineDict pausableCoroutineDict;
 

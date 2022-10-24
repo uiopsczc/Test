@@ -44,12 +44,12 @@ namespace CsCat
 		/// <param name="name"></param>
 		/// <returns></returns>
 		public static T[] FindComponentsInChildren<T>(this Transform self, string name, bool isRecursive = true,
-			bool isStartWith = true) where T : Component
+			bool isStartWith = true) where T : UnityEngine.Component
 		{
 			return TransformUtil.FindComponentsInChildren<T>(self, name, isRecursive, isStartWith);
 		}
 
-		public static Component[] FindComponentsInChildren(this Transform self, Type type, string name,
+		public static UnityEngine.Component[] FindComponentsInChildren(this Transform self, Type type, string name,
 			bool isRecursive = true, bool isStartWith = true)
 		{
 			return TransformUtil.FindComponentsInChildren(self, type, name, isRecursive, isStartWith);
@@ -57,24 +57,24 @@ namespace CsCat
 
 
 		public static T FindComponentInChildren<T>(this Transform self, string name, bool isRecursive = true,
-			bool isStartWith = true) where T : Component
+			bool isStartWith = true) where T : UnityEngine.Component
 		{
 			return TransformUtil.FindComponentInChildren<T>(self, name, isRecursive, isStartWith);
 		}
 
-		public static Component FindComponentInChildren(this Transform self, Type type, string name,
+		public static UnityEngine.Component FindComponentInChildren(this Transform self, Type type, string name,
 			bool isRecursive = true, bool isStartWith = true)
 		{
 			return TransformUtil.FindComponentInChildren(self, type, name, isRecursive, isStartWith);
 		}
 
 		public static T FindComponentWithTagInChildren<T>(this Transform self, string tagName, bool isRecursive = true,
-			bool isStartWith = true) where T : Component
+			bool isStartWith = true) where T : UnityEngine.Component
 		{
 			return TransformUtil.FindComponentWithTagInChildren<T>(self, tagName, isRecursive, isStartWith);
 		}
 
-		public static Component FindComponentWithTagInChildren(this Transform self, Type type, string tagName,
+		public static UnityEngine.Component FindComponentWithTagInChildren(this Transform self, Type type, string tagName,
 			bool isRecursive = true, bool isStartWith = true)
 		{
 			return TransformUtil.FindComponentWithTagInChildren(self, type, tagName, isRecursive, isStartWith);
@@ -82,12 +82,12 @@ namespace CsCat
 
 		public static T[] FindComponentsWithTagInChildren<T>(this Transform self, string tagName,
 			bool isRecursive = true,
-			bool isStartWith = true) where T : Component
+			bool isStartWith = true) where T : UnityEngine.Component
 		{
 			return TransformUtil.FindComponentsWithTagInChildren<T>(self, tagName, isRecursive, isStartWith);
 		}
 
-		public static Component[] FindComponentsWithTagInChildren(this Transform self, Type type, string tagName,
+		public static UnityEngine.Component[] FindComponentsWithTagInChildren(this Transform self, Type type, string tagName,
 			bool isRecursive = true, bool isStartWith = true)
 		{
 			return TransformUtil.FindComponentsWithTagInChildren(self, type, tagName, isRecursive, isStartWith);
@@ -104,12 +104,12 @@ namespace CsCat
 		/// <param name="name"></param>
 		/// <returns></returns>
 		public static T[] FindComponentsInParent<T>(this Transform self, string name, bool isStartWith = true)
-			where T : Component
+			where T : UnityEngine.Component
 		{
 			return TransformUtil.FindComponentsInParent<T>(self, name, isStartWith);
 		}
 
-		public static Component[] FindComponentsInParent(this Transform self, Type type, string name,
+		public static UnityEngine.Component[] FindComponentsInParent(this Transform self, Type type, string name,
 			bool isStartWith = true)
 		{
 			return TransformUtil.FindComponentsInParent(self, type, name, isStartWith);
@@ -117,12 +117,12 @@ namespace CsCat
 
 
 		public static T FindComponentInParent<T>(this Transform self, string name, bool isStartWith = true)
-			where T : Component
+			where T : UnityEngine.Component
 		{
 			return TransformUtil.FindComponentInParent<T>(self, name, isStartWith);
 		}
 
-		public static Component FindComponentInParent(this Transform self, Type type, string name,
+		public static UnityEngine.Component FindComponentInParent(this Transform self, Type type, string name,
 			bool isStartWith = true)
 		{
 			return TransformUtil.FindComponentInParent(self, type, name, isStartWith);

@@ -85,11 +85,11 @@ namespace CsCat
 			if (unit != null && !oldGuid.Equals(newGuid))
 			{
 				this._unitDict.Remove(oldGuid);
-				this.keyToChildDict.Remove(oldGuid);
+				this.keyToChildPoolObjectInfoDict.Remove(oldGuid);
 				int index = this.childKeyList.IndexOf(oldGuid);
 
 				this._unitDict[newGuid] = unit;
-				this.keyToChildDict[newGuid] = unit;
+				this.keyToChildPoolObjectInfoDict[newGuid] = unit;
 				this.childKeyList[index] = newGuid;
 			}
 		}

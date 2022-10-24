@@ -61,7 +61,7 @@ namespace CsCat
 				hashtable["child_list"] = GetSave_ChildList(childTransform);
 
 			List<Type> exceptList = new List<Type> { typeof(Transform), typeof(Tilemap) };
-			var components = childTransform.GetComponents<Component>();
+			var components = childTransform.GetComponents<UnityEngine.Component>();
 			for (var i = 0; i < components.Length; i++)
 			{
 				var component = components[i];

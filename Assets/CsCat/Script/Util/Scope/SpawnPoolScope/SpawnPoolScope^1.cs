@@ -30,7 +30,7 @@ namespace CsCat
 
 		public override void Dispose()
 		{
-			poolObject.DeSpawn();
+			poolObject.Despawn();
 			_spawn = default;
 			poolObject = null;
 			this._onSpawnCallback = null;

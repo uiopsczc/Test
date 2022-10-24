@@ -3,14 +3,16 @@ using System.Collections.Generic;
 
 namespace CsCat
 {
-	public class PoolCat<T>: IPoolCat
+	public class PoolCat<T>:IPoolCat
 	{
 		/// <summary>
 		/// 存放object的List
 		/// </summary>
 		private readonly List<PoolObject<T>> _poolObjectList = new List<PoolObject<T>>();
 		private string _poolName;
+		private PoolCatManager _poolManager;
 		private Func<T> _spawnFunc;
+
 
 
 		public PoolCat(string poolName)
@@ -24,10 +26,20 @@ namespace CsCat
 			this._spawnFunc = spawnFunc;
 		}
 
+		public void SetPoolManager(PoolCatManager poolManager)
+		{
+			this._poolManager = poolManager;
+		}
+
+		public PoolCatManager GetPoolManager()
+		{
+			return this._poolManager;
+		}
+
 		public void InitPool(int initCount = 1, Action<T> onSpawnCallback = null)
 		{
 			for (int i = 0; i < initCount; i++)
-				DeSpawn(Spawn(onSpawnCallback));
+				Despawn(Spawn(onSpawnCallback));
 		}
 
 
@@ -44,10 +56,18 @@ namespace CsCat
 
 		#endregion
 
-		public virtual IPoolObject Spawn()
+		public virtual PoolObject<T> Spawn()
 		{
 			return this.Spawn(null);
 		}
+
+		public PoolObject<T> GetPoolObjectAtIndex(int index)
+		{
+			return this._poolObjectList[index];
+		}
+
+
+
 		/// <summary>
 		/// 创建
 		/// </summary>
@@ -58,9 +78,9 @@ namespace CsCat
 			for (var i = 0; i < _poolObjectList.Count; i++)
 			{
 				poolObject = _poolObjectList[i];
-				if (poolObject.IsDeSpawned())
+				if (poolObject.IsDespawned())
 				{
-					poolObject.SetIsDeSpawned(false);
+					poolObject.SetIsDespawned(false);
 					onSpawnCallback?.Invoke(poolObject.GetValue());
 					return poolObject;
 				}
@@ -73,36 +93,24 @@ namespace CsCat
 			return poolObject;
 		}
 
-		public virtual void DeSpawn(PoolObject<T> poolObject)
+		public virtual void Despawn(PoolObject<T> poolObject)
 		{
 			T value = poolObject.GetValue();
-			IDeSpawn spawnable = value as IDeSpawn;
-			spawnable?.OnDeSpawn();
-		}
-
-		public void DeSpawn(IPoolObject poolObject)
-		{
-			DeSpawn((PoolObject<T>)poolObject);
+			IDespawn spawnable = value as IDespawn;
+			spawnable?.OnDespawn();
 		}
 
 
-		public void DeSpawnAll()
+		public void DespawnAll()
 		{
 			for (int i = 0; i < _poolObjectList.Count; i++)
 			{
 				var poolObject = _poolObjectList[i];
-				if (!poolObject.IsDeSpawned())
-					DeSpawn(poolObject);
+				if (!poolObject.IsDespawned())
+					Despawn(poolObject);
 			}
 		}
-
 		
-
-		public IPoolObject GetPoolObjectAtIndex(int index)
-		{
-			return this._poolObjectList[index];
-		}
-
 		protected virtual void OnDestroy(T value)
 		{
 		}
@@ -110,7 +118,7 @@ namespace CsCat
 
 		public virtual void Destroy()
 		{
-			DeSpawnAll();
+			DespawnAll();
 			for (var i = 0; i < _poolObjectList.Count; i++)
 			{
 				var poolObject = _poolObjectList[i];

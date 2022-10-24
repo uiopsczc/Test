@@ -10,7 +10,7 @@ namespace CsCat
 	{
 		protected PausableCoroutineDict PausableCoroutineDict => cache.GetOrAddDefault(() =>
 			new PausableCoroutineDict(GetGameEntity().GetComponent<PausableCoroutineDictComponent>()
-				.pausableCoroutineDict._monoBehaviour));
+				.pausableCoroutineDict.GetMonoBehaviour()));
 
 
 		public string StartPausableCoroutine(IEnumerator ie, string key = null)

@@ -7,6 +7,6 @@ namespace CsCat
 		public const string Pool_Name = "PoolName";
 		public const string Pool_Object = "PoolObject";
 		public const string Is_UIPool = "IsUIPool";
-		public const string OnDeSpawn_Method_Name = "OnDeSpawn";
+		public const string OnDespawn_Method_Name = "OnDespawn";
 	}
 }

@@ -7,12 +7,12 @@ namespace CsCat
 {
 	public static class ComponentExtensions
 	{
-		public static RectTransform RectTransform(this Component self)
+		public static RectTransform RectTransform(this UnityEngine.Component self)
 		{
 			return self.GetComponent<RectTransform>();
 		}
 
-		public static GameObject NewChildGameObject(this Component self, string path = null)
+		public static GameObject NewChildGameObject(this UnityEngine.Component self, string path = null)
 		{
 			if (self == null || self.transform == null)
 				return null;
@@ -34,7 +34,7 @@ namespace CsCat
 			return gameObject;
 		}
 
-		public static Component NewChildWithComponent(this Component self, Type componentType, string path = null)
+		public static UnityEngine.Component NewChildWithComponent(this UnityEngine.Component self, Type componentType, string path = null)
 		{
 			if (self == null)
 				return null;
@@ -42,22 +42,22 @@ namespace CsCat
 			return gameObject.AddComponent(componentType);
 		}
 
-		public static T NewChildWithComponent<T>(this Component self, string path = null) where T : Component
+		public static T NewChildWithComponent<T>(this UnityEngine.Component self, string path = null) where T : UnityEngine.Component
 		{
 			return NewChildWithComponent(self, typeof(T), path) as T;
 		}
 
-		public static RectTransform NewChildWithRectTransform(this Component self, string path = null)
+		public static RectTransform NewChildWithRectTransform(this UnityEngine.Component self, string path = null)
 		{
 			return NewChildWithComponent<RectTransform>(self, path);
 		}
 
-		public static Image NewChildWithImage(this Component self, string path = null)
+		public static Image NewChildWithImage(this UnityEngine.Component self, string path = null)
 		{
 			return NewChildWithComponent<Image>(self, path);
 		}
 
-		public static Text NewChildWithText(this Component self, string path = null, string content = null,
+		public static Text NewChildWithText(this UnityEngine.Component self, string path = null, string content = null,
 			int fontSize = 20, Color? color = null, TextAnchor? alignment = null, Font font = null)
 		{
 			Text text = NewChildWithComponent<Text>(self, path);
@@ -77,7 +77,7 @@ namespace CsCat
 			return text;
 		}
 
-		public static GameObject GetOrNewGameObject(this Component self, string path)
+		public static GameObject GetOrNewGameObject(this UnityEngine.Component self, string path)
 		{
 			return GameObjectUtil.GetOrNewGameObject(path, self.gameObject);
 		}

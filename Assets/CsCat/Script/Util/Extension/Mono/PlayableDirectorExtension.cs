@@ -19,7 +19,7 @@ namespace CsCat
 			if (sourceBinding != null)
 			{
 				Object clone_binding;
-				if (sourceBinding is Component c)
+				if (sourceBinding is UnityEngine.Component c)
 				{
 					GameObject cloneBindingGameObject = Object.Instantiate(c.gameObject);
 					cloneBindingGameObject.transform.CopyFrom(c.transform);

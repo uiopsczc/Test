@@ -6,7 +6,7 @@ namespace CsCat
 	/// <summary>
 	/// 缓存
 	/// </summary>
-	public class Cache : IDeSpawn
+	public class Cache : IDespawn
 	{
 		#region field
 
@@ -82,7 +82,7 @@ namespace CsCat
 			dict.Clear();
 		}
 
-		public void OnDeSpawn()
+		public void OnDespawn()
 		{
 			Clear();
 		}

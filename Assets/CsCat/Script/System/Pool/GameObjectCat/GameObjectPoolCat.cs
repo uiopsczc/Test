@@ -34,20 +34,20 @@ namespace CsCat
 			return onSpawnCallback == null ? Spawn() : Spawn(onSpawnCallback);
 		}
 
-		public override void DeSpawn(PoolObject<GameObject> poolObject)
+		public override void Despawn(PoolObject<GameObject> poolObject)
 		{
 			GameObject clone = poolObject.GetValue();
-			var components = clone.GetComponents<Component>();
+			var components = clone.GetComponents<UnityEngine.Component>();
 			for (var i = 0; i < components.Length; i++)
 			{
 				var cloneComponent = components[i];
-				var spawnable = cloneComponent as IDeSpawn;
-				spawnable?.OnDeSpawn();
+				var spawnable = cloneComponent as IDespawn;
+				spawnable?.OnDespawn();
 			}
 			clone.SetActive(false);
 			clone.transform.SetParent(categoryTransform);
 			clone.transform.CopyFrom(this.prefab.transform);
-			base.DeSpawn(poolObject);
+			base.Despawn(poolObject);
 		}
 	}
 }

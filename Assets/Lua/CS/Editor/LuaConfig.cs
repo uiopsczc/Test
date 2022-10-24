@@ -10,6 +10,7 @@ using UnityEngine.Audio;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using XLua;
+using Component = UnityEngine.Component;
 using Object = UnityEngine.Object;
 
 public static class LuaConfig
@@ -70,7 +71,7 @@ public static class LuaConfig
     typeof(AudioSourceExtension),
     typeof(TypeExtension),
     //////////////////////////////Interface////////////////////////////////////////
-    typeof(IDeSpawn),
+    typeof(IDespawn),
     //////////////////////////////Stand API////////////////////////////////////////
     typeof(File),
     typeof(Type),

@@ -8,7 +8,7 @@ namespace CsCat
 	/// </summary>
 	public partial class CZMToolMenu
 	{
-		static Component[] copiedComponents;
+		static UnityEngine.Component[] copiedComponents;
 
 		[MenuItem(CZMToolConst.Menu_Root + "Component/Copy All Components #C")]
 		//crtl+alt+shift+c
@@ -17,7 +17,7 @@ namespace CsCat
 			if (Selection.activeGameObject == null)
 				return;
 
-			copiedComponents = Selection.activeGameObject.GetComponents<Component>();
+			copiedComponents = Selection.activeGameObject.GetComponents<UnityEngine.Component>();
 			Debug.LogWarning("Copyed");
 		}
 

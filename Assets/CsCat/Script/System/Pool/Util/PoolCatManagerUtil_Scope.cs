@@ -1,14 +1,12 @@
 using System;
-using System.Runtime.CompilerServices;
-using Object = UnityEngine.Object;
 
 namespace CsCat
 {
 	public static partial class PoolCatManagerUtil
 	{
-		public static T SpawnScope<T>(Action<T> onSpawnCallback = null) where T : PoolScope
+		public static T SpawnScope<T>(PoolCatManager poolCatManager, Action<T> onSpawnCallback = null) where T : PoolScope
 		{
-			return Spawn(null, null, onSpawnCallback).GetValue();
+			return poolCatManager.Spawn(null, null, onSpawnCallback).GetValue();
 		}
 	}
 }

@@ -3,7 +3,7 @@ using DG.Tweening;
 
 namespace CsCat
 {
-	public class DOTweenPluginComponent : AbstractComponent
+	public class DOTweenPluginComponent : Component
 	{
 		private DOTweenPlugin _dotweenPlugin;
 

@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace CsCat
 {
 	//多个eventDispatchers使用，使用的时候需要指明是那个eventDispatchers
-	public class EventDispatchersPluginDictComponent : AbstractComponent
+	public class EventDispatchersPluginDictComponent : Component
 	{
 		public EventDispatchersPluginDict eventDispatchersPluginDict = new EventDispatchersPluginDict();
 

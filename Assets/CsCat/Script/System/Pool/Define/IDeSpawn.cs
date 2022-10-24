@@ -1,7 +1,7 @@
 namespace CsCat
 {
-	public interface IDeSpawn
+	public interface IDespawn
 	{
-		void OnDeSpawn();
+		void OnDespawn();
 	}
 }

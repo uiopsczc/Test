@@ -5,6 +5,8 @@ namespace CsCat
 {
 	public interface IPoolObject
 	{
-		void DeSpawn();
+		void Despawn();
+
+		PoolObjectIndex GetPoolObjectIndex();
 	}
 }

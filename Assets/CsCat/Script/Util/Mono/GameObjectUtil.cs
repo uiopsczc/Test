@@ -12,7 +12,7 @@ namespace CsCat
 		/// <typeparam name="T"></typeparam>
 		/// <param name="gameObject"></param>
 		/// <returns></returns>
-		public static Component GetOrAddComponent(GameObject gameObject, Type type)
+		public static UnityEngine.Component GetOrAddComponent(GameObject gameObject, Type type)
 		{
 			if (gameObject == null) return null;
 			var component = gameObject.GetComponent(type);
@@ -21,7 +21,7 @@ namespace CsCat
 			return component;
 		}
 
-		public static T GetOrAddComponent<T>(GameObject gameObject) where T : Component
+		public static T GetOrAddComponent<T>(GameObject gameObject) where T : UnityEngine.Component
 		{
 			return GetOrAddComponent(gameObject, typeof(T)) as T;
 		}
@@ -80,10 +80,10 @@ namespace CsCat
 		/// <param name="gameObject"></param>
 		/// <param name="excludeComponentTypes">剔除的组件类型</param>
 		/// <returns></returns>
-		public static Component[] GetComponentsExclude(GameObject gameObject, params Type[] excludeComponentTypes)
+		public static UnityEngine.Component[] GetComponentsExclude(GameObject gameObject, params Type[] excludeComponentTypes)
 		{
-			var result = new List<Component>();
-			foreach (var component in gameObject.GetComponents<Component>())
+			var result = new List<UnityEngine.Component>();
+			foreach (var component in gameObject.GetComponents<UnityEngine.Component>())
 			{
 				if (excludeComponentTypes.Length > 0) //如果剔除的类型个数不为0
 				{
@@ -112,7 +112,7 @@ namespace CsCat
 		/// <param name="excludeComponentTypes">剔除的组件类型</param>
 		/// <param name="excludeSeparator"></param>
 		/// <returns></returns>
-		public static Component[] GetComponentsExclude(GameObject gameObject, string excludeComponentTypes,
+		public static UnityEngine.Component[] GetComponentsExclude(GameObject gameObject, string excludeComponentTypes,
 			string excludeSeparator = StringConst.String_Vertical)
 		{
 			var excludeTypeList = new List<Type>();

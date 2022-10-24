@@ -88,7 +88,7 @@ namespace CsCat
 				if (childHashtableKey.IsFirstLetterUpper() && !except_list.Contains(childHashtableKey))
 				{
 					string componentTypeName = childHashtableKey.Substring(0, childHashtableKey.IndexOf("_"));
-					Component component = GetOrAddComponent(childGameObject, TypeUtil.GetType(componentTypeName),
+					UnityEngine.Component component = GetOrAddComponent(childGameObject, TypeUtil.GetType(componentTypeName),
 						isPrefab);
 					component.InvokeExtensionMethod("LoadSerializeHashtable", true,
 						childHashtable.Get<Hashtable>(curChildHashtableKey));
@@ -104,12 +104,12 @@ namespace CsCat
 		}
 
 
-		private T GetOrAddComponent<T>(GameObject gameObject, bool isPrefab) where T : Component
+		private T GetOrAddComponent<T>(GameObject gameObject, bool isPrefab) where T : UnityEngine.Component
 		{
 			return !isPrefab ? gameObject.AddComponent<T>() : gameObject.GetComponent<T>();
 		}
 
-		private Component GetOrAddComponent(GameObject gameObject, Type componentType, bool isPrefab)
+		private UnityEngine.Component GetOrAddComponent(GameObject gameObject, Type componentType, bool isPrefab)
 		{
 			return !isPrefab ? gameObject.AddComponent(componentType) : gameObject.GetComponent(componentType);
 		}

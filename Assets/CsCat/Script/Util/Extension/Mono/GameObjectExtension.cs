@@ -19,12 +19,12 @@ namespace CsCat
 		/// <typeparam name="T"></typeparam>
 		/// <param name="self"></param>
 		/// <returns></returns>
-		public static T GetOrAddComponent<T>(this GameObject self) where T : Component
+		public static T GetOrAddComponent<T>(this GameObject self) where T : UnityEngine.Component
 		{
 			return GameObjectUtil.GetOrAddComponent<T>(self);
 		}
 
-		public static Component GetOrAddComponent(this GameObject self, Type type)
+		public static UnityEngine.Component GetOrAddComponent(this GameObject self, Type type)
 		{
 			return GameObjectUtil.GetOrAddComponent(self, type);
 		}
@@ -72,7 +72,7 @@ namespace CsCat
 			return self.GetComponent(type) != null;
 		}
 
-		public static bool IsHasComponent<T>(this GameObject self) where T : Component
+		public static bool IsHasComponent<T>(this GameObject self) where T : UnityEngine.Component
 		{
 			return IsHasComponent(self, typeof(T));
 		}
@@ -83,7 +83,7 @@ namespace CsCat
 		/// <param name="self"></param>
 		/// <param name="excludeComponentTypes">剔除的组件类型</param>
 		/// <returns></returns>
-		public static Component[] GetComponentsExclude(this GameObject self, params Type[] excludeComponentTypes)
+		public static UnityEngine.Component[] GetComponentsExclude(this GameObject self, params Type[] excludeComponentTypes)
 		{
 			return GameObjectUtil.GetComponentsExclude(self, excludeComponentTypes);
 		}
@@ -95,7 +95,7 @@ namespace CsCat
 		/// <param name="excludeComponentTypes">剔除的组件类型</param>
 		/// <param name="excludeSplit"></param>
 		/// <returns></returns>
-		public static Component[] GetComponentsExclude(this GameObject self, string excludeComponentTypes,
+		public static UnityEngine.Component[] GetComponentsExclude(this GameObject self, string excludeComponentTypes,
 			string excludeSplit = StringConst.String_Vertical)
 		{
 			return GameObjectUtil.GetComponentsExclude(self, excludeComponentTypes, excludeSplit);
@@ -123,14 +123,14 @@ namespace CsCat
 			return self.GetComponent<RectTransform>();
 		}
 
-		public static void DeSpawn(this GameObject self)
+		public static void Despawn(this GameObject self)
 		{
 			if (self == null)
 				return;
 			if (self.IsCacheContainsKey(PoolCatConst.Pool_Object))
 			{
 				IPoolObject poolObject = self.GetCache<IPoolObject>(PoolCatConst.Pool_Object);
-				poolObject.DeSpawn();
+				poolObject.Despawn();
 			}
 		}
 
@@ -189,12 +189,12 @@ namespace CsCat
 			return self.transform.NewChildGameObject(path);
 		}
 
-		public static Component NewChildWithComponent(this GameObject self, Type componentType, string path = null)
+		public static UnityEngine.Component NewChildWithComponent(this GameObject self, Type componentType, string path = null)
 		{
 			return self == null ? null : self.transform.NewChildWithComponent(componentType, path);
 		}
 
-		public static T NewChildWithComponent<T>(this GameObject self, string path = null) where T : Component
+		public static T NewChildWithComponent<T>(this GameObject self, string path = null) where T : UnityEngine.Component
 		{
 			if (self == null)
 				return null;

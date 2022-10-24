@@ -10,13 +10,13 @@ namespace CsCat
 		public void Increase()
 		{
 			this.count = this.count + 1;
-			this.__CheckFunc();
+			this._CheckFunc();
 		}
 
 		public void Decrease()
 		{
 			this.count = this.count - 1;
-			this.__CheckFunc();
+			this._CheckFunc();
 		}
 
 		public void Reset()
@@ -31,7 +31,7 @@ namespace CsCat
 			this.changeValueInvokeFunc += func;
 		}
 
-		public void __CheckFunc()
+		public void _CheckFunc()
 		{
 			this.changeValueInvokeFunc?.Invoke();
 		}

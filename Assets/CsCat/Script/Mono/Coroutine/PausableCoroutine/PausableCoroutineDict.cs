@@ -6,13 +6,18 @@ namespace CsCat
 {
 	public class PausableCoroutineDict
 	{
-		private MonoBehaviour _monoBehaviour;
-		private PoolObjectDict<ulong> _idPoolObjectDict = new PoolObjectDict<ulong>(new IdPool());
-		private Dictionary<string, PausableCoroutine> _dict = new Dictionary<string, PausableCoroutine>();
-		private List<string> _toRemoveKeyList = new List<string>();
+		private readonly MonoBehaviour _monoBehaviour;
+		private readonly PoolObjectDict<ulong> _idPoolObjectDict = new PoolObjectDict<ulong>(new IdPool());
+		private readonly Dictionary<string, PausableCoroutine> _dict = new Dictionary<string, PausableCoroutine>();
+		private readonly List<string> _toRemoveKeyList = new List<string>();
 		public PausableCoroutineDict(MonoBehaviour monoBehaviour)
 		{
 			this._monoBehaviour = monoBehaviour;
+		}
+
+		public MonoBehaviour GetMonoBehaviour()
+		{
+			return _monoBehaviour;
 		}
 
 		public string StartCoroutine(IEnumerator iEnumerator, string key = null)

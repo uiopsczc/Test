@@ -5,7 +5,7 @@ namespace CsCat
 	public class TickObject : GameEntity
 	{
 		private TickObject child;
-		private AbstractComponent component;
+		private Component component;
 		
 
 		protected override bool isNotDeleteChildRelationshipImmediately => true;
@@ -31,7 +31,7 @@ namespace CsCat
 				child?.Update(deltaTime, unscaledDeltaTime);
 			}
 
-			foreach (var componentKey in componentKeyList)
+			foreach (var componentKey in componentPoolObjectIndexList)
 			{
 				component = GetComponent(componentKey);
 				component?.Update(deltaTime, unscaledDeltaTime);
@@ -50,9 +50,9 @@ namespace CsCat
 				child?.FixedUpdate(deltaTime, unscaledDeltaTime);
 			}
 
-			for (var i = 0; i < componentKeyList.Count; i++)
+			for (var i = 0; i < componentPoolObjectIndexList.Count; i++)
 			{
-				var componentKey = componentKeyList[i];
+				var componentKey = componentPoolObjectIndexList[i];
 				component = GetComponent(componentKey);
 				component?.FixedUpdate(deltaTime, unscaledDeltaTime);
 			}
@@ -71,9 +71,9 @@ namespace CsCat
 				child?.LateUpdate(deltaTime, unscaledDeltaTime);
 			}
 
-			for (var i = 0; i < componentKeyList.Count; i++)
+			for (var i = 0; i < componentPoolObjectIndexList.Count; i++)
 			{
-				var componentKey = componentKeyList[i];
+				var componentKey = componentPoolObjectIndexList[i];
 				component = GetComponent(componentKey);
 				component?.LateUpdate(deltaTime, unscaledDeltaTime);
 			}

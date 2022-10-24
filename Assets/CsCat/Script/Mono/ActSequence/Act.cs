@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace CsCat
 {
-	public partial class Act : IDeSpawn
+	public partial class Act : IDespawn
 	{
 		protected MonoBehaviour _owner;
 		public string id;
@@ -146,7 +146,7 @@ namespace CsCat
 		}
 
 
-		public virtual void OnDeSpawn()
+		public virtual void OnDespawn()
 		{
 			_owner = null;
 			id = null;

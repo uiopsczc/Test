@@ -9,7 +9,7 @@ namespace CsCat
 	public partial class GameComponent
 	{
 		protected CoroutineDict CoroutineDict => cache.GetOrAddDefault(() =>
-			new CoroutineDict(GetGameEntity().GetComponent<CoroutineDictComponent>().coroutineDict._mono));
+			new CoroutineDict(GetGameEntity().GetComponent<CoroutineDictComponent>().coroutineDict.GetMonoBehaviour()));
 
 
 		public string StartCoroutine(IEnumerator ie, string key = null)

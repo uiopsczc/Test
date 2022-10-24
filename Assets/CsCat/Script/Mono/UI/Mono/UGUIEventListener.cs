@@ -164,7 +164,7 @@ namespace CsCat
 			return gameObject.GetOrAddComponent<UGUIEventListener>();
 		}
 
-		public static UGUIEventListener Get<T>(T component) where T : Component
+		public static UGUIEventListener Get<T>(T component) where T : UnityEngine.Component
 		{
 			return Get(component.gameObject);
 		}
@@ -197,7 +197,7 @@ namespace CsCat
 			listener.onLongPress = null;
 		}
 
-		public static void RemoveAllListener(Component component)
+		public static void RemoveAllListener(UnityEngine.Component component)
 		{
 			RemoveAllListener(component.gameObject);
 		}
