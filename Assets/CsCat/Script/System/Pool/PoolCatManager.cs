@@ -67,7 +67,7 @@ namespace CsCat
 		}
 		
 
-		public IPoolObject Spawn(Type spawnType, string poolName = null)
+		public IPoolItem Spawn(Type spawnType, string poolName = null)
 		{
 			poolName = poolName ?? spawnType.FullName;
 			if (!poolDict.TryGetValue(poolName, out var pool))
@@ -75,12 +75,12 @@ namespace CsCat
 				pool = this.InvokeGenericMethod("Spawn", new[] { spawnType }, false, poolName, null, null) as IPoolCat;
 				this.AddPool(poolName, pool);
 			}
-			var poolObject = pool.InvokeMethod<IPoolObject>("Spawn");
+			var poolObject = pool.InvokeMethod<IPoolItem>("Spawn");
 			return poolObject;
 		}
 
 
-		public PoolObject<T> Spawn<T>(string poolName, Func<T> spawnFunc, Action<T> onSpawnCallback = null)
+		public PoolItem<T> Spawn<T>(string poolName, Func<T> spawnFunc, Action<T> onSpawnCallback = null)
 		{
 			poolName = poolName ?? typeof(T).FullName;
 			if (!poolDict.TryGetValue(poolName, out var pool))

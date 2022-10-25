@@ -1,26 +1,14 @@
 namespace CsCat
 {
-	public class PoolObject<T>:IPoolObject
+	public class PoolItem<T>:IPoolItem
 	{
 		private readonly T _value;
 		private bool _isDespawned;//是否回收了
-		private readonly PoolObjectIndex _poolObjectIndex;
 
-		public PoolObject(PoolCat<T> pool, int indexInPool, T value, bool isDespawned)
+		public PoolItem(T value, bool isDespawned)
 		{
-			this._poolObjectIndex = new PoolObjectIndex(pool, indexInPool);
 			this._value = value;
 			this._isDespawned = isDespawned;
-		}
-
-		public int GetIndexInPool()
-		{
-			return this._poolObjectIndex.GetIndexInPool();
-		}
-
-		public PoolObjectIndex GetPoolObjectIndex()
-		{
-			return this._poolObjectIndex;
 		}
 
 		public T GetValue()

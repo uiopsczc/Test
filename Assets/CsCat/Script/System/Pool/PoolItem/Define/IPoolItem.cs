@@ -3,10 +3,8 @@ using System.Collections.Generic;
 
 namespace CsCat
 {
-	public interface IPoolObject
+	public interface IPoolItem
 	{
 		void Despawn();
-
-		PoolObjectIndex GetPoolObjectIndex();
 	}
 }

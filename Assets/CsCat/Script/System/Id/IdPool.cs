@@ -18,7 +18,7 @@ namespace CsCat
 			return currentNumber;
 		}
 
-		public PoolObject<ulong> Get()
+		public PoolItem<ulong> Get()
 		{
 			return this.Spawn(null);
 		}

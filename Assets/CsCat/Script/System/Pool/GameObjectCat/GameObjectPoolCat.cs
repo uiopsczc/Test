@@ -19,7 +19,7 @@ namespace CsCat
 		{
 		}
 
-		public override PoolObject<GameObject> Spawn(Action<GameObject> onSpawnCallback = null)
+		public override PoolItem<GameObject> Spawn(Action<GameObject> onSpawnCallback = null)
 		{
 			var poolObject = base.Spawn(onSpawnCallback);
 			GameObject cloneGameObject = poolObject.GetValue();
@@ -29,14 +29,14 @@ namespace CsCat
 			return poolObject;
 		}
 
-		public PoolObject<GameObject> SpawnGameObject(Action<GameObject> onSpawnCallback = null)
+		public PoolItem<GameObject> SpawnGameObject(Action<GameObject> onSpawnCallback = null)
 		{
 			return onSpawnCallback == null ? Spawn() : Spawn(onSpawnCallback);
 		}
 
-		public override void Despawn(PoolObject<GameObject> poolObject)
+		public override void Despawn(PoolItem<GameObject> poolItem)
 		{
-			GameObject clone = poolObject.GetValue();
+			GameObject clone = poolItem.GetValue();
 			var components = clone.GetComponents<UnityEngine.Component>();
 			for (var i = 0; i < components.Length; i++)
 			{
@@ -47,7 +47,7 @@ namespace CsCat
 			clone.SetActive(false);
 			clone.transform.SetParent(categoryTransform);
 			clone.transform.CopyFrom(this.prefab.transform);
-			base.Despawn(poolObject);
+			base.Despawn(poolItem);
 		}
 	}
 }

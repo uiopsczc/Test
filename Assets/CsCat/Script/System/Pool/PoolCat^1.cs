@@ -3,12 +3,17 @@ using System.Collections.Generic;
 
 namespace CsCat
 {
-	public class PoolCat<T>:IPoolCat
+	public partial class PoolCat<T>:IPoolCat
 	{
 		/// <summary>
-		/// 存放object的List
+		/// 存放item的List
 		/// </summary>
-		private readonly List<PoolObject<T>> _poolObjectList = new List<PoolObject<T>>();
+		private readonly List<PoolItem<T>> _poolItemList = new List<PoolItem<T>>();
+		/// <summary>
+		/// 存放item对应在pool中的index
+		/// </summary>
+		private Dictionary<T, int> _valueToPoolIndexDict;
+		private Dictionary<T, int> valueToPoolIndexDict => _valueToPoolIndexDict ?? (_valueToPoolIndexDict = new Dictionary<T, int>());
 		private string _poolName;
 		private PoolCatManager _poolManager;
 		private Func<T> _spawnFunc;
@@ -39,97 +44,15 @@ namespace CsCat
 		public void InitPool(int initCount = 1, Action<T> onSpawnCallback = null)
 		{
 			for (int i = 0; i < initCount; i++)
-				Despawn(Spawn(onSpawnCallback));
-		}
-
-
-		#region virtual method
-
-		/// <summary>
-		/// 子类中重写spawn中需要用到的newObject
-		/// </summary>
-		/// <returns></returns>
-		protected virtual T _Spawn()
-		{
-			return _spawnFunc != null ? _spawnFunc() : (T)Activator.CreateInstance(typeof(T));
-		}
-
-		#endregion
-
-		public virtual PoolObject<T> Spawn()
-		{
-			return this.Spawn(null);
-		}
-
-		public PoolObject<T> GetPoolObjectAtIndex(int index)
-		{
-			return this._poolObjectList[index];
-		}
-
-
-
-		/// <summary>
-		/// 创建
-		/// </summary>
-		/// <returns></returns>
-		public virtual PoolObject<T> Spawn(Action<T> onSpawnCallback = null)
-		{
-			PoolObject<T> poolObject;
-			for (var i = 0; i < _poolObjectList.Count; i++)
 			{
-				poolObject = _poolObjectList[i];
-				if (poolObject.IsDespawned())
-				{
-					poolObject.SetIsDespawned(false);
-					onSpawnCallback?.Invoke(poolObject.GetValue());
-					return poolObject;
-				}
-			}
-			int index = _poolObjectList.Count;
-			T value = _Spawn();
-			poolObject = new PoolObject<T>(this, index, value, false);
-			onSpawnCallback?.Invoke(poolObject.GetValue());
-			_poolObjectList.Add(poolObject);
-			return poolObject;
-		}
-
-		public virtual void Despawn(PoolObject<T> poolObject)
-		{
-			T value = poolObject.GetValue();
-			IDespawn spawnable = value as IDespawn;
-			spawnable?.OnDespawn();
-		}
-
-
-		public void DespawnAll()
-		{
-			for (int i = 0; i < _poolObjectList.Count; i++)
-			{
-				var poolObject = _poolObjectList[i];
-				if (!poolObject.IsDespawned())
-					Despawn(poolObject);
+				var (poolItem, poolIndex) = Spawn(onSpawnCallback);
+				Despawn(poolItem);
 			}
 		}
-		
-		protected virtual void OnDestroy(T value)
+
+		public PoolItem<T> GetPoolItemAtIndex(int index)
 		{
+			return this._poolItemList[index];
 		}
-
-
-		public virtual void Destroy()
-		{
-			DespawnAll();
-			for (var i = 0; i < _poolObjectList.Count; i++)
-			{
-				var poolObject = _poolObjectList[i];
-				OnDestroy(poolObject.GetValue());
-			}
-
-			_poolObjectList.Clear();
-			_poolName = null;
-			_spawnFunc = null;
-		}
-
-		
 	}
 }

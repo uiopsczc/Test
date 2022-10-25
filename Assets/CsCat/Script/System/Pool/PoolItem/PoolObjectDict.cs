@@ -6,7 +6,7 @@ namespace CsCat
 	public class PoolObjectDict<SpawnType>
 	{
 		private readonly PoolCat<SpawnType> _pool;
-		private readonly Dictionary<SpawnType, PoolObject<SpawnType>> _poolObjectDict = new Dictionary<SpawnType, PoolObject<SpawnType>>();
+		private readonly Dictionary<SpawnType, PoolItem<SpawnType>> _poolObjectDict = new Dictionary<SpawnType, PoolItem<SpawnType>>();
 		public PoolObjectDict(PoolCat<SpawnType> pool)
 		{
 			this._pool = pool;

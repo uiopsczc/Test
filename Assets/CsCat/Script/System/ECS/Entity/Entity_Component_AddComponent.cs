@@ -16,7 +16,7 @@ namespace CsCat
 			}
 			return true;
 		}
-		protected Component _AddComponent(Type componentType, IPoolObject componentPoolObject)
+		protected Component _AddComponent(Type componentType, IPoolItem componentPoolObject)
 		{
 			var componentPoolObjectIndex = componentPoolObject.GetPoolObjectIndex();
 			var component = componentPoolObjectIndex.GetValue<Component>();

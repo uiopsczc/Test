@@ -14,9 +14,9 @@ namespace CsCat
 			this._indexInPool = indexInPool;
 		}
 
-		public IPoolObject GetPoolObject()
+		public IPoolItem GetPoolObject()
 		{
-			return this._pool.InvokeMethod<IPoolObject>("GetPoolObjectAtIndex", false, this._indexInPool);
+			return this._pool.InvokeMethod<IPoolItem>("GetPoolItemAtIndex", false, this._indexInPool);
 		}
 
 		public T GetValue<T>()

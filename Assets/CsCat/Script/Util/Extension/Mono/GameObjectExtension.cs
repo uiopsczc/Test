@@ -129,7 +129,7 @@ namespace CsCat
 				return;
 			if (self.IsCacheContainsKey(PoolCatConst.Pool_Object))
 			{
-				IPoolObject poolObject = self.GetCache<IPoolObject>(PoolCatConst.Pool_Object);
+				IPoolItem poolObject = self.GetCache<IPoolItem>(PoolCatConst.Pool_Object);
 				poolObject.Despawn();
 			}
 		}

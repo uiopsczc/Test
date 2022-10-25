@@ -5,7 +5,7 @@ namespace CsCat
 	public class SpawnPoolScope<T> : PoolScope
 	{
 		private T _spawn;
-		private PoolObject<T> poolObject;
+		private PoolItem<T> _poolItem;
 		private Action<T> _onSpawnCallback;
 
 		public T spawn
@@ -14,8 +14,8 @@ namespace CsCat
 			{
 				if (_spawn == null)
 				{
-					poolObject = PoolCatManagerUtil.Spawn<T>(null, null, _onSpawnCallback);
-					_spawn = poolObject.GetValue();
+					_poolItem = PoolCatManagerUtil.Spawn<T>(null, null, _onSpawnCallback);
+					_spawn = _poolItem.GetValue();
 				}
 
 				return _spawn;
@@ -30,9 +30,9 @@ namespace CsCat
 
 		public override void Dispose()
 		{
-			poolObject.Despawn();
+			_poolItem.Despawn();
 			_spawn = default;
-			poolObject = null;
+			_poolItem = null;
 			this._onSpawnCallback = null;
 			base.Dispose();
 		}

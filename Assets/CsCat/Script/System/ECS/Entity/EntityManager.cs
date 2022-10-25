@@ -9,10 +9,10 @@ namespace CsCat
 		}
 		public Entity NewEntity()
 		{
-			PoolObject<Entity> entityPoolObject = this._poolCatManager.Spawn<Entity>(null, null);
-			var entityPoolObjectIndex = entityPoolObject.GetPoolObjectIndex();
-			entityPoolObject.GetValue().SetPoolObjectIndex(entityPoolObjectIndex);
-			return entityPoolObject.GetValue();
+			PoolItem<Entity> entityPoolItem = this._poolCatManager.Spawn<Entity>(null, null);
+			var entityPoolObjectIndex = entityPoolItem.GetPoolObjectIndex();
+			entityPoolItem.GetValue().SetPoolObjectIndex(entityPoolObjectIndex);
+			return entityPoolItem.GetValue();
 		}
 
 		public void DespawnEntity(Entity entity)
