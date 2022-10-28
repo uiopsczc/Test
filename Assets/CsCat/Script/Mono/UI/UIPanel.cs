@@ -13,9 +13,9 @@ namespace CsCat
 		public virtual bool isResident => false;
 		public virtual EUILayerName layerName => EUILayerName.PopUpUILayer;
 		public UILayer uiLayer => Client.instance.uiManager.uiLayerManager.uiLayerDict[layerName];
-		protected Transform frameTransform => this.cache.GetOrAddDefault("frameTransform", () => this.graphicComponent.gameObject.transform.Find("frame"));
-		protected Transform contentTransform => this.cache.GetOrAddDefault("contentTransform", () => frameTransform.Find("content"));
-		protected Canvas canvas => this.cache.GetOrAddDefault("canvas", () => graphicComponent.gameObject.GetOrAddComponent<Canvas>());
+		protected Transform frameTransform => this._cache.GetOrAddDefault("frameTransform", () => this.graphicComponent.gameObject.transform.Find("frame"));
+		protected Transform contentTransform => this._cache.GetOrAddDefault("contentTransform", () => frameTransform.Find("content"));
+		protected Canvas canvas => this._cache.GetOrAddDefault("canvas", () => graphicComponent.gameObject.GetOrAddComponent<Canvas>());
 		public int sortingOrder
 		{
 			get => this._sortingOrder;

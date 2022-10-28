@@ -36,7 +36,7 @@ namespace CsCat
 			RemoveAllComponents();
 			_Destroy();
 			_isDestroyed = true;
-			cache.Clear();
+			_cache.Clear();
 		}
 
 		protected virtual void _Destroy()

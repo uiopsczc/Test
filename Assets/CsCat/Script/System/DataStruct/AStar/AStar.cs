@@ -241,7 +241,7 @@ namespace CsCat
 									neighborNode.f = neighborNode.g + neighborNode.h;
 									//更新neighbor_node的值
 									AddNodeToOpenList(neighborNode);
-									oldNeighborNode.Despawn();
+									ObjectExtension.Despawn(oldNeighborNode);
 									break;
 								case AStarNodeInListType.Open_List:
 									neighborNode.parent = checkNode;
@@ -251,14 +251,14 @@ namespace CsCat
 									//更新neighbor_node的值
 									openHeap.Remove(oldNeighborNode);
 									AddNodeToOpenList(neighborNode);
-									oldNeighborNode.Despawn();
+									ObjectExtension.Despawn(oldNeighborNode);
 									break;
 							}
 						}
 						else
 						{
 							//舍弃的进行回收
-							neighborNode.Despawn();
+							ObjectExtension.Despawn(neighborNode);
 						}
 					}
 					else

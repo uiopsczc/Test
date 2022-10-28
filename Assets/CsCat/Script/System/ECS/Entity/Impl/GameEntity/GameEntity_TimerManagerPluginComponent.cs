@@ -4,7 +4,7 @@ namespace CsCat
 {
 	public partial class GameEntity
 	{
-		public virtual TimerManager timerManager => cache.GetOrAddDefault(() => this.GetParent<GameEntity>().timerManager);
+		public virtual TimerManager timerManager => _cache.GetOrAddDefault(() => this.GetParent<GameEntity>().timerManager);
 
 		/// <summary>
 		/// duration needRunCount 里面随便一个触碰底线都会结束

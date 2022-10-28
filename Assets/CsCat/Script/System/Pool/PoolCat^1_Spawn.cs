@@ -42,10 +42,15 @@ namespace CsCat
 		public virtual T SpawnValue(Action<T> onSpawnCallback = null)
 		{
 			var (poolItem, poolIndex) = this.Spawn(onSpawnCallback);
+			OnSpawnValue(poolItem, poolIndex);
+			return poolItem.GetValue();
+		}
+
+		protected void OnSpawnValue(PoolItem<T> poolItem, PoolIndex<T> poolIndex)
+		{
 			var value = poolItem.GetValue();
 			var index = poolIndex.GetIndex();
 			this.valueToPoolIndexDict[value] = index;
-			return value;
 		}
 	}
 }

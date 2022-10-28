@@ -31,5 +31,15 @@ namespace CsCat
 		{
 			return this._index;
 		}
+
+		public void Despawn()
+		{
+			this._pool.Despawn(this.GetPoolItem());
+		}
+
+		object IPoolIndex.GetValue()
+		{
+			return this.GetValue();
+		}
 	}
 }

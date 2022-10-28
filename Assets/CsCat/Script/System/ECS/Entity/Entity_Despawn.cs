@@ -5,7 +5,7 @@ namespace CsCat
 {
 	public partial class Entity
 	{
-		public virtual void OnDespawn()
+		public virtual void Despawn()
 		{
 			_OnDespawn_();
 			_OnDespawn_Component();

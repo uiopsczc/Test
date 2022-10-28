@@ -146,7 +146,7 @@ namespace CsCat
 		}
 
 
-		public virtual void OnDespawn()
+		public virtual void Despawn()
 		{
 			_owner = null;
 			id = null;

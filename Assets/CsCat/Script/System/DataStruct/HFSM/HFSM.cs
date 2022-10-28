@@ -117,7 +117,7 @@ namespace CsCat
 
 		public HFSM GetRootHFSM()
 		{
-			HFSM rootHFSM = this.cache.GetOrAddDefault("root_hfsm", () =>
+			HFSM rootHFSM = this._cache.GetOrAddDefault("root_hfsm", () =>
 			{
 				HFSM hfsm = this;
 				while (hfsm.parentHFSM != null)

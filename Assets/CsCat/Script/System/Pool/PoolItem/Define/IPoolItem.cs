@@ -5,6 +5,5 @@ namespace CsCat
 {
 	public interface IPoolItem
 	{
-		void Despawn();
 	}
 }

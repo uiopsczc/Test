@@ -21,7 +21,7 @@ namespace CsCat
 		public SpellManager spellManager;
 		public RandomManager randomManager = new RandomManager();
 
-		public override TimerManager timerManager => cache.GetOrAddDefault(() => new TimerManager());
+		public override TimerManager timerManager => _cache.GetOrAddDefault(() => new TimerManager());
 
 		public void Init(Hashtable arg_dict)
 		{

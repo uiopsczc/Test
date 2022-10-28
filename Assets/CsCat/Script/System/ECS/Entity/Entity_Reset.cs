@@ -42,9 +42,9 @@ namespace CsCat
 
 		public void ResetAllComponents()
 		{
-			for (int i = 0; i < componentPoolObjectIndexList.Count; i++)
+			for (int i = 0; i < componentPoolIndexList.Count; i++)
 			{
-				var componentPoolObjectIndex = componentPoolObjectIndexList[i];
+				var componentPoolObjectIndex = componentPoolIndexList[i];
 				var component = _GetComponent(componentPoolObjectIndex);
 				component?.DoReset();
 			}

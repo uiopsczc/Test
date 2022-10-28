@@ -12,7 +12,7 @@ namespace CsCat
 
 		protected override bool isNotDeleteComponentRelationShipImmediately => true;
 
-		public TickObject parentTickObject => cache.GetOrAddDefault("parent_tickObject", () => parent as TickObject);
+		public TickObject parentTickObject => _cache.GetOrAddDefault("parent_tickObject", () => parent as TickObject);
 
 
 		public override bool IsCanUpdate()
@@ -31,7 +31,7 @@ namespace CsCat
 				child?.Update(deltaTime, unscaledDeltaTime);
 			}
 
-			foreach (var componentKey in componentPoolObjectIndexList)
+			foreach (var componentKey in componentPoolIndexList)
 			{
 				component = GetComponent(componentKey);
 				component?.Update(deltaTime, unscaledDeltaTime);
@@ -50,9 +50,9 @@ namespace CsCat
 				child?.FixedUpdate(deltaTime, unscaledDeltaTime);
 			}
 
-			for (var i = 0; i < componentPoolObjectIndexList.Count; i++)
+			for (var i = 0; i < componentPoolIndexList.Count; i++)
 			{
-				var componentKey = componentPoolObjectIndexList[i];
+				var componentKey = componentPoolIndexList[i];
 				component = GetComponent(componentKey);
 				component?.FixedUpdate(deltaTime, unscaledDeltaTime);
 			}
@@ -71,9 +71,9 @@ namespace CsCat
 				child?.LateUpdate(deltaTime, unscaledDeltaTime);
 			}
 
-			for (var i = 0; i < componentPoolObjectIndexList.Count; i++)
+			for (var i = 0; i < componentPoolIndexList.Count; i++)
 			{
-				var componentKey = componentPoolObjectIndexList[i];
+				var componentKey = componentPoolIndexList[i];
 				component = GetComponent(componentKey);
 				component?.LateUpdate(deltaTime, unscaledDeltaTime);
 			}

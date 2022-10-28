@@ -7,7 +7,7 @@ namespace CsCat
 	{
 		public Component GetComponent(string componentKey)
 		{
-			if (this.keyToComponentPoolObjectIndexDict.TryGetValue(componentKey, out var componentPoolObjectIndex))
+			if (this.keyToComponentPoolIndexDict.TryGetValue(componentKey, out var componentPoolObjectIndex))
 				return _GetComponent(componentPoolObjectIndex);
 			return null;
 		}

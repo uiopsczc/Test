@@ -12,13 +12,13 @@ namespace CsCat
 				return false;
 			component.DoDestroy();
 			_RemoveComponentRelationship(component);
-			component.Despawn();
+			ObjectExtension.Despawn(component);
 			return true;
 		}
 
 		public bool RemoveComponent(string componentKey)
 		{
-			if (this.keyToComponentPoolObjectIndexDict.TryGetValue(componentKey, out var componentPoolObjectIndex))
+			if (this.keyToComponentPoolIndexDict.TryGetValue(componentKey, out var componentPoolObjectIndex))
 				return _RemoveComponent(componentPoolObjectIndex);
 			return false;
 		}
@@ -35,9 +35,9 @@ namespace CsCat
 
 		public void RemoveAllComponents()
 		{
-			for (var i = 0; i < componentPoolObjectIndexList.Count; i++)
+			for (var i = 0; i < componentPoolIndexList.Count; i++)
 			{
-				var componentPoolObjectIndex = componentPoolObjectIndexList[i];
+				var componentPoolObjectIndex = componentPoolIndexList[i];
 				if (_RemoveComponent(componentPoolObjectIndex))
 					i--;
 			}
@@ -48,18 +48,18 @@ namespace CsCat
 
 		private void _RemoveComponentRelationship(Component component)
 		{
-			if (this.keyToComponentPoolObjectIndexDict.TryGetValue(component.GetType().FullName,
+			if (this.keyToComponentPoolIndexDict.TryGetValue(component.GetType().FullName,
 				out var poolObjectIndex))
-				componentPoolObjectIndexList.Remove(poolObjectIndex);
+				componentPoolIndexList.Remove(poolObjectIndex);
 		}
 
 
 		//主要作用是将IsDestroyed的Component从component_list中删除,配合Foreach的GetComponents使用
 		private void _CheckDestroyedComponents()
 		{
-			for (int i = componentPoolObjectIndexList.Count - 1; i >= 0; i--)
+			for (int i = componentPoolIndexList.Count - 1; i >= 0; i--)
 			{
-				var componentPoolObjectIndex = componentPoolObjectIndexList[i];
+				var componentPoolObjectIndex = componentPoolIndexList[i];
 				var component = componentPoolObjectIndex.GetValue<Component>();
 				if (component.IsDestroyed())
 				{

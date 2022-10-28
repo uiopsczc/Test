@@ -252,9 +252,9 @@ namespace CsCat
 
 		#endregion
 
-		public override void OnDespawn()
+		public override void Despawn()
 		{
-			base.OnDespawn();
+			base.Despawn();
 			actList.Clear();
 			curActIndex = 0;
 		}

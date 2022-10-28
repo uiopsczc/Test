@@ -41,9 +41,25 @@ namespace CsCat
 			return this.poolDict.TryGetValue(poolName, out pool);
 		}
 
-		public bool IsContainsPool(string poolName)
+		public bool TryGetPool<T>(string poolName, out PoolCat<T> pool)
+		{
+			if (poolDict.TryGetValue(poolName, out var tmpPool))
+			{
+				pool = tmpPool as PoolCat<T>;
+				return true;
+			}
+			pool = null;
+			return false;
+		}
+
+		public bool IsContainPool(string poolName)
 		{
 			return poolDict.ContainsKey(poolName);
+		}
+
+		public bool IsContainPool<T>()
+		{
+			return IsContainPool(typeof(T).FullName);
 		}
 
 		public IPoolCat GetOrAddPool(Type poolType, params object[] poolConstructArgs)
@@ -61,26 +77,22 @@ namespace CsCat
 		public void DespawnAll(string poolName)
 		{
 			if (poolDict.TryGetValue(poolName, out var pool))
-			{
 				pool.DespawnAll();
-			}
 		}
 		
 
-		public IPoolItem Spawn(Type spawnType, string poolName = null)
+		public (IPoolItem poolItem, IPoolIndex poolIndex) Spawn(Type spawnType, string poolName = null)
 		{
-			poolName = poolName ?? spawnType.FullName;
-			if (!poolDict.TryGetValue(poolName, out var pool))
-			{
-				pool = this.InvokeGenericMethod("Spawn", new[] { spawnType }, false, poolName, null, null) as IPoolCat;
-				this.AddPool(poolName, pool);
-			}
-			var poolObject = pool.InvokeMethod<IPoolItem>("Spawn");
-			return poolObject;
+			return this.InvokeGenericMethod<(IPoolItem, IPoolIndex)>("Spawn", new[] {spawnType}, false, poolName, null, null);
+		}
+
+		public object SpawnValue(Type spawnType, string poolName = null)
+		{
+			return this.InvokeGenericMethod<object>("SpawnValue", new[] { spawnType }, false, poolName, null, null);
 		}
 
 
-		public PoolItem<T> Spawn<T>(string poolName, Func<T> spawnFunc, Action<T> onSpawnCallback = null)
+		public (PoolItem<T> poolItem, PoolIndex<T> poolIndex) Spawn<T>(string poolName, Func<T> spawnFunc, Action<T> onSpawnCallback = null)
 		{
 			poolName = poolName ?? typeof(T).FullName;
 			if (!poolDict.TryGetValue(poolName, out var pool))
@@ -88,8 +100,20 @@ namespace CsCat
 				pool = new PoolCat<T>(poolName, spawnFunc);
 				this.AddPool(poolName, pool);
 			}
-			var poolObject = ((PoolCat<T>)pool).Spawn(onSpawnCallback);
-			return poolObject;
+			var (poolItem, poolIndex) = ((PoolCat<T>)pool).Spawn(onSpawnCallback);
+			return (poolItem, poolIndex);
+		}
+
+		public T SpawnValue<T>(string poolName, Func<T> spawnFunc, Action<T> onSpawnCallback = null)
+		{
+			poolName = poolName ?? typeof(T).FullName;
+			if (!poolDict.TryGetValue(poolName, out var pool))
+			{
+				pool = new PoolCat<T>(poolName, spawnFunc);
+				this.AddPool(poolName, pool);
+			}
+			var value = ((PoolCat<T>)pool).SpawnValue(onSpawnCallback);
+			return value;
 		}
 	}
 }

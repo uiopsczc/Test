@@ -25,11 +25,5 @@ namespace CsCat
 		{
 			return this._isDespawned;
 		}
-
-		public void Despawn()
-		{
-			this._poolObjectIndex.GetPool().InvokeMethod("Despawn", false, this);
-			this._isDespawned = true;
-		}
 	}
 }

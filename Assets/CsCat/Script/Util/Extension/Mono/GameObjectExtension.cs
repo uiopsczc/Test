@@ -127,10 +127,10 @@ namespace CsCat
 		{
 			if (self == null)
 				return;
-			if (self.IsCacheContainsKey(PoolCatConst.Pool_Object))
+			if (self.IsCacheContainsKey(PoolCatConst.Pool_Item))
 			{
-				IPoolItem poolObject = self.GetCache<IPoolItem>(PoolCatConst.Pool_Object);
-				poolObject.Despawn();
+				IPoolItem poolItem = self.GetCache<IPoolItem>(PoolCatConst.Pool_Item);
+				poolItem.Despawn();
 			}
 		}
 

@@ -39,7 +39,7 @@ namespace CsCat
 			return string.Format("[{0},{1}]", key, value);
 		}
 
-		public void OnDespawn()
+		public void Despawn()
 		{
 			this.key = default;
 			this.value = default;

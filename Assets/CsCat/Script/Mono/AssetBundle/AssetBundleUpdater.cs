@@ -126,14 +126,14 @@ namespace CsCat
 				var resourceWebRequester =
 					Client.instance.assetBundleManager.DownloadFileAsyncNoCache(URLSetting.Server_Resource_URL,
 						filePath);
-				resourceWebRequester.cache["file_path"] = filePath;
+				resourceWebRequester._cache["file_path"] = filePath;
 				downloadingRequestList.Add(resourceWebRequester);
 			}
 
 			for (var i = 0; i < downloadingRequestList.Count; i++)
 			{
 				var downloadingRequest = downloadingRequestList[i];
-				needDownloadDict[downloadingRequest.cache.Get<string>("file_path")]["downloded_bytes"] =
+				needDownloadDict[downloadingRequest._cache.Get<string>("file_path")]["downloded_bytes"] =
 					downloadingRequest.GetDownloadedBytes();
 			}
 
@@ -157,18 +157,18 @@ namespace CsCat
 
 			if (!resourceWebRequester.error.IsNullOrWhiteSpace())
 			{
-				LogCat.LogError("Error when downloading file : " + resourceWebRequester.cache.Get<string>("file_path") +
+				LogCat.LogError("Error when downloading file : " + resourceWebRequester._cache.Get<string>("file_path") +
 				                "\n from url : " +
 				                resourceWebRequester.url + "\n err : " + resourceWebRequester.error);
-				needDownloadList.Add(resourceWebRequester.cache.Get<string>("file_path"));
+				needDownloadList.Add(resourceWebRequester._cache.Get<string>("file_path"));
 			}
 			else
 			{
 				downloadingRequestList.Remove(resourceWebRequester);
-				needDownloadDict[resourceWebRequester.cache.Get<string>("file_path")]["is_finished"] = true;
-				needDownloadDict[resourceWebRequester.cache.Get<string>("file_path")]["downloded_bytes"] =
-					needDownloadDict[resourceWebRequester.cache.Get<string>("file_path")]["total_bytes"];
-				var filePath = resourceWebRequester.cache.Get<string>("file_path")
+				needDownloadDict[resourceWebRequester._cache.Get<string>("file_path")]["is_finished"] = true;
+				needDownloadDict[resourceWebRequester._cache.Get<string>("file_path")]["downloded_bytes"] =
+					needDownloadDict[resourceWebRequester._cache.Get<string>("file_path")]["total_bytes"];
+				var filePath = resourceWebRequester._cache.Get<string>("file_path")
 					.WithRootPath(FilePathConst.PersistentAssetBundleRoot);
 				StdioUtil.WriteFile(filePath, resourceWebRequester.bytes);
 			}

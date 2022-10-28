@@ -4,7 +4,7 @@ namespace CsCat
 {
 	public partial class Component : IDespawn
 	{
-		private PoolObjectIndex _entityPoolObjectIndex;
+		private int _entityId;
 		protected Cache cache = new Cache();
 
 
@@ -12,9 +12,9 @@ namespace CsCat
 		{
 		}
 
-		public void SetEntityPoolObjectIndex(PoolObjectIndex entityPoolObjectIndex)
+		public void SetEntityId(int entityId)
 		{
-			this._entityPoolObjectIndex = entityPoolObjectIndex;
+			this._entityId = entityId;
 		}
 
 		public virtual void Init()
@@ -25,7 +25,7 @@ namespace CsCat
 		{
 		}
 
-		public T GetEntity<T>() where T : Entity
+		public Entity GetEntity()
 		{
 			return this.cache.GetOrAddDefault("entity_" + typeof(T), () => this._entityPoolObjectIndex.GetValue<T>());
 		}

@@ -105,7 +105,7 @@ namespace CsCat
 		}
 
 
-		public void OnDespawn()
+		public void Despawn()
 		{
 			Reset();
 		}

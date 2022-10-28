@@ -81,7 +81,7 @@ namespace CsCat
 					var handlerInfo = handlerInfoList[i];
 					if (handlerInfo.value) continue;
 					handlerInfoList.RemoveAt(i);
-					handlerInfo.Despawn();
+					ObjectExtension.Despawn(handlerInfo);
 				}
 			}
 		}
@@ -96,7 +96,7 @@ namespace CsCat
 			}
 		}
 
-		public void OnDespawn()
+		public void Despawn()
 		{
 			RemoveAllListeners();
 		}

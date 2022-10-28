@@ -7,11 +7,13 @@ namespace CsCat
 	{
 		protected Transform rootTransform;
 		protected Transform categoryTransform;
+		private bool isPrefabActive;
 
 		public GameObjectPoolCat(string poolName, GameObject prefab, string category = null) : base(poolName, prefab)
 		{
 			if (category.IsNullOrWhiteSpace())
 				category = prefab.name;
+			isPrefabActive = prefab.activeSelf;
 			InitParentTransform(prefab, category);
 		}
 
@@ -19,19 +21,26 @@ namespace CsCat
 		{
 		}
 
-		public override PoolItem<GameObject> Spawn(Action<GameObject> onSpawnCallback = null)
+		public override (PoolItem<GameObject>, PoolIndex<GameObject>) Spawn(Action<GameObject> onSpawnCallback = null)
 		{
-			var poolObject = base.Spawn(onSpawnCallback);
-			GameObject cloneGameObject = poolObject.GetValue();
-			cloneGameObject.SetCache(PoolCatConst.Pool_Object, poolObject);
-			cloneGameObject.SetActive(true);
-			cloneGameObject.transform.CopyFrom(GetPrefab().transform);
-			return poolObject;
+			var (poolItem, poolIndex) = base.Spawn(onSpawnCallback);
+			OnSpawn(poolItem);
+			return (poolItem, poolIndex);
 		}
 
-		public PoolItem<GameObject> SpawnGameObject(Action<GameObject> onSpawnCallback = null)
+		public override GameObject SpawnValue(Action<GameObject> onSpawnCallback = null)
 		{
-			return onSpawnCallback == null ? Spawn() : Spawn(onSpawnCallback);
+			var(poolItem, poolIndex) = this.Spawn(onSpawnCallback);
+			OnSpawnValue(poolItem, poolIndex);
+			return poolItem.GetValue();
+		}
+
+		public void OnSpawn(PoolItem<GameObject> poolItem)
+		{
+			GameObject cloneGameObject = poolItem.GetValue();
+			cloneGameObject.SetCache(PoolCatConst.Pool_Item, poolItem);
+			cloneGameObject.SetActive(isPrefabActive);
+			cloneGameObject.transform.CopyFrom(GetPrefab().transform);
 		}
 
 		public override void Despawn(PoolItem<GameObject> poolItem)
@@ -42,7 +51,7 @@ namespace CsCat
 			{
 				var cloneComponent = components[i];
 				var spawnable = cloneComponent as IDespawn;
-				spawnable?.OnDespawn();
+				spawnable?.Despawn();
 			}
 			clone.SetActive(false);
 			clone.transform.SetParent(categoryTransform);

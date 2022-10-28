@@ -5,21 +5,32 @@ namespace CsCat
 {
 	public partial class Entity : IDespawn
 	{
-		private PoolObjectIndex _poolObjectIndex;
-		public Cache cache = new Cache();
+		public Cache _cache = new Cache();
+		private int _id;
+		private PoolCatManager _poolManager;
 
 		public Entity()
 		{
 		}
 
-		public void SetPoolObjectIndex(PoolObjectIndex poolObjectIndex)
+		public void SetId(int id)
 		{
-			this._poolObjectIndex = poolObjectIndex;
+			this._id = id;
+		}
+
+		public int GetId()
+		{
+			return this._id;
+		}
+
+		public void SetPoolManager(PoolCatManager poolManager)
+		{
+			this._poolManager = poolManager;
 		}
 
 		public PoolCatManager GetPoolManager()
 		{
-			return this._poolObjectIndex.GetPool().GetPoolManager();
+			return this._poolManager;
 		}
 
 

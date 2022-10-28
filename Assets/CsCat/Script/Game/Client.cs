@@ -51,7 +51,7 @@ namespace CsCat
 		public IdPool idPool = new IdPool();
 
 		//通用模块
-		public override TimerManager timerManager => cache.GetOrAddDefault(() => new TimerManager());
+		public override TimerManager timerManager => _cache.GetOrAddDefault(() => new TimerManager());
 
 		public UIManager uiManager;
 		public static Client instance => SingletonFactory.instance.Get<Client>();

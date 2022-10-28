@@ -5,17 +5,17 @@ namespace CsCat
 {
 	public partial class PoolCat<T>
 	{
-		public void Despawn(PoolItem<T> poolItem)
+		public virtual void Despawn(PoolItem<T> poolItem)
 		{
 			poolItem.SetIsDespawned(false);
 			var value = poolItem.GetValue();
-			Despawn(value);
+			_Despawn(value);
 		}
 
-		public virtual void Despawn(T value)
+		void _Despawn(T value)
 		{
 			IDespawn spawnable = value as IDespawn;
-			spawnable?.OnDespawn();
+			spawnable?.Despawn();
 		}
 
 		public virtual void DespawnValue(T value)

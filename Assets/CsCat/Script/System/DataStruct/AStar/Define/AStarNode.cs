@@ -18,7 +18,7 @@ namespace CsCat
 			this.pos = new Vector2Int(x, y);
 		}
 
-		public void OnDespawn()
+		public void Despawn()
 		{
 			pos = default;
 			parent = null;

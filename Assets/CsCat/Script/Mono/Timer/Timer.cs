@@ -319,7 +319,7 @@ namespace CsCat
 
 		#endregion
 
-		public void OnDespawn()
+		public void Despawn()
 		{
 			_isUseUnscaledDeltaTime = false;
 			priority = 1;

@@ -9,17 +9,16 @@ namespace CsCat
 		bool CheckCanAddComponentType(Type componentType)
 		{
 			var componentKey = componentType.FullName;
-			if (this.keyToComponentPoolObjectIndexDict.ContainsKey(componentKey))
+			if (this.keyToComponentPoolIndexDict.ContainsKey(componentKey))
 			{
 				LogCat.error("duplicate add component:", componentKey, componentType);
 				return false;
 			}
 			return true;
 		}
-		protected Component _AddComponent(Type componentType, IPoolItem componentPoolObject)
+		protected Component _AddComponent(Type componentType, IPoolIndex componentPoolIndex)
 		{
-			var componentPoolObjectIndex = componentPoolObject.GetPoolObjectIndex();
-			var component = componentPoolObjectIndex.GetValue<Component>();
+			var component = componentPoolIndex.GetValue() as Component;
 			component.SetEntityPoolObjectIndex(this._poolObjectIndex);
 			_AddComponentRelationship(componentType, componentPoolObjectIndex);
 			return component;
@@ -29,8 +28,8 @@ namespace CsCat
 		{
 			if (CheckCanAddComponentType(componentType))
 				return null;
-			var componentPoolObject = this.GetPoolManager().Spawn(componentType);
-			return _AddComponent(componentType, componentPoolObject);
+			var (componentPoolItem, componentPoolIndex) = this.GetPoolManager().Spawn(componentType);
+			return _AddComponent(componentType, componentPoolIndex);
 		}
 
 		public T AddComponentWithoutInit<T>() where T : Component
@@ -57,8 +56,8 @@ namespace CsCat
 		void _AddComponentRelationship(Type componentType, PoolObjectIndex componentPoolObjectIndex)
 		{
 			var key = componentType.FullName;
-			keyToComponentPoolObjectIndexDict[key] = componentPoolObjectIndex;
-			componentPoolObjectIndexList.Add(componentPoolObjectIndex);
+			keyToComponentPoolIndexDict[key] = componentPoolObjectIndex;
+			componentPoolIndexList.Add(componentPoolObjectIndex);
 		}
 	}
 }

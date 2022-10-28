@@ -4,7 +4,7 @@ namespace CsCat
 {
 	public partial class Component
 	{
-		public void OnDespawn()
+		public void Despawn()
 		{
 			_OnDespawn_();
 			_OnDespawn_Destroy();

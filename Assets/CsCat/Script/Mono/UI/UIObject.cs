@@ -8,9 +8,9 @@ namespace CsCat
 {
 	public partial class UIObject : GameEntity
 	{
-		public UIObject parentUIObject => cache.GetOrAddDefault("parent_uiObject", () => parent as UIObject);
+		public UIObject parentUIObject => _cache.GetOrAddDefault("parent_uiObject", () => parent as UIObject);
 
-		public UIPanel parentUIPanel => cache.GetOrAddDefault("parent_uiPanel", () => parent as UIPanel);
+		public UIPanel parentUIPanel => _cache.GetOrAddDefault("parent_uiPanel", () => parent as UIPanel);
 
 		protected override GraphicComponent CreateGraphicComponent()
 		{

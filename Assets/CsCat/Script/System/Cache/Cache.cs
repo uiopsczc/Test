@@ -82,7 +82,7 @@ namespace CsCat
 			dict.Clear();
 		}
 
-		public void OnDespawn()
+		public void Despawn()
 		{
 			Clear();
 		}

@@ -5,5 +5,8 @@ namespace CsCat
 {
 	public interface IPoolIndex
 	{
+		int GetIndex();
+
+		object GetValue();
 	}
 }

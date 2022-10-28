@@ -1063,7 +1063,7 @@ namespace CsCat
 		{
 			if (self is IDespawn spawn)
 			{
-				spawn.OnDespawn();
+				spawn.Despawn();
 			}
 		}
 
