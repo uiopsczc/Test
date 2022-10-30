@@ -21,17 +21,17 @@ namespace CsCat
 		{
 		}
 
-		public override (PoolItem<GameObject>, PoolIndex<GameObject>) Spawn(Action<GameObject> onSpawnCallback = null)
+		public override (PoolItem<GameObject>, PoolItemIndex<GameObject>) Spawn(Action<GameObject> onSpawnCallback = null)
 		{
-			var (poolItem, poolIndex) = base.Spawn(onSpawnCallback);
+			var (poolItem, poolItemIndex) = base.Spawn(onSpawnCallback);
 			OnSpawn(poolItem);
-			return (poolItem, poolIndex);
+			return (poolItem, poolItemIndex);
 		}
 
 		public override GameObject SpawnValue(Action<GameObject> onSpawnCallback = null)
 		{
-			var(poolItem, poolIndex) = this.Spawn(onSpawnCallback);
-			OnSpawnValue(poolItem, poolIndex);
+			var(poolItem, poolItemIndex) = this.Spawn(onSpawnCallback);
+			OnSpawnValue(poolItem, poolItemIndex);
 			return poolItem.GetValue();
 		}
 

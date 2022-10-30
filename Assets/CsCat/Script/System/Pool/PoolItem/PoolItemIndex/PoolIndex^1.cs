@@ -3,15 +3,20 @@ using System.Collections.Generic;
 
 namespace CsCat
 {
-	public class PoolIndex<T>:IPoolIndex
+	public class PoolItemIndex<T>:IPoolItemIndex
 	{
 		private PoolCat<T> _pool;
 		//在pool中的index
 		private int _index;
-		public PoolIndex(PoolCat<T> pool, int index)
+		public PoolItemIndex(PoolCat<T> pool, int index)
 		{
 			this._pool = pool;
 			this._index = index;
+		}
+
+		public PoolCat<T> GetPool()
+		{
+			return this._pool;
 		}
 
 		//在pool中的PoolItem
@@ -26,6 +31,11 @@ namespace CsCat
 			return this.GetPoolItem().GetValue();
 		}
 
+		public T2 GetValue<T2>() where  T2:class 
+		{
+			return GetValue() as T2;
+		}
+
 		//在pool中的index
 		public int GetIndex()
 		{
@@ -37,7 +47,7 @@ namespace CsCat
 			this._pool.Despawn(this.GetPoolItem());
 		}
 
-		object IPoolIndex.GetValue()
+		object IPoolItemIndex.GetValue()
 		{
 			return this.GetValue();
 		}

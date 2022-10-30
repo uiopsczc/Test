@@ -6,9 +6,9 @@ namespace CsCat
 {
 	public partial class Entity
 	{
-		protected Dictionary<string, IPoolIndex>
-			keyToComponentPoolIndexDict = new Dictionary<string, IPoolIndex>();
-		protected List<IPoolIndex> componentPoolIndexList = new List<IPoolIndex>();
+		protected Dictionary<string, IPoolItemIndex>
+			keyToComponentPoolItemIndexDict = new Dictionary<string, IPoolItemIndex>();
+		protected List<IPoolItemIndex> componentPoolItemIndexList = new List<IPoolItemIndex>();
 
 		//////////////////////////////////////////////////////////////////////
 		// 按加入的顺序遍历
@@ -16,10 +16,10 @@ namespace CsCat
 		//按加入的顺序遍历
 		public IEnumerable<Component> ForeachComponent()
 		{
-			for (int i = 0; i < componentPoolIndexList.Count; i++)
+			for (int i = 0; i < componentPoolItemIndexList.Count; i++)
 			{
-				var componentPoolIndex = componentPoolIndexList[i];
-				var component = _GetComponent(componentPoolIndex);
+				var componentPoolItemIndex = componentPoolItemIndexList[i];
+				var component = _GetComponent(componentPoolItemIndex);
 				if (component != null)
 					yield return component;
 			}
@@ -27,8 +27,8 @@ namespace CsCat
 
 		void _OnDespawn_Component()
 		{
-			keyToComponentPoolIndexDict.Clear();
-			componentPoolIndexList.Clear();
+			keyToComponentPoolItemIndexDict.Clear();
+			componentPoolItemIndexList.Clear();
 		}
 	}
 }

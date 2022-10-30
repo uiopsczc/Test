@@ -31,7 +31,7 @@ namespace CsCat
 				child?.Update(deltaTime, unscaledDeltaTime);
 			}
 
-			foreach (var componentKey in componentPoolIndexList)
+			foreach (var componentKey in componentPoolItemIndexList)
 			{
 				component = GetComponent(componentKey);
 				component?.Update(deltaTime, unscaledDeltaTime);
@@ -50,9 +50,9 @@ namespace CsCat
 				child?.FixedUpdate(deltaTime, unscaledDeltaTime);
 			}
 
-			for (var i = 0; i < componentPoolIndexList.Count; i++)
+			for (var i = 0; i < componentPoolItemIndexList.Count; i++)
 			{
-				var componentKey = componentPoolIndexList[i];
+				var componentKey = componentPoolItemIndexList[i];
 				component = GetComponent(componentKey);
 				component?.FixedUpdate(deltaTime, unscaledDeltaTime);
 			}
@@ -71,9 +71,9 @@ namespace CsCat
 				child?.LateUpdate(deltaTime, unscaledDeltaTime);
 			}
 
-			for (var i = 0; i < componentPoolIndexList.Count; i++)
+			for (var i = 0; i < componentPoolItemIndexList.Count; i++)
 			{
-				var componentKey = componentPoolIndexList[i];
+				var componentKey = componentPoolItemIndexList[i];
 				component = GetComponent(componentKey);
 				component?.LateUpdate(deltaTime, unscaledDeltaTime);
 			}

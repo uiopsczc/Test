@@ -18,9 +18,10 @@ namespace CsCat
 			return currentNumber;
 		}
 
-		public PoolItem<ulong> Get()
+		public void DespawnValue(string valueString)
 		{
-			return this.Spawn(null);
+			if(ulong.TryParse(valueString, out var value))
+				this.DespawnValue(value);
 		}
 	}
 }

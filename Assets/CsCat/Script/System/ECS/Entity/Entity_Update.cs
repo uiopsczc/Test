@@ -16,10 +16,10 @@ namespace CsCat
 			if (!this.IsCanUpdate())
 				return;
 
-			for (var i = 0; i < componentPoolIndexList.Count; i++)
+			for (var i = 0; i < componentPoolItemIndexList.Count; i++)
 			{
-				var componentPoolObjectIndex = componentPoolIndexList[i];
-				var component = _GetComponent(componentPoolObjectIndex);
+				var componentPoolItemIndex = componentPoolItemIndexList[i];
+				var component = _GetComponent(componentPoolItemIndex);
 				component?.Update(deltaTime, unscaledDeltaTime);
 			}
 			_Update(deltaTime, unscaledDeltaTime);
@@ -28,10 +28,10 @@ namespace CsCat
 		public virtual void FixedUpdate(float deltaTime = 0, float unscaledDeltaTime = 0)
 		{
 			if (!this.IsCanUpdate()) return;
-			for (var i = 0; i < componentPoolIndexList.Count; i++)
+			for (var i = 0; i < componentPoolItemIndexList.Count; i++)
 			{
-				var componentPoolObjectIndex = componentPoolIndexList[i];
-				var component = _GetComponent(componentPoolObjectIndex);
+				var componentPoolItemIndex = componentPoolItemIndexList[i];
+				var component = _GetComponent(componentPoolItemIndex);
 				component?.FixedUpdate(deltaTime, unscaledDeltaTime);
 			}
 
@@ -43,10 +43,10 @@ namespace CsCat
 		{
 			if (!this.IsCanUpdate()) return;
 
-			for (var i = 0; i < componentPoolIndexList.Count; i++)
+			for (var i = 0; i < componentPoolItemIndexList.Count; i++)
 			{
-				var componentPoolObjectIndex = componentPoolIndexList[i];
-				var component = _GetComponent(componentPoolObjectIndex);
+				var componentPoolItemIndex = componentPoolItemIndexList[i];
+				var component = _GetComponent(componentPoolItemIndex);
 				component?.LateUpdate(deltaTime, unscaledDeltaTime);
 			}
 			_LateUpdate(deltaTime, unscaledDeltaTime);

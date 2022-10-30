@@ -12,8 +12,8 @@ namespace CsCat
 		/// <summary>
 		/// 存放item对应在pool中的index
 		/// </summary>
-		private Dictionary<T, int> _valueToPoolIndexDict;
-		private Dictionary<T, int> valueToPoolIndexDict => _valueToPoolIndexDict ?? (_valueToPoolIndexDict = new Dictionary<T, int>());
+		private Dictionary<T, int> _valueToPoolItemIndexDict;
+		private Dictionary<T, int> valueToPoolItemIndexDict => _valueToPoolItemIndexDict ?? (_valueToPoolItemIndexDict = new Dictionary<T, int>());
 		private string _poolName;
 		private PoolCatManager _poolManager;
 		private Func<T> _spawnFunc;
@@ -31,6 +31,11 @@ namespace CsCat
 			this._spawnFunc = spawnFunc;
 		}
 
+		public string GetPoolName()
+		{
+			return this._poolName;
+		}
+
 		public void SetPoolManager(PoolCatManager poolManager)
 		{
 			this._poolManager = poolManager;
@@ -45,7 +50,7 @@ namespace CsCat
 		{
 			for (int i = 0; i < initCount; i++)
 			{
-				var (poolItem, poolIndex) = Spawn(onSpawnCallback);
+				var (poolItem, poolItemIndex) = Spawn(onSpawnCallback);
 				Despawn(poolItem);
 			}
 		}

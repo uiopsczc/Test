@@ -7,8 +7,8 @@ namespace CsCat
 	{
 		public Component GetComponent(string componentKey)
 		{
-			if (this.keyToComponentPoolIndexDict.TryGetValue(componentKey, out var componentPoolObjectIndex))
-				return _GetComponent(componentPoolObjectIndex);
+			if (this.keyToComponentPoolItemIndexDict.TryGetValue(componentKey, out var componentPoolItemIndex))
+				return _GetComponent(componentPoolItemIndex);
 			return null;
 		}
 
@@ -22,10 +22,10 @@ namespace CsCat
 			return GetComponent(componentType.FullName);
 		}
 
-		private Component _GetComponent(PoolObjectIndex componentPoolObjectIndex)
+		private Component _GetComponent(IPoolItemIndex componentPoolItemIndex)
 		{
-			var component = componentPoolObjectIndex.GetValue<Component>();
-			if (component != null && !component.IsDestroyed())
+			var component = componentPoolItemIndex.GetValue<Component>();
+			if (component!=null && !component.IsDestroyed())
 				return component;
 			return null;
 		}

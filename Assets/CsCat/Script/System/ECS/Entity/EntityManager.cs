@@ -5,43 +5,40 @@ namespace CsCat
 	public class EntityManager
 	{
 		private readonly PoolCatManager _poolManager;
-		private Dictionary<int, PoolIndex<Entity>> _entityPoolIndexDict = new Dictionary<int, PoolIndex<Entity>>();
+		private Dictionary<PoolItemIndex<Entity>, bool> _entityPoolItemIndexDict = new Dictionary<PoolItemIndex<Entity>, bool>();
 		public EntityManager(PoolCatManager poolManager)
 		{
 			this._poolManager = poolManager;
 		}
 		public Entity NewEntity()
 		{
-			var (entityPoolItem, entityPoolIndex) = this._poolManager.Spawn<Entity>(null, null);
+			var (entityPoolItem, entityPoolItemIndex) = this._poolManager.Spawn<Entity>(null, null);
 			var entity = entityPoolItem.GetValue();
-			var index = entityPoolIndex.GetIndex();
-			entity.SetId(index);
-			entity.SetPoolManager(this._poolManager);
-			_entityPoolIndexDict[index] = entityPoolIndex;
+			entity.SetPoolItemIndex(entityPoolItemIndex);
+			_entityPoolItemIndexDict[entityPoolItemIndex] = true;
 			return entity;
 		}
 
 		public void DespawnEntity(Entity entity)
 		{
-			int index = entity.GetId();
-			DespawnEntity(index);
+			var poolItemIndex = entity.GetPoolItemIndex();
+			DespawnEntity(poolItemIndex);
 		}
 
-		public void DespawnEntity(int entityId)
+		public void DespawnEntity(PoolItemIndex<Entity> entityPoolItemIndex)
 		{
-			var entityPoolIndex = this._entityPoolIndexDict[entityId];
-			this._entityPoolIndexDict.Remove(entityId);
-			entityPoolIndex.Despawn();
+			this._entityPoolItemIndexDict.Remove(entityPoolItemIndex);
+			entityPoolItemIndex.Despawn();
 		}
 
 		public void DespawnAll()
 		{
-			foreach (var kv in _entityPoolIndexDict)
+			foreach (var kv in _entityPoolItemIndexDict)
 			{
-				var entityPoolIndex = kv.Value;
-				entityPoolIndex.Despawn();
+				var entityPoolItemIndex = kv.Value;
+				entityPoolItemIndex.Despawn();
 			}
-			_entityPoolIndexDict.Clear();
+			_entityPoolItemIndexDict.Clear();
 		}
 
 		public void Destroy()

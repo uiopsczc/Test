@@ -7,7 +7,7 @@ namespace CsCat
 	public class CoroutineDict
 	{
 		private readonly MonoBehaviour _monoBehaviour;
-		private readonly PoolObjectDict<ulong> _idPoolObjectDict = new PoolObjectDict<ulong>(new IdPool());
+		private readonly PoolItemDict<ulong> _idPoolItemDict = new PoolItemDict<ulong>(new IdPool());
 		private readonly Dictionary<string, IEnumerator> _dict = new Dictionary<string, IEnumerator>();
 		
 
@@ -23,7 +23,7 @@ namespace CsCat
 
 		public string StartCoroutine(IEnumerator iEnumerator, string key = null)
 		{
-			key = key ?? _idPoolObjectDict.Get().ToString();
+			key = key ?? _idPoolItemDict.Get().ToString();
 			this._dict[key] = iEnumerator;
 			_monoBehaviour.StopAndStartCacheIEnumerator(key.ToGuid(this), iEnumerator);
 			return key;
@@ -39,7 +39,7 @@ namespace CsCat
 				return;
 			this._dict.Remove(key);
 			if(ulong.TryParse(key, out var id))
-				_idPoolObjectDict.Remove(id);
+				_idPoolItemDict.Remove(id);
 			_monoBehaviour.StopCacheIEnumerator(key.ToGuid(this));
 		}
 
@@ -52,7 +52,7 @@ namespace CsCat
 			}
 
 			_dict.Clear();
-			_idPoolObjectDict.Clear();
+			_idPoolItemDict.Clear();
 		}
 	}
 }

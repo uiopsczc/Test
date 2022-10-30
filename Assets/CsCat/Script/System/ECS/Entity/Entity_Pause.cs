@@ -23,10 +23,10 @@ namespace CsCat
 
 		public void SetAllComponentsIsPaused(bool isPaused)
 		{
-			for (int i = 0; i < componentPoolIndexList.Count; i++)
+			for (int i = 0; i < componentPoolItemIndexList.Count; i++)
 			{
-				var componentPoolObjectIndex = componentPoolIndexList[i];
-				var component = _GetComponent(componentPoolObjectIndex);
+				var componentPoolItemIndex = componentPoolItemIndexList[i];
+				var component = _GetComponent(componentPoolItemIndex);
 				component?.SetIsPaused(isPaused);
 			}
 		}

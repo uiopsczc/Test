@@ -13,7 +13,7 @@ namespace CsCat
 		{
 			if (key != null && _dict.ContainsKey(key))
 				RemoveDOTween(key);
-			key = key ?? _idPool.Get().ToString();
+			key = key ?? _idPool.SpawnValue().ToString();
 			var sequence = DOTween.Sequence();
 			_dict[key] = sequence;
 			sequence.OnKill(() => RemoveDOTween(key));
@@ -24,7 +24,7 @@ namespace CsCat
 		{
 			if (key != null && _dict.ContainsKey(key))
 				RemoveDOTween(key);
-			key = key ?? _idPool.Get().ToString();
+			key = key ?? _idPool.SpawnValue().ToString();
 			_dict[key] = tween;
 			tween.OnKill(() => RemoveDOTween(key));
 			return tween;
@@ -32,12 +32,11 @@ namespace CsCat
 
 		public void RemoveDOTween(string key)
 		{
-			if (_dict.ContainsKey(key))
+			if (_dict.TryGetValue(key, out var tween))
 			{
-				Tween tween = _dict[key];
 				if (tween.IsActive())
 					_dict[key].Kill();
-				ObjectExtension.Despawn(_idPool, key);
+				_idPool.DespawnValue(key);
 				_dict.Remove(key);
 			}
 		}
@@ -45,8 +44,9 @@ namespace CsCat
 		public void RemoveDOTween(Tween tween)
 		{
 			string key = null;
-			foreach (var dictKey in _dict.Keys)
+			foreach (var kv in _dict)
 			{
+				var dictKey = kv.Key;
 				if (_dict[dictKey] != tween) continue;
 				key = dictKey;
 				break;
@@ -58,8 +58,9 @@ namespace CsCat
 
 		public void SetIsPaused(bool isPaused)
 		{
-			foreach (var tween in _dict.Values)
+			foreach (var kv in _dict)
 			{
+				var tween = kv.Value;
 				if (!tween.IsActive())
 					continue;
 				if (isPaused)

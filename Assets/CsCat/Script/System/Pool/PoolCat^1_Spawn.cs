@@ -10,15 +10,15 @@ namespace CsCat
 			return _spawnFunc != null ? _spawnFunc() : (T)Activator.CreateInstance(typeof(T));
 		}
 
-		public virtual (PoolItem<T> poolItem, PoolIndex<T> poolIndex) Spawn()
+		public virtual (PoolItem<T> poolItem, PoolItemIndex<T> poolItemIndex) Spawn()
 		{
 			return this.Spawn(null);
 		}
 
-		public virtual (PoolItem<T> poolItem, PoolIndex<T> poolIndex) Spawn(Action<T> onSpawnCallback = null)
+		public virtual (PoolItem<T> poolItem, PoolItemIndex<T> poolItemIndex) Spawn(Action<T> onSpawnCallback = null)
 		{
 			PoolItem<T> poolItem;
-			PoolIndex<T> poolIndex;
+			PoolItemIndex<T> poolItemIndex;
 			for (var i = 0; i < _poolItemList.Count; i++)
 			{
 				poolItem = _poolItemList[i];
@@ -26,8 +26,8 @@ namespace CsCat
 				{
 					poolItem.SetIsDespawned(false);
 					onSpawnCallback?.Invoke(poolItem.GetValue());
-					poolIndex = new PoolIndex<T>(this, i);
-					return (poolItem, poolIndex);
+					poolItemIndex = new PoolItemIndex<T>(this, i);
+					return (poolItem, poolItemIndex);
 				}
 			}
 			int index = _poolItemList.Count;
@@ -35,22 +35,22 @@ namespace CsCat
 			poolItem = new PoolItem<T>(value, false);
 			onSpawnCallback?.Invoke(poolItem.GetValue());
 			_poolItemList.Add(poolItem);
-			poolIndex = new PoolIndex<T>(this, index);
-			return (poolItem, poolIndex);
+			poolItemIndex = new PoolItemIndex<T>(this, index);
+			return (poolItem, poolItemIndex);
 		}
 
 		public virtual T SpawnValue(Action<T> onSpawnCallback = null)
 		{
-			var (poolItem, poolIndex) = this.Spawn(onSpawnCallback);
-			OnSpawnValue(poolItem, poolIndex);
+			var (poolItem, poolItemIndex) = this.Spawn(onSpawnCallback);
+			OnSpawnValue(poolItem, poolItemIndex);
 			return poolItem.GetValue();
 		}
 
-		protected void OnSpawnValue(PoolItem<T> poolItem, PoolIndex<T> poolIndex)
+		protected void OnSpawnValue(PoolItem<T> poolItem, PoolItemIndex<T> poolItemIndex)
 		{
 			var value = poolItem.GetValue();
-			var index = poolIndex.GetIndex();
-			this.valueToPoolIndexDict[value] = index;
+			var index = poolItemIndex.GetIndex();
+			this.valueToPoolItemIndexDict[value] = index;
 		}
 	}
 }

@@ -81,9 +81,9 @@ namespace CsCat
 		}
 		
 
-		public (IPoolItem poolItem, IPoolIndex poolIndex) Spawn(Type spawnType, string poolName = null)
+		public (IPoolItem poolItem, IPoolItemIndex poolItemIndex) Spawn(Type spawnType, string poolName = null)
 		{
-			return this.InvokeGenericMethod<(IPoolItem, IPoolIndex)>("Spawn", new[] {spawnType}, false, poolName, null, null);
+			return this.InvokeGenericMethod<(IPoolItem, IPoolItemIndex)>("Spawn", new[] {spawnType}, false, poolName, null, null);
 		}
 
 		public object SpawnValue(Type spawnType, string poolName = null)
@@ -92,7 +92,7 @@ namespace CsCat
 		}
 
 
-		public (PoolItem<T> poolItem, PoolIndex<T> poolIndex) Spawn<T>(string poolName, Func<T> spawnFunc, Action<T> onSpawnCallback = null)
+		public (PoolItem<T> poolItem, PoolItemIndex<T> poolItemIndex) Spawn<T>(string poolName, Func<T> spawnFunc, Action<T> onSpawnCallback = null)
 		{
 			poolName = poolName ?? typeof(T).FullName;
 			if (!poolDict.TryGetValue(poolName, out var pool))
@@ -100,8 +100,8 @@ namespace CsCat
 				pool = new PoolCat<T>(poolName, spawnFunc);
 				this.AddPool(poolName, pool);
 			}
-			var (poolItem, poolIndex) = ((PoolCat<T>)pool).Spawn(onSpawnCallback);
-			return (poolItem, poolIndex);
+			var (poolItem, poolItemIndex) = ((PoolCat<T>)pool).Spawn(onSpawnCallback);
+			return (poolItem, poolItemIndex);
 		}
 
 		public T SpawnValue<T>(string poolName, Func<T> spawnFunc, Action<T> onSpawnCallback = null)

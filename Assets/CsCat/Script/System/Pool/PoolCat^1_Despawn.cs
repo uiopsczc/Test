@@ -20,9 +20,11 @@ namespace CsCat
 
 		public virtual void DespawnValue(T value)
 		{
-			int index = this._valueToPoolIndexDict[value];
-			var poolItem = this.GetPoolItemAtIndex(index);
-			Despawn(poolItem);
+			if (_valueToPoolItemIndexDict.TryGetValue(value, out var index))
+			{
+				var poolItem = this.GetPoolItemAtIndex(index);
+				Despawn(poolItem);
+			}
 		}
 
 
@@ -34,7 +36,7 @@ namespace CsCat
 				if (!poolItem.IsDespawned())
 					Despawn(poolItem);
 			}
-			_valueToPoolIndexDict?.Clear();
+			_valueToPoolItemIndexDict?.Clear();
 		}
 	}
 }

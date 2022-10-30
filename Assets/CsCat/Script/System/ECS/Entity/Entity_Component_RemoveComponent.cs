@@ -5,21 +5,21 @@ namespace CsCat
 {
 	public partial class Entity
 	{
-		protected bool _RemoveComponent(PoolObjectIndex componentPoolObjectIndex)
+		protected bool _RemoveComponent(IPoolItemIndex componentPoolItemIndex)
 		{
-			var component = _GetComponent(componentPoolObjectIndex);
+			var component = _GetComponent(componentPoolItemIndex);
 			if (component==null)
 				return false;
 			component.DoDestroy();
 			_RemoveComponentRelationship(component);
-			ObjectExtension.Despawn(component);
+			component.Despawn();
 			return true;
 		}
 
 		public bool RemoveComponent(string componentKey)
 		{
-			if (this.keyToComponentPoolIndexDict.TryGetValue(componentKey, out var componentPoolObjectIndex))
-				return _RemoveComponent(componentPoolObjectIndex);
+			if (this.keyToComponentPoolItemIndexDict.TryGetValue(componentKey, out var componentPoolItemIndex))
+				return _RemoveComponent(componentPoolItemIndex);
 			return false;
 		}
 
@@ -35,10 +35,10 @@ namespace CsCat
 
 		public void RemoveAllComponents()
 		{
-			for (var i = 0; i < componentPoolIndexList.Count; i++)
+			for (var i = 0; i < componentPoolItemIndexList.Count; i++)
 			{
-				var componentPoolObjectIndex = componentPoolIndexList[i];
-				if (_RemoveComponent(componentPoolObjectIndex))
+				var componentPoolItemIndex = componentPoolItemIndexList[i];
+				if (_RemoveComponent(componentPoolItemIndex))
 					i--;
 			}
 		}
@@ -48,24 +48,22 @@ namespace CsCat
 
 		private void _RemoveComponentRelationship(Component component)
 		{
-			if (this.keyToComponentPoolIndexDict.TryGetValue(component.GetType().FullName,
-				out var poolObjectIndex))
-				componentPoolIndexList.Remove(poolObjectIndex);
+			if (this.keyToComponentPoolItemIndexDict.TryGetValue(component.GetType().FullName,
+				out var poolItemIndex))
+				componentPoolItemIndexList.Remove(poolItemIndex);
 		}
 
 
 		//主要作用是将IsDestroyed的Component从component_list中删除,配合Foreach的GetComponents使用
 		private void _CheckDestroyedComponents()
 		{
-			for (int i = componentPoolIndexList.Count - 1; i >= 0; i--)
+			for (int i = componentPoolItemIndexList.Count - 1; i >= 0; i--)
 			{
-				var componentPoolObjectIndex = componentPoolIndexList[i];
-				var component = componentPoolObjectIndex.GetValue<Component>();
-				if (component.IsDestroyed())
-				{
-					_RemoveComponentRelationship(component);
-					component.Despawn();
-				}
+				var componentPoolItemIndex = componentPoolItemIndexList[i];
+				var component = componentPoolItemIndex.GetValue<Component>();
+				if (!component.IsDestroyed()) continue;
+				_RemoveComponentRelationship(component);
+				component.Despawn();
 			}
 		}
 	}
