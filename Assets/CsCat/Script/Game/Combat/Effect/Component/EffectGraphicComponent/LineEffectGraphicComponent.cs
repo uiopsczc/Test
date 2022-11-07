@@ -21,13 +21,13 @@ namespace CsCat
 		protected override void _Update(float deltaTime = 0, float unscaledDeltaTime = 0)
 		{
 			base._Update(deltaTime, unscaledDeltaTime);
-			transform.position = this.effectEntity.transformComponent.position;
-			transform.eulerAngles = this.effectEntity.transformComponent.eulerAngles;
+			transform.position = this.effectEntity.TransformInfoComponent.position;
+			transform.eulerAngles = this.effectEntity.TransformInfoComponent.eulerAngles;
 			for (var i = 0; i < _xlineRendererList.Count; i++)
 			{
 				var line = _xlineRendererList[i];
 				line.target.position = effectEntity.GetComponent<LineEffectComponent>().targetPosition;
-				line.target.eulerAngles = this.effectEntity.transformComponent.eulerAngles;
+				line.target.eulerAngles = this.effectEntity.TransformInfoComponent.eulerAngles;
 			}
 		}
 

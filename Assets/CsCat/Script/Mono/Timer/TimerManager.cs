@@ -1,7 +1,5 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
 
 namespace CsCat
 {
@@ -47,7 +45,7 @@ namespace CsCat
 			UpdateModeCat updateMode = UpdateModeCat.Update, bool isUseUnscaledDeltaTime = false, int priority = 1,
 			params object[] updateFuncArgs)
 		{
-			Timer timer = PoolCatManagerUtil.Spawn<Timer>();
+			Timer timer = PoolCatManager.Default.SpawnValue<Timer>(null, null);
 			timer.Init(updateFunc, delay, interval, needRunCount, updateMode, isUseUnscaledDeltaTime,
 				priority, updateFuncArgs);
 			AddTimer(timer);
@@ -92,7 +90,7 @@ namespace CsCat
 				timerList.Remove(timer);
 
 			timer.Finish();
-			PoolCatManagerUtil.Despawn(timer);
+			PoolCatManager.Default.DespawnValue(timer);
 		}
 
 		#endregion

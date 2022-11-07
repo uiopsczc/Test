@@ -5,95 +5,62 @@ namespace CsCat
 {
 	public class EventDispatchers
 	{
-		private const string EventDispatcherName = "EventDispatcher";
-		private readonly Dictionary<string, bool> _argsDict = new Dictionary<string, bool>(); //<argTypes, bool>
-
-		private Dictionary<string, IEventDispatcher>
-			eventDispatcherDict = new Dictionary<string, IEventDispatcher>(); //<argTypes, eventDispatcher>
+		private Dictionary<object, IEventDispatcher>
+			_eventDispatcherDict = new Dictionary<object, IEventDispatcher>(); //<argTypes, eventDispatcher>
 
 		public EventDispatcher GetEventDispatcher()
 		{
-			var args = EventDispatcherName;
-			if (_argsDict.ContainsKey(args))
-			{
-				var result = eventDispatcherDict.Get<EventDispatcher>(EventDispatcherName);
-				return result;
-			}
-			else
-			{
-				_argsDict[args] = true;
-				var result = new EventDispatcher();
-				eventDispatcherDict[args] = result;
-				return result;
-			}
+			var key = "";
+			EventDispatcher result = null;
+			if (_eventDispatcherDict.TryGetValue(key, out var eventDispatcher))
+				return eventDispatcher as EventDispatcher;
+			result = new EventDispatcher();
+			_eventDispatcherDict[key] = result;
+			return result;
 		}
 
 		public EventDispatcher<P0> GetEventDispatcher<P0>()
 		{
-			var args = EventDispatcherName + typeof(P0);
-			if (_argsDict.ContainsKey(args))
-			{
-				var result = eventDispatcherDict.Get<EventDispatcher<P0>>(args);
-				return result;
-			}
-			else
-			{
-				_argsDict[args] = true;
-				var result = new EventDispatcher<P0>();
-				eventDispatcherDict[args] = result;
-				return result;
-			}
+			var key = typeof(P0);
+			EventDispatcher<P0> result = null;
+			if (_eventDispatcherDict.TryGetValue(key, out var eventDispatcher))
+				return eventDispatcher as EventDispatcher<P0>;
+			result = new EventDispatcher<P0>();
+			_eventDispatcherDict[key] = result;
+			return result;
 		}
 
 		public EventDispatcher<P0, P1> GetEventDispatcher<P0, P1>()
 		{
-			var args = EventDispatcherName + typeof(P0) + typeof(P1);
-			if (_argsDict.ContainsKey(args))
-			{
-				var result = eventDispatcherDict.Get<EventDispatcher<P0, P1>>(args);
-				return result;
-			}
-			else
-			{
-				_argsDict[args] = true;
-				var result = new EventDispatcher<P0, P1>();
-				eventDispatcherDict[args] = result;
-				return result;
-			}
+			var key = (typeof(P0), typeof(P1));
+			EventDispatcher<P0,P1> result = null;
+			if (_eventDispatcherDict.TryGetValue(key, out var eventDispatcher))
+				return eventDispatcher as EventDispatcher<P0, P1>;
+			result = new EventDispatcher<P0, P1>();
+			_eventDispatcherDict[key] = result;
+			return result;
 		}
 
 		public EventDispatcher<P0, P1, P2> GetEventDispatcher<P0, P1, P2>()
 		{
-			var args = EventDispatcherName + typeof(P0) + typeof(P1) + typeof(P2);
-			if (_argsDict.ContainsKey(args))
-			{
-				var result = eventDispatcherDict.Get<EventDispatcher<P0, P1, P2>>(args);
-				return result;
-			}
-			else
-			{
-				_argsDict[args] = true;
-				var result = new EventDispatcher<P0, P1, P2>();
-				eventDispatcherDict[args] = result;
-				return result;
-			}
+			var key = (typeof(P0), typeof(P1), typeof(P2));
+			EventDispatcher<P0, P1, P2> result = null;
+			if (_eventDispatcherDict.TryGetValue(key, out var eventDispatcher))
+				return eventDispatcher as EventDispatcher<P0, P1, P2>;
+			result = new EventDispatcher<P0, P1, P2>();
+			_eventDispatcherDict[key] = result;
+			return result;
 		}
 
 		public EventDispatcher<P0, P1, P2, P3> GetEventDispatcher<P0, P1, P2, P3>()
 		{
-			var args = EventDispatcherName + typeof(P0) + typeof(P1) + typeof(P2) + typeof(P3);
-			if (_argsDict.ContainsKey(args))
-			{
-				var result = eventDispatcherDict.Get<EventDispatcher<P0, P1, P2, P3>>(args);
-				return result;
-			}
-			else
-			{
-				_argsDict[args] = true;
-				var result = new EventDispatcher<P0, P1, P2, P3>();
-				eventDispatcherDict[args] = result;
-				return result;
-			}
+			var key = (typeof(P0), typeof(P1), typeof(P2), typeof(P3));
+			EventDispatcher<P0, P1, P2, P3> result = null;
+			if (_eventDispatcherDict.TryGetValue(key, out var eventDispatcher))
+				return eventDispatcher as EventDispatcher<P0, P1, P2, P3>;
+			result = new EventDispatcher<P0, P1, P2, P3>();
+			_eventDispatcherDict[key] = result;
+			return result;
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////
@@ -178,14 +145,12 @@ namespace CsCat
 
 		public void RemoveAllListeners()
 		{
-			foreach (var keyValue in eventDispatcherDict)
+			foreach (var keyValue in _eventDispatcherDict)
 			{
 				IEventDispatcher eventDispatcher = keyValue.Value;
 				eventDispatcher.RemoveAllListeners();
 			}
-			eventDispatcherDict.Clear();
-			_argsDict.Clear();
-			eventDispatcherDict.Clear();
+			_eventDispatcherDict.Clear();
 		}
 	}
 }

@@ -9,11 +9,11 @@ namespace CsCat
 		private float _staySourceDuration;
 
 
-		public void Init(IPosition sourceIPosition,
+		protected void _Init(IPosition sourceIPosition,
 		  IPosition targetIPosition, float staySourceDuration = 0, float speed = 0,
 		  float accSpeed = 0)
 		{
-			base.Init();
+			base._Init();
 			this.sourceIPosition = sourceIPosition;
 			this.targetIPosition = targetIPosition;
 			SetSocket();

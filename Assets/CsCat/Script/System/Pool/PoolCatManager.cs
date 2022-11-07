@@ -6,6 +6,8 @@ namespace CsCat
 {
 	public partial class PoolCatManager
 	{
+		private static PoolCatManager _default;
+		public static PoolCatManager Default => _default ?? (_default = new PoolCatManager());
 		private readonly Dictionary<string, IPoolCat> poolDict = new Dictionary<string, IPoolCat>();
 		
 
@@ -114,6 +116,13 @@ namespace CsCat
 			}
 			var value = ((PoolCat<T>)pool).SpawnValue(onSpawnCallback);
 			return value;
+		}
+
+		public void DespawnValue<T>(T value, string poolName = null)
+		{
+			poolName = poolName ?? typeof(T).FullName;
+			var pool = poolDict[poolName] as PoolCat<T>;
+			pool.DespawnValue(value);
 		}
 	}
 }

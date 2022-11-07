@@ -15,11 +15,11 @@ namespace CsCat
 		private Vector3 _velocity;
 		private float _vertical;
 
-		public void Init(IPosition sourceIPosition,
+		protected void _Init(IPosition sourceIPosition,
 		  IPosition targetIPosition
 		  , Vector3 gravity, float startAngle)
 		{
-			base.Init();
+			base._Init();
 			this.sourceIPosition = sourceIPosition;
 			this.targetIPosition = targetIPosition;
 			SetSocket();

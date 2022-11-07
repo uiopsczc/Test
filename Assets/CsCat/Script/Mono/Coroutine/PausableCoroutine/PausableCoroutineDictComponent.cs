@@ -6,17 +6,17 @@ namespace CsCat
 {
 	public class PausableCoroutineDictComponent : Component
 	{
-		public PausableCoroutineDict pausableCoroutineDict;
+		public PausableCoroutineDict _pausableCoroutineDict;
 
-		public void Init(PausableCoroutineDict pausableCoroutineDict)
+		protected void _Init(PausableCoroutineDict pausableCoroutineDict)
 		{
-			base.Init();
-			this.pausableCoroutineDict = pausableCoroutineDict;
+			base._Init();
+			this._pausableCoroutineDict = pausableCoroutineDict;
 		}
 
 		public string StartCoroutine(IEnumerator iEnumerator, string key = null)
 		{
-			return pausableCoroutineDict.StartCoroutine(iEnumerator, key);
+			return _pausableCoroutineDict.StartCoroutine(iEnumerator, key);
 		}
 
 		/// <summary>
@@ -25,18 +25,18 @@ namespace CsCat
 		/// <param name="key"></param>
 		public void StopCoroutine(string key)
 		{
-			pausableCoroutineDict.StopCoroutine(key);
+			_pausableCoroutineDict.StopCoroutine(key);
 		}
 
 		public void StopAllCoroutines()
 		{
-			pausableCoroutineDict.StopAllCoroutines();
+			_pausableCoroutineDict.StopAllCoroutines();
 		}
 
 		protected override void _SetIsPaused(bool isPaused)
 		{
 			base._SetIsPaused(isPaused);
-			pausableCoroutineDict.SetIsPaused(isPaused);
+			_pausableCoroutineDict.SetIsPaused(isPaused);
 		}
 
 		protected override void _Reset()

@@ -7,12 +7,12 @@ namespace CsCat
 	{
 		public ResLoadData resLoadData;
 		public Dictionary<object, bool> callbackCauseDict = new Dictionary<object, bool>();
-		private bool isNotCheckDestroy;
+		private bool _isNotCheckDestroy;
 
 		public ResLoadDataInfo(ResLoadData resLoadData, bool isNotCheckDestroy)
 		{
 			this.resLoadData = resLoadData;
-			this.isNotCheckDestroy = isNotCheckDestroy;
+			this._isNotCheckDestroy = isNotCheckDestroy;
 		}
 
 		public void AddCallbackCause(object callbackCause)
@@ -27,7 +27,7 @@ namespace CsCat
 		{
 			this.callbackCauseDict.Remove(callbackCause.GetNotNullKey());
 			this.resLoadData.assetCat.RemoveCallback(callbackCause.GetNullableKey());
-			if (!isNotCheckDestroy)
+			if (!_isNotCheckDestroy)
 				CheckDestroy();
 		}
 
@@ -40,7 +40,7 @@ namespace CsCat
 			}
 
 			this.callbackCauseDict.Clear();
-			if (!isNotCheckDestroy)
+			if (!_isNotCheckDestroy)
 				CheckDestroy();
 		}
 

@@ -17,17 +17,33 @@ namespace CsCat
 			this._entityPoolItemIndex = entityPoolItemIndex;
 		}
 
-		public virtual void Init()
+		public void DoInit(params object[] args)
+		{
+			_PreInit();
+			this.InvokeMethod("_Init", false, args);
+			_PostInit();
+		}
+
+		protected virtual void _PreInit()
 		{
 		}
 
-		public virtual void PostInit()
+		protected virtual void _Init()
+		{
+		}
+
+		protected virtual void _PostInit()
 		{
 		}
 
 		public Entity GetEntity()
 		{
 			return this.cache.GetOrAddDefault("entity", () => this._entityPoolItemIndex.GetValue());
+		}
+
+		public T GetComponent<T>() where T:Component
+		{
+			return this.GetEntity().GetComponentStrictly<T>();
 		}
 		
 

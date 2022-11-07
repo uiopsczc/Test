@@ -11,7 +11,7 @@ namespace CsCat
 {
 	public class ResLoad
 	{
-		private readonly Dictionary<string, ResLoadDataInfo> resLoadDataInfoDict = new Dictionary<string, ResLoadDataInfo>();
+		private readonly Dictionary<string, ResLoadDataInfo> _resLoadDataInfoDict = new Dictionary<string, ResLoadDataInfo>();
 		public bool isNotCheckDestroy;
 		public ResLoad(bool isNotCheckDestroy = false)
 		{
@@ -19,7 +19,7 @@ namespace CsCat
 		}
 		public bool IsAllLoadDone()
 		{
-			foreach (var keyValue in resLoadDataInfoDict)
+			foreach (var keyValue in _resLoadDataInfoDict)
 			{
 				var resLoadDataInfo = keyValue.Value;
 				if (!resLoadDataInfo.resLoadData.assetCat.IsLoadDone())
@@ -46,13 +46,13 @@ namespace CsCat
 			{
 #if UNITY_EDITOR
 				Object obj = AssetDatabase.LoadAssetAtPath<Object>(assetPath);
-				if (!resLoadDataInfoDict.ContainsKey(assetPath.GetMainAssetPath()))
+				if (!_resLoadDataInfoDict.ContainsKey(assetPath.GetMainAssetPath()))
 				{
 					assetCat = new AssetCat(assetPath);
-					resLoadDataInfoDict[assetPath.GetMainAssetPath()] = new ResLoadDataInfo(new ResLoadData(assetCat), isNotCheckDestroy);
+					_resLoadDataInfoDict[assetPath.GetMainAssetPath()] = new ResLoadDataInfo(new ResLoadData(assetCat), isNotCheckDestroy);
 				}
 
-				var resLoadDataInfo = resLoadDataInfoDict[assetPath.GetMainAssetPath()];
+				var resLoadDataInfo = _resLoadDataInfoDict[assetPath.GetMainAssetPath()];
 				if (!resLoadDataInfo.resLoadData.assetCat.assetDict.ContainsKey(obj.name))
 					resLoadDataInfo.resLoadData.assetCat.assetDict[obj.name] = new Dictionary<Type, Object>();
 				if (!resLoadDataInfo.resLoadData.assetCat.assetDict[obj.name].ContainsKey(obj.GetType()))
@@ -66,9 +66,9 @@ namespace CsCat
 			assetCat =
 			  Client.instance.assetBundleManager.GetOrLoadAssetCat(assetPath.GetMainAssetPath(), onLoadSuccessCallback,
 				onLoadFailCallback, onLoadDoneCallback, callbackCause);
-			if (!resLoadDataInfoDict.ContainsKey(assetPath.GetMainAssetPath()))
-				resLoadDataInfoDict[assetPath.GetMainAssetPath()] = new ResLoadDataInfo(new ResLoadData(assetCat), isNotCheckDestroy);
-			resLoadDataInfoDict[assetPath.GetMainAssetPath()].AddCallbackCause(callbackCause);
+			if (!_resLoadDataInfoDict.ContainsKey(assetPath.GetMainAssetPath()))
+				_resLoadDataInfoDict[assetPath.GetMainAssetPath()] = new ResLoadDataInfo(new ResLoadData(assetCat), isNotCheckDestroy);
+			_resLoadDataInfoDict[assetPath.GetMainAssetPath()].AddCallbackCause(callbackCause);
 			return assetCat;
 		}
 
@@ -76,10 +76,10 @@ namespace CsCat
 		public void CancelLoadCallback(AssetCat assetCat, object callbackCause = null)
 		{
 			string toRemoveKey = null;
-			foreach (var keyValue in resLoadDataInfoDict)
+			foreach (var keyValue in _resLoadDataInfoDict)
 			{
 				var key = keyValue.Key;
-				var resLoadDataInfo = resLoadDataInfoDict[key];
+				var resLoadDataInfo = _resLoadDataInfoDict[key];
 				if (resLoadDataInfo.resLoadData.assetCat == assetCat)
 				{
 					resLoadDataInfo.RemoveCallbackCause(callbackCause);
@@ -90,16 +90,16 @@ namespace CsCat
 			}
 
 			if (toRemoveKey != null)
-				resLoadDataInfoDict.Remove(toRemoveKey);
+				_resLoadDataInfoDict.Remove(toRemoveKey);
 		}
 
 		public void CancelLoadAllCallbacks(AssetCat assetCat)
 		{
 			string toRemoveKey = null;
-			foreach (var keyValue in resLoadDataInfoDict)
+			foreach (var keyValue in _resLoadDataInfoDict)
 			{
 				var key = keyValue.Key;
-				var resLoadDataInfo = resLoadDataInfoDict[key];
+				var resLoadDataInfo = _resLoadDataInfoDict[key];
 				if (resLoadDataInfo.resLoadData.assetCat == assetCat)
 				{
 					resLoadDataInfo.RemoveAllCallbackCauses();
@@ -109,18 +109,18 @@ namespace CsCat
 				}
 			}
 			if (toRemoveKey != null)
-				resLoadDataInfoDict.Remove(toRemoveKey);
+				_resLoadDataInfoDict.Remove(toRemoveKey);
 		}
 
 
 		public void Reset()
 		{
-			foreach (var keyValue in resLoadDataInfoDict)
+			foreach (var keyValue in _resLoadDataInfoDict)
 			{
 				var resLoadDataInfo = keyValue.Value;
 				resLoadDataInfo.Destroy();
 			}
-			resLoadDataInfoDict.Clear();
+			_resLoadDataInfoDict.Clear();
 		}
 
 		public void Destroy()

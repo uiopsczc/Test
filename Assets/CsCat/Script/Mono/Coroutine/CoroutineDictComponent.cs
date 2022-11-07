@@ -1,22 +1,20 @@
-using UnityEngine;
 using System.Collections;
-using System.Collections.Generic;
 
 namespace CsCat
 {
 	public class CoroutineDictComponent : Component
 	{
-		public CoroutineDict coroutineDict;
+		private CoroutineDict _coroutineDict;
 
-		public void Init(CoroutineDict coroutineDict)
+		protected void _Init(CoroutineDict coroutineDict)
 		{
-			base.Init();
-			this.coroutineDict = coroutineDict;
+			base._Init();
+			this._coroutineDict = coroutineDict;
 		}
 
 		public string StartCoroutine(IEnumerator iEnumerator, string key = null)
 		{
-			return coroutineDict.StartCoroutine(iEnumerator, key);
+			return _coroutineDict.StartCoroutine(iEnumerator, key);
 		}
 
 		/// <summary>
@@ -25,12 +23,12 @@ namespace CsCat
 		/// <param name="key"></param>
 		public void StopCoroutine(string key)
 		{
-			coroutineDict.StopCoroutine(key);
+			_coroutineDict.StopCoroutine(key);
 		}
 
 		public void StopAllCoroutines()
 		{
-			coroutineDict.StopAllCoroutines();
+			_coroutineDict.StopAllCoroutines();
 		}
 
 		protected override void _Reset()

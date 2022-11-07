@@ -32,15 +32,6 @@ namespace CsCat
 			return _poolItemIndex.GetPool().GetPoolManager();
 		}
 
-
-		public virtual void Init()
-		{
-		}
-
-		public virtual void PostInit()
-		{
-		}
-
 		public virtual void Start()
 		{
 		}

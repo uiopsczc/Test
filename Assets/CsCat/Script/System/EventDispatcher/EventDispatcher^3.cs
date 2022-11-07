@@ -2,15 +2,14 @@ using System;
 
 namespace CsCat
 {
-	public class EventDispatcher<P0, P1, P2> : IDespawn, IEventDispatcher
+	public class EventDispatcher<P0, P1, P2> :IEventDispatcher
 	{
-		private readonly ValueListDictionary<string, KeyValuePairCat<Action<P0, P1, P2>, bool>> _listenerDict =
-			new ValueListDictionary<string, KeyValuePairCat<Action<P0, P1, P2>, bool>>();
+		private readonly ValueListDictionary<string, (Action<P0, P1, P2> handler, bool isValid)> _listenerDict =
+			new ValueListDictionary<string, (Action<P0, P1, P2> handler, bool isValid)>();
 
 		public Action<P0, P1, P2> AddListener(string eventName, Action<P0, P1, P2> handler)
 		{
-			var handlerInfo = PoolCatManagerUtil.Spawn<KeyValuePairCat<Action<P0, P1, P2>, bool>>().Init(handler, true);
-			_listenerDict.Add(eventName, handlerInfo);
+			_listenerDict.Add(eventName, (handler, true));
 			return handler;
 		}
 
@@ -26,9 +25,9 @@ namespace CsCat
 				for (var i = 0; i < listenerList.Count; i++)
 				{
 					var handlerInfo = listenerList[i];
-					if (handlerInfo.key != handler) continue;
-					if (!handlerInfo.value) continue;
-					handlerInfo.value = false;
+					if (handlerInfo.handler != handler) continue;
+					if (!handlerInfo.isValid) continue;
+					handlerInfo.isValid = false;
 					return true;
 				}
 			}
@@ -39,66 +38,25 @@ namespace CsCat
 
 		public void RemoveAllListeners()
 		{
-			foreach (var keyValue in _listenerDict)
-			{
-				var handlerInfoList = keyValue.Value;
-				for (var i = 0; i < handlerInfoList.Count; i++)
-				{
-					var handlerInfo = handlerInfoList[i];
-					handlerInfo.value = false;
-				}
-			}
-			CheckRemoved();
-			CheckEmpty();
+			_listenerDict.Clear();
 		}
 
 		public void Broadcast(string eventName, P0 p0, P1 p1, P2 p2)
 		{
 			if (_listenerDict.TryGetValue(eventName, out var listenerList))
 			{
-				int count = listenerList.Count;
-				for (int i = 0; i < count; i++)
+				for (int i = 0; i < listenerList.Count; i++)
 				{
 					var handlerInfo = listenerList[i];
-					if (handlerInfo.value == false)
+					if (handlerInfo.isValid == false)
+					{
+						listenerList.RemoveAt(i);
+						i--;//使i保持不变，因为有i++
 						continue;
-					handlerInfo.key(p0, p1, p2);
-				}
-
-				CheckRemoved();
-				CheckEmpty();
-			}
-
-		}
-
-		private void CheckRemoved()
-		{
-			foreach (var keyValue in _listenerDict)
-			{
-				var handlerInfoList = keyValue.Value;
-				for (int i = handlerInfoList.Count - 1; i >= 0; i--)
-				{
-					var handlerInfo = handlerInfoList[i];
-					if (handlerInfo.value) continue;
-					handlerInfoList.RemoveAt(i);
-					ObjectExtension.Despawn(handlerInfo);
+					}
+					handlerInfo.handler(p0, p1, p2);
 				}
 			}
-		}
-
-		private void CheckEmpty()
-		{
-			foreach (var keyValue in _listenerDict)
-			{
-				var eventName = keyValue.Key;
-				if (_listenerDict[eventName].Count == 0)
-					_listenerDict.Remove(eventName);
-			}
-		}
-
-		public void Despawn()
-		{
-			RemoveAllListeners();
 		}
 	}
 }

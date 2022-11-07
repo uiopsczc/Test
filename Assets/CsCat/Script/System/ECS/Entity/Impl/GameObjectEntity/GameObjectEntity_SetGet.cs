@@ -7,9 +7,9 @@ namespace CsCat
 {
 	public partial class GameObjectEntity
 	{
-		public TransformComponent GetTransformComponent()
+		public TransformInfoComponent GetTransformComponent()
 		{
-			return this.transformComponent;
+			return this.TransformInfoComponent;
 		}
 
 		public ResLoadComponent GetResLoadComponent()
@@ -39,91 +39,91 @@ namespace CsCat
 
 		public void SetLocalPosition(Vector3 localPosition)
 		{
-			this.transformComponent.SetLocalPosition(localPosition);
+			this.TransformInfoComponent.SetLocalPosition(localPosition);
 			this.graphicComponent.SetLocalPosition(localPosition);
 		}
 
 		public Vector3 GetLocalPosition()
 		{
-			return this.transformComponent.GetLocalPosition();
+			return this.TransformInfoComponent.GetLocalPosition();
 		}
 
 		public void SetLocalEulerAngles(Vector3 localEulerAngles)
 		{
-			this.transformComponent.SetLocalEulerAngles(localEulerAngles);
+			this.TransformInfoComponent.SetLocalEulerAngles(localEulerAngles);
 			this.graphicComponent.SetLocalEulerAngles(localEulerAngles);
 		}
 
 		public Vector3 GetLocalEulerAngles()
 		{
-			return this.transformComponent.GetLocalEulerAngles();
+			return this.TransformInfoComponent.GetLocalEulerAngles();
 		}
 
 		public void SetLocalRotation(Quaternion localRotation)
 		{
-			this.transformComponent.SetLocalRotation(localRotation);
+			this.TransformInfoComponent.SetLocalRotation(localRotation);
 			this.graphicComponent.SetLocalRotation(localRotation);
 		}
 
 
 		public Quaternion GetLocalRotation()
 		{
-			return this.transformComponent.GetLocalRotation();
+			return this.TransformInfoComponent.GetLocalRotation();
 		}
 
 		public void SetLocalScale(Vector3 localScale)
 		{
-			this.transformComponent.SetLocalScale(localScale);
+			this.TransformInfoComponent.SetLocalScale(localScale);
 			this.graphicComponent.SetLocalScale(localScale);
 		}
 
 		public Vector3 GetLocalScale()
 		{
-			return this.transformComponent.GetLocalScale();
+			return this.TransformInfoComponent.GetLocalScale();
 		}
 
 		public void SetPosition(Vector3 position)
 		{
-			this.transformComponent.SetPosition(position);
+			this.TransformInfoComponent.SetPosition(position);
 			this.graphicComponent.SetPosition(position);
 		}
 
 		public Vector3 GetPosition()
 		{
-			return this.transformComponent.GetPosition();
+			return this.TransformInfoComponent.GetPosition();
 		}
 
 		public void SetEulerAngles(Vector3 eulerAngles)
 		{
-			this.transformComponent.SetEulerAngles(eulerAngles);
+			this.TransformInfoComponent.SetEulerAngles(eulerAngles);
 			this.graphicComponent.SetEulerAngles(eulerAngles);
 		}
 
 		public Vector3 GetEulerAngles()
 		{
-			return this.transformComponent.GetEulerAngles();
+			return this.TransformInfoComponent.GetEulerAngles();
 		}
 
 		public void SetRotation(Quaternion rotation)
 		{
-			this.transformComponent.SetRotation(rotation);
+			this.TransformInfoComponent.SetRotation(rotation);
 			this.graphicComponent.SetRotation(rotation);
 		}
 
 		public Quaternion GetRotation()
 		{
-			return this.transformComponent.GetRotation();
+			return this.TransformInfoComponent.GetRotation();
 		}
 
 		public void SetScale(Vector3 scale)
 		{
-			this.transformComponent.SetScale(scale);
+			this.TransformInfoComponent.SetScale(scale);
 			this.graphicComponent.SetScale(scale);
 		}
 
 		public Vector3 GetScale()
 		{
-			return this.transformComponent.GetScale();
+			return this.TransformInfoComponent.GetScale();
 		}
 	}
 }

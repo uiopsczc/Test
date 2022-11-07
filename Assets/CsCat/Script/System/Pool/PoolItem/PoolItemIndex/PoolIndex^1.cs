@@ -19,6 +19,11 @@ namespace CsCat
 			return this._pool;
 		}
 
+		public IPoolCat GetIPool()
+		{
+			return this._pool;
+		}
+
 		//ÔÚpoolÖÐµÄPoolItem
 		public PoolItem<T> GetPoolItem()
 		{

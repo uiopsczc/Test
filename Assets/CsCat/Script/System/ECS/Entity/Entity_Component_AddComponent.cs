@@ -42,8 +42,7 @@ namespace CsCat
 			var component = AddComponentWithoutInit(componentType);
 			if (component == null) //没有加成功
 				return null;
-			component.InvokeMethod("Init", false, initArgs);
-			component.PostInit();
+			component.DoInit(initArgs);
 			component.SetIsEnabled(true);
 			return component;
 		}

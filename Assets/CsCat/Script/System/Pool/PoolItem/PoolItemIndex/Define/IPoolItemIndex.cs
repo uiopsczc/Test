@@ -10,5 +10,7 @@ namespace CsCat
 		object GetValue();
 
 		T2 GetValue<T2>() where T2 : class;
+
+		IPoolCat GetIPool();
 	}
 }

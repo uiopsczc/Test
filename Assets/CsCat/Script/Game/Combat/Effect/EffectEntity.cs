@@ -46,11 +46,11 @@ namespace CsCat
 		public void ApplyToTransformComponent(Vector3? position, Vector3? eulerAngles, Vector3? scale = null)
 		{
 			if (position != null)
-				this.transformComponent.position = position.Value;
+				this.TransformInfoComponent.position = position.Value;
 			if (eulerAngles != null)
-				this.transformComponent.eulerAngles = eulerAngles.Value;
+				this.TransformInfoComponent.eulerAngles = eulerAngles.Value;
 			if (scale != null)
-				this.transformComponent.scale = scale.Value;
+				this.TransformInfoComponent.scale = scale.Value;
 		}
 
 

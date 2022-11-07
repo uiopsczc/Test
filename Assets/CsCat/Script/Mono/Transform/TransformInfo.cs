@@ -4,25 +4,141 @@ namespace CsCat
 {
 	public class TransformInfo
 	{
-		public Vector3 position;
-		public Vector3 eulerAngles;
-		public Quaternion rotation;
-		public Vector3 scale;
+		private Vector3 _localPosition;
+		private Vector3 _localEulerAngles;
+		private Quaternion _localRotation;
+		private Vector3 _localScale;
+		private bool _isShow = true;
 
-		public TransformInfo(Vector3 position, Vector3 eulerAngles, Vector3 scale)
+
+		public TransformInfo()
 		{
-			this.position = position;
-			this.eulerAngles = eulerAngles;
-			this.rotation = Quaternion.Euler(this.eulerAngles.x, this.eulerAngles.y, this.eulerAngles.z);
-			this.scale = scale;
 		}
 
-		public TransformInfo(Vector3 position, Quaternion rotation, Vector3 scale)
+		public void ApplyToTransform(Transform toApplyTransform)
 		{
-			this.position = position;
-			this.eulerAngles = rotation.eulerAngles;
-			this.rotation = rotation;
-			this.scale = scale;
+			toApplyTransform.position = this.GetPosition();
+			toApplyTransform.eulerAngles = this.GetEulerAngles();
+			toApplyTransform.localScale = this.GetLocalScale();
+			toApplyTransform.gameObject.SetActive(this._isShow);
+//			toApplyTransform.SetParent(this._parentTransform,
+//				toApplyTransform.gameObject.layer != LayerMask.NameToLayer("UI"));
+		}
+
+		public void SetLocalPosition(Vector3 localPosition)
+		{
+			this._localPosition = localPosition;
+		}
+
+		public Vector3 GetLocalPosition()
+		{
+			return this._localPosition;
+		}
+
+
+		public void SetLocalEulerAngles(Vector3 localEulerAngles)
+		{
+			this._localEulerAngles = localEulerAngles;
+			this._localRotation = Quaternion.Euler(localEulerAngles.x, localEulerAngles.y, localEulerAngles.z);
+		}
+
+		public Vector3 GetLocalEulerAngles()
+		{
+			return this._localEulerAngles;
+		}
+
+
+		public void SetLocalRotation(Quaternion localRotation)
+		{
+			this._localRotation = localRotation;
+			this._localEulerAngles = localRotation.eulerAngles;
+		}
+
+		public Quaternion GetLocalRotation()
+		{
+			return this._localRotation;
+		}
+
+
+		public void SetLocalScale(Vector3 localScale)
+		{
+			this._localScale = localScale;
+		}
+
+		public Vector3 GetLocalScale()
+		{
+			return this._localScale;
+		}
+
+		public void SetPosition(Vector3 position)
+		{
+			this.SetLocalPosition(position);
+		}
+
+		public Vector3 GetPosition()
+		{
+			return this.GetLocalPosition();
+		}
+
+		public void SetEulerAngles(Vector3 eulerAngles)
+		{
+			this.SetLocalEulerAngles(eulerAngles);
+		}
+
+
+		public Vector3 GetEulerAngles()
+		{
+			return this.GetLocalEulerAngles();
+		}
+
+
+		public void SetRotation(Quaternion rotation)
+		{
+			this.SetLocalRotation(rotation);
+		}
+
+
+		public Quaternion GetRotation()
+		{
+			return this.GetLocalRotation();
+		}
+
+		public void SetScale(Vector3 scale)
+		{
+			this.SetLocalScale(scale);
+		}
+
+
+		public Vector3 GetScale()
+		{
+			return this.GetLocalScale();
+		}
+
+		public void RawSetIsShow(bool isShow)
+		{
+			this._isShow = isShow;
+		}
+
+		public bool SetIsShow(bool isShow)
+		{
+			if (this._isShow == isShow)
+				return false;
+			this._isShow = isShow;
+			return true;
+		}
+
+
+		public bool IsShow()
+		{
+			return this._isShow;
+		}
+
+		public void Reset()
+		{
+			this._localPosition = Vector3.zero;
+			this._localEulerAngles = Vector3.zero;
+			this._localRotation = Quaternion.identity;
+			this._localScale = Vector3.one;
 		}
 	}
 }

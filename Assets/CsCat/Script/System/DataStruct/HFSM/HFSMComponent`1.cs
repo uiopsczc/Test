@@ -6,9 +6,9 @@ namespace CsCat
 	{
 		public T hfsm;
 
-		public void Init(T hfsm)
+		protected void _Init(T hfsm)
 		{
-			base.Init();
+			base._Init();
 			this.hfsm = hfsm;
 		}
 

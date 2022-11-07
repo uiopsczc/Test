@@ -4,36 +4,38 @@ namespace CsCat
 {
 	public class Counter
 	{
-		public int count = 0;
-		public Action changeValueInvokeFunc;
+		private int _count = 0;
+		private Action _changeValueCallback;
+
+		public int count => _count;
 
 		public void Increase()
 		{
-			this.count = this.count + 1;
-			this._CheckFunc();
+			this._count = this._count + 1;
+			this._CheckCallback();
 		}
 
 		public void Decrease()
 		{
-			this.count = this.count - 1;
-			this._CheckFunc();
+			this._count = this._count - 1;
+			this._CheckCallback();
 		}
 
 		public void Reset()
 		{
-			this.count = 0;
-			this.changeValueInvokeFunc = null;
+			this._count = 0;
+			this._changeValueCallback = null;
 		}
 
 
-		public void AddChangeValueInvokeFunc(Action func)
+		public void AddChangeValueCallback(Action callback)
 		{
-			this.changeValueInvokeFunc += func;
+			this._changeValueCallback += callback;
 		}
 
-		public void _CheckFunc()
+		private void _CheckCallback()
 		{
-			this.changeValueInvokeFunc?.Invoke();
+			this._changeValueCallback?.Invoke();
 		}
 	}
 

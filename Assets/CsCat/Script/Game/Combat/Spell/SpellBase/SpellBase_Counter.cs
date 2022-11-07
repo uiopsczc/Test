@@ -7,14 +7,14 @@ namespace CsCat
 		private void InitCounter()
 		{
 			this.counter = new Counter();
-			this.counter.AddChangeValueInvokeFunc(this._CounterFunc);
+			this.counter.AddChangeValueCallback(this._CounterFunc);
 		}
 
 		private void _CounterFunc()
 		{
-			if (this.counter.count < 0)
+			if (this.counter._count < 0)
 				LogCat.error("Counter.count < 0");
-			if (this.counter.count == 0 && this.isSpellAnimationFinished && !this.IsDestroyed())
+			if (this.counter._count == 0 && this.isSpellAnimationFinished && !this.IsDestroyed())
 				this.RemoveSelf();
 		}
 

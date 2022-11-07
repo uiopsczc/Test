@@ -6,8 +6,9 @@ namespace CsCat
 	{
 		public EffectEntity effectEntity => this.GetEntity<EffectEntity>();
 
-		public override void Init()
+		protected void _Init()
 		{
+			base._Init();
 			base.Init(Client.instance.combat.effectManager.resLoadComponent);
 		}
 
@@ -15,7 +16,7 @@ namespace CsCat
 		public override void OnAllAssetsLoadDone()
 		{
 			base.OnAllAssetsLoadDone();
-			ApplyToTransform(this.effectEntity.transformComponent.position, this.effectEntity.transformComponent.eulerAngles);
+			ApplyToTransform(this.effectEntity.TransformInfoComponent.position, this.effectEntity.TransformInfoComponent.eulerAngles);
 		}
 
 		public void ApplyToTransform(Vector3? position, Vector3? eulerAngles)
@@ -58,7 +59,7 @@ namespace CsCat
 		protected override void _Update(float deltaTime = 0, float unscaledDeltaTime = 0)
 		{
 			base._Update(deltaTime, unscaledDeltaTime);
-			ApplyToTransform(this.effectEntity.transformComponent.position, this.effectEntity.transformComponent.eulerAngles);
+			ApplyToTransform(this.effectEntity.TransformInfoComponent.position, this.effectEntity.TransformInfoComponent.eulerAngles);
 		}
 	}
 }

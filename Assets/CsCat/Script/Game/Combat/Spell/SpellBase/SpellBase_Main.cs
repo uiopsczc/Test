@@ -180,7 +180,7 @@ namespace CsCat
 				return;
 			this.isSpellAnimationFinished = true;
 			Client.instance.combat.spellManager.OnSpellAnimationFinished(this);
-			if (this.counter.count <= 0)
+			if (this.counter._count <= 0)
 				this.RemoveSelf();
 			if (this.cfgSpellData.isCanMoveWhileCast && this.sourceUnit != null && !this.sourceUnit.IsDead())
 				this.sourceUnit.SetIsMoveWithMoveAnimation(true);

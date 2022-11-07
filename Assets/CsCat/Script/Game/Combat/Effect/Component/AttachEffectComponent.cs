@@ -10,10 +10,10 @@ namespace CsCat
 
 		public bool isAttach;
 
-		public void Init(IPosition attachEntityIPosition,
+		protected void _Init(IPosition attachEntityIPosition,
 		  Vector3? forceEulerAngles = null, float sectorAngle = 0)
 		{
-			base.Init();
+			base._Init();
 			attachEntityIPosition.SetSocketName(this.effectEntity.cfgEffectData.socketName1);
 			this._attachEntityTransform = attachEntityIPosition.GetTransform();
 			this._forceEulerAngles = forceEulerAngles;
