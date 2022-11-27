@@ -8,39 +8,37 @@ namespace CsCat
 	{
 		public class InputItem2 : UIObject
 		{
-			private Text descText;
-			private InputField inputField1;
-			private InputField inputField2;
-			private Button yesBtn;
+			private Text _TxtC_Desc;
+			private InputField _inputField1;
+			private InputField _inputField2;
+			private Button _BtnYes;
 
-			private string desc;
-			private Action<InputField, InputField> yesCallback;
+			private string _desc;
+			private Action<InputField, InputField> _yesCallback;
 
 
-			public void Init(GameObject gameObject, string desc, Action<InputField, InputField> yesCallback)
+			protected void _Init(GameObject gameObject, string desc, Action<InputField, InputField> yesCallback)
 			{
-				base.Init();
-				this.desc = desc;
-				this.yesCallback = yesCallback;
-				graphicComponent.SetGameObject(gameObject, true);
+				base._Init();
+				this._desc = desc;
+				this._yesCallback = yesCallback;
+				SetGameObject(gameObject, true);
 			}
 
-			public override void InitGameObjectChildren()
+			protected override void InitGameObjectChildren()
 			{
 				base.InitGameObjectChildren();
-				descText = graphicComponent.transform.FindComponentInChildren<Text>("desc");
-				inputField1 = graphicComponent.transform.FindComponentInChildren<InputField>("InputField1");
-				inputField2 = graphicComponent.transform.FindComponentInChildren<InputField>("InputField2");
-				yesBtn = graphicComponent.transform.FindComponentInChildren<Button>("yes_btn");
-
-				this.descText.text = this.desc;
-
+				_TxtC_Desc = this.GetTransform().Find("TxtC_Desc").GetComponent<Text>();
+				_inputField1 = this.GetTransform().Find("InputField1").GetComponent<InputField>();
+				_inputField2 = this.GetTransform().Find("InputField2").GetComponent<InputField>();
+				_BtnYes = this.GetTransform().Find("BtnYes").GetComponent<Button>();
+				this._TxtC_Desc.text = this._desc;
 			}
 
-			protected override void AddUnityEvents()
+			protected override void AddUnityListeners()
 			{
-				base.AddUnityEvents();
-				this.RegisterOnClick(yesBtn, () => { yesCallback(inputField1, inputField2); });
+				base.AddUnityListeners();
+				this.RegisterOnClick(_BtnYes, () => { _yesCallback(_inputField1, _inputField2); });
 			}
 		}
 	}

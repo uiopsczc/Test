@@ -8,11 +8,11 @@ namespace CsCat
 		public override void InitConfigList()
 		{
 			base.InitConfigList();
-			config_list.Add(new Dictionary<string, object>
+			configList.Add(new Dictionary<string, object>
 			{
-				{"type", "switch_item"},
+				{"type", "SwitchItem"},
 				{"desc", "GMTest"},
-				{"yes_callback", new Action(() => GMTest())},
+				{"yesCallback", new Action(() => GMTest())},
 			});
 		}
 

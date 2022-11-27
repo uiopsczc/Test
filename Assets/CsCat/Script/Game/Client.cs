@@ -156,9 +156,9 @@ namespace CsCat
 		protected override void _Update(float deltaTime, float unscaledDeltaTime)
 		{
 			base._Update(deltaTime, unscaledDeltaTime);
-			eventDispatchers.Broadcast(GlobalEventNameConst.Update);
-			eventDispatchers.Broadcast(GlobalEventNameConst.Update, deltaTime);
-			eventDispatchers.Broadcast(GlobalEventNameConst.Update, deltaTime, unscaledDeltaTime);
+			eventDispatchers.FireEvent(GlobalEventNameConst.Update);
+			eventDispatchers.FireEvent(GlobalEventNameConst.Update, deltaTime);
+			eventDispatchers.FireEvent(GlobalEventNameConst.Update, deltaTime, unscaledDeltaTime);
 
 			this.timerManager.Update(deltaTime, unscaledDeltaTime);
 			syncUpdate.Update();
@@ -168,9 +168,9 @@ namespace CsCat
 		protected override void _LateUpdate(float deltaTime, float unscaledDeltaTime)
 		{
 			base._LateUpdate(deltaTime, unscaledDeltaTime);
-			eventDispatchers.Broadcast(GlobalEventNameConst.LateUpdate);
-			eventDispatchers.Broadcast(GlobalEventNameConst.LateUpdate, deltaTime);
-			eventDispatchers.Broadcast(GlobalEventNameConst.LateUpdate, deltaTime, unscaledDeltaTime);
+			eventDispatchers.FireEvent(GlobalEventNameConst.LateUpdate);
+			eventDispatchers.FireEvent(GlobalEventNameConst.LateUpdate, deltaTime);
+			eventDispatchers.FireEvent(GlobalEventNameConst.LateUpdate, deltaTime, unscaledDeltaTime);
 
 			this.timerManager.LateUpdate(deltaTime, unscaledDeltaTime);
 			frameCallbackMananger.LateUpdate();
@@ -179,9 +179,9 @@ namespace CsCat
 		protected override void _FixedUpdate(float deltaTime, float unscaledDeltaTime)
 		{
 			base._FixedUpdate(deltaTime, unscaledDeltaTime);
-			eventDispatchers.Broadcast(GlobalEventNameConst.FixedUpdate);
-			eventDispatchers.Broadcast(GlobalEventNameConst.FixedUpdate, deltaTime);
-			eventDispatchers.Broadcast(GlobalEventNameConst.FixedUpdate, deltaTime, unscaledDeltaTime);
+			eventDispatchers.FireEvent(GlobalEventNameConst.FixedUpdate);
+			eventDispatchers.FireEvent(GlobalEventNameConst.FixedUpdate, deltaTime);
+			eventDispatchers.FireEvent(GlobalEventNameConst.FixedUpdate, deltaTime, unscaledDeltaTime);
 
 			this.timerManager.FixedUpdate(deltaTime, unscaledDeltaTime);
 			frameCallbackMananger.FixedUpdate();

@@ -8,12 +8,12 @@ namespace CsCat
 		public override void InitConfigList()
 		{
 			base.InitConfigList();
-			this.graphicComponent.gameObject.name = "test2";
-			config_list.Add(new Dictionary<string, object>
+			this.GetGameObject().name = "test2";
+			configList.Add(new Dictionary<string, object>
 			{
 				{"type", "InputItem"},
 				{"desc", "KKK"},
-				{"yes_callback", new Action(() => LogCat.LogWarning("KKK"))},
+				{"yesCallback", new Action(() => LogCat.LogWarning("KKK"))},
 			});
 		}
 	}

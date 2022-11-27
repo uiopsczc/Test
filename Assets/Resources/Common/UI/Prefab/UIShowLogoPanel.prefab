@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 4524530804621982748}
   - component: {fileID: 8438333000768587018}
   m_Layer: 5
-  m_Name: bg
+  m_Name: Nego_Bg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -84,9 +84,8 @@ GameObject:
   - component: {fileID: 999421469217238090}
   - component: {fileID: 7637595551148393018}
   - component: {fileID: 6642752982634126999}
-  - component: {fileID: 880762232078890659}
   m_Layer: 5
-  m_Name: desc
+  m_Name: TxtC_Desc
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -151,19 +150,6 @@ MonoBehaviour:
     m_VerticalOverflow: 0
     m_LineSpacing: 1.3
   m_Text: "<color=red>\u6B22\u8FCE\uFF0C\n\u6B22\u8FCE\uFF0C\u70ED\u70C8\u6B22\u8FCE</color>"
---- !u!114 &880762232078890659
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6631567766211506468}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e01d7886c628ec408af9ec3f116452f, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  lang_id: "<color=red>\u6B22\u8FCE\uFF0C\n\u6B22\u8FCE\uFF0C\u70ED\u70C8\u6B22\u8FCE</color>"
 --- !u!1 &7004941430507203150
 GameObject:
   m_ObjectHideFlags: 0
@@ -174,7 +160,7 @@ GameObject:
   m_Component:
   - component: {fileID: 8283873276122951758}
   m_Layer: 5
-  m_Name: frame
+  m_Name: Nego_Frame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

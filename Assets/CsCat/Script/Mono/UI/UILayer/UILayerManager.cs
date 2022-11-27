@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using UnityEngine;
-using RectTransform = UnityEngine.RectTransform;
 
 namespace CsCat
 {
@@ -10,15 +9,15 @@ namespace CsCat
 
 		public UIManager uiManager;
 
-		public void Init(UIManager uiManager)
+		protected void _Init(UIManager uiManager)
 		{
-			base.Init();
+			base._Init();
 			this.uiManager = uiManager;
 			for (int i = 0; i < UILayerConst.uiLayerConfigDict.Values.Count; i++)
 			{
 				UILayerConfig uiLayerConfig = UILayerConst.uiLayerConfigDict.Values[i];
 				string name = uiLayerConfig.name.ToString();
-				Transform layerTransform = uiManager.graphicComponent.transform.Find("UICanvas/" + name);
+				Transform layerTransform = uiManager.GetTransform().Find("UICanvas/" + name);
 				GameObject layerGameObject = layerTransform != null ? layerTransform.gameObject : new GameObject(name);
 				layerGameObject.transform.SetParent(uiManager.uiCanvas.transform);
 				layerGameObject.transform.SetSiblingIndex(i);
@@ -26,7 +25,7 @@ namespace CsCat
 				uiLayerDict[uiLayerConfig.name] = layer;
 			}
 
-			this.AddListener<EUILayerName, bool>(null, UIEventNameConst.SetIsHideUILayer, SetIsHideUILayer);
+			AddListener<EUILayerName, bool>(null, UIEventNameConst.SetIsHideUILayer, SetIsHideUILayer);
 		}
 
 		//供lua端调用，不要删除
@@ -43,7 +42,7 @@ namespace CsCat
 
 		void SetIsHideUILayer(EUILayerName eUILayerName, bool isHide)
 		{
-			GetUILayer(eUILayerName).graphicComponent.SetIsShow(!isHide);
+			GetUILayer(eUILayerName).SetIsShow(!isHide);
 		}
 	}
 }

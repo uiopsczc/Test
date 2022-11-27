@@ -6,10 +6,10 @@ namespace CsCat
 {
 	public partial class TreeNode
 	{
-		bool CheckCanAddChildType(Type childType, string childKey = null)
+		private bool _CheckCanAddChildType(Type childType, string childKey = null)
 		{
 			childKey = childKey??childType.FullName;
-			if (this.keyToChildPoolItemIndexDict.ContainsKey(childKey))
+			if (this._keyToChildPoolItemIndexDict.ContainsKey(childKey))
 			{
 				LogCat.error("duplicate add child:", childKey, childType);
 				return false;
@@ -22,13 +22,14 @@ namespace CsCat
 			var child = childPoolItemIndex.GetValue<TreeNode>();
 			child.SetPoolItemIndex(childPoolItemIndex);
 			child.SetParentPoolItemIndex(this._poolItemIndex);
+			child.SetKey(childKey);
 			_AddChildRelationship(childType, childPoolItemIndex);
 			return child;
 		}
 
 		public TreeNode AddChildWithoutInit(Type childType, string childKey = null)
 		{
-			if (CheckCanAddChildType(childType, childKey))
+			if (_CheckCanAddChildType(childType, childKey))
 				return null;
 			var (childPoolItem, childPoolItemIndex) = this.GetPoolManager().Spawn(childType);
 			return _AddChild(childType, childPoolItemIndex, childKey);
@@ -54,11 +55,11 @@ namespace CsCat
 			return AddChild(typeof(T), childKey, initArgs) as T;
 		}
 
-		void _AddChildRelationship(Type childType, IPoolItemIndex childPoolItemIndex, string childKey = null)
+		private void _AddChildRelationship(Type childType, IPoolItemIndex childPoolItemIndex, string childKey = null)
 		{
 			childKey = childKey??childType.FullName;
-			keyToChildPoolItemIndexDict[childKey] = childPoolItemIndex;
-			childPoolItemIndexList.Add(childPoolItemIndex);
+			_keyToChildPoolItemIndexDict[childKey] = childPoolItemIndex;
+			_childPoolItemIndexList.Add(childPoolItemIndex);
 		}
 	}
 }

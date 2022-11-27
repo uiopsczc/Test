@@ -2,10 +2,10 @@ namespace CsCat
 {
 	public class UIHUDNumberPanel : UIHUDPanel
 	{
-		public override void Init()
+		protected override void _Init()
 		{
-			base.Init();
-			this.graphicComponent.SetPrefabPath("Assets/Resources/common/ui/prefab/UINumberPanel.prefab");
+			base._Init();
+			this.SetPrefabPath("Assets/PatchResources/UI/UIHUD/Prefab/UINumberPanel.prefab");
 
 		}
 	}

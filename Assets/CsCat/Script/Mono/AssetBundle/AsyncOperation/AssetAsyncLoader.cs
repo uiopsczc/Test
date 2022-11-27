@@ -74,19 +74,19 @@ namespace CsCat
 			var assets = assetBundle.LoadAssetWithSubAssets(assetCat.assetPath);
 			assetCat.SetAssets(assets);
 
-			Broadcast(null, AssetBundleEventNameConst.On_AssetAsyncLoader_Success, this);
+			FireEvent(null, AssetBundleEventNameConst.On_AssetAsyncLoader_Success, this);
 		}
 
 		protected override void OnFail()
 		{
 			base.OnFail();
-			Broadcast(null, AssetBundleEventNameConst.On_AssetAsyncLoader_Fail, this);
+			FireEvent(null, AssetBundleEventNameConst.On_AssetAsyncLoader_Fail, this);
 		}
 
 		protected override void OnDone()
 		{
 			base.OnDone();
-			Broadcast(null, AssetBundleEventNameConst.On_AssetAsyncLoader_Done, this);
+			FireEvent(null, AssetBundleEventNameConst.On_AssetAsyncLoader_Done, this);
 		}
 
 		//需要手动释放

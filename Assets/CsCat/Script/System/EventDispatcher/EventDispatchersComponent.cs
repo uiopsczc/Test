@@ -20,9 +20,9 @@ namespace CsCat
 			return _eventDispatchers.RemoveListener(eventName, handler);
 		}
 
-		public void Broadcast(string eventName)
+		public void FireEvent(string eventName)
 		{
-			_eventDispatchers.Broadcast(eventName);
+			_eventDispatchers.FireEvent(eventName);
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////
@@ -36,9 +36,9 @@ namespace CsCat
 			return _eventDispatchers.RemoveListener(eventName, handler);
 		}
 
-		public void Broadcast<P0>(string eventName, P0 p0)
+		public void FireEvent<P0>(string eventName, P0 p0)
 		{
-			_eventDispatchers.Broadcast(eventName, p0);
+			_eventDispatchers.FireEvent(eventName, p0);
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////
@@ -52,9 +52,9 @@ namespace CsCat
 			return _eventDispatchers.RemoveListener(eventName, handler);
 		}
 
-		public void Broadcast<P0, P1>(string eventName, P0 p0, P1 p1)
+		public void FireEvent<P0, P1>(string eventName, P0 p0, P1 p1)
 		{
-			_eventDispatchers.Broadcast(eventName, p0, p1);
+			_eventDispatchers.FireEvent(eventName, p0, p1);
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////
@@ -68,9 +68,9 @@ namespace CsCat
 			return _eventDispatchers.RemoveListener(eventName, handler);
 		}
 
-		public void Broadcast<P0, P1, P2>(string eventName, P0 p0, P1 p1, P2 p2)
+		public void FireEvent<P0, P1, P2>(string eventName, P0 p0, P1 p1, P2 p2)
 		{
-			_eventDispatchers.Broadcast(eventName, p0, p1, p2);
+			_eventDispatchers.FireEvent(eventName, p0, p1, p2);
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////
@@ -84,9 +84,9 @@ namespace CsCat
 			return _eventDispatchers.RemoveListener(eventName, handler);
 		}
 
-		public void Broadcast<P0, P1, P2, P3>(string eventName, P0 p0, P1 p1, P2 p2, P3 p3)
+		public void FireEvent<P0, P1, P2, P3>(string eventName, P0 p0, P1 p1, P2 p2, P3 p3)
 		{
-			_eventDispatchers.Broadcast(eventName, p0, p1, p2, p3);
+			_eventDispatchers.FireEvent(eventName, p0, p1, p2, p3);
 		}
 
 		public void RemoveAllListeners()

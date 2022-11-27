@@ -22,7 +22,7 @@ namespace CsCat
 
 		public bool RawHasChild(string childKey)
 		{
-			return this.keyToChildPoolItemIndexDict.TryGetValue(childKey, out var childPoolItemIndex);
+			return this._keyToChildPoolItemIndexDict.TryGetValue(childKey, out var childPoolItemIndex);
 		}
 
 		public bool RawHasChildStrictly<T>()
@@ -42,9 +42,9 @@ namespace CsCat
 
 		public bool RawHasChild(Type childType)
 		{
-			for (int i = 0; i < this.childPoolItemIndexList.Count; i++)
+			for (int i = 0; i < this._childPoolItemIndexList.Count; i++)
 			{
-				var childPoolItemIndex = childPoolItemIndexList[i];
+				var childPoolItemIndex = _childPoolItemIndexList[i];
 				var child = childPoolItemIndex.GetValue<TreeNode>();
 				if (child.GetType().IsSubTypeOf(childType))
 					return true;

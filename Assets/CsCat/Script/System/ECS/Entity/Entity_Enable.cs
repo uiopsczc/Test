@@ -14,9 +14,9 @@ namespace CsCat
 			if (_isEnabled == isEnabled)
 				return;
 
-			for (int i = 0; i < componentPoolItemIndexList.Count; i++)
+			for (int i = 0; i < _componentPoolItemIndexList.Count; i++)
 			{
-				var componentPoolItemIndex = componentPoolItemIndexList[i];
+				var componentPoolItemIndex = _componentPoolItemIndexList[i];
 				var component = _GetComponent(componentPoolItemIndex);
 				component?.SetIsEnabled(isEnabled);
 			}

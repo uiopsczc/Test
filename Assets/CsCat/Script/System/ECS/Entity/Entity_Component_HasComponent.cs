@@ -5,46 +5,46 @@ namespace CsCat
 {
 	public partial class Entity
 	{
-		public bool HasComponent(string componentKey)
+		public bool IsHasComponent(string componentKey)
 		{
 			return this.GetComponent(componentKey) != null;
 		}
 
-		public bool HasComponentStrictly<T>() where T : Component
+		public bool IsHasComponentStrictly<T>() where T : Component
 		{
-			return HasComponentStrictly(typeof(T));
+			return IsHasComponentStrictly(typeof(T));
 		}
 
-		public bool HasComponentStrictly(Type componentType)
+		public bool IsHasComponentStrictly(Type componentType)
 		{
-			return HasComponent(componentType.FullName);
+			return IsHasComponent(componentType.FullName);
 		}
 
-		public bool RawHasComponent(string componentKey)
+		public bool IsRawHasComponent(string componentKey)
 		{
-			return this.keyToComponentPoolItemIndexDict.TryGetValue(componentKey, out var componentPoolItemIndex);
+			return this._keyToComponentPoolItemIndexDict.TryGetValue(componentKey, out var componentPoolItemIndex);
 		}
 
-		public bool RawHasComponentStrictly<T>()
+		public bool IsRawHasComponentStrictly<T>()
 		{
-			return RawHasComponentStrictly(typeof(T));
+			return IsRawHasComponentStrictly(typeof(T));
 		}
 
-		public bool RawHasComponentStrictly(Type componentType)
+		public bool IsRawHasComponentStrictly(Type componentType)
 		{
-			return RawHasComponent(componentType.FullName);
+			return IsRawHasComponent(componentType.FullName);
 		}
 
-		public bool RawHasComponent<T>()
+		public bool IsRawHasComponent<T>()
 		{
-			return RawHasComponent(typeof(T));
+			return IsRawHasComponent(typeof(T));
 		}
 
-		public bool RawHasComponent(Type componentType)
+		public bool IsRawHasComponent(Type componentType)
 		{
-			for (int i = 0; i < this.componentPoolItemIndexList.Count; i++)
+			for (int i = 0; i < this._componentPoolItemIndexList.Count; i++)
 			{
-				var componentPoolItemIndex = componentPoolItemIndexList[i];
+				var componentPoolItemIndex = _componentPoolItemIndexList[i];
 				var component = componentPoolItemIndex.GetValue<Component>();
 				if (component.GetType().IsSubTypeOf(componentType))
 					return true;

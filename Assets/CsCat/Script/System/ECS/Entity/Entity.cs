@@ -36,7 +36,7 @@ namespace CsCat
 		{
 		}
 
-		public virtual void Refresh()
+		public virtual void Refresh(bool isInit = false)
 		{
 		}
 		

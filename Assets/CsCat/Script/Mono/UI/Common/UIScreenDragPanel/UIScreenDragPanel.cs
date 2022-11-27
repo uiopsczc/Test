@@ -11,38 +11,38 @@ namespace CsCat
 	public class UIScreenDragPanel : UIBackgroundPanel
 	{
 
-		private object moveRange;
-		private float deltaMoveScale;
-		private float deltaHeightSacle;
-		private int touchCount; // 触摸数
-		private CameraManager cameraManager;
+		private object _moveRange;
+		private float _deltaMoveScale;
+		private float _deltaHeightSacle;
+		private int _touchCount; // 触摸数
+		private CameraManager _cameraManager;
 
-		private Dictionary<int, Vector2>
-		  modifyCameraHeightInfo = new Dictionary<int, Vector2>(); //用于双指控制调整摄像头高度时使用，记录手指两点距离变化
+		private readonly Dictionary<int, Vector2>
+		  _modifyCameraHeightInfo = new Dictionary<int, Vector2>(); //用于双指控制调整摄像头高度时使用，记录手指两点距离变化
 
-		private float lastDistance = 0;
+		private float _lastDistance = 0;
 
-		public void Init(object moveRange)
+		protected void _Init(object moveRange)
 		{
-			base.Init();
-			this.moveRange = moveRange;
+			base._Init();
+			this._moveRange = moveRange;
 
-			this.graphicComponent.SetPrefabPath("Assets/Resources/common/ui/prefab/UIScreenDragPanel.prefab");
+			SetPrefabPath("Assets/PatchResources/UI/UIScreenDragPanel/Prefab/UIScreenDragPanel.prefab");
 
 			//用于移动的比例
-			this.deltaMoveScale = 1 / (Screen.height / ScreenConst.Design_Resolution_Height * 12);
-			this.deltaHeightSacle = Screen.height / ScreenConst.Design_Resolution_Height * 0.15f; // 屏幕拖拽控制器缩放屏幕灵敏度
+			this._deltaMoveScale = 1 / (Screen.height / ScreenConst.Design_Resolution_Height * 12);
+			this._deltaHeightSacle = Screen.height / ScreenConst.Design_Resolution_Height * 0.15f; // 屏幕拖拽控制器缩放屏幕灵敏度
 																									//设置摄像机移动范围
-			this.cameraManager = Client.instance.combat.cameraManager;
-			this.cameraManager.SetMainCameraMoveRange(moveRange);
+			this._cameraManager = Client.instance.combat.cameraManager;
+			this._cameraManager.SetMainCameraMoveRange(moveRange);
 		}
 
-		protected override void AddUnityEvents()
+		protected override void AddUnityListeners()
 		{
-			base.AddUnityEvents();
-			this.RegisterOnDrag(graphicComponent.gameObject, this.OnUIScreenDrag);
-			this.RegisterOnPointerDown(graphicComponent.gameObject, this.OnUIScreenPointerDown);
-			this.RegisterOnPointerUp(graphicComponent.gameObject, this.OnUIScreenPointerUp);
+			base.AddUnityListeners();
+			this.RegisterOnDrag(this.GetGameObject(), this.OnUIScreenDrag);
+			this.RegisterOnPointerDown(this.GetGameObject(), this.OnUIScreenPointerDown);
+			this.RegisterOnPointerUp(this.GetGameObject(), this.OnUIScreenPointerUp);
 		}
 
 
@@ -50,33 +50,34 @@ namespace CsCat
 		protected override void _SetIsEnabled(bool isEnabled)
 		{
 			base._SetIsEnabled(isEnabled);
-			graphicComponent.SetIsShow(isEnabled);
+			SetIsShow(isEnabled);
 			if (!isEnabled)
-				this.touchCount = 0;
+				this._touchCount = 0;
 		}
 
 		public void OnUIScreenPointerDown(PointerEventData eventData)
 		{
-			this.touchCount = this.touchCount + 1;
+			this._touchCount = this._touchCount + 1;
 			// 不处理大于2个触摸点的操作
-			if (this.touchCount > 2)
+			if (this._touchCount > 2)
 				return;
 
 			//记录当前手指坐标
-			this.modifyCameraHeightInfo[eventData.pointerId] = eventData.position;
+			this._modifyCameraHeightInfo[eventData.pointerId] = eventData.position;
 			//计算当前两个手指的距离
-			if (this.touchCount > 1)
-				this.lastDistance = this.__CalculateTwoPointDistance();
+			if (this._touchCount > 1)
+				this._lastDistance = this._CalculateTwoPointDistance();
 
-			cameraManager?.MoveByDelta(0, 0, 0);
+			_cameraManager?.MoveByDelta(0, 0, 0);
 		}
 
 		// 计算两个触点的距离
-		private float __CalculateTwoPointDistance()
+		private float _CalculateTwoPointDistance()
 		{
 			Vector2? otherPoint = null;
-			foreach (var eventDataPosition in this.modifyCameraHeightInfo.Values)
+			foreach (var kv in this._modifyCameraHeightInfo)
 			{
+				var eventDataPosition = kv.Value;
 				if (otherPoint.HasValue)
 					return Vector2.Distance(otherPoint.Value, eventDataPosition);
 
@@ -84,46 +85,46 @@ namespace CsCat
 			}
 
 			//如果只剩下一个点，则返回上一次的距离
-			return this.lastDistance;
+			return this._lastDistance;
 		}
 
 		public void OnUIScreenPointerUp(PointerEventData eventData)
 		{
-			this.modifyCameraHeightInfo.Remove(eventData.pointerId);
-			this.touchCount = this.touchCount - 1;
+			this._modifyCameraHeightInfo.Remove(eventData.pointerId);
+			this._touchCount = this._touchCount - 1;
 		}
 
 
 		public void OnUIScreenDrag(PointerEventData eventData)
 		{
-			if (this.cameraManager == null)
+			if (this._cameraManager == null)
 				return;
 			//如果是一个触摸点的时候是拖拽屏幕移动
-			if (this.touchCount < 1.5f)
+			if (this._touchCount < 1.5f)
 			{
-				this.cameraManager.MoveByDelta(eventData.delta.x * this.deltaMoveScale,
-				  eventData.delta.y * this.deltaMoveScale, 0);
+				this._cameraManager.MoveByDelta(eventData.delta.x * this._deltaMoveScale,
+				  eventData.delta.y * this._deltaMoveScale, 0);
 			}
 			else
 			{
 				//如果是大于1个触摸点的时候，是调整摄像头高度
-				this.modifyCameraHeightInfo[eventData.pointerId] = eventData.position;
-				var distance = this.__CalculateTwoPointDistance();
-				this.cameraManager.MoveByDelta(0, 0, (distance - this.lastDistance) * this.deltaHeightSacle);
-				this.lastDistance = distance;
+				this._modifyCameraHeightInfo[eventData.pointerId] = eventData.position;
+				var distance = this._CalculateTwoPointDistance();
+				this._cameraManager.MoveByDelta(0, 0, (distance - this._lastDistance) * this._deltaHeightSacle);
+				this._lastDistance = distance;
 			}
 		}
 
 		protected override void _Reset()
 		{
 			base._Reset();
-			cameraManager?.SetMainCameraMoveRange(null);
+			_cameraManager?.SetMainCameraMoveRange(null);
 		}
 
 		protected override void _Destroy()
 		{
 			base._Destroy();
-			cameraManager?.SetMainCameraMoveRange(null);
+			_cameraManager?.SetMainCameraMoveRange(null);
 		}
 	}
 }

@@ -8,6 +8,7 @@ namespace CsCat
 		public Cache _cache = new Cache();
 		private IPoolItemIndex _poolItemIndex;
 		private IPoolItemIndex _parentPoolItemIndex;
+		private string _key;
 
 		public TreeNode()
 		{
@@ -23,9 +24,19 @@ namespace CsCat
 			return this._poolItemIndex;
 		}
 
-		public int GetId()
+		protected void SetKey(string key)
 		{
-			return this._poolItemIndex.GetIndex();
+			this._key = key;
+		}
+
+		protected string GetKey()
+		{
+			return this._key;
+		}
+
+		public string GetId()
+		{
+			return this._key;
 		}
 
 		public void SetParentPoolItemIndex(IPoolItemIndex parentPoolItemIndex)
@@ -66,7 +77,7 @@ namespace CsCat
 		{
 		}
 
-		public virtual void Refresh()
+		public virtual void Refresh(bool isInit = false)
 		{
 		}
 

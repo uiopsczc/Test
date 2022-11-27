@@ -6,30 +6,29 @@ namespace CsCat
 	public partial class UIGMPanelBase : UIPopUpPanel
 	{
 
-		protected List<Dictionary<string, object>> config_list = new List<Dictionary<string, object>>();
-		protected GameObject switch_item_prefab;
-		protected GameObject input_item_prefab;
-		protected GameObject input_item2_prefab;
-		protected GameObject close_btn_gameObject;
-		protected Transform inner_content_transform;
+		protected List<Dictionary<string, object>> configList = new List<Dictionary<string, object>>();
+		protected GameObject _Nego_SwitchItem;
+		protected GameObject _Nego_InputItem1;
+		protected GameObject _Nego_InputItem2;
+		protected GameObject _BtnClose;
+		protected Transform _Nego_ScrollViewContent;
 
-		public override void Init()
+		protected override void _Init()
 		{
-			base.Init();
-			this.graphicComponent.SetPrefabPath("Assets/Resources/common/ui/prefab/UIGMPanelBase.prefab");
+			base._Init();
+			this.SetPrefabPath("Assets/PatchResources/UI/UIGMPanelBase/Prefab/UIGMPanelBase.prefab");
 		}
 
-		public override void InitGameObjectChildren()
+		protected override void InitGameObjectChildren()
 		{
 			base.InitGameObjectChildren();
-			inner_content_transform = this.frameTransform.Find("content/Scroll View/Viewport/Content");
-			switch_item_prefab = inner_content_transform.Find("switch_item").gameObject;
-			input_item_prefab = inner_content_transform.Find("input_item").gameObject;
-			input_item2_prefab = inner_content_transform.Find("input_item_2").gameObject;
-			close_btn_gameObject = this.frameTransform.Find("content/close_btn").gameObject;
+			_Nego_ScrollViewContent = this._frameTransform.Find("Nego_Content/Scroll View/Viewport/Nego_ScrollViewContent");
+			_Nego_SwitchItem = _Nego_ScrollViewContent.Find("Nego_SwitchItem").gameObject;
+			_Nego_InputItem1 = _Nego_ScrollViewContent.Find("Nego_InputItem1").gameObject;
+			_Nego_InputItem2 = _Nego_ScrollViewContent.Find("Nego_InputItem2").gameObject;
+			_BtnClose = this._frameTransform.Find("Nego_Content/BtnClose").gameObject;
 
-			this.RegisterOnClick(close_btn_gameObject, () => this.Close());
-
+			this.RegisterOnClick(_BtnClose, this.Close);
 			InitConfigList();
 			InitItems();
 		}
@@ -37,17 +36,18 @@ namespace CsCat
 
 		public void InitItems()
 		{
-			foreach (Dictionary<string, object> config in config_list)
+			for (var i = 0; i < configList.Count; i++)
 			{
+				Dictionary<string, object> config = configList[i];
 				switch (config["type"])
 				{
-					case "switch_item":
+					case "SwitchItem":
 						InitSwitchItem(config);
 						break;
-					case "input_item":
+					case "inputItem1":
 						InitInputItem(config);
 						break;
-					case "input_item_2":
+					case "inputItem2":
 						InitInputItem2(config);
 						break;
 				}
@@ -56,28 +56,28 @@ namespace CsCat
 
 		private GameObject CreateClone(GameObject prefab)
 		{
-			GameObject clone = GameObject.Instantiate(prefab, inner_content_transform);
+			GameObject clone = Object.Instantiate(prefab, _Nego_ScrollViewContent);
 			clone.SetActive(true);
 			return clone;
 		}
 
 		public void InitSwitchItem(Dictionary<string, object> config)
 		{
-			GameObject clone = CreateClone(switch_item_prefab);
-			this.AddChild<SwitchItem>(null, clone, config["desc"], config["yes_callback"],
-			  config.ContainsKey("no_callback") ? config["no_callback"] : null);
+			GameObject clone = CreateClone(_Nego_SwitchItem);
+			this.AddChild<SwitchItem>(null, clone, config["desc"], config["yesCallback"],
+			  config.ContainsKey("noCallback") ? config["noCallback"] : null);
 		}
 
 		public void InitInputItem(Dictionary<string, object> config)
 		{
-			GameObject clone = CreateClone(input_item_prefab);
-			this.AddChild<InputItem>(null, clone, config["desc"], config["yes_callbak"]);
+			GameObject clone = CreateClone(_Nego_InputItem1);
+			this.AddChild<InputItem>(null, clone, config["desc"], config["yesCallbak"]);
 		}
 
 		public void InitInputItem2(Dictionary<string, object> config)
 		{
-			GameObject clone = CreateClone(input_item2_prefab);
-			this.AddChild<InputItem2>(null, clone, config["desc"], config["yes_callback"]);
+			GameObject clone = CreateClone(_Nego_InputItem2);
+			this.AddChild<InputItem2>(null, clone, config["desc"], config["yesCallback"]);
 		}
 
 		////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -88,7 +88,7 @@ namespace CsCat
 		protected override void _Destroy()
 		{
 			base._Destroy();
-			config_list.Clear();
+			configList.Clear();
 		}
 	}
 }

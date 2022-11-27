@@ -7,6 +7,18 @@ namespace CsCat
 	{
 		protected TransformInfoProxy _transformInfoProxy = new TransformInfoProxy();
 
+		protected override void _Init()
+		{
+			base._Init();
+			this.AddChild<ListenerDictTreeNode>(null);
+			this.AddChild<ResLoadDictTreeNode>(null, new ResLoadDict(new ResLoad()));
+		}
+
+		public void SetParentTransform(Transform parentTransform)
+		{
+			this._transformInfoProxy.SetParentTransform(parentTransform);
+		}
+
 		public Transform GetTransform()
 		{
 			return this._transformInfoProxy.GetTransform();
@@ -117,7 +129,15 @@ namespace CsCat
 
 		public bool SetIsShow(bool isShow)
 		{
-			return _transformInfoProxy.SetIsShow(isShow);
+			var isChange = _transformInfoProxy.SetIsShow(isShow);
+			if (isChange)
+			{
+				if (isShow)
+					OnShow();
+				else
+					OnHide();
+			}
+			return isChange;
 		}
 
 
@@ -126,15 +146,27 @@ namespace CsCat
 			return this._transformInfoProxy.IsShow();
 		}
 
+		protected virtual void OnShow()
+		{
+
+		}
+
+		protected virtual void OnHide()
+		{
+
+		}
+
 		protected override void _Reset()
 		{
 			base._Reset();
+			this.SetIsShow(false);
 			this._transformInfoProxy.Reset();
 		}
 
 		protected override void _Destroy()
 		{
 			base._Destroy();
+			this.SetIsShow(false);
 			this._transformInfoProxy.Reset();
 		}
 	}

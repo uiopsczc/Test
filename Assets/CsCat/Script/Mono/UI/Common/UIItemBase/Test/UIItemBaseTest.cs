@@ -4,8 +4,8 @@ namespace CsCat
 	{
 		public static void Test(UIObject parent)
 		{
-			UIItemBase item = parent.AddChild<UIItemBase>(null, parent.graphicComponent.transform);
-			item.InvokeAfterAllAssetsLoadDone(() => { item.Show("1", 2); });
+			UIItemBase item = parent.AddChild<UIItemBase>(null, parent.GetTransform());
+			item.InvokeAfterPrefabLoadDone(() => { item.Show("1", 2); });
 		}
 	}
 }

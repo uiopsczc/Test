@@ -8,7 +8,8 @@ namespace CsCat
 		private Vector3 _localEulerAngles;
 		private Quaternion _localRotation;
 		private Vector3 _localScale;
-		private bool _isShow = true;
+		private bool _isShow;
+		private Transform _parentTransform;
 
 
 		public TransformInfo()
@@ -21,8 +22,18 @@ namespace CsCat
 			toApplyTransform.eulerAngles = this.GetEulerAngles();
 			toApplyTransform.localScale = this.GetLocalScale();
 			toApplyTransform.gameObject.SetActive(this._isShow);
-//			toApplyTransform.SetParent(this._parentTransform,
-//				toApplyTransform.gameObject.layer != LayerMask.NameToLayer("UI"));
+			toApplyTransform.SetParent(this._parentTransform,
+				toApplyTransform.gameObject.layer != LayerMask.NameToLayer("UI"));
+		}
+
+		public void SetParentTransform(Transform parentTransform)
+		{
+			this._parentTransform = parentTransform;
+		}
+
+		public Transform GetParentTransform()
+		{
+			return this._parentTransform;
 		}
 
 		public void SetLocalPosition(Vector3 localPosition)
@@ -139,6 +150,7 @@ namespace CsCat
 			this._localEulerAngles = Vector3.zero;
 			this._localRotation = Quaternion.identity;
 			this._localScale = Vector3.one;
+			this._isShow = false;
 		}
 	}
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace CsCat
 {
-	public class ListenerTreeNode : TreeNode
+	public class ListenerDictTreeNode : TreeNode
 	{
 		private readonly ListenerDict _listenerDict = new ListenerDict();
 

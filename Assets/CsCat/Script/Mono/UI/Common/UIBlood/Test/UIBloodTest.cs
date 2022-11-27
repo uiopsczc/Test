@@ -16,7 +16,7 @@ namespace CsCat
 
 		public static void Test3()
 		{
-			uiBloodTestParent.Reset();
+			uiBloodTestParent.DoReset();
 		}
 
 		public static void Test4()

@@ -1,40 +1,58 @@
 using System;
-using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.UI;
 
 namespace CsCat
 {
-	public partial class UIObject : GameEntity
+	public partial class UIObject : CommonViewTreeNode
 	{
-		public UIObject parentUIObject => _cache.GetOrAddDefault("parent_uiObject", () => parent as UIObject);
+		public UIObject parentUIObject => _cache.GetOrAddDefault("parentUIObject", () => GetParent<UIObject>());
 
-		public UIPanel parentUIPanel => _cache.GetOrAddDefault("parent_uiPanel", () => parent as UIPanel);
+		public UIPanel parentUIPanel => _cache.GetOrAddDefault("parentUIPanel", () => GetParent<UIPanel>());
 
-		protected override GraphicComponent CreateGraphicComponent()
+		protected virtual Transform _contentTransform
 		{
-			return this.AddComponent<UIGraphicComponent>(null, this.resLoadComponent);
+			get{return _cache.GetOrAddDefault("contentTransform", () => GetTransform().Find("Nego_Content"));}
 		}
 
-		public virtual void Open()
+		protected virtual void AddUnityListeners()
 		{
-			this.AddUnityEvents();
-			this.AddGameEvents();
+
+		}
+		protected virtual void RemoveUnityListeners()
+		{
+			for (var i = 0; i < _registeredUGUIEventListenerList.Count; i++)
+			{
+				var uguiEventListener = _registeredUGUIEventListenerList[i];
+				uguiEventListener.Destroy();
+			}
+
+			_registeredUGUIEventListenerList.Clear();
 		}
 
-		protected virtual void AddUnityEvents()
+		protected virtual void AddGameListeners()
 		{
 		}
-		protected virtual void AddGameEvents()
+
+		protected virtual void RemoveGameListeners()
 		{
 		}
+
+		protected virtual void AddTimers()
+		{
+		}
+
+		protected virtual void RemoveTimers()
+		{
+		}
+
+		
 
 
 		public void SetImageAsync(Image image, string assetPath, Action<Image> callbak = null,
-		  bool isSetNativeSize = true)
+		  bool isSetNativeSize = false)
 		{
-			resLoadComponent.GetOrLoadAsset(assetPath.GetMainAssetPath(), (assetCat) =>
+			GetChild<ResLoadDictTreeNode>().GetOrLoadAsset(assetPath.GetMainAssetPath(), assetCat =>
 			{
 				if (image == null)
 					return;
@@ -46,9 +64,9 @@ namespace CsCat
 		}
 
 		public void SetRawImageAsync(RawImage image, string assetPath, Action<RawImage> callbak = null,
-		  bool isSetNativeSize = true)
+		  bool isSetNativeSize = false)
 		{
-			resLoadComponent.GetOrLoadAsset(assetPath, (assetCat) =>
+			GetChild<ResLoadDictTreeNode>().GetOrLoadAsset(assetPath, assetCat =>
 			{
 				if (image == null)
 					return;
@@ -64,25 +82,17 @@ namespace CsCat
 		protected override void _Reset()
 		{
 			base._Reset();
-			for (var i = 0; i < registeredUGUIEventListenerList.Count; i++)
-			{
-				var uguiEventListener = registeredUGUIEventListenerList[i];
-				uguiEventListener.Destroy();
-			}
-
-			registeredUGUIEventListenerList.Clear();
+			RemoveUnityListeners();
+			RemoveGameListeners();
+			RemoveTimers();
 		}
 
 		protected override void _Destroy()
 		{
 			base._Destroy();
-			for (var i = 0; i < registeredUGUIEventListenerList.Count; i++)
-			{
-				var uguiEventListener = registeredUGUIEventListenerList[i];
-				uguiEventListener.Destroy();
-			}
-
-			registeredUGUIEventListenerList.Clear();
+			RemoveUnityListeners();
+			RemoveGameListeners();
+			RemoveTimers();
 		}
 	}
 }

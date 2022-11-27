@@ -7,16 +7,21 @@ namespace CsCat
 		public override bool isResident => true;
 
 
-		public void Init(GameObject gameObject)
+		protected void _Init(GameObject gameObject)
 		{
-			base.Init();
-			graphicComponent.SetGameObject(gameObject, true);
+			SetGameObject(gameObject, true);
+		}
+
+		protected override void _PostInit()
+		{
+			base._PostInit();
+			this.SetIsShow(false);
 		}
 
 		protected override void _Reset()
 		{
 			base._Reset();
-			graphicComponent.SetIsShow(false);
+			SetIsShow(false);
 		}
 	}
 }

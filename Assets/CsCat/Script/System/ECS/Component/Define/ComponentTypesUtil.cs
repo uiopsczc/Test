@@ -7,13 +7,13 @@ namespace CsCat
 	{
 		public static void AddGameComponentTypes(this Entity entity, TimerManager timerManager)
 		{
-			if (!entity.RawHasComponentStrictly<CoroutineDictComponent>())
+			if (!entity.IsRawHasComponentStrictly<CoroutineDictComponent>())
 				entity.AddComponent<CoroutineDictComponent>(new CoroutineDict(Main.instance));
-			if (!entity.RawHasComponentStrictly<DOTweenDictComponent>())
+			if (!entity.IsRawHasComponentStrictly<DOTweenDictComponent>())
 				entity.AddComponent<DOTweenDictComponent>(new DOTweenDict());
-			if (!entity.RawHasComponentStrictly<PausableCoroutineDictComponent>())
+			if (!entity.IsRawHasComponentStrictly<PausableCoroutineDictComponent>())
 				entity.AddComponent<PausableCoroutineDictComponent>(new PausableCoroutineDict(Main.instance));
-			if (!entity.RawHasComponentStrictly<TimerDictComponent>())
+			if (!entity.IsRawHasComponentStrictly<TimerDictComponent>())
 				entity.AddComponent<TimerDictComponent>(new TimerDict(timerManager));
 		}
 	}

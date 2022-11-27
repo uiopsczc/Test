@@ -24,7 +24,17 @@ namespace CsCat
 
 		public IEnumerator IEIsAllLoadDone(Action onAllLoadDoneCallback = null)
 		{
-			yield return this._resLoadDict.IEIsAllLoadDone(onAllLoadDoneCallback);
+			return this._resLoadDict.IEIsAllLoadDone(onAllLoadDoneCallback);
+		}
+
+		public bool IsLoadDone(string assetPath)
+		{
+			return this._resLoadDict.IsLoadDone(assetPath);
+		}
+
+		public IEnumerator IEIsLoadDone(string assetPath, Action onLoadDoneCallback = null)
+		{
+			return IEIsLoadDone(assetPath, onLoadDoneCallback);
 		}
 
 

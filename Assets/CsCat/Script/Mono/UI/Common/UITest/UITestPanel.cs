@@ -4,40 +4,41 @@ namespace CsCat
 {
 	public class UITestPanel : UIBackgroundPanel
 	{
-		private Button gm_btn;
-		Button test_btn;
-		Button combat_test_btn;
+		private Button _BtnGM;
+		private Button _BtnTest;
+		private Button _BtnCombatTest;
 
-		public override void Init()
+		protected override void _Init()
 		{
-			base.Init();
-			this.graphicComponent.SetPrefabPath("Assets/Resources/common/ui/prefab/UITestPanel.prefab");
+			base._Init();
+			this.SetPrefabPath("Assets/PatchResources/UI/UITest/Prefab/UITestPanel.prefab");
 		}
 
-		public override void InitGameObjectChildren()
+		protected override void InitGameObjectChildren()
 		{
 			base.InitGameObjectChildren();
-			gm_btn = this.frameTransform.FindComponentInChildren<Button>("gm_btn");
-			test_btn = this.frameTransform.FindComponentInChildren<Button>("test_btn");
-			combat_test_btn = this.frameTransform.FindComponentInChildren<Button>("combat_test_btn");
+			_BtnGM = this._frameTransform.Find("BtnGM").GetComponent<Button>();
+			_BtnTest = this._frameTransform.Find("BtnTest").GetComponent<Button>();
+			_BtnCombatTest = this._frameTransform.Find("BtnCombatTest").GetComponent<Button>();
 
 
 			UIItemBaseTest.Test(this);
 			UIGuidePanelTest.Test();
 
+			AddUnityListeners();
 		}
 
-		protected override void AddUnityEvents()
+		protected override void AddUnityListeners()
 		{
-			base.AddUnityEvents();
-			this.RegisterOnClick(gm_btn,
+			base.AddUnityListeners();
+			this.RegisterOnClick(_BtnGM,
 			  () => { Client.instance.uiManager.CreateChildPanel("UIGMPanel", default(UIGMTestPanel)); });
-			this.RegisterOnClick(combat_test_btn, () =>
+			this.RegisterOnClick(_BtnCombatTest, () =>
 			{
 				Client.instance.Goto<CombatStageTest>(0.5f,
-			() => { Client.instance.uiManager.uiLoadingPanel.Reset(); });
+			() => { Client.instance.uiManager.uiLoadingPanel.DoReset(); });
 			});
-			this.RegisterOnClick(test_btn, Test);
+			this.RegisterOnClick(_BtnTest, Test);
 		}
 
 		void Test()

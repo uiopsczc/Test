@@ -9,48 +9,53 @@ namespace CsCat
 
 		public override EUILayerName layerName => EUILayerName.LoadingUILayer;
 
-		private float pct;
-		private Slider silder;
-		private Text descText;
+		private float _pct;
+		private Slider _Slider_Progress;
+		private Text _TxtC_Desc;
 
-		public void Init(GameObject gameObject)
+		protected void _Init(GameObject gameObject)
 		{
-			base.Init();
-			graphicComponent.SetGameObject(gameObject, true);
-			graphicComponent.SetIsShow(false);
+			base._Init();
+			SetGameObject(gameObject, true);
 		}
 
-		public override void InitGameObjectChildren()
+		protected override void _PostInit()
+		{
+			base._PostInit();
+			this.SetIsShow(false);
+		}
+
+		protected override void InitGameObjectChildren()
 		{
 			base.InitGameObjectChildren();
-			silder = frameTransform.FindComponentInChildren<Slider>("Slider");
-			descText = graphicComponent.transform.FindComponentInChildren<Text>("desc");
+			_Slider_Progress = _frameTransform.Find("Slider_Progress").GetComponent<Slider>();
+			_TxtC_Desc = _frameTransform.Find("TxtC_Desc").GetComponent<Text>();
 		}
 
 		public void SetPct(float pct)
 		{
-			graphicComponent.SetIsShow(true);
-			silder.value = pct;
+			SetIsShow(true);
+			_Slider_Progress.value = pct;
 		}
 
 		public void SetDesc(string desc)
 		{
-			graphicComponent.SetIsShow(true);
-			this.descText.text = desc;
+			SetIsShow(true);
+			_TxtC_Desc.text = desc;
 		}
 
 		protected override void _Reset()
 		{
 			base._Reset();
-			this.descText.text = "";
-			silder.value = 0;
-			graphicComponent.SetIsShow(false);
+			_TxtC_Desc.text = "";
+			_Slider_Progress.value = 0;
+			SetIsShow(false);
 		}
 
 		public void HideLoading()
 		{
 			Reset();
-			graphicComponent.SetIsShow(false);
+			SetIsShow(false);
 		}
 	}
 }

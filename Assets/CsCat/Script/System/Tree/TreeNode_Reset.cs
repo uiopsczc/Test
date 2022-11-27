@@ -42,9 +42,9 @@ namespace CsCat
 
 		public void ResetAllChildren()
 		{
-			for (int i = 0; i < childPoolItemIndexList.Count; i++)
+			for (int i = 0; i < _childPoolItemIndexList.Count; i++)
 			{
-				var childPoolItemIndex = childPoolItemIndexList[i];
+				var childPoolItemIndex = _childPoolItemIndexList[i];
 				var child = _GetChild(childPoolItemIndex);
 				child?.DoReset();
 			}

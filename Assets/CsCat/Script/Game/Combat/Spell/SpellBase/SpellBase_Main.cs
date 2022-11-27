@@ -23,7 +23,7 @@ namespace CsCat
 			if (this.IsHasMethod("OnStart"))
 				this.InvokeMethod("OnStart", false);
 			this.RegisterTriggerSpell();
-			this.Broadcast<Unit, Unit, SpellBase>(null, SpellEventNameConst.On_Spell_Start, this.sourceUnit,
+			this.FireEvent<Unit, Unit, SpellBase>(null, SpellEventNameConst.On_Spell_Start, this.sourceUnit,
 				this.targetUnit, this);
 			Client.instance.combat.spellManager.UnRegisterListener("onStart", this.sourceUnit, this,
 				"RegisterTriggerSpell");
@@ -74,7 +74,7 @@ namespace CsCat
 		{
 			if (this.IsHasMethod("OnCast"))
 				this.InvokeMethod("OnCast", false);
-			this.Broadcast<Unit, Unit, SpellBase>(null, SpellEventNameConst.On_Spell_Cast, this.sourceUnit,
+			this.FireEvent<Unit, Unit, SpellBase>(null, SpellEventNameConst.On_Spell_Cast, this.sourceUnit,
 				this.targetUnit, this);
 			Client.instance.combat.spellManager.UnRegisterListener("onCast", this.sourceUnit, this,
 				"RegisterTriggerSpell");
@@ -200,7 +200,7 @@ namespace CsCat
 
 		protected void OnMissileReach(EffectEntity missileEffect)
 		{
-			this.Broadcast<Unit, EffectEntity, SpellBase>(null, SpellEventNameConst.On_Missile_Reach, this.sourceUnit,
+			this.FireEvent<Unit, EffectEntity, SpellBase>(null, SpellEventNameConst.On_Missile_Reach, this.sourceUnit,
 				missileEffect, this);
 			this.CounterDecrease();
 		}

@@ -15,7 +15,7 @@ namespace CsCat
 
 		public Component GetComponent(string componentKey)
 		{
-			if (this.keyToComponentPoolItemIndexDict.TryGetValue(componentKey, out var componentPoolItemIndex))
+			if (this._keyToComponentPoolItemIndexDict.TryGetValue(componentKey, out var componentPoolItemIndex))
 				return _GetComponent(componentPoolItemIndex);
 			return null;
 		}
@@ -37,9 +37,9 @@ namespace CsCat
 
 		public Component GetComponent(Type componentType)
 		{
-			for (int i = 0; i < this.componentPoolItemIndexList.Count; i++)
+			for (int i = 0; i < this._componentPoolItemIndexList.Count; i++)
 			{
-				var componentPoolItemIndex = componentPoolItemIndexList[i];
+				var componentPoolItemIndex = _componentPoolItemIndexList[i];
 				var component = componentPoolItemIndex.GetValue<Component>();
 				if (!component.IsDestroyed() && component.GetType().IsSubTypeOf(componentType))
 					return component;

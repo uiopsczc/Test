@@ -43,7 +43,7 @@ namespace CsCat
 		protected override void _Destroy()
 		{
 			base._Destroy();
-			this.Broadcast<Unit>(null, UnitEventNameConst.On_Unit_Destroy, this);
+			this.FireEvent<Unit>(null, UnitEventNameConst.On_Unit_Destroy, this);
 			animatorComp?.Destroy();
 			propertyComp?.Destroy();
 			this._unitModelInfoDict.Clear();
@@ -172,13 +172,13 @@ namespace CsCat
 		protected void OnHpChange(Unit sourceUnit, int oldValue, int newValue)
 		{
 			if (oldValue != newValue)
-				this.Broadcast<Unit, Unit, int, int>(null, UnitEventNameConst.On_Unit_Hp_Change, sourceUnit, this, oldValue, newValue);
+				this.FireEvent<Unit, Unit, int, int>(null, UnitEventNameConst.On_Unit_Hp_Change, sourceUnit, this, oldValue, newValue);
 		}
 
 		protected void OnMaxHpChange(int old_value, int new_value)
 		{
 			if (old_value == new_value)
-				this.Broadcast<Unit, int, int>(null, UnitEventNameConst.On_MaxHp_Change, this, old_value, new_value);
+				this.FireEvent<Unit, int, int>(null, UnitEventNameConst.On_MaxHp_Change, this, old_value, new_value);
 		}
 
 		public int GetHp()

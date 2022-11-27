@@ -8,13 +8,13 @@ namespace CsCat
 {
 	public partial class UIObject
 	{
-		private List<UGUIEventListener> registeredUGUIEventListenerList = new List<UGUIEventListener>();
+		private readonly List<UGUIEventListener> _registeredUGUIEventListenerList = new List<UGUIEventListener>();
 
 		protected void SaveRegisteredUGUIEventListener(UGUIEventListener uguiEventListener)
 		{
-			if (registeredUGUIEventListenerList.Contains(uguiEventListener))
+			if (_registeredUGUIEventListenerList.Contains(uguiEventListener))
 				return;
-			registeredUGUIEventListenerList.Add(uguiEventListener);
+			_registeredUGUIEventListenerList.Add(uguiEventListener);
 		}
 
 		//////////////////////////////////////////////////////////////////////

@@ -16,9 +16,9 @@ namespace CsCat
 			if (!this.IsCanUpdate())
 				return;
 
-			for (var i = 0; i < childPoolItemIndexList.Count; i++)
+			for (var i = 0; i < _childPoolItemIndexList.Count; i++)
 			{
-				var childPoolItemIndex = childPoolItemIndexList[i];
+				var childPoolItemIndex = _childPoolItemIndexList[i];
 				var child = _GetChild(childPoolItemIndex);
 				child?.Update(deltaTime, unscaledDeltaTime);
 			}
@@ -28,9 +28,9 @@ namespace CsCat
 		public virtual void FixedUpdate(float deltaTime = 0, float unscaledDeltaTime = 0)
 		{
 			if (!this.IsCanUpdate()) return;
-			for (var i = 0; i < childPoolItemIndexList.Count; i++)
+			for (var i = 0; i < _childPoolItemIndexList.Count; i++)
 			{
-				var childPoolItemIndex = childPoolItemIndexList[i];
+				var childPoolItemIndex = _childPoolItemIndexList[i];
 				var child = _GetChild(childPoolItemIndex);
 				child?.FixedUpdate(deltaTime, unscaledDeltaTime);
 			}
@@ -43,9 +43,9 @@ namespace CsCat
 		{
 			if (!this.IsCanUpdate()) return;
 
-			for (var i = 0; i < childPoolItemIndexList.Count; i++)
+			for (var i = 0; i < _childPoolItemIndexList.Count; i++)
 			{
-				var childPoolItemIndex = childPoolItemIndexList[i];
+				var childPoolItemIndex = _childPoolItemIndexList[i];
 				var child = _GetChild(childPoolItemIndex);
 				child?.LateUpdate(deltaTime, unscaledDeltaTime);
 			}

@@ -17,14 +17,14 @@ namespace CsCat
 		public override void InitGameObjectChildren()
 		{
 			base.InitGameObjectChildren();
-			gmBtn = this.frameTransform.FindComponentInChildren<Button>("gm_btn");
-			testBtn = this.frameTransform.FindComponentInChildren<Button>("test_btn");
+			gmBtn = this._frameTransform.FindComponentInChildren<Button>("gm_btn");
+			testBtn = this._frameTransform.FindComponentInChildren<Button>("test_btn");
 
 		}
 
-		protected override void AddUnityEvents()
+		protected override void AddUnityListeners()
 		{
-			base.AddUnityEvents();
+			base.AddUnityListeners();
 			this.RegisterOnClick(testBtn, Test);
 		}
 

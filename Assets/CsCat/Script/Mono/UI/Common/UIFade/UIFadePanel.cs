@@ -11,54 +11,59 @@ namespace CsCat
 
 		public override EUILayerName layerName => EUILayerName.FadeUILayer;
 
-		private Image fadeImage;
+		private Image _ImgC_Fade;
 
-		public void Init(GameObject gameObject)
+		protected void _Init(GameObject gameObject)
 		{
-			base.Init();
-			graphicComponent.SetGameObject(gameObject, true);
-			graphicComponent.SetIsShow(false);
+			base._Init();
+			SetGameObject(gameObject, true);
 		}
 
-		public override void InitGameObjectChildren()
+		protected override void _PostInit()
+		{
+			base._PostInit();
+			this.SetIsShow(false);
+		}
+
+		protected override void InitGameObjectChildren()
 		{
 			base.InitGameObjectChildren();
-			fadeImage = this.frameTransform.Find("fade").GetComponent<Image>();
+			_ImgC_Fade = this._frameTransform.Find("ImgC_Fade").GetComponent<Image>();
 		}
 
 		public void FadeInOut(float duration, Action callback)
 		{
-			graphicComponent.SetIsShow(true);
+			SetIsShow(true);
 			Sequence sequence = DOTween.Sequence();
-			fadeImage.SetColorA(0);
-			sequence.Append(fadeImage.DOFade(1, duration * 0.25f)); //透明度从0-1
-			sequence.Append(graphicComponent.transform.DOWait(0.45f)); //透明度在1的时候保持X * 0.4秒
-			sequence.Append(fadeImage.DOFade(1, duration * 0.3f)); //透明度从1 - 0
+			_ImgC_Fade.SetColorA(0);
+			sequence.Append(_ImgC_Fade.DOFade(1, duration * 0.25f)); //透明度从0-1
+			sequence.Append(this.GetTransform().DOWait(0.45f)); //透明度在1的时候保持X * 0.4秒
+			sequence.Append(_ImgC_Fade.DOFade(1, duration * 0.3f)); //透明度从1 - 0
 			sequence.OnComplete(() => { callback?.Invoke(); });
 		}
 
 		public void FadeTo(float toAlpha, float duration, Action callback = null)
 		{
-			graphicComponent.SetIsShow(true);
-			fadeImage.DOFade(toAlpha, duration).OnComplete(() => { callback?.Invoke(); });
+			SetIsShow(true);
+			_ImgC_Fade.DOFade(toAlpha, duration).OnComplete(() => { callback?.Invoke(); });
 		}
 
 		public void FadeTo(float fromAlpha, float toAlpha, float duration, Action callback = null)
 		{
-			fadeImage.SetColorA(fromAlpha);
+			_ImgC_Fade.SetColorA(fromAlpha);
 			FadeTo(toAlpha, duration, callback);
 		}
 
 		protected override void _Reset()
 		{
 			base._Reset();
-			graphicComponent.SetIsShow(false);
-			fadeImage.SetColorA(1);
+			SetIsShow(false);
+			_ImgC_Fade.SetColorA(1);
 		}
 
 		public void HideFade()
 		{
-			Reset();
+			DoReset();
 		}
 	}
 }

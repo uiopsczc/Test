@@ -68,7 +68,7 @@ namespace CsCat
 			if (this._isCanMove != newIsCanMove)
 			{
 				this._isCanMove = newIsCanMove;
-				this.Broadcast(null, UnitEventNameConst.On_Unit_Is_Can_Move_Change, this, !this._isCanMove, this._isCanMove);
+				this.FireEvent(null, UnitEventNameConst.On_Unit_Is_Can_Move_Change, this, !this._isCanMove, this._isCanMove);
 				if (!this._isCanMove)
 					this.MoveStop();
 			}
@@ -76,13 +76,13 @@ namespace CsCat
 			if (this._isCanAttack != newIsCanAttack)
 			{
 				this._isCanAttack = newIsCanAttack;
-				this.Broadcast(null, UnitEventNameConst.On_Unit_Is_Can_Attack_Change, this, !this._isCanAttack, this._isCanAttack);
+				this.FireEvent(null, UnitEventNameConst.On_Unit_Is_Can_Attack_Change, this, !this._isCanAttack, this._isCanAttack);
 			}
 
 			if (this.isCanCastSkill != newIsCanCastSkill)
 			{
 				this.isCanCastSkill = newIsCanCastSkill;
-				this.Broadcast(null, UnitEventNameConst.On_Unit_Is_Can_Cast_Skill_Change, this, !this.isCanCastSkill, this.isCanCastSkill);
+				this.FireEvent(null, UnitEventNameConst.On_Unit_Is_Can_Cast_Skill_Change, this, !this.isCanCastSkill, this.isCanCastSkill);
 				if (!this.isCanCastSkill &&
 					(this.currentAttack != null && this.skillIdList.Contains(this.currentAttack.spellId)))
 					Client.instance.combat.spellManager.BreakSpell(this.currentAttack.GetGuid());
@@ -91,7 +91,7 @@ namespace CsCat
 			if (this._isCanNormalAttack != newIsCanNormalAttack)
 			{
 				this._isCanNormalAttack = newIsCanNormalAttack;
-				this.Broadcast(null, UnitEventNameConst.On_Unit_Is_Can_Normal_Attack_Change, this, !this._isCanNormalAttack, this._isCanNormalAttack);
+				this.FireEvent(null, UnitEventNameConst.On_Unit_Is_Can_Normal_Attack_Change, this, !this._isCanNormalAttack, this._isCanNormalAttack);
 				if (!this._isCanNormalAttack && (this.currentAttack != null &&
 												   this._normalAttackIdList.Contains(this.currentAttack.spellId)))
 					Client.instance.combat.spellManager.BreakSpell(this.currentAttack.GetGuid());
@@ -100,7 +100,7 @@ namespace CsCat
 			if (this.isCanControl != newIsCanControl)
 			{
 				this.isCanControl = newIsCanControl;
-				this.Broadcast(null, UnitEventNameConst.On_Unit_Is_Can_Control_Change, this, !this.isCanControl, this.isCanControl);
+				this.FireEvent(null, UnitEventNameConst.On_Unit_Is_Can_Control_Change, this, !this.isCanControl, this.isCanControl);
 			}
 		}
 	}

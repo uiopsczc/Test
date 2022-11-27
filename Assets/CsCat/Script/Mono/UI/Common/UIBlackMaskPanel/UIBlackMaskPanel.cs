@@ -8,69 +8,85 @@ namespace CsCat
 {
 	public class UIBlackMaskPanel : UIPanel
 	{
-		private Image bgImage;
-		private Action closeAction;
+		private Image _bgImage;
+		private Action _closeAction;
 
 		public override bool isResident => true;
 
 		public override EUILayerName layerName => EUILayerName.BlackMaskUILayer;
 
 
-		public void Init(GameObject gameObject)
+		protected void _Init(GameObject gameObject)
 		{
-			base.Init();
-			graphicComponent.SetGameObject(gameObject, true);
-			graphicComponent.SetIsShow(false);
+			this.SetGameObject(gameObject, true);
 		}
 
-		public override void InitGameObjectChildren()
+		protected override void _PostInit()
+		{
+			base._PostInit();
+			this.SetIsShow(false);
+		}
+
+		protected override void InitGameObjectChildren()
 		{
 			base.InitGameObjectChildren();
-			bgImage = this.frameTransform.Find("bg").GetComponent<Image>();
-
-
-
-
+			_bgImage = this._frameTransform.Find("Nego_Bg").GetComponent<Image>();
 		}
 
-		protected override void AddUnityEvents()
+		protected override void AddUnityListeners()
 		{
-			base.AddUnityEvents();
-			this.RegisterOnClick(bgImage,
-			  () => { closeAction?.Invoke(); });
+			base.AddUnityListeners();
+			this.RegisterOnClick(_bgImage,
+			  () => { _closeAction?.Invoke(); });
 		}
 
-		protected override void AddGameEvents()
+		protected override void AddGameListeners()
 		{
-			base.AddGameEvents();
+			base.AddGameListeners();
 			this.AddListener<int, object>(null, UIEventNameConst.ShowUIBlackMask, ShowUIBlackMask);
 			this.AddListener(null, UIEventNameConst.HideUIBlackMask, HideUIBlackMask);
 		}
 
-		void ShowUIBlackMask(int target_panel_sorttingOrder, object target_panel)
+		void ShowUIBlackMask(int targetPanelSortingOrder, object targetPanel)
 		{
-			this.graphicComponent.SetIsShow(true);
-			this.canvas.sortingOrder = target_panel_sorttingOrder + UIBlackMaskPanelConst.Offset;
+			this.SetIsShow(true);
+			this.sortingOrder = targetPanelSortingOrder + UIBlackMaskPanelConst.Offset;
 
 
-			if (target_panel is UIPanel uiPanel)
-				closeAction = uiPanel.Close;
+			if (targetPanel is UIPanel uiPanel)
+				_closeAction = uiPanel.Close;
 			else
-				closeAction = () => { ((LuaTable)target_panel).InvokeAction("Close"); };
+				_closeAction = () => { ((LuaTable)targetPanel).InvokeAction("Close"); };
 		}
 
 
 		void HideUIBlackMask()
 		{
-			graphicComponent.SetIsShow(false);
+			SetIsShow(false);
 			SetIsRaycastTarget(true);
-			closeAction = null;
+			_closeAction = null;
 		}
 
 
 		public void SetIsRaycastTarget(bool isRaycastTarget)
 		{
-			this.bgImage.raycastTarget = isRaycastTarget;
+			this._bgImage.raycastTarget = isRaycastTarget;
+		}
+
+		protected override void _Reset()
+		{
+			base._Reset();
+			SetIsShow(false);
+			_bgImage = null;
+			_closeAction = null;
+		}
+
+		protected override void _Destroy()
+		{
+			base._Destroy();
+			SetIsShow(false);
+			_bgImage = null;
+			_closeAction = null;
 		}
 	}
 }

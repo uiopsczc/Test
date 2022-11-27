@@ -10,7 +10,7 @@ namespace CsCat
 		public Dictionary<AssetCat, Dictionary<object, bool>> assetCatDict =
 		  new Dictionary<AssetCat, Dictionary<object, bool>>();
 
-		private ResLoad _resLoad;
+		private readonly ResLoad _resLoad;
 
 		public ResLoadDict(ResLoad resLoad)
 		{
@@ -30,8 +30,25 @@ namespace CsCat
 
 		public IEnumerator IEIsAllLoadDone(Action onAllLoadDoneCallback = null)
 		{
-			yield return new WaitUntil(() => { return IsAllLoadDone(); });
+			yield return new WaitUntil(IsAllLoadDone);
 			onAllLoadDoneCallback?.Invoke();
+		}
+
+		public bool IsLoadDone(string assetPath)
+		{
+			foreach (var kv in assetCatDict)
+			{
+				var assetCat = kv.Key;
+				if (assetCat.assetPath.Equals(assetPath) && assetCat.IsLoadDone())
+					return true;
+			}
+			return false;
+		}
+
+		public IEnumerator IEIsLoadDone(string assetPath, Action onLoadDoneCallback = null)
+		{
+			yield return new WaitUntil(() => IsLoadDone(assetPath));
+			onLoadDoneCallback?.Invoke();
 		}
 
 

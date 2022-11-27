@@ -5,12 +5,12 @@ namespace CsCat
 {
 	public class TimerDict
 	{
-		public TimerManager timerManager;
-		public Dictionary<Timer, bool> dict = new Dictionary<Timer, bool>();
+		private readonly TimerManager _timerManager;
+		private readonly Dictionary<Timer, bool> _dict = new Dictionary<Timer, bool>();
 
 		public TimerDict(TimerManager timerManager)
 		{
-			this.timerManager = timerManager;
+			this._timerManager = timerManager;
 		}
 
 		/// <summary>
@@ -37,35 +37,35 @@ namespace CsCat
 
 		public Timer AddTimer(Timer timer)
 		{
-			timerManager.AddTimer(timer);
-			dict[timer] = true;
+			_timerManager.AddTimer(timer);
+			_dict[timer] = true;
 			return timer;
 		}
 
 		public void RemoveTimer(Timer timer)
 		{
-			if (dict.TryGetValue(timer, out bool hasTimer))
+			if (_dict.TryGetValue(timer, out bool hasTimer))
 			{
-				timerManager.RemoveTimer(timer);
-				dict.Remove(timer);
+				_timerManager.RemoveTimer(timer);
+				_dict.Remove(timer);
 				PoolCatManager.Default.DespawnValue(timer);
 			}
 		}
 
 		public void RemoveAllTimers()
 		{
-			foreach (var kv in dict)
+			foreach (var kv in _dict)
 			{
 				var timer = kv.Key;
-				timerManager.RemoveTimer(timer);
+				_timerManager.RemoveTimer(timer);
 				PoolCatManager.Default.DespawnValue(timer);
 			}
-			dict.Clear();
+			_dict.Clear();
 		}
 
 		public void SetIsPaused(bool isPaused)
 		{
-			foreach (var kv in dict)
+			foreach (var kv in _dict)
 			{
 				var timer = kv.Key;
 				timer.SetIsPaused(isPaused);

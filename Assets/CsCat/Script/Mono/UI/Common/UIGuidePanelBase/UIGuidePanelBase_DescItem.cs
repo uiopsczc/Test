@@ -7,27 +7,27 @@ namespace CsCat
 	{
 		public class DescItem : UIObject
 		{
-			private Text descText;
-			private Image descImage;
+			private Text _TxtC_Desc;
+			private Image _ImgC_Bg;
 
-			public void Init(GameObject gameObject)
+			protected void Init(GameObject gameObject)
 			{
-				base.Init();
-				graphicComponent.SetGameObject(gameObject, true);
+				base._Init();
+				SetGameObject(gameObject, true);
 			}
 
-			public override void InitGameObjectChildren()
+			protected override void InitGameObjectChildren()
 			{
 				base.InitGameObjectChildren();
-				descText = graphicComponent.transform.FindComponentInChildren<Text>("desc");
-				descImage = graphicComponent.gameObject.GetComponent<Image>();
+				_TxtC_Desc = this.GetTransform().Find("TxtC_Desc").GetComponent<Text>();
+				_ImgC_Bg = this.GetTransform().Find("ImgC_Bg").GetComponent<Image>();
 			}
 
 			public void Show(string desc, bool isBgVisible = true)
 			{
-				descText.text = desc;
+				_TxtC_Desc.text = desc;
 				if (!isBgVisible)
-					descImage.SetAlpha(0);
+					_ImgC_Bg.SetAlpha(0);
 			}
 		}
 	}

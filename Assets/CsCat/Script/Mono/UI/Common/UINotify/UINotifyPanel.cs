@@ -8,72 +8,74 @@ namespace CsCat
 		public override EUILayerName layerName => EUILayerName.NotifyUILayer;
 
 
-		private Text descText;
-		private Image bgImage;
+		private Text _TxtC_Desc;
+		private Image _ImgC_Bg;
 
 
-		private string desc;
+		private string _desc;
 		private bool isMovingUp;
-		private bool isRised;
-		private float position;
-		private bool isCreated;
+		private bool _isRised;
+		private float _position;
+		private bool _isCreated;
 
-		private float moveUpDelayDuration = 1f;
-		private float closeDelayDuration = 2.8f;
+		private float _moveUpDelayDuration = 1f;
+		private float _closeDelayDuration = 2.8f;
 
-		public void Init(string desc)
+		protected void Init(string desc)
 		{
-			base.Init();
-			this.desc = desc;
-			graphicComponent.SetPrefabPath("Assets/Resources/common/ui/prefab/UINotifyPanel.prefab");
+			base._Init();
+			this.AddChild<TimerDictTreeNode>(null, new TimerDict(Client.instance.timerManager));
+			this._desc = desc;
+			SetPrefabPath("Assets/Resources/common/ui/prefab/UINotifyPanel.prefab");
 		}
 
-		public override void InitGameObjectChildren()
+		protected override void InitGameObjectChildren()
 		{
 			base.InitGameObjectChildren();
-			descText = graphicComponent.transform.FindComponentInChildren<Text>("desc");
-			bgImage = graphicComponent.transform.FindComponentInChildren<Image>("bg");
+			_TxtC_Desc = this.GetTransform().Find("TxtC_Desc").GetComponent<Text>();
+			_ImgC_Bg = this.GetTransform().Find("ImgC_Bg").GetComponent<Image>();
 
-			this.AddTimer(MoveUp, this.moveUpDelayDuration);
-			this.AddTimer((args) =>
+			var timerDictTreeNode = this.GetChild<TimerDictTreeNode>();
+			timerDictTreeNode.AddTimer(MoveUp, this._moveUpDelayDuration);
+			timerDictTreeNode.AddTimer((args) =>
 			{
 				this.Close();
 				return false;
-			}, this.closeDelayDuration);
-			this.isCreated = true;
-			if (this.isRised)
+			}, this._closeDelayDuration);
+			this._isCreated = true;
+			if (this._isRised)
 				Rise();
 		}
 
-		public override void Refresh()
+		public override void Refresh(bool isInit = false)
 		{
-			base.Refresh();
-			descText.text = desc;
+			base.Refresh(isInit);
+			_TxtC_Desc.text = _desc;
 		}
 
 		public bool MoveUp(params object[] args)
 		{
-			graphicComponent.transform.DOBlendableMoveYBy(5, 1);
-			descText.DOFade(0, 1);
-			bgImage.DOFade(0, 1);
+			this.GetTransform().DOBlendableMoveYBy(5, 1);
+			_TxtC_Desc.DOFade(0, 1);
+			_ImgC_Bg.DOFade(0, 1);
 			isMovingUp = true;
 			return false;
 		}
 
 		public void Rise()
 		{
-			if (!isCreated)
+			if (!_isCreated)
 			{
-				isRised = true;
-				this.position = this.position + 0.5f;
+				_isRised = true;
+				this._position = this._position + 0.5f;
 				return;
 			}
 
 			if (this.isMovingUp)
 				return;
 
-			graphicComponent.transform.DOBlendableMoveYBy(this.position + 0.5f, 0.2f);
-			this.position = 0;
+			this.GetTransform().DOBlendableMoveYBy(this._position + 0.5f, 0.2f);
+			this._position = 0;
 
 		}
 
@@ -81,8 +83,8 @@ namespace CsCat
 		{
 			base._Destroy();
 			isMovingUp = false;
-			isRised = false;
-			isCreated = false;
+			_isRised = false;
+			_isCreated = false;
 		}
 	}
 }

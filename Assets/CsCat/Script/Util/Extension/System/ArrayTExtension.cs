@@ -641,5 +641,18 @@ namespace CsCat
 		{
 			SortUtil.MergeSortWithCompareRules(self, compareRules);
 		}
+
+		public static Dictionary<T, ElementValueType> ToDictionary<T, ElementValueType>(this T[] self, ElementValueType defaultElementValue = default)
+		{
+			Dictionary<T, ElementValueType> dict = new Dictionary<T, ElementValueType>();
+			if (self.IsNullOrEmpty())
+				return dict;
+			for (var i = 0; i < self.Length; i++)
+			{
+				var element = self[i];
+				dict[element] = defaultElementValue;
+			}
+			return dict;
+		}
 	}
 }

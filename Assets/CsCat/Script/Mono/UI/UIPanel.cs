@@ -3,38 +3,73 @@ using UnityEngine.UI;
 
 namespace CsCat
 {
-	public class UIPanel : UIObject
+	public partial class UIPanel : UIObject
 	{
-		private int _sortingOrder = int.MinValue;
-
 		/// <summary>
 		/// 是否是常驻的,即不被销毁
 		/// </summary>
 		public virtual bool isResident => false;
 		public virtual EUILayerName layerName => EUILayerName.PopUpUILayer;
 		public UILayer uiLayer => Client.instance.uiManager.uiLayerManager.uiLayerDict[layerName];
-		protected Transform frameTransform => this._cache.GetOrAddDefault("frameTransform", () => this.graphicComponent.gameObject.transform.Find("frame"));
-		protected Transform contentTransform => this._cache.GetOrAddDefault("contentTransform", () => frameTransform.Find("content"));
-		protected Canvas canvas => this._cache.GetOrAddDefault("canvas", () => graphicComponent.gameObject.GetOrAddComponent<Canvas>());
+		protected Transform _frameTransform => this._cache.GetOrAddDefault("frameTransform", () => this.GetTransform().Find("Nego_Frame"));
+		protected override Transform _contentTransform
+		{
+			get { return this._cache.GetOrAddDefault("contentTransform", () => _frameTransform.Find("Nego_Content")); }
+		}
+
 		public int sortingOrder
 		{
-			get => this._sortingOrder;
+			get => this.GetChild<CanvasProxyTreeNode>().GetSortingOrder();
 			set
 			{
-				if (_sortingOrder == value)
-					return;
-				_sortingOrder = value;
-				OnSortingOrderChange();
+				this.GetChild<CanvasProxyTreeNode>().SetSortingOrder(value);
+				_OnSortingOrderChange();
 			}
+		}
+
+		public bool isOverrideSorting
+		{
+			get => this.GetChild<CanvasProxyTreeNode>().IsOverrideSorting();
+			set => this.GetChild<CanvasProxyTreeNode>().SetIsOverrideSorting(value);
+		}
+
+		public string sortingLayerName
+		{
+			get => this.GetChild<CanvasProxyTreeNode>().GetSortingLayerName();
+			set => this.GetChild<CanvasProxyTreeNode>().SetSortingLayerName(value);
 		}
 
 		public virtual bool isHideBlackMaskBehind => false;
 
-		protected virtual void OnSortingOrderChange()
+		protected override void _Init()
 		{
-			if (graphicComponent.gameObject == null)
-				return;
-			canvas.sortingOrder = sortingOrder;
+			base._Init();
+			this.AddChild<CanvasProxyTreeNode>(null);
+		}
+
+		protected override void _PostInit()
+		{
+			this.SetParentTransform(this.uiLayer.GetTransform());
+			uiLayer.AddPanel(this);
+		}
+
+
+		protected virtual void _OnSortingOrderChange()
+		{
+		}
+
+		public override void SetGameObject(GameObject gameObject, bool? isNotDestroyGameObject = false)
+		{
+			base.SetGameObject(gameObject, isNotDestroyGameObject);
+			if (gameObject != null)
+			{
+				var canvas = gameObject.GetOrAddComponent<Canvas>();
+				gameObject.GetOrAddComponent<GraphicRaycaster>();
+				this.isOverrideSorting = true;
+				this.sortingLayerName = "UI";
+				this.GetChild<CanvasProxyTreeNode>().ApplyToCanvas(canvas);
+				_OnSortingOrderChange();
+			}
 		}
 
 		public void SetToTop()
@@ -52,36 +87,44 @@ namespace CsCat
 			this.uiLayer.SetPanelIndex(this, newIndex);
 		}
 
-
-		public override void OnAllAssetsLoadDone()
+		protected override void _OnInstantiateGameObject()
 		{
-			//    LogCat.LogWarning(prefabPath);
-			base.OnAllAssetsLoadDone();
-			canvas.overrideSorting = true;
-			canvas.sortingLayerName = "UI";
-			graphicComponent.gameObject.GetOrAddComponent<GraphicRaycaster>();
-			OnSortingOrderChange();
+			base._OnInstantiateGameObject();
+			this._CheckPopupAnimation();
 		}
 
-		public void OnInitPanel(Transform parentTransform)
+		public virtual void Close()
 		{
-			graphicComponent.SetParentTransform(parentTransform == null ? uiLayer.graphicComponent.transform : parentTransform);
-			this.uiLayer.AddPanel(this);
+			if (_isHiding)
+				return;
+			if (!this.IsShow())
+			{
+				Client.instance.uiManager.CloseChildPanel(this.GetKey());
+				return;
+			}
+			if (!this._IsHasPopup())
+			{
+				var onPopupHideFinishAction = this._onPopupHideFinishAction;
+				Client.instance.uiManager.CloseChildPanel(this.GetKey());
+				onPopupHideFinishAction?.Invoke();
+				return;
+			}
+			this._PlayPopupAnimation(AnimationNameConst.Quit);
+		}
+
+		protected override void _Reset()
+		{
+			base._Reset();
+			this.uiLayer.RemovePanel(this);
+			_Reset_Popup();
 		}
 
 		protected override void _Destroy()
 		{
 			base._Destroy();
-			_sortingOrder = int.MinValue;
-		}
-
-
-		public virtual void Close()
-		{
 			this.uiLayer.RemovePanel(this);
-			this.parentUIObject.CloseChildPanel(this.key);
+			_Destroy_Popup();
 		}
-
 	}
 
 }

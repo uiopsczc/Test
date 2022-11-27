@@ -6,10 +6,10 @@ namespace CsCat
 	{
 		public class ArrowItem : UIObject
 		{
-			public void Init(GameObject gameObject)
+			protected void Init(GameObject gameObject)
 			{
-				base.Init();
-				graphicComponent.SetGameObject(gameObject, true);
+				base._Init();
+				SetGameObject(gameObject, true);
 			}
 		}
 	}

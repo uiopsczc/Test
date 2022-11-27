@@ -6,7 +6,7 @@ namespace CsCat
 	// 下上 键盘的SW键,[-1，1]
 	public class UIRockerInput2 : UIRockerInput
 	{
-		public override void __GetAxisKeyInput(out float axisX, out float axisY)
+		public override void GetAxisKeyInput(out float axisX, out float axisY)
 		{
 			var axisXLeft = Input.GetKey(KeyCode.A) ? -1 : 0; //键盘的左
 			var axisXRight = Input.GetKey(KeyCode.D) ? 1 : 0; //键盘的右

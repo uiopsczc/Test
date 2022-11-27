@@ -32,13 +32,21 @@ namespace CsCat
 		{
 			this.GetComponent<CoroutineDictComponent>().StartCoroutine(IEIsAllLoadDone(onAllLoadDoneCallback));
 		}
-
-
-
+		
 		// 加载某个资源
 		public AssetCat GetOrLoadAsset(string assetPath, Action<AssetCat> onLoadSuccessCallback = null, Action<AssetCat> onLoadFailCallback = null, Action<AssetCat> onLoadDoneCallback = null, object callbackCause = null)
 		{
 			return this._resLoad.GetOrLoadAsset(assetPath, onLoadSuccessCallback, onLoadFailCallback, onLoadDoneCallback, callbackCause);
+		}
+
+		public bool IsLoadDone(string assetPath)
+		{
+			return this._resLoad.IsLoadDone(assetPath);
+		}
+
+		public IEnumerator IEIsLoadDone(string assetPath, Action onLoadDoneCallback = null)
+		{
+			return this._resLoad.IEIsLoadDone(assetPath);
 		}
 
 

@@ -6,38 +6,32 @@ namespace CsCat
 	public class UIItemBase : UIObject
 	{
 
-		private Transform contentTransform;
-		private Image contentBgImage;
-		private Image contentQualityImage;
-		private Image contentIconImage;
-		private Text contentCountText;
-		private Transform nameTransform;
-		private Image nameBgImage;
-		private Text nameText;
+		private Image _ImgC_Bg;
+		private Image _ImgC_Quality;
+		private Image _ImgC_Icon;
+		private Text _TxtC_Count;
+		private Text _TxtC_Name;
 
 		private string itemId;
 		private int itemCount;
 		private CfgItemData cfgItemData;
 		private CfgQualityData cfgQualityData;
 
-		public void Init(Transform parent_transform)
+		protected void _Init(Transform parentTransform)
 		{
-			base.Init();
-			this.graphicComponent.SetParentTransform(parent_transform);
-			this.graphicComponent.SetPrefabPath("Assets/Resources/common/ui/prefab/UIItemBase.prefab");
+			base._Init();
+			this.SetParentTransform(parentTransform);
+			this.SetPrefabPath("Assets/PatchResources/UI/UIItemBase/Prefab/UIItemBase.prefab");
 		}
 
-		public override void InitGameObjectChildren()
+		protected override void InitGameObjectChildren()
 		{
 			base.InitGameObjectChildren();
-			this.contentTransform = graphicComponent.transform.Find("content");
-			this.contentBgImage = contentTransform.FindComponentInChildren<Image>("bg");
-			this.contentQualityImage = contentTransform.FindComponentInChildren<Image>("quality");
-			this.contentIconImage = contentTransform.FindComponentInChildren<Image>("icon");
-			this.contentCountText = contentTransform.FindComponentInChildren<Text>("count");
-			this.nameTransform = graphicComponent.transform.Find("name");
-			this.nameBgImage = this.nameTransform.FindComponentInChildren<Image>("bg");
-			this.nameText = this.nameTransform.FindComponentInChildren<Text>("text");
+			this._ImgC_Bg = _contentTransform.Find("ImgC_Bg").GetComponent<Image>();
+			this._ImgC_Quality = _contentTransform.Find("ImgC_Quality").GetComponent<Image>();
+			this._ImgC_Icon = _contentTransform.Find("ImgC_Icon").GetComponent<Image>();
+			this._TxtC_Count = _contentTransform.Find("TxtC_Count").GetComponent<Text>();
+			this._TxtC_Name = _contentTransform.Find("TxtC_Name").GetComponent<Text>();
 		}
 
 		public void Show(string itemId, int itemCount, bool isShowName = true)
@@ -51,16 +45,16 @@ namespace CsCat
 			  : CfgQuality.Instance.GetById(cfgItemData.qualityId);
 
 			if (!cfgItemData.bgPath.IsNullOrWhiteSpace())
-				this.SetImageAsync(this.contentBgImage, cfgItemData.bgPath, null, false);
+				this.SetImageAsync(this._ImgC_Bg, cfgItemData.bgPath, null, false);
 			if (this.cfgQualityData != null && !this.cfgQualityData.iconPath.IsNullOrWhiteSpace())
-				this.SetImageAsync(this.contentQualityImage, cfgQualityData.iconPath, null, false);
+				this.SetImageAsync(this._ImgC_Quality, cfgQualityData.iconPath, null, false);
 			else
-				this.contentBgImage.gameObject.SetActive(false);
+				this._ImgC_Bg.gameObject.SetActive(false);
 			//    LogCat.LogWarning(this.content_icon_image);
 			//    LogCat.LogWarning(itemData.icon_path);
-			this.SetImageAsync(this.contentIconImage, cfgItemData.iconPath, null, false);
-			this.contentCountText.text = (itemCount == 0 || itemCount == 1) ? "" : string.Format("x{0}", itemCount);
-			this.nameText.text = cfgItemData.name;
+			this.SetImageAsync(this._ImgC_Icon, cfgItemData.iconPath, null, false);
+			this._TxtC_Count.text = (itemCount == 0 || itemCount == 1) ? "" : string.Format("x{0}", itemCount);
+			this._TxtC_Name.text = cfgItemData.name;
 
 		}
 	}

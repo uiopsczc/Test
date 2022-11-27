@@ -157,7 +157,7 @@ namespace CsCat
 			if (isHit)
 			{
 				this.lastHit = hit;
-				this.Broadcast(null, PhysicsEventNameConst.On_Raycast, hit);
+				this.FireEvent(null, PhysicsEventNameConst.On_Raycast, hit);
 				XLuaManager.instance.CallLuaFunction("global.client.physicsManager:OnRaycast", hit);
 			}
 		}

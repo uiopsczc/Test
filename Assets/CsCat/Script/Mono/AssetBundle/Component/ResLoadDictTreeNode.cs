@@ -27,6 +27,16 @@ namespace CsCat
 			yield return this._resLoadDict.IEIsAllLoadDone(onAllLoadDoneCallback);
 		}
 
+		public bool IsLoadDone(string assetPath)
+		{
+			return this._resLoadDict.IsLoadDone(assetPath);
+		}
+
+		public IEnumerator IEIsLoadDone(string assetPath, Action onLoadDoneCallback = null)
+		{
+			return this._resLoadDict.IEIsLoadDone(assetPath, onLoadDoneCallback);
+		}
+
 
 		// 加载某个资源
 		public AssetCat GetOrLoadAsset(string assetPath, Action<AssetCat> onLoadSuccessCallback = null,

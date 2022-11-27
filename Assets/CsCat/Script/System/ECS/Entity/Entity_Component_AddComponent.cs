@@ -6,10 +6,10 @@ namespace CsCat
 {
 	public partial class Entity
 	{
-		bool CheckCanAddComponentType(Type componentType)
+		private bool _CheckCanAddComponentType(Type componentType)
 		{
 			var componentKey = componentType.FullName;
-			if (this.keyToComponentPoolItemIndexDict.ContainsKey(componentKey))
+			if (this._keyToComponentPoolItemIndexDict.ContainsKey(componentKey))
 			{
 				LogCat.error("duplicate add component:", componentKey, componentType);
 				return false;
@@ -26,7 +26,7 @@ namespace CsCat
 
 		public Component AddComponentWithoutInit(Type componentType)
 		{
-			if (CheckCanAddComponentType(componentType))
+			if (_CheckCanAddComponentType(componentType))
 				return null;
 			var (componentPoolItem, componentPoolItemIndex) = this.GetPoolManager().Spawn(componentType);
 			return _AddComponent(componentType, componentPoolItemIndex);
@@ -55,8 +55,8 @@ namespace CsCat
 		void _AddComponentRelationship(Type componentType, IPoolItemIndex componentPoolItemIndex)
 		{
 			var key = componentType.FullName;
-			keyToComponentPoolItemIndexDict[key] = componentPoolItemIndex;
-			componentPoolItemIndexList.Add(componentPoolItemIndex);
+			_keyToComponentPoolItemIndexDict[key] = componentPoolItemIndex;
+			_componentPoolItemIndexList.Add(componentPoolItemIndex);
 		}
 	}
 }

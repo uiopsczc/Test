@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace CsCat
 {
@@ -21,48 +22,48 @@ namespace CsCat
 		  () => GameObject.Find(UIConst.UICamera_Path).GetComponent<Camera>());
 		public Canvas uiCanvas => _cache.GetOrAddDefault("uiCanvas",
 		  () => GameObject.Find(UIConst.UICanvas_Path).GetComponent<Canvas>());
-		public RectTransform uiCanvas_rectTransform => _cache.GetOrAddDefault("uiCanvas_rectTransform",
+		public RectTransform uiCanvasRectTransform => _cache.GetOrAddDefault("uiCanvasRectTransform",
 		  () => uiCanvas.GetComponent<RectTransform>());
 
 
 
-		public override void Init()
+		protected override void _Init()
 		{
-			base.Init();
+			base._Init();
 			var gameObject = GameObject.Find(UIConst.UIManager_Path);
-			graphicComponent.SetGameObject(gameObject, true);
+			SetGameObject(gameObject, true);
 			if (Application.isPlaying)
-				MonoBehaviour.DontDestroyOnLoad(graphicComponent.gameObject);
+				Object.DontDestroyOnLoad(gameObject);
 		}
 
-		public override void PostInit()
+		protected override void _PostInit()
 		{
+			base._PostInit();
 			uiLayerManager = this.AddChild<UILayerManager>("UILayerManager", this);
 			InitListeners();
 			InitPanels();
 			uiNotifyManager = this.AddChild<UINotifyManager>("UINotifyManager");
 			uiBloodManager = this.AddChild<UIBloodManager>("UIBloodManager");
-			base.PostInit();
 		}
 
 		void InitPanels()
 		{
-			uiBlackMaskPanel = CreateChildPanel("UIBlackMaskPanel", default(UIBlackMaskPanel), null,
+			uiBlackMaskPanel = CreateChildPanel("UIBlackMaskPanel", default(UIBlackMaskPanel),
 			  GameObject.Find("UIManager/UICanvas/BlackMaskUILayer/UIBlackMaskPanel"));
 
-			uiShowLogoPanel = CreateChildPanel("UIShowLogoPanel", default(UIShowLogoPanel), null,
+			uiShowLogoPanel = CreateChildPanel("UIShowLogoPanel", default(UIShowLogoPanel),
 			  GameObject.Find("UIManager/UICanvas/BackgroundUILayer/UIShowLogoPanel"));
 
-			uiLoadingPanel = CreateChildPanel("UILoadingPanel", default(UILoadingPanel), null,
+			uiLoadingPanel = CreateChildPanel("UILoadingPanel", default(UILoadingPanel),
 			  GameObject.Find("UIManager/UICanvas/LoadingUILayer/UILoadingPanel"));
 
-			uiFadePanel = CreateChildPanel("UIFadePanel", default(UIFadePanel), null,
+			uiFadePanel = CreateChildPanel("UIFadePanel", default(UIFadePanel),
 			  GameObject.Find("UIManager/UICanvas/FadeUILayer/UIFadePanel"));
 
-			uiWaitingPanel = CreateChildPanel("UIWaitingPanel", default(UIWaitingPanel), null,
+			uiWaitingPanel = CreateChildPanel("UIWaitingPanel", default(UIWaitingPanel),
 			  GameObject.Find("UIManager/UICanvas/WaitingUILayer/UIWaitingPanel"));
 
-			uiLanternNotifyPanel = CreateChildPanel("UILanternNotifyPanel", default(UILanternNotifyPanel), null,
+			uiLanternNotifyPanel = CreateChildPanel("UILanternNotifyPanel", default(UILanternNotifyPanel),
 			  GameObject.Find("UIManager/UICanvas/NotifyUILayer/UILanternNotifyPanel"));
 		}
 
@@ -76,7 +77,7 @@ namespace CsCat
 		protected override void _Reset()
 		{
 			base._Reset();
-			this.CloseAllChildPanels(true);
+			this.CloseAllChildPanels();
 		}
 
 		//////////////////////////////////////////////////////////////////////

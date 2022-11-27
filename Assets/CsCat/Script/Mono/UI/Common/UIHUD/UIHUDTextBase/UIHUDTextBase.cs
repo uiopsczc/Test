@@ -7,29 +7,29 @@ namespace CsCat
 	public class UIHUDTextBase : UIObject
 	{
 
-		float textAlpha;
-		public Text textComp;
-		public Animation textAnimation;
+		float _textAlpha;
+		public Text _TxtC_This;
+		public Animation _Animation_This;
 
-		public void Init(Transform parent_transform)
+		protected void _Init(Transform parentTransform)
 		{
-			base.Init();
-			this.graphicComponent.SetParentTransform(parent_transform);
-			this.graphicComponent.SetPrefabPath("Assets/Resources/common/ui/prefab/UIHUDText.prefab");
+			base._Init();
+			this.SetParentTransform(parentTransform);
+			this.SetPrefabPath("Assets/PatchResources/UI/UIHUD/Prefab/UIHUDText.prefab");
 		}
 
-		public override void InitGameObjectChildren()
+		protected override void InitGameObjectChildren()
 		{
 			base.InitGameObjectChildren();
-			this.textComp = graphicComponent.gameObject.GetComponent<Text>();
-			this.textAlpha = textComp.color.a;
-			this.textAnimation = graphicComponent.gameObject.GetComponent<Animation>();
+			this._TxtC_This = this.GetGameObject().GetComponent<Text>();
+			this._textAlpha = _TxtC_This.color.a;
+			this._Animation_This = this.GetGameObject().GetComponent<Animation>();
 		}
 
 		protected override void _Reset()
 		{
 			base._Reset();
-			this.textComp.SetColorA(this.textAlpha);
+			this._TxtC_This.SetColorA(this._textAlpha);
 		}
 	}
 }

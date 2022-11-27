@@ -4,7 +4,7 @@ namespace CsCat
 	{
 		public void SetText(string text)
 		{
-			InvokeAfterAllAssetsLoadDone(() => { this.textComp.text = text; });
+			InvokeAfterPrefabLoadDone(() => { this._TxtC_This.text = text; });
 		}
 	}
 }

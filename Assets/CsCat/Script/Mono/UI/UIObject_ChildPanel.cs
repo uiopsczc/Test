@@ -8,10 +8,10 @@ namespace CsCat
 {
 	public partial class UIObject
 	{
-		public Dictionary<string, UIPanel> childPanelDict = new Dictionary<string, UIPanel>();
+		private readonly Dictionary<string, UIPanel> _childPanelDict = new Dictionary<string, UIPanel>();
 
-		public T __CreateChildPanel<T>(string key, T t, Transform parentTransform,
-		  Action<UIPanel> initCallback) where T : UIPanel, new()
+		public T _CreateChildPanel<T>(string key, T t,
+			params object[] args) where T : UIPanel, new()
 		{
 			T childPanel = default(T);
 			if (key != null)
@@ -19,19 +19,17 @@ namespace CsCat
 			if (childPanel != null)
 				return childPanel;
 			childPanel = this.AddChildWithoutInit<T>(key);
-			initCallback(childPanel);
-			childPanel.OnInitPanel(parentTransform);
-			childPanel.PostInit();
-			childPanel.SetIsEnabled(true, false);
-			childPanelDict[childPanel.key] = childPanel;
+			if (childPanel == null) //没有加成功
+				return null;
+			childPanel.DoInit(args);
+			_childPanelDict[childPanel.GetKey()] = childPanel;
 			return childPanel;
 		}
 
-		public virtual T CreateChildPanel<T>(string key, T t, Transform parentTransform = null,
+		public virtual T CreateChildPanel<T>(string key, T t,
 		   params object[] args) where T : UIPanel, new()
 		{
-			return this.__CreateChildPanel(key, t, parentTransform,
-			  (childPanel) => childPanel.InvokeMethod("Init", false, args));
+			return this._CreateChildPanel(key, t, args);
 		}
 
 		public UIPanel GetChildPanel(string key)
@@ -51,19 +49,20 @@ namespace CsCat
 			var childPanel = GetChildPanel(key);
 			if (childPanel == null)
 				return;
-			if (childPanelDict.ContainsKey(key))
-				childPanelDict.Remove(key);
+			if (childPanel.isResident)
+				return;
+			if (_childPanelDict.ContainsKey(key))
+				_childPanelDict.Remove(key);
 			this.RemoveChild(key);
 		}
 
-		public void CloseAllChildPanels(bool isRemainResidentPanels = false)
+		public void CloseAllChildPanels()
 		{
-			List<string> panelNameList = new List<string>(childPanelDict.Keys);
-			for (var i = 0; i < panelNameList.Count; i++)
+			string[] panelNames = _childPanelDict.Keys.ToArray();
+			for (var i = 0; i < panelNames.Length; i++)
 			{
-				string panelName = panelNameList[i];
-				UIPanel childPanel = this.childPanelDict[panelName];
-				if (!childPanel.isResident || !isRemainResidentPanels) childPanel.Close();
+				string panelName = panelNames[i];
+				this.CloseChildPanel(panelName);
 			}
 		}
 	}

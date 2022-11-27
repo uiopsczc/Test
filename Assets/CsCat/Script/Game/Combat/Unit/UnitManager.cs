@@ -51,7 +51,7 @@ namespace CsCat
 			var newGuid = argDict.Get<string>("guid");
 			var oldGuid = unit.GetGuid();
 			if (!newGuid.IsNullOrWhiteSpace() && !oldGuid.IsNullOrWhiteSpace())
-				this.Broadcast(null, UnitEventNameConst.On_Unit_Guid_Change, oldGuid, newGuid);
+				this.FireEvent(null, UnitEventNameConst.On_Unit_Guid_Change, oldGuid, newGuid);
 			if (!newGuid.IsNullOrWhiteSpace())
 				argDict.Remove(newGuid);
 			unit.UpdateUnit(argDict);

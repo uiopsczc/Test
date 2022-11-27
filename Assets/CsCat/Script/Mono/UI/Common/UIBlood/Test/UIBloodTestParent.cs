@@ -4,19 +4,19 @@ using UnityEngine;
 
 namespace CsCat
 {
-	public partial class UIBloodTestParent : GameEntity
+	public partial class UIBloodTestParent : UIObject
 	{
 		public UIBlood uiBlood;
 
-		public void Init(string name, int sliderCount)
+		protected void _Init(string name, int sliderCount)
 		{
-			base.Init();
+			base._Init();
 			var rectTransform = GameObject.Find("UITestPanel").NewChildWithRectTransform(name);
 			rectTransform.anchorMin = Vector2.zero;
 			rectTransform.anchorMax = Vector2.one;
 			rectTransform.sizeDelta = Vector2.zero;
-			graphicComponent.SetGameObject(rectTransform.gameObject, false);
-			this.uiBlood = Client.instance.uiManager.AddUIBlood(graphicComponent.transform, 150, sliderCount, null, null);
+			SetGameObject(rectTransform.gameObject, false);
+			this.uiBlood = Client.instance.uiManager.AddUIBlood(this.GetTransform(), 150, sliderCount, null);
 		}
 
 		public Tween SlideTo(float toValue, Action<float, Tween> callback = null)

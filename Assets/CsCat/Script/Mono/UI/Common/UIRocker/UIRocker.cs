@@ -7,64 +7,69 @@ namespace CsCat
 {
 	public class UIRocker : UIObject
 	{
-		private float movePCTX;
-		private float movePCTY;
-		private int pointId;
-		private UIRockerInput uiRockerInput;
-		private GameObject uiRockerGameObject;
-		private RectTransform uiRockerRectTransform;
-		private Vector2 uiRockerRectTransformSizeDelta;
-		private Vector2 uiRockerOriginAnchoredPosition;
-		private float uiRockerRadius;
-		private float uiRockerRadiusInEventData;
-		private GameObject bollGameObject;
-		private RectTransform bollRectTransform;
-		private Vector2 bollOriginAnchoredPosition;
-		private GameObject arrowGameObject;
-		private RectTransform arrowRectTransform;
-		private bool isNeedResponseWithSetAlpha;
-		private Vector2 uiRockerDownPosInEventData;
-		private Vector2 uiRockerDownAnchoredPosition;
-		private Image bollImage;
-		private CanvasGroup canvasGroup;
-		private bool isDraging;
+		private float _movePCTX;
+		private float _movePCTY;
+		private int _pointId;
+		private UIRockerInput _uiRockerInput;
+		
+		private Vector2 _uiRockerRectTransformSizeDelta;
+		private Vector2 _uiRockerOriginAnchoredPosition;
+		private float _uiRockerRadius;
+		private float _uiRockerRadiusInEventData;
+		private GameObject _Nego_Boll;
+		private RectTransform _Nego_Boll_RectTransform;
+		private Vector2 _bollOriginAnchoredPosition;
+		private GameObject _Nego_Arrow;
+		private RectTransform _Nego_Arrow_RectTransform;
+		private bool _isNeedResponseWithSetAlpha;
+		private Vector2 _uiRockerDownPosInEventData;
+		private Vector2 _uiRockerDownAnchoredPosition;
+		private Image _ImgC_Boll;
+		private CanvasGroup _canvasGroup;
+		private bool _isDraging;
+
+		private GameObject _Nego_RockerTriggerArea;
+		private GameObject _Nego_Rocker;
+		private RectTransform _Nego_Rocker_RectTransform;
 
 
-		public void Init(string prefabPath, Transform parentTransform, UIRockerInput uiRockerInput)
+		protected void _Init(string prefabPath, Transform parentTransform, UIRockerInput uiRockerInput)
 		{
-			base.Init();
-			this.graphicComponent.SetPrefabPath(prefabPath ?? UIRockerConst.UIRock_Prefab_Path);
-			this.graphicComponent.SetParentTransform(parentTransform);
-			this.uiRockerInput = uiRockerInput;
+			base._Init();
+			SetPrefabPath(prefabPath ?? UIRockerConst.UIRock_Prefab_Path);
+			SetParentTransform(parentTransform);
+			this._uiRockerInput = uiRockerInput;
 
 			this.AddListener<float, float>(null, GlobalEventNameConst.Update, Update);
 		}
 
-		public override void OnAllAssetsLoadDone()
+		protected override void InitGameObjectChildren()
 		{
-			base.OnAllAssetsLoadDone();
-			var uiRockerTriggerAreaGameObject = graphicComponent.transform.Find("uiRocker_trigger_area").gameObject;
-			this.RegisterOnDrag(uiRockerTriggerAreaGameObject, this.OnUIRockerDrag);
-			this.RegisterOnPointerDown(uiRockerTriggerAreaGameObject, this.OnUIRockerPointerDown);
-			this.RegisterOnPointerUp(uiRockerTriggerAreaGameObject, this.OnUIRockerPointerUp);
-
-			this.uiRockerGameObject = graphicComponent.transform.Find("uiRocker").gameObject;
-			this.uiRockerRectTransform = this.uiRockerGameObject.GetComponent<RectTransform>();
-			this.uiRockerRectTransformSizeDelta = this.uiRockerRectTransform.sizeDelta;
-			this.uiRockerOriginAnchoredPosition = this.uiRockerRectTransform.anchoredPosition;
-			this.uiRockerRadius = this.uiRockerRectTransformSizeDelta.x / 2;
-			this.uiRockerRadiusInEventData = this.uiRockerRadius; //是跟self.rocker_radius一样的
-
-			this.bollGameObject = this.uiRockerGameObject.transform.Find("boll").gameObject;
-			this.bollRectTransform = this.bollGameObject.GetComponent<RectTransform>();
-			this.bollOriginAnchoredPosition = this.bollRectTransform.anchoredPosition;
-
-			this.arrowGameObject = this.uiRockerGameObject.transform.Find("arrow").gameObject;
-			this.arrowRectTransform = this.arrowGameObject.GetComponent<RectTransform>();
+			base.InitGameObjectChildren();
+			this._Nego_RockerTriggerArea = this.GetTransform().Find("Nego_RockerTriggerArea").gameObject;
+			this._Nego_Rocker = this.GetTransform().Find("Nego_Rocker").gameObject;
+			this._Nego_Rocker_RectTransform = this._Nego_Rocker.GetComponent<RectTransform>();
+			this._ImgC_Boll = this._Nego_Rocker.transform.Find("ImgC_Boll").GetComponent<Image>();
+			this._Nego_Boll = this._ImgC_Boll.gameObject;
+			this._Nego_Boll_RectTransform = this._Nego_Boll.GetComponent<RectTransform>();
+			this._Nego_Arrow = this._Nego_Rocker.transform.Find("Nego_Arrow").gameObject;
+			this._Nego_Arrow_RectTransform = this._Nego_Arrow.GetComponent<RectTransform>();
+			this._canvasGroup = this.GetGameObject().GetComponent<CanvasGroup>();
 
 
-			this.bollImage = this.bollGameObject.GetComponent<Image>();
-			this.canvasGroup = graphicComponent.gameObject.GetComponent<CanvasGroup>();
+			this._uiRockerRectTransformSizeDelta = this._Nego_Rocker_RectTransform.sizeDelta;
+			this._uiRockerOriginAnchoredPosition = this._Nego_Rocker_RectTransform.anchoredPosition;
+			this._uiRockerRadius = this._uiRockerRectTransformSizeDelta.x / 2;
+			this._uiRockerRadiusInEventData = this._uiRockerRadius; //是跟self.rocker_radius一样的
+			this._bollOriginAnchoredPosition = this._Nego_Boll_RectTransform.anchoredPosition;
+		}
+
+		protected override void AddUnityListeners()
+		{
+			base.AddUnityListeners();
+			this.RegisterOnDrag(this._Nego_RockerTriggerArea, this.OnNego_RockerDrag);
+			this.RegisterOnPointerDown(this._Nego_RockerTriggerArea, this.OnNego_RockerPointerDown);
+			this.RegisterOnPointerUp(this._Nego_RockerTriggerArea, this.OnNego_RockerPointerUp);
 		}
 
 		// 响应的时候是否需要设值alpha值
@@ -72,131 +77,114 @@ namespace CsCat
 		// 松开时设置alpha为0
 		public void SetIsNeedResponseWithSetAlpha(bool isNeedResponseWithSetAlpha)
 		{
-			this.isNeedResponseWithSetAlpha = isNeedResponseWithSetAlpha;
+			this._isNeedResponseWithSetAlpha = isNeedResponseWithSetAlpha;
 		}
 
 		protected override void _SetIsEnabled(bool isEnabled)
 		{
 			base._SetIsEnabled(isEnabled);
 			if (!isEnabled)
-				this.OnUIRockerPointerUp(null);
+				this.OnNego_RockerPointerUp(null);
 		}
 
-		public void SetUIRockerAnchoredPosition(float x, float y)
+		public void SetNego_RockerAnchoredPosition(float x, float y)
 		{
-			this.uiRockerRectTransform.anchoredPosition = new Vector2(x, y);
+			this._Nego_Rocker_RectTransform.anchoredPosition = new Vector2(x, y);
 		}
 
-		public void SetBollAnchoredPosition(float x, float y)
+		public void SetNego_BollAnchoredPosition(float x, float y)
 		{
-			this.bollRectTransform.anchoredPosition = new Vector2(x, y);
+			this._Nego_Boll_RectTransform.anchoredPosition = new Vector2(x, y);
 		}
 
-		public void SetArrowLocalRotation(float z)
+		public void SetNego_ArrowLocalRotation(float z)
 		{
-			this.arrowRectTransform.localRotation = Quaternion.Euler(0, 0, z);
+			this._Nego_Arrow_RectTransform.localRotation = Quaternion.Euler(0, 0, z);
 		}
 
-		public void SetArrowActive(bool isActive)
+		public void SetNego_ArrowActive(bool isActive)
 		{
-			this.arrowGameObject.SetActive(isActive);
+			this._Nego_Arrow.SetActive(isActive);
 		}
 
 
-		protected void Update(float deltaTime = 0, float unscaledDeltaTime = 0)
+		protected override void _Update(float deltaTime = 0, float unscaledDeltaTime = 0)
 		{
-			if (!this.IsCanUpdate())
-				return;
-			if (this.movePCTX != 0 || this.movePCTY != 0)
-				this.uiRockerInput.AxisMove(this.movePCTX, this.movePCTY);
+			base._Update();
+			if (this._movePCTX != 0 || this._movePCTY != 0)
+				this._uiRockerInput.AxisMove(this._movePCTX, this._movePCTY);
 		}
 
-		public void OnUIRockerPointerDown(PointerEventData eventData)
-		{
-			if (!this.isEnabled)
-				return;
-			this.pointId = eventData.pointerId;
-			this.uiRockerDownPosInEventData = eventData.pressPosition;
-			this.uiRockerDownAnchoredPosition = CameraUtil.ScreenToUIPos(null, null,
-			  new Vector3(eventData.pressPosition.x, eventData.pressPosition.y, 0), this.uiRockerRectTransform.pivot);
-			var offset = this.uiRockerRectTransform.pivot - new Vector2(0.5f, 0.5f); // 还原到点击的位置为中心点
-			var uiRockerDownAnchoredPosition = this.uiRockerDownAnchoredPosition +
-											   new Vector2(offset.x * this.uiRockerRectTransform.sizeDelta.x,
-												 offset.y * this.uiRockerRectTransform.sizeDelta.y); // 还原到点击的位置为中心点
-			this.SetUIRockerAnchoredPosition(uiRockerDownAnchoredPosition.x, uiRockerDownAnchoredPosition.y);
-			this.bollImage.color = new Color(1, 1, 1, 1);
-
-			if (this.isNeedResponseWithSetAlpha)
-				this.canvasGroup.alpha = 1;
-		}
-
-		public void OnUIRockerPointerUp(PointerEventData eventData)
-		{
-			this.isDraging = false;
-			if (!this.isEnabled)
-				return;
-			if (eventData != null && this.pointId != eventData.pointerId)
-				return;
-			this.SetUIRockerAnchoredPosition(this.uiRockerOriginAnchoredPosition.x, this.uiRockerOriginAnchoredPosition.y);
-			this.SetBollAnchoredPosition(this.bollOriginAnchoredPosition.x, this.bollOriginAnchoredPosition.y);
-			this.SetArrowActive(false);
-			this.SetArrowLocalRotation(0);
-			this.movePCTX = 0;
-			this.movePCTY = 0;
-
-			this.uiRockerInput.AxisMove(0, 0);
-			this.bollImage.color = new Color(1, 1, 1, 0.3f);
-			if (this.isNeedResponseWithSetAlpha)
-				this.canvasGroup.alpha = 0;
-		}
-
-		public void OnUIRockerDrag(PointerEventData eventData)
+		public void OnNego_RockerPointerDown(PointerEventData eventData)
 		{
 			if (!this.isEnabled)
 				return;
-			if (this.pointId != eventData.pointerId)
+			this._pointId = eventData.pointerId;
+			this._uiRockerDownPosInEventData = eventData.pressPosition;
+			this._uiRockerDownAnchoredPosition = CameraUtil.ScreenToUIPos(null, null,
+			  new Vector3(eventData.pressPosition.x, eventData.pressPosition.y, 0), this._Nego_Rocker_RectTransform.pivot);
+			var offset = this._Nego_Rocker_RectTransform.pivot - new Vector2(0.5f, 0.5f); // 还原到点击的位置为中心点
+			var nego_RockerDownAnchoredPosition = this._uiRockerDownAnchoredPosition +
+											   new Vector2(offset.x * this._Nego_Rocker_RectTransform.sizeDelta.x,
+												 offset.y * this._Nego_Rocker_RectTransform.sizeDelta.y); // 还原到点击的位置为中心点
+			this.SetNego_RockerAnchoredPosition(nego_RockerDownAnchoredPosition.x, nego_RockerDownAnchoredPosition.y);
+			this._ImgC_Boll.color = new Color(1, 1, 1, 1);
+
+			if (this._isNeedResponseWithSetAlpha)
+				this._canvasGroup.alpha = 1;
+		}
+
+		public void OnNego_RockerPointerUp(PointerEventData eventData)
+		{
+			this._isDraging = false;
+			if (!this.isEnabled)
 				return;
-			var dx = eventData.position.x - this.uiRockerDownPosInEventData.x;
-			var dy = eventData.position.y - this.uiRockerDownPosInEventData.y;
+			if (eventData != null && this._pointId != eventData.pointerId)
+				return;
+			this.SetNego_RockerAnchoredPosition(this._uiRockerOriginAnchoredPosition.x, this._uiRockerOriginAnchoredPosition.y);
+			this.SetNego_BollAnchoredPosition(this._bollOriginAnchoredPosition.x, this._bollOriginAnchoredPosition.y);
+			this.SetNego_ArrowActive(false);
+			this.SetNego_ArrowLocalRotation(0);
+			this._movePCTX = 0;
+			this._movePCTY = 0;
+
+			this._uiRockerInput.AxisMove(0, 0);
+			this._ImgC_Boll.color = new Color(1, 1, 1, 0.3f);
+			if (this._isNeedResponseWithSetAlpha)
+				this._canvasGroup.alpha = 0;
+		}
+
+		public void OnNego_RockerDrag(PointerEventData eventData)
+		{
+			if (!this.isEnabled)
+				return;
+			if (this._pointId != eventData.pointerId)
+				return;
+			var dx = eventData.position.x - this._uiRockerDownPosInEventData.x;
+			var dy = eventData.position.y - this._uiRockerDownPosInEventData.y;
 			var distance = (float)Math.Sqrt(dx * dx + dy * dy);
 
-			var _dx = Mathf.Clamp(dx, -this.uiRockerRadiusInEventData, this.uiRockerRadiusInEventData); // 不能超过半径
-			var _dy = Mathf.Clamp(dy, -this.uiRockerRadiusInEventData, this.uiRockerRadiusInEventData); // 不能超过半径
+			var _dx = Mathf.Clamp(dx, -this._uiRockerRadiusInEventData, this._uiRockerRadiusInEventData); // 不能超过半径
+			var _dy = Mathf.Clamp(dy, -this._uiRockerRadiusInEventData, this._uiRockerRadiusInEventData); // 不能超过半径
 			var pctX = Mathf.Abs(dx) / distance; // 比例，用于还原到圆内的坐标
 			var pctY = Mathf.Abs(dy) / distance; // 比例，用于还原到圆内的坐标
 
-			this.SetBollAnchoredPosition(_dx * pctX, _dy * pctY);
+			this.SetNego_BollAnchoredPosition(_dx * pctX, _dy * pctY);
 			var dir = new Vector3(dx, dy, 0);
 			var angle = Vector3.Angle(dir, Vector3.up);
 			if (!(Vector3.Cross(dir, Vector3.forward).y > 0))
 				angle = -angle;
-			this.SetArrowActive(true);
-			this.SetArrowLocalRotation(angle);
-			this.movePCTX = distance == 0 ? 0 : _dx * pctX / this.uiRockerRadiusInEventData;
-			this.movePCTY = distance == 0 ? 0 : _dy * pctY / this.uiRockerRadiusInEventData;
-			if (this.movePCTX == 0 && this.movePCTY == 0)
+			this.SetNego_ArrowActive(true);
+			this.SetNego_ArrowLocalRotation(angle);
+			this._movePCTX = distance == 0 ? 0 : _dx * pctX / this._uiRockerRadiusInEventData;
+			this._movePCTY = distance == 0 ? 0 : _dy * pctY / this._uiRockerRadiusInEventData;
+			if (this._movePCTX == 0 && this._movePCTY == 0)
 			{
-				this.SetArrowActive(false);
-				this.SetBollAnchoredPosition(0, 0);
+				this.SetNego_ArrowActive(false);
+				this.SetNego_BollAnchoredPosition(0, 0);
 			}
 
-			this.isDraging = true;
-		}
-
-		protected override void _Reset()
-		{
-			base._Reset();
-			if (graphicComponent.gameObject == null)
-				return;
-			this.OnUIRockerPointerUp(null);
-		}
-
-		protected override void _Destroy()
-		{
-			base._Destroy();
-			if (graphicComponent.gameObject == null)
-				return;
-			this.OnUIRockerPointerUp(null);
+			this._isDraging = true;
 		}
 	}
 }

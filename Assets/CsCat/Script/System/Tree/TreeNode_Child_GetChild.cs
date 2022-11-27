@@ -15,7 +15,7 @@ namespace CsCat
 
 		public TreeNode GetChild(string childKey)
 		{
-			if (this.keyToChildPoolItemIndexDict.TryGetValue(childKey, out var childPoolItemIndex))
+			if (this._keyToChildPoolItemIndexDict.TryGetValue(childKey, out var childPoolItemIndex))
 				return _GetChild(childPoolItemIndex);
 			return null;
 		}
@@ -42,9 +42,9 @@ namespace CsCat
 
 		public TreeNode GetChild(Type childType)
 		{
-			for (int i = 0; i < this.childPoolItemIndexList.Count; i++)
+			for (int i = 0; i < this._childPoolItemIndexList.Count; i++)
 			{
-				var childPoolItemIndex = childPoolItemIndexList[i];
+				var childPoolItemIndex = _childPoolItemIndexList[i];
 				var child = childPoolItemIndex.GetValue<TreeNode>();
 				if (!child.IsDestroyed() && child.GetType().IsSubTypeOf(childType))
 					return child;

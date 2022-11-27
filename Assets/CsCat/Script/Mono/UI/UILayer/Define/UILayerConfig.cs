@@ -6,10 +6,10 @@ namespace CsCat
 		public int orderInLayer;
 		public UILayerRule uiLayerRule;
 
-		public UILayerConfig(EUILayerName name, int order_in_layer, UILayerRule uiLayerRule)
+		public UILayerConfig(EUILayerName name, int orderInLayer, UILayerRule uiLayerRule)
 		{
 			this.name = name;
-			this.orderInLayer = order_in_layer;
+			this.orderInLayer = orderInLayer;
 			this.uiLayerRule = uiLayerRule;
 		}
 

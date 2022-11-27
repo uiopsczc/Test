@@ -16,11 +16,11 @@ namespace CsCat
 			int oldHp = this.GetHp();
 			SetHp(Math.Max(0, this.GetHp() - damageValue), true);
 			this.OnHpChange(sourceUnit, oldHp, this.GetHp());
-			this.Broadcast<Unit, Unit, SpellBase, int>(null, UnitEventNameConst.On_Unit_Hurt, sourceUnit, this, spell, damageValue);
+			this.FireEvent<Unit, Unit, SpellBase, int>(null, UnitEventNameConst.On_Unit_Hurt, sourceUnit, this, spell, damageValue);
 
 			if (this.GetHp() <= 0)
 			{
-				this.Broadcast<Unit, Unit, SpellBase, int>(null, UnitEventNameConst.Before_Unit_Dead, sourceUnit, this, spell, damageValue); //回调监听
+				this.FireEvent<Unit, Unit, SpellBase, int>(null, UnitEventNameConst.Before_Unit_Dead, sourceUnit, this, spell, damageValue); //回调监听
 				this.OnKilled(sourceUnit, spell);
 			}
 

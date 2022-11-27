@@ -25,14 +25,18 @@ namespace CsCat
 
 		public IEnumerator IEIsAllLoadDone(Action onAllLoadDoneCallback = null)
 		{
-			yield return this._resLoad.IEIsAllLoadDone(onAllLoadDoneCallback);
+			return this._resLoad.IEIsAllLoadDone(onAllLoadDoneCallback);
 		}
 
-		public void CheckIsAllLoadDone(Action onAllLoadDoneCallback = null)
+		public bool IsLoadDone(string assetPath)
 		{
-			this.GetSibling<CoroutineDictTreeNode>().StartCoroutine(IEIsAllLoadDone(onAllLoadDoneCallback));
+			return this._resLoad.IsLoadDone(assetPath);
 		}
 
+		public IEnumerator IEIsLoadDone(string assetPath, Action onLoadDoneCallback = null)
+		{
+			return this._resLoad.IEIsLoadDone(assetPath);
+		}
 
 
 		// 加载某个资源

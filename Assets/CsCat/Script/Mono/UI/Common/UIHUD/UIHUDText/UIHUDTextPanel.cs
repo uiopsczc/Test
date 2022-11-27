@@ -3,10 +3,10 @@ namespace CsCat
 	public class UIHUDTextPanel : UIHUDPanel
 	{
 
-		public override void Init()
+		protected override void _Init()
 		{
-			base.Init();
-			this.graphicComponent.SetPrefabPath("Assets/Resources/common/ui/prefab/UITestPanel.prefab");
+			base._Init();
+			this.SetPrefabPath("Assets/Resources/common/ui/prefab/UITestPanel.prefab");
 		}
 	}
 }

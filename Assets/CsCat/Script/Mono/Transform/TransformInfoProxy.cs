@@ -54,6 +54,19 @@ namespace CsCat
 			return this._transformInfo.IsShow();
 		}
 
+		public void SetParentTransform(Transform parentTransform)
+		{
+			this._transformInfo.SetParentTransform(parentTransform);
+			if (this._transform != null)
+				_transform.SetParent(parentTransform,
+					_transform.gameObject.layer != LayerMask.NameToLayer("UI"));
+		}
+
+		public Transform GetParentTransform()
+		{
+			return this._transformInfo.GetParentTransform();
+		}
+
 		public void SetLocalPosition(Vector3 localPosition)
 		{
 			if (this.GetLocalPosition() == localPosition)

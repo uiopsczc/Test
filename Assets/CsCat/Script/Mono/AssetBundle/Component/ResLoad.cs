@@ -31,10 +31,22 @@ namespace CsCat
 
 		public IEnumerator IEIsAllLoadDone(Action onAllLoadDoneCallback = null)
 		{
-			yield return new WaitUntil(() => { return IsAllLoadDone(); });
+			yield return new WaitUntil(IsAllLoadDone);
 			onAllLoadDoneCallback?.Invoke();
 		}
 
+		public bool IsLoadDone(string assetPath)
+		{
+			if (!_resLoadDataInfoDict.TryGetValue(assetPath.GetMainAssetPath(), out var resLoadDataInfo))
+				return false;
+			return resLoadDataInfo.resLoadData.assetCat.IsLoadDone();
+		}
+
+		public IEnumerator IEIsLoadDone(string assetPath, Action onLoadDoneCallback = null)
+		{
+			yield return new WaitUntil(() => IsLoaded(assetPath));
+			onLoadDoneCallback?.Invoke();
+		}
 
 		// 加载某个资源
 		public AssetCat GetOrLoadAsset(string assetPath, Action<AssetCat> onLoadSuccessCallback = null,

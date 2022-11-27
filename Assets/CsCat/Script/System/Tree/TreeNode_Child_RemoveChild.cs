@@ -18,7 +18,7 @@ namespace CsCat
 
 		public bool RemoveChild(string childKey)
 		{
-			if (this.keyToChildPoolItemIndexDict.TryGetValue(childKey, out var childPoolItemIndex))
+			if (this._keyToChildPoolItemIndexDict.TryGetValue(childKey, out var childPoolItemIndex))
 				return _RemoveChild(childPoolItemIndex);
 			return false;
 		}
@@ -35,9 +35,9 @@ namespace CsCat
 
 		public void RemoveAllChildren()
 		{
-			for (var i = 0; i < childPoolItemIndexList.Count; i++)
+			for (var i = 0; i < _childPoolItemIndexList.Count; i++)
 			{
-				var childPoolItemIndex = childPoolItemIndexList[i];
+				var childPoolItemIndex = _childPoolItemIndexList[i];
 				if (_RemoveChild(childPoolItemIndex))
 					i--;
 			}
@@ -48,18 +48,18 @@ namespace CsCat
 
 		private void _RemoveChildRelationship(TreeNode child)
 		{
-			if (this.keyToChildPoolItemIndexDict.TryGetValue(child.GetType().FullName,
+			if (this._keyToChildPoolItemIndexDict.TryGetValue(child.GetType().FullName,
 				out var poolItemIndex))
-				childPoolItemIndexList.Remove(poolItemIndex);
+				_childPoolItemIndexList.Remove(poolItemIndex);
 		}
 
 
 		//主要作用是将IsDestroyed的Child从child_list中删除,配合Foreach的GetChildren使用
 		private void _CheckDestroyedChildren()
 		{
-			for (int i = childPoolItemIndexList.Count - 1; i >= 0; i--)
+			for (int i = _childPoolItemIndexList.Count - 1; i >= 0; i--)
 			{
-				var childPoolItemIndex = childPoolItemIndexList[i];
+				var childPoolItemIndex = _childPoolItemIndexList[i];
 				var child = childPoolItemIndex.GetValue<TreeNode>();
 				if (!child.IsDestroyed()) continue;
 				_RemoveChildRelationship(child);

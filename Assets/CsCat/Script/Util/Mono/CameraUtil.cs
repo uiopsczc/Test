@@ -48,7 +48,7 @@ namespace CsCat
 		public static Vector2 WorldToUIPos(RectTransform canvasRectTransform, Camera worldCamera, Vector3 worldPosition,
 			Vector2? uiPosPivot = null, Vector2 offset = default)
 		{
-			canvasRectTransform = canvasRectTransform ?? Client.instance.uiManager.uiCanvas_rectTransform;
+			canvasRectTransform = canvasRectTransform ?? Client.instance.uiManager.uiCanvasRectTransform;
 			//世界坐标-》ViewPort坐标
 			Vector2 viewportPoint = worldCamera.WorldToViewportPoint(worldPosition);
 			return ViewPortToUIPos(canvasRectTransform, viewportPoint, uiPosPivot, offset);
@@ -58,7 +58,7 @@ namespace CsCat
 		public static Vector2 ScreenToUIPos(RectTransform canvasRectTransform, Camera screenCamera, Vector3 screenPoint,
 			Vector2? uiPosPivot = null, Vector2 offset = default)
 		{
-			canvasRectTransform = canvasRectTransform ?? Client.instance.uiManager.uiCanvas_rectTransform;
+			canvasRectTransform = canvasRectTransform ?? Client.instance.uiManager.uiCanvasRectTransform;
 			screenCamera = screenCamera ?? Client.instance.uiManager.uiCamera;
 			//屏幕坐标 -》ViewPort坐标
 			Vector2 viewportPos = screenCamera.ScreenToViewportPoint(screenPoint);
@@ -69,7 +69,7 @@ namespace CsCat
 		public static Vector2 ViewPortToUIPos(RectTransform canvasRectTransform, Vector3 viewportPos,
 			Vector2? uiPosPivot = null, Vector2 offset = default)
 		{
-			canvasRectTransform = canvasRectTransform ?? Client.instance.uiManager.uiCanvas_rectTransform;
+			canvasRectTransform = canvasRectTransform ?? Client.instance.uiManager.uiCanvasRectTransform;
 			// uiPosPivot_x =0.5,uiPosPivot_y = 0.5 MiddleCenter
 			// uiPosPivot_x =0.5,uiPosPivot_y = 0 MiddleBottom
 			// uiPosPivot_x =0.5,uiPosPivot_y = 1 MiddleTop
@@ -95,7 +95,7 @@ namespace CsCat
 		public static Vector2 UIPosToWorldPos(RectTransform canvasRectTransform, Camera worldCamera, Vector2 uiPos,
 			Vector2? uiPosPivot = null, float viewportZ = 0, Vector2 viewportOffset = default)
 		{
-			canvasRectTransform = canvasRectTransform ?? Client.instance.uiManager.uiCanvas_rectTransform;
+			canvasRectTransform = canvasRectTransform ?? Client.instance.uiManager.uiCanvasRectTransform;
 			Vector3 viewportPos = UIPosToViewPortPos(canvasRectTransform, uiPos, uiPosPivot, 0, viewportOffset);
 			viewportPos = new Vector3(viewportPos.x, viewportPos.y, viewportZ);
 			//ViewPort坐标 -》 世界坐标
@@ -107,7 +107,7 @@ namespace CsCat
 		public static Vector2 UIPosToScreenPos(RectTransform canvasRectTransform, Camera screenCamera, Vector2 uiPos,
 			Vector2? uiPosPivot = null, Vector2 viewportOffset = default)
 		{
-			canvasRectTransform = canvasRectTransform ?? Client.instance.uiManager.uiCanvas_rectTransform;
+			canvasRectTransform = canvasRectTransform ?? Client.instance.uiManager.uiCanvasRectTransform;
 			screenCamera = screenCamera ?? Client.instance.uiManager.uiCamera;
 			Vector3 viewportPos = UIPosToViewPortPos(canvasRectTransform, uiPos, uiPosPivot, 0, viewportOffset);
 			//ViewPort坐标-》屏幕坐标
@@ -120,7 +120,7 @@ namespace CsCat
 		public static Vector3 UIPosToViewPortPos(RectTransform canvasRectTransform, Vector2 uiPos,
 			Vector2? uiPosPivot = null, float viewportZ = 0, Vector2 viewportOffset = default)
 		{
-			canvasRectTransform = canvasRectTransform ?? Client.instance.uiManager.uiCanvas_rectTransform;
+			canvasRectTransform = canvasRectTransform ?? Client.instance.uiManager.uiCanvasRectTransform;
 			// uiPosPivot_x =0.5,uiPosPivot_y = 0.5 MiddleCenter
 			// uiPosPivot_x =0.5,uiPosPivot_y = 0 MiddleBottom
 			// uiPosPivot_x =0.5,uiPosPivot_y = 1 MiddleTop

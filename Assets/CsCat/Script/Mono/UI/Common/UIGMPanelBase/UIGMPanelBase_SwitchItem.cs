@@ -9,39 +9,37 @@ namespace CsCat
 		public class SwitchItem : UIObject
 		{
 			private Text descText;
-			private Button noBtn;
-			private Button yesBtn;
+			private Button _BtnNo;
+			private Button _BtnYes;
 
-			private string desc;
-			private Action yesCallback;
-			private Action noCallback;
+			private string _desc;
+			private Action _yesCallback;
+			private Action _noCallback;
 
-			public void Init(GameObject gameObject, string desc, Action yesCallback, Action noCallback = null)
+			public void _Init(GameObject gameObject, string desc, Action yesCallback, Action noCallback = null)
 			{
-				base.Init();
-				this.desc = desc;
-				this.yesCallback = yesCallback;
-				this.noCallback = noCallback;
-				graphicComponent.SetGameObject(gameObject, true);
+				base._Init();
+				this._desc = desc;
+				this._yesCallback = yesCallback;
+				this._noCallback = noCallback;
+				SetGameObject(gameObject, true);
 			}
 
-			public override void InitGameObjectChildren()
+			protected override void InitGameObjectChildren()
 			{
 				base.InitGameObjectChildren();
-				descText = graphicComponent.transform.FindComponentInChildren<Text>("desc");
-				noBtn = graphicComponent.transform.FindComponentInChildren<Button>("no_btn");
-				yesBtn = graphicComponent.transform.FindComponentInChildren<Button>("yes_btn");
-
-				this.descText.text = this.desc;
-
+				descText = GetTransform().Find("TxtC_Desc").GetComponent<Text>();
+				_BtnNo = GetTransform().Find("BtnNo").GetComponent<Button>();
+				_BtnYes = GetTransform().Find("BtnYes").GetComponent<Button>();
+				this.descText.text = this._desc;
 			}
 
-			protected override void AddUnityEvents()
+			protected override void AddUnityListeners()
 			{
-				base.AddUnityEvents();
-				this.RegisterOnClick(yesBtn, () => { this.yesCallback(); });
-				if (this.noCallback != null)
-					this.RegisterOnClick(noBtn, () => { this.noCallback(); });
+				base.AddUnityListeners();
+				this.RegisterOnClick(_BtnYes, () => { this._yesCallback(); });
+				if (this._noCallback != null)
+					this.RegisterOnClick(_BtnNo, () => { this._noCallback(); });
 			}
 
 		}

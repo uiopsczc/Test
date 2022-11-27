@@ -71,7 +71,7 @@ GameObject:
   - component: {fileID: 1701128528065616973}
   - component: {fileID: 1414845781681297815}
   m_Layer: 5
-  m_Name: bg
+  m_Name: Nego_Bg
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -185,7 +185,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1454579474219662071}
   m_Layer: 5
-  m_Name: frame
+  m_Name: Nego_Frame
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

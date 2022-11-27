@@ -11,7 +11,7 @@ namespace CsCat
 			this.CreateHitEffect(sourceUnit, targetUnit);
 			var (damageValue, specialEffectDict) =
 			  this.TakeDamage(sourceUnit, targetUnit, damageFactor, forceDamageValue);
-			this.Broadcast<Unit, Unit, SpellBase, int>(null, UnitEventNameConst.On_Unit_Hit, sourceUnit, targetUnit, this, damageValue);
+			this.FireEvent<Unit, Unit, SpellBase, int>(null, UnitEventNameConst.On_Unit_Hit, sourceUnit, targetUnit, this, damageValue);
 			this.AddCombatNumber(damageValue, targetUnit.GetGuid(), "physical", specialEffectDict);
 			targetUnit.PlayAnimation(AnimationNameConst.be_hit, null, null, null, true);
 		}
@@ -50,7 +50,7 @@ namespace CsCat
 			//计算减伤
 			damageValue = sourceUnit.propertyComp.CalculateRealDamageValue(damageValue, targetUnit);
 			//伤害前的回调
-			this.Broadcast<Unit, Unit, SpellBase, int>(null, UnitEventNameConst.Before_Unit_Hit, sourceUnit, targetUnit, this, damageValue);
+			this.FireEvent<Unit, Unit, SpellBase, int>(null, UnitEventNameConst.Before_Unit_Hit, sourceUnit, targetUnit, this, damageValue);
 			Client.instance.combat.spellManager.BeforeHit(sourceUnit, targetUnit, this, damageValue);
 			//目标接收伤害
 			damageValue = targetUnit.TakeDamage(damageValue, sourceUnit, this);

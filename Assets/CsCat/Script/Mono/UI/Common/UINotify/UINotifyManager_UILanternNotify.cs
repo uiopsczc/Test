@@ -5,21 +5,20 @@ namespace CsCat
 	public partial class UINotifyManager
 	{
 		//走马灯效果
-		private List<string> lanternNotifyDescCacheList = new List<string>();
+		private readonly List<string> _lanternNotifyDescCacheList = new List<string>();
 
 		public void LanternNotify(string desc)
 		{
-			lanternNotifyDescCacheList.Add(desc);
-			if (!Client.instance.uiManager.GetChildPanel<UILanternNotifyPanel>("UILanternNotifyPanel").graphicComponent.gameObject
-			  .activeInHierarchy)
-				__LanternNotify();
+			_lanternNotifyDescCacheList.Add(desc);
+			if (!Client.instance.uiManager.GetChildPanel<UILanternNotifyPanel>("UILanternNotifyPanel").IsShow())
+				LanternNotify();
 		}
 
-		public void __LanternNotify()
+		public void LanternNotify()
 		{
-			if (lanternNotifyDescCacheList.Count > 0)
+			if (_lanternNotifyDescCacheList.Count > 0)
 			{
-				string desc = lanternNotifyDescCacheList.RemoveFirst<string>();
+				string desc = _lanternNotifyDescCacheList.RemoveFirst();
 				UILanternNotifyPanel panel =
 				  Client.instance.uiManager.GetChildPanel<UILanternNotifyPanel>("UILanternNotifyPanel");
 				panel.Show(desc);

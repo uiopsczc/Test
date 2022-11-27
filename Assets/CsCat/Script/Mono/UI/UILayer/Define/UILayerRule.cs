@@ -2,10 +2,10 @@ namespace CsCat
 {
 	public class UILayerRule
 	{
-		private uint rule;
+		private readonly uint _rule;
 		public UILayerRule(uint rule)
 		{
-			this.rule = rule;
+			this._rule = rule;
 		}
 
 		public bool IsHideBackgroundUILayer()
@@ -31,7 +31,7 @@ namespace CsCat
 
 		public bool IsContains(uint beContainedValue)
 		{
-			return this.rule.IsContains(beContainedValue);
+			return this._rule.IsContains(beContainedValue);
 		}
 	}
 }

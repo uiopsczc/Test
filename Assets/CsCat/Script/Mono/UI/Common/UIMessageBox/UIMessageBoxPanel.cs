@@ -9,54 +9,54 @@ namespace CsCat
 	public class UIMessageBoxPanel : UIPopUpPanel
 	{
 
-		private Text titleText;
-		private Text subtitleText;
-		private Text descText;
-		private ScrollRect descScrollRect;
-		private Transform itemsTransform;
-		private ScrollRect itemsScrollRect;
-		private Transform itemParentTransform;
-		private Button closeBtn;
-		private Button button1;
-		private Text button1Text;
-		private Button button2;
-		private Text button2Text;
+		private Text _TxtC_Title;
+		private Text _TxtC_Subtitle;
+		private Text _TxtC_Desc;
+		private ScrollRect _ScrollRect_Desc;
+		private Transform _Nego_Items;
+		private ScrollRect _ScrollRect_Items;
+		private Transform _itemsParentTransform;
+		private Button _Btn_Close;
+		private Button _Btn1;
+		private Text _TxtC_Btn1;
+		private Button _Btn2;
+		private Text _TxtC_Btn2;
 		private Action closeCallback;
 
-		public override void Init()
+		protected override void _Init()
 		{
-			base.Init();
-			this.graphicComponent.SetPrefabPath("Assets/Resources/common/ui/prefab/UIMessageBoxPanel.prefab");
+			base._Init();
+			this.SetPrefabPath("Assets/PatchResources/UI/UIMessageBox/Prefab/UIMessageBoxPanel.prefab");
 		}
 
-		public override void InitGameObjectChildren()
+		protected override void InitGameObjectChildren()
 		{
 			base.InitGameObjectChildren();
-			titleText = this.contentTransform.FindComponentInChildren<Text>("title");
-			subtitleText = this.contentTransform.FindComponentInChildren<Text>("subtitle");
-			descText =
-			  this.contentTransform.FindComponentInChildren<Text>("content/desc/Scroll View/Viewport/Content/desc");
-			descScrollRect = this.contentTransform.FindComponentInChildren<ScrollRect>("content/desc/Scroll View");
-			itemParentTransform = this.contentTransform.Find("content/items/Scroll View/Viewport/Content");
-			itemsTransform = this.contentTransform.Find("content/items");
-			itemsScrollRect = this.contentTransform.FindComponentInChildren<ScrollRect>("content/items/Scroll View");
-			closeBtn = this.contentTransform.FindComponentInChildren<Button>("close");
-			button1 = this.contentTransform.FindComponentInChildren<Button>("buttons/button1");
-			button1Text = this.contentTransform.FindComponentInChildren<Text>("buttons/button1/text");
-			button2 = this.contentTransform.FindComponentInChildren<Button>("buttons/button2");
-			button2Text = this.contentTransform.FindComponentInChildren<Text>("buttons/button2/text");
+			_TxtC_Title = this._contentTransform.Find("TxtC_Title").GetComponent<Text>();
+			_TxtC_Subtitle = this._contentTransform.Find("TxtC_Subtitle").GetComponent<Text>();
+			_TxtC_Desc =
+				this._contentTransform.Find("Nego_Desc/ScrollView_Desc/Viewport/Content/TxtC_Desc").GetComponent<Text>();
+			_ScrollRect_Desc = this._contentTransform.Find("Neog_Content/Nego_Desc/ScrollView_Desc").GetComponent<ScrollRect>();
+			_itemsParentTransform = this._contentTransform.Find("Nego_Items/ScrollView_Items/Viewport/Neog_ItemsContent");
+			_Nego_Items = this._contentTransform.Find("Nego_Items");
+			_ScrollRect_Items = this._contentTransform.Find("Nego_Items/ScrollView_Items").GetComponent<ScrollRect>();
+			_Btn_Close = this._contentTransform.Find("Btn_Close").GetComponent<Button>();
+			_Btn1 = this._contentTransform.Find("Nego_Buttons/Btn1").GetComponent<Button>();
+			_TxtC_Btn1 = this._contentTransform.Find("Nego_Buttons/Btn1/TxtC_Btn1").GetComponent<Text>();
+			_Btn2 = this._contentTransform.Find("Nego_Buttons/Btn2").GetComponent<Button>();
+			_TxtC_Btn1 = this._contentTransform.Find("Nego_Buttons/Btn2/TxtC_Btn2").GetComponent<Text>();
 		}
 
 		public void Show(string title, string subTitle, string desc,
 		  List<Dictionary<string, int>> itemInfoDictList = null, string button1Desc = null,
 		  Action button1Callback = null, string button2Desc = null, Action button2Callback = null, Action closeCallback = null)
 		{
-			graphicComponent.SetIsShow(true);
-			this.titleText.text = title;
-			this.subtitleText.text = subTitle;
-			this.descText.text = desc;
-			this.descScrollRect.verticalNormalizedPosition = 1;
-			itemsTransform.gameObject.SetActive(!itemInfoDictList.IsNullOrEmpty());
+			SetIsShow(true);
+			this._TxtC_Title.text = title;
+			this._TxtC_Subtitle.text = subTitle;
+			this._TxtC_Desc.text = desc;
+			this._ScrollRect_Desc.verticalNormalizedPosition = 1;
+			_Nego_Items.gameObject.SetActive(!itemInfoDictList.IsNullOrEmpty());
 			if (!itemInfoDictList.IsNullOrEmpty())
 			{
 				for (var i = 0; i < itemInfoDictList.Count; i++)
@@ -64,35 +64,35 @@ namespace CsCat
 					var itemInfoDict = itemInfoDictList[i];
 					int id = itemInfoDict["id"];
 					int count = itemInfoDict["count"];
-					UIItemBase item = this.AddChild<UIItemBase>(null, this.itemParentTransform);
-					item.InvokeAfterAllAssetsLoadDone(() =>
+					UIItemBase item = this.AddChild<UIItemBase>(null, this._itemsParentTransform);
+					item.InvokeAfterPrefabLoadDone(() =>
 					{
 						item.Show(id.ToString(), count);
-						StartCoroutine(IEScrollRectSetVerticalPosition(this.itemsScrollRect, 1));
+						this.GetChild<CoroutineDictTreeNode>().StartCoroutine(IEScrollRectSetVerticalPosition(this._ScrollRect_Items, 1));
 					});
 				}
 			}
 
 			if (button1Callback != null)
 			{
-				button1.gameObject.SetActive(true);
-				button1Text.text = button1Desc;
-				this.RegisterOnClick(button1, button1Callback);
+				_Btn1.gameObject.SetActive(true);
+				_TxtC_Btn1.text = button1Desc;
+				this.RegisterOnClick(_Btn1, button1Callback);
 			}
 			else
-				button1.gameObject.SetActive(false);
+				_Btn1.gameObject.SetActive(false);
 
 			if (button2Callback != null)
 			{
-				button2.gameObject.SetActive(true);
-				button2Text.text = button2Desc;
-				this.RegisterOnClick(button2, button2Callback);
+				_Btn2.gameObject.SetActive(true);
+				_TxtC_Btn2.text = button2Desc;
+				this.RegisterOnClick(_Btn2, button2Callback);
 			}
 			else
-				button2.gameObject.SetActive(false);
+				_Btn2.gameObject.SetActive(false);
 
 			this.closeCallback = closeCallback;
-			this.RegisterOnClick(this.closeBtn, Close);
+			this.RegisterOnClick(this._Btn_Close, Close);
 		}
 
 		IEnumerator IEScrollRectSetVerticalPosition(ScrollRect scrollRect, float value)

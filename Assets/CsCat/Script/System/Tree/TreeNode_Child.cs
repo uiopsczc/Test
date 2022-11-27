@@ -7,8 +7,8 @@ namespace CsCat
 	public partial class TreeNode
 	{
 		protected Dictionary<string, IPoolItemIndex>
-			keyToChildPoolItemIndexDict = new Dictionary<string, IPoolItemIndex>();
-		protected List<IPoolItemIndex> childPoolItemIndexList = new List<IPoolItemIndex>();
+			_keyToChildPoolItemIndexDict = new Dictionary<string, IPoolItemIndex>();
+		protected List<IPoolItemIndex> _childPoolItemIndexList = new List<IPoolItemIndex>();
 
 		//////////////////////////////////////////////////////////////////////
 		// 按加入的顺序遍历
@@ -16,9 +16,9 @@ namespace CsCat
 		//按加入的顺序遍历
 		public IEnumerable<TreeNode> ForeachChild()
 		{
-			for (int i = 0; i < childPoolItemIndexList.Count; i++)
+			for (int i = 0; i < _childPoolItemIndexList.Count; i++)
 			{
-				var childPoolItemIndex = childPoolItemIndexList[i];
+				var childPoolItemIndex = _childPoolItemIndexList[i];
 				var child = _GetChild(childPoolItemIndex);
 				if (child != null)
 					yield return child;
@@ -27,8 +27,8 @@ namespace CsCat
 
 		void _OnDespawn_Child()
 		{
-			keyToChildPoolItemIndexDict.Clear();
-			childPoolItemIndexList.Clear();
+			_keyToChildPoolItemIndexDict.Clear();
+			_childPoolItemIndexList.Clear();
 		}
 	}
 }

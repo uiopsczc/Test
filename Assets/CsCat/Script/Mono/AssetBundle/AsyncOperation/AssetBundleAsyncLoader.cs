@@ -141,19 +141,19 @@ namespace CsCat
 		protected override void OnSuccess()
 		{
 			base.OnSuccess();
-			Broadcast(null, AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Success, this);
+			FireEvent(null, AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Success, this);
 		}
 
 		protected override void OnFail()
 		{
 			base.OnFail();
-			Broadcast(null, AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Fail, this);
+			FireEvent(null, AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Fail, this);
 		}
 
 		protected override void OnDone()
 		{
 			base.OnDone();
-			Broadcast(null, AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Done, this);
+			FireEvent(null, AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Done, this);
 			this.Destroy();
 			PoolCatManagerUtil.Despawn(this);
 		}

@@ -11,17 +11,17 @@ namespace CsCat
 			public Image image;
 			public Button button;
 
-			public void Init(GameObject gameObject)
+			protected void Init(GameObject gameObject)
 			{
-				base.Init();
-				graphicComponent.SetGameObject(gameObject, true);
+				base._Init();
+				SetGameObject(gameObject, true);
 			}
 
-			public override void InitGameObjectChildren()
+			protected override void InitGameObjectChildren()
 			{
 				base.InitGameObjectChildren();
-				image = graphicComponent.gameObject.GetComponent<Image>();
-				button = graphicComponent.gameObject.GetComponent<Button>();
+				image = this.GetGameObject().GetComponent<Image>();
+				button = this.GetGameObject().GetComponent<Button>();
 			}
 
 			public void Show(bool isClickable = true, Action<UIPanel> clickCallback = null, bool isVisible = true)

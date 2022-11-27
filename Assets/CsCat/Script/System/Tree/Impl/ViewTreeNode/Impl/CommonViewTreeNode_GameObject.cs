@@ -12,9 +12,20 @@ namespace CsCat
 			return Object.Instantiate(prefab);
 		}
 
+		protected virtual void _OnInstantiateGameObject()
+		{
+		}
+
 		protected virtual void InitGameObjectChildren()
 		{
 		}
+
+		//是否加载完预设且创建完gameObject
+		protected bool IsGameObjectInited()
+		{
+			return this.GetGameObject() != null;
+		}
+
 
 		public virtual void SetGameObject(GameObject gameObject, bool? isNotDestroyGameObject = false)
 		{
@@ -31,6 +42,16 @@ namespace CsCat
 			var gameObject = this.GetGameObject();
 			if (gameObject != null && !_isNotDestroyGameObject)
 				gameObject.Destroy();
+		}
+
+		private void _Reset_GameObject()
+		{
+			_isNotDestroyGameObject = false;
+		}
+
+		protected void _Destroy_GameObject()
+		{
+			_isNotDestroyGameObject = false;
 		}
 	}
 }

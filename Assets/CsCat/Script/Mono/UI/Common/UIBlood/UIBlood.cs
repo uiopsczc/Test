@@ -8,70 +8,60 @@ namespace CsCat
 {
 	public partial class UIBlood : UIObject
 	{
+		private float _slideFrom0To1Duration = 1;
+		private float _maxValue;
+		private int _sliderCount;
+		private float _toValue;
+		private List<Color> _sliderColorList;
+		private Slider _Slider_Blood;
+		private Image _ImgC_Fill;
+		private Image _ImgC_Bg;
+		private SliderCat _sliderCat;
 
-		private float slideFrom0To1Duration = 1;
-		private float maxValue;
-		private int sliderCount;
-		private float toValue;
-		private List<Color> sliderColorList;
-		private Slider slider;
-		private Image sliderFrontImage;
-		private Image sliderBackImage;
-		private SliderCat sliderCat;
-
-		public void Init(Transform parentTransform, float maxValue, int? sliderCount, float? toValue, List<Color> sliderColorList = null)
+		protected void _Init(Transform parentTransform, float maxValue, int? sliderCount, float? toValue, List<Color> sliderColorList = null)
 		{
-			base.Init();
-			this.graphicComponent.SetParentTransform(parentTransform);
-			this.graphicComponent.SetPrefabPath("Assets/Resources/common/ui/prefab/UIBoold.prefab");
+			base._Init();
+			this.AddChild<DOTweenDictTreeNode>(null, new DOTweenDict());
+			this.SetParentTransform(parentTransform);
+			this.SetPrefabPath("Assets/PatchResources/UI/UIBlood/Prefab/UIBlood.prefab");
 			InitBlood(maxValue, sliderCount, toValue, sliderColorList);
 		}
 
 		protected void InitBlood(float maxValue, int? sliderCount, float? toValue, List<Color> sliderColorList = null)
 		{
-			this.maxValue = maxValue;
-			this.sliderCount = sliderCount.GetValueOrDefault(1);
-			this.toValue = toValue.GetValueOrDefault(this.maxValue);
-			this.sliderColorList = this.sliderColorList ?? UIBloodConst.Color_List1;
+			this._maxValue = maxValue;
+			this._sliderCount = sliderCount.GetValueOrDefault(1);
+			this._toValue = toValue.GetValueOrDefault(this._maxValue);
+			this._sliderColorList = this._sliderColorList ?? UIBloodConst.Color_List1;
 		}
 
-		//    public override GameObject InstantiateGameObject(GameObject prefab)
-		//    {
-		//      GameObject clone = Client.instance.uiManager.uiBloodManager.SpawnUIBloodGameObject();
-		//      if (clone == null)
-		//        clone = GameObject.Instantiate(prefab);
-		//      return clone;
-		//    }
+		public override GameObject InstantiateGameObject(GameObject prefab)
+		{
+			return this.GetPoolManager().GetOrAddGameObjectPool("UIBloodPool", prefab, "UIBlood").SpawnValue();
+		}
 
-		public override void InitGameObjectChildren()
+		protected override void InitGameObjectChildren()
 		{
 			base.InitGameObjectChildren();
-			this.slider = graphicComponent.transform.Find("slider").GetComponent<Slider>();
-			this.sliderBackImage = graphicComponent.transform.FindChildRecursive("Background").GetComponent<Image>();
-			this.sliderFrontImage = graphicComponent.transform.FindChildRecursive("Fill").GetComponent<Image>();
+			this._Slider_Blood = this.GetTransform().Find("Slider_Blood").GetComponent<Slider>();
+			this._ImgC_Bg = this.GetTransform().Find("Slider_Blood/ImgC_Bg").GetComponent<Image>();
+			this._ImgC_Fill = this.GetTransform().Find("Slider_Blood/ImgC_Fg/ImgC_Fill").GetComponent<Image>();
 		}
-
-		//    public override void OnAllAssetsLoadDone()
-		//    {
-		//      base.OnAllAssetsLoadDone();
-		//      graphicComponent.SetIsNotDestroyGameObject(true);
-		//      __OnAllAssetsLoadDone();
-		//    }
 
 		// spawn的时候重用
-		public void __OnAllAssetsLoadDone()
+		protected override void PostPrefabLoadDone()
 		{
-			var sliderInfo = this.__GetSliderInfoByValue(this.toValue);
-			if (sliderCat != null)
-				this.sliderCat.Init(this.slider, sliderInfo.index, this.slideFrom0To1Duration, sliderInfo.pct);
+			base.PostPrefabLoadDone();
+			var sliderInfo = this.GetSliderInfoByValue(this._toValue);
+			if (_sliderCat != null)
+				this._sliderCat.Init(this._Slider_Blood, sliderInfo.index, this._slideFrom0To1Duration, sliderInfo.pct);
 			else
-				this.sliderCat =
-				  new SliderCat(this.slider, sliderInfo.index, this.slideFrom0To1Duration, sliderInfo.pct);
-			this.__SetSliderColor(this.sliderCat.curIndex);
-			graphicComponent.SetIsShow(true);
+				this._sliderCat =
+				  new SliderCat(this._Slider_Blood, sliderInfo.index, this._slideFrom0To1Duration, sliderInfo.pct);
+			this.SetSliderColor(this._sliderCat.curIndex);
 		}
 
-		public SliderInfo __GetSliderInfoByValue(float value)
+		public SliderInfo GetSliderInfoByValue(float value)
 		{
 			int index = 0;
 			float pct = 0;
@@ -80,14 +70,14 @@ namespace CsCat
 				index = 0;
 				pct = 0;
 			}
-			else if (value == this.maxValue)
+			else if (value == this._maxValue)
 			{
-				index = this.sliderCount - 1;
+				index = this._sliderCount - 1;
 				pct = 1;
 			}
 			else
 			{
-				float sliderEachValue = this.maxValue / this.sliderCount;
+				float sliderEachValue = this._maxValue / this._sliderCount;
 				index = (int)Mathf.Ceil(value / sliderEachValue);
 				int intPart = (int)Mathf.Floor(value / sliderEachValue);
 				float fractionalPart = value / sliderEachValue - intPart;
@@ -100,44 +90,45 @@ namespace CsCat
 			return new SliderInfo(index, pct);
 		}
 
-		public void __SetSliderColor(int index)
+		public void SetSliderColor(int index)
 		{
-			var sliderBackColor = this.sliderColorList[index];
-			var sliderFrontColor = this.sliderColorList[index + 1];
-			this.sliderBackImage.color = sliderBackColor;
-			this.sliderFrontImage.color = sliderFrontColor;
+			var sliderBackColor = this._sliderColorList[index];
+			var sliderFrontColor = this._sliderColorList[index + 1];
+			this._ImgC_Bg.color = sliderBackColor;
+			this._ImgC_Fill.color = sliderFrontColor;
 		}
 
 		public Tween SlideTo(float toValue, Action<float, Tween> callback = null, float? maxValue = null,
 		  int? sliderCount = null)
 		{
-			this.toValue = toValue;
+			this._toValue = toValue;
 			if (maxValue.HasValue)
-				this.maxValue = maxValue.Value;
+				this._maxValue = maxValue.Value;
 			if (sliderCount.HasValue)
-				this.sliderCount = sliderCount.Value;
-			if (this.sliderCat == null)
+				this._sliderCount = sliderCount.Value;
+			if (this._sliderCat == null)
 				return null;
-			var sliderInfo = this.__GetSliderInfoByValue(toValue);
-			return this.AddDOTween("UIBlood", this.sliderCat.SlideTo(sliderInfo.index, sliderInfo.pct,
+			var sliderInfo = this.GetSliderInfoByValue(toValue);
+			var dotweenDictTreeNode = this.GetChild<DOTweenDictTreeNode>();
+			return dotweenDictTreeNode.AddDOTween("UIBlood", this._sliderCat.SlideTo(sliderInfo.index, sliderInfo.pct,
 			  (index, pct, nextTween) =>
 			  {
-				  this.__SetSliderColor(this.sliderCat.curIndex);
+				  this.SetSliderColor(this._sliderCat.curIndex);
 				  if (nextTween != null)
-					  this.AddDOTween("UIBlood", nextTween);
+					  dotweenDictTreeNode.AddDOTween("UIBlood", nextTween);
 				  if (callback != null)
 				  {
-					  var currentValue = this.sliderCat.GetCurrentValue() * (this.maxValue / this.sliderCount);
+					  var currentValue = this._sliderCat.GetCurrentValue() * (this._maxValue / this._sliderCount);
 					  callback(currentValue, nextTween);
 				  }
 			  }));
 		}
 
-		protected override void _Destroy()
+		public override void DestroyGameObject()
 		{
-			base._Destroy();
-			graphicComponent.SetIsShow(false);
-			Client.instance.uiManager.uiBloodManager.DespawnUIBloodGameObject(graphicComponent.gameObject);
+			var gameObject = this.GetGameObject();
+			if (gameObject != null)
+				this.GetPoolManager().GetGameObjectPool("UIBloodPool").DespawnValue(gameObject);
 		}
 	}
 }

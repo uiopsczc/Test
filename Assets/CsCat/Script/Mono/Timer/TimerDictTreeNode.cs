@@ -6,11 +6,11 @@ namespace CsCat
 {
 	public class TimerDictTreeNode : TreeNode
 	{
-		public TimerDict timerDict;
+		private TimerDict _timerDict;
 		protected void _Init(TimerDict timerDict)
 		{
 			base._Init();
-			this.timerDict = timerDict;
+			this._timerDict = timerDict;
 		}
 
 		/// <summary>
@@ -28,30 +28,30 @@ namespace CsCat
 		  UpdateModeCat updateMode = UpdateModeCat.Update, bool isUseUnscaledDeltaTime = false, int priority = 1,
 		  params object[] updateFuncArgs)
 		{
-			return this.timerDict.AddTimer(updateFunc, delay, interval, needRunCount,
+			return this._timerDict.AddTimer(updateFunc, delay, interval, needRunCount,
 			  updateMode, isUseUnscaledDeltaTime, priority,
 			  updateFuncArgs);
 		}
 
 		public Timer AddTimer(Timer timer)
 		{
-			return this.timerDict.AddTimer(timer);
+			return this._timerDict.AddTimer(timer);
 		}
 
 		public void RemoveTimer(Timer timer)
 		{
-			this.timerDict.RemoveTimer(timer);
+			this._timerDict.RemoveTimer(timer);
 		}
 
 		public void RemoveAllTimers()
 		{
-			this.timerDict.RemoveAllTimers();
+			this._timerDict.RemoveAllTimers();
 		}
 
 		protected override void _SetIsPaused(bool isPaused)
 		{
 			base._SetIsPaused(isPaused);
-			this.timerDict.SetIsPaused(isPaused);
+			this._timerDict.SetIsPaused(isPaused);
 		}
 
 		protected override void _Reset()

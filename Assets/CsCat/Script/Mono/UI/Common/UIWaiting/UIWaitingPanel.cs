@@ -8,37 +8,42 @@ namespace CsCat
 
 		public override EUILayerName layerName => EUILayerName.WaitingUILayer;
 
-		private int waitingCount = 0;
-		private Animation waitingAinimation;
-		private GameObject waitingGameObject;
+		private int _waitingCount = 0;
+		private Animation _waitingAinimation;
+		private GameObject _waitingGameObject;
 
-		public void Init(GameObject gameObject)
+		protected void _Init(GameObject gameObject)
 		{
-			base.Init();
-			graphicComponent.SetGameObject(gameObject, true);
-			graphicComponent.SetIsShow(false);
+			base._Init();
+			SetGameObject(gameObject, true);
 		}
 
-		public override void InitGameObjectChildren()
+		protected override void _PostInit()
+		{
+			base._PostInit();
+			this.SetIsShow(false);
+		}
+
+		protected override void InitGameObjectChildren()
 		{
 			base.InitGameObjectChildren();
-			waitingGameObject = frameTransform.Find("waiting").gameObject;
-			waitingAinimation = waitingGameObject.GetComponent<Animation>();
+			_waitingGameObject = _frameTransform.Find("waiting").gameObject;
+			_waitingAinimation = _waitingGameObject.GetComponent<Animation>();
 		}
 
 		public void StartWaiting()
 		{
-			this.waitingCount += 1;
-			graphicComponent.SetIsShow(true);
+			this._waitingCount += 1;
+			SetIsShow(true);
 		}
 
 		public void EndWaiting()
 		{
-			this.waitingCount -= 1;
-			if (this.waitingCount <= 0)
+			this._waitingCount -= 1;
+			if (this._waitingCount <= 0)
 			{
-				this.waitingCount = 0;
-				graphicComponent.SetIsShow(false);
+				this._waitingCount = 0;
+				SetIsShow(false);
 			}
 		}
 
@@ -46,17 +51,13 @@ namespace CsCat
 		protected override void _Reset()
 		{
 			base._Reset();
-			this.waitingCount = 0;
+			this._waitingCount = 0;
 		}
 
 		public void HideWaiting()
 		{
 			Reset();
-			graphicComponent.SetIsShow(false);
+			SetIsShow(false);
 		}
-
-
-
-
 	}
 }

@@ -7,27 +7,27 @@ namespace CsCat
 	{
 		public class DialogItem : UIObject
 		{
-			private Image touXiangImg;
-			private Text descText;
+			private Image _ImgC_Head;
+			private Text _TxtC_Desc;
 
-			public void Init(GameObject gameObject)
+			protected void Init(GameObject gameObject)
 			{
-				base.Init();
-				graphicComponent.SetGameObject(gameObject, true);
+				base._Init();
+				SetGameObject(gameObject, true);
 			}
 
-			public override void InitGameObjectChildren()
+			protected override void InitGameObjectChildren()
 			{
 				base.InitGameObjectChildren();
-				touXiangImg = graphicComponent.transform.FindComponentInChildren<Image>("tou_xiang");
-				descText = graphicComponent.transform.FindComponentInChildren<Text>("content/desc");
+				_ImgC_Head = this.GetTransform().Find("ImgC_Head").GetComponent<Image>();
+				_TxtC_Desc = this.GetTransform().Find("Nego_Content/TxtC_Desc").GetComponent<Text>();
 			}
 
 			public void Show(string desc, string imagePath = null)
 			{
-				descText.text = desc;
+				_TxtC_Desc.text = desc;
 				if (imagePath != null)
-					SetImageAsync(touXiangImg, imagePath);
+					SetImageAsync(_ImgC_Head, imagePath);
 			}
 		}
 	}

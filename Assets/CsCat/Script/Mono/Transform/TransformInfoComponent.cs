@@ -6,6 +6,16 @@ namespace CsCat
 	{
 		private readonly TransformInfo _transformInfo = new TransformInfo();
 
+		public void SetParentTransform(Transform parentTransform)
+		{
+			_transformInfo.SetParentTransform(parentTransform);
+		}
+
+		public Transform GetParentTransform()
+		{
+			return this._transformInfo.GetParentTransform();
+		}
+
 		public void SetLocalPosition(Vector3 localPosition)
 		{
 			_transformInfo.SetLocalPosition(localPosition);
