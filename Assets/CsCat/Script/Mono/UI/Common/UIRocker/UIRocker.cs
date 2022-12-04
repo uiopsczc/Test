@@ -40,12 +40,12 @@ namespace CsCat
 			SetParentTransform(parentTransform);
 			this._uiRockerInput = uiRockerInput;
 
-			this.AddListener<float, float>(null, GlobalEventNameConst.Update, Update);
+			this._AddGameListeners();
 		}
 
-		protected override void InitGameObjectChildren()
+		protected override void _InitGameObjectChildren()
 		{
-			base.InitGameObjectChildren();
+			base._InitGameObjectChildren();
 			this._Nego_RockerTriggerArea = this.GetTransform().Find("Nego_RockerTriggerArea").gameObject;
 			this._Nego_Rocker = this.GetTransform().Find("Nego_Rocker").gameObject;
 			this._Nego_Rocker_RectTransform = this._Nego_Rocker.GetComponent<RectTransform>();
@@ -55,8 +55,10 @@ namespace CsCat
 			this._Nego_Arrow = this._Nego_Rocker.transform.Find("Nego_Arrow").gameObject;
 			this._Nego_Arrow_RectTransform = this._Nego_Arrow.GetComponent<RectTransform>();
 			this._canvasGroup = this.GetGameObject().GetComponent<CanvasGroup>();
+		}
 
-
+		protected override void _PostSetGameObject()
+		{
 			this._uiRockerRectTransformSizeDelta = this._Nego_Rocker_RectTransform.sizeDelta;
 			this._uiRockerOriginAnchoredPosition = this._Nego_Rocker_RectTransform.anchoredPosition;
 			this._uiRockerRadius = this._uiRockerRectTransformSizeDelta.x / 2;
@@ -64,13 +66,20 @@ namespace CsCat
 			this._bollOriginAnchoredPosition = this._Nego_Boll_RectTransform.anchoredPosition;
 		}
 
-		protected override void AddUnityListeners()
+		protected override void _AddUnityListeners()
 		{
-			base.AddUnityListeners();
+			base._AddUnityListeners();
 			this.RegisterOnDrag(this._Nego_RockerTriggerArea, this.OnNego_RockerDrag);
 			this.RegisterOnPointerDown(this._Nego_RockerTriggerArea, this.OnNego_RockerPointerDown);
 			this.RegisterOnPointerUp(this._Nego_RockerTriggerArea, this.OnNego_RockerPointerUp);
 		}
+
+		protected override void _AddGameListeners()
+		{
+			base._AddGameListeners();
+			this.AddListener<float, float>(null, GlobalEventNameConst.Update, Update);
+		}
+
 
 		// 响应的时候是否需要设值alpha值
 		// 按住时设置alpha为1
@@ -108,11 +117,13 @@ namespace CsCat
 		}
 
 
-		protected override void _Update(float deltaTime = 0, float unscaledDeltaTime = 0)
+		protected override bool _Update(float deltaTime = 0, float unscaledDeltaTime = 0)
 		{
-			base._Update();
+			if (!this._Update())
+				return false;
 			if (this._movePCTX != 0 || this._movePCTY != 0)
 				this._uiRockerInput.AxisMove(this._movePCTX, this._movePCTY);
+			return true;
 		}
 
 		public void OnNego_RockerPointerDown(PointerEventData eventData)

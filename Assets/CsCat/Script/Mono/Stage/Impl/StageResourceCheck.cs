@@ -32,7 +32,7 @@ namespace CsCat
 			XLuaManager.instance.OnInit();
 			XLuaManager.instance.StartXLua();
 			Client.instance.Goto<StageTest>(0,
-				() => { Client.instance.uiManager.uiLoadingPanel.Reset(); });
+				() => { Client.instance.uiManager.uiLoadingPanel.DoReset(); });
 		}
 
 

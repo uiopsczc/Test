@@ -9,7 +9,7 @@ namespace CsCat
 		{
 			base.InitConfigList();
 			this.GetGameObject().name = "test2";
-			configList.Add(new Dictionary<string, object>
+			_configList.Add(new Dictionary<string, object>
 			{
 				{"type", "InputItem"},
 				{"desc", "KKK"},

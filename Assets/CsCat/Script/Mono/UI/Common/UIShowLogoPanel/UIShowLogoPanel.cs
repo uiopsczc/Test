@@ -9,7 +9,7 @@ namespace CsCat
 
 		protected void _Init(GameObject gameObject)
 		{
-			SetGameObject(gameObject, true);
+			_SetGameObject(gameObject, true);
 		}
 
 		protected override void _PostInit()

@@ -25,18 +25,18 @@ namespace CsCat
 				this._prefabAssetCat = this.GetChild<ResLoadDictTreeNode>().GetOrLoadAsset(prefabPath, null, null,
 					assetCat =>
 					{
-						OnPrefabLoadDone();
+						_OnPrefabLoadDone();
 						_prefabLoadDoneCallback?.Invoke();
-						PostPrefabLoadDone();
+						_PostPrefabLoadDone();
 					}, this);
 			}
 		}
 
-		protected virtual void PostPrefabLoadDone()
+		protected virtual void _PostPrefabLoadDone()
 		{
 		}
 
-		protected bool IsPrefabLoadDone()
+		protected bool _IsPrefabLoadDone()
 		{
 			return this._isPrefabLoadDone;
 		}
@@ -49,16 +49,15 @@ namespace CsCat
 				_prefabLoadDoneCallback = callback;
 		}
 
-		protected virtual void OnPrefabLoadDone()
+		protected virtual void _OnPrefabLoadDone()
 		{
 			_isPrefabLoadDone = true;
 			GameObject prefab = _prefabAssetCat.Get<GameObject>();
-			GameObject clone = InstantiateGameObject(prefab);
+			GameObject clone = _DoInstantiateGameObject(prefab);
 			clone.name = prefab.name;
 			Transform transform = clone.transform;
 			transform.CopyFrom(prefab.transform);
-			SetGameObject(clone, null);
-			this._OnInstantiateGameObject();
+			DoSetGameObject(clone, null);
 		}
 
 

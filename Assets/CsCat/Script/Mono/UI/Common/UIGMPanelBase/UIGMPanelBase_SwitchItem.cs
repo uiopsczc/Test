@@ -22,24 +22,29 @@ namespace CsCat
 				this._desc = desc;
 				this._yesCallback = yesCallback;
 				this._noCallback = noCallback;
-				SetGameObject(gameObject, true);
+				_SetGameObject(gameObject, true);
 			}
 
-			protected override void InitGameObjectChildren()
+			protected override void _InitGameObjectChildren()
 			{
-				base.InitGameObjectChildren();
+				base._InitGameObjectChildren();
 				descText = GetTransform().Find("TxtC_Desc").GetComponent<Text>();
 				_BtnNo = GetTransform().Find("BtnNo").GetComponent<Button>();
 				_BtnYes = GetTransform().Find("BtnYes").GetComponent<Button>();
-				this.descText.text = this._desc;
 			}
 
-			protected override void AddUnityListeners()
+			protected override void _AddUnityListeners()
 			{
-				base.AddUnityListeners();
+				base._AddUnityListeners();
 				this.RegisterOnClick(_BtnYes, () => { this._yesCallback(); });
 				if (this._noCallback != null)
 					this.RegisterOnClick(_BtnNo, () => { this._noCallback(); });
+			}
+
+			protected override void _PostSetGameObject()
+			{
+				base._PostSetGameObject();
+				this.descText.text = this._desc;
 			}
 
 		}

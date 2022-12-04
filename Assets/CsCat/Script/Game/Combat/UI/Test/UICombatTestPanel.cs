@@ -14,17 +14,17 @@ namespace CsCat
 			this.graphicComponent.SetPrefabPath("Assets/Resources/common/ui/prefab/UICombatTestPanel.prefab");
 		}
 
-		public override void InitGameObjectChildren()
+		public override void _InitGameObjectChildren()
 		{
-			base.InitGameObjectChildren();
+			base._InitGameObjectChildren();
 			gmBtn = this._frameTransform.FindComponentInChildren<Button>("gm_btn");
 			testBtn = this._frameTransform.FindComponentInChildren<Button>("test_btn");
 
 		}
 
-		protected override void AddUnityListeners()
+		protected override void _AddUnityListeners()
 		{
-			base.AddUnityListeners();
+			base._AddUnityListeners();
 			this.RegisterOnClick(testBtn, Test);
 		}
 

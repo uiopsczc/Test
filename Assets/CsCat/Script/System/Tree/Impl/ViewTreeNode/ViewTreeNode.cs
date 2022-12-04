@@ -133,9 +133,9 @@ namespace CsCat
 			if (isChange)
 			{
 				if (isShow)
-					OnShow();
+					_OnShow();
 				else
-					OnHide();
+					_OnHide();
 			}
 			return isChange;
 		}
@@ -146,12 +146,12 @@ namespace CsCat
 			return this._transformInfoProxy.IsShow();
 		}
 
-		protected virtual void OnShow()
+		protected virtual void _OnShow()
 		{
 
 		}
 
-		protected virtual void OnHide()
+		protected virtual void _OnHide()
 		{
 
 		}
@@ -160,6 +160,11 @@ namespace CsCat
 		{
 			base._Reset();
 			this.SetIsShow(false);
+		}
+
+		protected override void _PostReset()
+		{
+			base._PostReset();
 			this._transformInfoProxy.Reset();
 		}
 
@@ -167,6 +172,11 @@ namespace CsCat
 		{
 			base._Destroy();
 			this.SetIsShow(false);
+		}
+
+		protected override void _PostDestroy()
+		{
+			base._PostDestroy();
 			this._transformInfoProxy.Reset();
 		}
 	}

@@ -58,9 +58,9 @@ namespace CsCat
 		{
 		}
 
-		public override void SetGameObject(GameObject gameObject, bool? isNotDestroyGameObject = false)
+		protected override void _SetGameObject(GameObject gameObject, bool? isNotDestroyGameObject = false)
 		{
-			base.SetGameObject(gameObject, isNotDestroyGameObject);
+			base._SetGameObject(gameObject, isNotDestroyGameObject);
 			if (gameObject != null)
 			{
 				var canvas = gameObject.GetOrAddComponent<Canvas>();
@@ -87,9 +87,9 @@ namespace CsCat
 			this.uiLayer.SetPanelIndex(this, newIndex);
 		}
 
-		protected override void _OnInstantiateGameObject()
+		protected override void _PostSetGameObject()
 		{
-			base._OnInstantiateGameObject();
+			base._PostSetGameObject();
 			this._CheckPopupAnimation();
 		}
 

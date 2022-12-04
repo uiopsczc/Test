@@ -6,7 +6,7 @@ namespace CsCat
 	public partial class UIGMPanelBase : UIPopUpPanel
 	{
 
-		protected List<Dictionary<string, object>> configList = new List<Dictionary<string, object>>();
+		protected List<Dictionary<string, object>> _configList = new List<Dictionary<string, object>>();
 		protected GameObject _Nego_SwitchItem;
 		protected GameObject _Nego_InputItem1;
 		protected GameObject _Nego_InputItem2;
@@ -19,16 +19,26 @@ namespace CsCat
 			this.SetPrefabPath("Assets/PatchResources/UI/UIGMPanelBase/Prefab/UIGMPanelBase.prefab");
 		}
 
-		protected override void InitGameObjectChildren()
+		protected override void _InitGameObjectChildren()
 		{
-			base.InitGameObjectChildren();
+			base._InitGameObjectChildren();
 			_Nego_ScrollViewContent = this._frameTransform.Find("Nego_Content/Scroll View/Viewport/Nego_ScrollViewContent");
 			_Nego_SwitchItem = _Nego_ScrollViewContent.Find("Nego_SwitchItem").gameObject;
 			_Nego_InputItem1 = _Nego_ScrollViewContent.Find("Nego_InputItem1").gameObject;
 			_Nego_InputItem2 = _Nego_ScrollViewContent.Find("Nego_InputItem2").gameObject;
 			_BtnClose = this._frameTransform.Find("Nego_Content/BtnClose").gameObject;
+		}
 
+		protected override void _AddUnityListeners()
+		{
+			base._AddUnityListeners();
 			this.RegisterOnClick(_BtnClose, this.Close);
+		}
+
+
+		protected override void _PostSetGameObject()
+		{
+			base._PostSetGameObject();
 			InitConfigList();
 			InitItems();
 		}
@@ -36,9 +46,9 @@ namespace CsCat
 
 		public void InitItems()
 		{
-			for (var i = 0; i < configList.Count; i++)
+			for (var i = 0; i < _configList.Count; i++)
 			{
-				Dictionary<string, object> config = configList[i];
+				Dictionary<string, object> config = _configList[i];
 				switch (config["type"])
 				{
 					case "SwitchItem":
@@ -88,7 +98,7 @@ namespace CsCat
 		protected override void _Destroy()
 		{
 			base._Destroy();
-			configList.Clear();
+			_configList.Clear();
 		}
 	}
 }

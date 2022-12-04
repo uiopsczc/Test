@@ -14,7 +14,7 @@ namespace CsCat
 		{
 			base._Init();
 			this.uiLayerConfig = uiLayerConfig;
-			SetGameObject(gameObject, true);
+			_SetGameObject(gameObject, true);
 			gameObject.name = uiLayerConfig.name.ToString();
 			gameObject.layer = LayerMask.NameToLayer("UI");
 
@@ -27,9 +27,10 @@ namespace CsCat
 		}
 
 
-		public override void Refresh(bool isInit = false)
+		protected override bool _Refresh(bool isInit = false)
 		{
-			base.Refresh(isInit);
+			if (!base._Refresh(isInit))
+				return false;
 			for (var i = 0; i < panelList.Count; i++)
 			{
 				object panel = panelList[i];
@@ -59,7 +60,8 @@ namespace CsCat
 			if (uiLayerConfig.uiLayerRule.IsHideFrontUILayer())
 				this.FireEvent(null, UIEventNameConst.SetIsHideUILayer, EUILayerName.FrontUILayer, panelList.Count > 0);
 			if (uiLayerConfig.uiLayerRule.IsAddBlackMaskBehind())
-				HandleLayerAddBlackMaskBehind();
+				_HandleLayerAddBlackMaskBehind();
+			return true;
 		}
 
 		public void RemovePanel(object panel)
@@ -102,7 +104,7 @@ namespace CsCat
 		}
 
 
-		void HandleLayerAddBlackMaskBehind()
+		void _HandleLayerAddBlackMaskBehind()
 		{
 			object targetPanel = null;
 			int targetPanelSortingOrder = 0;
@@ -127,7 +129,7 @@ namespace CsCat
 						else
 						{
 							LuaTable panelLuaTable = (LuaTable) panel;
-							if (!panelLuaTable.InvokeFunc<bool>("IsHideBlackMaskBehind"))
+							if (!panelLuaTable.InvokeFunc<bool>("_IsHideBlackMaskBehind"))
 							{
 								targetPanel = panel;
 								targetPanelSortingOrder = panelLuaTable.InvokeFunc<int>("GetSortingOrder");

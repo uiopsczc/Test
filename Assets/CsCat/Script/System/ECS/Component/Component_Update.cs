@@ -33,16 +33,19 @@ namespace CsCat
 		}
 
 
-		protected virtual void _Update(float deltaTime = 0, float unscaledDeltaTime = 0)
+		protected virtual bool _Update(float deltaTime = 0, float unscaledDeltaTime = 0)
 		{
+			return true;
 		}
 
-		protected virtual void _FixedUpdate(float deltaTime = 0, float unscaledDeltaTime = 0)
+		protected virtual bool _FixedUpdate(float deltaTime = 0, float unscaledDeltaTime = 0)
 		{
+			return true;
 		}
 
-		protected virtual void _LateUpdate(float deltaTime = 0, float unscaledDeltaTime = 0)
+		protected virtual bool _LateUpdate(float deltaTime = 0, float unscaledDeltaTime = 0)
 		{
+			return true;
 		}
 
 		void _OnReset_Update()

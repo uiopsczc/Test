@@ -77,10 +77,6 @@ namespace CsCat
 		{
 		}
 
-		public virtual void Refresh(bool isInit = false)
-		{
-		}
-
 
 		void _OnDespawn_()
 		{

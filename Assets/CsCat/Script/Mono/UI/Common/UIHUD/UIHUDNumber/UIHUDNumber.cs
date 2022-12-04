@@ -49,7 +49,7 @@ namespace CsCat
 			Vector3? spawnWorldPosition = spawnWorldPositionFunc();
 			if (spawnWorldPosition == null)
 			{
-				Reset();
+				DoReset();
 				return;
 			}
 			_textProxy_This.SetText(showString);
@@ -66,10 +66,12 @@ namespace CsCat
 			UpdatePos(0);
 		}
 
-		protected override void _Update(float deltaTime, float unscaledDeltaTime)
+		protected override bool _Update(float deltaTime, float unscaledDeltaTime)
 		{
-			base._Update(deltaTime, unscaledDeltaTime);
+			if (!base._Update(deltaTime, unscaledDeltaTime))
+				return false;
 			this.UpdatePos(deltaTime);
+			return true;
 		}
 
 		public void UpdatePos(float deltaTime)
@@ -77,7 +79,7 @@ namespace CsCat
 			_duration = _duration - deltaTime;
 			if (_duration <= 0)
 			{
-				this.Reset();
+				this.DoReset();
 				return;
 			}
 

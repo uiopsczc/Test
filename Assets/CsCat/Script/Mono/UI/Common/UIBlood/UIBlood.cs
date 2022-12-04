@@ -35,23 +35,23 @@ namespace CsCat
 			this._sliderColorList = this._sliderColorList ?? UIBloodConst.Color_List1;
 		}
 
-		public override GameObject InstantiateGameObject(GameObject prefab)
+		protected override GameObject _InstantiateGameObject(GameObject prefab)
 		{
 			return this.GetPoolManager().GetOrAddGameObjectPool("UIBloodPool", prefab, "UIBlood").SpawnValue();
 		}
 
-		protected override void InitGameObjectChildren()
+		protected override void _InitGameObjectChildren()
 		{
-			base.InitGameObjectChildren();
+			base._InitGameObjectChildren();
 			this._Slider_Blood = this.GetTransform().Find("Slider_Blood").GetComponent<Slider>();
 			this._ImgC_Bg = this.GetTransform().Find("Slider_Blood/ImgC_Bg").GetComponent<Image>();
 			this._ImgC_Fill = this.GetTransform().Find("Slider_Blood/ImgC_Fg/ImgC_Fill").GetComponent<Image>();
 		}
 
 		// spawn的时候重用
-		protected override void PostPrefabLoadDone()
+		protected override void _PostSetGameObject()
 		{
-			base.PostPrefabLoadDone();
+			base._PostSetGameObject();
 			var sliderInfo = this.GetSliderInfoByValue(this._toValue);
 			if (_sliderCat != null)
 				this._sliderCat.Init(this._Slider_Blood, sliderInfo.index, this._slideFrom0To1Duration, sliderInfo.pct);

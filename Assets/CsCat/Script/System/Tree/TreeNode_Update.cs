@@ -5,10 +5,15 @@ namespace CsCat
 {
 	public partial class TreeNode
 	{
-		public bool isCanNotUpdate = false;
+		protected bool _isCanNotUpdate = false;
 		public virtual bool IsCanUpdate()
 		{
-			return !isCanNotUpdate&&isEnabled && !this.isPaused && !IsDestroyed();
+			return !_isCanNotUpdate&&isEnabled && !this.isPaused && !IsDestroyed();
+		}
+
+		protected virtual bool IsNeedUpdateChildren()
+		{
+			return true;
 		}
 
 		public virtual void Update(float deltaTime = 0, float unscaledDeltaTime = 0)
@@ -16,11 +21,14 @@ namespace CsCat
 			if (!this.IsCanUpdate())
 				return;
 
-			for (var i = 0; i < _childPoolItemIndexList.Count; i++)
+			if (IsNeedUpdateChildren())
 			{
-				var childPoolItemIndex = _childPoolItemIndexList[i];
-				var child = _GetChild(childPoolItemIndex);
-				child?.Update(deltaTime, unscaledDeltaTime);
+				for (var i = 0; i < _childPoolItemIndexList.Count; i++)
+				{
+					var childPoolItemIndex = _childPoolItemIndexList[i];
+					var child = _GetChild(childPoolItemIndex);
+					child?.Update(deltaTime, unscaledDeltaTime);
+				}
 			}
 			_Update(deltaTime, unscaledDeltaTime);
 		}
@@ -28,13 +36,15 @@ namespace CsCat
 		public virtual void FixedUpdate(float deltaTime = 0, float unscaledDeltaTime = 0)
 		{
 			if (!this.IsCanUpdate()) return;
-			for (var i = 0; i < _childPoolItemIndexList.Count; i++)
+			if (IsNeedUpdateChildren())
 			{
-				var childPoolItemIndex = _childPoolItemIndexList[i];
-				var child = _GetChild(childPoolItemIndex);
-				child?.FixedUpdate(deltaTime, unscaledDeltaTime);
+				for (var i = 0; i < _childPoolItemIndexList.Count; i++)
+				{
+					var childPoolItemIndex = _childPoolItemIndexList[i];
+					var child = _GetChild(childPoolItemIndex);
+					child?.FixedUpdate(deltaTime, unscaledDeltaTime);
+				}
 			}
-
 			_FixedUpdate(deltaTime, unscaledDeltaTime);
 		}
 
@@ -42,37 +52,42 @@ namespace CsCat
 		public virtual void LateUpdate(float deltaTime = 0, float unscaledDeltaTime = 0)
 		{
 			if (!this.IsCanUpdate()) return;
-
-			for (var i = 0; i < _childPoolItemIndexList.Count; i++)
+			if (IsNeedUpdateChildren())
 			{
-				var childPoolItemIndex = _childPoolItemIndexList[i];
-				var child = _GetChild(childPoolItemIndex);
-				child?.LateUpdate(deltaTime, unscaledDeltaTime);
+				for (var i = 0; i < _childPoolItemIndexList.Count; i++)
+				{
+					var childPoolItemIndex = _childPoolItemIndexList[i];
+					var child = _GetChild(childPoolItemIndex);
+					child?.LateUpdate(deltaTime, unscaledDeltaTime);
+				}
 			}
 			_LateUpdate(deltaTime, unscaledDeltaTime);
 		}
 
 
-		protected virtual void _Update(float deltaTime = 0, float unscaledDeltaTime = 0)
+		protected virtual bool _Update(float deltaTime = 0, float unscaledDeltaTime = 0)
 		{
+			return true;
 		}
 
-		protected virtual void _FixedUpdate(float deltaTime = 0, float unscaledDeltaTime = 0)
+		protected virtual bool _FixedUpdate(float deltaTime = 0, float unscaledDeltaTime = 0)
 		{
+			return true;
 		}
 
-		protected virtual void _LateUpdate(float deltaTime = 0, float unscaledDeltaTime = 0)
+		protected virtual bool _LateUpdate(float deltaTime = 0, float unscaledDeltaTime = 0)
 		{
+			return true;
 		}
 
 		void _OnReset_Update()
 		{
-			isCanNotUpdate = false;
+			_isCanNotUpdate = false;
 		}
 
 		void _OnDespawn_Update()
 		{
-			isCanNotUpdate = false;
+			_isCanNotUpdate = false;
 		}
 	}
 }

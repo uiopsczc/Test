@@ -11,15 +11,15 @@ namespace CsCat
 			public Image image;
 			public Button button;
 
-			protected void Init(GameObject gameObject)
+			protected void _Init(GameObject gameObject)
 			{
 				base._Init();
-				SetGameObject(gameObject, true);
+				_SetGameObject(gameObject, true);
 			}
 
-			protected override void InitGameObjectChildren()
+			protected override void _InitGameObjectChildren()
 			{
-				base.InitGameObjectChildren();
+				base._InitGameObjectChildren();
 				image = this.GetGameObject().GetComponent<Image>();
 				button = this.GetGameObject().GetComponent<Button>();
 			}

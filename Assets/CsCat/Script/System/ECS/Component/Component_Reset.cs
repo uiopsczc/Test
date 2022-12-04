@@ -9,33 +9,29 @@ namespace CsCat
 
 		public void DoReset()
 		{
-			PreReset();
-			Reset();
-			PostReset();
-		}
-
-		protected virtual void PreReset()
-		{
 			preResetCallback?.Invoke();
 			preResetCallback = null;
+			_PreReset();
+			_Reset();
+			_PostReset();
+			postResetCallback?.Invoke();
+			postResetCallback = null;
 		}
 
-		protected void Reset()
+		protected virtual void _PreReset()
 		{
-			_OnReset_Enable();
-			_OnReset_Pause();
-			_OnReset_Update();
-			_Reset();
+			
 		}
 
 		protected virtual void _Reset()
 		{
+			_OnReset_Enable();
+			_OnReset_Pause();
+			_OnReset_Update();
 		}
 
-		protected virtual void PostReset()
+		protected virtual void _PostReset()
 		{
-			postResetCallback?.Invoke();
-			postResetCallback = null;
 		}
 
 

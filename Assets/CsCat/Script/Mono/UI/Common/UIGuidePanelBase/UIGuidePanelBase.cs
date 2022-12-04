@@ -22,16 +22,19 @@ namespace CsCat
 			SetPrefabPath("Assets/PatchResources/UI/UIGuidePanelBase/Prefab/UIGuidePanelBase.prefab");
 		}
 
-		protected override void InitGameObjectChildren()
+		protected override void _InitGameObjectChildren()
 		{
-			base.InitGameObjectChildren();
+			base._InitGameObjectChildren();
 			_Nego_Bg = this._frameTransform.Find("Nego_Bg").gameObject;
 			_Nego_DialogRight = this._frameTransform.Find("Nego_DialogRight").gameObject;
 			_Nego_DialogLeft = this._frameTransform.Find("Nego_DialogLeft").gameObject;
 			_Nego_Finger = this._frameTransform.Find("Nego_Finger").gameObject;
 			_Nego_Arrow = this._frameTransform.Find("Nego_Arrow").gameObject;
 			_Nego_Desc = this._frameTransform.Find("Nego_Desc").gameObject;
+		}
 
+		protected override void _PostSetGameObject()
+		{
 			bgItem = this.AddChild<UIGuidePanelBase.BgItem>(null, _Nego_Bg);
 		}
 

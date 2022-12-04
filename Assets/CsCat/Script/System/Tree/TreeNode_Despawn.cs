@@ -14,6 +14,7 @@ namespace CsCat
 			_OnDespawn_Pause();
 			_OnDespawn_Reset();
 			_OnDespawn_Update();
+			_OnDespawn_Refresh();
 		}
 	}
 }

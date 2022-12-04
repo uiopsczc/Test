@@ -16,7 +16,8 @@ namespace CsCat
 		protected void _Init(GameObject gameObject)
 		{
 			base._Init();
-			SetGameObject(gameObject, true);
+			this.AddChild<DOTweenDictTreeNode>(null, new DOTweenDict());
+			_SetGameObject(gameObject, true);
 		}
 
 		protected override void _PostInit()
@@ -25,16 +26,16 @@ namespace CsCat
 			this.SetIsShow(false);
 		}
 
-		protected override void InitGameObjectChildren()
+		protected override void _InitGameObjectChildren()
 		{
-			base.InitGameObjectChildren();
+			base._InitGameObjectChildren();
 			_ImgC_Fade = this._frameTransform.Find("ImgC_Fade").GetComponent<Image>();
 		}
 
 		public void FadeInOut(float duration, Action callback)
 		{
 			SetIsShow(true);
-			Sequence sequence = DOTween.Sequence();
+			Sequence sequence = this.GetChild<DOTweenDictTreeNode>().AddDOTweenSequence(null);
 			_ImgC_Fade.SetColorA(0);
 			sequence.Append(_ImgC_Fade.DOFade(1, duration * 0.25f)); //透明度从0-1
 			sequence.Append(this.GetTransform().DOWait(0.45f)); //透明度在1的时候保持X * 0.4秒
@@ -57,7 +58,6 @@ namespace CsCat
 		protected override void _Reset()
 		{
 			base._Reset();
-			SetIsShow(false);
 			_ImgC_Fade.SetColorA(1);
 		}
 

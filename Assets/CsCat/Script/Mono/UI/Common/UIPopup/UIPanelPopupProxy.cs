@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class UIPanelPopupProxy
 {
-	private UIPanelPopup _uiPanelPopup;
+	private readonly UIPanelPopup _uiPanelPopup;
 	public bool isPlaying;//(showing or hiding)
 	public bool isHiding;
 

@@ -10,7 +10,7 @@ namespace CsCat
 	{
 		private readonly List<UGUIEventListener> _registeredUGUIEventListenerList = new List<UGUIEventListener>();
 
-		protected void SaveRegisteredUGUIEventListener(UGUIEventListener uguiEventListener)
+		protected void _SaveRegisteredUGUIEventListener(UGUIEventListener uguiEventListener)
 		{
 			if (_registeredUGUIEventListenerList.Contains(uguiEventListener))
 				return;
@@ -37,7 +37,7 @@ namespace CsCat
 				action();
 			};
 			UGUIEventListener.Get(button).onClick += result;
-			SaveRegisteredUGUIEventListener(gameObject.GetComponent<UGUIEventListener>());
+			_SaveRegisteredUGUIEventListener(gameObject.GetComponent<UGUIEventListener>());
 			return result;
 		}
 
@@ -58,7 +58,7 @@ namespace CsCat
 		{
 			Action<GameObject, PointerEventData> result = (go, eventData) => { action(eventData); };
 			UGUIEventListener.Get(gameObject).onDrag += result;
-			SaveRegisteredUGUIEventListener(gameObject.GetComponent<UGUIEventListener>());
+			_SaveRegisteredUGUIEventListener(gameObject.GetComponent<UGUIEventListener>());
 			return result;
 		}
 
@@ -80,7 +80,7 @@ namespace CsCat
 		{
 			Action<GameObject, PointerEventData> result = (go, eventData) => { action(eventData); };
 			UGUIEventListener.Get(gameObject).onPointerDown += result;
-			SaveRegisteredUGUIEventListener(gameObject.GetComponent<UGUIEventListener>());
+			_SaveRegisteredUGUIEventListener(gameObject.GetComponent<UGUIEventListener>());
 			return result;
 		}
 

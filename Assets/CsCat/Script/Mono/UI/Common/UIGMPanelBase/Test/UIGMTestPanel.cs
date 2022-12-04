@@ -8,7 +8,7 @@ namespace CsCat
 		public override void InitConfigList()
 		{
 			base.InitConfigList();
-			configList.Add(new Dictionary<string, object>
+			_configList.Add(new Dictionary<string, object>
 			{
 				{"type", "SwitchItem"},
 				{"desc", "GMTest"},

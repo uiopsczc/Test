@@ -16,7 +16,7 @@ namespace CsCat
 		protected void _Init(GameObject gameObject)
 		{
 			base._Init();
-			SetGameObject(gameObject, true);
+			_SetGameObject(gameObject, true);
 		}
 
 		protected override void _PostInit()
@@ -25,9 +25,9 @@ namespace CsCat
 			this.SetIsShow(false);
 		}
 
-		protected override void InitGameObjectChildren()
+		protected override void _InitGameObjectChildren()
 		{
-			base.InitGameObjectChildren();
+			base._InitGameObjectChildren();
 			_Slider_Progress = _frameTransform.Find("Slider_Progress").GetComponent<Slider>();
 			_TxtC_Desc = _frameTransform.Find("TxtC_Desc").GetComponent<Text>();
 		}
@@ -54,7 +54,7 @@ namespace CsCat
 
 		public void HideLoading()
 		{
-			Reset();
+			DoReset();
 			SetIsShow(false);
 		}
 	}

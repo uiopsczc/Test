@@ -24,9 +24,9 @@ namespace CsCat
 			this.SetPrefabPath("Assets/PatchResources/UI/UIItemBase/Prefab/UIItemBase.prefab");
 		}
 
-		protected override void InitGameObjectChildren()
+		protected override void _InitGameObjectChildren()
 		{
-			base.InitGameObjectChildren();
+			base._InitGameObjectChildren();
 			this._ImgC_Bg = _contentTransform.Find("ImgC_Bg").GetComponent<Image>();
 			this._ImgC_Quality = _contentTransform.Find("ImgC_Quality").GetComponent<Image>();
 			this._ImgC_Icon = _contentTransform.Find("ImgC_Icon").GetComponent<Image>();
@@ -45,14 +45,14 @@ namespace CsCat
 			  : CfgQuality.Instance.GetById(cfgItemData.qualityId);
 
 			if (!cfgItemData.bgPath.IsNullOrWhiteSpace())
-				this.SetImageAsync(this._ImgC_Bg, cfgItemData.bgPath, null, false);
+				this._SetImageAsync(this._ImgC_Bg, cfgItemData.bgPath, null, false);
 			if (this.cfgQualityData != null && !this.cfgQualityData.iconPath.IsNullOrWhiteSpace())
-				this.SetImageAsync(this._ImgC_Quality, cfgQualityData.iconPath, null, false);
+				this._SetImageAsync(this._ImgC_Quality, cfgQualityData.iconPath, null, false);
 			else
 				this._ImgC_Bg.gameObject.SetActive(false);
 			//    LogCat.LogWarning(this.content_icon_image);
 			//    LogCat.LogWarning(itemData.icon_path);
-			this.SetImageAsync(this._ImgC_Icon, cfgItemData.iconPath, null, false);
+			this._SetImageAsync(this._ImgC_Icon, cfgItemData.iconPath, null, false);
 			this._TxtC_Count.text = (itemCount == 0 || itemCount == 1) ? "" : string.Format("x{0}", itemCount);
 			this._TxtC_Name.text = cfgItemData.name;
 

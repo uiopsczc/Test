@@ -37,9 +37,9 @@ namespace CsCat
 			this._cameraManager.SetMainCameraMoveRange(moveRange);
 		}
 
-		protected override void AddUnityListeners()
+		protected override void _AddUnityListeners()
 		{
-			base.AddUnityListeners();
+			base._AddUnityListeners();
 			this.RegisterOnDrag(this.GetGameObject(), this.OnUIScreenDrag);
 			this.RegisterOnPointerDown(this.GetGameObject(), this.OnUIScreenPointerDown);
 			this.RegisterOnPointerUp(this.GetGameObject(), this.OnUIScreenPointerUp);

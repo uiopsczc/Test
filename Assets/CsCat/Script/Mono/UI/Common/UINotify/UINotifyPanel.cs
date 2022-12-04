@@ -29,12 +29,25 @@ namespace CsCat
 			SetPrefabPath("Assets/Resources/common/ui/prefab/UINotifyPanel.prefab");
 		}
 
-		protected override void InitGameObjectChildren()
+		protected override void _InitGameObjectChildren()
 		{
-			base.InitGameObjectChildren();
+			base._InitGameObjectChildren();
 			_TxtC_Desc = this.GetTransform().Find("TxtC_Desc").GetComponent<Text>();
 			_ImgC_Bg = this.GetTransform().Find("ImgC_Bg").GetComponent<Image>();
+		}
 
+		protected override void _PostSetGameObject()
+		{
+			base._PostSetGameObject();
+			this._AddTimers();
+			this._isCreated = true;
+			if (this._isRised)
+				Rise();
+		}
+
+		protected override void _AddTimers()
+		{
+			base._AddTimers();
 			var timerDictTreeNode = this.GetChild<TimerDictTreeNode>();
 			timerDictTreeNode.AddTimer(MoveUp, this._moveUpDelayDuration);
 			timerDictTreeNode.AddTimer((args) =>
@@ -42,15 +55,14 @@ namespace CsCat
 				this.Close();
 				return false;
 			}, this._closeDelayDuration);
-			this._isCreated = true;
-			if (this._isRised)
-				Rise();
 		}
 
-		public override void Refresh(bool isInit = false)
+		protected override bool _Refresh(bool isInit = false)
 		{
-			base.Refresh(isInit);
+			if (!base._Refresh(isInit))
+				return false;
 			_TxtC_Desc.text = _desc;
+			return true;
 		}
 
 		public bool MoveUp(params object[] args)

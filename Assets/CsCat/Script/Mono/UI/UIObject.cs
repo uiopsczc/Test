@@ -15,11 +15,23 @@ namespace CsCat
 			get{return _cache.GetOrAddDefault("contentTransform", () => GetTransform().Find("Nego_Content"));}
 		}
 
-		protected virtual void AddUnityListeners()
+		protected override bool IsNeedUpdateChildren()
+		{
+			return false;
+		}
+
+		protected override void _PostSetGameObject()
+		{
+			base._PostSetGameObject();
+			_RemoveUnityListeners();
+			_AddUnityListeners();
+		}
+
+		protected virtual void _AddUnityListeners()
 		{
 
 		}
-		protected virtual void RemoveUnityListeners()
+		protected virtual void _RemoveUnityListeners()
 		{
 			for (var i = 0; i < _registeredUGUIEventListenerList.Count; i++)
 			{
@@ -30,26 +42,26 @@ namespace CsCat
 			_registeredUGUIEventListenerList.Clear();
 		}
 
-		protected virtual void AddGameListeners()
+		protected virtual void _AddGameListeners()
 		{
 		}
 
-		protected virtual void RemoveGameListeners()
+		protected virtual void _RemoveGameListeners()
 		{
 		}
 
-		protected virtual void AddTimers()
+		protected virtual void _AddTimers()
 		{
 		}
 
-		protected virtual void RemoveTimers()
+		protected virtual void _RemoveTimers()
 		{
 		}
 
 		
 
 
-		public void SetImageAsync(Image image, string assetPath, Action<Image> callbak = null,
+		protected void _SetImageAsync(Image image, string assetPath, Action<Image> callback = null,
 		  bool isSetNativeSize = false)
 		{
 			GetChild<ResLoadDictTreeNode>().GetOrLoadAsset(assetPath.GetMainAssetPath(), assetCat =>
@@ -59,11 +71,11 @@ namespace CsCat
 				image.sprite = assetCat.Get<Sprite>(assetPath.GetSubAssetPath());
 				if (isSetNativeSize)
 					image.SetNativeSize();
-				callbak?.Invoke(image);
+				callback?.Invoke(image);
 			}, null, null, this);
 		}
 
-		public void SetRawImageAsync(RawImage image, string assetPath, Action<RawImage> callbak = null,
+		protected void _SetRawImageAsync(RawImage image, string assetPath, Action<RawImage> callback = null,
 		  bool isSetNativeSize = false)
 		{
 			GetChild<ResLoadDictTreeNode>().GetOrLoadAsset(assetPath, assetCat =>
@@ -73,26 +85,25 @@ namespace CsCat
 				image.texture = assetCat.Get<Texture>(assetPath.GetSubAssetPath());
 				if (isSetNativeSize)
 					image.SetNativeSize();
-				callbak?.Invoke(image);
+				callback?.Invoke(image);
 			}, null, null, this);
 		}
-
 
 
 		protected override void _Reset()
 		{
 			base._Reset();
-			RemoveUnityListeners();
-			RemoveGameListeners();
-			RemoveTimers();
+			_RemoveUnityListeners();
+			_RemoveGameListeners();
+			_RemoveTimers();
 		}
 
 		protected override void _Destroy()
 		{
 			base._Destroy();
-			RemoveUnityListeners();
-			RemoveGameListeners();
-			RemoveTimers();
+			_RemoveUnityListeners();
+			_RemoveGameListeners();
+			_RemoveTimers();
 		}
 	}
 }

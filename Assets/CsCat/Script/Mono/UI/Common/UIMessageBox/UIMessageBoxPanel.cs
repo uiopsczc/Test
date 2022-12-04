@@ -29,9 +29,9 @@ namespace CsCat
 			this.SetPrefabPath("Assets/PatchResources/UI/UIMessageBox/Prefab/UIMessageBoxPanel.prefab");
 		}
 
-		protected override void InitGameObjectChildren()
+		protected override void _InitGameObjectChildren()
 		{
-			base.InitGameObjectChildren();
+			base._InitGameObjectChildren();
 			_TxtC_Title = this._contentTransform.Find("TxtC_Title").GetComponent<Text>();
 			_TxtC_Subtitle = this._contentTransform.Find("TxtC_Subtitle").GetComponent<Text>();
 			_TxtC_Desc =

@@ -10,15 +10,15 @@ namespace CsCat
 			private Text _TxtC_Desc;
 			private Image _ImgC_Bg;
 
-			protected void Init(GameObject gameObject)
+			protected void _Init(GameObject gameObject)
 			{
 				base._Init();
-				SetGameObject(gameObject, true);
+				_SetGameObject(gameObject, true);
 			}
 
-			protected override void InitGameObjectChildren()
+			protected override void _InitGameObjectChildren()
 			{
-				base.InitGameObjectChildren();
+				base._InitGameObjectChildren();
 				_TxtC_Desc = this.GetTransform().Find("TxtC_Desc").GetComponent<Text>();
 				_ImgC_Bg = this.GetTransform().Find("ImgC_Bg").GetComponent<Image>();
 			}

@@ -18,9 +18,9 @@ namespace CsCat
 			this.SetPrefabPath("Assets/PatchResources/UI/UIHUD/Prefab/UIHUDText.prefab");
 		}
 
-		protected override void InitGameObjectChildren()
+		protected override void _InitGameObjectChildren()
 		{
-			base.InitGameObjectChildren();
+			base._InitGameObjectChildren();
 			this._TxtC_This = this.GetGameObject().GetComponent<Text>();
 			this._textAlpha = _TxtC_This.color.a;
 			this._Animation_This = this.GetGameObject().GetComponent<Animation>();

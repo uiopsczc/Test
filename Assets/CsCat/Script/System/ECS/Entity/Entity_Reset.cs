@@ -10,34 +10,31 @@ namespace CsCat
 
 		public void DoReset()
 		{
-			PreReset();
-			Reset();
-			PostReset();
-		}
-
-		protected virtual void PreReset()
-		{
 			preResetCallback?.Invoke();
 			preResetCallback = null;
+			_PreReset();
+			_Reset();
+			_PostReset();
+			postResetCallback?.Invoke();
+			postResetCallback = null;
 		}
 
-		protected void Reset()
+		protected virtual void _PreReset()
+		{
+			
+		}
+
+		protected virtual void _Reset()
 		{
 			ResetAllComponents();
 			_OnReset_Enable();
 			_OnReset_Pause();
 			_OnReset_Update();
-			_Reset();
 		}
 
-		protected virtual void _Reset()
+		protected virtual void _PostReset()
 		{
-		}
-
-		protected virtual void PostReset()
-		{
-			postResetCallback?.Invoke();
-			postResetCallback = null;
+			
 		}
 
 		public void ResetAllComponents()
@@ -52,8 +49,6 @@ namespace CsCat
 
 		void _OnDespawn_Reset()
 		{
-			preResetCallback = null;
-			postResetCallback = null;
 		}
 	}
 }

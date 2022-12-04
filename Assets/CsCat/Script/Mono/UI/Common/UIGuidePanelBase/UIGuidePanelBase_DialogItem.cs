@@ -10,15 +10,15 @@ namespace CsCat
 			private Image _ImgC_Head;
 			private Text _TxtC_Desc;
 
-			protected void Init(GameObject gameObject)
+			protected void _Init(GameObject gameObject)
 			{
 				base._Init();
-				SetGameObject(gameObject, true);
+				_SetGameObject(gameObject, true);
 			}
 
-			protected override void InitGameObjectChildren()
+			protected override void _InitGameObjectChildren()
 			{
-				base.InitGameObjectChildren();
+				base._InitGameObjectChildren();
 				_ImgC_Head = this.GetTransform().Find("ImgC_Head").GetComponent<Image>();
 				_TxtC_Desc = this.GetTransform().Find("Nego_Content/TxtC_Desc").GetComponent<Text>();
 			}
@@ -27,7 +27,7 @@ namespace CsCat
 			{
 				_TxtC_Desc.text = desc;
 				if (imagePath != null)
-					SetImageAsync(_ImgC_Head, imagePath);
+					_SetImageAsync(_ImgC_Head, imagePath);
 			}
 		}
 	}

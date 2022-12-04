@@ -15,8 +15,6 @@ namespace CsCat
 		private RectTransform _RectTransform_Desc;
 		private RectTransform _RectTransform_Mask;
 
-		private Sequence sequence;
-
 		private float moveToCenterDuration = 1f;
 		private float stayCenterDuration = 1f;
 		private float moveToEndDuration = 1f;
@@ -24,7 +22,8 @@ namespace CsCat
 		protected void Init(GameObject gameObject)
 		{
 			base._Init();
-			SetGameObject(gameObject, true);
+			_SetGameObject(gameObject, true);
+			this.AddChild<DOTweenDictTreeNode>(null, new DOTweenDict());
 		}
 
 		protected override void _PostInit()
@@ -33,9 +32,9 @@ namespace CsCat
 			this.SetIsShow(false);
 		}
 
-		protected override void InitGameObjectChildren()
+		protected override void _InitGameObjectChildren()
 		{
-			base.InitGameObjectChildren();
+			base._InitGameObjectChildren();
 			_TxtC_Desc = this._frameTransform.Find("Nego_Mask/TxtC_Desc").GetComponent<Text>();
 			_RectTransform_Desc = _TxtC_Desc.GetComponent<RectTransform>();
 			_RectTransform_Mask = this._frameTransform.Find("Nego_Mask").GetComponent< RectTransform>();
@@ -47,7 +46,8 @@ namespace CsCat
 			_TxtC_Desc.text = desc;
 			LayoutRebuilder.ForceRebuildLayoutImmediate(_RectTransform_Desc); //计算desc_rtf的长度
 			_RectTransform_Desc.SetAnchoredPositionX(_RectTransform_Mask.sizeDelta.x / 2 + _RectTransform_Desc.sizeDelta.x / 2);
-			sequence = DOTween.Sequence();
+
+			var sequence = this.GetChild<DOTweenDictTreeNode>().AddDOTweenSequence(null);
 			sequence.Append(_RectTransform_Desc.DOMoveX(0, moveToCenterDuration));
 			sequence.Append(_RectTransform_Desc.DOWait(stayCenterDuration));
 			sequence.Append(_RectTransform_Desc.DOAnchorPosX(
@@ -58,14 +58,7 @@ namespace CsCat
 		protected override void _Reset()
 		{
 			base._Reset();
-			SetIsShow(false);
 			Client.instance.uiManager.uiNotifyManager.LanternNotify();
-		}
-
-		protected override void _Destroy()
-		{
-			base._Destroy();
-			sequence?.Kill();
 		}
 	}
 }

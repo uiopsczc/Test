@@ -161,7 +161,7 @@ namespace CsCat
 
 		public IEnumerator IEPreDestroy()
 		{
-			Client.instance.uiManager.Reset();
+			Client.instance.uiManager.DoReset();
 			PoolCatManager.instance.Trim(); //清理所有的对象池
 			if (!scenePath.IsNullOrWhiteSpace())
 			{

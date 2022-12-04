@@ -18,12 +18,14 @@ namespace CsCat
 		public string eventNameMoveStop => this._name + "MoveStop";
 		public string eventNameMovePCT => this._name + "MovePct";
 
-		protected override void _Update(float deltaTime, float unscaledDeltaTime)
+		protected override bool _Update(float deltaTime, float unscaledDeltaTime)
 		{
-			base._Update(deltaTime, unscaledDeltaTime);
+			if (!base._Update(deltaTime, unscaledDeltaTime))
+				return false;
 			this.UpdateKeyInput(deltaTime, unscaledDeltaTime); // 键盘测试用的
 			if (this._moveCooldownRemainDuration > 0)
 				this._UpdateMove(deltaTime, unscaledDeltaTime);
+			return true;
 		}
 
 		public virtual void GetAxisKeyInput(out float axisX, out float axisY)

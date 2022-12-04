@@ -18,35 +18,31 @@ namespace CsCat
 		{
 			if (IsDestroyed())
 				return;
-			PreDestroy();
-			Destroy();
-			PostDestroy();
-		}
-
-		protected void PreDestroy()
-		{
 			preDestroyCallback?.Invoke();
 			preDestroyCallback = null;
+			_PreDestroy();
+			_Destroy();
+			_PostDestroy();
+			postDestroyCallback?.Invoke();
+			postDestroyCallback = null;
 		}
 
-		protected void Destroy()
+		protected virtual void _PreDestroy()
 		{
-			SetIsEnabled(false);
-			SetIsPaused(false);
-			RemoveAllChildren();
-			_Destroy();
-			_isDestroyed = true;
-			_cache.Clear();
 		}
 
 		protected virtual void _Destroy()
 		{
+			SetIsEnabled(false);
+			SetIsPaused(false);
+			RemoveAllChildren();
+			
 		}
 
-		protected void PostDestroy()
+		protected virtual void _PostDestroy()
 		{
-			postDestroyCallback?.Invoke();
-			postDestroyCallback = null;
+			_isDestroyed = true;
+			_cache.Clear();
 		}
 
 		

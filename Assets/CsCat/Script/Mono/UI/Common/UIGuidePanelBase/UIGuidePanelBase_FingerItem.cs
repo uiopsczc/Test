@@ -6,10 +6,10 @@ namespace CsCat
 	{
 		public class FingerItem : UIObject
 		{
-			protected void Init(GameObject gameObject)
+			protected void _Init(GameObject gameObject)
 			{
 				base._Init();
-				SetGameObject(gameObject, true);
+				_SetGameObject(gameObject, true);
 			}
 		}
 	}

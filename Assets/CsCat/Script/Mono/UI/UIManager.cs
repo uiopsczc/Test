@@ -31,7 +31,7 @@ namespace CsCat
 		{
 			base._Init();
 			var gameObject = GameObject.Find(UIConst.UIManager_Path);
-			SetGameObject(gameObject, true);
+			_SetGameObject(gameObject, true);
 			if (Application.isPlaying)
 				Object.DontDestroyOnLoad(gameObject);
 		}
@@ -90,7 +90,7 @@ namespace CsCat
 
 		public void RemoveUIBlood(UIBlood uiBlood)
 		{
-			this.uiBloodManager.RemoveChild(uiBlood.key);
+			this.uiBloodManager.RemoveChild(uiBlood.GetId());
 		}
 
 		//////////////////////////////////////////////////////////////////////

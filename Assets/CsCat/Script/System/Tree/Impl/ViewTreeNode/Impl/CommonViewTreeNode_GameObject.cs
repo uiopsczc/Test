@@ -7,34 +7,50 @@ namespace CsCat
 	{
 		private bool _isNotDestroyGameObject;
 
-		public virtual GameObject InstantiateGameObject(GameObject prefab)
+		protected virtual GameObject _DoInstantiateGameObject(GameObject prefab)
+		{
+			GameObject clone = _InstantiateGameObject(prefab);
+			_PostInstantiateGameObject();
+			return clone;
+		}
+
+		protected virtual GameObject _InstantiateGameObject(GameObject prefab)
 		{
 			return Object.Instantiate(prefab);
 		}
 
-		protected virtual void _OnInstantiateGameObject()
+		protected virtual void _PostInstantiateGameObject()
 		{
 		}
 
-		protected virtual void InitGameObjectChildren()
+		protected virtual void _InitGameObjectChildren()
 		{
 		}
 
 		//是否加载完预设且创建完gameObject
-		protected bool IsGameObjectInited()
+		protected bool _IsGameObjectInited()
 		{
 			return this.GetGameObject() != null;
 		}
 
+		protected virtual void DoSetGameObject(GameObject gameObject, bool? isNotDestroyGameObject = false)
+		{
+			_SetGameObject(gameObject, isNotDestroyGameObject);
+			_PostSetGameObject();
+		}
 
-		public virtual void SetGameObject(GameObject gameObject, bool? isNotDestroyGameObject = false)
+		protected virtual void _SetGameObject(GameObject gameObject, bool? isNotDestroyGameObject = false)
 		{
 			Transform transform = gameObject == null ? null : gameObject.transform;
 			ApplyToTransform(transform);
 			if (gameObject == null)
 				return;
 			this._isNotDestroyGameObject = isNotDestroyGameObject.Value;
-			InitGameObjectChildren();
+		}
+
+		protected virtual void _PostSetGameObject()
+		{
+			_InitGameObjectChildren();
 		}
 
 		public virtual void DestroyGameObject()

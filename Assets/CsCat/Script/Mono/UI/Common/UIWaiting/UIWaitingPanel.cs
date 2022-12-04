@@ -10,12 +10,12 @@ namespace CsCat
 
 		private int _waitingCount = 0;
 		private Animation _waitingAinimation;
-		private GameObject _waitingGameObject;
+		private Transform _Nego_Waiting;
 
 		protected void _Init(GameObject gameObject)
 		{
 			base._Init();
-			SetGameObject(gameObject, true);
+			_SetGameObject(gameObject, true);
 		}
 
 		protected override void _PostInit()
@@ -24,11 +24,11 @@ namespace CsCat
 			this.SetIsShow(false);
 		}
 
-		protected override void InitGameObjectChildren()
+		protected override void _InitGameObjectChildren()
 		{
-			base.InitGameObjectChildren();
-			_waitingGameObject = _frameTransform.Find("waiting").gameObject;
-			_waitingAinimation = _waitingGameObject.GetComponent<Animation>();
+			base._InitGameObjectChildren();
+			_Nego_Waiting = _frameTransform.Find("Nego_Waiting");
+			_waitingAinimation = _Nego_Waiting.GetComponent<Animation>();
 		}
 
 		public void StartWaiting()
@@ -56,8 +56,7 @@ namespace CsCat
 
 		public void HideWaiting()
 		{
-			Reset();
-			SetIsShow(false);
+			DoReset();
 		}
 	}
 }

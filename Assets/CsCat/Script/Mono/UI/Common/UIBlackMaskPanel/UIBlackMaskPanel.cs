@@ -18,31 +18,32 @@ namespace CsCat
 
 		protected void _Init(GameObject gameObject)
 		{
-			this.SetGameObject(gameObject, true);
+			this._SetGameObject(gameObject, true);
 		}
 
 		protected override void _PostInit()
 		{
 			base._PostInit();
 			this.SetIsShow(false);
+			this._AddGameListeners();
 		}
 
-		protected override void InitGameObjectChildren()
+		protected override void _InitGameObjectChildren()
 		{
-			base.InitGameObjectChildren();
+			base._InitGameObjectChildren();
 			_bgImage = this._frameTransform.Find("Nego_Bg").GetComponent<Image>();
 		}
 
-		protected override void AddUnityListeners()
+		protected override void _AddUnityListeners()
 		{
-			base.AddUnityListeners();
+			base._AddUnityListeners();
 			this.RegisterOnClick(_bgImage,
 			  () => { _closeAction?.Invoke(); });
 		}
 
-		protected override void AddGameListeners()
+		protected override void _AddGameListeners()
 		{
-			base.AddGameListeners();
+			base._AddGameListeners();
 			this.AddListener<int, object>(null, UIEventNameConst.ShowUIBlackMask, ShowUIBlackMask);
 			this.AddListener(null, UIEventNameConst.HideUIBlackMask, HideUIBlackMask);
 		}
@@ -76,7 +77,6 @@ namespace CsCat
 		protected override void _Reset()
 		{
 			base._Reset();
-			SetIsShow(false);
 			_bgImage = null;
 			_closeAction = null;
 		}
@@ -84,7 +84,6 @@ namespace CsCat
 		protected override void _Destroy()
 		{
 			base._Destroy();
-			SetIsShow(false);
 			_bgImage = null;
 			_closeAction = null;
 		}

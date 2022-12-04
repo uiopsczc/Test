@@ -17,24 +17,31 @@ namespace CsCat
 			this.SetIsShow(true);
 		}
 
+		protected override bool _Refresh(bool isInit = false)
+		{
+			if (!base._Refresh(isInit))
+				return false;
+			if (!this._IsGameObjectInited())
+				return false;
+			return true;
+		}
+
 
 
 		protected override void _Reset()
 		{
+			base._Reset();
 			this.DestroyGameObject();
 			this._Reset_GameObject();
 			this._Reset_Prefab();
-			base._Reset();
-			
 		}
 
 		protected override void _Destroy()
 		{
+			base._Destroy();
 			this.DestroyGameObject();
 			this._Destroy_GameObject();
 			this._Destroy_Prefab();
-			base._Destroy();
-			
 		}
 	}
 }
