@@ -92,18 +92,18 @@ namespace CsCat
 
 		protected override void _Reset()
 		{
-			base._Reset();
 			_RemoveUnityListeners();
 			_RemoveGameListeners();
 			_RemoveTimers();
+			base._Reset();
 		}
 
 		protected override void _Destroy()
 		{
-			base._Destroy();
 			_RemoveUnityListeners();
 			_RemoveGameListeners();
 			_RemoveTimers();
+			base._Destroy();
 		}
 	}
 }

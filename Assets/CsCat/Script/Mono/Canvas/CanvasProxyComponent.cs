@@ -44,14 +44,14 @@ namespace CsCat
 
 		protected override void _Reset()
 		{
-			this._Reset();
 			this._canvasProxy.Reset();
+			base._Reset();
 		}
 
 		protected override void _Destroy()
 		{
-			this._Destroy();
 			this._canvasProxy.Reset();
+			base._Destroy();
 		}
 	}
 }

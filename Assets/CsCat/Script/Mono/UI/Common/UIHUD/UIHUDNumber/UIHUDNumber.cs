@@ -104,9 +104,9 @@ namespace CsCat
 
 		protected override void _Reset()
 		{
-			base._Reset();
 			_duration = _defaultShowDuration;
 			_textProxy_This.Reset();
+			base._Reset();
 		}
 	}
 }

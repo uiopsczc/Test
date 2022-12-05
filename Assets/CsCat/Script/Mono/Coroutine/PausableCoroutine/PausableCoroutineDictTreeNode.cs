@@ -41,14 +41,14 @@ namespace CsCat
 
 		protected override void _Reset()
 		{
-			base._Reset();
 			StopAllCoroutines();
+			base._Reset();
 		}
 
 		protected override void _Destroy()
 		{
-			base._Destroy();
 			StopAllCoroutines();
+			base._Destroy();
 		}
 	}
 }

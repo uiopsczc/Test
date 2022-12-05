@@ -1,40 +1,45 @@
-using System.Collections.Generic;
-
 namespace CsCat
 {
 	public class UpdateComponent : Component
 	{
-		protected override void _Update(float deltaTime = 0, float unscaledDeltaTime = 0)
+		protected override bool _Update(float deltaTime = 0, float unscaledDeltaTime = 0)
 		{
-			base._Update(deltaTime, unscaledDeltaTime);
+			if(!base._Update(deltaTime, unscaledDeltaTime))
+				return false;
 			foreach (var component in this.GetEntity().ForeachComponent())
 			{
 				if(component is UpdateComponent)
 					continue;
 				component.Update(deltaTime, unscaledDeltaTime);
 			}
+			return true;
 		}
 
-		protected override void _FixedUpdate(float deltaTime = 0, float unscaledDeltaTime = 0)
+		protected override bool _FixedUpdate(float deltaTime = 0, float unscaledDeltaTime = 0)
 		{
-			base._FixedUpdate(deltaTime, unscaledDeltaTime);
+			if (!base._FixedUpdate(deltaTime, unscaledDeltaTime))
+				return false;
 			foreach (var component in this.GetEntity().ForeachComponent())
 			{
 				if (component is UpdateComponent)
 					continue;
 				component.FixedUpdate(deltaTime, unscaledDeltaTime);
 			}
+			return true;
 		}
 
-		protected override void _LateUpdate(float deltaTime = 0, float unscaledDeltaTime = 0)
+		protected override bool _LateUpdate(float deltaTime = 0, float unscaledDeltaTime = 0)
 		{
-			base._LateUpdate(deltaTime, unscaledDeltaTime);
+			if (base._LateUpdate(deltaTime, unscaledDeltaTime))
+				return false;
 			foreach (var component in this.GetEntity().ForeachComponent())
 			{
 				if (component is UpdateComponent)
 					continue;
 				component.LateUpdate(deltaTime, unscaledDeltaTime);
 			}
+
+			return true;
 		}
 	}
 }

@@ -17,11 +17,5 @@ namespace CsCat
 			base._PostInit();
 			this.SetIsShow(false);
 		}
-
-		protected override void _Reset()
-		{
-			base._Reset();
-			SetIsShow(false);
-		}
 	}
 }

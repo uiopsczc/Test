@@ -114,16 +114,16 @@ namespace CsCat
 
 		protected override void _Reset()
 		{
-			base._Reset();
 			this.uiLayer.RemovePanel(this);
 			_Reset_Popup();
+			base._Reset();
 		}
 
 		protected override void _Destroy()
 		{
-			base._Destroy();
 			this.uiLayer.RemovePanel(this);
 			_Destroy_Popup();
+			base._Destroy();
 		}
 	}
 

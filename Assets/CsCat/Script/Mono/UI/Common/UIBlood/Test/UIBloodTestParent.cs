@@ -27,9 +27,9 @@ namespace CsCat
 
 		protected override void _Reset()
 		{
-			base._Reset();
 			Client.instance.uiManager.RemoveUIBlood(this.uiBlood);
 			this.uiBlood = null;
+			base._Reset();
 		}
 	}
 }

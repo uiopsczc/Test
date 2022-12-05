@@ -7,23 +7,23 @@ namespace CsCat
 		protected override void _Reset()
 		{
 			this.DestroyGameObject();
-			base._Reset();
 			_isNotDestroyGameObject = false;
 			_prefabPath = null;
 			_prefabAssetCat = null;
 			_isLoadDone = false;
 			_parentTransform = null;
+			base._Reset();
 		}
 
 		protected override void _Destroy()
 		{
 			this.DestroyGameObject();
-			base._Destroy();
 			_isNotDestroyGameObject = false;
 			_prefabPath = null;
 			_prefabAssetCat = null;
 			_isLoadDone = false;
 			_parentTransform = null;
+			base._Destroy();
 		}
 	}
 }

@@ -76,8 +76,8 @@ namespace CsCat
 
 		protected override void _Reset()
 		{
-			base._Reset();
 			this.CloseAllChildPanels();
+			base._Reset();
 		}
 
 		//////////////////////////////////////////////////////////////////////

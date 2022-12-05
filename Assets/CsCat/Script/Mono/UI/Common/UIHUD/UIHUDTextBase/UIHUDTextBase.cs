@@ -28,8 +28,8 @@ namespace CsCat
 
 		protected override void _Reset()
 		{
-			base._Reset();
 			this._TxtC_This.SetColorA(this._textAlpha);
+			base._Reset();
 		}
 	}
 }

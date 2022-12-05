@@ -34,12 +34,13 @@ namespace CsCat
 		{
 			SetIsEnabled(false);
 			SetIsPaused(false);
+			_isDestroyed = true;
+			_cache.Clear();
 		}
 
 		protected virtual void _PostDestroy()
 		{
-			_isDestroyed = true;
-			cache.Clear();
+			
 		}
 
 

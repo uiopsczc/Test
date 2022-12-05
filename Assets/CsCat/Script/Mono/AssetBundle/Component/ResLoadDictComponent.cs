@@ -60,14 +60,14 @@ namespace CsCat
 
 		protected  override  void _Reset()
 		{
-			base._Reset();
 			this._resLoadDict.Reset();
+			base._Reset();
 		}
 
 		protected override void _Destroy()
 		{
-			base._Destroy();
 			this._resLoadDict.Reset();
+			base._Destroy();
 		}
 	}
 }

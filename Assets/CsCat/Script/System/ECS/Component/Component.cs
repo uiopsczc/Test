@@ -5,7 +5,7 @@ namespace CsCat
 	public partial class Component : IDespawn
 	{
 		private PoolItemIndex<Entity> _entityPoolItemIndex;
-		protected Cache cache = new Cache();
+		protected Cache _cache = new Cache();
 
 
 		public Component()
@@ -38,7 +38,7 @@ namespace CsCat
 
 		public Entity GetEntity()
 		{
-			return this.cache.GetOrAddDefault("entity", () => this._entityPoolItemIndex.GetValue());
+			return this._cache.GetOrAddDefault("entity", () => this._entityPoolItemIndex.GetValue());
 		}
 
 		public T GetComponent<T>() where T:Component

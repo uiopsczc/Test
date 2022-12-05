@@ -90,14 +90,14 @@ namespace CsCat
 
 		protected override void _Reset()
 		{
-			base._Reset();
 			RemoveAllListeners();
+			base._Reset();
 		}
 
 		protected override void _Destroy()
 		{
-			base._Destroy();
 			RemoveAllListeners();
+			base._Destroy();
 		}
 	}
 }

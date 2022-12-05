@@ -46,10 +46,9 @@ namespace CsCat
 
 		protected override void _Reset()
 		{
-			base._Reset();
 			_TxtC_Desc.text = "";
 			_Slider_Progress.value = 0;
-			SetIsShow(false);
+			base._Reset();
 		}
 
 		public void HideLoading()

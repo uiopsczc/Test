@@ -26,10 +26,10 @@ namespace CsCat
 
 		protected virtual void _Reset()
 		{
-			ResetAllComponents();
 			_OnReset_Enable();
 			_OnReset_Pause();
 			_OnReset_Update();
+			ResetAllComponents();
 		}
 
 		protected virtual void _PostReset()

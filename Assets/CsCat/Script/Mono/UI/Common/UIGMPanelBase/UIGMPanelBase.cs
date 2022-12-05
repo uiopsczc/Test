@@ -97,8 +97,8 @@ namespace CsCat
 
 		protected override void _Destroy()
 		{
-			base._Destroy();
 			_configList.Clear();
+			base._Destroy();
 		}
 	}
 }

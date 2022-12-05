@@ -93,10 +93,10 @@ namespace CsCat
 
 		protected override void _Destroy()
 		{
-			base._Destroy();
 			isMovingUp = false;
 			_isRised = false;
 			_isCreated = false;
+			base._Destroy();
 		}
 	}
 }

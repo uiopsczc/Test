@@ -50,8 +50,8 @@ namespace CsCat
 
 		protected override void _Reset()
 		{
-			base._Reset();
 			this._waitingCount = 0;
+			base._Reset();
 		}
 
 		public void HideWaiting()

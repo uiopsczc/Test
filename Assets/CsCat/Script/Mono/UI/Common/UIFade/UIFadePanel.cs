@@ -57,8 +57,8 @@ namespace CsCat
 
 		protected override void _Reset()
 		{
-			base._Reset();
 			_ImgC_Fade.SetColorA(1);
+			base._Reset();
 		}
 
 		public void HideFade()

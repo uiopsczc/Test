@@ -76,16 +76,16 @@ namespace CsCat
 
 		protected override void _Reset()
 		{
-			base._Reset();
 			_bgImage = null;
 			_closeAction = null;
+			base._Reset();
 		}
 
 		protected override void _Destroy()
 		{
-			base._Destroy();
 			_bgImage = null;
 			_closeAction = null;
+			base._Destroy();
 		}
 	}
 }

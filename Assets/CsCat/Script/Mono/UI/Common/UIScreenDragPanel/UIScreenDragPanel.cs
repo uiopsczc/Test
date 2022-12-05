@@ -117,14 +117,14 @@ namespace CsCat
 
 		protected override void _Reset()
 		{
-			base._Reset();
 			_cameraManager?.SetMainCameraMoveRange(null);
+			base._Reset();
 		}
 
 		protected override void _Destroy()
 		{
-			base._Destroy();
 			_cameraManager?.SetMainCameraMoveRange(null);
+			base._Destroy();
 		}
 	}
 }

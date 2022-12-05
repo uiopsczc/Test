@@ -158,26 +158,16 @@ namespace CsCat
 
 		protected override void _Reset()
 		{
-			base._Reset();
-			this.SetIsShow(false);
-		}
-
-		protected override void _PostReset()
-		{
-			base._PostReset();
 			this._transformInfoProxy.Reset();
+			base._Reset();
+			
 		}
 
 		protected override void _Destroy()
 		{
-			base._Destroy();
 			this.SetIsShow(false);
-		}
-
-		protected override void _PostDestroy()
-		{
-			base._PostDestroy();
 			this._transformInfoProxy.Reset();
+			base._Destroy();
 		}
 	}
 }

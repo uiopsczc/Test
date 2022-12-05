@@ -56,14 +56,14 @@ namespace CsCat
 
 		protected override void _Reset()
 		{
-			base._Reset();
 			RemoveAllTimers();
+			base._Reset();
 		}
 
 		protected override void _Destroy()
 		{
-			base._Destroy();
 			RemoveAllTimers();
+			base._Destroy();
 		}
 
 

@@ -47,14 +47,14 @@ namespace CsCat
 
 		protected override void _Reset()
 		{
-			base._Reset();
 			RemoveDOTweens();
+			base._Reset();
 		}
 
 		protected override void _Destroy()
 		{
-			base._Destroy();
 			RemoveDOTweens();
+			base._Destroy();
 		}
 	}
 }

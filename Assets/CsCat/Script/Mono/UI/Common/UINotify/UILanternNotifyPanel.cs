@@ -57,8 +57,8 @@ namespace CsCat
 
 		protected override void _Reset()
 		{
-			base._Reset();
 			Client.instance.uiManager.uiNotifyManager.LanternNotify();
+			base._Reset();
 		}
 	}
 }

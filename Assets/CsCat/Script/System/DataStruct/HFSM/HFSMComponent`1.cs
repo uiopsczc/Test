@@ -26,14 +26,14 @@ namespace CsCat
 
 		protected override void _Reset()
 		{
-			base._Reset();
 			this.hfsm.Reset(true);
+			base._Reset();
 		}
 
 		protected override void _Destroy()
 		{
-			base._Destroy();
 			this.hfsm.Destroy();
+			base._Destroy();
 		}
 
 		public override void Update(float deltaTime = 0, float unscaledDeltaTime = 0)
