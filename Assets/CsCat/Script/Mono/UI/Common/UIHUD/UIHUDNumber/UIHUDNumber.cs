@@ -54,7 +54,7 @@ namespace CsCat
 			}
 			_textProxy_This.SetText(showString);
 			_textProxy_This.SetColor(color);
-			InvokeAfterPrefabLoadDone(() =>
+			InvokePostPrefabLoad(() =>
 			{
 				_textProxy_This.ApplyToText(this._TxtC_This);
 			});

@@ -21,6 +21,7 @@ namespace CsCat
 			preDestroyCallback?.Invoke();
 			preDestroyCallback = null;
 			_PreDestroy();
+			RemoveAllComponents();
 			_Destroy();
 			_PostDestroy();
 			postDestroyCallback?.Invoke();
@@ -36,7 +37,6 @@ namespace CsCat
 		{
 			SetIsEnabled(false);
 			SetIsPaused(false);
-			RemoveAllComponents();
 			_cache.Clear();
 			_isDestroyed = true;
 		}

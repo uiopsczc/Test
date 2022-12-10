@@ -4,7 +4,7 @@ namespace CsCat
 	{
 		public void SetText(string text)
 		{
-			InvokeAfterPrefabLoadDone(() => { this._TxtC_This.text = text; });
+			InvokePostPrefabLoad(() => { this._TxtC_This.text = text; });
 		}
 	}
 }

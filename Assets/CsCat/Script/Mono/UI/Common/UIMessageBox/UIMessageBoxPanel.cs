@@ -65,7 +65,7 @@ namespace CsCat
 					int id = itemInfoDict["id"];
 					int count = itemInfoDict["count"];
 					UIItemBase item = this.AddChild<UIItemBase>(null, this._itemsParentTransform);
-					item.InvokeAfterPrefabLoadDone(() =>
+					item.InvokePostPrefabLoad(() =>
 					{
 						item.Show(id.ToString(), count);
 						this.GetChild<CoroutineDictTreeNode>().StartCoroutine(IEScrollRectSetVerticalPosition(this._ScrollRect_Items, 1));

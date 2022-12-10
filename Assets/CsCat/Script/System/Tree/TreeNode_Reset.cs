@@ -13,6 +13,7 @@ namespace CsCat
 			preResetCallback?.Invoke();
 			preResetCallback = null;
 			_PreReset();
+			ResetAllChildren();
 			_Reset();
 			_PostReset();
 			postResetCallback?.Invoke();
@@ -26,7 +27,6 @@ namespace CsCat
 
 		protected virtual void _Reset()
 		{
-			ResetAllChildren();
 			_OnReset_Enable();
 			_OnReset_Pause();
 			_OnReset_Update();
@@ -49,8 +49,6 @@ namespace CsCat
 
 		void _OnDespawn_Reset()
 		{
-			preResetCallback = null;
-			postResetCallback = null;
 		}
 	}
 }

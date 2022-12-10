@@ -13,6 +13,7 @@ namespace CsCat
 			preResetCallback?.Invoke();
 			preResetCallback = null;
 			_PreReset();
+			ResetAllComponents();
 			_Reset();
 			_PostReset();
 			postResetCallback?.Invoke();
@@ -29,7 +30,6 @@ namespace CsCat
 			_OnReset_Enable();
 			_OnReset_Pause();
 			_OnReset_Update();
-			ResetAllComponents();
 		}
 
 		protected virtual void _PostReset()

@@ -7,15 +7,15 @@ namespace CsCat
 	{
 		protected string _prefabPath;
 		public AssetCat _prefabAssetCat;
-		private bool _isPrefabLoadDone;
-		private Action _prefabLoadDoneCallback;
+		private bool _isPostPrefabLoad;
+		private Action _postPrefabLoadCallback;
 
 		public string prefabPath => _prefabPath;
 		
 		public void SetPrefabPath(string prefabPath)
 		{
 			this._prefabPath = prefabPath;
-			_isPrefabLoadDone = prefabPath == null;
+			_isPostPrefabLoad = prefabPath == null;
 		}
 
 		private void _LoadPrefabPath()
@@ -25,33 +25,28 @@ namespace CsCat
 				this._prefabAssetCat = this.GetChild<ResLoadDictTreeNode>().GetOrLoadAsset(prefabPath, null, null,
 					assetCat =>
 					{
-						_OnPrefabLoadDone();
-						_prefabLoadDoneCallback?.Invoke();
-						_PostPrefabLoadDone();
+						_isPostPrefabLoad = true;
+						_PostPrefabLoad();
+						_postPrefabLoadCallback?.Invoke();
 					}, this);
 			}
 		}
 
-		protected virtual void _PostPrefabLoadDone()
+		protected bool _IsPostPrefabLoad()
 		{
+			return this._isPostPrefabLoad;
 		}
 
-		protected bool _IsPrefabLoadDone()
+		public void InvokePostPrefabLoad(Action postPrefabLoadCallback)
 		{
-			return this._isPrefabLoadDone;
-		}
-
-		public void InvokeAfterPrefabLoadDone(Action callback)
-		{
-			if (this._isPrefabLoadDone)
-				callback();
+			if (this._isPostPrefabLoad)
+				postPrefabLoadCallback();
 			else
-				_prefabLoadDoneCallback = callback;
+				_postPrefabLoadCallback = postPrefabLoadCallback;
 		}
 
-		protected virtual void _OnPrefabLoadDone()
+		protected virtual void _PostPrefabLoad()
 		{
-			_isPrefabLoadDone = true;
 			GameObject prefab = _prefabAssetCat.Get<GameObject>();
 			GameObject clone = _DoInstantiateGameObject(prefab);
 			clone.name = prefab.name;
@@ -65,16 +60,16 @@ namespace CsCat
 		{
 			_prefabPath = null;
 			_prefabAssetCat = null;
-			_isPrefabLoadDone = false;
-			_prefabLoadDoneCallback = null;
+			_isPostPrefabLoad = false;
+			_postPrefabLoadCallback = null;
 		}
 
 		protected void _Destroy_Prefab()
 		{
 			_prefabPath = null;
 			_prefabAssetCat = null;
-			_isPrefabLoadDone = false;
-			_prefabLoadDoneCallback = null;
+			_isPostPrefabLoad = false;
+			_postPrefabLoadCallback = null;
 		}
 	}
 }
