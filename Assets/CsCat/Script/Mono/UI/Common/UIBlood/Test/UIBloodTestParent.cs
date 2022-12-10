@@ -15,7 +15,7 @@ namespace CsCat
 			rectTransform.anchorMin = Vector2.zero;
 			rectTransform.anchorMax = Vector2.one;
 			rectTransform.sizeDelta = Vector2.zero;
-			_SetGameObject(rectTransform.gameObject, false);
+			DoSetGameObject(rectTransform.gameObject);
 			this.uiBlood = Client.instance.uiManager.AddUIBlood(this.GetTransform(), 150, sliderCount, null);
 		}
 

@@ -1,4 +1,4 @@
-using System;
+ using System;
 
 namespace CsCat
 {
@@ -32,10 +32,12 @@ namespace CsCat
 
 		protected virtual void _Destroy()
 		{
-			SetIsEnabled(false);
-			SetIsPaused(false);
+			_Destroy_Pause();
+			_Destroy_Enable();
+			_Destroy_Reset();
+			_Destroy_Update();
+			_Destroy_();
 			_isDestroyed = true;
-			_cache.Clear();
 		}
 
 		protected virtual void _PostDestroy()
@@ -43,12 +45,16 @@ namespace CsCat
 			
 		}
 
-
-		void _OnDespawn_Destroy()
+		void _Reset_Destroy()
 		{
-			_isDestroyed = false;
 			preDestroyCallback = null;
 			postDestroyCallback = null;
+		}
+
+
+		void _Despawn_Destroy()
+		{
+			_isDestroyed = false;
 		}
 	}
 }

@@ -52,7 +52,7 @@ namespace CsCat
 			clone.name = prefab.name;
 			Transform transform = clone.transform;
 			transform.CopyFrom(prefab.transform);
-			DoSetGameObject(clone, null);
+			DoSetGameObject(clone);
 		}
 
 
@@ -64,7 +64,7 @@ namespace CsCat
 			_postPrefabLoadCallback = null;
 		}
 
-		protected void _Destroy_Prefab()
+		private void _Destroy_Prefab()
 		{
 			_prefabPath = null;
 			_prefabAssetCat = null;

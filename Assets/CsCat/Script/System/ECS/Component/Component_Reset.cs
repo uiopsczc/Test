@@ -25,9 +25,11 @@ namespace CsCat
 
 		protected virtual void _Reset()
 		{
-			_OnReset_Enable();
-			_OnReset_Pause();
-			_OnReset_Update();
+			_Reset_Pause();
+			_Reset_Enable();
+			_Reset_Destroy();
+			_Reset_Update();
+			_Reset_();
 		}
 
 		protected virtual void _PostReset()
@@ -35,7 +37,7 @@ namespace CsCat
 		}
 
 
-		void _OnDespawn_Reset()
+		void _Destroy_Reset()
 		{
 			preResetCallback = null;
 			postResetCallback = null;

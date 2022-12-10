@@ -31,12 +31,12 @@ namespace CsCat
 			}
 		}
 
-		void _OnReset_Pause()
+		void _Reset_Pause()
 		{
 			_isPaused = false;
 		}
 
-		void _OnDespawn_Pause()
+		void _Despawn_Pause()
 		{
 			_isPaused = false;
 		}

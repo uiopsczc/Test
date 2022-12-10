@@ -80,12 +80,12 @@ namespace CsCat
 			return true;
 		}
 
-		void _OnReset_Update()
+		void _Reset_Update()
 		{
 			_isCanNotUpdate = false;
 		}
 
-		void _OnDespawn_Update()
+		void _Despawn_Update()
 		{
 			_isCanNotUpdate = false;
 		}

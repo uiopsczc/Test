@@ -22,7 +22,7 @@ namespace CsCat
 		protected void Init(GameObject gameObject)
 		{
 			base._Init();
-			_SetGameObject(gameObject, true);
+			DoSetGameObject(gameObject);
 			this.AddChild<DOTweenDictTreeNode>(null, new DOTweenDict());
 		}
 
@@ -59,6 +59,10 @@ namespace CsCat
 		{
 			Client.instance.uiManager.uiNotifyManager.LanternNotify();
 			base._Reset();
+		}
+
+		protected override void _DestroyGameObject()
+		{
 		}
 	}
 }

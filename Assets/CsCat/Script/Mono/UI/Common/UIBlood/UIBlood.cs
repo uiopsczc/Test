@@ -124,7 +124,7 @@ namespace CsCat
 			  }));
 		}
 
-		public override void DestroyGameObject()
+		protected override void _DestroyGameObject()
 		{
 			var gameObject = this.GetGameObject();
 			if (gameObject != null)

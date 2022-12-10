@@ -13,7 +13,7 @@ namespace CsCat
 			protected void _Init(GameObject gameObject)
 			{
 				base._Init();
-				_SetGameObject(gameObject, true);
+				DoSetGameObject(gameObject);
 			}
 
 			protected override void _InitGameObjectChildren()
@@ -28,6 +28,10 @@ namespace CsCat
 				_TxtC_Desc.text = desc;
 				if (!isBgVisible)
 					_ImgC_Bg.SetAlpha(0);
+			}
+
+			protected override void _DestroyGameObject()
+			{
 			}
 		}
 	}

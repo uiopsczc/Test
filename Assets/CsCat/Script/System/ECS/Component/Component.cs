@@ -45,9 +45,18 @@ namespace CsCat
 		{
 			return this.GetEntity().GetComponentStrictly<T>();
 		}
-		
 
-		void _OnDespawn_()
+		void _Reset_()
+		{
+			_cache.Clear();
+		}
+
+		void _Destroy_()
+		{
+			_cache.Clear();
+		}
+
+		void _Despawn_()
 		{
 			_entityPoolItemIndex = null;
 		}

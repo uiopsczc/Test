@@ -14,7 +14,7 @@ namespace CsCat
 		{
 			base._Init();
 			this.uiLayerConfig = uiLayerConfig;
-			_SetGameObject(gameObject, true);
+			DoSetGameObject(gameObject);
 			gameObject.name = uiLayerConfig.name.ToString();
 			gameObject.layer = LayerMask.NameToLayer("UI");
 
@@ -144,6 +144,10 @@ namespace CsCat
 				this.FireEvent(null, UIEventNameConst.HideUIBlackMask);
 			else
 				this.FireEvent(null, UIEventNameConst.ShowUIBlackMask, targetPanelSortingOrder, targetPanel);
+		}
+
+		protected override void _DestroyGameObject()
+		{
 		}
 	}
 }

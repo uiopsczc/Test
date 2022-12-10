@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace CsCat
 {
 	public partial class Entity : IDespawn
@@ -35,10 +32,20 @@ namespace CsCat
 		public virtual void Start()
 		{
 		}
-		
 
-		void _OnDespawn_()
+		private void _Reset_()
 		{
+			_cache.Clear();
+		}
+
+		private void _Destroy_()
+		{
+			_cache.Clear();
+		}
+
+		private void _Despawn_()
+		{
+			_poolItemIndex = null;
 		}
 	}
 }

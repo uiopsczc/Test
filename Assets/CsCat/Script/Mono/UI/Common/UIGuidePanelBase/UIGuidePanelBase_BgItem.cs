@@ -14,7 +14,7 @@ namespace CsCat
 			protected void _Init(GameObject gameObject)
 			{
 				base._Init();
-				_SetGameObject(gameObject, true);
+				DoSetGameObject(gameObject);
 			}
 
 			protected override void _InitGameObjectChildren()
@@ -36,6 +36,10 @@ namespace CsCat
 						this.parentUIPanel.RegisterOnClick(button, () => { clickCallback(parentUIPanel); });
 				}
 
+			}
+
+			protected override void _DestroyGameObject()
+			{
 			}
 		}
 	}

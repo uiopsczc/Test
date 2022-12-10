@@ -7,13 +7,9 @@ namespace CsCat
 	{
 		public virtual void Despawn()
 		{
-			_OnDespawn_();
-			_OnDespawn_Component();
-			_OnDespawn_Destroy();
-			_OnDespawn_Enable();
-			_OnDespawn_Pause();
-			_OnDespawn_Reset();
-			_OnDespawn_Update();
+			_Despawn_Component();
+			_Despawn_();
+			_Despawn_Destroy();
 		}
 	}
 }

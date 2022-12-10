@@ -25,7 +25,7 @@ namespace CsCat
 			}
 		}
 
-		void _OnDespawn_Component()
+		private void _Despawn_Component()
 		{
 			_keyToComponentPoolItemIndexDict.Clear();
 			_componentPoolItemIndexList.Clear();

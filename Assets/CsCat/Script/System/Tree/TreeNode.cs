@@ -78,7 +78,7 @@ namespace CsCat
 		}
 
 
-		void _OnDespawn_()
+		void _Despawn_()
 		{
 		}
 	}

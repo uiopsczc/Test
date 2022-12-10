@@ -5,7 +5,6 @@ namespace CsCat
 {
 	public partial class CommonViewTreeNode
 	{
-		private bool _isNotDestroyGameObject;
 
 		protected virtual GameObject _DoInstantiateGameObject(GameObject prefab)
 		{
@@ -33,19 +32,16 @@ namespace CsCat
 			return this.GetGameObject() != null;
 		}
 
-		protected virtual void DoSetGameObject(GameObject gameObject, bool? isNotDestroyGameObject = false)
+		protected virtual void DoSetGameObject(GameObject gameObject)
 		{
-			_SetGameObject(gameObject, isNotDestroyGameObject);
+			_SetGameObject(gameObject);
 			_PostSetGameObject();
 		}
 
-		protected virtual void _SetGameObject(GameObject gameObject, bool? isNotDestroyGameObject = false)
+		protected virtual void _SetGameObject(GameObject gameObject)
 		{
 			Transform transform = gameObject == null ? null : gameObject.transform;
 			ApplyToTransform(transform);
-			if (gameObject == null)
-				return;
-			this._isNotDestroyGameObject = isNotDestroyGameObject.Value;
 		}
 
 		protected virtual void _PostSetGameObject()
@@ -53,21 +49,21 @@ namespace CsCat
 			_InitGameObjectChildren();
 		}
 
-		public virtual void DestroyGameObject()
+		protected virtual void _DestroyGameObject()
 		{
 			var gameObject = this.GetGameObject();
-			if (gameObject != null && !_isNotDestroyGameObject)
+			if (gameObject != null)
 				gameObject.Destroy();
 		}
 
 		private void _Reset_GameObject()
 		{
-			_isNotDestroyGameObject = false;
+			_DestroyGameObject();
 		}
 
-		protected void _Destroy_GameObject()
+		private void _Destroy_GameObject()
 		{
-			_isNotDestroyGameObject = false;
+			_DestroyGameObject();
 		}
 	}
 }

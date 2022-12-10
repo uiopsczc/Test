@@ -25,7 +25,7 @@ namespace CsCat
 			}
 		}
 
-		void _OnDespawn_Child()
+		void _Despawn_Child()
 		{
 			_keyToChildPoolItemIndexDict.Clear();
 			_childPoolItemIndexList.Clear();

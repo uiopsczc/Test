@@ -17,7 +17,7 @@ namespace CsCat
 		{
 			base._Init();
 			this.AddChild<DOTweenDictTreeNode>(null, new DOTweenDict());
-			_SetGameObject(gameObject, true);
+			DoSetGameObject(gameObject);
 		}
 
 		protected override void _PostInit()
@@ -64,6 +64,10 @@ namespace CsCat
 		public void HideFade()
 		{
 			DoReset();
+		}
+
+		protected override void _DestroyGameObject()
+		{
 		}
 	}
 }

@@ -9,13 +9,17 @@ namespace CsCat
 
 		protected void _Init(GameObject gameObject)
 		{
-			_SetGameObject(gameObject, true);
+			DoSetGameObject(gameObject);
 		}
 
 		protected override void _PostInit()
 		{
 			base._PostInit();
 			this.SetIsShow(false);
+		}
+
+		protected override void _DestroyGameObject()
+		{
 		}
 	}
 }

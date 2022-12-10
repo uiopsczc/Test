@@ -31,7 +31,7 @@ namespace CsCat
 		{
 			base._Init();
 			var gameObject = GameObject.Find(UIConst.UIManager_Path);
-			_SetGameObject(gameObject, true);
+			DoSetGameObject(gameObject);
 			if (Application.isPlaying)
 				Object.DontDestroyOnLoad(gameObject);
 		}
@@ -158,6 +158,10 @@ namespace CsCat
 		public void HideWaiting()
 		{
 			uiWaitingPanel.HideWaiting();
+		}
+
+		protected override void _DestroyGameObject()
+		{
 		}
 	}
 }

@@ -9,7 +9,7 @@ namespace CsCat
 		{
 			base._Init();
 			var gameObject = GameObject.Find(UIConst.UIBloodManager_Path);
-			_SetGameObject(gameObject, true);
+			DoSetGameObject(gameObject);
 		}
 
 		public UIBlood AddUIBlood(Transform parentTransform, float maxValue, int? sliderCount, float? toValue,
@@ -18,6 +18,9 @@ namespace CsCat
 			var uiBlood =
 			  this.AddChild<UIBlood>(null, parentTransform, maxValue, sliderCount, toValue, sliderColorList);
 			return uiBlood;
+		}
+		protected override void _DestroyGameObject()
+		{
 		}
 	}
 }

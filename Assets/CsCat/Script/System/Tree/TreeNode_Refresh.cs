@@ -20,12 +20,12 @@ namespace CsCat
 			return true;
 		}
 
-		void _OnReset_Refresh()
+		void _Reset_Refresh()
 		{
 			_isCanNotRefresh = false;
 		}
 
-		void _OnDespawn_Refresh()
+		void _Despawn_Refresh()
 		{
 			_isCanNotRefresh = false;
 		}

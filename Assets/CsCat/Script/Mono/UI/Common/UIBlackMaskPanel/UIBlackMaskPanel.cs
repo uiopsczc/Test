@@ -18,7 +18,7 @@ namespace CsCat
 
 		protected void _Init(GameObject gameObject)
 		{
-			this._SetGameObject(gameObject, true);
+			this.DoSetGameObject(gameObject);
 		}
 
 		protected override void _PostInit()
@@ -72,6 +72,10 @@ namespace CsCat
 		public void SetIsRaycastTarget(bool isRaycastTarget)
 		{
 			this._bgImage.raycastTarget = isRaycastTarget;
+		}
+
+		protected override void _DestroyGameObject()
+		{
 		}
 
 		protected override void _Reset()

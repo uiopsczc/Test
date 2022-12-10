@@ -58,9 +58,9 @@ namespace CsCat
 		{
 		}
 
-		protected override void _SetGameObject(GameObject gameObject, bool? isNotDestroyGameObject = false)
+		protected override void _SetGameObject(GameObject gameObject)
 		{
-			base._SetGameObject(gameObject, isNotDestroyGameObject);
+			base._SetGameObject(gameObject);
 			if (gameObject != null)
 			{
 				var canvas = gameObject.GetOrAddComponent<Canvas>();

@@ -20,7 +20,7 @@ namespace CsCat
 				base._Init();
 				this._desc = desc;
 				this._yesCallback = yesCallback;
-				_SetGameObject(gameObject, true);
+				DoSetGameObject(gameObject);
 			}
 
 			protected override void _InitGameObjectChildren()
@@ -43,7 +43,9 @@ namespace CsCat
 				this._TxtC_Desc.text = _desc;
 			}
 
-
+			protected override void _DestroyGameObject()
+			{
+			}
 		}
 	}
 }

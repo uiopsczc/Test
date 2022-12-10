@@ -47,7 +47,7 @@ namespace CsCat
 
 		
 
-		void _OnDespawn_Destroy()
+		void _Despawn_Destroy()
 		{
 			_isDestroyed = false;
 			preDestroyCallback = null;

@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace CsCat
 {
 	public partial class Entity
@@ -31,12 +28,12 @@ namespace CsCat
 			}
 		}
 
-		void _OnReset_Pause()
+		void _Reset_Pause()
 		{
 			_isPaused = false;
 		}
 
-		void _OnDespawn_Pause()
+		void _Destroy_Pause()
 		{
 			_isPaused = false;
 		}

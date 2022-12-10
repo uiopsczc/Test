@@ -1,6 +1,3 @@
-using System;
-using System.Collections.Generic;
-
 namespace CsCat
 {
 	public partial class Entity
@@ -68,12 +65,12 @@ namespace CsCat
 			return true;
 		}
 
-		void _OnReset_Update()
+		void _Reset_Update()
 		{
 			isCanNotUpdate = false;
 		}
 
-		void _OnDespawn_Update()
+		void _Destroy_Update()
 		{
 			isCanNotUpdate = false;
 		}

@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-
 namespace CsCat
 {
 	public partial class CommonViewTreeNode : ViewTreeNode
@@ -24,24 +22,6 @@ namespace CsCat
 			if (!this._IsGameObjectInited())
 				return false;
 			return true;
-		}
-
-
-
-		protected override void _Reset()
-		{
-			this.DestroyGameObject();
-			this._Reset_GameObject();
-			this._Reset_Prefab();
-			base._Reset();
-		}
-
-		protected override void _Destroy()
-		{
-			this.DestroyGameObject();
-			this._Destroy_GameObject();
-			this._Destroy_Prefab();
-			base._Destroy();
 		}
 	}
 }

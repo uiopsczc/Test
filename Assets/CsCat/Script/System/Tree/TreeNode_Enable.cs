@@ -40,12 +40,12 @@ namespace CsCat
 		{
 		}
 
-		void _OnReset_Enable()
+		void _Reset_Enable()
 		{
 			_isEnabled = false;
 		}
 
-		void _OnDespawn_Enable()
+		void _Despawn_Enable()
 		{
 			_isEnabled = false;
 		}

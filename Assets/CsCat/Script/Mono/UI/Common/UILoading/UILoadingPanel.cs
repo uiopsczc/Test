@@ -16,7 +16,7 @@ namespace CsCat
 		protected void _Init(GameObject gameObject)
 		{
 			base._Init();
-			_SetGameObject(gameObject, true);
+			DoSetGameObject(gameObject);
 		}
 
 		protected override void _PostInit()
@@ -55,6 +55,10 @@ namespace CsCat
 		{
 			DoReset();
 			SetIsShow(false);
+		}
+
+		protected override void _DestroyGameObject()
+		{
 		}
 	}
 }
