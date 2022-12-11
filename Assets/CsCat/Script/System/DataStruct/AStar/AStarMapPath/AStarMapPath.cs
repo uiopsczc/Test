@@ -14,15 +14,16 @@ namespace CsCat
 		public int gridOffsetX;
 		public int gridOffsetY;
 
-		public AStarMapPath(string jsonConent)
+		public AStarMapPath(string jsonContent)
 		{
-			Hashtable dict = MiniJson.JsonDecode(jsonConent).To<Hashtable>();
+			Hashtable dict = MiniJson.JsonDecode(jsonContent).To<Hashtable>();
 			int minGridX = dict["minGridX"].To<int>();
 			int minGridY = dict["minGridY"].To<int>();
 			int maxGridX = dict["maxGridX"].To<int>();
 			int maxGridY = dict["maxGridY"].To<int>();
 			Dictionary<Vector2Int, int> dataDict = new Dictionary<Vector2Int, int>();
 			Hashtable _dataDict = dict["dataDict"].To<Hashtable>();
+
 			foreach (var _key in _dataDict.Keys)
 			{
 				Vector2 v = _key.To<string>().ToVector2();

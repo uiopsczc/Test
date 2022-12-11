@@ -22,7 +22,7 @@ namespace CsCat
 	{
 		#region field
 
-		private string desc;
+		private readonly string _desc;
 
 		#endregion
 
@@ -30,7 +30,7 @@ namespace CsCat
 
 		public AOP_TestAttribute(string desc)
 		{
-			this.desc = desc;
+			this._desc = desc;
 		}
 
 		#endregion
@@ -54,7 +54,7 @@ namespace CsCat
 		/// </summary>
 		public void Pre_AOP_Handle()
 		{
-			LogCat.LogWarning("Before :" + desc + " ");
+			LogCat.LogWarning("Before :" + _desc + " ");
 		}
 
 		/// <summary>
@@ -62,7 +62,7 @@ namespace CsCat
 		/// </summary>
 		public void Post_AOP_Handle()
 		{
-			LogCat.LogWarning("After :" + desc);
+			LogCat.LogWarning("After :" + _desc);
 		}
 
 		#endregion

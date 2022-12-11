@@ -5,7 +5,7 @@ namespace CsCat
 {
 	public class Args
 	{
-		private object[] args;
+		private object[] _args;
 
 		public Args()
 		{
@@ -23,7 +23,7 @@ namespace CsCat
 
 		public void Init(params object[] args)
 		{
-			this.args = args;
+			this._args = args;
 		}
 
 		public void Init(object args0, params object[] args)
@@ -33,7 +33,7 @@ namespace CsCat
 			_args[0] = args0;
 			if (args != null)
 				Array.Copy(args, 0, _args, 1, args.Length);
-			this.args = _args;
+			this._args = _args;
 		}
 
 		public override bool Equals(object obj)
@@ -43,21 +43,19 @@ namespace CsCat
 			if (other == null)
 				return false;
 
-			if (this.args == null && other.args == null)
+			if (this._args == null && other._args == null)
 				return true;
-			if (this.args == null && other.args != null)
+			if (this._args == null && other._args != null)
 				return false;
-			if (this.args != null && other.args == null)
+			if (this._args != null && other._args == null)
 				return false;
 
-			if (this.args.Length == other.args.Length)
+			if (this._args.Length == other._args.Length)
 			{
-				for (int i = 0; i < this.args.Length; i++)
+				for (int i = 0; i < this._args.Length; i++)
 				{
-					if (!ObjectUtil.Equals(args[i], other.args[i]))
-					{
+					if (!ObjectUtil.Equals(_args[i], other._args[i]))
 						return false;
-					}
 				}
 
 				return true;
@@ -68,30 +66,28 @@ namespace CsCat
 
 		public override int GetHashCode()
 		{
-			return ObjectUtil.GetHashCode(args);
+			return ObjectUtil.GetHashCode(_args);
 		}
 
 		public override string ToString()
 		{
 			var result = new StringBuilder("(");
-			if (this.args == null)
+			if (this._args == null)
 			{
 				result.Append(")");
 				return result.ToString();
 			}
-			else
-			{
-				for (int i = 0; i < args.Length; i++)
-				{
-					var arg = args[i];
-					result.Append(arg);
-					if (i != args.Length - 1)
-						result.Append(",");
-				}
 
-				result.Append(")");
-				return result.ToString();
+			for (int i = 0; i < _args.Length; i++)
+			{
+				var arg = _args[i];
+				result.Append(arg);
+				if (i != _args.Length - 1)
+					result.Append(",");
 			}
+
+			result.Append(")");
+			return result.ToString();
 		}
 
 		//    public void OnDespawn()

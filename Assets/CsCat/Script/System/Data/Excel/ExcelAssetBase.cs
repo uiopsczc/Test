@@ -5,9 +5,9 @@ namespace CsCat
 {
 	public class ExcelAssetBase
 	{
-		protected virtual string path => null;
+		protected virtual string _path => null;
 
-		private ExcelDatabase instance;
+		private ExcelDatabase _instance;
 
 		public string id;
 		public string name;
@@ -18,13 +18,13 @@ namespace CsCat
 
 		protected ExcelDatabase GetInstance()
 		{
-			if (instance == null)
+			if (_instance == null)
 			{
 				//      LogCat.LogWarning(path);
-				instance = Resources.Load<ExcelDatabase>(path);
+				_instance = Resources.Load<ExcelDatabase>(_path);
 			}
 
-			return instance;
+			return _instance;
 		}
 
 		public ExcelAssetBase()
@@ -49,7 +49,7 @@ namespace CsCat
 
 		public List<int> GetIdListAsInt()
 		{
-			return GetIdList().ConvertAll(t => int.Parse(t));
+			return GetIdList().ConvertAll(int.Parse);
 		}
 	}
 }

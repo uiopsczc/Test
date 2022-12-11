@@ -5,14 +5,14 @@ namespace CsCat
 {
 	public class CommandManager : ICommandManager
 	{
-		protected Dictionary<string, Type> commandDict = new Dictionary<string, Type>();
+		protected Dictionary<string, Type> _commandDict = new Dictionary<string, Type>();
 
 
 		public virtual void ExecuteCommand(ICommandMessage commandMessage)
 		{
 			Type commandType = null;
-			if (commandDict.ContainsKey(commandMessage.name))
-				commandType = commandDict[commandMessage.name];
+			if (_commandDict.ContainsKey(commandMessage.name))
+				commandType = _commandDict[commandMessage.name];
 
 			if (commandType != null)
 			{
@@ -23,17 +23,17 @@ namespace CsCat
 
 		public virtual void RegisterCommand<HandleCommandType>(string commandName)
 		{
-			commandDict[commandName] = typeof(HandleCommandType);
+			_commandDict[commandName] = typeof(HandleCommandType);
 		}
 
 		public virtual bool HasCommand(string commandName)
 		{
-			return commandDict.ContainsKey(commandName);
+			return _commandDict.ContainsKey(commandName);
 		}
 
 		public virtual void RemoveCommand(string commandName)
 		{
-			if (commandDict.ContainsKey(commandName)) commandDict.Remove(commandName);
+			if (_commandDict.ContainsKey(commandName)) _commandDict.Remove(commandName);
 		}
 
 		public void SendMessageCommand(string message, object body = null)

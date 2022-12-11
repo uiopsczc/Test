@@ -7,9 +7,9 @@ namespace CsCat
 		/// <summary>
 		/// 存数数据
 		/// </summary>
-		public LinkedHashtable data_dict = new LinkedHashtable();
+		public LinkedHashtable dataDict = new LinkedHashtable();
 
-		public string file_path;
+		public string filePath;
 
 		#endregion
 
@@ -23,12 +23,12 @@ namespace CsCat
 		/// </summary>
 		public virtual void SaveData()
 		{
-			StdioUtil.WriteTextFile(file_path, data_dict.ToString2(true));
+			StdioUtil.WriteTextFile(filePath, dataDict.ToString2(true));
 		}
 
 		public virtual object GetValue(string key)
 		{
-			return data_dict[key];
+			return dataDict[key];
 		}
 
 		public virtual T GetValue<T>(string key)
@@ -48,7 +48,7 @@ namespace CsCat
 
 		public virtual void Refresh()
 		{
-			Init(file_path);
+			Init(filePath);
 		}
 
 		protected virtual void InitDataFromOrgFile()
@@ -57,13 +57,13 @@ namespace CsCat
 
 		#endregion
 
-		public void Init(string file_path)
+		public void Init(string filePath)
 		{
-			this.file_path = file_path;
-			data_dict.Clear();
+			this.filePath = filePath;
+			dataDict.Clear();
 			InitDataFromOrgFile();
-			string file_content = FileUtilCat.ReadUnityFile(file_path);
-			data_dict = MiniJsonLinked.JsonDecode(file_content) as LinkedHashtable;
+			string fileContent = FileUtilCat.ReadUnityFile(filePath);
+			dataDict = MiniJsonLinked.JsonDecode(fileContent) as LinkedHashtable;
 		}
 
 		public LinkedHashtable GetRow(string key)

@@ -6,28 +6,28 @@ namespace CsCat
 {
 	public class BitMask
 	{
-		private readonly uint[] bytes;
-		private const int byteWidth = 32; //uint是32位
+		private readonly uint[] _bytes;
+		private const int _byteWidth = 32; //uint是32位
 
 
 		public bool this[int index]
 		{
 			get
 			{
-				var bytesIndex = (uint)(index / byteWidth);
-				var bitIndex = index % byteWidth;
-				var b = (bytes[bytesIndex] >> bitIndex) & 1u;
+				var bytesIndex = (uint)(index / _byteWidth);
+				var bitIndex = index % _byteWidth;
+				var b = (_bytes[bytesIndex] >> bitIndex) & 1u;
 				return Convert.ToBoolean(b);
 			}
 			set
 			{
-				var bytesIndex = (uint)(index / byteWidth);
-				var bitIndex = index % byteWidth;
+				var bytesIndex = (uint)(index / _byteWidth);
+				var bitIndex = index % _byteWidth;
 				var b = 1u << bitIndex;
 				if (value)
-					bytes[bytesIndex] = bytes[bytesIndex] | b;
+					_bytes[bytesIndex] = _bytes[bytesIndex] | b;
 				else
-					bytes[bytesIndex] = bytes[bytesIndex] & ~b;
+					_bytes[bytesIndex] = _bytes[bytesIndex] & ~b;
 			}
 		}
 
@@ -35,13 +35,13 @@ namespace CsCat
 		/// <param name="size">szie需要，会保存在_bytes中，_bytes每个数字是unit，每个unit保存32位，如果该位为0表示被标记，该位为0表示未标记</param>
 		public BitMask(int size)
 		{
-			bytes = new uint[(size - 1) / byteWidth + 1];
+			_bytes = new uint[(size - 1) / _byteWidth + 1];
 		}
 
 		public BitMask(BitMask mask)
 		{
-			bytes = new uint[mask.bytes.Length];
-			for (var i = 0; i < mask.bytes.Length; i++) bytes[i] = mask.bytes[i];
+			_bytes = new uint[mask._bytes.Length];
+			for (var i = 0; i < mask._bytes.Length; i++) _bytes[i] = mask._bytes[i];
 		}
 
 
@@ -62,11 +62,11 @@ namespace CsCat
 		private static bool _isEqual(BitMask m1, BitMask m2)
 		{
 			// BitMasks need to be the same size
-			if (m1.bytes.Length != m2.bytes.Length) return false;
+			if (m1._bytes.Length != m2._bytes.Length) return false;
 
 			// Compare all elements in each BitMask's _byte array
-			for (var i = 0; i < m1.bytes.Length; i++)
-				if (m1.bytes[i] != m2.bytes[i])
+			for (var i = 0; i < m1._bytes.Length; i++)
+				if (m1._bytes[i] != m2._bytes[i])
 					return false;
 
 			return true;
@@ -95,7 +95,7 @@ namespace CsCat
 			unchecked // Overflow is fine, just wrap
 			{
 				var hash = 17;
-				hash = hash * 23 + bytes.GetHashCode();
+				hash = hash * 23 + _bytes.GetHashCode();
 				return hash;
 			}
 		}
@@ -104,9 +104,9 @@ namespace CsCat
 
 		public override string ToString()
 		{
-			var sb = new StringBuilder(bytes.Length * byteWidth);
-			for (var i = bytes.Length - 1; i >= 0; i--)
-				sb.Append(Convert.ToString(bytes[i], 2).PadLeft(byteWidth, '0'));
+			var sb = new StringBuilder(_bytes.Length * _byteWidth);
+			for (var i = _bytes.Length - 1; i >= 0; i--)
+				sb.Append(Convert.ToString(_bytes[i], 2).PadLeft(_byteWidth, '0'));
 			return sb.ToString();
 		}
 
@@ -118,34 +118,34 @@ namespace CsCat
 
 		public BitMask And(BitMask mask)
 		{
-			for (var i = 0; i < mask.bytes.Length; i++) bytes[i] = bytes[i] & mask.bytes[i];
+			for (var i = 0; i < mask._bytes.Length; i++) _bytes[i] = _bytes[i] & mask._bytes[i];
 			return this;
 		}
 
 		public BitMask Or(BitMask mask)
 		{
-			Debug.Assert(bytes.Length == mask.bytes.Length, "BitMasks must be the same size");
-			for (var i = 0; i < mask.bytes.Length; i++) bytes[i] = bytes[i] | mask.bytes[i];
+			Debug.Assert(_bytes.Length == mask._bytes.Length, "BitMasks must be the same size");
+			for (var i = 0; i < mask._bytes.Length; i++) _bytes[i] = _bytes[i] | mask._bytes[i];
 			return this;
 		}
 
 		public BitMask Xor(BitMask mask)
 		{
-			Debug.Assert(bytes.Length == mask.bytes.Length, "BitMasks must be the same size");
-			for (var i = 0; i < mask.bytes.Length; i++) bytes[i] = bytes[i] ^ mask.bytes[i];
+			Debug.Assert(_bytes.Length == mask._bytes.Length, "BitMasks must be the same size");
+			for (var i = 0; i < mask._bytes.Length; i++) _bytes[i] = _bytes[i] ^ mask._bytes[i];
 			return this;
 		}
 
 		public BitMask Not()
 		{
-			for (var i = 0; i < bytes.Length; i++) bytes[i] = ~bytes[i];
+			for (var i = 0; i < _bytes.Length; i++) _bytes[i] = ~_bytes[i];
 			return this;
 		}
 
 		public void SetAll(bool b)
 		{
 			var num = b ? uint.MaxValue : 0u;
-			for (var i = 0; i < bytes.Length; i++) bytes[i] = num;
+			for (var i = 0; i < _bytes.Length; i++) _bytes[i] = num;
 		}
 
 		#endregion

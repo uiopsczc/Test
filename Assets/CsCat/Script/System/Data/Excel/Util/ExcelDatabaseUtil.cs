@@ -81,8 +81,7 @@ namespace CsCat
 			{
 				case ExcelDataType.INT:
 				{
-					var intValue = 0;
-					int.TryParse(content, out intValue);
+					int.TryParse(content, out var intValue);
 					result = intValue;
 					return result;
 				}
@@ -93,8 +92,7 @@ namespace CsCat
 				}
 				case ExcelDataType.FLOAT:
 				{
-					var floatValue = 0f;
-					float.TryParse(content, out floatValue);
+					float.TryParse(content, out var floatValue);
 					result = floatValue;
 					return result;
 				}
@@ -106,12 +104,9 @@ namespace CsCat
 					var contents = content.Split(',');
 					if (contents.Length == 3)
 					{
-						var x = 0f;
-						var y = 0f;
-						var z = 0f;
-						float.TryParse(contents[0], out x);
-						float.TryParse(contents[1], out y);
-						float.TryParse(contents[2], out z);
+						float.TryParse(contents[0], out var x);
+						float.TryParse(contents[1], out var y);
+						float.TryParse(contents[2], out var z);
 						result = new Vector3(x, y, z);
 						return result;
 					}
@@ -123,7 +118,7 @@ namespace CsCat
 				{
 					var boolValue = false;
 					if (content.IsNullOrWhiteSpace())
-						return boolValue;
+						return false;
 					bool.TryParse(content, out boolValue);
 					result = boolValue;
 					return result;

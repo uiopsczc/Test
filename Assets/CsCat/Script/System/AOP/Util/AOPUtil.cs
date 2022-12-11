@@ -40,35 +40,35 @@ namespace CsCat
 		/// <summary>
 		/// 获取目标参数方法顺序
 		/// </summary>
-		/// <param name="source_type"></param>
-		/// <param name="source_method_name"></param>
-		/// <param name="aop_method_type"></param>
+		/// <param name="sourceType"></param>
+		/// <param name="sourceMethodName"></param>
+		/// <param name="aopMethodType"></param>
 		/// <returns></returns>
-		private static string[] GetSeachTargetMethodNameOrders(Type source_type, string source_method_name,
-			AOPMethodType aop_method_type)
+		private static string[] GetSearchTargetMethodNameOrders(Type sourceType, string sourceMethodName,
+			AOPMethodType aopMethodType)
 		{
 			string[] result = new string[Seach_Format_Target_Method_Name_Orders.Length + 1];
 			for (int i = 0; i < Seach_Format_Target_Method_Name_Orders.Length; i++)
-				result[i] = GetTargetMethodName(Seach_Format_Target_Method_Name_Orders[i], source_type,
-					source_method_name,
-					aop_method_type);
+				result[i] = GetTargetMethodName(Seach_Format_Target_Method_Name_Orders[i], sourceType,
+					sourceMethodName,
+					aopMethodType);
 			// 再加上默认的处理方法
-			result[Seach_Format_Target_Method_Name_Orders.Length] = aop_method_type.ToString();
+			result[Seach_Format_Target_Method_Name_Orders.Length] = aopMethodType.ToString();
 			return result;
 		}
 
 		/// <summary>
 		/// 
 		/// </summary>
-		/// <param name="format_target_method_name"></param>
-		/// <param name="source_type"></param>
-		/// <param name="source_method_name"></param>
+		/// <param name="formatTargetMethodName"></param>
+		/// <param name="sourceType"></param>
+		/// <param name="sourceMethodName"></param>
 		/// <param name="aopMethodType"></param>
 		/// <returns></returns>
-		private static string GetTargetMethodName(string format_target_method_name, Type source_type,
-			string source_method_name, AOPMethodType aopMethodType)
+		private static string GetTargetMethodName(string formatTargetMethodName, Type sourceType,
+			string sourceMethodName, AOPMethodType aopMethodType)
 		{
-			return string.Format(format_target_method_name, source_type.GetLastName(), source_method_name,
+			return string.Format(formatTargetMethodName, sourceType.GetLastName(), sourceMethodName,
 				aopMethodType.ToString());
 		}
 
@@ -83,24 +83,24 @@ namespace CsCat
 		/// 4.被切面的方法的名称_AOPMethodType的类型（）
 		///   4.1.被切面的方法的类_被切面的方法的名称_AOPMethodType的类型()
 		/// 5.默认的处理方法
-		public static MethodInfoProxy SeachTargetMethodInfoProxy(Type aopAttributeType, Type sourceType,
+		public static MethodInfoProxy SearchTargetMethodInfoProxy(Type aopAttributeType, Type sourceType,
 			string sourceMethodName, AOPMethodType aopMethodType, Type[] sourceMethodArgTypes)
 		{
 			//从特殊到一般，注意有顺序先后的查找
-			var names = GetSeachTargetMethodNameOrders(sourceType, sourceMethodName,
+			var names = GetSearchTargetMethodNameOrders(sourceType, sourceMethodName,
 				aopMethodType);
 			for (var i = 0; i < names.Length; i++)
 			{
 				string targetMethodName = names[i];
 				for (var j = 0; j < Is_Target_Method_With_Source_ArgTypes_Orders.Length; j++)
 				{
-					bool isTargetMethodWithSoruceArgType = Is_Target_Method_With_Source_ArgTypes_Orders[j];
+					bool isTargetMethodWithSourceArgType = Is_Target_Method_With_Source_ArgTypes_Orders[j];
 					for (var k = 0; k < Is_Target_Method_Self_Arg_Orders.Length; k++)
 					{
 						bool isTargetMethodSelfArg = Is_Target_Method_Self_Arg_Orders[k];
 						MethodInfoProxy methodInfoProxy = new MethodInfoProxy(targetMethodName, aopAttributeType,
 							sourceType,
-							isTargetMethodSelfArg, isTargetMethodWithSoruceArgType, sourceMethodArgTypes);
+							isTargetMethodSelfArg, isTargetMethodWithSourceArgType, sourceMethodArgTypes);
 						MethodInfo targetMethod = aopAttributeType.GetMethodInfo(targetMethodName,
 							BindingFlagsConst.All,
 							methodInfoProxy.methodArgTypesProxy.targetMethodArgTypes);
@@ -111,7 +111,7 @@ namespace CsCat
 			}
 
 			throw new Exception(string.Format("can not find AOPAttributeMethod of  Method:{0}->{1}  AOPAttribute:{2}",
-				sourceType.ToString(), sourceMethodName, aopAttributeType));
+				sourceType, sourceMethodName, aopAttributeType));
 		}
 	}
 }

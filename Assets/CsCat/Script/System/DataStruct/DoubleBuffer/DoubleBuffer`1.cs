@@ -26,29 +26,29 @@ namespace CsCat
 		/// <summary>
 		///   当前队列
 		/// </summary>
-		private volatile Queue<T> currentQueue;
+		private volatile Queue<T> _currentQueue;
 
 		/// <summary>
 		///   队列中是否有新的数据缓存了，需要处理的锁,当WaitOne的时候阻塞，直到其他地方有Set()调用才有机会获得锁，自己线程得以执行
 		/// </summary>
-		private readonly AutoResetEvent dataAvailableEvent = new AutoResetEvent(false);
+		private readonly AutoResetEvent _dataAvailableEvent = new AutoResetEvent(false);
 
 		/// <summary>
 		///   Produce中Enqueue的时候需要进行的处理
 		/// </summary>
 		public Action<T> produceHandle;
 
-		private readonly Queue<T> queue0 = new Queue<T>();
-		private readonly Queue<T> queue1 = new Queue<T>();
+		private readonly Queue<T> _queue0 = new Queue<T>();
+		private readonly Queue<T> _queue1 = new Queue<T>();
 
 		/// <summary>
 		///   阻塞线程的锁，当WaitOne的时候阻塞，直到其他地方有Set()调用才有机会获得锁，自己线程得以执行
 		/// </summary>
-		private readonly AutoResetEvent unblockEvent = new AutoResetEvent(true);
+		private readonly AutoResetEvent _unblockEvent = new AutoResetEvent(true);
 
 		public DoubleBuffer(Action<T> consumeHandle, Action<T> produceHandle = null)
 		{
-			currentQueue = queue0;
+			_currentQueue = _queue0;
 			this.consumeHandle = consumeHandle;
 			this.produceHandle = produceHandle;
 		}
@@ -57,19 +57,19 @@ namespace CsCat
 		{
 			//1.等待其他线程的Produce的unblockEvent的Set()释放获得锁,从而才有机会获得锁，自己线程得以执行
 			//2.等待Consume()线程中的unblockEvent的unblockEvent的Set()释放获得锁,从而才有机会获得锁，自己线程得以执行
-			unblockEvent.WaitOne();
+			_unblockEvent.WaitOne();
 
 			produceHandle?.Invoke(data);
 			//写数据 
-			currentQueue.Enqueue(data);
+			_currentQueue.Enqueue(data);
 
 
 			//告诉Consume()有数据，可以供handle处理
 			//这里有操作的空间，譬如可以改成在queue数量达到多少时才告诉Consume执行
-			dataAvailableEvent.Set();
+			_dataAvailableEvent.Set();
 
 			//释放unblockEvent锁
-			unblockEvent.Set();
+			_unblockEvent.Set();
 		}
 
 		/// <summary>
@@ -79,14 +79,14 @@ namespace CsCat
 		public void Consume()
 		{
 			//等待Produce中dataAvailableEvent的Set()来通知获得锁，得知有数据需要处理
-			dataAvailableEvent.WaitOne();
+			_dataAvailableEvent.WaitOne();
 
 			//swap queues
-			unblockEvent.WaitOne(); //等待当前的Produce线程Enqueue操作完成
-			var readQueue = currentQueue; //当前需要处理的数据
-			currentQueue =
-			  currentQueue == queue0 ? queue1 : queue0; // 交换两个Queue,旧的队列在readQueue中进行处理，currentQueue变为另一个的队列供Enqueue
-			unblockEvent.Set(); // 释放unblockEvent的锁，其他的Produce()可以获取unblockEvent的锁进行Enqueue操作
+			_unblockEvent.WaitOne(); //等待当前的Produce线程Enqueue操作完成
+			var readQueue = _currentQueue; //当前需要处理的数据
+			_currentQueue =
+			  _currentQueue == _queue0 ? _queue1 : _queue0; // 交换两个Queue,旧的队列在readQueue中进行处理，currentQueue变为另一个的队列供Enqueue
+			_unblockEvent.Set(); // 释放unblockEvent的锁，其他的Produce()可以获取unblockEvent的锁进行Enqueue操作
 
 
 			//数据处理   这里需要时间处理数据，但同时缓冲区是开放给其他Produce（）进行Enqueue的

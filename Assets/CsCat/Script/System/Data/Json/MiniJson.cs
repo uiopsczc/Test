@@ -64,13 +64,11 @@ namespace CsCat
 			{
 				char[] charArray = json.ToCharArray();
 				int index = 0;
-				object value = ParseValue(charArray, ref index, ref success);
+				object value = _ParseValue(charArray, ref index, ref success);
 				return value;
 			}
-			else
-			{
-				return null;
-			}
+
+			return null;
 		}
 
 		/// <summary>
@@ -81,7 +79,7 @@ namespace CsCat
 		public static string JsonEncode(object json)
 		{
 			StringBuilder builder = new StringBuilder(BUILDER_CAPACITY);
-			bool success = SerializeValue(json, builder);
+			bool success = _SerializeValue(json, builder);
 			return (success ? builder.ToString() : null);
 		}
 
@@ -89,37 +87,34 @@ namespace CsCat
 
 		#region protected
 
-		protected static Hashtable ParseObject(char[] json, ref int index, ref bool success)
+		protected static Hashtable _ParseObject(char[] json, ref int index, ref bool success)
 		{
 			Hashtable table = new Hashtable();
-			int token;
 
 			// {
-			NextToken(json, ref index);
+			_NextToken(json, ref index);
 
 			bool done = false;
 			while (!done)
 			{
-				token = LookAhead(json, index);
+				var token = _LookAhead(json, index);
 				if (token == MiniJson.TOKEN_NONE)
 				{
 					success = false;
 					return null;
 				}
-				else if (token == MiniJson.TOKEN_COMMA)
-				{
-					NextToken(json, ref index);
-				}
+
+				if (token == MiniJson.TOKEN_COMMA)
+					_NextToken(json, ref index);
 				else if (token == MiniJson.TOKEN_CURLY_CLOSE)
 				{
-					NextToken(json, ref index);
+					_NextToken(json, ref index);
 					return table;
 				}
 				else
 				{
-
 					// name
-					string name = ParseString(json, ref index, ref success);
+					string name = _ParseString(json, ref index, ref success);
 					if (!success)
 					{
 						success = false;
@@ -127,7 +122,7 @@ namespace CsCat
 					}
 
 					// :
-					token = NextToken(json, ref index);
+					token = _NextToken(json, ref index);
 					if (token != MiniJson.TOKEN_COLON)
 					{
 						success = false;
@@ -135,7 +130,7 @@ namespace CsCat
 					}
 
 					// value
-					object value = ParseValue(json, ref index, ref success);
+					object value = _ParseValue(json, ref index, ref success);
 					if (!success)
 					{
 						success = false;
@@ -149,38 +144,37 @@ namespace CsCat
 			return table;
 		}
 
-		protected static ArrayList ParseArray(char[] json, ref int index, ref bool success)
+		protected static ArrayList _ParseArray(char[] json, ref int index, ref bool success)
 		{
 			ArrayList array = new ArrayList();
 
 			// [
-			NextToken(json, ref index);
+			_NextToken(json, ref index);
 
 			bool done = false;
 			while (!done)
 			{
-				int token = LookAhead(json, index);
+				int token = _LookAhead(json, index);
 				if (token == MiniJson.TOKEN_NONE)
 				{
 					success = false;
 					return null;
 				}
-				else if (token == MiniJson.TOKEN_COMMA)
+
+				if (token == MiniJson.TOKEN_COMMA)
 				{
-					NextToken(json, ref index);
+					_NextToken(json, ref index);
 				}
 				else if (token == MiniJson.TOKEN_SQUARED_CLOSE)
 				{
-					NextToken(json, ref index);
+					_NextToken(json, ref index);
 					break;
 				}
 				else
 				{
-					object value = ParseValue(json, ref index, ref success);
+					object value = _ParseValue(json, ref index, ref success);
 					if (!success)
-					{
 						return null;
-					}
 
 					array.Add(value);
 				}
@@ -189,26 +183,26 @@ namespace CsCat
 			return array;
 		}
 
-		protected static object ParseValue(char[] json, ref int index, ref bool success)
+		protected static object _ParseValue(char[] json, ref int index, ref bool success)
 		{
-			switch (LookAhead(json, index))
+			switch (_LookAhead(json, index))
 			{
 				case MiniJson.TOKEN_STRING:
-					return ParseString(json, ref index, ref success);
+					return _ParseString(json, ref index, ref success);
 				case MiniJson.TOKEN_NUMBER:
-					return ParseNumber(json, ref index, ref success);
+					return _ParseNumber(json, ref index, ref success);
 				case MiniJson.TOKEN_CURLY_OPEN:
-					return ParseObject(json, ref index, ref success);
+					return _ParseObject(json, ref index, ref success);
 				case MiniJson.TOKEN_SQUARED_OPEN:
-					return ParseArray(json, ref index, ref success);
+					return _ParseArray(json, ref index, ref success);
 				case MiniJson.TOKEN_TRUE:
-					NextToken(json, ref index);
+					_NextToken(json, ref index);
 					return true;
 				case MiniJson.TOKEN_FALSE:
-					NextToken(json, ref index);
+					_NextToken(json, ref index);
 					return false;
 				case MiniJson.TOKEN_NULL:
-					NextToken(json, ref index);
+					_NextToken(json, ref index);
 					return null;
 				case MiniJson.TOKEN_NONE:
 					break;
@@ -218,24 +212,20 @@ namespace CsCat
 			return null;
 		}
 
-		protected static string ParseString(char[] json, ref int index, ref bool success)
+		protected static string _ParseString(char[] json, ref int index, ref bool success)
 		{
 			StringBuilder s = new StringBuilder(BUILDER_CAPACITY);
-			char c;
 
-			EatWhitespace(json, ref index);
+			_EatWhitespace(json, ref index);
 
 			// "
-			c = json[index++];
+			var c = json[index++];
 
 			bool complete = false;
 			while (!complete)
 			{
-
 				if (index == json.Length)
-				{
 					break;
-				}
 
 				c = json[index++];
 				if (c == '"')
@@ -243,77 +233,50 @@ namespace CsCat
 					complete = true;
 					break;
 				}
-				else if (c == '\\')
-				{
 
+				if (c == '\\')
+				{
 					if (index == json.Length)
-					{
 						break;
-					}
 
 					c = json[index++];
 					if (c == '"')
-					{
 						s.Append('"');
-					}
 					else if (c == '\\')
-					{
 						s.Append('\\');
-					}
 					else if (c == '/')
-					{
 						s.Append('/');
-					}
 					else if (c == 'b')
-					{
 						s.Append('\b');
-					}
 					else if (c == 'f')
-					{
 						s.Append('\f');
-					}
 					else if (c == 'n')
-					{
 						s.Append('\n');
-					}
 					else if (c == 'r')
-					{
 						s.Append('\r');
-					}
 					else if (c == 't')
-					{
 						s.Append('\t');
-					}
 					else if (c == 'u')
 					{
 						int remainingLength = json.Length - index;
 						if (remainingLength >= 4)
 						{
 							// parse the 32 bit hex into an integer codepoint
-							uint codePoint;
 							if (!(success = UInt32.TryParse(new string(json, index, 4), NumberStyles.HexNumber,
-							  CultureInfo.InvariantCulture, out codePoint)))
-							{
+								CultureInfo.InvariantCulture, out var codePoint)))
 								return "";
-							}
 
 							// convert the integer codepoint to a unicode char and add to string
-							s.Append(Char.ConvertFromUtf32((int)codePoint));
+							s.Append(Char.ConvertFromUtf32((int) codePoint));
 							// skip 4 chars
 							index += 4;
 						}
 						else
-						{
 							break;
-						}
 					}
-
 				}
 				else
-				{
 					s.Append(c);
-				}
-
 			}
 
 			if (!complete)
@@ -325,61 +288,54 @@ namespace CsCat
 			return s.ToString();
 		}
 
-		protected static double ParseNumber(char[] json, ref int index, ref bool success)
+		protected static double _ParseNumber(char[] json, ref int index, ref bool success)
 		{
-			EatWhitespace(json, ref index);
+			_EatWhitespace(json, ref index);
 
-			int lastIndex = GetLastIndexOfNumber(json, index);
+			int lastIndex = _GetLastIndexOfNumber(json, index);
 			int charLength = (lastIndex - index) + 1;
 
-			double number;
 			success = Double.TryParse(new string(json, index, charLength), NumberStyles.Any, CultureInfo.InvariantCulture,
-			  out number);
+			  out var number);
 
 			index = lastIndex + 1;
 			return number;
 		}
 
-		protected static int GetLastIndexOfNumber(char[] json, int index)
+		protected static int _GetLastIndexOfNumber(char[] json, int index)
 		{
 			int lastIndex;
 
 			for (lastIndex = index; lastIndex < json.Length; lastIndex++)
 			{
 				if ("0123456789+-.eE".IndexOf(json[lastIndex]) == -1)
-				{
 					break;
-				}
 			}
 
 			return lastIndex - 1;
 		}
 
-		protected static void EatWhitespace(char[] json, ref int index)
+		protected static void _EatWhitespace(char[] json, ref int index)
 		{
 			for (; index < json.Length; index++)
 			{
 				if (" \t\n\r".IndexOf(json[index]) == -1)
-				{
 					break;
-				}
 			}
 		}
 
-		protected static int LookAhead(char[] json, int index)
+		protected static int _LookAhead(char[] json, int index)
 		{
 			int saveIndex = index;
-			return NextToken(json, ref saveIndex);
+			return _NextToken(json, ref saveIndex);
 		}
 
-		protected static int NextToken(char[] json, ref int index)
+		protected static int _NextToken(char[] json, ref int index)
 		{
-			EatWhitespace(json, ref index);
+			_EatWhitespace(json, ref index);
 
 			if (index == json.Length)
-			{
 				return MiniJson.TOKEN_NONE;
-			}
 
 			char c = json[index];
 			index++;
@@ -460,48 +416,36 @@ namespace CsCat
 			return MiniJson.TOKEN_NONE;
 		}
 
-		protected static bool SerializeValue(object value, StringBuilder builder)
+		protected static bool _SerializeValue(object value, StringBuilder builder)
 		{
 			bool success = true;
 
-			if (value is string)
-			{
-				success = SerializeString((string)value, builder);
-			}
-			else if (value is Hashtable)
-			{
-				success = SerializeObject((Hashtable)value, builder);
-			}
-			else if (value is ArrayList)
-			{
-				success = SerializeArray((ArrayList)value, builder);
-			}
-			else if ((value is Boolean) && ((Boolean)value == true))
+			if (value is string s)
+				success = _SerializeString(s, builder);
+			else if (value is Hashtable hashtable)
+				success = _SerializeObject(hashtable, builder);
+			else if (value is ArrayList list)
+				success = _SerializeArray(list, builder);
+			else if ((value is bool b) && b)
 			{
 				builder.Append("true");
 			}
-			else if ((value is Boolean) && ((Boolean)value == false))
-			{
+			else if ((value is bool b1) && (b1 == false))
 				builder.Append("false");
-			}
 			else if (value is ValueType)
 			{
 				// thanks to ritchie for pointing out ValueType to me
-				success = SerializeNumber(Convert.ToDouble(value), builder);
+				success = _SerializeNumber(Convert.ToDouble(value), builder);
 			}
 			else if (value == null)
-			{
 				builder.Append("null");
-			}
 			else
-			{
 				success = false;
-			}
 
 			return success;
 		}
 
-		protected static bool SerializeObject(Hashtable anObject, StringBuilder builder)
+		protected static bool _SerializeObject(Hashtable anObject, StringBuilder builder)
 		{
 			builder.Append("{");
 
@@ -513,16 +457,12 @@ namespace CsCat
 				object value = e.Value;
 
 				if (!first)
-				{
 					builder.Append(", ");
-				}
 
-				SerializeString(key, builder);
+				_SerializeString(key, builder);
 				builder.Append(":");
-				if (!SerializeValue(value, builder))
-				{
+				if (!_SerializeValue(value, builder))
 					return false;
-				}
 
 				first = false;
 			}
@@ -531,7 +471,7 @@ namespace CsCat
 			return true;
 		}
 
-		protected static bool SerializeArray(ArrayList anArray, StringBuilder builder)
+		protected static bool _SerializeArray(ArrayList anArray, StringBuilder builder)
 		{
 			builder.Append("[");
 
@@ -541,14 +481,10 @@ namespace CsCat
 				object value = anArray[i];
 
 				if (!first)
-				{
 					builder.Append(", ");
-				}
 
-				if (!SerializeValue(value, builder))
-				{
+				if (!_SerializeValue(value, builder))
 					return false;
-				}
 
 				first = false;
 			}
@@ -557,7 +493,7 @@ namespace CsCat
 			return true;
 		}
 
-		protected static bool SerializeString(string aString, StringBuilder builder)
+		protected static bool _SerializeString(string aString, StringBuilder builder)
 		{
 			builder.Append("\"");
 
@@ -566,44 +502,26 @@ namespace CsCat
 			{
 				char c = charArray[i];
 				if (c == '"')
-				{
 					builder.Append("\\\"");
-				}
 				else if (c == '\\')
-				{
 					builder.Append("\\\\");
-				}
 				else if (c == '\b')
-				{
 					builder.Append("\\b");
-				}
 				else if (c == '\f')
-				{
 					builder.Append("\\f");
-				}
 				else if (c == '\n')
-				{
 					builder.Append("\\n");
-				}
 				else if (c == '\r')
-				{
 					builder.Append("\\r");
-				}
 				else if (c == '\t')
-				{
 					builder.Append("\\t");
-				}
 				else
 				{
 					int codepoint = Convert.ToInt32(c);
 					if ((codepoint >= 32) && (codepoint <= 126))
-					{
 						builder.Append(c);
-					}
 					else
-					{
 						builder.Append("\\u" + Convert.ToString(codepoint, 16).PadLeft(4, '0'));
-					}
 				}
 			}
 
@@ -611,7 +529,7 @@ namespace CsCat
 			return true;
 		}
 
-		protected static bool SerializeNumber(double number, StringBuilder builder)
+		protected static bool _SerializeNumber(double number, StringBuilder builder)
 		{
 			builder.Append(Convert.ToString(number, CultureInfo.InvariantCulture));
 			return true;

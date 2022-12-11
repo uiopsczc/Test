@@ -7,10 +7,10 @@ namespace CsCat
 {
 	public partial class LinkedDictionary<K, V> : Dictionary<K, V>, IGetLinkedHashtable
 	{
-		private List<K> _keyList = new List<K>();
-		private List<V> _valueList = new List<V>();
+		private readonly List<K> _keyList = new List<K>();
+		private readonly List<V> _valueList = new List<V>();
 		private DictionaryEnumerator<K, V> __enumerator;
-		LinkedHashtable table = new LinkedHashtable();
+		LinkedHashtable _table = new LinkedHashtable();
 
 		private DictionaryEnumerator<K, V> _enumerator =>
 			__enumerator ?? (__enumerator = new DictionaryEnumerator<K, V>(_keyList, _valueList));
@@ -50,7 +50,7 @@ namespace CsCat
 			base.Remove(key);
 		}
 
-		public DictionaryEnumerator<K, V> GetEnumerator()
+		public new DictionaryEnumerator<K, V> GetEnumerator()
 		{
 			_enumerator.Reset();
 			return _enumerator;
@@ -89,14 +89,14 @@ namespace CsCat
 
 		public LinkedHashtable GetLinkedHashtable()
 		{
-			table.Clear();
+			_table.Clear();
 			for (var i = 0; i < Keys.Count; i++)
 			{
 				var key = Keys[i];
-				table[key] = this[key];
+				_table[key] = this[key];
 			}
 
-			return table;
+			return _table;
 		}
 	}
 

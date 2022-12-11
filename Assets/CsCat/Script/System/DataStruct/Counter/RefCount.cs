@@ -4,7 +4,7 @@ namespace CsCat
 {
 	public class RefCount
 	{
-		private Counter _counter = new Counter();
+		private readonly Counter _counter = new Counter();
 
 		public int count => _counter.count;
 

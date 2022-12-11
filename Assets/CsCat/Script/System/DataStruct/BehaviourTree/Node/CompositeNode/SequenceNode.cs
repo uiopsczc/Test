@@ -12,8 +12,9 @@ namespace CsCat
 				return status;
 			}
 
-			foreach (var child in childList)
+			for (var i = 0; i < childList.Count; i++)
 			{
+				var child = childList[i];
 				var childStatus = child.Update();
 				if (childStatus == BehaviourTreeNodeStatus.Running || childStatus == BehaviourTreeNodeStatus.Fail)
 				{

@@ -7,12 +7,10 @@ namespace CsCat
 	{
 		public class DictionaryEnumerator<K, V> : IEnumerator<KeyValuePair<K, V>>
 		{
-
-			List<K> keyList;
-			List<V> valueList;
-			int position = -1;
-			private KeyValuePair<K, V> current;
-
+			private List<K> _keyList;
+			private List<V> _valueList;
+			private int _position = -1;
+			private KeyValuePair<K, V> _current;
 
 
 			public DictionaryEnumerator(List<K> keyList, List<V> valueList)
@@ -22,19 +20,19 @@ namespace CsCat
 
 			public void Init(List<K> keyList, List<V> valueList)
 			{
-				this.keyList = keyList;
-				this.valueList = valueList;
+				this._keyList = keyList;
+				this._valueList = valueList;
 			}
 
 			public bool MoveNext()
 			{
-				position++;
-				return position < keyList.Count;
+				_position++;
+				return _position < _keyList.Count;
 			}
 
 			public void Reset()
 			{
-				position = -1;
+				_position = -1;
 			}
 
 			object IEnumerator.Current => Current;
@@ -43,8 +41,8 @@ namespace CsCat
 			{
 				get
 				{
-					current = new KeyValuePair<K, V>(keyList[position], valueList[position]);
-					return current;
+					_current = new KeyValuePair<K, V>(_keyList[_position], _valueList[_position]);
+					return _current;
 				}
 			}
 

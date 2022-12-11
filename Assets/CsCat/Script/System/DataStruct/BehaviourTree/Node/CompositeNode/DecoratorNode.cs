@@ -1,10 +1,10 @@
 namespace CsCat
 {
-	public class DecortorNode : BehaviourTreeCompositeNode
+	public class DecoratorNode : BehaviourTreeCompositeNode
 	{
 		#region ctor
 
-		public DecortorNode(BehaviourTreeNodeStatus untilStatus, int countLimit = -1)
+		public DecoratorNode(BehaviourTreeNodeStatus untilStatus, int countLimit = -1)
 		{
 			this.untilStatus = untilStatus;
 			this.countLimit = countLimit;

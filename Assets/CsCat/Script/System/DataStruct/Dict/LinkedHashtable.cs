@@ -8,8 +8,8 @@ namespace CsCat
 {
 	public partial class LinkedHashtable : Hashtable, IToString2
 	{
-		private ArrayList _keyList = new ArrayList();
-		private ArrayList _valueList = new ArrayList();
+		private readonly ArrayList _keyList = new ArrayList();
+		private readonly ArrayList _valueList = new ArrayList();
 		private DictionaryEnumerator __enumerator;
 
 		private DictionaryEnumerator _enumerator => __enumerator ?? (__enumerator = new DictionaryEnumerator(_keyList, _valueList));

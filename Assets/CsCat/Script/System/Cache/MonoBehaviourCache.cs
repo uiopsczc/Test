@@ -13,7 +13,7 @@ namespace CsCat
 	{
 		#region field
 
-		protected MonoBehaviour owner;
+		protected MonoBehaviour _owner;
 
 		#endregion
 
@@ -22,42 +22,42 @@ namespace CsCat
 		#region property
 
 		//与Component中的过时组件对应
-		public GameObject gameObject => dict.GetOrAddDefault2(typeof(GameObject), () => owner.gameObject);
+		public GameObject gameObject => dict.GetOrAddDefault2(typeof(GameObject), () => _owner.gameObject);
 
-		public Rigidbody rigidbody => dict.GetOrAddDefault2(typeof(Rigidbody), () => owner.GetComponent<Rigidbody>());
+		public Rigidbody rigidbody => dict.GetOrAddDefault2(typeof(Rigidbody), () => _owner.GetComponent<Rigidbody>());
 
-		public Rigidbody2D rigidbody2D => dict.GetOrAddDefault2(typeof(Rigidbody2D), () => owner.GetComponent<Rigidbody2D>());
+		public Rigidbody2D rigidbody2D => dict.GetOrAddDefault2(typeof(Rigidbody2D), () => _owner.GetComponent<Rigidbody2D>());
 
-		public Camera camera => dict.GetOrAddDefault2(typeof(Camera), () => owner.GetComponent<Camera>());
+		public Camera camera => dict.GetOrAddDefault2(typeof(Camera), () => _owner.GetComponent<Camera>());
 
-		public Light light => dict.GetOrAddDefault2(typeof(Light), () => owner.GetComponent<Light>());
+		public Light light => dict.GetOrAddDefault2(typeof(Light), () => _owner.GetComponent<Light>());
 
-		public Animation animation => dict.GetOrAddDefault2(typeof(Animation), () => owner.GetComponent<Animation>());
+		public Animation animation => dict.GetOrAddDefault2(typeof(Animation), () => _owner.GetComponent<Animation>());
 
-		public ConstantForce constantForce => dict.GetOrAddDefault2(typeof(ConstantForce), () => owner.GetComponent<ConstantForce>());
+		public ConstantForce constantForce => dict.GetOrAddDefault2(typeof(ConstantForce), () => _owner.GetComponent<ConstantForce>());
 
-		public Renderer renderer => dict.GetOrAddDefault2(typeof(Renderer), () => owner.GetComponent<Renderer>());
+		public Renderer renderer => dict.GetOrAddDefault2(typeof(Renderer), () => _owner.GetComponent<Renderer>());
 
-		public AudioSource audio => dict.GetOrAddDefault2(typeof(AudioSource), () => owner.GetComponent<AudioSource>());
+		public AudioSource audio => dict.GetOrAddDefault2(typeof(AudioSource), () => _owner.GetComponent<AudioSource>());
 
 		//  public GUIElement guiElement { get { return dict.GetOrAddDefault(typeof(GUIElement), () => { return owner.GetComponent<GUIElement>(); }); } }
-		public Collider collider => dict.GetOrAddDefault2(typeof(Collider), () => owner.GetComponent<Collider>());
+		public Collider collider => dict.GetOrAddDefault2(typeof(Collider), () => _owner.GetComponent<Collider>());
 
-		public Collider2D collider2D => dict.GetOrAddDefault2(typeof(Collider2D), () => owner.GetComponent<Collider2D>());
+		public Collider2D collider2D => dict.GetOrAddDefault2(typeof(Collider2D), () => _owner.GetComponent<Collider2D>());
 
-		public HingeJoint hingeJoint => dict.GetOrAddDefault2(typeof(HingeJoint), () => owner.GetComponent<HingeJoint>());
+		public HingeJoint hingeJoint => dict.GetOrAddDefault2(typeof(HingeJoint), () => _owner.GetComponent<HingeJoint>());
 
-		public Transform transform => dict.GetOrAddDefault2(typeof(Transform), () => owner.GetComponent<Transform>());
+		public Transform transform => dict.GetOrAddDefault2(typeof(Transform), () => _owner.GetComponent<Transform>());
 
-		public ParticleSystem particleSystem => dict.GetOrAddDefault2(typeof(ParticleSystem), () => owner.GetComponent<ParticleSystem>());
+		public ParticleSystem particleSystem => dict.GetOrAddDefault2(typeof(ParticleSystem), () => _owner.GetComponent<ParticleSystem>());
 
-		public RectTransform rectTransform => dict.GetOrAddDefault2(typeof(RectTransform), () => owner.GetComponent<RectTransform>());
+		public RectTransform rectTransform => dict.GetOrAddDefault2(typeof(RectTransform), () => _owner.GetComponent<RectTransform>());
 
-		public Animator animator => dict.GetOrAddDefault2(typeof(Animator), () => owner.GetComponent<Animator>());
+		public Animator animator => dict.GetOrAddDefault2(typeof(Animator), () => _owner.GetComponent<Animator>());
 
-		public BoxCollider boxCollider => dict.GetOrAddDefault2(typeof(BoxCollider), () => owner.GetComponent<BoxCollider>());
+		public BoxCollider boxCollider => dict.GetOrAddDefault2(typeof(BoxCollider), () => _owner.GetComponent<BoxCollider>());
 
-		public SpriteRenderer spriteRenderer => dict.GetOrAddDefault2(typeof(SpriteRenderer), () => owner.GetComponent<SpriteRenderer>());
+		public SpriteRenderer spriteRenderer => dict.GetOrAddDefault2(typeof(SpriteRenderer), () => _owner.GetComponent<SpriteRenderer>());
 
 		#endregion
 
@@ -65,7 +65,7 @@ namespace CsCat
 
 		public MonoBehaviourCache(MonoBehaviour owner)
 		{
-			this.owner = owner;
+			this._owner = owner;
 		}
 
 		#endregion

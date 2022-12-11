@@ -8,12 +8,12 @@ namespace CsCat
 	{
 		public static GameData2 instance => SingletonFactory.instance.Get<GameData2>();
 
-		private string filePath = SerializeDataConst.SaveFilePathCS2;
+		private readonly string _filePath = SerializeDataConst.SaveFilePathCS2;
 		public Hashtable data;
 
 		public void SingleInit()
 		{
-			var fileInfo = new FileInfo(filePath);
+			var fileInfo = new FileInfo(_filePath);
 			if (!fileInfo.Exists)
 			{
 				var org_data = new Hashtable()
@@ -26,7 +26,7 @@ namespace CsCat
 				return;
 			}
 
-			var conentBytes = StdioUtil.ReadFile(filePath);
+			var conentBytes = StdioUtil.ReadFile(_filePath);
 			//conentBytes = CompressUtil.GZipDecompress(conentBytes);--½âÑ¹Ëõ
 			var content = Encoding.UTF8.GetString(conentBytes);
 			data = MiniJson.JsonDecode(content) as Hashtable;
@@ -68,7 +68,7 @@ namespace CsCat
 			var content = MiniJson.JsonEncode(saveData);
 			var contentBytes = Encoding.UTF8.GetBytes(content);
 			//contentBytes = CompressUtil.GZipCompress(contentBytes);//Ñ¹Ëõ
-			StdioUtil.WriteFile(filePath, contentBytes);
+			StdioUtil.WriteFile(_filePath, contentBytes);
 		}
 	}
 }

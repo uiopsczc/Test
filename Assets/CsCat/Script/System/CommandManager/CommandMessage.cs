@@ -4,7 +4,7 @@ namespace CsCat
 	{
 		private object _body;
 		private string _type;
-		private string _name;
+		private readonly string _name;
 
 		public CommandMessage(string name) : this(name, null, null)
 		{

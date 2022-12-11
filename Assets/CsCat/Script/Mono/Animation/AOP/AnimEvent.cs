@@ -38,7 +38,7 @@ namespace CsCat
 			for (var i = 0; i < eventCallbackDict[eventKey].Count; i++)
 			{
 				var callbackStruct = eventCallbackDict[eventKey][i];
-				callbackStruct.Call();
+				callbackStruct.Invoke();
 			}
 		}
 

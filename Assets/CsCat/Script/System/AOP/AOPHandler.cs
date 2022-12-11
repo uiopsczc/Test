@@ -17,7 +17,7 @@ namespace CsCat
 		///   AOPAttributeMethodInfoProxyCategory的东西可以参考AOPAttributeMethodInfoProxyCategory的类说明
 		/// </summary>
 		private readonly Dictionary<MethodBase, List<AOPAttributeMethodInfoProxyCategory>>
-			aopAttributeMethodInfoProxyCategoryCacheDict =
+			_aopAttributeMethodInfoProxyCategoryCacheDict =
 				new Dictionary<MethodBase, List<AOPAttributeMethodInfoProxyCategory>>();
 
 
@@ -41,11 +41,11 @@ namespace CsCat
 			params object[] sourceMethodArgs)
 		{
 			var aopAttributeMethodInfoProxyCategoryList =
-				GetAOPAttributeMethodInfoProxyCategoryList(sourceMethodBase);
+				_GetAOPAttributeMethodInfoProxyCategoryList(sourceMethodBase);
 			aopAttributeMethodInfoProxyCategoryList.ForEach(
 				aopAttributeMethodCategory =>
 				{
-					InvokeAOPAttributeMethod(aopAttributeMethodCategory, AOPMethodType.Pre_AOP_Handle,
+					_InvokeAOPAttributeMethod(aopAttributeMethodCategory, AOPMethodType.Pre_AOP_Handle,
 						sourceMethodOwner,
 						sourceMethodBase, sourceMethodArgs);
 				}
@@ -61,11 +61,11 @@ namespace CsCat
 		public void Post_AOP_Handle(object sourceMethodOwner, MethodBase sourceMethodBase,
 			params object[] sourceMethodArgs)
 		{
-			var aopAttributeMethodCategoryList = GetAOPAttributeMethodInfoProxyCategoryList(sourceMethodBase);
+			var aopAttributeMethodCategoryList = _GetAOPAttributeMethodInfoProxyCategoryList(sourceMethodBase);
 			aopAttributeMethodCategoryList.ForEach(
 				aopAttributeMethodCategory =>
 				{
-					InvokeAOPAttributeMethod(aopAttributeMethodCategory, AOPMethodType.Post_AOP_Handle,
+					_InvokeAOPAttributeMethod(aopAttributeMethodCategory, AOPMethodType.Post_AOP_Handle,
 						sourceMethodOwner,
 						sourceMethodBase, sourceMethodArgs);
 				}
@@ -79,13 +79,13 @@ namespace CsCat
 		/// </summary>
 		/// <param name="sourceMethodBase"></param>
 		/// <returns></returns>
-		private List<AOPAttributeMethodInfoProxyCategory> GetAOPAttributeMethodInfoProxyCategoryList(
+		private List<AOPAttributeMethodInfoProxyCategory> _GetAOPAttributeMethodInfoProxyCategoryList(
 			MethodBase sourceMethodBase)
 		{
 			var aopAttributeMethodInfoProxyCategories = from a in sourceMethodBase.GetCustomAttributes(true)
 				where a is IAOPAttribute
 				select new AOPAttributeMethodInfoProxyCategory(a as IAOPAttribute); //linq会延迟处理的，用到的时候才会调用
-			var result = aopAttributeMethodInfoProxyCategoryCacheDict.GetOrAddDefault(sourceMethodBase,
+			var result = _aopAttributeMethodInfoProxyCategoryCacheDict.GetOrAddDefault(sourceMethodBase,
 				() => new List<AOPAttributeMethodInfoProxyCategory>(aopAttributeMethodInfoProxyCategories));
 			return result;
 		}
@@ -98,20 +98,20 @@ namespace CsCat
 		/// <param name="sourceMethodOwner"></param>
 		/// <param name="sourceMethodBase"></param>
 		/// <param name="sourceMethodArgs"></param>
-		private void InvokeAOPAttributeMethod(AOPAttributeMethodInfoProxyCategory aopAttributeMethodInfoProxyCategory,
+		private void _InvokeAOPAttributeMethod(AOPAttributeMethodInfoProxyCategory aopAttributeMethodInfoProxyCategory,
 			AOPMethodType aopMethodType, object sourceMethodOwner, MethodBase sourceMethodBase,
 			params object[] sourceMethodArgs)
 		{
 			//获取目标函数
-			var targetMethodInfoProxy = GetTargetMethodInfoProxy(aopAttributeMethodInfoProxyCategory, aopMethodType,
-				sourceMethodOwner, sourceMethodBase, sourceMethodBase.GetParameterTypes());
+			var targetMethodInfoProxy = _GetTargetMethodInfoProxy(aopAttributeMethodInfoProxyCategory, aopMethodType,
+				sourceMethodBase, sourceMethodBase.GetParameterTypes());
 
 			//缓存目标函数以备下次使用
 			aopAttributeMethodInfoProxyCategory.aopMethodInfoDict[aopMethodType] = targetMethodInfoProxy;
 
 			//调用目标函数
 			var targetMethodInfo = targetMethodInfoProxy.GetTargetMethodInfo();
-			var targetMethodArgs = GetTargetMethodArgs(targetMethodInfoProxy.isTargetMethodAddSelfArg,
+			var targetMethodArgs = _GetTargetMethodArgs(targetMethodInfoProxy.isTargetMethodAddSelfArg,
 				sourceMethodOwner,
 				targetMethodInfoProxy.isTargetMethodWithSourceArgs, sourceMethodArgs);
 			targetMethodInfo.Invoke(aopAttributeMethodInfoProxyCategory.aopAttribute, targetMethodArgs);
@@ -126,9 +126,9 @@ namespace CsCat
 		/// <param name="sourceMethodBase"></param>
 		/// <param name="sourceMethodParameterTypes"></param>
 		/// <returns></returns>
-		private MethodInfoProxy GetTargetMethodInfoProxy(
+		private MethodInfoProxy _GetTargetMethodInfoProxy(
 			AOPAttributeMethodInfoProxyCategory aopAttributeMethodInfoProxyCategory,
-			AOPMethodType aopMethodType, object sourceMethodOwner, MethodBase sourceMethodBase,
+			AOPMethodType aopMethodType, MethodBase sourceMethodBase,
 			params Type[] sourceMethodParameterTypes)
 		{
 			//如果缓存中有对应的aop处理函数，则不用查找，直接使用
@@ -138,7 +138,7 @@ namespace CsCat
 			//根据优先顺序查找
 			var aopAttributeType = aopAttributeMethodInfoProxyCategory.aopAttribute.GetType();
 			var sourceMethodName = sourceMethodBase.Name;
-			return AOPUtil.SeachTargetMethodInfoProxy(aopAttributeType, sourceMethodBase.DeclaringType,
+			return AOPUtil.SearchTargetMethodInfoProxy(aopAttributeType, sourceMethodBase.DeclaringType,
 				sourceMethodName,
 				aopMethodType, sourceMethodParameterTypes);
 		}
@@ -151,7 +151,7 @@ namespace CsCat
 		/// <param name="isTargetMethodWithSourceArgs"></param>
 		/// <param name="sourceMethodArgs"></param>
 		/// <returns></returns>
-		private object[] GetTargetMethodArgs(bool isTargetMethodAddSelfArg, object sourceMethodOwner,
+		private object[] _GetTargetMethodArgs(bool isTargetMethodAddSelfArg, object sourceMethodOwner,
 			bool isTargetMethodWithSourceArgs, params object[] sourceMethodArgs)
 		{
 			var result = new List<object>();

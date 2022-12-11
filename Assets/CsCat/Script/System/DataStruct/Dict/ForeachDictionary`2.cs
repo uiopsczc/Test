@@ -5,42 +5,42 @@ namespace CsCat
 {
 	public class ForeachDictionary<K, V>
 	{
-		private Dictionary<K, V> dict;
-		private List<K> tmpToCheckKeyList = new List<K>();
-		private Dictionary<K, bool> tmpCheckedKeyDict = new Dictionary<K, bool>();
+		private readonly Dictionary<K, V> _dict;
+		private readonly List<K> _tmpToCheckKeyList = new List<K>();
+		private readonly Dictionary<K, bool> _tmpCheckedKeyDict = new Dictionary<K, bool>();
 		public ForeachDictionary(Dictionary<K, V> dict)
 		{
-			this.dict = dict;
+			this._dict = dict;
 		}
 
 		//to_check_key_list 有些特殊的要求可能用到，如外部需要按照to_check_key_list的顺序来检测
 		public IEnumerable<V> ForeachValues(List<K> toCheckKeyList = null)
 		{
-			this.tmpToCheckKeyList.Clear();
-			this.tmpCheckedKeyDict.Clear();
+			this._tmpToCheckKeyList.Clear();
+			this._tmpCheckedKeyDict.Clear();
 			if (toCheckKeyList == null)
-				this.tmpToCheckKeyList.AddRange(dict.Keys);
+				this._tmpToCheckKeyList.AddRange(_dict.Keys);
 			else
-				this.tmpToCheckKeyList.AddRange(toCheckKeyList);
+				this._tmpToCheckKeyList.AddRange(toCheckKeyList);
 			while (true)
 			{
-				while (tmpToCheckKeyList.Count > 0)
+				while (_tmpToCheckKeyList.Count > 0)
 				{
-					var tmpToCheckKey = tmpToCheckKeyList.RemoveFirst();
-					if (!dict.ContainsKey(tmpToCheckKey))//中途yield return value;可能有删除其他的节点，所以可能会出现null,所以要检测是否需要忽略
+					var tmpToCheckKey = _tmpToCheckKeyList.RemoveFirst();
+					if (!_dict.ContainsKey(tmpToCheckKey))//中途yield return value;可能有删除其他的节点，所以可能会出现null,所以要检测是否需要忽略
 						continue;
-					yield return dict[tmpToCheckKey];
-					tmpCheckedKeyDict[tmpToCheckKey] = true;
+					yield return _dict[tmpToCheckKey];
+					_tmpCheckedKeyDict[tmpToCheckKey] = true;
 				}
 
 				//再次检测，是否有新生成的，如果有则加入tmp_to_check_key_list，然后再次调用上面的步骤，否则全部checked，跳出所有循环
 				bool isCanBreak = true;
-				var keys = dict.Keys;
+				var keys = _dict.Keys;
 				foreach (var key in keys)
 				{
-					if (tmpCheckedKeyDict.ContainsKey(key))
+					if (_tmpCheckedKeyDict.ContainsKey(key))
 						continue;
-					tmpToCheckKeyList.Add(key);
+					_tmpToCheckKeyList.Add(key);
 					isCanBreak = false;
 				}
 				if (isCanBreak)

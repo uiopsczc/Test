@@ -7,38 +7,38 @@ namespace CsCat
 		class DictionaryEnumerator : IDictionaryEnumerator
 		{
 
-			ArrayList keyList;
-			ArrayList valueList;
-			int position = -1;
-			private DictionaryEntry current;
-			private DictionaryEntry entry;
+			private ArrayList _keyList;
+			private ArrayList _valueList;
+			private int _position = -1;
+			private DictionaryEntry _current;
+			private DictionaryEntry _entry;
 
 
 			DictionaryEntry IDictionaryEnumerator.Entry
 			{
 				get
 				{
-					object key = keyList[position];
-					object value = valueList[position];
-					entry.Key = key;
-					entry.Value = value;
-					return entry;
+					object key = _keyList[_position];
+					object value = _valueList[_position];
+					_entry.Key = key;
+					_entry.Value = value;
+					return _entry;
 				}
 			}
 
-			object IDictionaryEnumerator.Key => keyList[position];
+			object IDictionaryEnumerator.Key => _keyList[_position];
 
-			object IDictionaryEnumerator.Value => valueList[position];
+			object IDictionaryEnumerator.Value => _valueList[_position];
 
 			object IEnumerator.Current
 			{
 				get
 				{
-					object key = keyList[position];
-					object value = valueList[position];
-					current.Key = key;
-					current.Value = value;
-					return current;
+					object key = _keyList[_position];
+					object value = _valueList[_position];
+					_current.Key = key;
+					_current.Value = value;
+					return _current;
 				}
 			}
 
@@ -50,20 +50,20 @@ namespace CsCat
 
 			public void Init(ArrayList keyList, ArrayList valueList)
 			{
-				this.keyList = keyList;
-				this.valueList = valueList;
+				this._keyList = keyList;
+				this._valueList = valueList;
 			}
 
 			public void Reset()
 			{
-				position = -1;
+				_position = -1;
 			}
 
 
 			bool IEnumerator.MoveNext()
 			{
-				position++;
-				return position < keyList.Count;
+				_position++;
+				return _position < _keyList.Count;
 			}
 
 			void IEnumerator.Reset()

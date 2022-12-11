@@ -10,15 +10,15 @@ namespace CsCat
 	// 里面的point是没有offset的
 	public class AStarImpl : AStar
 	{
-		protected AStarHType astarHType;
-		protected AStarMapPath astarMapPath; // 地图数组
-		protected int[] canPassObstacleTypes; // 可通过障碍表
-		protected int[] canPassTerrainTypes; // 可通过地形表
+		protected AStarHType _astarHType;
+		protected AStarMapPath _astarMapPath; // 地图数组
+		protected int[] _canPassObstacleTypes; // 可通过障碍表
+		protected int[] _canPassTerrainTypes; // 可通过地形表
 
 		public AStarImpl(AStarMapPath astarMapPath, AStarHType astarHType, int[] canPassObstacleTypes,
 		  int[] canPassTerrainTypes)
 		{
-			this.astarMapPath = astarMapPath;
+			this._astarMapPath = astarMapPath;
 			SetAStarHType(astarHType);
 			SetCanPassType(canPassObstacleTypes, canPassTerrainTypes);
 			SetRange(0, 0, astarMapPath.Height() - 1, astarMapPath.Width() - 1);
@@ -26,30 +26,30 @@ namespace CsCat
 
 		public void SetCanPassType(int[] canPassObstacleTypes, int[] canPassTerrainTypes)
 		{
-			this.canPassObstacleTypes = canPassObstacleTypes;
-			this.canPassTerrainTypes = canPassTerrainTypes;
+			this._canPassObstacleTypes = canPassObstacleTypes;
+			this._canPassTerrainTypes = canPassTerrainTypes;
 		}
 
-		protected override bool CanPass(int xWithoutOffset, int yWithoutOffset)
+		protected override bool _CanPass(int xWithoutOffset, int yWithoutOffset)
 		{
-			if (!AStarUtil.CanPass(astarMapPath.GetFinalGrids(), xWithoutOffset, yWithoutOffset, canPassObstacleTypes, canPassTerrainTypes))
+			if (!AStarUtil.CanPass(_astarMapPath.GetFinalGrids(), xWithoutOffset, yWithoutOffset, _canPassObstacleTypes, _canPassTerrainTypes))
 				return false;
 			return true;
 		}
 
-		int GetHeight()
+		int _GetHeight()
 		{
-			return astarMapPath.Height();
+			return _astarMapPath.Height();
 		}
 
-		int GetWidth()
+		int _GetWidth()
 		{
-			return astarMapPath.Width();
+			return _astarMapPath.Width();
 		}
 
 		public void SetAStarHType(AStarHType astarHType)
 		{
-			this.astarHType = astarHType;
+			this._astarHType = astarHType;
 		}
 
 		//返回的是不带offset的point
@@ -57,10 +57,10 @@ namespace CsCat
 		{
 			randomManager = randomManager ?? Client.instance.randomManager;
 			var canPassPointList = new List<Vector2Int>();
-			for (int x = 0; x < astarMapPath.Width(); x++)
-				for (int y = 0; y < astarMapPath.Height(); y++)
+			for (int x = 0; x < _astarMapPath.Width(); x++)
+				for (int y = 0; y < _astarMapPath.Height(); y++)
 				{
-					if (CanPass(x, y))
+					if (_CanPass(x, y))
 						canPassPointList.Add(new Vector2Int(x, y));
 				}
 
@@ -68,11 +68,11 @@ namespace CsCat
 			return canPassPointList[randomIndex];
 		}
 
-		protected override float GetG(Vector2Int p1, Vector2Int p2)
+		protected override float _GetG(Vector2Int p1, Vector2Int p2)
 		{
 			int dx = Math.Abs(p1.x - p2.x);
 			int dy = Math.Abs(p1.y - p2.y);
-			var terrainType = AStarUtil.GetTerrainType(astarMapPath.GetFinalGrids()[p2.x][p2.y]);
+			var terrainType = AStarUtil.GetTerrainType(_astarMapPath.GetFinalGrids()[p2.x][p2.y]);
 			float cost = AStarConst.AStarTerrainType_Dict[terrainType].cost;
 			if (dx == 0 || dy == 0) //非斜线方向
 				return cost;
@@ -81,13 +81,13 @@ namespace CsCat
 		}
 
 
-		protected override float GetH(Vector2Int nPoint, Vector2Int goalPoint)
+		protected override float _GetH(Vector2Int nPoint, Vector2Int goalPoint)
 		{
-			switch (astarHType)
+			switch (_astarHType)
 			{
 				case AStarHType.Euclid_Distance:
 					return (float)Math.Sqrt((nPoint.x - goalPoint.x) * (nPoint.x - goalPoint.x) + (nPoint.y - goalPoint.y) * (nPoint.y - goalPoint.y));
-				case AStarHType.Euclid_SqureDistance:
+				case AStarHType.Euclid_SquareDistance:
 					return (nPoint.x - goalPoint.x) * (nPoint.x - goalPoint.x) + (nPoint.y - goalPoint.y) * (nPoint.y - goalPoint.y);
 				case AStarHType.Manhattan_Distance:
 					return Math.Abs(nPoint.x - goalPoint.x) + Math.Abs(nPoint.y - goalPoint.y);
@@ -100,18 +100,18 @@ namespace CsCat
 			return 0;
 		}
 
-		protected override void SetNeighborOffsetList()
+		protected override void _SetNeighborOffsetList()
 		{
-			switch (astarHType)
+			switch (_astarHType)
 			{
 				case AStarHType.Manhattan_Distance:
-					neighborOffsetList.Add(Vector2IntConst.Top); //上方邻居节点
-					neighborOffsetList.Add(Vector2IntConst.Right); //右侧邻居节点
-					neighborOffsetList.Add(Vector2IntConst.Bottom); //下方邻居节点
-					neighborOffsetList.Add(Vector2IntConst.Left); //左侧邻居节点
+					_neighborOffsetList.Add(Vector2IntConst.Top); //上方邻居节点
+					_neighborOffsetList.Add(Vector2IntConst.Right); //右侧邻居节点
+					_neighborOffsetList.Add(Vector2IntConst.Bottom); //下方邻居节点
+					_neighborOffsetList.Add(Vector2IntConst.Left); //左侧邻居节点
 					break;
 				default:
-					base.SetNeighborOffsetList();
+					base._SetNeighborOffsetList();
 					break;
 			}
 		}

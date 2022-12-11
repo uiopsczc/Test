@@ -13,7 +13,7 @@ namespace CsCat
 	{
 		#region field
 
-		private Dictionary<string, string> propDict = new Dictionary<string, string>();
+		private Dictionary<string, string> _propDict = new Dictionary<string, string>();
 
 		#endregion
 
@@ -21,10 +21,11 @@ namespace CsCat
 
 		public PropertyConfig(Dictionary<string, string> propDict)
 		{
-			foreach (string key in propDict.Keys)
+			foreach (var kv in propDict)
 			{
-				string value = propDict[key];
-				this.propDict[key] = value;
+				string key = kv.Key;
+				string value = kv.Value;
+				this._propDict[key] = value;
 			}
 		}
 
@@ -58,7 +59,7 @@ namespace CsCat
 				string[] contents = line.Split('=');
 				if (contents.Length != 2)
 					continue;
-				this.propDict[contents[0]] = contents[1];
+				this._propDict[contents[0]] = contents[1];
 			}
 
 			streamReader.Close();
@@ -68,22 +69,27 @@ namespace CsCat
 		{
 			FileStream fileStream = new FileStream(file.FullName, FileMode.Truncate, FileAccess.Write);
 			StreamWriter streamWriter = new StreamWriter(fileStream);
-			foreach (string key in propDict.Keys)
-				streamWriter.WriteLine(string.Format("{0}={1}", key, this.propDict[key]));
+			foreach (var kv in _propDict)
+			{
+				string key = kv.Key;
+				string value = kv.Value;
+				streamWriter.WriteLine(string.Format("{0}={1}", key, value));
+			}
 			streamWriter.Close();
 		}
 
 		public Dictionary<string, string> GetProperties()
 		{
-			return this.propDict;
+			return this._propDict;
 		}
 
 		public string[] ConfigNames()
 		{
-			string[] configNames = new string[this.propDict.Count];
+			string[] configNames = new string[this._propDict.Count];
 			int i = 0;
-			foreach (string name in this.propDict.Keys)
+			foreach (var kv in this._propDict)
 			{
+				var name = kv.Key;
 				configNames[i] = name;
 				i++;
 			}
@@ -93,7 +99,7 @@ namespace CsCat
 
 		public void Clear()
 		{
-			this.propDict.Clear();
+			this._propDict.Clear();
 		}
 
 		public string GetConfigString(string name)
@@ -103,12 +109,12 @@ namespace CsCat
 
 		public string GetConfigString(string name, string dv)
 		{
-			return this.propDict.GetOrAddDefault(name, () => dv);
+			return this._propDict.GetOrAddDefault(name, () => dv);
 		}
 
 		public void SetConfigString(string name, string value)
 		{
-			this.propDict[name] = value;
+			this._propDict[name] = value;
 		}
 
 		public int GetConfigInt(string name)
@@ -118,12 +124,12 @@ namespace CsCat
 
 		public int GetConfigInt(string name, int dv)
 		{
-			return int.Parse(this.propDict.GetOrAddDefault(name, () => dv.ToString()));
+			return int.Parse(this._propDict.GetOrAddDefault(name, () => dv.ToString()));
 		}
 
 		public void SetConfigInt(string name, int value)
 		{
-			this.propDict[name] = value.ToString();
+			this._propDict[name] = value.ToString();
 		}
 
 		#endregion

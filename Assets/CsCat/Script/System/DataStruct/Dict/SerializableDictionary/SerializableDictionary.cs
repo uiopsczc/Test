@@ -6,43 +6,42 @@ namespace CsCat
 	// Unity的Serializable不能序列化Dict和泛化的类，所以需要在SerializableDictionaryImpl添加对应的类型
 	public abstract class SerializableDictionary<TKey, TValue> : ISerializationCallbackReceiver
 	{
-		[SerializeField] private TKey[] keys;
-		[SerializeField] private TValue[] values;
+		[SerializeField] private TKey[] _keys;
+		[SerializeField] private TValue[] _values;
 
 		public Dictionary<TKey, TValue> dict;
 
 		public static T New<T>() where T : SerializableDictionary<TKey, TValue>, new()
 		{
-			var result = new T();
-			result.dict = new Dictionary<TKey, TValue>();
+			var result = new T {dict = new Dictionary<TKey, TValue>()};
 			return result;
 		}
 
 		public void OnAfterDeserialize()
 		{
-			var length = keys.Length;
+			var length = _keys.Length;
 			dict = new Dictionary<TKey, TValue>(length);
 			for (int i = 0; i < length; i++)
 			{
-				dict[keys[i]] = values[i];
+				dict[_keys[i]] = _values[i];
 			}
 
-			keys = null;
-			values = null;
+			_keys = null;
+			_values = null;
 		}
 
 		public void OnBeforeSerialize()
 		{
 			var c = dict.Count;
-			keys = new TKey[c];
-			values = new TValue[c];
+			_keys = new TKey[c];
+			_values = new TValue[c];
 			int i = 0;
 			using (var e = dict.GetEnumerator())
 				while (e.MoveNext())
 				{
 					var kvp = e.Current;
-					keys[i] = kvp.Key;
-					values[i] = kvp.Value;
+					_keys[i] = kvp.Key;
+					_values[i] = kvp.Value;
 					i++;
 				}
 		}

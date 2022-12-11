@@ -26,7 +26,7 @@ namespace CsCat
 		/// <summary>
 		/// 数据的行数
 		/// </summary>
-		int dataRowCount;
+		int _dataRowCount;
 
 		/// <summary>
 		/// 文件路径
@@ -82,7 +82,7 @@ namespace CsCat
 			//window用"\r\n"
 			string[] lines = content.Split("\r\n".ToCharArray());
 			//string[] lineArray = textAsset.text.Split("\r".ToCharArray());
-			dataRowCount = lines.Length - 1;
+			_dataRowCount = lines.Length - 1;
 
 			string[] columnNames = lines[0].Split(',');
 
@@ -103,7 +103,7 @@ namespace CsCat
 				string[] rowContents = lines[i].Split(',');
 				if (rowContents[0] == "\n" || rowContents[0] == "")
 				{
-					dataRowCount = dataRowCount - 1;
+					_dataRowCount = _dataRowCount - 1;
 					continue;
 				}
 
@@ -134,7 +134,7 @@ namespace CsCat
 		/// <returns></returns>
 		public int GetDataRowCount()
 		{
-			return dataRowCount;
+			return _dataRowCount;
 		}
 
 		/// <summary>
@@ -181,8 +181,9 @@ namespace CsCat
 				StdioUtil.WriteTextFile(path, columnName, true);
 
 
-				foreach (LinkedDictionary<string, string> lineDataDict in dataDict.Values)
+				foreach (var kv in dataDict)
 				{
+					LinkedDictionary<string, string> lineDataDict = kv.Value;
 					string rowValue = "";
 					for (var i = 0; i < columnNameList.Count; i++)
 					{
@@ -205,9 +206,9 @@ namespace CsCat
 
 		#region private method
 
-		private int GetKeyIndex(string columName)
+		private int GetKeyIndex(string columnName)
 		{
-			string columnNameLow = columName.ToLower();
+			string columnNameLow = columnName.ToLower();
 			for (var i = 0; i < CsvConst.Key_Symbol_List.Count; i++)
 			{
 				string keySymbol = CsvConst.Key_Symbol_List[i];
@@ -226,12 +227,14 @@ namespace CsCat
 		List<string> GetColumnNames()
 		{
 			List<string> columnNameList = new List<string>();
-			foreach (LinkedDictionary<string, string> lineDataDict in dataDict.Values)
+			foreach (var kv in dataDict)
 			{
-				foreach (string key in lineDataDict.Keys)
+				LinkedDictionary<string, string> lineDataDict = kv.Value;
+				foreach (var kv2 in lineDataDict)
 				{
-					if (!columnNameList.Contains(key))
-						columnNameList.Add(key);
+					var key2 = kv2.Key;
+					if (!columnNameList.Contains(key2))
+						columnNameList.Add(key2);
 				}
 			}
 

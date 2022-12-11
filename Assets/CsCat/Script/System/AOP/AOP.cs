@@ -17,6 +17,25 @@ namespace CsCat
 	/// </summary>
 	public sealed class AOP : IDisposable
 	{
+		#region field
+
+		/// <summary>
+		///   被切面的方法的拥有者
+		/// </summary>
+		private readonly object _sourceMethodOwner;
+
+		/// <summary>
+		///   被切面的方法
+		/// </summary>
+		private readonly MethodBase sourceMethod;
+
+		/// <summary>
+		///   被切面的方法的参数
+		/// </summary>
+		private readonly object[] _sourceMethodArgs;
+
+		#endregion
+
 		#region ctor
 
 		public AOP(object sourceMethodOwner, params object[] sourceMethodArgs)
@@ -56,23 +75,6 @@ namespace CsCat
 
 		#endregion
 
-		#region field
-
-		/// <summary>
-		///   被切面的方法的拥有者
-		/// </summary>
-		private readonly object _sourceMethodOwner;
-
-		/// <summary>
-		///   被切面的方法
-		/// </summary>
-		private readonly MethodBase sourceMethod;
-
-		/// <summary>
-		///   被切面的方法的参数
-		/// </summary>
-		private readonly object[] _sourceMethodArgs;
-
-		#endregion
+		
 	}
 }

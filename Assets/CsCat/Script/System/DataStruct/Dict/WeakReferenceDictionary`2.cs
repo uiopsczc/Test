@@ -10,23 +10,26 @@ namespace CsCat
 	/// <typeparam name="V"></typeparam>
 	public class WeakReferenceDictionary<K, V>
 	{
-		private Dictionary<K, WeakReference> dict = new Dictionary<K, WeakReference>();
-		private List<K> toRemoveList = new List<K>();
+		private readonly Dictionary<K, WeakReference> _dict = new Dictionary<K, WeakReference>();
+		private readonly List<K> _toRemoveList = new List<K>();
 		public List<V> valueList = new List<V>();
 
 
-		public ICollection<K> Keys => this.dict.Keys;
+		public ICollection<K> Keys => this._dict.Keys;
 
-		public ICollection<WeakReference> ReferenceValues => this.dict.Values;
+		public ICollection<WeakReference> ReferenceValues => this._dict.Values;
 
 		public List<V> Values
 		{
 			get
 			{
 				valueList.Clear();
-				foreach (K current in this.dict.Keys)
+				foreach (var kv in this._dict)
+				{
+					K current = kv.Key;
 					if (TryGetValue(current, out var v))
 						valueList.Add(v);
+				}
 				return valueList;
 			}
 		}
@@ -40,35 +43,35 @@ namespace CsCat
 
 		public void Add(K key, V value)
 		{
-			if (!this.dict.ContainsKey(key))
+			if (!this._dict.ContainsKey(key))
 			{
-				this.dict.Add(key, new WeakReference(value));
+				this._dict.Add(key, new WeakReference(value));
 				return;
 			}
 
-			this.dict[key] = new WeakReference(value);
+			this._dict[key] = new WeakReference(value);
 		}
 
 		public void Clear()
 		{
-			this.dict.Clear();
+			this._dict.Clear();
 		}
 
 		public bool ContainsKey(K key)
 		{
-			return this.dict.ContainsKey(key);
+			return this._dict.ContainsKey(key);
 		}
 
 		public bool Remove(K key)
 		{
-			return this.dict.Remove(key);
+			return this._dict.Remove(key);
 		}
 
 		public bool TryGetValue(K key, out V value)
 		{
-			if (this.dict.ContainsKey(key))
+			if (this._dict.ContainsKey(key))
 			{
-				var valueResult = this.dict[key].GetValueResult<V>();
+				var valueResult = this._dict[key].GetValueResult<V>();
 				value = valueResult.GetValue();
 				return valueResult.GetIsHasValue();
 			}
@@ -79,16 +82,22 @@ namespace CsCat
 
 		public void GC()
 		{
-			toRemoveList.Clear();
-			foreach (var e in dict.Keys)
+			_toRemoveList.Clear();
+			foreach (var kv in _dict)
 			{
-				if (!dict[e].IsAlive)
-					toRemoveList.Add(e);
+				var key = kv.Key;
+				var value = kv.Value;
+				if (!value.IsAlive)
+					_toRemoveList.Add(key);
 			}
 
-			if (toRemoveList.Count <= 0) return;
-			foreach (var e in toRemoveList)
-				dict.Remove(e);
+			if (_toRemoveList.Count <= 0) return;
+			for (var i = 0; i < _toRemoveList.Count; i++)
+			{
+				var e = _toRemoveList[i];
+				_dict.Remove(e);
+			}
+
 			System.GC.Collect();
 		}
 	}

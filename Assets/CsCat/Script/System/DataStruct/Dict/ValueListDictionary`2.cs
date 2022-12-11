@@ -42,8 +42,9 @@ namespace CsCat
 		public void CheckAll()
 		{
 			List<TKey> toRemoveKeyList = new List<TKey>();
-			foreach (var key in this.Keys)
+			foreach (var kv in this)
 			{
+				var key = kv.Key;
 				if (this[key].IsNullOrEmpty())
 					toRemoveKeyList.Add(key);
 			}
@@ -57,8 +58,9 @@ namespace CsCat
 
 		public void ForEach(Action<TKey, TValue> action)
 		{
-			foreach (var key in this.Keys)
+			foreach (var kv in this)
 			{
+				var key = kv.Key;
 				var valueList = this[key];
 				for (var i = 0; i < valueList.Count; i++)
 				{

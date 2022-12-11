@@ -5,7 +5,7 @@ namespace CsCat
 {
 	public class ValueDictList<TKey, TValue> : List<Dictionary<TKey, TValue>>
 	{
-		public void Add(Dictionary<TKey, TValue> dict)
+		public new void Add(Dictionary<TKey, TValue> dict)
 		{
 			base.Add(dict);
 		}

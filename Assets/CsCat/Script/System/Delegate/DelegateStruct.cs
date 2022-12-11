@@ -7,20 +7,20 @@ namespace CsCat
 	/// </summary>
 	public class DelegateStruct
 	{
-		public Delegate delegation;
-		public object[] args;
+		public Delegate _delegation;
+		public object[] _args;
 
 
 		public DelegateStruct(Delegate delegation, params object[] args)
 		{
-			this.delegation = delegation;
-			this.args = args;
+			this._delegation = delegation;
+			this._args = args;
 		}
 
 
-		public object Call()
+		public object Invoke()
 		{
-			return delegation.DynamicInvoke(args);
+			return _delegation.DynamicInvoke(_args);
 		}
 	}
 }

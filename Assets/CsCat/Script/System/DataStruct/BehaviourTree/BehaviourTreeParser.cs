@@ -43,7 +43,7 @@ namespace CsCat
 			{
 				var untilStatusString = XMLUtil.GetNodeAttrValue(parentXMLNode, "untilStatus", "").ToLower();
 				var untilStatus = untilStatusString == "success" ? BehaviourTreeNodeStatus.Success : BehaviourTreeNodeStatus.Fail;
-				parent = new DecortorNode(untilStatus);
+				parent = new DecoratorNode(untilStatus);
 			}
 
 			if (parentXMLNode.Name == "ParallelNode")

@@ -2,11 +2,11 @@ namespace CsCat
 {
 	public class RandomSelectorNode : BehaviourTreeCompositeNode
 	{
-		protected RandomManager randomManager;
+		protected RandomManager _randomManager;
 
 		public RandomSelectorNode(RandomManager randomManager = null)
 		{
-			this.randomManager = randomManager ?? Client.instance.randomManager;
+			this._randomManager = randomManager ?? Client.instance.randomManager;
 		}
 
 		#region override method
@@ -19,7 +19,7 @@ namespace CsCat
 				return status;
 			}
 
-			var random = randomManager.RandomInt(0, childList.Count);
+			var random = _randomManager.RandomInt(0, childList.Count);
 			var childStatus = childList[random].Update();
 			status = childStatus;
 			return status;

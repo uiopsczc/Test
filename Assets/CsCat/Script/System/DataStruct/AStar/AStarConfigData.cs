@@ -8,9 +8,9 @@ namespace CsCat
 {
 	public class AStarConfigData
 	{
-		private Transform transform;
-		private Vector3 transformPosition;
-		private Vector3 transformEulerAngles;
+		private Transform _transform;
+		private Vector3 _transformPosition;
+		private Vector3 _transformEulerAngles;
 
 		[SerializeField] public TextAsset textAsset;
 		[SerializeField] public Vector2 cellSize = new Vector2(0.32f, 0.32f);
@@ -27,12 +27,12 @@ namespace CsCat
 
 		public void SetTransform(Transform transform)
 		{
-			this.transform = transform;
+			this._transform = transform;
 		}
 
 		public Transform GetTransform(Transform transform)
 		{
-			return this.transform;
+			return this._transform;
 		}
 
 		public Vector2 GetPosition(int pointXWithOffset, int pointYWithOffset)
@@ -161,8 +161,8 @@ namespace CsCat
 			foreach (var key in dataDict.Keys)
 				((Hashtable)dict["data_dict"])[key.ToString()] = dataDict[key];
 
-			dict["position"] = transform.position.ToString();
-			dict["eulerAngles"] = transform.eulerAngles.ToString();
+			dict["position"] = _transform.position.ToString();
+			dict["eulerAngles"] = _transform.eulerAngles.ToString();
 
 #if UNITY_EDITOR
 			string content = JsonMapper.ToJson(dict);
@@ -214,14 +214,14 @@ namespace CsCat
 				dataDict[key] = value;
 			}
 
-			transformPosition = jsonData["position"].ToString().ToVector3();
-			transformEulerAngles = jsonData["eulerAngles"].ToString().ToVector3();
+			_transformPosition = jsonData["position"].ToString().ToVector3();
+			_transformEulerAngles = jsonData["eulerAngles"].ToString().ToVector3();
 		}
 
 		public void ResetTransformInfo()
 		{
-			transform.position = transformPosition;
-			transform.eulerAngles = transformEulerAngles;
+			_transform.position = _transformPosition;
+			_transform.eulerAngles = _transformEulerAngles;
 		}
 	}
 }

@@ -34,9 +34,9 @@ namespace CsCat
 		/// <summary>
 		/// 所有的值
 		/// </summary>
-		[SerializeField] private List<ExcelRow> valueList;
+		[SerializeField] private List<ExcelRow> _valueList;
 
-		[NonSerialized] private Dictionary<string, ExcelRow> dataSourceItemListDict;
+		[NonSerialized] private Dictionary<string, ExcelRow> _dataSourceItemListDict;
 
 		#endregion
 
@@ -53,14 +53,11 @@ namespace CsCat
 		/// <returns></returns>
 		public T GetRow<T>(string id) where T : class
 		{
-			object value = null;
-			if (!this.dataDict.TryGetValue(id, out value))
+			if (!this.dataDict.TryGetValue(id, out var value))
 			{
 				value = this.CreateRowInstance<T>(id);
 				if (value != null)
-				{
 					this.dataDict[id] = value;
-				}
 			}
 
 			T t = value as T;
@@ -76,14 +73,15 @@ namespace CsCat
 		public void SetAssetData(LinkedDictionary<string, ExcelRow> data)
 		{
 			this.dataDict = new Dictionary<string, object>();
-			this.dataSourceItemListDict = null;
+			this._dataSourceItemListDict = null;
 			this.idList = new List<string>();
-			this.valueList = new List<ExcelRow>();
-			foreach (var key in data.Keys)
+			this._valueList = new List<ExcelRow>();
+			foreach (var kv in data)
 			{
-				ExcelRow row = data[key];
+				var key = kv.Key;
+				ExcelRow row = kv.Value;
 				this.idList.Add(key);
-				this.valueList.Add(row);
+				this._valueList.Add(row);
 			}
 		}
 
@@ -107,9 +105,7 @@ namespace CsCat
 			for (int i = 0; i < this.idList.Count; i++)
 			{
 				if (this.idList[i].Equals(id))
-				{
 					return i;
-				}
 			}
 
 			return -1;
@@ -124,7 +120,7 @@ namespace CsCat
 		/// <returns></returns>
 		public string GetValue(int rowIndex, int columnIndex)
 		{
-			return this.valueList[rowIndex].valueList[columnIndex].value;
+			return this._valueList[rowIndex].valueList[columnIndex].value;
 		}
 
 		/// <summary>
@@ -136,35 +132,32 @@ namespace CsCat
 		/// <returns></returns>
 		public T CreateRowInstance<T>(string id) where T : class
 		{
-			if (this.idList.Count != this.valueList.Count) //数量不等，报错
+			if (this.idList.Count != this._valueList.Count) //数量不等，报错
 			{
 				LogCat.LogErrorFormat("AssetDataSource OnAfterDeserialize Failed! keys.Count:{0}, values.Count:{1}",
-				  idList.Count, this.valueList.Count);
+				  idList.Count, this._valueList.Count);
 				return default(T);
 			}
 
-			if (this.dataSourceItemListDict == null)
+			if (this._dataSourceItemListDict == null)
 			{
-				this.dataSourceItemListDict = new Dictionary<string, ExcelRow>();
+				this._dataSourceItemListDict = new Dictionary<string, ExcelRow>();
 				for (int i = 0; i < this.idList.Count; i++)
 				{
-					this.dataSourceItemListDict[this.idList[i]] = this.valueList[i];
+					this._dataSourceItemListDict[this.idList[i]] = this._valueList[i];
 				}
 			}
 
-			ExcelRow excelRow = null;
-			T result = default(T); //最终的数据
-			if (this.dataSourceItemListDict.TryGetValue(id, out excelRow))
+			if (this._dataSourceItemListDict.TryGetValue(id, out var excelRow))
 			{
-				result = Activator.CreateInstance(typeof(T), true) as T;
+				var result = Activator.CreateInstance(typeof(T), true) as T; //最终的数据
 				Dictionary<string, MemberAccessor> accessorDict =
 				  MemberAccessorPool.instance.GetAccessors(typeof(T), BindingFlagsConst.Instance);
 				for (int j = 0; j < this.headerList.Count; j++) //循环每一列
 				{
 					ExcelHeader excelHeader = this.headerList[j];
 					object value = ExcelDatabaseUtil.Convert(excelRow.valueList[j].value, excelHeader.type); //转化对对应列所对应的类型的数据
-					MemberAccessor memberAccessor = null;
-					if (accessorDict.TryGetValue(excelHeader.name, out memberAccessor))
+					if (accessorDict.TryGetValue(excelHeader.name, out var memberAccessor))
 					{
 						try
 						{
@@ -181,7 +174,7 @@ namespace CsCat
 				return result;
 			}
 
-			return default(T);
+			return default;
 		}
 
 		#endregion

@@ -1,16 +1,15 @@
 using System;
-using System.Collections.Generic;
 
 namespace CsCat
 {
 	public class DelayEditHandler
 	{
-		private readonly object editTarget;
-		private Action toCallback;
+		private readonly object _editTarget;
+		private Action _toCallback;
 
 		public DelayEditHandler(object editTarget)
 		{
-			this.editTarget = editTarget;
+			this._editTarget = editTarget;
 		}
 
 		public object this[object key]
@@ -20,46 +19,46 @@ namespace CsCat
 
 		public void ToSet(object key, object value)
 		{
-			ToCallback(() => editTarget.SetPropertyValue("Item", value, new object[] { key }));
+			ToCallback(() => _editTarget.SetPropertyValue("Item", value, new[] { key }));
 		}
 
 
 		public void ToAdd(params object[] args)
 		{
-			ToCallback(() => editTarget.InvokeMethod("Add", true, args));
+			ToCallback(() => _editTarget.InvokeMethod("Add", true, args));
 		}
 
 		public void ToRemove(params object[] args)
 		{
-			ToCallback(() => editTarget.InvokeMethod("Remove", true, args));
+			ToCallback(() => _editTarget.InvokeMethod("Remove", true, args));
 		}
 
 		public void ToRemoveAt(int toRemoveIndex)
 		{
-			ToCallback(() => editTarget.InvokeMethod("RemoveAt", true, toRemoveIndex));
+			ToCallback(() => _editTarget.InvokeMethod("RemoveAt", true, toRemoveIndex));
 		}
 
 		public void ToRemoveAt_Stack(int toRemoveIndex)
 		{
-			ToCallback_Stack(() => editTarget.InvokeMethod("RemoveAt", true, toRemoveIndex));
+			ToCallback_Stack(() => _editTarget.InvokeMethod("RemoveAt", true, toRemoveIndex));
 		}
 
 		public void ToCallback(Action toCallback)
 		{
-			this.toCallback += toCallback;
+			this._toCallback += toCallback;
 		}
 
 		//后入先出
 		public void ToCallback_Stack(Action toCallback)
 		{
-			this.toCallback += toCallback + this.toCallback;
+			this._toCallback += toCallback + this._toCallback;
 		}
 
 
 		public void Handle()
 		{
-			this.toCallback?.Invoke();
-			this.toCallback = null;
+			this._toCallback?.Invoke();
+			this._toCallback = null;
 		}
 	}
 }

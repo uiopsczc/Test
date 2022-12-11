@@ -11,7 +11,7 @@ namespace CsCat
 			return !_isCanNotUpdate&&isEnabled && !this.isPaused && !IsDestroyed();
 		}
 
-		protected virtual bool IsNeedUpdateChildren()
+		protected virtual bool _IsNeedUpdateChildren()
 		{
 			return true;
 		}
@@ -21,7 +21,7 @@ namespace CsCat
 			if (!this.IsCanUpdate())
 				return;
 
-			if (IsNeedUpdateChildren())
+			if (_IsNeedUpdateChildren())
 			{
 				for (var i = 0; i < _childPoolItemIndexList.Count; i++)
 				{
@@ -36,7 +36,7 @@ namespace CsCat
 		public virtual void FixedUpdate(float deltaTime = 0, float unscaledDeltaTime = 0)
 		{
 			if (!this.IsCanUpdate()) return;
-			if (IsNeedUpdateChildren())
+			if (_IsNeedUpdateChildren())
 			{
 				for (var i = 0; i < _childPoolItemIndexList.Count; i++)
 				{
@@ -52,7 +52,7 @@ namespace CsCat
 		public virtual void LateUpdate(float deltaTime = 0, float unscaledDeltaTime = 0)
 		{
 			if (!this.IsCanUpdate()) return;
-			if (IsNeedUpdateChildren())
+			if (_IsNeedUpdateChildren())
 			{
 				for (var i = 0; i < _childPoolItemIndexList.Count; i++)
 				{
