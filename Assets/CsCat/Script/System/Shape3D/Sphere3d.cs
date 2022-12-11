@@ -38,18 +38,18 @@ namespace CsCat
 		{
 			List<KeyValuePair<Vector3, Vector3>> result = new List<KeyValuePair<Vector3, Vector3>>();
 
-			result.AddRange(new Circle3D(worldOffset, radius).MultiplyMatrix(matrix)
+			result.AddRange(new Circle3D(worldOffset, radius).MultiplyMatrix(_matrix)
 				.MultiplyMatrix(Matrix4x4.Rotate(Quaternion.Euler(90, 0, 0))).GetDrawLineList());
-			result.AddRange(new Circle3D(worldOffset, radius).MultiplyMatrix(matrix)
+			result.AddRange(new Circle3D(worldOffset, radius).MultiplyMatrix(_matrix)
 				.MultiplyMatrix(Matrix4x4.Rotate(Quaternion.Euler(0, 90, 0))).GetDrawLineList());
-			result.AddRange(new Circle3D(worldOffset, radius).MultiplyMatrix(matrix)
+			result.AddRange(new Circle3D(worldOffset, radius).MultiplyMatrix(_matrix)
 				.MultiplyMatrix(Matrix4x4.Rotate(Quaternion.Euler(0, 0, 90))).GetDrawLineList());
 
 			float eachDegree = 4;
 			int segmentNum = (int)Mathf.Ceil(360 / eachDegree);
 			for (int i = 0; i <= segmentNum; i++)
 			{
-				Circle3D circle = (Circle3D)(new Circle3D(worldOffset, radius).MultiplyMatrix(matrix)
+				Circle3D circle = (Circle3D)(new Circle3D(worldOffset, radius).MultiplyMatrix(_matrix)
 					.MultiplyMatrix(Matrix4x4.Rotate(Quaternion.Euler(0, 0, i * eachDegree))));
 				result.AddRange(circle.GetDrawLineList());
 			}

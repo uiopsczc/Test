@@ -17,9 +17,9 @@ namespace CsCat
 		public override void InitParentTransform(GameObject prefab, string category)
 		{
 			base.InitParentTransform(prefab, category);
-			rootTransform = GameObjectUtil.GetOrNewGameObject("UIPools", null).transform;
-			rootTransform.gameObject.AddComponent<Canvas>();
-			categoryTransform = rootTransform.GetOrNewGameObject(category).transform;
+			_rootTransform = GameObjectUtil.GetOrNewGameObject("UIPools", null).transform;
+			_rootTransform.gameObject.AddComponent<Canvas>();
+			_categoryTransform = _rootTransform.GetOrNewGameObject(category).transform;
 		}
 		
 	}

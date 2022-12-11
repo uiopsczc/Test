@@ -23,10 +23,10 @@ namespace CsCat
 			return clone;
 		}
 
-		protected override void OnDestroy(T value)
+		protected override void _OnDestroy(T value)
 		{
 			value.Destroy();
-			base.OnDestroy(value);
+			base._OnDestroy(value);
 		}
 	}
 }

@@ -5,7 +5,7 @@ namespace CsCat
 {
 	public class TabGroup
 	{
-		private List<Tab> _tabList = new List<Tab>();
+		private readonly List<Tab> _tabList = new List<Tab>();
 		public int curSelectedIndex = -1; //默认全部不选中
 		private int _preSelectedIndex = -1;
 

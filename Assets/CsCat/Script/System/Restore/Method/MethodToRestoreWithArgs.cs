@@ -30,7 +30,7 @@ namespace CsCat
 			var argTypes = new Type[methodArgsToRestore.Length];
 			for (var i = 0; i < methodArgsToRestore.Length; i++)
 				argTypes[i] = methodArgsToRestore[i].GetType();
-			methodInfoToRestore = type.GetMethodInfo(methodNameToRestore, BindingFlagsConst.All, argTypes);
+			_methodInfoToRestore = type.GetMethodInfo(methodNameToRestore, BindingFlagsConst.All, argTypes);
 		}
 
 		#endregion
@@ -42,7 +42,7 @@ namespace CsCat
 		/// </summary>
 		public override void Restore()
 		{
-			methodInfoToRestore.Invoke(toRestoreBase.owner, methodArgsToRestore);
+			_methodInfoToRestore.Invoke(toRestoreBase.owner, methodArgsToRestore);
 		}
 
 		#endregion

@@ -4,12 +4,12 @@ namespace CsCat
 	{
 		#region field
 
-		protected ToRestoreBase toRestoreBase;
+		protected ToRestoreBase _toRestoreBase;
 
 		/// <summary>
 		/// 还原时候的用到的值
 		/// </summary>
-		protected object valueToRestore;
+		protected object _valueToRestore;
 
 		#endregion
 
@@ -17,8 +17,8 @@ namespace CsCat
 
 		public object cause
 		{
-			set => toRestoreBase.cause = value;
-			get => toRestoreBase.cause;
+			set => _toRestoreBase.cause = value;
+			get => _toRestoreBase.cause;
 		}
 
 		#endregion
@@ -34,7 +34,7 @@ namespace CsCat
 		/// <param name="nameToRestore">需要还原的属性名</param>
 		protected MemberToRestoreBase(object cause, object owner, string nameToRestore)
 		{
-			toRestoreBase = new ToRestoreBase(cause, owner, nameToRestore);
+			_toRestoreBase = new ToRestoreBase(cause, owner, nameToRestore);
 		}
 
 		#endregion
@@ -47,12 +47,12 @@ namespace CsCat
 		{
 			if (!(obj is MemberToRestoreBase other))
 				return false;
-			return other.toRestoreBase.Equals(toRestoreBase);
+			return other._toRestoreBase.Equals(_toRestoreBase);
 		}
 
 		public override int GetHashCode()
 		{
-			return toRestoreBase.GetHashCode();
+			return _toRestoreBase.GetHashCode();
 		}
 
 		#endregion

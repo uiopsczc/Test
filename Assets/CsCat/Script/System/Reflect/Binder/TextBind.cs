@@ -17,7 +17,7 @@ namespace CsCat
 		public string formatString;
 
 
-		private Text text;
+		private Text _text;
 
 		#endregion
 
@@ -30,18 +30,18 @@ namespace CsCat
 		/// <param name="propertyName"></param>
 		/// <param name="oldValue"></param>
 		/// <param name="newValue"></param>
-		internal override void OnValueChanged(string propertyName, object oldValue, object newValue)
+		internal override void _OnValueChanged(string propertyName, object oldValue, object newValue)
 		{
-			if (this.text == null)
+			if (this._text == null)
 			{
-				this.text = base.GetComponent<Text>();
+				this._text = base.GetComponent<Text>();
 			}
 
 			string text = (newValue == null) ? StringConst.String_Empty : newValue.ToString();
 			if (!string.IsNullOrEmpty(this.formatString))
 				text = string.Format(this.formatString, text);
 
-			this.text.text = text;
+			this._text.text = text;
 		}
 
 		#endregion

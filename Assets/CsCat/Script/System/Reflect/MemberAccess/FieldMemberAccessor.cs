@@ -16,7 +16,7 @@ namespace CsCat
 		/// <summary>
 		///  该属性信息
 		/// </summary>
-		private readonly FieldInfo fieldInfo;
+		private readonly FieldInfo _fieldInfo;
 
 		#endregion
 
@@ -24,9 +24,9 @@ namespace CsCat
 
 		public FieldMemberAccessor(FieldInfo fieldInfo)
 		{
-			this.fieldInfo = fieldInfo;
-			InitializeGetter(fieldInfo); //初始化该属性的getter方法
-			InitializeSetter(fieldInfo); //初始化该属性的setter方法
+			this._fieldInfo = fieldInfo;
+			_InitializeGetter(fieldInfo); //初始化该属性的getter方法
+			_InitializeSetter(fieldInfo); //初始化该属性的setter方法
 		}
 
 		#endregion
@@ -36,12 +36,12 @@ namespace CsCat
 		/// <summary>
 		///   该属性类型
 		/// </summary>
-		public override Type memberType => fieldInfo.FieldType;
+		public override Type memberType => _fieldInfo.FieldType;
 
 		/// <summary>
 		///   该属性的信息
 		/// </summary>
-		public override MemberInfo memberInfo => fieldInfo;
+		public override MemberInfo memberInfo => _fieldInfo;
 
 		#endregion
 
@@ -54,7 +54,7 @@ namespace CsCat
 		///   创建的方法通过MemberAccessor的getter访问
 		/// </summary>
 		/// <param name="fieldInfo"></param>
-		private void InitializeGetter(FieldInfo fieldInfo)
+		private void _InitializeGetter(FieldInfo fieldInfo)
 		{
 			var dynamicMethod = new DynamicMethod(fieldInfo.ReflectedType.FullName + ".get_" + fieldInfo.Name,
 				typeof(object),
@@ -80,7 +80,7 @@ namespace CsCat
 		///   创建的方法通过MemberAccessor的setter访问
 		/// </summary>
 		/// <param name="fieldInfo"></param>
-		private void InitializeSetter(FieldInfo fieldInfo)
+		private void _InitializeSetter(FieldInfo fieldInfo)
 		{
 			//ReflectedType  如果filedInfo的类是内部定义类，则ReflectedType返回的是定义该内部内所在的类（即包含该内部类的类）
 			var dynamicMethod = new DynamicMethod(fieldInfo.ReflectedType.FullName + ".set_" + fieldInfo.Name,

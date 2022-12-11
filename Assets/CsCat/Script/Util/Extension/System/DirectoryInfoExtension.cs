@@ -22,9 +22,12 @@ namespace CsCat
 		public static void ClearDir(this DirectoryInfo self)
 		{
 			if (!self.IsDirectory()) return;
-			FileSystemInfo[] fileSystemInfoes = self.GetFileSystemInfos();
-			foreach (FileSystemInfo fileSystemInfo in fileSystemInfoes)
+			FileSystemInfo[] fileSystemInfos = self.GetFileSystemInfos();
+			for (var i = 0; i < fileSystemInfos.Length; i++)
+			{
+				FileSystemInfo fileSystemInfo = fileSystemInfos[i];
 				fileSystemInfo.RemoveFiles();
+			}
 		}
 
 		/// <summary>
@@ -36,14 +39,15 @@ namespace CsCat
 		/// <returns></returns>
 		public static List<FileSystemInfo> SearchFiles(this DirectoryInfo self, Func<FileSystemInfo, bool> filter)
 		{
-			FileSystemInfo[] fileSystemInfoes = self.GetFileSystemInfos();
+			FileSystemInfo[] fileSystemInfos = self.GetFileSystemInfos();
 			List<FileSystemInfo> result = new List<FileSystemInfo>();
-			foreach (FileSystemInfo fileSystemInfo in fileSystemInfoes)
+			for (var i = 0; i < fileSystemInfos.Length; i++)
 			{
+				FileSystemInfo fileSystemInfo = fileSystemInfos[i];
 				if (filter(fileSystemInfo))
 					result.Add(fileSystemInfo);
 				if (!fileSystemInfo.IsDirectory()) continue;
-				var subResultList = SearchFiles((DirectoryInfo)fileSystemInfo, filter);
+				var subResultList = SearchFiles((DirectoryInfo) fileSystemInfo, filter);
 				if (subResultList.Count > 0)
 					result.AddRange(subResultList);
 			}

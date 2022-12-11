@@ -1,11 +1,8 @@
-using System;
-using System.Collections.Generic;
-
 namespace CsCat
 {
 	public partial class PoolCat<T>
 	{
-		protected virtual void OnDestroy(T value)
+		protected virtual void _OnDestroy(T value)
 		{
 		}
 		public virtual void Destroy()
@@ -14,7 +11,7 @@ namespace CsCat
 			for (var i = 0; i < _poolItemList.Count; i++)
 			{
 				var poolItem = _poolItemList[i];
-				OnDestroy(poolItem.GetValue());
+				_OnDestroy(poolItem.GetValue());
 			}
 			_poolItemList.Clear();
 			_poolName = null;

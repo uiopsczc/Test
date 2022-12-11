@@ -5,11 +5,11 @@ namespace CsCat
 {
 	public class LinkedBufferCat : BufferCat
 	{
-		private readonly List<byte[]> bfs = new List<byte[]>();
-		private readonly int minBufferSize = 1024;
-		private int capacity;
-		private int firstOffset;
-		private int length;
+		private readonly List<byte[]> _bfs = new List<byte[]>();
+		private readonly int _minBufferSize = 1024;
+		private int _capacity;
+		private int _firstOffset;
+		private int _length;
 
 
 		/// <summary>
@@ -21,7 +21,7 @@ namespace CsCat
 		{
 			if (minBufferUnitSize <= 0)
 				throw new ArgumentException();
-			minBufferSize = minBufferUnitSize;
+			_minBufferSize = minBufferUnitSize;
 		}
 
 		public LinkedBufferCat()
@@ -34,7 +34,7 @@ namespace CsCat
 		/// <returns></returns>
 		public sealed override int Capacity()
 		{
-			return capacity - firstOffset;
+			return _capacity - _firstOffset;
 		}
 
 		/// <summary>
@@ -43,7 +43,7 @@ namespace CsCat
 		/// <returns></returns>
 		public sealed override int Length()
 		{
-			return length;
+			return _length;
 		}
 
 		/// <summary>
@@ -52,8 +52,8 @@ namespace CsCat
 		/// <returns></returns>
 		public sealed override void Clear()
 		{
-			length = 0;
-			firstOffset = 0;
+			_length = 0;
+			_firstOffset = 0;
 			CheckFreeBuffer();
 		}
 
@@ -66,10 +66,10 @@ namespace CsCat
 		{
 			if (length < 0)
 				throw new ArgumentException();
-			if (length > this.length)
+			if (length > this._length)
 				throw new IndexOutOfRangeException();
-			firstOffset += length;
-			this.length -= length;
+			_firstOffset += length;
+			this._length -= length;
 			CheckFreeBuffer();
 		}
 
@@ -82,9 +82,9 @@ namespace CsCat
 		{
 			if (length < 0)
 				throw new ArgumentException();
-			if (length > this.length)
+			if (length > this._length)
 				throw new IndexOutOfRangeException();
-			this.length -= length;
+			this._length -= length;
 			CheckFreeBuffer();
 		}
 
@@ -95,9 +95,9 @@ namespace CsCat
 		public sealed override void TrimBuffer()
 		{
 			var all = GetAll();
-			bfs.Clear();
-			bfs.Add(all);
-			capacity = all.Length;
+			_bfs.Clear();
+			_bfs.Add(all);
+			_capacity = all.Length;
 		}
 
 		/// <summary>
@@ -115,11 +115,11 @@ namespace CsCat
 				throw new IndexOutOfRangeException();
 
 
-			var need = length - (Capacity() - this.length);
+			var need = length - (Capacity() - this._length);
 			if (need > 0)
 				ExtendBuffer(need);
-			Set(this.length, data, offset, length);
-			this.length += length;
+			Set(this._length, data, offset, length);
+			this._length += length;
 		}
 
 		/// <summary>
@@ -130,11 +130,11 @@ namespace CsCat
 		public override void Append(ByteBufferCat bbf)
 		{
 			var len = bbf.Remaining();
-			var need = len - (Capacity() - length);
+			var need = len - (Capacity() - _length);
 			if (need > 0)
 				ExtendBuffer(need);
-			Set(length, bbf);
-			length += len;
+			Set(_length, bbf);
+			_length += len;
 		}
 
 		/// <summary>
@@ -147,8 +147,8 @@ namespace CsCat
 		public override void Pop(byte[] buf, int offset, int length)
 		{
 			Get(0, buf, offset, length);
-			firstOffset += length;
-			this.length -= length;
+			_firstOffset += length;
+			this._length -= length;
 			CheckFreeBuffer();
 		}
 
@@ -161,8 +161,8 @@ namespace CsCat
 		{
 			var len = bbf.Remaining();
 			Get(0, bbf);
-			firstOffset += len;
-			length -= len;
+			_firstOffset += len;
+			_length -= len;
 
 			CheckFreeBuffer();
 		}
@@ -183,18 +183,18 @@ namespace CsCat
 				throw new IndexOutOfRangeException();
 			if (length == 0)
 				return;
-			if (bfs.Count == 0)
+			if (_bfs.Count == 0)
 				throw new IndexOutOfRangeException();
 
-			var first = bfs.First();
-			if (firstOffset + pos >= first.Length)
+			var first = _bfs.First();
+			if (_firstOffset + pos >= first.Length)
 			{
-				pos -= first.Length - firstOffset;
+				pos -= first.Length - _firstOffset;
 			}
 			else
 			{
-				var copyPos = firstOffset + pos; // listi中要copy的位置
-				var copyLen = Math.Min(length, first.Length - (firstOffset + pos)); // listi中要copy的长度
+				var copyPos = _firstOffset + pos; // listi中要copy的位置
+				var copyLen = Math.Min(length, first.Length - (_firstOffset + pos)); // listi中要copy的长度
 				Array.Copy(data, offset, first, copyPos, copyLen);
 				offset += copyLen;
 				length -= copyLen;
@@ -204,9 +204,9 @@ namespace CsCat
 					return;
 			}
 
-			for (var i = 1; i < bfs.Count; i++)
+			for (var i = 1; i < _bfs.Count; i++)
 			{
-				var listi = bfs[i];
+				var listi = _bfs[i];
 				if (pos >= listi.Length)
 				{
 					pos -= listi.Length;
@@ -238,27 +238,27 @@ namespace CsCat
 				throw new IndexOutOfRangeException();
 			if (bbf.Remaining() == 0)
 				return;
-			if (bfs.Count == 0)
+			if (_bfs.Count == 0)
 				throw new IndexOutOfRangeException();
 
-			var first = bfs.First();
-			if (firstOffset + pos > first.Length)
+			var first = _bfs.First();
+			if (_firstOffset + pos > first.Length)
 			{
-				pos -= first.Length - firstOffset;
+				pos -= first.Length - _firstOffset;
 			}
 			else
 			{
-				var getPos = firstOffset + pos; // bbf从get_pos放数据到listi中
-				var getLen = Math.Min(bbf.Remaining(), first.Length - (firstOffset + pos)); // bbf放get_len长度的数据到listi中
+				var getPos = _firstOffset + pos; // bbf从get_pos放数据到listi中
+				var getLen = Math.Min(bbf.Remaining(), first.Length - (_firstOffset + pos)); // bbf放get_len长度的数据到listi中
 				bbf.Get(first, getPos, getLen);
 				pos = 0;
 				if (!bbf.IsHasRemaining())
 					return;
 			}
 
-			for (var i = 1; i < bfs.Count; i++)
+			for (var i = 1; i < _bfs.Count; i++)
 			{
-				var listi = bfs[i];
+				var listi = _bfs[i];
 				if (pos >= listi.Length)
 					pos -= listi.Length;
 				else
@@ -285,21 +285,21 @@ namespace CsCat
 		{
 			if (length < 0)
 				throw new ArgumentException();
-			if (pos < 0 || offset < 0 || offset + length > data.Length || pos + length > this.length)
+			if (pos < 0 || offset < 0 || offset + length > data.Length || pos + length > this._length)
 				throw new IndexOutOfRangeException();
 			if (length == 0)
 				return;
-			if (bfs.Count == 0)
+			if (_bfs.Count == 0)
 				throw new IndexOutOfRangeException();
 
-			var first = bfs.First();
-			if (firstOffset + pos > first.Length)
-				pos -= first.Length - firstOffset;
+			var first = _bfs.First();
+			if (_firstOffset + pos > first.Length)
+				pos -= first.Length - _firstOffset;
 			else
 			{
 				var copyPos = offset; // data从copy_pos开始复制
-				var copyLen = Math.Min(length, first.Length - (firstOffset + pos)); // data复制copy_len长度
-				Array.Copy(first, firstOffset + pos, data, copyPos, copyLen);
+				var copyLen = Math.Min(length, first.Length - (_firstOffset + pos)); // data复制copy_len长度
+				Array.Copy(first, _firstOffset + pos, data, copyPos, copyLen);
 				offset += copyLen;
 				length -= copyLen;
 				pos = 0;
@@ -308,9 +308,9 @@ namespace CsCat
 					return;
 			}
 
-			for (var i = 1; i < bfs.Count; i++)
+			for (var i = 1; i < _bfs.Count; i++)
 			{
-				var listi = bfs[i];
+				var listi = _bfs[i];
 				if (pos >= listi.Length)
 					pos -= listi.Length;
 				else
@@ -336,20 +336,20 @@ namespace CsCat
 		/// <returns></returns>
 		public override void Get(int pos, ByteBufferCat bbf)
 		{
-			if (pos < 0 || pos + bbf.Remaining() > length)
+			if (pos < 0 || pos + bbf.Remaining() > _length)
 				throw new IndexOutOfRangeException();
 			if (bbf.Remaining() == 0)
 				return;
-			if (bfs.Count == 0)
+			if (_bfs.Count == 0)
 				throw new IndexOutOfRangeException();
 
-			var first = bfs.First();
-			if (firstOffset + pos >= first.Length)
-				pos -= first.Length - firstOffset;
+			var first = _bfs.First();
+			if (_firstOffset + pos >= first.Length)
+				pos -= first.Length - _firstOffset;
 			else
 			{
-				var putPos = firstOffset + pos; // listi从get_pos放数据到bbf中
-				var putLen = Math.Min(bbf.Remaining(), first.Length - (firstOffset + pos));
+				var putPos = _firstOffset + pos; // listi从get_pos放数据到bbf中
+				var putLen = Math.Min(bbf.Remaining(), first.Length - (_firstOffset + pos));
 				// listi从get_pos放get_len长度的数据到bbf中
 				bbf.Put(first, putPos, putLen);
 				pos = 0;
@@ -358,9 +358,9 @@ namespace CsCat
 					return;
 			}
 
-			for (var i = 1; i < bfs.Count; i++)
+			for (var i = 1; i < _bfs.Count; i++)
 			{
-				var listi = bfs[i];
+				var listi = _bfs[i];
 				if (pos >= listi.Length)
 					pos -= listi.Length;
 				else
@@ -384,25 +384,25 @@ namespace CsCat
 		{
 			// 清空firstoffset之前的在bfs中的element;但不清firstoffset当前所在的element之前的元素
 			byte[] data;
-			if (bfs.Count > 0)
-				while (firstOffset >= (data = bfs.First()).Length)
+			if (_bfs.Count > 0)
+				while (_firstOffset >= (data = _bfs.First()).Length)
 				{
-					bfs.RemoveFirst();
-					firstOffset -= data.Length;
-					capacity -= data.Length;
-					if (bfs.Count == 0)
+					_bfs.RemoveFirst();
+					_firstOffset -= data.Length;
+					_capacity -= data.Length;
+					if (_bfs.Count == 0)
 						break;
 				}
 
 			// 清除最后面的多余的空间
-			if (bfs.Count > 0)
+			if (_bfs.Count > 0)
 				// 还有的空间=capacity-(offset+lenghth)
-				for (var i = Capacity() - length; i > (data = bfs.Last()).Length;)
+				for (var i = Capacity() - _length; i > (data = _bfs.Last()).Length;)
 				{
-					bfs.RemoveLast();
+					_bfs.RemoveLast();
 					i -= data.Length;
-					capacity -= data.Length;
-					if (bfs.Count == 0)
+					_capacity -= data.Length;
+					if (_bfs.Count == 0)
 						break;
 				}
 		}
@@ -416,10 +416,10 @@ namespace CsCat
 		{
 			if (len > 0)
 			{
-				len = Math.Max(len * 2, minBufferSize); // 增加传进来的长度的2倍,如果不够minBufferSize,则增加minBufferSize
+				len = Math.Max(len * 2, _minBufferSize); // 增加传进来的长度的2倍,如果不够minBufferSize,则增加minBufferSize
 				var extendedBytes = new byte[len];
-				bfs.Add(extendedBytes);
-				capacity += len;
+				_bfs.Add(extendedBytes);
+				_capacity += len;
 			}
 		}
 	}

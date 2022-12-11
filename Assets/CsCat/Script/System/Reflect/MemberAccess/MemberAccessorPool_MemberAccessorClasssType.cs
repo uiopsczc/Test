@@ -10,16 +10,6 @@ namespace CsCat
 		/// </summary>
 		public class MemberAccessorClassType
 		{
-			#region ctor
-
-			public MemberAccessorClassType(Type classType, BindingFlags bindingFlags)
-			{
-				this.classType = classType;
-				this.bindingFlags = bindingFlags;
-			}
-
-			#endregion
-
 			#region field
 
 			/// <summary>
@@ -33,6 +23,18 @@ namespace CsCat
 			public BindingFlags bindingFlags;
 
 			#endregion
+
+			#region ctor
+
+			public MemberAccessorClassType(Type classType, BindingFlags bindingFlags)
+			{
+				this.classType = classType;
+				this.bindingFlags = bindingFlags;
+			}
+
+			#endregion
+
+			
 
 			#region override method
 

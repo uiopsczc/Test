@@ -15,7 +15,7 @@ namespace CsCat
 			methodNameToRestore)
 		{
 			var type = owner.GetType();
-			methodInfoToRestore = type.GetMethodInfo2(methodNameToRestore);
+			_methodInfoToRestore = type.GetMethodInfo2(methodNameToRestore);
 		}
 
 		#endregion
@@ -27,7 +27,7 @@ namespace CsCat
 		/// </summary>
 		public override void Restore()
 		{
-			methodInfoToRestore.Invoke(toRestoreBase.owner, null);
+			_methodInfoToRestore.Invoke(toRestoreBase.owner, null);
 		}
 
 		#endregion

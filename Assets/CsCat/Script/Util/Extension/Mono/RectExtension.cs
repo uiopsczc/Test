@@ -11,7 +11,7 @@ namespace CsCat
 		/// <param name="scaleFactor"></param>
 		/// <param name="pivotPointOffset">中心点偏移，默认(0,0)是在中心</param>
 		/// <returns></returns>
-		public static Rect ScaleBy(this Rect self, float scaleFactor, Vector2 pivotPointOffset = default(Vector2))
+		public static Rect ScaleBy(this Rect self, float scaleFactor, Vector2 pivotPointOffset = default)
 		{
 			return RectUtil.ScaleBy(self, scaleFactor, pivotPointOffset);
 		}

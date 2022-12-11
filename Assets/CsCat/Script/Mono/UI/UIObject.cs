@@ -6,16 +6,16 @@ namespace CsCat
 {
 	public partial class UIObject : CommonViewTreeNode
 	{
-		public UIObject parentUIObject => _cache.GetOrAddDefault("parentUIObject", () => GetParent<UIObject>());
+		public UIObject parentUIObject => _cache.GetOrAddDefault("parentUIObject", GetParent<UIObject>);
 
-		public UIPanel parentUIPanel => _cache.GetOrAddDefault("parentUIPanel", () => GetParent<UIPanel>());
+		public UIPanel parentUIPanel => _cache.GetOrAddDefault("parentUIPanel", GetParent<UIPanel>);
 
 		protected virtual Transform _contentTransform
 		{
 			get{return _cache.GetOrAddDefault("contentTransform", () => GetTransform().Find("Nego_Content"));}
 		}
 
-		protected override bool IsNeedUpdateChildren()
+		protected override bool _IsNeedUpdateChildren()
 		{
 			return false;
 		}

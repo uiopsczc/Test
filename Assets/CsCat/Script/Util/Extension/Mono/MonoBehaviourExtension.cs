@@ -72,10 +72,10 @@ namespace CsCat
 			return MonoBehaviourUtil.StartCachePausableCoroutine(self, ieName, toStartIE);
 		}
 
-		public static PausableCoroutine StopAndStartCachePausableCoroutine(this MonoBehaviour self, string ie_name,
+		public static PausableCoroutine StopAndStartCachePausableCoroutine(this MonoBehaviour self, string ieName,
 			IEnumerator toStartIE)
 		{
-			return MonoBehaviourUtil.StopAndStartCachePausableCoroutine(self, ie_name, toStartIE);
+			return MonoBehaviourUtil.StopAndStartCachePausableCoroutine(self, ieName, toStartIE);
 		}
 
 		public static PausableCoroutine StopAndStartPausableCoroutine(this MonoBehaviour self,

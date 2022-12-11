@@ -26,16 +26,17 @@ namespace CsCat
 		}
 
 		//获取zhi_shu指数对应的单位
-		public static string GetNumberUnitInfoByZhiShu(int zhi_shu, List<NumberUnitInfo> numberUnitList = null)
+		public static string GetNumberUnitInfoByZhiShu(int zhiShu, List<NumberUnitInfo> numberUnitList = null)
 		{
 			numberUnitList = numberUnitList ?? NumberUnitConst.NumberUnitList;
-			foreach (var number_unit_info in numberUnitList)
+			for (var i = 0; i < numberUnitList.Count; i++)
 			{
-				if (number_unit_info.zhiShu == zhi_shu)
-					return number_unit_info.numberUnit;
+				var numberUnitInfo = numberUnitList[i];
+				if (numberUnitInfo.zhiShu == zhiShu)
+					return numberUnitInfo.numberUnit;
 			}
 
-			throw new Exception(string.Format("没有该指数的单位信息 指数:{0}", zhi_shu)); //指数
+			throw new Exception(string.Format("没有该指数的单位信息 指数:{0}", zhiShu)); //指数
 		}
 
 		//when_show_unit传入的是大于多少开始显示单位

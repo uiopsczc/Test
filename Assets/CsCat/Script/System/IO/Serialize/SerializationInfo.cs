@@ -5,14 +5,14 @@ namespace CsCat
 {
 	public struct SerializationInfo
 	{
-		private readonly ArrayList list;
-		private readonly object context;
+		private readonly ArrayList _list;
+		private readonly object _context;
 
 
 		internal SerializationInfo(ArrayList list, object context)
 		{
-			this.list = list;
-			this.context = context;
+			this._list = list;
+			this._context = context;
 		}
 
 
@@ -25,13 +25,13 @@ namespace CsCat
 
 		public object GetValue(string name, Type type)
 		{
-			var count = list.Count;
+			var count = _list.Count;
 			for (var i = 0; i < count; i++)
 			{
-				var enumerator = (list[i] as Hashtable).GetEnumerator();
+				var enumerator = (_list[i] as Hashtable).GetEnumerator();
 				enumerator.MoveNext();
 				var key = enumerator.Key.ToString();
-				if (name == key) return JsonSerializer.Deserialize(enumerator.Value, type, context);
+				if (name == key) return JsonSerializer.Deserialize(enumerator.Value, type, _context);
 			}
 
 			return null;
@@ -40,9 +40,9 @@ namespace CsCat
 		public void SetValue(string name, object value)
 		{
 			if (value == null) return;
-			var value2 = JsonSerializer.SerializeObject(value, context);
+			var value2 = JsonSerializer.SerializeObject(value, _context);
 			var hashtable = new Hashtable { [name] = value2 };
-			list.Add(hashtable);
+			_list.Add(hashtable);
 		}
 	}
 }

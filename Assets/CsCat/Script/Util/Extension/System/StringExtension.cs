@@ -188,9 +188,13 @@ namespace CsCat
 		public static bool ContainTags(this string self, params string[] checkTags)
 		{
 			var tags = self.Split(MultiTagsUtil.TAG_SEPARATOR);
-			foreach (var checkTag in checkTags)
+			for (var i = 0; i < checkTags.Length; i++)
+			{
+				var checkTag = checkTags[i];
 				if (!tags.Contains(checkTag))
 					return false;
+			}
+
 			return true;
 		}
 
@@ -457,8 +461,9 @@ namespace CsCat
 			var regex = new Regex(pattern);
 			var startIndex = -1;
 			var matchCollection = regex.Matches(self);
-			foreach (Match match in matchCollection)
+			for (var i = 0; i < matchCollection.Count; i++)
 			{
+				Match match = matchCollection[i];
 				var element = self.Substring(startIndex + 1, match.Index - (startIndex + 1));
 				resultList.Add(element);
 				startIndex = match.Index;
@@ -489,7 +494,12 @@ namespace CsCat
 			if (self.IsNullOrWhiteSpace())
 				return list;
 			var elements = self.SplitIgnore(split);
-			foreach (var element in elements) list.Add(element.To<T>());
+			for (var i = 0; i < elements.Length; i++)
+			{
+				var element = elements[i];
+				list.Add(element.To<T>());
+			}
+
 			return list;
 		}
 
@@ -502,8 +512,9 @@ namespace CsCat
 		{
 			var elementList = self.ToList<string>(split, trimLeft, trimRight);
 			var dict = new Dictionary<TKey, TValue>();
-			foreach (var element in elementList)
+			for (var i = 0; i < elementList.Count; i++)
 			{
+				var element = elementList[i];
 				var ss = element.SplitIgnore(subSeparator, elementIgnoreLeft, elementIgnoreRight);
 				var keyString = ss[0];
 				var valueString = ss[1];
@@ -833,8 +844,9 @@ namespace CsCat
 			self = self.Trim();
 			using (var scope = new StringBuilderScope(self.Length))
 			{
-				foreach (var t in self)
+				for (var i = 0; i < self.Length; i++)
 				{
+					var t = self[i];
 					if (!char.IsDigit(t))
 						break;
 					scope.stringBuilder.Append(t);

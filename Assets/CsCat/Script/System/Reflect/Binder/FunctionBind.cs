@@ -15,7 +15,7 @@ namespace CsCat
 		/// <summary>
 		/// 绑定的propertyName属性的值改变的时候触发mBindedFunc的调用
 		/// </summary>
-		private Action<GameObject, object, object> bindedFunc;
+		private Action<GameObject, object, object> _bindedFunc;
 
 		#endregion
 
@@ -27,7 +27,7 @@ namespace CsCat
 		/// <param name="func"></param>
 		public void SetFunc(Action<GameObject, object, object> func)
 		{
-			this.bindedFunc = func;
+			this._bindedFunc = func;
 		}
 
 		/// <summary>
@@ -38,7 +38,7 @@ namespace CsCat
 		/// <param name="newValue"></param>
 		internal override void OnValueChanged(string propertyName, object oldValue, object newValue)
 		{
-			bindedFunc?.Invoke(gameObject, oldValue, newValue);
+			_bindedFunc?.Invoke(gameObject, oldValue, newValue);
 		}
 
 		#endregion

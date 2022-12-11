@@ -12,7 +12,7 @@ namespace CsCat
 		/// <summary>
 		///   所有类的指定bindingFlags指定属性访问器
 		/// </summary>
-		protected Dictionary<MemberAccessorClassType, MemberAccessorDict> classTypeAccessorDict =
+		protected Dictionary<MemberAccessorClassType, MemberAccessorDict> _classTypeAccessorDict =
 			new Dictionary<MemberAccessorClassType, MemberAccessorDict>();
 
 
@@ -31,11 +31,11 @@ namespace CsCat
 		/// <returns></returns>
 		public Dictionary<string, MemberAccessor> GetAccessors(Type classType, BindingFlags bindingFlags)
 		{
-			var value = GetAssessorInfo(classType, bindingFlags);
+			var value = _GetAssessorInfo(classType, bindingFlags);
 			if (value == null) //没有的话，就创建
 			{
 				value = new MemberAccessorDict(classType.GetFields(bindingFlags));
-				classTypeAccessorDict.Add(new MemberAccessorClassType(classType, bindingFlags), value);
+				_classTypeAccessorDict.Add(new MemberAccessorClassType(classType, bindingFlags), value);
 			}
 
 			return value.memberAccessorDict;
@@ -49,14 +49,14 @@ namespace CsCat
 		/// <param name="classType"></param>
 		/// <param name="bindingFlags"></param>
 		/// <returns></returns>
-		protected MemberAccessorDict GetAssessorInfo(Type classType, BindingFlags bindingFlags)
+		protected MemberAccessorDict _GetAssessorInfo(Type classType, BindingFlags bindingFlags)
 		{
 			var tempMemberAccessorType = new MemberAccessorClassType(typeof(Type), BindingFlags.Default)
 			{
 				classType = classType,
 				bindingFlags = bindingFlags
 			};
-			classTypeAccessorDict.TryGetValue(tempMemberAccessorType, out var result);
+			_classTypeAccessorDict.TryGetValue(tempMemberAccessorType, out var result);
 			return result;
 		}
 	}

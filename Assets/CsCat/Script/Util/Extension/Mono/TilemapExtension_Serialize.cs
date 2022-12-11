@@ -35,23 +35,23 @@ namespace CsCat
 				Vector3Int current = origin + new Vector3Int(offsetX, offsetY, offsetZ);
 				if (self.HasTile(current))
 				{
-					Hashtable tile_detail_hashtable = new Hashtable();
+					Hashtable tileDetailHashtable = new Hashtable();
 
 					TileBase tileBase = self.GetTile(current);
 					string assetPath = tileBase.GetAssetPath();
 					string guid = AssetDatabase.AssetPathToGUID(assetPath);
 					long refId = AssetPathRefManager.instance.GetRefIdByGuid(guid);
-					tile_detail_hashtable[StringConst.String_tileBase_ref_id] = refId;
+					tileDetailHashtable[StringConst.String_tileBase_ref_id] = refId;
 					if (ref_id_hashtable != null)
 						ref_id_hashtable[refId] = true;
 
 					TileFlags tileFlags = self.GetTileFlags(current);
-					tile_detail_hashtable[StringConst.String_tileFlags] = (int)tileFlags;
+					tileDetailHashtable[StringConst.String_tileFlags] = (int)tileFlags;
 
-					tile_detail_hashtable[StringConst.String_transformMatrix] =
+					tileDetailHashtable[StringConst.String_transformMatrix] =
 						self.GetTransformMatrix(current).ToStringOrDefault(null, Matrix4x4.identity);
 
-					tileHashtable[current.ToString()] = tile_detail_hashtable;
+					tileHashtable[current.ToString()] = tileDetailHashtable;
 				}
 			}
 

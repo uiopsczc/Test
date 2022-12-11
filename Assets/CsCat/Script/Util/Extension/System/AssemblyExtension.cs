@@ -12,8 +12,10 @@ namespace CsCat
 		public static Type[] GetTypesOfNameSpace(this Assembly assembly, string targetNamespace)
 		{
 			List<Type> typeList = new List<Type>();
-			foreach (var type in assembly.GetTypes())
+			var types = assembly.GetTypes();
+			for (var i = 0; i < types.Length; i++)
 			{
+				var type = types[i];
 				if (targetNamespace.Equals(type.Namespace))
 					typeList.Add(type);
 			}
@@ -25,10 +27,13 @@ namespace CsCat
 		public static MemberInfo[] GetCustomAttributeMemberInfos<T>(this Assembly assembly)
 		{
 			List<MemberInfo> result = new List<MemberInfo>();
-			foreach (var type in assembly.GetTypes())
+			var types = assembly.GetTypes();
+			for (var i = 0; i < types.Length; i++)
 			{
-				foreach (var memberInfo in type.GetMembers(BindingFlagsConst.All))
+				var type = types[i];
+				for (var j = 0; j < type.GetMembers(BindingFlagsConst.All).Length; j++)
 				{
+					var memberInfo = type.GetMembers(BindingFlagsConst.All)[j];
 					if (memberInfo.GetCustomAttribute<T>() == null) continue;
 					result.AddUnique(memberInfo);
 				}

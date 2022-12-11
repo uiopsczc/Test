@@ -14,8 +14,8 @@ namespace CsCat
 		#region field
 
 		private Image _image;
-		private float curValue;
-		private float maxValue;
+		private float _curValue;
+		private float _maxValue;
 
 		#endregion
 
@@ -106,8 +106,8 @@ namespace CsCat
 		/// <param name="newValue"></param>
 		internal void OnMaxValueChanged(string propertyName, object oldValue, object newValue)
 		{
-			this.maxValue = Convert.ToSingle(newValue);
-			this.image.fillAmount = this.curValue / this.maxValue;
+			this._maxValue = Convert.ToSingle(newValue);
+			this.image.fillAmount = this._curValue / this._maxValue;
 		}
 
 		/// <summary>
@@ -118,8 +118,8 @@ namespace CsCat
 		/// <param name="newValue"></param>
 		internal void OnCurValueChanged(string propertyName, object oldValue, object newValue)
 		{
-			this.curValue = (float)Convert.ToDouble(newValue);
-			this.image.fillAmount = this.curValue / this.maxValue;
+			this._curValue = (float)Convert.ToDouble(newValue);
+			this.image.fillAmount = this._curValue / this._maxValue;
 		}
 
 		#endregion

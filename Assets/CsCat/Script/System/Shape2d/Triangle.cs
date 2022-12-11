@@ -68,13 +68,13 @@ namespace CsCat
 
 
 		//测试给定点是否在三角型中(包括这个点在边界上)
-		public bool IsPointIn(Vector2 test_point)
+		public bool IsPointIn(Vector2 testPoint)
 		{
 			// 点在所有边的右面
 			int count = 0;
 			for (int i = 0; i < 3; i++)
 			{
-				if (lineList[i].ClassifyPoint(test_point) != PointClassification.LeftSide)
+				if (lineList[i].ClassifyPoint(testPoint) != PointClassification.LeftSide)
 					count++;
 			}
 

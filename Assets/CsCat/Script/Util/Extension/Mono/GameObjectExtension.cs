@@ -113,7 +113,7 @@ namespace CsCat
 		/// </summary>
 		/// <param name="gameObject"></param>
 		/// <param name="cause"></param>
-		public static void SetPuase(this GameObject self, object cause)
+		public static void SetPause(this GameObject self, object cause)
 		{
 			PauseUtil.SetPause(self, cause);
 		}
@@ -256,8 +256,10 @@ namespace CsCat
 			}
 
 			float maxDuration = 0;
-			foreach (var particleSystem in self.GetComponentsInChildren<ParticleSystem>())
+			var particleSystems = self.GetComponentsInChildren<ParticleSystem>();
+			for (var i = 0; i < particleSystems.Length; i++)
 			{
+				var particleSystem = particleSystems[i];
 				var duration = particleSystem.GetDuration(false);
 				if (duration == -1)
 					return duration;

@@ -12,8 +12,9 @@ namespace CsCat
 		/// <returns></returns>
 		public static AnimationClip GetAnimationClip(Animator animator, string name)
 		{
-			foreach (var animationClip in animator.runtimeAnimatorController.animationClips)
+			for (var i = 0; i < animator.runtimeAnimatorController.animationClips.Length; i++)
 			{
+				var animationClip = animator.runtimeAnimatorController.animationClips[i];
 				if (animationClip.name == name)
 					return animationClip;
 			}

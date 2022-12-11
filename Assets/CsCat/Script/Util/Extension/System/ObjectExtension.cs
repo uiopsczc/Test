@@ -672,8 +672,7 @@ namespace CsCat
 		/// </summary>
 		public static double[] ToDoublesOrToDefault(this object self, double[] defaultValue = null)
 		{
-			var doubles = self as double[];
-			if (doubles != null)
+			if (self is double[] doubles)
 				return doubles;
 			if (self.IsArray())
 			{
@@ -692,8 +691,7 @@ namespace CsCat
 		/// </summary>
 		public static string[] ToStringsOrToDefault(this object self, string[] defaultValue = null)
 		{
-			var strings = self as string[];
-			if (strings != null)
+			if (self is string[] strings)
 				return strings;
 			if (self.IsArray())
 			{

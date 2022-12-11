@@ -12,7 +12,7 @@ namespace CsCat
 		/// <summary>
 		/// 是否是顺时针
 		/// </summary>
-		private bool isClockwise = true;
+		private bool _isClockwise = true;
 
 		#endregion
 
@@ -321,14 +321,14 @@ namespace CsCat
 		/// <param name="value"></param>
 		public void SetClockWise(bool value)
 		{
-			if (this.isClockwise != value)
+			if (this._isClockwise != value)
 				Reverse();
-			this.isClockwise = value;
+			this._isClockwise = value;
 		}
 
 		public bool GetClockWise()
 		{
-			return this.isClockwise;
+			return this._isClockwise;
 		}
 
 		/// <summary>
@@ -351,11 +351,8 @@ namespace CsCat
 				{
 					if (cur_dir.EqualsEPSILON(last_dir))
 						continue;
-					else
-					{
-						last_dir = cur_dir;
-						ret.Add(line.localVertexList[0]);
-					}
+					last_dir = cur_dir;
+					ret.Add(line.localVertexList[0]);
 				}
 			}
 

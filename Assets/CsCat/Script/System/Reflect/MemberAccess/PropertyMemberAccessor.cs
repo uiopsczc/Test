@@ -16,7 +16,7 @@ namespace CsCat
 		/// <summary>
 		///   该属性信息
 		/// </summary>
-		private readonly PropertyInfo propertyInfo;
+		private readonly PropertyInfo _propertyInfo;
 
 		#endregion
 
@@ -24,8 +24,8 @@ namespace CsCat
 
 		public PropertyMemberAccessor(PropertyInfo propertyInfo)
 		{
-			this.propertyInfo = propertyInfo;
-			InitializeGetter(propertyInfo); //设置getter方法
+			this._propertyInfo = propertyInfo;
+			_InitializeGetter(propertyInfo); //设置getter方法
 			InitializeSetter(propertyInfo); //设置setter方法
 		}
 
@@ -36,12 +36,12 @@ namespace CsCat
 		/// <summary>
 		///   该属性类型
 		/// </summary>
-		public override Type memberType => propertyInfo.PropertyType;
+		public override Type memberType => _propertyInfo.PropertyType;
 
 		/// <summary>
 		///   该属性的信息
 		/// </summary>
-		public override MemberInfo memberInfo => propertyInfo;
+		public override MemberInfo memberInfo => _propertyInfo;
 
 		#endregion
 
@@ -53,7 +53,7 @@ namespace CsCat
 		///   创建的方法通过MemberAccessor的getter访问
 		/// </summary>
 		/// <param name="propertyInfo"></param>
-		private void InitializeGetter(PropertyInfo propertyInfo)
+		private void _InitializeGetter(PropertyInfo propertyInfo)
 		{
 			//ReflectedType  如果filedInfo的类是内部定义类，则ReflectedType返回的是定义该内部内所在的类（即包含该内部类的类）
 			var dynamicMethod = new DynamicMethod(

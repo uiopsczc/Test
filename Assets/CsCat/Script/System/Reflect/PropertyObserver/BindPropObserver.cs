@@ -24,7 +24,7 @@ namespace CsCat
 		/// <param name="listener"></param>
 		public override void AddPropertyChangedListener(string propertyName, Action<string, object, object> listener)
 		{
-			((PropObserver)propOwner).AddPropListener(propertyName, listener);
+			((PropObserver)_propOwner).AddPropListener(propertyName, listener);
 		}
 
 		/// <summary>
@@ -35,7 +35,7 @@ namespace CsCat
 		public override void RemovePropertyChangedListener(string propertyName,
 			Action<string, object, object> listener)
 		{
-			((PropObserver)propOwner).RemovePropListener(propertyName, listener);
+			((PropObserver)_propOwner).RemovePropListener(propertyName, listener);
 		}
 
 		#endregion

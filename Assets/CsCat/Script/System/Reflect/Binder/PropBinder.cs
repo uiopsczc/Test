@@ -12,22 +12,22 @@ namespace CsCat
 		/// <summary>
 		/// 要被绑定的属性
 		/// </summary>
-		protected string propName;
+		protected string _propName;
 
 		/// <summary>
 		/// 是否已经
 		/// </summary>
-		protected bool isRegisted;
+		protected bool _isRegisted;
 
 		/// <summary>
 		/// 属性观察者
 		/// </summary>
-		protected IPropertyObserver propertyObserver;
+		protected IPropertyObserver _propertyObserver;
 
 		/// <summary>
 		/// binder
 		/// </summary>
-		protected object binder;
+		protected object _binder;
 
 		#endregion
 
@@ -41,7 +41,7 @@ namespace CsCat
 		/// <summary>
 		/// 属性观察者
 		/// </summary>
-		public IPropertyObserver PropertyObserver => this.propertyObserver;
+		public IPropertyObserver PropertyObserver => this._propertyObserver;
 
 		#endregion
 
@@ -51,7 +51,7 @@ namespace CsCat
 		/// 值被改变时候的调用
 		/// Register中会对其进行observer的listener的引用
 		/// </summary>
-		protected Action<string, object, object> valueChangedHandler;
+		protected Action<string, object, object> _valueChangedHandler;
 
 		#endregion
 
@@ -59,7 +59,7 @@ namespace CsCat
 
 		public PropBinder(object binder)
 		{
-			this.binder = binder;
+			this._binder = binder;
 		}
 
 		#endregion
@@ -78,7 +78,7 @@ namespace CsCat
 			if (propertyObserver == null)
 				return;
 
-			this.Bind(propName, handler, propertyObserver);
+			this._Bind(propName, handler, propertyObserver);
 		}
 
 		/// <summary>
@@ -87,7 +87,7 @@ namespace CsCat
 		/// <returns></returns>
 		public string GetPropName()
 		{
-			return this.propName;
+			return this._propName;
 		}
 
 		/// <summary>
@@ -103,8 +103,8 @@ namespace CsCat
 		/// </summary>
 		public void OnEnable()
 		{
-			if (!this.isRegisted)
-				this.Regist();
+			if (!this._isRegisted)
+				this._Regist();
 		}
 
 		/// <summary>
@@ -112,9 +112,9 @@ namespace CsCat
 		/// </summary>
 		public void Unbind()
 		{
-			this.Unregist();
-			this.propertyObserver = null;
-			this.propName = null;
+			this._Unregist();
+			this._propertyObserver = null;
+			this._propName = null;
 		}
 
 		#endregion
@@ -125,12 +125,12 @@ namespace CsCat
 		/// 注册对应mPropName属性的listener
 		/// </summary>
 		/// <returns></returns>
-		protected bool Regist()
+		protected bool _Regist()
 		{
-			this.isRegisted = true;
-			if (this.propertyObserver != null)
+			this._isRegisted = true;
+			if (this._propertyObserver != null)
 			{
-				this.propertyObserver.AddPropertyChangedListener(this.propName, this.OnValueChanged);
+				this._propertyObserver.AddPropertyChangedListener(this._propName, this._OnValueChanged);
 				return true;
 			}
 
@@ -141,12 +141,12 @@ namespace CsCat
 		/// 注册对应mPropName属性的listener
 		/// </summary>
 		/// <returns></returns>
-		protected bool Unregist()
+		protected bool _Unregist()
 		{
-			this.isRegisted = false;
-			if (this.propertyObserver != null)
+			this._isRegisted = false;
+			if (this._propertyObserver != null)
 			{
-				this.propertyObserver.RemovePropertyChangedListener(this.propName, this.OnValueChanged);
+				this._propertyObserver.RemovePropertyChangedListener(this._propName, this._OnValueChanged);
 				return true;
 			}
 
@@ -163,14 +163,14 @@ namespace CsCat
 		/// <param name="propName"></param>
 		/// <param name="handler"></param>
 		/// <param name="observer"></param>
-		private void Bind(string propName, Action<string, object, object> handler, IPropertyObserver observer)
+		private void _Bind(string propName, Action<string, object, object> handler, IPropertyObserver observer)
 		{
-			this.Unregist();
-			this.propertyObserver = observer;
-			this.propName = propName;
-			this.valueChangedHandler = handler;
-			this.Regist();
-			CheckBinderIsValidObject();
+			this._Unregist();
+			this._propertyObserver = observer;
+			this._propName = propName;
+			this._valueChangedHandler = handler;
+			this._Regist();
+			_CheckBinderIsValidObject();
 		}
 
 		/// <summary>
@@ -179,26 +179,26 @@ namespace CsCat
 		/// <param name="propertyName"></param>
 		/// <param name="oldValue"></param>
 		/// <param name="newValue"></param>
-		private void OnValueChanged(string propertyName, object oldValue, object newValue)
+		private void _OnValueChanged(string propertyName, object oldValue, object newValue)
 		{
-			if (!CheckBinderIsValidObject())
+			if (!_CheckBinderIsValidObject())
 				return;
 
 			if (this.GetterProxy != null)
 				newValue = this.GetterProxy(newValue);
 
-			this.valueChangedHandler(this.propName, oldValue, newValue);
+			this._valueChangedHandler(this._propName, oldValue, newValue);
 		}
 
 		/// <summary>
 		/// 检查binder是不是有效
 		/// </summary>
 		/// <returns></returns>
-		bool CheckBinderIsValidObject()
+		bool _CheckBinderIsValidObject()
 		{
-			if (!this.binder.IsValidObject())
+			if (!this._binder.IsValidObject())
 			{
-				this.Unregist();
+				this._Unregist();
 				return false;
 			}
 

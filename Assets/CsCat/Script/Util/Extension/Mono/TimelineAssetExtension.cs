@@ -12,11 +12,11 @@ namespace CsCat
 
 		public static TrackAsset GetTrackAsset(this TimelineAsset self, string trackName)
 		{
-			foreach (var output_track in self.GetOutputTracks())
+			foreach (var outputTrack in self.GetOutputTracks())
 			{
-				if (output_track.name.Equals(trackName))
-					return output_track;
-				TrackAsset successFoundTrackAsset = GetSubTrackAsset(output_track, trackName);
+				if (outputTrack.name.Equals(trackName))
+					return outputTrack;
+				TrackAsset successFoundTrackAsset = GetSubTrackAsset(outputTrack, trackName);
 				if (successFoundTrackAsset != null)
 					return successFoundTrackAsset;
 			}
@@ -62,8 +62,9 @@ namespace CsCat
 					//                    }
 					//                }
 					TrackAsset cloneTrackAsset = clone.CreateTrack(outputTrack.GetType(), null, outputTrack.name);
-					foreach (var info in outputTrack.GetType().GetProperties())
+					for (var i = 0; i < outputTrack.GetType().GetProperties().Length; i++)
 					{
+						var info = outputTrack.GetType().GetProperties()[i];
 						if (info.GetSetMethod(true) != null || info.GetSetMethod() != null)
 							cloneTrackAsset.SetPropertyValue(info.Name, outputTrack.GetPropertyValue(info.Name));
 					}

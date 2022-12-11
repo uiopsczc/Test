@@ -10,8 +10,8 @@ namespace CsCat
 {
 	public class ShellUtil
 	{
-		private static List<Action> _queue = new List<Action>();
-		private List<string> _enviroumentVarList = new List<string>();
+		private static readonly List<Action> _queue = new List<Action>();
+		private readonly List<string> _environmentVarList = new List<string>();
 
 		private static string shellApp
 		{
@@ -106,7 +106,7 @@ namespace CsCat
 					};
 					process.Exited += delegate (object sender, EventArgs e) { LogCat.LogError(e.ToString()); };
 
-					bool is_has_error = false;
+					bool isHasError = false;
 					do
 					{
 						string line = process.StandardOutput.ReadLine();
@@ -123,12 +123,12 @@ namespace CsCat
 						if (string.IsNullOrEmpty(error))
 							break;
 
-						is_has_error = true;
+						isHasError = true;
 						_queue.Add(delegate () { shellRequest.Log(LogCatType.Error, error); });
 					}
 
 					process.Close();
-					if (is_has_error)
+					if (isHasError)
 						_queue.Add(delegate () { shellRequest.Error(); });
 					else
 						_queue.Add(delegate () { shellRequest.NotifyDone(); });
@@ -145,17 +145,18 @@ namespace CsCat
 
 		public void AddEnvironmentVars(params string[] vars)
 		{
-			foreach (var var in vars)
+			for (var i = 0; i < vars.Length; i++)
 			{
+				var var = vars[i];
 				if (var.IsNullOrWhiteSpace())
 					continue;
-				_enviroumentVarList.Add(var);
+				_environmentVarList.Add(var);
 			}
 		}
 
-		public ShellRequest ProcessCMD(string cmd, string work_direcotry)
+		public ShellRequest ProcessCMD(string cmd, string workDirectory)
 		{
-			return ShellUtil.ProcessCommand(cmd, work_direcotry, _enviroumentVarList);
+			return ShellUtil.ProcessCommand(cmd, workDirectory, _environmentVarList);
 		}
 	}
 }

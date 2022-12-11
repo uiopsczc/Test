@@ -8,9 +8,9 @@ namespace CsCat
 		[Serialize] public CurrencyData currencyData = new CurrencyData();
 		[Serialize] public long quitTimeTicks;
 
-		protected override void AddDataList()
+		protected override void _AddDataList()
 		{
-			AddToDataList(currencyData);
+			_AddToDataList(currencyData);
 		}
 	}
 }

@@ -7,9 +7,9 @@ namespace CsCat
 		/// <summary>
 		///   网络字节顺序BIG_ENDIAN
 		/// </summary>
-		private ByteOrder byteOrder = ByteOrder.BigEndian;
+		private ByteOrder _byteOrder = ByteOrder.BigEndian;
 
-		private readonly byte[] singleByteBuf = new byte[1];
+		private readonly byte[] _singleByteBuf = new byte[1];
 
 		/// <summary>
 		///   是否是网络字节顺序
@@ -17,7 +17,7 @@ namespace CsCat
 		/// <returns></returns>
 		private bool NetOrder()
 		{
-			return byteOrder.Equals(ByteOrder.BigEndian);
+			return _byteOrder.Equals(ByteOrder.BigEndian);
 		}
 
 
@@ -137,11 +137,11 @@ namespace CsCat
 		{
 			if (byteOrder == null)
 			{
-				this.byteOrder = ByteOrder.BigEndian;
+				this._byteOrder = ByteOrder.BigEndian;
 				return;
 			}
 
-			this.byteOrder = byteOrder;
+			this._byteOrder = byteOrder;
 		}
 
 		/// <summary>
@@ -150,7 +150,7 @@ namespace CsCat
 		/// <returns></returns>
 		public ByteOrder Order()
 		{
-			return byteOrder;
+			return _byteOrder;
 		}
 
 		/// <summary>
@@ -161,8 +161,8 @@ namespace CsCat
 		/// <returns></returns>
 		public void Set(int pos, int value)
 		{
-			singleByteBuf[0] = (byte)value;
-			Set(pos, singleByteBuf);
+			_singleByteBuf[0] = (byte)value;
+			Set(pos, _singleByteBuf);
 		}
 
 		/// <summary>
@@ -238,8 +238,8 @@ namespace CsCat
 		/// <returns></returns>
 		public int Get(int pos)
 		{
-			Get(pos, singleByteBuf);
-			return singleByteBuf[0];
+			Get(pos, _singleByteBuf);
+			return _singleByteBuf[0];
 		}
 
 		/// <summary>
@@ -341,8 +341,8 @@ namespace CsCat
 		/// <returns></returns>
 		public void Append(int value)
 		{
-			singleByteBuf[0] = (byte)value;
-			Append(singleByteBuf);
+			_singleByteBuf[0] = (byte)value;
+			Append(_singleByteBuf);
 		}
 
 		/// <summary>
@@ -411,8 +411,8 @@ namespace CsCat
 		/// <returns></returns>
 		public int Pop()
 		{
-			Pop(singleByteBuf);
-			return singleByteBuf[0];
+			Pop(_singleByteBuf);
+			return _singleByteBuf[0];
 		}
 
 		/// <summary>

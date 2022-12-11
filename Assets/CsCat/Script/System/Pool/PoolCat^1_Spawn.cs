@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 
 namespace CsCat
 {
@@ -42,11 +41,11 @@ namespace CsCat
 		public virtual T SpawnValue(Action<T> onSpawnCallback = null)
 		{
 			var (poolItem, poolItemIndex) = this.Spawn(onSpawnCallback);
-			OnSpawnValue(poolItem, poolItemIndex);
+			_OnSpawnValue(poolItem, poolItemIndex);
 			return poolItem.GetValue();
 		}
 
-		protected void OnSpawnValue(PoolItem<T> poolItem, PoolItemIndex<T> poolItemIndex)
+		protected void _OnSpawnValue(PoolItem<T> poolItem, PoolItemIndex<T> poolItemIndex)
 		{
 			var value = poolItem.GetValue();
 			var index = poolItemIndex.GetIndex();

@@ -62,7 +62,7 @@ namespace CsCat
 		/// <param name="maxPropName"></param>
 		public void BindMaxValue(object maxPropOwner, string maxPropName)
 		{
-			this.maxValueBinder.Bind(maxPropOwner, maxPropName, this.OnMaxValueChanged);
+			this.maxValueBinder.Bind(maxPropOwner, maxPropName, this._OnMaxValueChanged);
 		}
 
 		/// <summary>
@@ -72,7 +72,7 @@ namespace CsCat
 		/// <param name="curValuePropName"></param>
 		public void BindCurValue(object curValuePropOwner, string curValuePropName)
 		{
-			this.curValueBinder.Bind(curValuePropOwner, curValuePropName, this.OnCurValueChanged);
+			this.curValueBinder.Bind(curValuePropOwner, curValuePropName, this._OnCurValueChanged);
 		}
 
 		#endregion
@@ -82,7 +82,7 @@ namespace CsCat
 		/// <summary>
 		/// 销毁的时候取消绑定
 		/// </summary>
-		protected virtual void OnDestroy()
+		protected virtual void _OnDestroy()
 		{
 			this.curValueBinder.OnDestroy();
 			this.maxValueBinder.OnDestroy();
@@ -91,7 +91,7 @@ namespace CsCat
 		/// <summary>
 		/// enable的时候，如果之前没绑定过的，进行绑定
 		/// </summary>
-		protected virtual void OnEnable()
+		protected virtual void _OnEnable()
 		{
 			this.curValueBinder.OnEnable();
 			this.maxValueBinder.OnEnable();
@@ -107,7 +107,7 @@ namespace CsCat
 		/// <param name="propertyName"></param>
 		/// <param name="oldValue"></param>
 		/// <param name="newValue"></param>
-		private void OnMaxValueChanged(string propertyName, object oldValue, object newValue)
+		private void _OnMaxValueChanged(string propertyName, object oldValue, object newValue)
 		{
 			this.silder.maxValue = (float)Convert.ToDouble(newValue);
 		}
@@ -118,7 +118,7 @@ namespace CsCat
 		/// <param name="propertyName"></param>
 		/// <param name="oldValue"></param>
 		/// <param name="newValue"></param>
-		private void OnCurValueChanged(string propertyName, object oldValue, object newValue)
+		private void _OnCurValueChanged(string propertyName, object oldValue, object newValue)
 		{
 			this.silder.value = (float)Convert.ToDouble(newValue);
 		}

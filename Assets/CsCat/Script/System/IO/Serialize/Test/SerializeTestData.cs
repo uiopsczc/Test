@@ -4,9 +4,9 @@ namespace CsCat
 	{
 		[Serialize] public SerializeTestSubData serializeTestSubData = new SerializeTestSubData();
 
-		protected override void AddDataList()
+		protected override void _AddDataList()
 		{
-			AddToDataList(serializeTestSubData);
+			_AddToDataList(serializeTestSubData);
 		}
 	}
 }

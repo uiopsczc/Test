@@ -9,7 +9,7 @@ namespace CsCat
 	{
 		#region field
 
-		private Image image;
+		private Image _image;
 
 		#endregion
 
@@ -21,10 +21,10 @@ namespace CsCat
 		/// <param name="propertyName"></param>
 		/// <param name="oldValue"></param>
 		/// <param name="newValue"></param>
-		internal override void OnValueChanged(string propertyName, object oldValue, object newValue)
+		internal override void _OnValueChanged(string propertyName, object oldValue, object newValue)
 		{
-			if (this.image == null)
-				this.image = base.GetComponent<Image>();
+			if (this._image == null)
+				this._image = base.GetComponent<Image>();
 
 			//TODO
 		}

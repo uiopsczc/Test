@@ -8,28 +8,28 @@ namespace CsCat
 	{
 		private static PoolCatManager _default;
 		public static PoolCatManager Default => _default ?? (_default = new PoolCatManager());
-		private readonly Dictionary<string, IPoolCat> poolDict = new Dictionary<string, IPoolCat>();
+		private readonly Dictionary<string, IPoolCat> _poolDict = new Dictionary<string, IPoolCat>();
 		
 
 		public IPoolCat AddPool(string poolName, IPoolCat pool)
 		{
-			poolDict[poolName] = pool;
+			_poolDict[poolName] = pool;
 			pool.SetPoolManager(this);
 			return pool;
 		}
 
 		public void RemovePool(string poolName)
 		{
-			if (poolDict.TryGetValue(poolName, out var pool))
+			if (_poolDict.TryGetValue(poolName, out var pool))
 			{
 				pool.Destroy();
-				poolDict.Remove(poolName);
+				_poolDict.Remove(poolName);
 			}
 		}
 
 		public IPoolCat GetPool(string poolName)
 		{
-			return poolDict[poolName];
+			return _poolDict[poolName];
 		}
 
 		public PoolCat<T> GetPool<T>(string poolName = null)
@@ -40,12 +40,12 @@ namespace CsCat
 
 		public bool TryGetPool(string poolName, out IPoolCat pool)
 		{
-			return this.poolDict.TryGetValue(poolName, out pool);
+			return this._poolDict.TryGetValue(poolName, out pool);
 		}
 
 		public bool TryGetPool<T>(string poolName, out PoolCat<T> pool)
 		{
-			if (poolDict.TryGetValue(poolName, out var tmpPool))
+			if (_poolDict.TryGetValue(poolName, out var tmpPool))
 			{
 				pool = tmpPool as PoolCat<T>;
 				return true;
@@ -56,7 +56,7 @@ namespace CsCat
 
 		public bool IsContainPool(string poolName)
 		{
-			return poolDict.ContainsKey(poolName);
+			return _poolDict.ContainsKey(poolName);
 		}
 
 		public bool IsContainPool<T>()
@@ -78,7 +78,7 @@ namespace CsCat
 
 		public void DespawnAll(string poolName)
 		{
-			if (poolDict.TryGetValue(poolName, out var pool))
+			if (_poolDict.TryGetValue(poolName, out var pool))
 				pool.DespawnAll();
 		}
 		
@@ -97,7 +97,7 @@ namespace CsCat
 		public (PoolItem<T> poolItem, PoolItemIndex<T> poolItemIndex) Spawn<T>(string poolName, Func<T> spawnFunc, Action<T> onSpawnCallback = null)
 		{
 			poolName = poolName ?? typeof(T).FullName;
-			if (!poolDict.TryGetValue(poolName, out var pool))
+			if (!_poolDict.TryGetValue(poolName, out var pool))
 			{
 				pool = new PoolCat<T>(poolName, spawnFunc);
 				this.AddPool(poolName, pool);
@@ -109,7 +109,7 @@ namespace CsCat
 		public T SpawnValue<T>(string poolName, Func<T> spawnFunc, Action<T> onSpawnCallback = null)
 		{
 			poolName = poolName ?? typeof(T).FullName;
-			if (!poolDict.TryGetValue(poolName, out var pool))
+			if (!_poolDict.TryGetValue(poolName, out var pool))
 			{
 				pool = new PoolCat<T>(poolName, spawnFunc);
 				this.AddPool(poolName, pool);
@@ -121,7 +121,7 @@ namespace CsCat
 		public void DespawnValue<T>(T value, string poolName = null)
 		{
 			poolName = poolName ?? typeof(T).FullName;
-			var pool = poolDict[poolName] as PoolCat<T>;
+			var pool = _poolDict[poolName] as PoolCat<T>;
 			pool.DespawnValue(value);
 		}
 	}

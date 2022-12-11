@@ -1,13 +1,10 @@
-using System;
-using System.Collections.Generic;
-
 namespace CsCat
 {
 	public class PoolItemIndex<T>:IPoolItemIndex
 	{
-		private PoolCat<T> _pool;
+		private readonly PoolCat<T> _pool;
 		//ÔÚpoolÖÐµÄindex
-		private int _index;
+		private readonly int _index;
 		public PoolItemIndex(PoolCat<T> pool, int index)
 		{
 			this._pool = pool;

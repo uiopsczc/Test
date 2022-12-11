@@ -75,7 +75,7 @@ namespace CsCat
 		/// <param name="prefix"></param>
 		/// <param name="suffix"></param>
 		/// <returns></returns>
-		public static FileInfo CreateTimesliceFile(DirectoryInfo dir, string prefix, string suffix,
+		public static FileInfo CreateTimeSliceFile(DirectoryInfo dir, string prefix, string suffix,
 			RandomManager randomManager = null)
 		{
 			randomManager = randomManager ?? Client.instance.randomManager;
@@ -360,8 +360,12 @@ namespace CsCat
 			var streamWriter = new StreamWriter(fileInfo.FullName, isAppend);
 			try
 			{
-				foreach (var content in contentList)
+				for (var i = 0; i < contentList.Count; i++)
+				{
+					var content = contentList[i];
 					streamWriter.WriteLine(content);
+				}
+
 				streamWriter.Flush();
 			}
 			finally
@@ -458,6 +462,7 @@ namespace CsCat
 					}
 					catch
 					{
+						// ignored
 					}
 				}
 			}

@@ -63,7 +63,7 @@ namespace CsCat
 		//则是将count由小到大排序，注意比较大小时不要漏掉等于号，否则相等时也进行排序，则排序不稳定
 		public static void MergeSort<T>(IList<T> list, Func<T, T, bool> func)
 		{
-			__MergeSort(list, 0, list.Count - 1, func);
+			_MergeSort(list, 0, list.Count - 1, func);
 		}
 
 		public static void MergeSortWithCompareRules<T>(IList<T> list, IList<Comparison<T>> compareRules)
@@ -71,17 +71,17 @@ namespace CsCat
 			MergeSort(list, (a, b) => CompareUtil.CompareWithRules(a, b, compareRules) < 0);
 		}
 
-		private static void __MergeSort<T>(IList<T> list, int leftIndex, int rightIndex, Func<T, T, bool> func)
+		private static void _MergeSort<T>(IList<T> list, int leftIndex, int rightIndex, Func<T, T, bool> func)
 		{
 			if (leftIndex >= rightIndex)
 				return;
 			int middleIndex = (leftIndex + rightIndex) / 2;
-			__MergeSort(list, leftIndex, middleIndex, func);
-			__MergeSort(list, middleIndex + 1, rightIndex, func);
-			__Merge(list, leftIndex, middleIndex, rightIndex, func);
+			_MergeSort(list, leftIndex, middleIndex, func);
+			_MergeSort(list, middleIndex + 1, rightIndex, func);
+			_Merge(list, leftIndex, middleIndex, rightIndex, func);
 		}
 
-		private static void __Merge<T>(IList<T> list, int leftIndex, int middleIndex, int rightIndex,
+		private static void _Merge<T>(IList<T> list, int leftIndex, int middleIndex, int rightIndex,
 			Func<T, T, bool> func)
 		{
 			List<T> newList = new List<T>(rightIndex - leftIndex); //新的数组(用于存放排序后的元素)
@@ -131,10 +131,10 @@ namespace CsCat
 			int middle = (leftIndex + rightIndex) / 2;
 			_MergeSort(list, leftIndex, middle, func);
 			_MergeSort(list, middle + 1, rightIndex, func);
-			__Merge(list, leftIndex, middle, rightIndex, func);
+			_Merge(list, leftIndex, middle, rightIndex, func);
 		}
 
-		private static void __Merge(IList list, int leftIndex, int middleIndex, int rightIndex,
+		private static void _Merge(IList list, int leftIndex, int middleIndex, int rightIndex,
 			Func<object, object, bool> func)
 		{
 			List<object> newList = new List<object>(rightIndex - leftIndex); //新的数组(用于存放排序后的元素)
@@ -183,7 +183,7 @@ namespace CsCat
 			if (leftIndexValue >= rightIndexValue)
 				return;
 			//在partition_index左边的都比index的value小，右边的都比index的value大
-			var partitionIndex = Partition(list, func, leftIndexValue, rightIndexValue);
+			var partitionIndex = _Partition(list, func, leftIndexValue, rightIndexValue);
 			//对左边单元进行排序
 			QuickSort(list, func, leftIndex, partitionIndex - 1);
 			//对右边单元进行排序
@@ -195,7 +195,7 @@ namespace CsCat
 			QuickSort(list, (a, b) => CompareUtil.CompareWithRules(a, b, compareRules) < 0);
 		}
 
-		private static int Partition(IList list, Func<object, object, bool> func, int leftIndex, int rightIndex)
+		private static int _Partition(IList list, Func<object, object, bool> func, int leftIndex, int rightIndex)
 		{
 			var pivotValue = list[rightIndex];
 			int partitionIndex = leftIndex;
@@ -229,7 +229,7 @@ namespace CsCat
 			if (leftIndexValue >= rightIndexValue)
 				return;
 			//在partition_index左边的都比index的value小，右边的都比index的value大
-			var partitionIndex = Partition(list, func, leftIndexValue, rightIndexValue);
+			var partitionIndex = _Partition(list, func, leftIndexValue, rightIndexValue);
 			//对左边单元进行排序
 			QuickSort(list, func, leftIndex, partitionIndex - 1);
 			//对右边单元进行排序
@@ -241,7 +241,7 @@ namespace CsCat
 			QuickSort(list, (a, b) => CompareUtil.CompareWithRules(a, b, compareRules) < 0);
 		}
 
-		private static int Partition<T>(IList<T> list, Func<T, T, bool> func, int leftIndex, int rightIndex)
+		private static int _Partition<T>(IList<T> list, Func<T, T, bool> func, int leftIndex, int rightIndex)
 		{
 			var pivotValue = list[rightIndex];
 			int partitionIndex = leftIndex;

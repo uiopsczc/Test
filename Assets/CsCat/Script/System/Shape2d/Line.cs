@@ -269,7 +269,7 @@ namespace CsCat
 				tmp = new Vector2(x, y);
 			}
 
-			var closestPoint = CalculateClosestPoint(tmp);
+			var closestPoint = _CalculateClosestPoint(tmp);
 			return closestPoint;
 		}
 
@@ -284,7 +284,7 @@ namespace CsCat
 		/// </summary>
 		/// <param name="p2"></param>
 		/// <returns></returns>
-		private Vector2 CalculateClosestPoint(Vector2 p2)
+		private Vector2 _CalculateClosestPoint(Vector2 p2)
 		{
 			if (this.Contains(p2))
 				return p2;

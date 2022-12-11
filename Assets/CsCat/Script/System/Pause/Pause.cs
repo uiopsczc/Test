@@ -7,17 +7,17 @@ namespace CsCat
 		/// <summary>
 		///   每次pause会加一，每次unPause会减一，当为pauseCount的时候会Resume
 		/// </summary>
-		private int pauseCount;
+		private int _pauseCount;
 
 		public void SingleInit()
 		{
 		}
 
 
-		private void AddPauseCount(int cnt)
+		private void _AddPauseCount(int cnt)
 		{
 			var org = isPaused;
-			pauseCount += cnt;
+			_pauseCount += cnt;
 			var cur = isPaused;
 			if (org != cur)
 			{
@@ -30,7 +30,7 @@ namespace CsCat
 
 
 		public static Pause instance = SingletonFactory.instance.Get<Pause>();
-		public bool isPaused => pauseCount > 0;
+		public bool isPaused => _pauseCount > 0;
 
 
 		public Action onPause;
@@ -39,19 +39,19 @@ namespace CsCat
 
 		public void SetPause()
 		{
-			AddPauseCount(1);
+			_AddPauseCount(1);
 		}
 
 		public void SetUnPause()
 		{
-			AddPauseCount(-1);
+			_AddPauseCount(-1);
 		}
 
 
 		public void Reset()
 		{
 			var org = isPaused;
-			pauseCount = 0;
+			_pauseCount = 0;
 			var cur = isPaused;
 
 			if (org != cur)

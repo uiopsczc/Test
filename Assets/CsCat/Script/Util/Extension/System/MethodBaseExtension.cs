@@ -9,9 +9,13 @@ namespace CsCat
 		public static Type[] GetParameterTypes(this MethodBase self)
 		{
 			var result = new List<Type>();
-			var parameterInfoes = self.GetParameters();
-			foreach (var parameterInfo in parameterInfoes)
+			var parameterInfos = self.GetParameters();
+			for (var i = 0; i < parameterInfos.Length; i++)
+			{
+				var parameterInfo = parameterInfos[i];
 				result.Add(parameterInfo.ParameterType);
+			}
+
 			return result.ToArray();
 		}
 	}

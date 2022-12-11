@@ -5,7 +5,7 @@ namespace CsCat
 {
 	public class ByteBufferCat : MemoryStream
 	{
-		private readonly bool isInfinite;
+		private readonly bool _isInfinite;
 
 
 		/// <summary>
@@ -20,7 +20,7 @@ namespace CsCat
 			if ((offset | length | (offset + length) | (size - (offset + length))) < 0)
 				throw new IndexOutOfRangeException();
 
-			if (length > Remaining() && isInfinite == false)
+			if (length > Remaining() && _isInfinite == false)
 				throw new IndexOutOfRangeException();
 		}
 
@@ -32,7 +32,7 @@ namespace CsCat
 
 		public ByteBufferCat()
 		{
-			isInfinite = true;
+			_isInfinite = true;
 		}
 
 
@@ -123,7 +123,7 @@ namespace CsCat
 			if (src == this)
 				throw new ArgumentException();
 			var n = src.Remaining();
-			if (n > Remaining() && isInfinite == false)
+			if (n > Remaining() && _isInfinite == false)
 				throw new IndexOutOfRangeException();
 			for (var i = 0; i < n; i++)
 				Put(src.Get());

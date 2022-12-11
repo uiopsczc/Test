@@ -10,7 +10,7 @@ namespace CsCat
 	{
 		#region field
 
-		private readonly PropertyInfo propertyInfo;
+		private readonly PropertyInfo _propertyInfo;
 
 		#endregion
 
@@ -19,7 +19,7 @@ namespace CsCat
 
 		public PropertyMember(PropertyInfo propertyInfo)
 		{
-			this.propertyInfo = propertyInfo;
+			this._propertyInfo = propertyInfo;
 			getter = container => propertyInfo.GetValue(container, null); //设置getter方法
 			setter = (container, value) => { propertyInfo.SetValue(container, value, null); }; //设置setter方法
 		}
@@ -31,12 +31,12 @@ namespace CsCat
 		/// <summary>
 		///   该属性类型
 		/// </summary>
-		public override Type memberType => propertyInfo.PropertyType;
+		public override Type memberType => _propertyInfo.PropertyType;
 
 		/// <summary>
 		///   该属性的信息
 		/// </summary>
-		public override MemberInfo memberInfo => propertyInfo;
+		public override MemberInfo memberInfo => _propertyInfo;
 
 		#endregion
 	}

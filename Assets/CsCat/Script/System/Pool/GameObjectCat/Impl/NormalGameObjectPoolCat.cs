@@ -12,8 +12,8 @@ namespace CsCat
 		public override void InitParentTransform(GameObject prefab, string category)
 		{
 			base.InitParentTransform(prefab, category);
-			rootTransform = GameObjectUtil.GetOrNewGameObject("Pools", null).transform;
-			categoryTransform = rootTransform.GetOrNewGameObject(category).transform;
+			_rootTransform = GameObjectUtil.GetOrNewGameObject("Pools", null).transform;
+			_categoryTransform = _rootTransform.GetOrNewGameObject(category).transform;
 		}
 	}
 }

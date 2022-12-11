@@ -48,8 +48,9 @@ namespace CsCat
 		public static Vector2 Average(this Vector2[] selfs)
 		{
 			Vector2 total = Vector2.zero;
-			foreach (Vector2 v in selfs)
+			for (var i = 0; i < selfs.Length; i++)
 			{
+				Vector2 v = selfs[i];
 				total += v;
 			}
 
@@ -83,8 +84,9 @@ namespace CsCat
 			float y = self.y;
 
 			int i = 0;
-			foreach (string f in formats)
+			for (var index = 0; index < formats.Length; index++)
 			{
+				string f = formats[index];
 				if (f.ToLower().Equals("x"))
 				{
 					x = args[i];
@@ -108,19 +110,19 @@ namespace CsCat
 
 		//将v Round四舍五入snap_size的倍数的值
 		//Rounds value to the closest multiple of snap_size.
-		public static Vector2 Snap(this Vector2 self, Vector2 snap_size)
+		public static Vector2 Snap(this Vector2 self, Vector2 snapSize)
 		{
-			return Vector2Util.Snap(self, snap_size);
+			return Vector2Util.Snap(self, snapSize);
 		}
 
-		public static Vector2 Snap2(this Vector2 self, Vector2 snap_size)
+		public static Vector2 Snap2(this Vector2 self, Vector2 snapSize)
 		{
-			return Vector2Util.Snap2(self, snap_size);
+			return Vector2Util.Snap2(self, snapSize);
 		}
 
-		public static Vector2 ConvertElement(this Vector2 self, Func<float, float> convert_element_func)
+		public static Vector2 ConvertElement(this Vector2 self, Func<float, float> convertElementFunc)
 		{
-			return Vector2Util.ConvertElement(self, convert_element_func);
+			return Vector2Util.ConvertElement(self, convertElementFunc);
 		}
 
 		public static Vector2Int ToVector2Int(this Vector2 self)
@@ -128,20 +130,19 @@ namespace CsCat
 			return new Vector2Int((int)self.x, (int)self.y);
 		}
 
-		public static string ToStringOrDefault(this Vector2 self, string to_default_string = null,
-			Vector2 default_value = default(Vector2))
+		public static string ToStringOrDefault(this Vector2 self, string toDefaultString = null,
+			Vector2 defaultValue = default(Vector2))
 		{
-			if (ObjectUtil.Equals(self, default_value))
-				return to_default_string;
+			if (ObjectUtil.Equals(self, defaultValue))
+				return toDefaultString;
 			return self.ToString();
 		}
 
-		public static bool IsDefault(this Vector2 self, bool is_min = false)
+		public static bool IsDefault(this Vector2 self, bool isMin = false)
 		{
-			if (is_min)
+			if (isMin)
 				return self == Vector2Const.Default_Min;
-			else
-				return self == Vector2Const.Default_Max;
+			return self == Vector2Const.Default_Max;
 		}
 
 

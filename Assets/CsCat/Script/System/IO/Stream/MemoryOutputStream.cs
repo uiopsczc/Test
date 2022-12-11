@@ -5,29 +5,29 @@ namespace CsCat
 {
 	public class MemoryOutputStream : OutputStream
 	{
-		private byte[] data;
-		private int incLen;
+		private byte[] _data;
+		private int _incLen;
 
 		public void Reset(byte[] inBuffer, int length)
 		{
-			data = inBuffer;
-			base.length = length;
+			_data = inBuffer;
+			this.length = length;
 			pos = 0;
 		}
 
 
-		public MemoryOutputStream(int length, int inc_len)
+		public MemoryOutputStream(int length, int incLen)
 		{
-			this.incLen = inc_len;
-			data = new byte[length];
-			base.length = length;
+			this._incLen = incLen;
+			_data = new byte[length];
+			this.length = length;
 			pos = 0;
 		}
 
-		public MemoryOutputStream(byte[] buf, int inc_len = 0)
+		public MemoryOutputStream(byte[] buf, int incLen = 0)
 		{
-			this.incLen = inc_len;
-			data = buf;
+			this._incLen = incLen;
+			_data = buf;
 			length = buf.Length;
 			pos = 0;
 		}
@@ -39,7 +39,7 @@ namespace CsCat
 
 		public override byte[] GetBuffer()
 		{
-			return data;
+			return _data;
 		}
 
 		public override void Seek(int length)
@@ -58,22 +58,22 @@ namespace CsCat
 		{
 			if (pos + length > base.length)
 			{
-				if (incLen <= 0)
+				if (_incLen <= 0)
 				{
-					incLen = 128;
+					_incLen = 128;
 					LogCat.LogError("KMemoryOutputStream write error with 0 increase length");
 				}
 
-				var num = incLen;
-				var num2 = base.length + num;
+				var num = _incLen;
+				var num2 = this.length + num;
 				while (pos + length >= num2) num2 += num;
 				var dst = new byte[num2];
-				Buffer.BlockCopy(data, 0, dst, 0, base.length);
-				data = dst;
+				Buffer.BlockCopy(_data, 0, dst, 0, base.length);
+				_data = dst;
 				base.length = num2;
 			}
 
-			Buffer.BlockCopy(buffer, offset, data, pos, length);
+			Buffer.BlockCopy(buffer, offset, _data, pos, length);
 			pos += length;
 			return true;
 		}

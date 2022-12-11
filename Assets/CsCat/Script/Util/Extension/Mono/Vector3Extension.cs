@@ -111,8 +111,9 @@ namespace CsCat
 		public static Vector3 Average(this Vector3[] selfs)
 		{
 			Vector3 total = Vector3.zero;
-			foreach (Vector3 v in selfs)
+			for (var i = 0; i < selfs.Length; i++)
 			{
+				Vector3 v = selfs[i];
 				total += v;
 			}
 
@@ -159,8 +160,9 @@ namespace CsCat
 			float z = self.z;
 
 			int i = 0;
-			foreach (string f in formats)
+			for (var index = 0; index < formats.Length; index++)
 			{
+				string f = formats[index];
 				switch (f.ToLower())
 				{
 					case StringConst.String_x:
@@ -173,6 +175,7 @@ namespace CsCat
 						z = args[i];
 						break;
 				}
+
 				i++;
 			}
 

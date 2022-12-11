@@ -5,15 +5,15 @@ namespace CsCat
 {
 	public class GameObjectPoolCat : UnityObjectPoolCat<GameObject>
 	{
-		protected Transform rootTransform;
-		protected Transform categoryTransform;
-		private bool isPrefabActive;
+		protected Transform _rootTransform;
+		protected Transform _categoryTransform;
+		private readonly bool _isPrefabActive;
 
 		public GameObjectPoolCat(string poolName, GameObject prefab, string category = null) : base(poolName, prefab)
 		{
 			if (category.IsNullOrWhiteSpace())
 				category = prefab.name;
-			isPrefabActive = prefab.activeSelf;
+			_isPrefabActive = prefab.activeSelf;
 			InitParentTransform(prefab, category);
 		}
 
@@ -39,7 +39,7 @@ namespace CsCat
 		{
 			GameObject cloneGameObject = poolItem.GetValue();
 			cloneGameObject.SetCache(PoolCatConst.Pool_Item, poolItem);
-			cloneGameObject.SetActive(isPrefabActive);
+			cloneGameObject.SetActive(_isPrefabActive);
 			cloneGameObject.transform.CopyFrom(GetPrefab().transform);
 		}
 
@@ -54,7 +54,7 @@ namespace CsCat
 				spawnable?.Despawn();
 			}
 			clone.SetActive(false);
-			clone.transform.SetParent(categoryTransform);
+			clone.transform.SetParent(_categoryTransform);
 			clone.transform.CopyFrom(this.prefab.transform);
 			base.Despawn(poolItem);
 		}

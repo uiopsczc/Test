@@ -7,7 +7,7 @@ namespace CsCat
 	public class SerializeData<T> where T : SerializeData<T>, new()
 	{
 		public static T _instance;
-		private readonly List<PropObserver> dataList = new List<PropObserver>();
+		private readonly List<PropObserver> _dataList = new List<PropObserver>();
 
 		public static T instance
 		{
@@ -18,46 +18,46 @@ namespace CsCat
 					bool isNewCreate = false;
 					_instance = Load(ref isNewCreate);
 					if (isNewCreate)
-						_instance.OnNewCreate();
-					_instance.OnLoaded();
+						_instance._OnNewCreate();
+					_instance._OnLoaded();
 				}
 
 				return _instance;
 			}
 		}
 
-		protected virtual void AddDataList()
+		protected virtual void _AddDataList()
 		{
 		}
 
-		protected void AddToDataList(PropObserver data)
+		protected void _AddToDataList(PropObserver data)
 		{
-			dataList.Add(data);
+			_dataList.Add(data);
 		}
 
-		protected virtual void OnNewCreate()
+		protected virtual void _OnNewCreate()
 		{
-			for (var i = 0; i < dataList.Count; i++)
+			for (var i = 0; i < _dataList.Count; i++)
 			{
-				var data = dataList[i];
+				var data = _dataList[i];
 				data.OnNewCreate();
 			}
 		}
 
-		protected virtual void OnLoaded()
+		protected virtual void _OnLoaded()
 		{
-			for (var i = 0; i < dataList.Count; i++)
+			for (var i = 0; i < _dataList.Count; i++)
 			{
-				var data = dataList[i];
+				var data = _dataList[i];
 				data.OnLoaded();
 			}
 		}
 
-		protected void RemoveAllListeners()
+		protected void _RemoveAllListeners()
 		{
-			for (var i = 0; i < dataList.Count; i++)
+			for (var i = 0; i < _dataList.Count; i++)
 			{
-				var data = dataList[i];
+				var data = _dataList[i];
 				data.RemoveAllListeners();
 			}
 		}
@@ -80,13 +80,13 @@ namespace CsCat
 			}
 			else
 			{
-				var conentBytes = StdioUtil.ReadFile(SerializeDataConst.SaveFilePathCS);
-				//conentBytes = CompressUtil.GZipDecompress(conentBytes);--解压缩
-				var content = Encoding.UTF8.GetString(conentBytes);
+				var contentBytes = StdioUtil.ReadFile(SerializeDataConst.SaveFilePathCS);
+				//contentBytes = CompressUtil.GZipDecompress(contentBytes);--解压缩
+				var content = Encoding.UTF8.GetString(contentBytes);
 				data = JsonSerializer.Deserialize(content) as T;
 			}
 
-			data.AddDataList();
+			data._AddDataList();
 			return data;
 		}
 	}

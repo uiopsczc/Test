@@ -22,8 +22,10 @@ namespace CsCat
 
 		public static T GetBehaviour<T>(this Animator self, string name) where T : StateMachineBehaviour
 		{
-			foreach (var behaviour in self.GetBehaviours<T>())
+			var behaviours = self.GetBehaviours<T>();
+			for (var i = 0; i < behaviours.Length; i++)
 			{
+				var behaviour = behaviours[i];
 				if (name.Equals(behaviour.GetFieldValue<string>(StringConst.String_name)))
 					return behaviour;
 			}

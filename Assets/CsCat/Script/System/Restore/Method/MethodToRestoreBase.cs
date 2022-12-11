@@ -6,7 +6,7 @@ namespace CsCat
 	{
 		#region field
 
-		protected MethodInfo methodInfoToRestore;
+		protected MethodInfo _methodInfoToRestore;
 
 		#endregion
 

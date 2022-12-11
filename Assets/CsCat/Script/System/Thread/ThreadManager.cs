@@ -19,18 +19,32 @@ namespace CsCat
 			for (int i = 0; i < list.Count; i++)
 				list[i].Abort();
 			list.Clear();
-			foreach (var t in dict.Values)
-				t.Abort();
+			foreach (var kv in dict)
+				kv.Value.Abort();
 			dict.Clear();
 		}
 
 		public void Start(object args = null)
 		{
-			foreach (var t in list)
+			for (var i = 0; i < list.Count; i++)
+			{
+				var t = list[i];
 				if (args == null)
 					t.Start();
 				else
 					t.Start(args);
+			}
+
+			foreach (var kv in dict)
+			{
+				var t = kv.Value;
+				if (args == null)
+					t.Start();
+				else
+					t.Start(args);
+			}
+
+
 			foreach (var t in dict.Values)
 				if (args == null)
 					t.Start();

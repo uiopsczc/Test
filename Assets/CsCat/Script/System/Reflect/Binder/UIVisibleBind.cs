@@ -12,7 +12,7 @@ namespace CsCat
 		/// <summary>
 		/// 上次的值
 		/// </summary>
-		private object lastValue;
+		private object _lastValue;
 
 		#endregion
 
@@ -38,11 +38,11 @@ namespace CsCat
 		/// <param name="propertyName"></param>
 		/// <param name="oldValue"></param>
 		/// <param name="newValue"></param>
-		internal override void OnValueChanged(string propertyName, object oldValue, object newValue)
+		internal override void _OnValueChanged(string propertyName, object oldValue, object newValue)
 		{
-			this.lastValue = newValue;
+			this._lastValue = newValue;
 
-			bool isActive = this.lastValue != null && Convert.ToBoolean(this.lastValue);
+			bool isActive = this._lastValue != null && Convert.ToBoolean(this._lastValue);
 			if (this.canvasRenderer != null) //如果canvasRenderer直接设置alpha
 			{
 				this.canvasRenderer.SetAlpha(isActive ? 1 : 0);
@@ -59,7 +59,7 @@ namespace CsCat
 		protected override void OnEnable()
 		{
 			base.OnEnable();
-			bool isActive = this.lastValue != null && Convert.ToBoolean(this.lastValue);
+			bool isActive = this._lastValue != null && Convert.ToBoolean(this._lastValue);
 			if (this.canvasRenderer != null)
 				this.canvasRenderer.SetAlpha(isActive ? 1 : 0);
 		}

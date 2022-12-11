@@ -29,9 +29,10 @@ namespace CsCat
 					zipOutputStream.SetLevel(9); // 压缩级别 0-9
 												 //s.Password = "123"; //Zip压缩文件密码
 					var buffer = new byte[4096]; //缓冲区大小
-					foreach (var file in fileNames)
+					for (var i = 0; i < fileNames.Length; i++)
 					{
-						var entry = new ZipEntry(Path.GetFileName(file)) { DateTime = DateTimeUtil.NowDateTime() };
+						var file = fileNames[i];
+						var entry = new ZipEntry(Path.GetFileName(file)) {DateTime = DateTimeUtil.NowDateTime()};
 						zipOutputStream.PutNextEntry(entry);
 						using (var fileStream = File.OpenRead(file))
 						{
