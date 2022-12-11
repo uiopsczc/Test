@@ -43,13 +43,6 @@ namespace CsCat
 				else
 					t.Start(args);
 			}
-
-
-			foreach (var t in dict.Values)
-				if (args == null)
-					t.Start();
-				else
-					t.Start(args);
 		}
 
 		public void Add(ParameterizedThreadStart threadCallback)

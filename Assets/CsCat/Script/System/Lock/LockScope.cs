@@ -6,7 +6,7 @@ namespace CsCat
 {
 	public class LockScope : IDisposable
 	{
-		private object lockObject;
+		private object _lockObject;
 
 		public bool isHasLock { get; private set; }
 
@@ -16,7 +16,7 @@ namespace CsCat
 				return;
 
 			this.isHasLock = true;
-			this.lockObject = obj;
+			this._lockObject = obj;
 		}
 
 		public void Dispose()
@@ -24,8 +24,8 @@ namespace CsCat
 			if (!this.isHasLock)
 				return;
 
-			Monitor.Exit(this.lockObject);
-			this.lockObject = null;
+			Monitor.Exit(this._lockObject);
+			this._lockObject = null;
 			this.isHasLock = false;
 		}
 	}

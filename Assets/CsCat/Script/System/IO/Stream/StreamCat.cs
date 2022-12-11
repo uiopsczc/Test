@@ -2,8 +2,8 @@ namespace CsCat
 {
 	public abstract class StreamCat
 	{
-		protected int pos;
-		protected int length;
+		protected int _pos;
+		protected int _length;
 
 
 		public abstract byte[] GetBuffer();
@@ -17,22 +17,22 @@ namespace CsCat
 
 		public virtual int CurrentPosition()
 		{
-			return pos;
+			return _pos;
 		}
 
 		public virtual bool Eof()
 		{
-			return pos >= length;
+			return _pos >= _length;
 		}
 
 		public virtual int GetLength()
 		{
-			return length;
+			return _length;
 		}
 
 		public virtual void Reset()
 		{
-			pos = 0;
+			_pos = 0;
 		}
 	}
 }

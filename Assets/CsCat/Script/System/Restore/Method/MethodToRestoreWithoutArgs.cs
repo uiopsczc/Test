@@ -27,7 +27,7 @@ namespace CsCat
 		/// </summary>
 		public override void Restore()
 		{
-			_methodInfoToRestore.Invoke(toRestoreBase.owner, null);
+			_methodInfoToRestore.Invoke(_toRestoreBase.owner, null);
 		}
 
 		#endregion

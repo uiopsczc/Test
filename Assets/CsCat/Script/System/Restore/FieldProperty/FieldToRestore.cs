@@ -23,7 +23,7 @@ namespace CsCat
 		{
 			var type = owner.GetType();
 			fieldInfoToRestore = type.GetField(nameToRestore);
-			valueToRestore = fieldInfoToRestore.GetValue(owner);
+			_valueToRestore = fieldInfoToRestore.GetValue(owner);
 		}
 
 		#endregion
@@ -36,7 +36,7 @@ namespace CsCat
 		/// </summary>
 		public override void Restore()
 		{
-			fieldInfoToRestore.SetValue(toRestoreBase.owner, valueToRestore);
+			fieldInfoToRestore.SetValue(_toRestoreBase.owner, _valueToRestore);
 		}
 
 		#endregion

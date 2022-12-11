@@ -40,7 +40,7 @@ namespace CsCat
 				_isSuccess = value;
 				if (value)
 				{
-					OnSuccess();
+					_OnSuccess();
 					isDone = true;
 				}
 			}
@@ -56,7 +56,7 @@ namespace CsCat
 				_isFail = value;
 				if (value)
 				{
-					OnFail();
+					_OnFail();
 					isDone = true;
 				}
 			}
@@ -72,23 +72,23 @@ namespace CsCat
 					return;
 				_isDone = value;
 				if (value)
-					OnDone();
+					_OnDone();
 			}
 		}
 
-		void OnSuccess()
+		void _OnSuccess()
 		{
 			this.onSuccessCallback?.Invoke();
 		}
 
 
-		void OnFail()
+		void _OnFail()
 		{
 			this.onFailCallback?.Invoke();
 		}
 
 
-		void OnDone()
+		void _OnDone()
 		{
 			this.onDoneCallback?.Invoke();
 		}

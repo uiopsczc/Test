@@ -23,7 +23,7 @@ namespace CsCat
 		{
 			var type = owner.GetType();
 			propertyInfoToRestore = type.GetProperty(nameToRestore);
-			valueToRestore = propertyInfoToRestore.GetValue(owner, null);
+			_valueToRestore = propertyInfoToRestore.GetValue(owner, null);
 		}
 
 		#endregion
@@ -35,7 +35,7 @@ namespace CsCat
 		/// </summary>
 		public override void Restore()
 		{
-			propertyInfoToRestore.SetValue(toRestoreBase.owner, valueToRestore, null);
+			propertyInfoToRestore.SetValue(_toRestoreBase.owner, _valueToRestore, null);
 		}
 
 		#endregion

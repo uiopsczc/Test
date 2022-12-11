@@ -12,7 +12,7 @@ namespace CsCat
 		/// <summary>
 		///   属性的拥有者
 		/// </summary>
-		protected object propOwner;
+		protected object _propOwner;
 
 		#endregion
 
@@ -20,7 +20,7 @@ namespace CsCat
 
 		public AbstractPropertyObserver(object propOwner)
 		{
-			this.propOwner = propOwner;
+			this._propOwner = propOwner;
 		}
 
 		#endregion
@@ -35,11 +35,11 @@ namespace CsCat
 		/// <returns></returns>
 		public virtual object GetPropertyValue(string propertyName)
 		{
-			var type = propOwner.GetType();
+			var type = _propOwner.GetType();
 			var fieldInfo = type.GetFieldInfo(propertyName, BindingFlagsConst.Instance);
-			if (fieldInfo != null) return fieldInfo.GetValue(propOwner);
+			if (fieldInfo != null) return fieldInfo.GetValue(_propOwner);
 			var propertyInfo = type.GetPropertyInfo(propertyName, BindingFlagsConst.Instance);
-			return propertyInfo != null ? propertyInfo.GetValue(propOwner, null) : null;
+			return propertyInfo != null ? propertyInfo.GetValue(_propOwner, null) : null;
 		}
 
 		#endregion

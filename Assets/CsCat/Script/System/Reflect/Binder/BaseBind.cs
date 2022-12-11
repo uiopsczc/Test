@@ -41,7 +41,7 @@ namespace CsCat
 			this.propBinder.Bind(propertyOwner, propertyName,
 				(propName, oldValue, newValue) =>
 				{
-					this.OnValueChanged(this.propBinder.GetPropName(), oldValue, newValue);
+					this._OnValueChanged(this.propBinder.GetPropName(), oldValue, newValue);
 				});
 			return this;
 		}
@@ -52,7 +52,7 @@ namespace CsCat
 		/// <param name="propertyName"></param>
 		/// <param name="oldValue"></param>
 		/// <param name="newValue"></param>
-		internal virtual void OnValueChanged(string propertyName, object oldValue, object newValue)
+		internal virtual void _OnValueChanged(string propertyName, object oldValue, object newValue)
 		{
 		}
 
@@ -68,7 +68,7 @@ namespace CsCat
 		/// <summary>
 		/// enable的时候，如果之前没绑定过的，进行绑定
 		/// </summary>
-		protected virtual void OnEnable()
+		protected virtual void _OnEnable()
 		{
 			this.propBinder.OnEnable();
 		}

@@ -10,7 +10,7 @@ namespace CsCat
 		#region field
 
 		public List<Vector3> localVertexList = new List<Vector3>();
-		protected Matrix4x4 matrix = Matrix4x4.identity;
+		protected Matrix4x4 _matrix = Matrix4x4.identity;
 
 		/// <summary>
 		/// worldOffset不会跟随matrix进行位移和旋转或缩放
@@ -123,7 +123,7 @@ namespace CsCat
 
 		public Shape3D MultiplyMatrix(Matrix4x4 matrix)
 		{
-			this.matrix *= matrix;
+			this._matrix *= matrix;
 			return this;
 		}
 
@@ -134,7 +134,7 @@ namespace CsCat
 
 		public Shape3D PreMultiplyMatrix(Matrix4x4 matrix)
 		{
-			this.matrix = matrix * this.matrix;
+			this._matrix = matrix * this._matrix;
 			return this;
 		}
 
@@ -152,13 +152,13 @@ namespace CsCat
 
 		public Vector3 ToLocalSpace(Vector3 p)
 		{
-			return matrix.inverse.MultiplyPoint(p - worldOffset);
+			return _matrix.inverse.MultiplyPoint(p - worldOffset);
 		}
 
 
 		public Vector3 ToWorldSpace(Vector3 p)
 		{
-			return matrix.MultiplyPoint(p) + worldOffset;
+			return _matrix.MultiplyPoint(p) + worldOffset;
 		}
 
 

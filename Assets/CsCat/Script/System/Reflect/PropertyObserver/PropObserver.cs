@@ -13,7 +13,7 @@ namespace CsCat
 		/// <summary>
 		///   该类的全部属性listener
 		/// </summary>
-		protected Dictionary<string, List<Action<string, object, object>>> propListenerDict =
+		protected Dictionary<string, List<Action<string, object, object>>> _propListenerDict =
 			new Dictionary<string, List<Action<string, object, object>>>();
 
 		#endregion
@@ -47,14 +47,14 @@ namespace CsCat
 		/// <param name="listener"></param>
 		public void AddPropListener(string property_name, Action<string, object, object> listener)
 		{
-			if (propListenerDict.TryGetValue(property_name, out var list)) //防止重复添加
+			if (_propListenerDict.TryGetValue(property_name, out var list)) //防止重复添加
 			{
 				list.Add(listener);
 				return;
 			}
 
 			list = new List<Action<string, object, object>> { listener };
-			propListenerDict.Add(property_name, list);
+			_propListenerDict.Add(property_name, list);
 		}
 
 		/// <summary>
@@ -65,7 +65,7 @@ namespace CsCat
 		/// <param name="newValue">更改后的值</param>
 		public void NotifyPropChanged(string propertyName, object oldValue, object newValue)
 		{
-			if (propListenerDict.TryGetValue(propertyName, out var list))
+			if (_propListenerDict.TryGetValue(propertyName, out var list))
 				for (var i = 0; i < list.Count; i++)
 				{
 					var listener = list[i];
@@ -80,7 +80,7 @@ namespace CsCat
 		/// <param name="listener"></param>
 		public void RemovePropListener(string property_name, Action<string, object, object> listener)
 		{
-			if (propListenerDict.TryGetValue(property_name, out var list)) list.Remove(listener);
+			if (_propListenerDict.TryGetValue(property_name, out var list)) list.Remove(listener);
 		}
 
 		#region edit by czq  //直接传当前类名作为Name
@@ -102,7 +102,7 @@ namespace CsCat
 
 		public void RemoveAllListeners()
 		{
-			propListenerDict.Clear();
+			_propListenerDict.Clear();
 		}
 
 		#endregion

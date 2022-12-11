@@ -13,7 +13,7 @@ namespace CsCat
 	{
 		#region field
 
-		protected Vector2 size;
+		protected Vector2 _size;
 
 		#endregion
 
@@ -50,7 +50,7 @@ namespace CsCat
 		public Rectangle(Vector2 center, Vector2 size)
 		{
 			MultiplyMatrix(Matrix4x4.Translate(center));
-			this.size = size;
+			this._size = size;
 
 
 			Vector2 localLeftBottom = new Vector2(-size.x / 2, -size.y / 2);
@@ -149,10 +149,10 @@ namespace CsCat
 		/// <returns></returns>
 		public override bool Contains(Vector2 p)
 		{
-			float minX = center.x - size.x / 2;
-			float maxX = center.x + size.x / 2;
-			float minY = center.y - size.y / 2;
-			float maxY = center.y + size.y / 2;
+			float minX = center.x - _size.x / 2;
+			float maxX = center.x + _size.x / 2;
+			float minY = center.y - _size.y / 2;
+			float maxY = center.y + _size.y / 2;
 
 			return p.x >= minX && p.x <= maxX && p.y >= minY && p.y <= maxY;
 		}

@@ -208,9 +208,7 @@ namespace CsCat
 			{
 				var listi = _bfs[i];
 				if (pos >= listi.Length)
-				{
 					pos -= listi.Length;
-				}
 				else
 				{
 					var copyPos = pos; // listi中要copy的位置
@@ -243,9 +241,7 @@ namespace CsCat
 
 			var first = _bfs.First();
 			if (_firstOffset + pos > first.Length)
-			{
 				pos -= first.Length - _firstOffset;
-			}
 			else
 			{
 				var getPos = _firstOffset + pos; // bbf从get_pos放数据到listi中

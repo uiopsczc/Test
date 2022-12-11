@@ -11,15 +11,15 @@ namespace CsCat
 		public MemoryInputStream(byte[] inBuffer)
 		{
 			_buffer = inBuffer;
-			length = inBuffer.Length;
+			_length = inBuffer.Length;
 		}
 
 
 		public void Reset(byte[] inBuffer, int length)
 		{
 			_buffer = inBuffer;
-			base.length = length;
-			pos = 0;
+			base._length = length;
+			_pos = 0;
 		}
 
 
@@ -42,17 +42,17 @@ namespace CsCat
 
 		public override void Peek(byte[] buffer, int offset, int length)
 		{
-			if (pos + length > base.length)
+			if (_pos + length > base._length)
 			{
 				var text = string.Concat(
 					"Peek out of stream,want -> mPos:",
-					pos,
+					_pos,
 					",length: ",
 					length,
 					",offset: ",
 					offset,
 					", but mLength:",
-					base.length,
+					base._length,
 					",buf.Length: ",
 					buffer.Length
 				);
@@ -69,47 +69,47 @@ namespace CsCat
 				throw new IOException(text);
 			}
 
-			Buffer.BlockCopy(_buffer, pos, buffer, offset, length);
+			Buffer.BlockCopy(_buffer, _pos, buffer, offset, length);
 		}
 
 		public override void Read(byte[] buffer, int offset, int length)
 		{
 			Peek(buffer, offset, length);
-			pos += length;
+			_pos += length;
 		}
 
 		public override void Seek(int length)
 		{
-			if (pos + length > base.length)
+			if (_pos + length > base._length)
 			{
 				LogCat.LogWarningFormat(string.Concat(
 					"Seek out of stream, wanted:",
-					pos + length,
+					_pos + length,
 					", but:",
-					base.length
+					base._length
 				));
-				pos = base.length;
+				_pos = base._length;
 				return;
 			}
 
-			pos = length;
+			_pos = length;
 		}
 
 		public override void Skip(int length)
 		{
-			if (pos + length > base.length)
+			if (_pos + length > base._length)
 			{
 				LogCat.LogWarningFormat(string.Concat(
 					"Skip out of stream, wanted:",
-					pos + length,
+					_pos + length,
 					", but:",
-					base.length
+					base._length
 				));
-				pos = base.length;
+				_pos = base._length;
 				return;
 			}
 
-			pos += length;
+			_pos += length;
 		}
 	}
 }

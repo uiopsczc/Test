@@ -13,7 +13,7 @@ namespace CsCat
 		/// <summary>
 		///   所有的属性观察者
 		/// </summary>
-		private static readonly Dictionary<Type, Func<object, IPropertyObserver>> observerDict =
+		private static readonly Dictionary<Type, Func<object, IPropertyObserver>> _observerDict =
 			new Dictionary<Type, Func<object, IPropertyObserver>>();
 
 		#endregion
@@ -28,7 +28,7 @@ namespace CsCat
 		public static IPropertyObserver CreatePropertyObserver(object propOwner)
 		{
 			if (propOwner == null) return null;
-			foreach (var current in observerDict)
+			foreach (var current in _observerDict)
 				if (current.Key.IsInstanceOfType(propOwner))
 					return current.Value(propOwner);
 			return null;
@@ -41,7 +41,7 @@ namespace CsCat
 		/// <param name="creator"></param>
 		public static void RegistPropertyObserver(Type type, Func<object, IPropertyObserver> creator)
 		{
-			observerDict[type] = creator;
+			_observerDict[type] = creator;
 		}
 
 		/// <summary>
@@ -50,7 +50,7 @@ namespace CsCat
 		/// <param name="type"></param>
 		public static void UnregistPropertyObserver(Type type)
 		{
-			if (observerDict.ContainsKey(type)) observerDict[type] = null;
+			if (_observerDict.ContainsKey(type)) _observerDict[type] = null;
 		}
 
 		#endregion

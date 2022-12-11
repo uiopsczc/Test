@@ -5,7 +5,7 @@ namespace CsCat
 {
 	public class BalanceGroupManager
 	{
-		private BalanceGroupDefinition[] _balanceGroupDefinitions;
+		private readonly BalanceGroupDefinition[] _balanceGroupDefinitions;
 
 		public BalanceGroupManager(params BalanceGroupDefinition[] balanceGroupDefinitions)
 		{
@@ -15,15 +15,13 @@ namespace CsCat
 		public void Parse(string content)
 		{
 			int startIndex = 0;
-			Regex regex;
-			Match match;
 			Stack<BalanceGroup> balanceGroupStack = new Stack<BalanceGroup>();
 			while (startIndex != content.Length - 1)
 			{
 				foreach (var balanceGroupDefinition in _balanceGroupDefinitions)
 				{
-					regex = new Regex(balanceGroupDefinition.openRegexPattern);
-					match = regex.Match(content, startIndex);
+					var regex = new Regex(balanceGroupDefinition.openRegexPattern);
+					var match = regex.Match(content, startIndex);
 					if (match.Index == startIndex)
 					{
 						BalanceGroup balanceGroup = new BalanceGroup();

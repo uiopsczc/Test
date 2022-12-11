@@ -79,7 +79,7 @@ namespace CsCat
 				return false;
 			if (worldOffset != other.worldOffset)
 				return false;
-			return other.matrix.Equals(this.matrix) && base.Equals(obj);
+			return other._matrix.Equals(this._matrix) && base.Equals(obj);
 		}
 
 		public override string ToString()

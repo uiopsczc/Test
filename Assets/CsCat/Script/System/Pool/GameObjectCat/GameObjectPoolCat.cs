@@ -31,7 +31,7 @@ namespace CsCat
 		public override GameObject SpawnValue(Action<GameObject> onSpawnCallback = null)
 		{
 			var(poolItem, poolItemIndex) = this.Spawn(onSpawnCallback);
-			OnSpawnValue(poolItem, poolItemIndex);
+			_OnSpawnValue(poolItem, poolItemIndex);
 			return poolItem.GetValue();
 		}
 

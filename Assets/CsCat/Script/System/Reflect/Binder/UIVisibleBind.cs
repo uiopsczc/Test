@@ -56,9 +56,9 @@ namespace CsCat
 		/// enable的时候，如果之前没绑定过的，进行绑定
 		/// 根据lastValue设置canvasRenderer的alpha
 		/// </summary>
-		protected override void OnEnable()
+		protected override void _OnEnable()
 		{
-			base.OnEnable();
+			base._OnEnable();
 			bool isActive = this._lastValue != null && Convert.ToBoolean(this._lastValue);
 			if (this.canvasRenderer != null)
 				this.canvasRenderer.SetAlpha(isActive ? 1 : 0);

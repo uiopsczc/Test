@@ -22,7 +22,7 @@ namespace CsCat
 		public MethodToRestoreBase(object cause, object owner, string nameToRestore) : base(cause, owner,
 			nameToRestore)
 		{
-			toRestoreBase = new ToRestoreBase(cause, owner, nameToRestore);
+			_toRestoreBase = new ToRestoreBase(cause, owner, nameToRestore);
 		}
 
 		#endregion

@@ -36,7 +36,7 @@ namespace CsCat
 		/// <param name="propertyName"></param>
 		/// <param name="oldValue"></param>
 		/// <param name="newValue"></param>
-		internal override void OnValueChanged(string propertyName, object oldValue, object newValue)
+		internal override void _OnValueChanged(string propertyName, object oldValue, object newValue)
 		{
 			_bindedFunc?.Invoke(gameObject, oldValue, newValue);
 		}

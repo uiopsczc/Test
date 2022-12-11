@@ -7,7 +7,7 @@ namespace CsCat
 	{
 		#region field
 
-		private MemberToRestoreBase _memberToRestoreBase;
+		private readonly MemberToRestoreBase _memberToRestoreBase;
 
 		#endregion
 

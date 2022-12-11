@@ -11,8 +11,8 @@ namespace CsCat
 		public void Reset(byte[] inBuffer, int length)
 		{
 			_data = inBuffer;
-			this.length = length;
-			pos = 0;
+			this._length = length;
+			_pos = 0;
 		}
 
 
@@ -20,16 +20,16 @@ namespace CsCat
 		{
 			this._incLen = incLen;
 			_data = new byte[length];
-			this.length = length;
-			pos = 0;
+			this._length = length;
+			_pos = 0;
 		}
 
 		public MemoryOutputStream(byte[] buf, int incLen = 0)
 		{
 			this._incLen = incLen;
 			_data = buf;
-			length = buf.Length;
-			pos = 0;
+			_length = buf.Length;
+			_pos = 0;
 		}
 
 
@@ -44,19 +44,19 @@ namespace CsCat
 
 		public override void Seek(int length)
 		{
-			Debug.Assert(length <= base.length, "out of output stream length");
-			pos = length;
+			Debug.Assert(length <= base._length, "out of output stream length");
+			_pos = length;
 		}
 
 		public override void Skip(int length)
 		{
-			Debug.Assert(pos + length <= base.length, "out of output stream length");
-			pos += length;
+			Debug.Assert(_pos + length <= base._length, "out of output stream length");
+			_pos += length;
 		}
 
 		public override bool Write(byte[] buffer, int offset, int length)
 		{
-			if (pos + length > base.length)
+			if (_pos + length > base._length)
 			{
 				if (_incLen <= 0)
 				{
@@ -65,16 +65,16 @@ namespace CsCat
 				}
 
 				var num = _incLen;
-				var num2 = this.length + num;
-				while (pos + length >= num2) num2 += num;
+				var num2 = this._length + num;
+				while (_pos + length >= num2) num2 += num;
 				var dst = new byte[num2];
-				Buffer.BlockCopy(_data, 0, dst, 0, base.length);
+				Buffer.BlockCopy(_data, 0, dst, 0, base._length);
 				_data = dst;
-				base.length = num2;
+				base._length = num2;
 			}
 
-			Buffer.BlockCopy(buffer, offset, _data, pos, length);
-			pos += length;
+			Buffer.BlockCopy(buffer, offset, _data, _pos, length);
+			_pos += length;
 			return true;
 		}
 	}

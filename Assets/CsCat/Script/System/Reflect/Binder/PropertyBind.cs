@@ -14,17 +14,17 @@ namespace CsCat
 		/// <summary>
 		/// dstPropOwner
 		/// </summary>
-		private object dstPropOwner;
+		private object _dstPropOwner;
 
 		/// <summary>
 		/// dstFieldInfo
 		/// </summary>
-		private FieldInfo dstFieldInfo;
+		private FieldInfo _dstFieldInfo;
 
 		/// <summary>
 		/// dstPropInfo
 		/// </summary>
-		private PropertyInfo dstPropInfo;
+		private PropertyInfo _dstPropInfo;
 
 		#endregion
 
@@ -39,14 +39,14 @@ namespace CsCat
 		/// <param name="newValue"></param>
 		internal override void _OnValueChanged(string propertyName, object oldValue, object newValue)
 		{
-			if (this.dstFieldInfo != null)
+			if (this._dstFieldInfo != null)
 			{
-				this.dstFieldInfo.SetValue(this.dstPropOwner, newValue);
+				this._dstFieldInfo.SetValue(this._dstPropOwner, newValue);
 				return;
 			}
 
-			if (this.dstPropInfo != null)
-				this.dstPropInfo.SetValue(this.dstPropOwner, newValue, null);
+			if (this._dstPropInfo != null)
+				this._dstPropInfo.SetValue(this._dstPropOwner, newValue, null);
 		}
 
 		/// <summary>
@@ -61,11 +61,11 @@ namespace CsCat
 		public virtual BaseBind Bind(object srcPropOwner, string srcPropName, object dstPropOwner,
 			string dstPropName)
 		{
-			this.dstPropOwner = dstPropOwner;
-			Type dstType = this.dstPropOwner.GetType();
-			this.dstFieldInfo = dstType.GetFieldInfo(dstPropName);
-			if (this.dstFieldInfo == null)
-				this.dstPropInfo = dstType.GetPropertyInfo(dstPropName);
+			this._dstPropOwner = dstPropOwner;
+			Type dstType = this._dstPropOwner.GetType();
+			this._dstFieldInfo = dstType.GetFieldInfo(dstPropName);
+			if (this._dstFieldInfo == null)
+				this._dstPropInfo = dstType.GetPropertyInfo(dstPropName);
 
 			base.propBinder.Bind(srcPropOwner, srcPropName, _OnValueChanged);
 			return this;

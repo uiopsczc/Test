@@ -11,12 +11,12 @@ namespace CsCat
 		/// <summary>
 		/// 所有的需要还原的属性列表
 		/// </summary>
-		List<IRestore> _restoreList = new List<IRestore>();
+		readonly List<IRestore> _restoreList = new List<IRestore>();
 
 		/// <summary>
 		/// 里面的元素用于还原后从restoreList中删除
 		/// </summary>
-		List<IRestore> _toRemoveList = new List<IRestore>();
+		readonly List<IRestore> _toRemoveList = new List<IRestore>();
 
 
 		public static RestoreManager instance => SingletonFactory.instance.Get<RestoreManager>();
