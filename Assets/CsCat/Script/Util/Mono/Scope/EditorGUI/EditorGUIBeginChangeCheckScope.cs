@@ -6,8 +6,8 @@ namespace CsCat
 {
 	public class EditorGUIBeginChangeCheckScope : IDisposable
 	{
-		private bool isEndChangeCheck = false;
-		private bool isChanged;
+		private bool _isEndChangeCheck = false;
+		private bool _isChanged;
 
 
 		public EditorGUIBeginChangeCheckScope()
@@ -19,20 +19,20 @@ namespace CsCat
 		{
 			get
 			{
-				if (isEndChangeCheck) return isChanged;
-				isChanged = EditorGUI.EndChangeCheck();
-				isEndChangeCheck = true;
+				if (_isEndChangeCheck) return _isChanged;
+				_isChanged = EditorGUI.EndChangeCheck();
+				_isEndChangeCheck = true;
 
-				return isChanged;
+				return _isChanged;
 			}
 		}
 
 		public void Dispose()
 		{
-			if (isEndChangeCheck)
+			if (_isEndChangeCheck)
 				return;
-			isChanged = EditorGUI.EndChangeCheck();
-			isEndChangeCheck = true;
+			_isChanged = EditorGUI.EndChangeCheck();
+			_isEndChangeCheck = true;
 		}
 	}
 }

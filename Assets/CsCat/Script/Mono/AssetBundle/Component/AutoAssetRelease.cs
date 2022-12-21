@@ -8,7 +8,7 @@ namespace CsCat
 	public class AutoAssetRelease<TargetComponent, AssetObjectType> : AssetCatDisposable
 		where TargetComponent : UnityEngine.Component where AssetObjectType : Object
 	{
-		protected static void Set<TargetComponent_AssetObjectType>(TargetComponent component, AssetCat assetCat,
+		protected static void _Set<TargetComponent_AssetObjectType>(TargetComponent component, AssetCat assetCat,
 			string assetPath) where TargetComponent_AssetObjectType : AutoAssetRelease<TargetComponent, AssetObjectType>
 		{
 			if (component == null || assetCat == null)
@@ -25,7 +25,7 @@ namespace CsCat
 		}
 
 
-		protected static bool Set<TargetComponent_AssetObjectType>(TargetComponent component, string assetPath,
+		protected static bool _Set<TargetComponent_AssetObjectType>(TargetComponent component, string assetPath,
 			Action<TargetComponent, AssetObjectType> onLoadSuccessCallback,
 			Action<TargetComponent, AssetObjectType> onLoadFailCallback,
 			Action<TargetComponent, AssetObjectType> onLoadDoneCallback)
@@ -50,7 +50,7 @@ namespace CsCat
 
 			autoAssetRelease = component.gameObject.GetOrAddComponent<TargetComponent_AssetObjectType>();
 
-			var curAssetCat = autoAssetRelease.curAssetCat;
+			var curAssetCat = autoAssetRelease._curAssetCat;
 			var curAssetPath = autoAssetRelease.curAssetPath;
 			var newAssetCat = Client.instance.assetBundleManager.GetOrLoadAssetCat(assetPath.GetMainAssetPath());
 			var newAssetPath = assetPath;
@@ -88,7 +88,7 @@ namespace CsCat
 				if (curAssetCat.IsLoadSuccess())
 				{
 					autoAssetRelease.ReleasePreAssetCat(); // 先清除之前的记录
-					autoAssetRelease.SetPreAssetCat(autoAssetRelease.curAssetCat, autoAssetRelease.curAssetPath);
+					autoAssetRelease.SetPreAssetCat(autoAssetRelease._curAssetCat, autoAssetRelease.curAssetPath);
 				}
 				else
 				{
@@ -115,7 +115,7 @@ namespace CsCat
 				newAssetCat.AddOnLoadSuccessCallback(assetCat =>
 				{
 					assetCat.AddRefCount();
-					if (autoAssetRelease.curAssetCat != assetCat)
+					if (autoAssetRelease._curAssetCat != assetCat)
 						return;
 					autoAssetRelease.ReleasePreAssetCat();
 					onLoadSuccessCallback(component, assetCat.Get<AssetObjectType>(assetPath.GetSubAssetPath()));
@@ -137,7 +137,7 @@ namespace CsCat
 			Client.instance.assetBundleManager.LoadAssetAsync(assetPath, assetCat =>
 				{
 					assetCat.AddRefCount();
-					if (autoAssetRelease.curAssetCat != assetCat)
+					if (autoAssetRelease._curAssetCat != assetCat)
 						return;
 					autoAssetRelease.ReleasePreAssetCat();
 					onLoadSuccessCallback(component, assetCat.Get<AssetObjectType>());

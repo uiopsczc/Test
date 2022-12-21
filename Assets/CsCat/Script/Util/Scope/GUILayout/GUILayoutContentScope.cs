@@ -7,7 +7,7 @@ namespace CsCat
 {
 	public class GUILayoutContentScope : IDisposable
 	{
-		private readonly float old;
+		private readonly float _old;
 		private const string As_TextArea_String = "AS TextArea";
 
 		public GUILayoutContentScope()
@@ -16,8 +16,8 @@ namespace CsCat
 			GUILayout.BeginHorizontal(As_TextArea_String, GUILayout.MinHeight(10f));
 			GUILayout.BeginVertical();
 			GUILayout.Space(2f);
-			old = EditorGUIUtility.labelWidth;
-			EditorGUIUtility.labelWidth = old - 10;
+			_old = EditorGUIUtility.labelWidth;
+			EditorGUIUtility.labelWidth = _old - 10;
 		}
 
 		public void Dispose()
@@ -29,7 +29,7 @@ namespace CsCat
 			GUILayout.EndHorizontal();
 
 			GUILayout.Space(3f);
-			EditorGUIUtility.labelWidth = old;
+			EditorGUIUtility.labelWidth = _old;
 		}
 	}
 }

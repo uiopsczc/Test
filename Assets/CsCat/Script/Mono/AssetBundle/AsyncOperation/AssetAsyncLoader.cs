@@ -6,7 +6,7 @@ namespace CsCat
 {
 	public class AssetAsyncLoader : BaseAssetAsyncLoader
 	{
-		protected BaseAssetBundleAsyncLoader assetBundleLoader;
+		protected BaseAssetBundleAsyncLoader _assetBundleLoader;
 
 
 
@@ -14,32 +14,32 @@ namespace CsCat
 		public void Init(AssetCat assetCat, BaseAssetBundleAsyncLoader assetBundleLoader)
 		{
 			this.assetCat = assetCat;
-			this.assetBundleLoader = assetBundleLoader;
+			this._assetBundleLoader = assetBundleLoader;
 
 			AddListener<AssetBundleAsyncLoader>(null, AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Fail,
-			  OnAssetBundleAsyncLoaderFail);
+			  _OnAssetBundleAsyncLoaderFail);
 			AddListener<AssetBundleAsyncLoader>(null, AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Success,
-			  OnAssetBundleAsyncLoaderSuccess);
+			  _OnAssetBundleAsyncLoaderSuccess);
 		}
 
 
-		protected override float GetProgress()
+		protected override float _GetProgress()
 		{
-			return resultInfo.isDone ? 1.0f : assetBundleLoader.progress;
+			return resultInfo.isDone ? 1.0f : _assetBundleLoader.progress;
 		}
 
 		public override long GetNeedDownloadBytes()
 		{
-			return assetBundleLoader.GetNeedDownloadBytes();
+			return _assetBundleLoader.GetNeedDownloadBytes();
 		}
 		public override long GetDownloadedBytes()
 		{
-			return assetBundleLoader.GetDownloadedBytes();
+			return _assetBundleLoader.GetDownloadedBytes();
 		}
 
 		public override List<string> GetAssetBundlePathList()
 		{
-			return assetBundleLoader.GetAssetBundlePathList();
+			return _assetBundleLoader.GetAssetBundlePathList();
 		}
 
 
@@ -47,29 +47,29 @@ namespace CsCat
 		{
 		}
 
-		private void OnAssetBundleAsyncLoaderSuccess(AssetBundleAsyncLoader assetBundleAsyncLoader)
+		private void _OnAssetBundleAsyncLoaderSuccess(AssetBundleAsyncLoader assetBundleAsyncLoader)
 		{
-			if (assetBundleLoader != assetBundleAsyncLoader)
+			if (_assetBundleLoader != assetBundleAsyncLoader)
 				return;
 			resultInfo.isSuccess = true;
 			RemoveListener<AssetBundleAsyncLoader>(null, AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Success,
-			  OnAssetBundleAsyncLoaderSuccess);
+			  _OnAssetBundleAsyncLoaderSuccess);
 		}
 
-		private void OnAssetBundleAsyncLoaderFail(AssetBundleAsyncLoader assetBundleAsyncLoader)
+		private void _OnAssetBundleAsyncLoaderFail(AssetBundleAsyncLoader assetBundleAsyncLoader)
 		{
-			if (assetBundleLoader != assetBundleAsyncLoader)
+			if (_assetBundleLoader != assetBundleAsyncLoader)
 				return;
 			resultInfo.isFail = true;
 			RemoveListener<AssetBundleAsyncLoader>(null, AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Fail,
-			  OnAssetBundleAsyncLoaderFail);
+			  _OnAssetBundleAsyncLoaderFail);
 		}
 
-		protected override void OnSuccess()
+		protected override void _OnSuccess()
 		{
-			base.OnSuccess();
+			base._OnSuccess();
 
-			var assetBundleCat = this.assetBundleLoader.assetBundleCat;
+			var assetBundleCat = this._assetBundleLoader.assetBundleCat;
 			var assetBundle = assetBundleCat.Get();
 			var assets = assetBundle.LoadAssetWithSubAssets(assetCat.assetPath);
 			assetCat.SetAssets(assets);
@@ -77,15 +77,15 @@ namespace CsCat
 			FireEvent(null, AssetBundleEventNameConst.On_AssetAsyncLoader_Success, this);
 		}
 
-		protected override void OnFail()
+		protected override void _OnFail()
 		{
-			base.OnFail();
+			base._OnFail();
 			FireEvent(null, AssetBundleEventNameConst.On_AssetAsyncLoader_Fail, this);
 		}
 
-		protected override void OnDone()
+		protected override void _OnDone()
 		{
-			base.OnDone();
+			base._OnDone();
 			FireEvent(null, AssetBundleEventNameConst.On_AssetAsyncLoader_Done, this);
 		}
 
@@ -93,7 +93,7 @@ namespace CsCat
 		protected override void _Destroy()
 		{
 			base._Destroy();
-			assetBundleLoader = null;
+			_assetBundleLoader = null;
 		}
 	}
 }

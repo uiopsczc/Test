@@ -82,8 +82,8 @@ namespace CsCat
 							if (i >= methodInfoParameters.Length - 1 && isFinalParams)
 								targetParameterType = targetParameterType.GetElementType();
 							if (targetParameterType.IsGenericTypeDefinition || targetParameterType.IsGenericType ||
-								targetParameterType.IsGenericParameter ||
-								ConvertUtil.CanConvertToType(sourceParameterType, targetParameterType)) continue;
+							    targetParameterType.IsGenericParameter ||
+							    ConvertUtil.CanConvertToType(sourceParameterType, targetParameterType)) continue;
 							isContinueThisRound = true;
 							break;
 						}
@@ -92,22 +92,19 @@ namespace CsCat
 
 						if (targetParameterInfo.IsOptional) continue;
 						if (i == methodInfoParameters.Length - 1 &&
-							(i != methodInfoParameters.Length - 1 || isFinalParams)) continue;
+						    (i != methodInfoParameters.Length - 1 || isFinalParams)) continue;
 						isContinueThisRound = true;
 						break;
 					}
 
 					if (isContinueThisRound)
 						continue;
-					else
-					{
-						var result = methodInfo.MakeGenericMethod(genericTypes);
-						SetGenericMethodInfoCache(type, methodName, genericTypes, sourceParameterTypes, result);
-						SetGenericMethodInfoCache(type, methodName, genericTypes,
-							methodInfoParameters.ToList().ConvertAll(parameter => parameter.ParameterType).ToArray(),
-							result);
-						return result;
-					}
+					var result = methodInfo.MakeGenericMethod(genericTypes);
+					SetGenericMethodInfoCache(type, methodName, genericTypes, sourceParameterTypes, result);
+					SetGenericMethodInfoCache(type, methodName, genericTypes,
+						methodInfoParameters.ToList().ConvertAll(parameter => parameter.ParameterType).ToArray(),
+						result);
+					return result;
 				}
 			}
 

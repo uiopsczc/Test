@@ -14,11 +14,11 @@ namespace CsCat
 			{
 				if (_resultInfo != null) return _resultInfo;
 				_resultInfo = PoolCatManagerUtil.Spawn<ResultInfo>();
-				_resultInfo.Init(OnSuccess, OnFail, OnDone);
+				_resultInfo.Init(_OnSuccess, _OnFail, _OnDone);
 				return _resultInfo;
 			}
 		}
-		public float progress => GetProgress();
+		public float progress => _GetProgress();
 		public object Current => null;
 
 
@@ -36,26 +36,26 @@ namespace CsCat
 
 		public abstract void Update();
 
-		protected virtual void OnSuccess()
+		protected virtual void _OnSuccess()
 		{
 			this.onSuccessCallback?.Invoke();
 			this.onSuccessCallback = null;
 		}
 
-		protected virtual void OnFail()
+		protected virtual void _OnFail()
 		{
 			this.onFailCallback?.Invoke();
 			this.onFailCallback = null;
 		}
 
-		protected virtual void OnDone()
+		protected virtual void _OnDone()
 		{
 			this.onDoneCallback?.Invoke();
 			this.onDoneCallback = null;
 		}
 
 
-		protected abstract float GetProgress();
+		protected abstract float _GetProgress();
 
 		public virtual long GetNeedDownloadBytes()
 		{

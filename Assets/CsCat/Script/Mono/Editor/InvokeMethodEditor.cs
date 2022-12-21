@@ -149,8 +149,10 @@ namespace CsCat
 		void OnInputChangedOfTargetMethodInfoSearchField(string result)
 		{
 			_targetMethodInfoSearchField.ClearResults();
-			foreach (var methodInfo in _targetType.GetMethods(BindingFlagsConst.All))
+			var infos = _targetType.GetMethods(BindingFlagsConst.All);
+			for (var i = 0; i < infos.Length; i++)
 			{
+				var methodInfo = infos[i];
 				if (methodInfo.Name.ToLower().Contains(result.ToLower()))
 					_targetMethodInfoSearchField.AddResult(methodInfo.Name, methodInfo);
 			}

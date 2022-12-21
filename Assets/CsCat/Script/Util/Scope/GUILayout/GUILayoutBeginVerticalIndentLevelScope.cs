@@ -7,11 +7,11 @@ namespace CsCat
 	{
 		public const float Width_Of_Per_Indent_Level = 10f;
 		public static int Global_Indent_Level = 0;
-		private int add;
+		private int _add;
 
 		public void _Init(int add = 1)
 		{
-			this.add = add;
+			this._add = add;
 			Global_Indent_Level += add;
 			GUILayout.BeginHorizontal();
 			GUILayout.Space(Global_Indent_Level * Width_Of_Per_Indent_Level);
@@ -41,7 +41,7 @@ namespace CsCat
 		{
 			GUILayout.EndVertical();
 			GUILayout.EndHorizontal();
-			Global_Indent_Level -= add;
+			Global_Indent_Level -= _add;
 		}
 	}
 }

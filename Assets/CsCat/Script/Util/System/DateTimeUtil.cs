@@ -22,9 +22,9 @@ namespace CsCat
 		/// <param name="isIngroed">是否忽略非比较类型部分</param>
 		/// <returns></returns>
 		public static float Diff(DateTime dateTime1, DateTime dateTime2, DateTimeType compareType,
-			bool isIngroedNotCompareType = true)
+			bool isIgnoredNotCompareType = true)
 		{
-			if (isIngroedNotCompareType)
+			if (isIgnoredNotCompareType)
 			{
 				TimeSpan timeSpan1;
 				TimeSpan timeSpan2;

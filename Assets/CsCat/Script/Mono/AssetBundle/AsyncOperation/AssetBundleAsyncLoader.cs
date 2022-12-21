@@ -7,13 +7,13 @@ namespace CsCat
 	/// </summary>
 	public class AssetBundleAsyncLoader : BaseAssetBundleAsyncLoader
 	{
-		protected int totalWaitingAssetBundleCatCount;
+		protected int _totalWaitingAssetBundleCatCount;
 
-		protected Dictionary<string, AssetBundleCat> waitingAssetBundleCatDict =
+		protected Dictionary<string, AssetBundleCat> _waitingAssetBundleCatDict =
 			new Dictionary<string, AssetBundleCat>();
 
-		protected Dictionary<string, long> assetBundleDownloadedBytesDict = new Dictionary<string, long>();
-		protected long needDownloadBytes;
+		protected Dictionary<string, long> _assetBundleDownloadedBytesDict = new Dictionary<string, long>();
+		protected long _needDownloadBytes;
 
 
 		public void Init(AssetBundleCat assetBundleCat)
@@ -23,8 +23,8 @@ namespace CsCat
 			// 只添加没有被加载过的
 			if (!assetBundleCat.IsLoadDone())
 			{
-				waitingAssetBundleCatDict[assetBundleCat.assetBundleName] = assetBundleCat;
-				assetBundleDownloadedBytesDict[assetBundleCat.assetBundleName] = 0;
+				_waitingAssetBundleCatDict[assetBundleCat.assetBundleName] = assetBundleCat;
+				_assetBundleDownloadedBytesDict[assetBundleCat.assetBundleName] = 0;
 			}
 
 			for (var i = 0; i < assetBundleCat.dependenceAssetBundleCatList.Count; i++)
@@ -32,21 +32,21 @@ namespace CsCat
 				var dependenceAssetBundleCat = assetBundleCat.dependenceAssetBundleCatList[i];
 				if (dependenceAssetBundleCat.IsLoadDone())
 					continue;
-				waitingAssetBundleCatDict[dependenceAssetBundleCat.assetBundleName] = dependenceAssetBundleCat;
-				assetBundleDownloadedBytesDict[dependenceAssetBundleCat.assetBundleName] = 0;
+				_waitingAssetBundleCatDict[dependenceAssetBundleCat.assetBundleName] = dependenceAssetBundleCat;
+				_assetBundleDownloadedBytesDict[dependenceAssetBundleCat.assetBundleName] = 0;
 			}
 
-			totalWaitingAssetBundleCatCount = waitingAssetBundleCatDict.Count;
+			_totalWaitingAssetBundleCatCount = _waitingAssetBundleCatDict.Count;
 
 
-			needDownloadBytes = 0;
-			foreach (var keyValue in assetBundleDownloadedBytesDict)
+			_needDownloadBytes = 0;
+			foreach (var keyValue in _assetBundleDownloadedBytesDict)
 			{
 				var curAssetBundleName = keyValue.Key;
-				needDownloadBytes += Client.instance.assetBundleManager.assetBundleMap.dict[curAssetBundleName];
+				_needDownloadBytes += Client.instance.assetBundleManager.assetBundleMap.dict[curAssetBundleName];
 			}
 
-			if (totalWaitingAssetBundleCatCount == 0)
+			if (_totalWaitingAssetBundleCatCount == 0)
 			{
 				resultInfo.isSuccess = true;
 				return;
@@ -59,7 +59,7 @@ namespace CsCat
 		}
 
 
-		protected override float GetProgress()
+		protected override float _GetProgress()
 		{
 			if (resultInfo.isDone)
 				return 1.0f;
@@ -71,7 +71,7 @@ namespace CsCat
 		public override List<string> GetAssetBundlePathList()
 		{
 			List<string> result = new List<string>();
-			foreach (var keyValue in assetBundleDownloadedBytesDict)
+			foreach (var keyValue in _assetBundleDownloadedBytesDict)
 			{
 				var assetBundleName = keyValue.Key;
 				result.Add(assetBundleName);
@@ -82,7 +82,7 @@ namespace CsCat
 
 		public override long GetNeedDownloadBytes()
 		{
-			return needDownloadBytes;
+			return _needDownloadBytes;
 		}
 
 		public override long GetDownloadedBytes()
@@ -90,22 +90,22 @@ namespace CsCat
 			if (resultInfo.isDone)
 				return GetNeedDownloadBytes();
 			long downloadedBytes = 0;
-			foreach (var keyValue in assetBundleDownloadedBytesDict)
+			foreach (var keyValue in _assetBundleDownloadedBytesDict)
 			{
 				var assetBundleName = keyValue.Key;
-				bool isLoadDone = !waitingAssetBundleCatDict.ContainsKey(assetBundleName);
+				bool isLoadDone = !_waitingAssetBundleCatDict.ContainsKey(assetBundleName);
 				if (isLoadDone) //已经下载完的assetBundle_name
-					assetBundleDownloadedBytesDict[assetBundleName] =
+					_assetBundleDownloadedBytesDict[assetBundleName] =
 						Client.instance.assetBundleManager.assetBundleMap.GetAssetBundleBytes(assetBundleName);
 				else
 				{
-					var resourceWebRequester = this.waitingAssetBundleCatDict[assetBundleName].resourceWebRequester;
-					assetBundleDownloadedBytesDict[assetBundleName] =
+					var resourceWebRequester = this._waitingAssetBundleCatDict[assetBundleName].resourceWebRequester;
+					_assetBundleDownloadedBytesDict[assetBundleName] =
 						resourceWebRequester?.GetDownloadedBytes() ??
 						Client.instance.assetBundleManager.assetBundleMap.GetAssetBundleBytes(assetBundleName);
 				}
 
-				downloadedBytes += assetBundleDownloadedBytesDict[assetBundleName];
+				downloadedBytes += _assetBundleDownloadedBytesDict[assetBundleName];
 			}
 
 			return downloadedBytes;
@@ -119,10 +119,10 @@ namespace CsCat
 		{
 			if (resultInfo.isDone)
 				return;
-			if (!waitingAssetBundleCatDict.ContainsValue(resourceWebRequester.assetBundleCat) ||
+			if (!_waitingAssetBundleCatDict.ContainsValue(resourceWebRequester.assetBundleCat) ||
 			    resourceWebRequester.isNotCache) return;
-			waitingAssetBundleCatDict.Remove(resourceWebRequester.assetBundleCat.assetBundleName);
-			if (waitingAssetBundleCatDict.Count == 0)
+			_waitingAssetBundleCatDict.Remove(resourceWebRequester.assetBundleCat.assetBundleName);
+			if (_waitingAssetBundleCatDict.Count == 0)
 				resultInfo.isSuccess = true;
 		}
 
@@ -130,7 +130,7 @@ namespace CsCat
 		{
 			if (resultInfo.isDone)
 				return;
-			if (!waitingAssetBundleCatDict.ContainsValue(resourceWebRequester.assetBundleCat) ||
+			if (!_waitingAssetBundleCatDict.ContainsValue(resourceWebRequester.assetBundleCat) ||
 			    resourceWebRequester.isNotCache) return;
 			resultInfo.isFail = true;
 			RemoveListener<ResourceWebRequester>(null, AssetBundleEventNameConst.On_ResourceWebRequester_Fail,
@@ -138,21 +138,21 @@ namespace CsCat
 		}
 
 
-		protected override void OnSuccess()
+		protected override void _OnSuccess()
 		{
-			base.OnSuccess();
+			base._OnSuccess();
 			FireEvent(null, AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Success, this);
 		}
 
-		protected override void OnFail()
+		protected override void _OnFail()
 		{
-			base.OnFail();
+			base._OnFail();
 			FireEvent(null, AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Fail, this);
 		}
 
-		protected override void OnDone()
+		protected override void _OnDone()
 		{
-			base.OnDone();
+			base._OnDone();
 			FireEvent(null, AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Done, this);
 			this.Destroy();
 			PoolCatManagerUtil.Despawn(this);
@@ -161,10 +161,10 @@ namespace CsCat
 		protected override void _Destroy()
 		{
 			base._Destroy();
-			totalWaitingAssetBundleCatCount = 0;
-			waitingAssetBundleCatDict.Clear();
-			assetBundleDownloadedBytesDict.Clear();
-			needDownloadBytes = 0;
+			_totalWaitingAssetBundleCatCount = 0;
+			_waitingAssetBundleCatDict.Clear();
+			_assetBundleDownloadedBytesDict.Clear();
+			_needDownloadBytes = 0;
 		}
 	}
 }

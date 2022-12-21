@@ -26,9 +26,11 @@ namespace CsCat
 			if (GameObject.Find(SingletonConst.StringSingletonMaster))
 			{
 				//检测失效物体中是否有名为(Singleton)xxx【xxx为T的类名】
-				foreach (GameObject inActiveGameObject in SingletonFactory.instance.GetMono<SingletonMaster>()
-					.inActiveGameObjects)
+				var objects = SingletonFactory.instance.GetMono<SingletonMaster>()
+					.inActiveGameObjects;
+				for (var i = 0; i < objects.Length; i++)
 				{
+					GameObject inActiveGameObject = objects[i];
 					if (!inActiveGameObject.name.Equals(targetName)) continue;
 					instance = inActiveGameObject.GetComponent<T>();
 					instance.SingleInit();

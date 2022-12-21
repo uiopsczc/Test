@@ -28,7 +28,7 @@ namespace CsCat
 			this.callbackCauseDict.Remove(callbackCause.GetNotNullKey());
 			this.resLoadData.assetCat.RemoveCallback(callbackCause.GetNullableKey());
 			if (!_isNotCheckDestroy)
-				CheckDestroy();
+				_CheckDestroy();
 		}
 
 		public void RemoveAllCallbackCauses()
@@ -41,11 +41,11 @@ namespace CsCat
 
 			this.callbackCauseDict.Clear();
 			if (!_isNotCheckDestroy)
-				CheckDestroy();
+				_CheckDestroy();
 		}
 
 
-		void CheckDestroy()
+		void _CheckDestroy()
 		{
 			if (this.callbackCauseDict.Count == 0)
 				resLoadData.Destroy();

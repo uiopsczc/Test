@@ -12,32 +12,32 @@ namespace CsCat
 		/// <summary>
 		///   每个切片上的所有事件(key:该Animator上的ClipName)
 		/// </summary>
-		private readonly Dictionary<string, List<string>> clipEventDict = new Dictionary<string, List<string>>();
+		private readonly Dictionary<string, List<string>> _clipEventDict = new Dictionary<string, List<string>>();
 
 		/// <summary>
 		///   每个事件对应回调(key:clipName + percentage)
 		/// </summary>
-		private readonly Dictionary<string, List<DelegateStruct>> eventCallbackDict =
+		private readonly Dictionary<string, List<DelegateStruct>> _eventCallbackDict =
 			new Dictionary<string, List<DelegateStruct>>();
 
 
-		private Animator animator => GetComponent<Animator>();
-		private AnimationClip[] clips => animator.runtimeAnimatorController.animationClips;
+		private Animator _animator => GetComponent<Animator>();
+		private AnimationClip[] _clips => _animator.runtimeAnimatorController.animationClips;
 
 
 		#region private method
 
 		private void OnTrigger(string eventKey)
 		{
-			if (!eventCallbackDict.ContainsKey(eventKey))
+			if (!_eventCallbackDict.ContainsKey(eventKey))
 			{
 				LogCat.LogWarningFormat("{0}:不存在eventCallbacks {1}", GetType().Name, eventKey);
 				return;
 			}
 
-			for (var i = 0; i < eventCallbackDict[eventKey].Count; i++)
+			for (var i = 0; i < _eventCallbackDict[eventKey].Count; i++)
 			{
-				var callbackStruct = eventCallbackDict[eventKey][i];
+				var callbackStruct = _eventCallbackDict[eventKey][i];
 				callbackStruct.Invoke();
 			}
 		}
@@ -58,20 +58,20 @@ namespace CsCat
 		//例子: AddEvents((Action<string, string>)((a, b) => { LogCat.LogWarning(a+b);}), "TestAnimationClip", 1f,"aabbcc","ddff");
 		public AnimEvent AddEvents(Delegate callback, string clipName, float percentage, params object[] callbackArgs)
 		{
-			clipEventDict.GetOrAddDefault(clipName, () => new List<string>());
+			_clipEventDict.GetOrAddDefault(clipName, () => new List<string>());
 
 			var eventKey = GetEventKey(clipName, percentage);
-			var hasEventCallback = eventCallbackDict.ContainsKey(eventKey);
-			eventCallbackDict.GetOrAddDefault(eventKey, () => new List<DelegateStruct>());
-			eventCallbackDict[eventKey].Add(new DelegateStruct(callback, callbackArgs));
-			if (clipEventDict[clipName].FindIndex(a => a.Equals(eventKey)) == -1)
-				clipEventDict[clipName].Add(eventKey);
+			var hasEventCallback = _eventCallbackDict.ContainsKey(eventKey);
+			_eventCallbackDict.GetOrAddDefault(eventKey, () => new List<DelegateStruct>());
+			_eventCallbackDict[eventKey].Add(new DelegateStruct(callback, callbackArgs));
+			if (_clipEventDict[clipName].FindIndex(a => a.Equals(eventKey)) == -1)
+				_clipEventDict[clipName].Add(eventKey);
 
-			LogCat.LogWarning(clipEventDict[clipName].Count);
+			LogCat.LogWarning(_clipEventDict[clipName].Count);
 
-			for (var i = 0; i < clips.Length; i++)
+			for (var i = 0; i < _clips.Length; i++)
 			{
-				var clip = clips[i];
+				var clip = _clips[i];
 				if (!clip.name.Equals(clipName)) continue;
 				if (hasEventCallback) continue;
 				var animationEvent = new AnimationEvent();
@@ -98,8 +98,8 @@ namespace CsCat
 			params object[] callbackArgs)
 		{
 			var eventKey = GetEventKey(clipName, percentage);
-			if (eventCallbackDict.ContainsKey(eventKey))
-				eventCallbackDict[eventKey].Clear(); //确保只有一个
+			if (_eventCallbackDict.ContainsKey(eventKey))
+				_eventCallbackDict[eventKey].Clear(); //确保只有一个
 			return AddEvents(callback, clipName, percentage, callbackArgs);
 		}
 
@@ -114,25 +114,25 @@ namespace CsCat
 
 		public AnimEvent RemoveClipEvents(string clipName)
 		{
-			if (clips != null)
-				for (var i = 0; i < clips.Length; i++)
+			if (_clips != null)
+				for (var i = 0; i < _clips.Length; i++)
 				{
-					var clip = clips[i];
+					var clip = _clips[i];
 					if (clip == null) continue;
 					if (!clip.name.Equals(clipName)) continue;
 					clip.events = emptyEvent;
 				}
 
 			List<string> eventList = null;
-			if (clipEventDict.TryGetValue(clipName, out eventList))
+			if (_clipEventDict.TryGetValue(clipName, out eventList))
 			{
 				for (var i = 0; i < eventList.Count; i++)
 				{
 					var eventName = eventList[i];
-					eventCallbackDict.Remove(eventName);
+					_eventCallbackDict.Remove(eventName);
 				}
 
-				clipEventDict.Remove(clipName);
+				_clipEventDict.Remove(clipName);
 			}
 
 			return this;
@@ -140,7 +140,7 @@ namespace CsCat
 
 		public void RemoveAllEvent(bool destroy = false)
 		{
-			var clipEventKeys = new List<string>(clipEventDict.Keys);
+			var clipEventKeys = new List<string>(_clipEventDict.Keys);
 			for (var i = 0; i < clipEventKeys.Count; i++)
 			{
 				var clipName = clipEventKeys[i];

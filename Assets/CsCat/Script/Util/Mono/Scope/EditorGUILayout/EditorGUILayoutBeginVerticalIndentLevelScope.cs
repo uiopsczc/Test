@@ -9,15 +9,15 @@ namespace CsCat
 	public class EditorGUILayoutBeginVerticalIndentLevelScope : IDisposable
 	{
 		public const float Width_Of_Per_Indent_Level = 10f;
-		public static int Golbal_Indent_Level;
-		private int add;
+		public static int Global_Indent_Level;
+		private int _add;
 
 		public void _Init(int add = 1)
 		{
-			this.add = add;
-			Golbal_Indent_Level += add;
+			this._add = add;
+			Global_Indent_Level += add;
 			EditorGUILayout.BeginHorizontal();
-			GUILayout.Space(Golbal_Indent_Level * Width_Of_Per_Indent_Level);
+			GUILayout.Space(Global_Indent_Level * Width_Of_Per_Indent_Level);
 			//      GUILayout.FlexibleSpace();
 		}
 
@@ -52,7 +52,7 @@ namespace CsCat
 		{
 			EditorGUILayout.EndVertical();
 			EditorGUILayout.EndHorizontal();
-			Golbal_Indent_Level -= add;
+			Global_Indent_Level -= _add;
 		}
 	}
 }

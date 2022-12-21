@@ -39,8 +39,9 @@ namespace CsCat
 		{
 			if (animatorStateInfo.IsName(prefix))
 				return true;
-			foreach (var suffix in suffixes)
+			for (var i = 0; i < suffixes.Length; i++)
 			{
+				var suffix = suffixes[i];
 				var name = prefix + suffix;
 				if (animatorStateInfo.IsName(name))
 					return true;

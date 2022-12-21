@@ -6,17 +6,17 @@ namespace CsCat
 {
 	public class EditorGUIUtilityLabelWidthScope : IDisposable
 	{
-		private float orgLableWidth;
+		private readonly float _orgLabelWidth;
 
-		public EditorGUIUtilityLabelWidthScope(float newLableWidth)
+		public EditorGUIUtilityLabelWidthScope(float newLabelWidth)
 		{
-			orgLableWidth = EditorGUIUtility.labelWidth;
-			EditorGUIUtility.labelWidth = newLableWidth;
+			_orgLabelWidth = EditorGUIUtility.labelWidth;
+			EditorGUIUtility.labelWidth = newLabelWidth;
 		}
 
 		public void Dispose()
 		{
-			EditorGUIUtility.labelWidth = orgLableWidth;
+			EditorGUIUtility.labelWidth = _orgLabelWidth;
 		}
 	}
 }

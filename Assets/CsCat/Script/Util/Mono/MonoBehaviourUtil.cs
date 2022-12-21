@@ -51,12 +51,12 @@ namespace CsCat
 		public static void StopCacheIEnumeratorDict(MonoBehaviour monoBehaviour)
 		{
 			Dictionary<string, IEnumerator> enumeratorDict = monoBehaviour.GetCacheIEnumeratorDict();
-			foreach (var enumerator in enumeratorDict.Values)
+			foreach (var kv in enumeratorDict)
 			{
+				var enumerator = kv.Value;
 				if (enumerator == null) continue;
 				monoBehaviour.StopCoroutine(enumerator);
 			}
-
 			enumeratorDict.Clear();
 		}
 
@@ -124,10 +124,12 @@ namespace CsCat
 		public static void StopCachePausableCoroutineDict(MonoBehaviour monoBehaviour)
 		{
 			Dictionary<string, PausableCoroutine> pausableCoroutineDict = monoBehaviour.GetCachePausableCoroutineDict();
-			foreach (var pausableCoroutine in pausableCoroutineDict.Values)
+			foreach (var kv in pausableCoroutineDict)
+			{
+				var pausableCoroutine = kv.Value;
 				if (pausableCoroutine != null)
 					PausableCoroutineManager.instance.StopCoroutine(pausableCoroutine.routine, monoBehaviour);
-
+			}
 			pausableCoroutineDict.Clear();
 		}
 

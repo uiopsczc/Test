@@ -7,18 +7,18 @@ namespace CsCat
 {
 	public class HandlesColorScope : IDisposable
 	{
-		[SerializeField] private Color preColor { get; }
+		[SerializeField] private Color _preColor { get; }
 
 		public HandlesColorScope(Color newColor)
 		{
-			preColor = Handles.color;
+			_preColor = Handles.color;
 			Handles.color = newColor;
 		}
 
 
 		public void Dispose()
 		{
-			Handles.color = preColor;
+			Handles.color = _preColor;
 		}
 	}
 }

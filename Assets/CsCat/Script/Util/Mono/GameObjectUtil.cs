@@ -68,9 +68,13 @@ namespace CsCat
 		/// <returns></returns>
 		public static bool IsHasComponents(GameObject gameObject, params Type[] types)
 		{
-			foreach (var type in types)
+			for (var i = 0; i < types.Length; i++)
+			{
+				var type = types[i];
 				if (!gameObject.GetComponent(type))
 					return false;
+			}
+
 			return true;
 		}
 
@@ -83,17 +87,22 @@ namespace CsCat
 		public static UnityEngine.Component[] GetComponentsExclude(GameObject gameObject, params Type[] excludeComponentTypes)
 		{
 			var result = new List<UnityEngine.Component>();
-			foreach (var component in gameObject.GetComponents<UnityEngine.Component>())
+			var components = gameObject.GetComponents<UnityEngine.Component>();
+			for (var i = 0; i < components.Length; i++)
 			{
+				var component = components[i];
 				if (excludeComponentTypes.Length > 0) //如果剔除的类型个数不为0
 				{
 					var isContinueThisRound = false; //是否结束这个round
-					foreach (var excludeComponentType in excludeComponentTypes)
+					for (var j = 0; j < excludeComponentTypes.Length; j++)
+					{
+						var excludeComponentType = excludeComponentTypes[j];
 						if (component.GetType().IsSubTypeOf(excludeComponentType)) //如果是组件类型是其中的剔除的类型或其子类
 						{
 							isContinueThisRound = true;
 							break;
 						}
+					}
 
 					if (isContinueThisRound)
 						continue;
@@ -119,12 +128,14 @@ namespace CsCat
 			if (string.IsNullOrEmpty(excludeComponentTypes))
 				return gameObject.GetComponentsExclude(excludeTypeList.ToArray());
 			var excludeComponentTypeList = excludeComponentTypes.ToList<string>(excludeSeparator);
-			foreach (var excludeComponentType in excludeComponentTypeList)
-				//只查当前的assembly和UnityEngine两个Assembly
+			for (var i = 0; i < excludeComponentTypeList.Count; i++)
+			{
+				var excludeComponentType = excludeComponentTypeList[i];
 				if (TypeUtil.GetType(excludeComponentType) != null)
 					excludeTypeList.Add(TypeUtil.GetType(excludeComponentType));
 				else if (TypeUtil.GetType(excludeComponentType, "UnityEngine") != null)
 					excludeTypeList.Add(TypeUtil.GetType(excludeComponentType, "UnityEngine"));
+			}
 
 			return gameObject.GetComponentsExclude(excludeTypeList.ToArray());
 		}
@@ -161,11 +172,13 @@ namespace CsCat
 		public static T GetFieldValue<T>(GameObject gameObject, string fieldInfoString, T defaultValue,
 			params Type[] excludeComponentTypes)
 		{
-			foreach (var component in gameObject.GetComponentsExclude(excludeComponentTypes))
+			var exclude = gameObject.GetComponentsExclude(excludeComponentTypes);
+			for (var i = 0; i < exclude.Length; i++)
 			{
+				var component = exclude[i];
 				var fieldInfo = component.GetType().GetFieldInfo(fieldInfoString);
 				if (fieldInfo != null)
-					return (T)fieldInfo.GetValue(fieldInfoString);
+					return (T) fieldInfo.GetValue(fieldInfoString);
 			}
 
 			return defaultValue;
@@ -174,8 +187,10 @@ namespace CsCat
 		public static void SetFieldValue(GameObject gameObject, string fieldInfoString, object value,
 			params Type[] excludeComponentTypes)
 		{
-			foreach (var component in gameObject.GetComponentsExclude(excludeComponentTypes))
+			var exclude = gameObject.GetComponentsExclude(excludeComponentTypes);
+			for (var i = 0; i < exclude.Length; i++)
 			{
+				var component = exclude[i];
 				var fieldInfo = component.GetType().GetFieldInfo(fieldInfoString);
 				if (fieldInfo != null)
 					fieldInfo.SetValue(fieldInfoString, value);
@@ -189,11 +204,13 @@ namespace CsCat
 		public static T GetPropertyValue<T>(GameObject gameObject, string propertyInfoString, T defaultValue,
 			object[] index = null, params Type[] excludeComponentTypes)
 		{
-			foreach (var component in gameObject.GetComponentsExclude(excludeComponentTypes))
+			var exclude = gameObject.GetComponentsExclude(excludeComponentTypes);
+			for (var i = 0; i < exclude.Length; i++)
 			{
+				var component = exclude[i];
 				var propertyInfo = component.GetType().GetPropertyInfo(propertyInfoString);
 				if (propertyInfo != null)
-					return (T)propertyInfo.GetValue(propertyInfoString, index);
+					return (T) propertyInfo.GetValue(propertyInfoString, index);
 			}
 
 			return defaultValue;
@@ -202,8 +219,10 @@ namespace CsCat
 		public static void SetPropertyValue(GameObject gameObject, string fieldInfoString, object value,
 			object[] index = null, params Type[] excludeComponentTypes)
 		{
-			foreach (var component in gameObject.GetComponentsExclude(excludeComponentTypes))
+			var exclude = gameObject.GetComponentsExclude(excludeComponentTypes);
+			for (var i = 0; i < exclude.Length; i++)
 			{
+				var component = exclude[i];
 				var propertyInfo = component.GetType().GetPropertyInfo(fieldInfoString);
 				if (propertyInfo != null)
 					propertyInfo.SetValue(fieldInfoString, value, index);
@@ -224,8 +243,12 @@ namespace CsCat
 		public static void Invoke(GameObject gameObject, string invokeMethodName, string excludeComponentTypes = null,
 			params object[] parameters)
 		{
-			foreach (var component in gameObject.GetComponentsExclude(excludeComponentTypes))
+			var exclude = gameObject.GetComponentsExclude(excludeComponentTypes);
+			for (var i = 0; i < exclude.Length; i++)
+			{
+				var component = exclude[i];
 				ReflectionUtil.Invoke(component, invokeMethodName, true, parameters);
+			}
 		}
 
 		#endregion

@@ -5,11 +5,11 @@ namespace CsCat
 {
 	public static class GUILayoutToggleAreaScopeTest
 	{
-		private static GUIToggleTween toggleTween = new GUIToggleTween();
+		private static readonly GUIToggleTween _toggleTween = new GUIToggleTween();
 
 		public static void Test()
 		{
-			using (new GUILayoutToggleAreaScope(toggleTween, "Chen"))
+			using (new GUILayoutToggleAreaScope(_toggleTween, "Chen"))
 			{
 				for (int i = 0; i < 20; i++)
 					GUILayout.Label("cccc" + i);

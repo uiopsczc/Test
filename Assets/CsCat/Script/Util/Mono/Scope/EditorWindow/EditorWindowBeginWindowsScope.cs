@@ -6,17 +6,17 @@ namespace CsCat
 {
 	public class EditorWindowBeginWindowsScope : IDisposable
 	{
-		private readonly EditorWindow self;
+		private readonly EditorWindow _self;
 
 		public EditorWindowBeginWindowsScope(EditorWindow self)
 		{
-			this.self = self;
+			this._self = self;
 			self.BeginWindows();
 		}
 
 		public void Dispose()
 		{
-			self.EndWindows();
+			_self.EndWindows();
 		}
 	}
 }

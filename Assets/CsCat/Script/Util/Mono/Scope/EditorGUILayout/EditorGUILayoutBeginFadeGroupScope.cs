@@ -6,7 +6,7 @@ namespace CsCat
 {
 	public class EditorGUILayoutBeginFadeGroupScope : IDisposable
 	{
-		private readonly bool isWithIndent;
+		private readonly bool _isWithIndent;
 
 		/// <summary>
 		///   Begins a group that can be be hidden/shown and the transition will be animated.
@@ -16,15 +16,15 @@ namespace CsCat
 		public EditorGUILayoutBeginFadeGroupScope(float value, bool isWithIndent = false)
 		{
 			EditorGUILayout.BeginFadeGroup(value);
-			this.isWithIndent = isWithIndent;
-			if (this.isWithIndent)
+			this._isWithIndent = isWithIndent;
+			if (this._isWithIndent)
 				EditorGUI.indentLevel++;
 		}
 
 		public void Dispose()
 		{
 			EditorGUILayout.EndFadeGroup();
-			if (isWithIndent)
+			if (_isWithIndent)
 				EditorGUI.indentLevel--;
 		}
 	}

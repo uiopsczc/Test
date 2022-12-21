@@ -4,7 +4,7 @@ namespace CsCat
 {
 	public class AutoAssetDestroy : MonoBehaviour
 	{
-		private AssetCat assetCat;
+		private AssetCat _assetCat;
 
 		/// <summary>
 		///   只能通过这个方法添加
@@ -15,13 +15,13 @@ namespace CsCat
 		{
 			assetCat.AddRefCount();
 			var autoAssetDestroy = go.AddComponent<AutoAssetDestroy>();
-			autoAssetDestroy.assetCat = assetCat;
+			autoAssetDestroy._assetCat = assetCat;
 		}
 
 		private void OnDestroy()
 		{
-			if (assetCat != null)
-				assetCat.SubRefCount(1, true);
+			if (_assetCat != null)
+				_assetCat.SubRefCount(1, true);
 			else
 				LogCat.LogErrorFormat("{0} destroy but ont find assetCat", name);
 		}

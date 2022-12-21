@@ -16,8 +16,10 @@ namespace CsCat
 		{
 			List<Tween> tweenList = new List<Tween>();
 			if (DOTween.PlayingTweens() == null) return tweenList;
-			foreach (var tween in DOTween.PlayingTweens())
+			var list = DOTween.PlayingTweens();
+			for (var i = 0; i < list.Count; i++)
 			{
+				var tween = list[i];
 				if (source == null)
 				{
 					if (tween.id is DOTweenId id && id.prefix == prefix)

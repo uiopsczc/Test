@@ -13,7 +13,7 @@ namespace CsCat
 
 
 
-		protected override float GetProgress()
+		protected override float _GetProgress()
 		{
 			return 1.0f;
 		}

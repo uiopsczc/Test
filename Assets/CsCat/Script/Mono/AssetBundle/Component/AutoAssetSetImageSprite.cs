@@ -7,7 +7,7 @@ namespace CsCat
 {
 	public class AutoAssetSetImageSprite : AutoAssetRelease<Image, Sprite>
 	{
-		private static void SetImageSprite(Image component, Sprite asset, bool isSetNativeSize, Vector2 newSize)
+		private static void _SetImageSprite(Image component, Sprite asset, bool isSetNativeSize, Vector2 newSize)
 		{
 			component.sprite = asset;
 			if (isSetNativeSize)
@@ -21,9 +21,9 @@ namespace CsCat
 		  Action<Image, Sprite> onLoadFailCallback = null,
 		  Action<Image, Sprite> onLoadDoneCallback = null)
 		{
-			Set<AutoAssetSetImageSprite>(image, assetPath, (component, asset) =>
+			_Set<AutoAssetSetImageSprite>(image, assetPath, (component, asset) =>
 			{
-				SetImageSprite(component, asset, isSetNativeSize, newSize);
+				_SetImageSprite(component, asset, isSetNativeSize, newSize);
 				onLoadSuccessCallback?.Invoke(component, asset);
 			}, onLoadFailCallback, onLoadDoneCallback);
 		}
@@ -42,9 +42,9 @@ namespace CsCat
 		  Action<Image, Sprite> onLoadDoneCallback = null)
 		{
 			var is_done = false;
-			Set<AutoAssetSetImageSprite>(image, assetPath, (component, asset) =>
+			_Set<AutoAssetSetImageSprite>(image, assetPath, (component, asset) =>
 			{
-				SetImageSprite(component, asset, isSetNativeSize, newSize);
+				_SetImageSprite(component, asset, isSetNativeSize, newSize);
 				onLoadSuccessCallback?.Invoke(component, asset);
 			}, onLoadFailCallback, (component, asset) => { is_done = true; });
 			while (!is_done)

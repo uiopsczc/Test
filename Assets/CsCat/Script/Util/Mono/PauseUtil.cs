@@ -26,12 +26,20 @@ namespace CsCat
 			if (gameObject.activeInHierarchy == false)
 				return;
 
-			foreach (var animator in gameObject.GetComponentsInChildren<Animator>())
+			var children = gameObject.GetComponentsInChildren<Animator>();
+			for (var i = 0; i < children.Length; i++)
+			{
+				var animator = children[i];
 				if (animator.enabled)
 					animator.SetPause(cause);
+			}
 
-			foreach (var particleSystem in gameObject.GetComponentsInChildren<ParticleSystem>())
+			var systems = gameObject.GetComponentsInChildren<ParticleSystem>();
+			for (var i = 0; i < systems.Length; i++)
+			{
+				var particleSystem = systems[i];
 				particleSystem.SetPause(cause);
+			}
 		}
 
 		/// <summary>

@@ -40,7 +40,7 @@ namespace CsCat
 			//    Debug.LogError("loading:"+url);
 		}
 
-		protected override float GetProgress()
+		protected override float _GetProgress()
 		{
 			if (resultInfo.isDone)
 				return 1.0f;
@@ -87,9 +87,9 @@ namespace CsCat
 			}
 		}
 
-		protected override void OnSuccess()
+		protected override void _OnSuccess()
 		{
-			base.OnSuccess();
+			base._OnSuccess();
 			// 无缓存，不计引用计数、Creater使用后由上层回收，所以这里不需要做任何处理
 			if (assetBundleCat != null && !isNotCache)
 			{
@@ -103,17 +103,17 @@ namespace CsCat
 			FireEvent(null, AssetBundleEventNameConst.On_ResourceWebRequester_Success, this);
 		}
 
-		protected override void OnFail()
+		protected override void _OnFail()
 		{
-			base.OnFail();
+			base._OnFail();
 			LogCat.warn("服务器连接失败[未启动?]", www.url, www.error);
 			FireEvent(null, AssetBundleEventNameConst.On_ResourceWebRequester_Fail, this);
 		}
 
 
-		protected override void OnDone()
+		protected override void _OnDone()
 		{
-			base.OnDone();
+			base._OnDone();
 			//完成时不再需要resourceWebRequester
 			if (assetBundleCat != null)
 				assetBundleCat.resourceWebRequester = null;

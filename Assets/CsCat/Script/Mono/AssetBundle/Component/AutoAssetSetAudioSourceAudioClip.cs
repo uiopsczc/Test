@@ -6,7 +6,7 @@ namespace CsCat
 {
 	public class AutoAssetSetAudioSourceAudioClip : AutoAssetRelease<AudioSource, AudioClip>
 	{
-		private static void SetAudioSourceAudioClip(AudioSource component, AudioClip audioClip)
+		private static void _SetAudioSourceAudioClip(AudioSource component, AudioClip audioClip)
 		{
 			component.clip = audioClip;
 		}
@@ -17,9 +17,9 @@ namespace CsCat
 			Action<AudioSource, AudioClip> onLoadDoneCallback = null)
 		{
 			;
-			Set<AutoAssetSetAudioSourceAudioClip>(audioSource, assetPath, (component, asset) =>
+			_Set<AutoAssetSetAudioSourceAudioClip>(audioSource, assetPath, (component, asset) =>
 			{
-				SetAudioSourceAudioClip(component, asset);
+				_SetAudioSourceAudioClip(component, asset);
 				onLoadSuccessCallback?.Invoke(component, asset);
 			}, onLoadFailCallback, onLoadDoneCallback);
 		}
@@ -31,9 +31,9 @@ namespace CsCat
 			Action<AudioSource, AudioClip> onLoadDoneCallback = null)
 		{
 			var isDone = false;
-			Set<AutoAssetSetAudioSourceAudioClip>(audioSource, assetPath, (component, audioClip) =>
+			_Set<AutoAssetSetAudioSourceAudioClip>(audioSource, assetPath, (component, audioClip) =>
 			{
-				SetAudioSourceAudioClip(component, audioClip);
+				_SetAudioSourceAudioClip(component, audioClip);
 				onLoadSuccessCallback?.Invoke(component, audioClip);
 			}, onLoadFailCallback, (component, audioClip) =>
 			{
