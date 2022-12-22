@@ -14,9 +14,9 @@ namespace CsCat
 			                                                                  new ReorderableListInfo(mountPrefabInfoList));
 
 
-		public override void DrawGUISetting_Detail()
+		public override void DrawGUISettingDetail()
 		{
-			base.DrawGUISetting_Detail();
+			base.DrawGUISettingDetail();
 			mountPointTransformFinderIndex = EditorGUILayout.Popup("transformFinder",
 			  mountPointTransformFinderIndex,
 			  TransformFinderConst.transformFinderInfoList.ConvertAll(t => t.name).ToArray());
@@ -31,7 +31,7 @@ namespace CsCat
 				  var mountPrefabInfo = mountPrefabInfoReorderableListInfo.reorderableList.list[index] as MountPrefabInfo;
 				  mountPrefabInfo.DrawGUISetting(rect, EditorConst.Single_Line_Height, ReorderableListConst.Padding);
 			  };
-			mountPrefabInfoReorderableListInfo.DrawGUI("mountPrefabInfo_list");
+			mountPrefabInfoReorderableListInfo.DrawGUI("mountPrefabInfoList");
 		}
 	}
 }

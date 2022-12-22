@@ -11,21 +11,21 @@ namespace CsCat
 
 
 		public PlayableDirector director;
-		private bool isFirstFrameHappened;
+		private bool _isFirstFrameHappened;
 
 
-		private Transform isTrackBinding;
+		private Transform _isTrackBinding;
 
 		public Vector3 defaultPosition;
 
-		private Vector3 endPosition;
+		private Vector3 _endPosition;
 
 		public Vector3 startPosition;
 		public Vector3 defaultRotation;
-		private Vector3 endRotation;
+		private Vector3 _endRotation;
 		public Vector3 startRotation;
 		public Vector3 defaultScale;
-		private Vector3 endScale;
+		private Vector3 _endScale;
 		public Vector3 startScale;
 
 
@@ -60,9 +60,9 @@ namespace CsCat
 
 		public override void ProcessFrame(Playable playable, FrameData info, object arg)
 		{
-			isTrackBinding = arg as Transform;
+			_isTrackBinding = arg as Transform;
 
-			if (isTrackBinding == null)
+			if (_isTrackBinding == null)
 				return;
 
 
@@ -118,9 +118,9 @@ namespace CsCat
 			var remainDefaultWeight = Mathf.Clamp(1 - totalBlendWeight, 0, 1);
 
 
-			isTrackBinding.transform.localPosition = remainDefaultWeight * startPosition + blendPosition;
-			isTrackBinding.transform.localEulerAngles = remainDefaultWeight * startRotation + blendRotation;
-			isTrackBinding.transform.localScale = remainDefaultWeight * startScale + blendScale;
+			_isTrackBinding.transform.localPosition = remainDefaultWeight * startPosition + blendPosition;
+			_isTrackBinding.transform.localEulerAngles = remainDefaultWeight * startRotation + blendRotation;
+			_isTrackBinding.transform.localScale = remainDefaultWeight * startScale + blendScale;
 		}
 	}
 }

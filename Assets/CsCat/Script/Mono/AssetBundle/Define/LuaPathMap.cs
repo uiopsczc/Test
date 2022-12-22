@@ -5,13 +5,13 @@ namespace CsCat
 {
 	public class LuaPathMap
 	{
-		private string fileContent;
-		protected Dictionary<string, string> luaName2LuaPathDict = new Dictionary<string, string>();
+		private string _fileContent;
+		protected Dictionary<string, string> _luaName2LuaPathDict = new Dictionary<string, string>();
 
 		public void SaveToDisk()
 		{
 			var path = BuildConst.Lua_Path_Map_File_Name.WithRootPath(FilePathConst.PersistentAssetBundleRoot);
-			StdioUtil.WriteTextFile(path, fileContent);
+			StdioUtil.WriteTextFile(path, _fileContent);
 		}
 
 
@@ -23,7 +23,7 @@ namespace CsCat
 				return;
 			}
 
-			fileContent = content;
+			_fileContent = content;
 			content = content.Replace("\r\n", "\n");
 			var mapList = content.Split('\n');
 			for (var i = 0; i < mapList.Length; i++)
@@ -42,14 +42,14 @@ namespace CsCat
 				var luaName = splits[0];
 				var luaPath = splits[1];
 
-				luaName2LuaPathDict[luaName] = luaPath;
+				_luaName2LuaPathDict[luaName] = luaPath;
 			}
 		}
 
 
 		public string GetLuaPath(string luaName)
 		{
-			return luaName2LuaPathDict[luaName];
+			return _luaName2LuaPathDict[luaName];
 		}
 	}
 }

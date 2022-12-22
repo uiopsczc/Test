@@ -4,8 +4,8 @@ namespace CsCat
 {
 	public class Manifest
 	{
-		private readonly string[] emptyStringArray = { };
-		private byte[] manifestBytes;
+		private readonly string[] _emptyStringArray = { };
+		private byte[] _manifestBytes;
 
 		public Manifest()
 		{
@@ -27,13 +27,13 @@ namespace CsCat
 
 		public void SaveBytes(byte[] bytes)
 		{
-			manifestBytes = bytes;
+			_manifestBytes = bytes;
 		}
 
 		public void SaveToDisk()
 		{
 			var path = assetBundleName.WithRootPath(FilePathConst.PersistentAssetBundleRoot);
-			StdioUtil.WriteFile(path, manifestBytes);
+			StdioUtil.WriteFile(path, _manifestBytes);
 		}
 
 		public Hash128 GetAssetBundleHash(string assetBundleName)
@@ -43,27 +43,27 @@ namespace CsCat
 
 		public string[] GetAllAssetBundlePaths()
 		{
-			return assetBundleManifest == null ? emptyStringArray : assetBundleManifest.GetAllAssetBundles();
+			return assetBundleManifest == null ? _emptyStringArray : assetBundleManifest.GetAllAssetBundles();
 		}
 
 		public string[] GetAllAssetBundlePathsWithVariant()
 		{
 			return assetBundleManifest == null
-				? emptyStringArray
+				? _emptyStringArray
 				: assetBundleManifest.GetAllAssetBundlesWithVariant();
 		}
 
 		public string[] GetAllDependencies(string assetBundleName)
 		{
 			return assetBundleManifest == null
-				? emptyStringArray
+				? _emptyStringArray
 				: assetBundleManifest.GetAllDependencies(assetBundleName);
 		}
 
 		public string[] GetDirectDependencies(string assetBundleName)
 		{
 			return assetBundleManifest == null
-				? emptyStringArray
+				? _emptyStringArray
 				: assetBundleManifest.GetDirectDependencies(assetBundleName);
 		}
 	}

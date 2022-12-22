@@ -9,9 +9,9 @@ namespace CsCat
 	{
 		#region field
 
-		float duration;
-		float delay;
-		bool isDestroyWhileEnd;
+		float _duration;
+		float _delay;
+		bool _isDestroyWhileEnd;
 
 		#endregion
 
@@ -26,9 +26,9 @@ namespace CsCat
 
 		#region delegate
 
-		Action startCallback;
-		Action updateCallback;
-		Action endCallback;
+		Action _startCallback;
+		Action _updateCallback;
+		Action _endCallback;
 
 		#endregion
 
@@ -46,13 +46,13 @@ namespace CsCat
 		public void StartIE(float duration, float delay = 0, Action startCallback = null,
 			Action updateCallback = null, Action endCallback = null, bool isDestroyWhileEnd = true)
 		{
-			this.startCallback = startCallback;
-			this.updateCallback = updateCallback;
-			this.endCallback = endCallback;
-			this.duration = duration;
-			this.delay = delay;
-			this.isDestroyWhileEnd = isDestroyWhileEnd;
-			this.StopAndStartCacheIEnumerator("ProcessIE", ProcessIE());
+			this._startCallback = startCallback;
+			this._updateCallback = updateCallback;
+			this._endCallback = endCallback;
+			this._duration = duration;
+			this._delay = delay;
+			this._isDestroyWhileEnd = isDestroyWhileEnd;
+			this.StopAndStartCacheIEnumerator("ProcessIE", _ProcessIE());
 		}
 
 		/// <summary>
@@ -67,21 +67,21 @@ namespace CsCat
 
 		#region private method
 
-		IEnumerator ProcessIE()
+		IEnumerator _ProcessIE()
 		{
-			yield return WaitForDelay();
-			startCallback?.Invoke();
-			yield return ExecuteUpdate();
-			endCallback?.Invoke();
-			if (isDestroyWhileEnd)
+			yield return _WaitForDelay();
+			_startCallback?.Invoke();
+			yield return _ExecuteUpdate();
+			_endCallback?.Invoke();
+			if (_isDestroyWhileEnd)
 				this.Destroy();
 
 			yield return 0;
 		}
 
-		IEnumerator WaitForDelay()
+		IEnumerator _WaitForDelay()
 		{
-			float delayRemainDuration = delay;
+			float delayRemainDuration = _delay;
 			while (delayRemainDuration > 0)
 			{
 				if (Pause.instance.isPaused)
@@ -95,9 +95,9 @@ namespace CsCat
 			}
 		}
 
-		IEnumerator ExecuteUpdate()
+		IEnumerator _ExecuteUpdate()
 		{
-			float exeRemainDuration = duration;
+			float exeRemainDuration = _duration;
 			while (exeRemainDuration > 0)
 			{
 				if (Pause.instance.isPaused)
@@ -107,7 +107,7 @@ namespace CsCat
 				}
 
 				yield return null;
-				updateCallback?.Invoke();
+				_updateCallback?.Invoke();
 				exeRemainDuration -= Time.deltaTime;
 			}
 		}

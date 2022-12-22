@@ -76,13 +76,13 @@ namespace CsCat
 		public void Clear()
 		{
 			actList.Clear();
-			Reset();
+			_Reset();
 		}
 
-		protected override void Reset()
+		protected override void _Reset()
 		{
 			curActIndex = 0;
-			base.Reset();
+			base._Reset();
 		}
 
 
@@ -231,10 +231,10 @@ namespace CsCat
 
 		public Act WaitUntil(Func<bool> func, float timeout = -1)
 		{
-			return Coroutine(IEWaitUtil(func, timeout));
+			return Coroutine(_IEWaitUtil(func, timeout));
 		}
 
-		private IEnumerator IEWaitUtil(Func<bool> func, float timeout = -1)
+		private IEnumerator _IEWaitUtil(Func<bool> func, float timeout = -1)
 		{
 			var time = 0f;
 			while (!func())

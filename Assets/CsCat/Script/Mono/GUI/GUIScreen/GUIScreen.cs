@@ -7,7 +7,7 @@ namespace CsCat
 	class GUIScreen : MonoBehaviour
 	{
 		public static Action action;
-		Vector2 scrollPosition;
+		private Vector2 _scrollPosition;
 		public bool isShowLog = true;
 		public bool isLockToBottom = true;
 

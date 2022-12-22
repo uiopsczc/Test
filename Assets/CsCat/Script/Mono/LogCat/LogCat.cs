@@ -10,17 +10,17 @@ namespace CsCat
 {
 	public partial class LogCat : MonoBehaviour
 	{
-		private static List<LogMessage> messageList = new List<LogMessage>();
-		private static StringBuilder stringBuilder = new StringBuilder();
-		private static bool isInited = false;
+		private static readonly List<LogMessage> _messageList = new List<LogMessage>();
+		private static readonly StringBuilder _stringBuilder = new StringBuilder();
+		private static bool _isInited = false;
 
 
 		public static void Init()
 		{
-			if (isInited)
+			if (_isInited)
 				return;
-			isInited = true;
-			Application.logMessageReceived += HandleLog;
+			_isInited = true;
+			Application.logMessageReceived += _HandleLog;
 			if (Directory.Exists(LogCatConst.LogBasePath))
 			{
 				//每次启动客户端删除10天前保存的Log
@@ -44,7 +44,7 @@ namespace CsCat
 
 		void Update()
 		{
-			Flush();
+			_Flush();
 		}
 
 		//////////////////////////////////////////////////////////////////////
@@ -167,21 +167,21 @@ namespace CsCat
 			return result.ToString();
 		}
 
-		private static void HandleLog(string message, string stackTrace, LogType logType)
+		private static void _HandleLog(string message, string stackTrace, LogType logType)
 		{
-			messageList.Add(new LogMessage(message, stackTrace, LogCatConst.LogType_2_LogCatType_Dict[logType]));
+			_messageList.Add(new LogMessage(message, stackTrace, LogCatConst.LogType_2_LogCatType_Dict[logType]));
 			if (!Application.isPlaying)
-				Flush();
+				_Flush();
 		}
 
-		private static void Flush()
+		private static void _Flush()
 		{
-			if (messageList.Count > 0)
+			if (_messageList.Count > 0)
 			{
 				var nowTimeSpan = DateTimeUtil.NowDateTime().TimeOfDay;
-				for (var i = 0; i < messageList.Count; i++)
+				for (var i = 0; i < _messageList.Count; i++)
 				{
-					var message = messageList[i];
+					var message = _messageList[i];
 					if (message.logType < LogCatConst.Write_Log_Level && message.logType < LogCatConst.GUI_Log_Level)
 						continue;
 
@@ -190,22 +190,22 @@ namespace CsCat
 						message.message, message.stackTrace);
 
 					if (message.logType >= LogCatConst.Write_Log_Level)
-						stringBuilder.Append(logContent + "\n");
+						_stringBuilder.Append(logContent + "\n");
 
 					if (message.logType >= LogCatConst.GUI_Log_Level)
 					{
-						guiMessageList.Add(string.Format("<color=#{0}>{1}</color>",
+						_guiMessageList.Add(string.Format("<color=#{0}>{1}</color>",
 							LogCatConst.LogCatTypeInfo_Dict[message.logType].color.ToHtmlStringRGBA(), logContent));
 					}
 				}
 
-				WriteLogFile(stringBuilder.ToString());
-				messageList.Clear();
-				stringBuilder.Clear();
+				_WriteLogFile(_stringBuilder.ToString());
+				_messageList.Clear();
+				_stringBuilder.Clear();
 			}
 		}
 
-		private static void WriteLogFile(string content)
+		private static void _WriteLogFile(string content)
 		{
 			if (content.IsNullOrWhiteSpace())
 				return;

@@ -7,13 +7,13 @@ namespace CsCat
 	{
 		public Type transformFinderType;
 		public string name;
-		private Func<object> createCallback;
+		private Func<object> _createCallback;
 
 		public TransformFinderInfo(Type transformFinderType)
 		{
 			this.name = transformFinderType.GetLastName();
 			this.transformFinderType = transformFinderType;
-			this.createCallback = () => Activator.CreateInstance(transformFinderType);
+			this._createCallback = () => Activator.CreateInstance(transformFinderType);
 		}
 
 		public TransformFinderBase CreateInstance()

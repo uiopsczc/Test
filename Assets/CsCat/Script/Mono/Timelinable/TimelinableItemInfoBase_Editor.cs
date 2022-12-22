@@ -47,11 +47,11 @@ namespace CsCat
 				time = EditorGUILayout.FloatField("time", time).Minimum(0);
 				duration = EditorGUILayout.FloatField("duration", duration).Minimum(0);
 
-				DrawGUISetting_Detail();
+				DrawGUISettingDetail();
 			}
 		}
 
-		public virtual void DrawGUISetting_Detail()
+		public virtual void DrawGUISettingDetail()
 		{
 		}
 	}

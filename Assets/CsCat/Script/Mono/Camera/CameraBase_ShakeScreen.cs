@@ -5,13 +5,13 @@ namespace CsCat
 {
 	public partial class CameraBase
 	{
-		private List<CameraShakeData> shakeDataList = new List<CameraShakeData>();
+		private readonly List<CameraShakeData> _shakeDataList = new List<CameraShakeData>();
 
 		public void ShakeScreen(float duration, Vector3 posShakeRange, Vector3 posShakeFrequency,
 			Vector3 eulerAnglesShakeRange,
 			Vector3 eulerAnglesShakeFrequency, float fovShakeRange, float fovShakeFrequency)
 		{
-			shakeDataList.Add(new CameraShakeData(
+			_shakeDataList.Add(new CameraShakeData(
 				duration, posShakeRange, posShakeFrequency, eulerAnglesShakeRange, eulerAnglesShakeFrequency,
 				fovShakeRange,
 				fovShakeFrequency
@@ -23,9 +23,9 @@ namespace CsCat
 			CameraShakeResult shakeResult = GetShakeResult(deltaTime);
 			if (shakeResult != null)
 			{
-				Vector3 shakePosition = this.currentRotation * shakeResult.position;
+				Vector3 shakePosition = this._currentRotation * shakeResult.position;
 				graphicComponent.transform.position = graphicComponent.transform.position + shakePosition;
-				Quaternion currentRotation = this.currentRotation * Quaternion.Euler(shakeResult.eulerAngles);
+				Quaternion currentRotation = this._currentRotation * Quaternion.Euler(shakeResult.eulerAngles);
 				graphicComponent.transform.rotation = currentRotation;
 				this.camera.fieldOfView = this.camera.fieldOfView + shakeResult.fov;
 			}
@@ -36,25 +36,25 @@ namespace CsCat
 			Vector3 shakePosition = new Vector3(0, 0, 0);
 			Vector3 shakeEulerAngles = new Vector3(0, 0, 0);
 			float shakeFov = 0;
-			for (int i = shakeDataList.Count - 1; i >= 0; i--)
+			for (int i = _shakeDataList.Count - 1; i >= 0; i--)
 			{
-				CameraShakeData shakeData = shakeDataList[i];
+				CameraShakeData shakeData = _shakeDataList[i];
 				shakeData.frameTime = shakeData.frameTime + deltaTime;
 				if (shakeData.frameTime >= shakeData.duration)
-					shakeDataList.RemoveLast();
+					_shakeDataList.RemoveLast();
 				else
 				{
 					if (shakeData.posShakeRange != null && shakeData.posShakeFrequency != null)
-						shakePosition = shakePosition + this.__CalculateShakeResult(shakeData.duration,
+						shakePosition = shakePosition + this._CalculateShakeResult(shakeData.duration,
 							shakeData.frameTime,
 							shakeData.posShakeRange.Value, shakeData.posShakeFrequency.Value);
 					if (shakeData.eulerAnglesShakeRange != null && shakeData.eulerAnglesShakeFrequency != null)
-						shakeEulerAngles = shakeEulerAngles + this.__CalculateShakeResult(shakeData.duration,
+						shakeEulerAngles = shakeEulerAngles + this._CalculateShakeResult(shakeData.duration,
 							shakeData.frameTime,
 							shakeData.eulerAnglesShakeRange.Value,
 							shakeData.eulerAnglesShakeFrequency.Value);
 					if (shakeData.fovShakeRange != null && shakeData.fovShakeFrequency != null)
-						shakeFov = shakeFov + __CalculateShakeResult(shakeData.duration, shakeData.frameTime,
+						shakeFov = shakeFov + _CalculateShakeResult(shakeData.duration, shakeData.frameTime,
 							shakeData.fovShakeRange.Value, shakeData.fovShakeFrequency.Value);
 					return new CameraShakeResult(shakePosition, shakeEulerAngles, shakeFov);
 				}
@@ -63,17 +63,17 @@ namespace CsCat
 			return null;
 		}
 
-		private Vector3 __CalculateShakeResult(float duration, float frameTime, Vector3 shakeRange,
+		private Vector3 _CalculateShakeResult(float duration, float frameTime, Vector3 shakeRange,
 			Vector3 shakeFrequency)
 		{
 			return new Vector3(
-				__CalculateShakeResult(duration, frameTime, shakeRange.x, shakeFrequency.x),
-				__CalculateShakeResult(duration, frameTime, shakeRange.y, shakeFrequency.y),
-				__CalculateShakeResult(duration, frameTime, shakeRange.z, shakeFrequency.z)
+				_CalculateShakeResult(duration, frameTime, shakeRange.x, shakeFrequency.x),
+				_CalculateShakeResult(duration, frameTime, shakeRange.y, shakeFrequency.y),
+				_CalculateShakeResult(duration, frameTime, shakeRange.z, shakeFrequency.z)
 			);
 		}
 
-		private float __CalculateShakeResult(float duration, float frameTime, float shakeRange,
+		private float _CalculateShakeResult(float duration, float frameTime, float shakeRange,
 			float shakeFrequency)
 		{
 			float reduction = (duration - frameTime) / duration;

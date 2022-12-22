@@ -14,7 +14,7 @@ namespace CsCat
 	{
 		public void LoadFromPath(string path)
 		{
-			resLoad.GetOrLoadAsset(path, assetCat =>
+			_resLoad.GetOrLoadAsset(path, assetCat =>
 			{
 				string contentJson = assetCat.Get<TextAsset>().text;
 				GameObjectLoader.instance.Load(contentJson);
@@ -22,29 +22,29 @@ namespace CsCat
 		}
 
 
-		public void Load(string content_json)
+		public void Load(string contentJson)
 		{
 			Clear();
-			Hashtable dict = MiniJson.JsonDecode(content_json) as Hashtable;
-			Load_ChildList(dict.Get<ArrayList>("child_list"), this.gameObject.transform);
+			Hashtable dict = MiniJson.JsonDecode(contentJson) as Hashtable;
+			_LoadChildList(dict.Get<ArrayList>("childList"), this.gameObject.transform);
 		}
 
-		private void Load_ChildList(ArrayList childList, Transform parentTransform)
+		private void _LoadChildList(ArrayList childList, Transform parentTransform)
 		{
 			for (var i = 0; i < childList.Count; i++)
 			{
 				var childHashtable = (Hashtable) childList[i];
-				Load_Child(childHashtable, parentTransform);
+				_LoadChild(childHashtable, parentTransform);
 			}
 		}
 
-		private void Load_Child(Hashtable childHashtable, Transform parentTransform)
+		private void _LoadChild(Hashtable childHashtable, Transform parentTransform)
 		{
-			long prefabRefId = childHashtable.Get<long>("prefab_ref_id");
+			long prefabRefId = childHashtable.Get<long>("prefabRefId");
 			if (prefabRefId != 0)
 			{
 				string assetPath = prefabRefId.GetAssetPathByRefId();
-				resLoad.GetOrLoadAsset(assetPath, assetCat =>
+				_resLoad.GetOrLoadAsset(assetPath, assetCat =>
 				{
 					Object prefab = assetCat.Get();
 					GameObject clone = null;
@@ -53,7 +53,7 @@ namespace CsCat
 					else
 					{
 #if UNITY_EDITOR
-						clone = EditorUtility.InstantiatePrefab(prefab) as GameObject;
+						clone = PrefabUtility.InstantiatePrefab(prefab) as GameObject;
 						clone.transform.SetParent(parentTransform);
 #endif
 					}
@@ -73,22 +73,23 @@ namespace CsCat
 		{
 			childGameObject.transform.SetParent(parentTransform);
 			childGameObject.name = childHashtable.Get<string>("name");
-			childGameObject.transform.LoadSerializeHashtable(childHashtable.Get<Hashtable>("Transform_hashtable"));
+			childGameObject.transform.LoadSerializeHashtable(childHashtable.Get<Hashtable>("TransformHashtable"));
 
-			if (childHashtable.Get<Hashtable>("Tilemap_hashtable") != null)
+			if (childHashtable.Get<Hashtable>("TilemapHashtable") != null)
 			{
-				Tilemap tilemap = GetOrAddComponent<Tilemap>(childGameObject, isPrefab);
-				tilemap.LoadSerializeHashtable(childHashtable.Get<Hashtable>("Tilemap_hashtable"), resLoad);
+				Tilemap tilemap = _GetOrAddComponent<Tilemap>(childGameObject, isPrefab);
+				tilemap.LoadSerializeHashtable(childHashtable.Get<Hashtable>("TilemapHashtable"), _resLoad);
 			}
 
-			List<string> except_list = new List<string>() {"Transform_hashtable", "Tilemap_hashtable"};
-			foreach (var curChildHashtableKey in childHashtable.Keys)
+			List<string> except_list = new List<string>() {"TransformHashtable", "TilemapHashtable"};
+			foreach (DictionaryEntry kv in childHashtable)
 			{
+				var curChildHashtableKey = kv.Key;
 				string childHashtableKey = curChildHashtableKey.ToString();
 				if (childHashtableKey.IsFirstLetterUpper() && !except_list.Contains(childHashtableKey))
 				{
 					string componentTypeName = childHashtableKey.Substring(0, childHashtableKey.IndexOf("_"));
-					UnityEngine.Component component = GetOrAddComponent(childGameObject, TypeUtil.GetType(componentTypeName),
+					UnityEngine.Component component = _GetOrAddComponent(childGameObject, TypeUtil.GetType(componentTypeName),
 						isPrefab);
 					component.InvokeExtensionMethod("LoadSerializeHashtable", true,
 						childHashtable.Get<Hashtable>(curChildHashtableKey));
@@ -97,19 +98,19 @@ namespace CsCat
 
 			if (!isPrefab) //如果是预设则不用递归子节点
 			{
-				ArrayList childList = childHashtable.Get<ArrayList>("child_list");
+				ArrayList childList = childHashtable.Get<ArrayList>("childList");
 				if (childList != null)
-					Load_ChildList(childList, childGameObject.transform);
+					_LoadChildList(childList, childGameObject.transform);
 			}
 		}
 
 
-		private T GetOrAddComponent<T>(GameObject gameObject, bool isPrefab) where T : UnityEngine.Component
+		private T _GetOrAddComponent<T>(GameObject gameObject, bool isPrefab) where T : UnityEngine.Component
 		{
 			return !isPrefab ? gameObject.AddComponent<T>() : gameObject.GetComponent<T>();
 		}
 
-		private UnityEngine.Component GetOrAddComponent(GameObject gameObject, Type componentType, bool isPrefab)
+		private UnityEngine.Component _GetOrAddComponent(GameObject gameObject, Type componentType, bool isPrefab)
 		{
 			return !isPrefab ? gameObject.AddComponent(componentType) : gameObject.GetComponent(componentType);
 		}

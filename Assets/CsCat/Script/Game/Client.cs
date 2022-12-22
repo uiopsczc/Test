@@ -19,7 +19,7 @@ namespace CsCat
 		public CommandManager commandManager = new CommandManager();
 		public GameHotKeyManager gameHotKeyManager;
 
-		public FrameCallbackMananger frameCallbackMananger = new FrameCallbackMananger();
+		public FrameCallbackManager FrameCallbackManager = new FrameCallbackManager();
 		public GuidManager guidManager;
 
 		public RandomManager randomManager = new RandomManager();
@@ -162,7 +162,7 @@ namespace CsCat
 
 			this.timerManager.Update(deltaTime, unscaledDeltaTime);
 			syncUpdate.Update();
-			frameCallbackMananger.Update();
+			FrameCallbackManager.Update();
 		}
 
 		protected override void _LateUpdate(float deltaTime, float unscaledDeltaTime)
@@ -173,7 +173,7 @@ namespace CsCat
 			eventDispatchers.FireEvent(GlobalEventNameConst.LateUpdate, deltaTime, unscaledDeltaTime);
 
 			this.timerManager.LateUpdate(deltaTime, unscaledDeltaTime);
-			frameCallbackMananger.LateUpdate();
+			FrameCallbackManager.LateUpdate();
 		}
 
 		protected override void _FixedUpdate(float deltaTime, float unscaledDeltaTime)
@@ -184,7 +184,7 @@ namespace CsCat
 			eventDispatchers.FireEvent(GlobalEventNameConst.FixedUpdate, deltaTime, unscaledDeltaTime);
 
 			this.timerManager.FixedUpdate(deltaTime, unscaledDeltaTime);
-			frameCallbackMananger.FixedUpdate();
+			FrameCallbackManager.FixedUpdate();
 		}
 
 		public void OnApplicationQuit()

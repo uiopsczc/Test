@@ -32,7 +32,7 @@ namespace CsCat
 		public virtual void Play(params object[] args)
 		{
 			_isPlaying = true;
-			LogCat.log(this.name + " set_to_play");
+			LogCat.log(this.name + " setToPlay");
 		}
 
 		public virtual void Stop(params object[] args)

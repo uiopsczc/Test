@@ -13,7 +13,7 @@ namespace CsCat
 			  this.TakeDamage(sourceUnit, targetUnit, damageFactor, forceDamageValue);
 			this.FireEvent<Unit, Unit, SpellBase, int>(null, UnitEventNameConst.On_Unit_Hit, sourceUnit, targetUnit, this, damageValue);
 			this.AddCombatNumber(damageValue, targetUnit.GetGuid(), "physical", specialEffectDict);
-			targetUnit.PlayAnimation(AnimationNameConst.be_hit, null, null, null, true);
+			targetUnit.PlayAnimation(AnimationNameConst.BeHit, null, null, null, true);
 		}
 
 		public void Hit(Unit sourceUnit, Unit targetUnit, float? damageFactor = null, int? forceDamageValue = null)

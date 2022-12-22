@@ -10,7 +10,7 @@ namespace CsCat
 	{
 		public List<string> assetPathList;
 		public Dictionary<string, long> assetBundleDownloadedBytesDict = new Dictionary<string, long>();
-		private long needDownloadBytes;
+		private long _needDownloadBytes;
 
 		public AssetListDownloadProgress(List<string> assetPathList)
 		{
@@ -34,13 +34,13 @@ namespace CsCat
 			{
 				var assetBundleName = assetBundleNameList[i];
 				assetBundleDownloadedBytesDict[assetBundleName] = 0;
-				needDownloadBytes += Client.instance.assetBundleManager.assetBundleMap.dict[assetBundleName];
+				_needDownloadBytes += Client.instance.assetBundleManager.assetBundleMap.dict[assetBundleName];
 			}
 		}
 
 		public long GetNeedDownloadBytes()
 		{
-			return this.needDownloadBytes;
+			return this._needDownloadBytes;
 		}
 
 		public long GetDownloadedBytes()

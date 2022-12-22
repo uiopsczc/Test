@@ -7,7 +7,7 @@ namespace CsCat
 {
 	public partial class SkinnedMeshRendererSubBlendShapeInfo
 	{
-		public virtual void DrawGUISetting(Rect rect, string[] skinnedMeshRendererNames, string[][] blendShapNames,
+		public virtual void DrawGUISetting(Rect rect, string[] skinnedMeshRendererNames, string[][] blendShapeNames,
 			float singleLineHeight, float padding)
 		{
 			rect.height -= 2 * padding;
@@ -16,14 +16,14 @@ namespace CsCat
 			    skinnedMeshRendererIndex >= skinnedMeshRendererNames.Length)
 				return;
 			skinnedMeshRendererIndex =
-				EditorGUI.Popup(new Rect(rect.x, rect.y, rect.width, singleLineHeight), "skinnedMeshRenderer_name",
+				EditorGUI.Popup(new Rect(rect.x, rect.y, rect.width, singleLineHeight), "skinnedMeshRendererName",
 					skinnedMeshRendererIndex, skinnedMeshRendererNames);
-			if (blendShapNames.IsNullOrEmpty() || blendShapNames[skinnedMeshRendererIndex].IsNullOrEmpty() ||
-			    blendShape_index >= blendShapNames[skinnedMeshRendererIndex].Length)
+			if (blendShapeNames.IsNullOrEmpty() || blendShapeNames[skinnedMeshRendererIndex].IsNullOrEmpty() ||
+			    blendShapeIndex >= blendShapeNames[skinnedMeshRendererIndex].Length)
 				return;
-			blendShape_index = EditorGUI.Popup(
+			blendShapeIndex = EditorGUI.Popup(
 				new Rect(rect.x, rect.y + singleLineHeight, rect.width, singleLineHeight),
-				"blendShape_name", blendShape_index, blendShapNames[skinnedMeshRendererIndex]);
+				"blendShapeName", blendShapeIndex, blendShapeNames[skinnedMeshRendererIndex]);
 		}
 	}
 }

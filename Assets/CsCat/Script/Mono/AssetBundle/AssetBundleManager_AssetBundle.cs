@@ -5,28 +5,28 @@ namespace CsCat
 {
 	public partial class AssetBundleManager
 	{
-		private bool CreateAssetBundleAsync(string assetBundleName)
+		private bool _CreateAssetBundleAsync(string assetBundleName)
 		{
-			if (__IsAssetBundleLoadSuccess(assetBundleName) || resourceWebRequesterAllDict.ContainsKey(assetBundleName))
+			if (_IsAssetBundleLoadSuccess(assetBundleName) || resourceWebRequesterAllDict.ContainsKey(assetBundleName))
 				return false;
 
 
 			// webRequester持有的引用,webRequester结束后会删除该次引用(在AssetBunldeMananger中的OnProsessingWebRequester的进行删除本次引用操作)
 			var assetBundleCat = new AssetBundleCat(assetBundleName);
 			assetBundleCat.AddRefCount();
-			AddAssetBundleCat(assetBundleCat);
+			_AddAssetBundleCat(assetBundleCat);
 
 			var resourceWebRequester = PoolCatManagerUtil.Spawn<ResourceWebRequester>();
 			var url = assetBundleName.WithRootPath(FilePathConst.PersistentAssetBundleRoot);
 			resourceWebRequester.Init(assetBundleCat, url);
 			resourceWebRequesterAllDict[assetBundleName] = resourceWebRequester;
-			resourceWebRequesterWaitingQueue.Enqueue(resourceWebRequester);
+			_resourceWebRequesterWaitingQueue.Enqueue(resourceWebRequester);
 
 			return true;
 		}
 
 		// 异步请求Assetbundle资源
-		private BaseAssetBundleAsyncLoader __LoadAssetBundleAsync(string assetBundleName)
+		private BaseAssetBundleAsyncLoader _LoadAssetBundleAsync(string assetBundleName)
 		{
 			if (Application.isEditor && EditorModeConst.IsEditorMode)
 				return new EditorAssetBundleAsyncLoader(assetBundleName);
@@ -38,15 +38,15 @@ namespace CsCat
 			for (var i = 0; i < dependanceNames.Length; i++)
 			{
 				var dependanceName = dependanceNames[i];
-				CreateAssetBundleAsync(dependanceName);
-				var dependanceAssetBundleCat = __GetAssetBundleCat(dependanceName);
+				_CreateAssetBundleAsync(dependanceName);
+				var dependanceAssetBundleCat = _GetAssetBundleCat(dependanceName);
 				// A依赖于B，A对B持有引用
 				dependanceAssetBundleCat.AddRefCount();
 				dependanceAssetBundleCatList.Add(dependanceAssetBundleCat);
 			}
 
-			CreateAssetBundleAsync(assetBundleName);
-			var assetBundleCat = __GetAssetBundleCat(assetBundleName);
+			_CreateAssetBundleAsync(assetBundleName);
+			var assetBundleCat = _GetAssetBundleCat(assetBundleName);
 			for (var i = 0; i < dependanceAssetBundleCatList.Count; i++)
 			{
 				var dependanceAssetBundleCat = dependanceAssetBundleCatList[i];
@@ -60,7 +60,7 @@ namespace CsCat
 		}
 
 
-		private void OnAssetBundleAsyncLoaderFail(AssetBundleAsyncLoader assetBundleAsyncLoader)
+		private void _OnAssetBundleAsyncLoaderFail(AssetBundleAsyncLoader assetBundleAsyncLoader)
 		{
 			if (!assetBundleAsyncLoaderProcessingList.Contains(assetBundleAsyncLoader))
 				return;
@@ -68,7 +68,7 @@ namespace CsCat
 			//assetCat的OnFail中反过来回调减引用
 		}
 
-		private void OnAssetBundleAsyncLoaderDone(AssetBundleAsyncLoader assetBundleAsyncLoader)
+		private void _OnAssetBundleAsyncLoaderDone(AssetBundleAsyncLoader assetBundleAsyncLoader)
 		{
 			if (!assetBundleAsyncLoaderProcessingList.Contains(assetBundleAsyncLoader))
 				return;
@@ -78,12 +78,12 @@ namespace CsCat
 			assetBundleAsyncLoaderProcessingList.Remove(assetBundleAsyncLoader);
 		}
 
-		private bool __IsAssetBundleLoadSuccess(string assetBundleName)
+		private bool _IsAssetBundleLoadSuccess(string assetBundleName)
 		{
-			return assetBundleCatDict.ContainsKey(assetBundleName) && __GetAssetBundleCat(assetBundleName).IsLoadSuccess();
+			return assetBundleCatDict.ContainsKey(assetBundleName) && _GetAssetBundleCat(assetBundleName).IsLoadSuccess();
 		}
 
-		private AssetBundleCat __GetAssetBundleCat(string assetBundleName)
+		private AssetBundleCat _GetAssetBundleCat(string assetBundleName)
 		{
 			assetBundleCatDict.TryGetValue(assetBundleName, out var target);
 			return target;
@@ -91,7 +91,7 @@ namespace CsCat
 
 		public void RemoveAssetBundleCat(string assetBundleName)
 		{
-			RemoveAssetBundleCat(this.__GetAssetBundleCat(assetBundleName));
+			RemoveAssetBundleCat(this._GetAssetBundleCat(assetBundleName));
 		}
 
 		public void RemoveAssetBundleCat(AssetBundleCat assetBundleCat)
@@ -104,7 +104,7 @@ namespace CsCat
 		}
 
 
-		protected void AddAssetBundleCat(AssetBundleCat assetBundle)
+		protected void _AddAssetBundleCat(AssetBundleCat assetBundle)
 		{
 			assetBundleCatDict[assetBundle.assetBundleName] = assetBundle;
 		}

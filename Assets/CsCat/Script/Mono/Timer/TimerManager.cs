@@ -22,7 +22,7 @@ namespace CsCat
 		/// </summary>
 		public List<Timer> fixedUpdateTimerList = new List<Timer>();
 
-		private bool isUpdating;
+		private bool _isUpdating;
 
 		#endregion
 
@@ -52,7 +52,7 @@ namespace CsCat
 			return timer;
 		}
 
-		private List<Timer> GetTimerList(UpdateModeCat updateMode)
+		private List<Timer> _GetTimerList(UpdateModeCat updateMode)
 		{
 			switch (updateMode)
 			{
@@ -74,7 +74,7 @@ namespace CsCat
 		/// <param name="timer"></param>
 		public void AddTimer(Timer timer)
 		{
-			this.Add(this.GetTimerList(timer.updateMode), timer);
+			this._Add(this._GetTimerList(timer.updateMode), timer);
 		}
 
 		/// <summary>
@@ -83,7 +83,7 @@ namespace CsCat
 		/// <param name="timer"></param>
 		public void RemoveTimer(Timer timer, int? index = null)
 		{
-			List<Timer> timerList = this.GetTimerList(timer.updateMode);
+			List<Timer> timerList = this._GetTimerList(timer.updateMode);
 			if (index != null)
 				timerList.RemoveAt(index.Value);
 			else
@@ -102,7 +102,7 @@ namespace CsCat
 		/// </summary>
 		/// <param name="timerList"></param>
 		/// <param name="timer"></param>
-		private void Add(List<Timer> timerList, Timer timer)
+		private void _Add(List<Timer> timerList, Timer timer)
 		{
 			bool isTimerExist = false;
 			int index = timerList.Count;
@@ -112,7 +112,7 @@ namespace CsCat
 				if (!isTimerExist)
 					isTimerExist = (curTimer == timer);
 
-				if (timer.priority > curTimer.priority)
+				if (timer._priority > curTimer._priority)
 					index = i - 1;
 			}
 
@@ -131,12 +131,12 @@ namespace CsCat
 		/// </summary>
 		/// <param name="timerList"></param>
 		/// <param name="isFixed"></param>
-		private void DoUpdate(List<Timer> timerList, float deltaTime, float unscaledDeltaTime)
+		private void _DoUpdate(List<Timer> timerList, float deltaTime, float unscaledDeltaTime)
 		{
 			if (timerList.Count <= 0)
 				return;
 
-			this.isUpdating = true;
+			this._isUpdating = true;
 
 			int count = timerList.Count;
 			for (int j = 0; j < count; j++)
@@ -144,7 +144,7 @@ namespace CsCat
 				Timer timer = timerList[j];
 				if (timer.isFinished) //如果该timer的状态是结束的话，从timerList中移除
 					continue;
-				timer.DoUpdate(deltaTime, unscaledDeltaTime);
+				timer._DoUpdate(deltaTime, unscaledDeltaTime);
 			}
 
 			// check remove
@@ -155,7 +155,7 @@ namespace CsCat
 					this.RemoveTimer(timer, j);
 			}
 
-			this.isUpdating = false;
+			this._isUpdating = false;
 		}
 
 		#endregion
@@ -163,18 +163,18 @@ namespace CsCat
 
 		public void Update(float deltaTime, float unscaledDeltaTime)
 		{
-			DoUpdate(this.updateTimerList, deltaTime, unscaledDeltaTime);
+			_DoUpdate(this.updateTimerList, deltaTime, unscaledDeltaTime);
 		}
 
 
 		public void FixedUpdate(float deltaTime, float unscaledDeltaTime)
 		{
-			DoUpdate(this.fixedUpdateTimerList, deltaTime, unscaledDeltaTime);
+			_DoUpdate(this.fixedUpdateTimerList, deltaTime, unscaledDeltaTime);
 		}
 
 		public void LateUpdate(float deltaTime, float unscaledDeltaTime)
 		{
-			DoUpdate(this.lateUpdateTimerList, deltaTime, unscaledDeltaTime);
+			_DoUpdate(this.lateUpdateTimerList, deltaTime, unscaledDeltaTime);
 		}
 	}
 }

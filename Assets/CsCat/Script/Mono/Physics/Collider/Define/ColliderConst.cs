@@ -9,8 +9,8 @@ namespace CsCat
 		public static Dictionary<ColliderType, ColliderTypeInfo> ColliderInfoDict =
 			new Dictionary<ColliderType, ColliderTypeInfo>()
 			{
-				{ColliderType.attack, new ColliderTypeInfo(ColliderType.attack, Color.red)},
-				{ColliderType.hit, new ColliderTypeInfo(ColliderType.hit, Color.green)}
+				{ColliderType.Attack, new ColliderTypeInfo(ColliderType.Attack, Color.red)},
+				{ColliderType.Hit, new ColliderTypeInfo(ColliderType.Hit, Color.green)}
 			};
 	}
 }

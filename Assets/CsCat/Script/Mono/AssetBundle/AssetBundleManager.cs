@@ -26,10 +26,10 @@ namespace CsCat
 	public partial class AssetBundleManager : TickObject
 	{
 		// 最大同时进行的ab创建数量
-		private const int Max_AssetBundle_Create_Num = 20;
+		private const int _Max_AssetBundle_Create_Num = 20;
 
 		private readonly List<AssetCat>
-			assetCatOfNoRefList =
+			_assetCatOfNoRefList =
 				new List<AssetCat>(); //这里使用延迟删除处理，和GameObject.Destroy类似,检查因为没有ref而需要删除的asset（如果有ref则不会删除）
 
 		// 逻辑层正在等待的asset加载异步句柄
@@ -45,12 +45,12 @@ namespace CsCat
 			new Dictionary<string, ResourceWebRequester>();
 
 		// 正在处理的资源请求
-		private readonly List<ResourceWebRequester> resourceWebRequesterProcessingList =
+		private readonly List<ResourceWebRequester> _resourceWebRequesterProcessingList =
 			new List<ResourceWebRequester>();
 
 
 		// 等待处理的资源请求
-		private readonly Queue<ResourceWebRequester> resourceWebRequesterWaitingQueue =
+		private readonly Queue<ResourceWebRequester> _resourceWebRequesterWaitingQueue =
 			new Queue<ResourceWebRequester>();
 
 		// 常驻内存的(游戏中一直存在的)asset
@@ -77,17 +77,17 @@ namespace CsCat
 			base.Init();
 
 			AddListener<ResourceWebRequester>(null, AssetBundleEventNameConst.On_ResourceWebRequester_Done,
-				OnResourceWebRequesterDone);
+				_OnResourceWebRequesterDone);
 
 			AddListener<AssetBundleAsyncLoader>(null, AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Fail,
-				OnAssetBundleAsyncLoaderFail);
+				_OnAssetBundleAsyncLoaderFail);
 			AddListener<AssetBundleAsyncLoader>(null, AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Done,
-				OnAssetBundleAsyncLoaderDone);
+				_OnAssetBundleAsyncLoaderDone);
 
 			AddListener<AssetAsyncLoader>(null, AssetBundleEventNameConst.On_AssetAsyncLoader_Fail,
-				OnAssetAsyncLoaderFail);
+				_OnAssetAsyncLoaderFail);
 			AddListener<AssetAsyncLoader>(null, AssetBundleEventNameConst.On_AssetAsyncLoader_Done,
-				OnAssetAsyncLoaderDone);
+				_OnAssetAsyncLoaderDone);
 		}
 
 
@@ -145,41 +145,41 @@ namespace CsCat
 		public override void Update(float deltaTime = 0, float unscaledDeltaTime = 0)
 		{
 			base.Update(deltaTime, unscaledDeltaTime);
-			OnProcessingResourceWebRequester();
-			OnProcessingAssetBundleAsyncLoader();
-			OnProcessingAssetAsyncLoader();
-			CheckAssetOfNoRefList();
+			_OnProcessingResourceWebRequester();
+			_OnProcessingAssetBundleAsyncLoader();
+			_OnProcessingAssetAsyncLoader();
+			_CheckAssetOfNoRefList();
 		}
 
-		private void OnProcessingResourceWebRequester()
+		private void _OnProcessingResourceWebRequester()
 		{
-			var slot_count = resourceWebRequesterProcessingList.Count;
-			while (slot_count < Max_AssetBundle_Create_Num && resourceWebRequesterWaitingQueue.Count > 0)
+			var slot_count = _resourceWebRequesterProcessingList.Count;
+			while (slot_count < _Max_AssetBundle_Create_Num && _resourceWebRequesterWaitingQueue.Count > 0)
 			{
-				var resourceWebRequester = resourceWebRequesterWaitingQueue.Dequeue();
+				var resourceWebRequester = _resourceWebRequesterWaitingQueue.Dequeue();
 				resourceWebRequester.Start();
-				resourceWebRequesterProcessingList.Add(resourceWebRequester);
+				_resourceWebRequesterProcessingList.Add(resourceWebRequester);
 				slot_count++;
 			}
 
-			for (var i = resourceWebRequesterProcessingList.Count - 1; i >= 0; i--)
-				resourceWebRequesterProcessingList[i].Update();
+			for (var i = _resourceWebRequesterProcessingList.Count - 1; i >= 0; i--)
+				_resourceWebRequesterProcessingList[i].Update();
 		}
 
-		private void OnProcessingAssetBundleAsyncLoader()
+		private void _OnProcessingAssetBundleAsyncLoader()
 		{
 		}
 
-		private void OnProcessingAssetAsyncLoader()
+		private void _OnProcessingAssetAsyncLoader()
 		{
 		}
 
 
-		private void OnResourceWebRequesterDone(ResourceWebRequester resourceWebRequester)
+		private void _OnResourceWebRequesterDone(ResourceWebRequester resourceWebRequester)
 		{
-			if (!resourceWebRequesterProcessingList.Contains(resourceWebRequester))
+			if (!_resourceWebRequesterProcessingList.Contains(resourceWebRequester))
 				return;
-			resourceWebRequesterProcessingList.Remove(resourceWebRequester);
+			_resourceWebRequesterProcessingList.Remove(resourceWebRequester);
 			resourceWebRequesterAllDict.RemoveByFunc((k, v) => v == resourceWebRequester);
 			// 无缓存，不计引用计数、Creater使用后由上层回收，所以这里不需要做任何处理
 			if (!resourceWebRequester.isNotCache)

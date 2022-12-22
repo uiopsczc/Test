@@ -22,7 +22,7 @@ namespace CsCat
 
 		public string StartCoroutine(IEnumerator iEnumerator, string key = null)
 		{
-			CleanFinishedCoroutines();
+			_CleanFinishedCoroutines();
 			key = key ?? _idPoolItemDict.Get().ToString();
 			var coroutine = _monoBehaviour.StopAndStartCachePausableCoroutine(key.ToGuid(this), iEnumerator);
 			this._dict[key] = coroutine;
@@ -35,7 +35,7 @@ namespace CsCat
 		/// <param name="key"></param>
 		public void StopCoroutine(string key)
 		{
-			CleanFinishedCoroutines();
+			_CleanFinishedCoroutines();
 			if (!this._dict.ContainsKey(key))
 				return;
 			this._dict.Remove(key);
@@ -58,7 +58,7 @@ namespace CsCat
 
 		public void SetIsPaused(bool isPaused)
 		{
-			CleanFinishedCoroutines();
+			_CleanFinishedCoroutines();
 			foreach (var keyValue in _dict)
 			{
 				var key = keyValue.Key;
@@ -66,7 +66,7 @@ namespace CsCat
 			}
 		}
 
-		void CleanFinishedCoroutines()
+		void _CleanFinishedCoroutines()
 		{
 			foreach (var keyValue in _dict)
 			{

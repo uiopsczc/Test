@@ -6,7 +6,7 @@ namespace CsCat
 {
 	public partial class MountTimelinableTrack
 	{
-		public override void DrawGUISetting_Detail()
+		public override void DrawGUISettingDetail()
 		{
 			transform = EditorGUILayout.ObjectField("transform", transform, typeof(Transform), true) as Transform;
 		}

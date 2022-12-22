@@ -17,7 +17,7 @@ namespace CsCat
 		  new List<SkinnedMeshRendererSubBlendShapeInfo>();
 
 		[NonSerialized]
-		private readonly Dictionary<Vector2Int, float> fixedWeightBlendShapeDict = new Dictionary<Vector2Int, float>();
+		private readonly Dictionary<Vector2Int, float> _fixedWeightBlendShapeDict = new Dictionary<Vector2Int, float>();
 
 		public float blendDuration => this.duration;
 
@@ -73,9 +73,9 @@ namespace CsCat
 					  blendDuration, time, preItemInfo.blendShapeWeight, 0);
 					for (int i = 0; i < preItemInfo.skinnedMeshRendererSubBlendShapeInfoList.Count; i++)
 					{
-						var pre_skinnedMeshRendererSubBlendShapeInfo = preItemInfo.skinnedMeshRendererSubBlendShapeInfoList[i];
-						UpdateBlendShape(curTime, pre_skinnedMeshRendererSubBlendShapeInfo.skinnedMeshRendererIndex,
-						  pre_skinnedMeshRendererSubBlendShapeInfo.blendShape_index,
+						var preSkinnedMeshRendererSubBlendShapeInfo = preItemInfo.skinnedMeshRendererSubBlendShapeInfoList[i];
+						UpdateBlendShape(curTime, preSkinnedMeshRendererSubBlendShapeInfo.skinnedMeshRendererIndex,
+						  preSkinnedMeshRendererSubBlendShapeInfo.blendShapeIndex,
 						  blendDuration,
 						  time, preItemInfo.blendShapeWeight, 0);
 					}
@@ -93,10 +93,10 @@ namespace CsCat
 				{
 					var skinnedMeshRendererSubBlendShapeInfo = skinnedMeshRendererSubBlendShapeInfoList[i];
 					UpdateBlendShape(curTime, skinnedMeshRendererSubBlendShapeInfo.skinnedMeshRendererIndex,
-					  skinnedMeshRendererSubBlendShapeInfo.blendShape_index,
+					  skinnedMeshRendererSubBlendShapeInfo.blendShapeIndex,
 					  blendDuration, time,
 					  GetBlendShapeWeight(skinnedMeshRendererSubBlendShapeInfo.skinnedMeshRendererIndex,
-						skinnedMeshRendererSubBlendShapeInfo.blendShape_index), blendShapeWeight);
+						skinnedMeshRendererSubBlendShapeInfo.blendShapeIndex), blendShapeWeight);
 				}
 			}
 			else
@@ -107,7 +107,7 @@ namespace CsCat
 				{
 					var skinnedMeshRendererSubBlendShapeInfo = skinnedMeshRendererSubBlendShapeInfoList[i];
 					UpdateBlendShape(skinnedMeshRendererSubBlendShapeInfo.skinnedMeshRendererIndex,
-					  skinnedMeshRendererSubBlendShapeInfo.blendShape_index, blendShapeWeight);
+					  skinnedMeshRendererSubBlendShapeInfo.blendShapeIndex, blendShapeWeight);
 				}
 			}
 
@@ -121,20 +121,20 @@ namespace CsCat
 		}
 
 		//////////////////////////////////////////////////////////////////////////////////////
-		void RegisterFixedWeightBlendShape(int skinnedMeshRendererIndex, int blendShapeIndex, float weight)
+		void _RegisterFixedWeightBlendShape(int skinnedMeshRendererIndex, int blendShapeIndex, float weight)
 		{
 			var key = new Vector2Int(skinnedMeshRendererIndex, blendShapeIndex);
-			fixedWeightBlendShapeDict[key] = weight;
+			_fixedWeightBlendShapeDict[key] = weight;
 			UpdateBlendShape(skinnedMeshRendererIndex, blendShapeIndex, weight, false);
 		}
 
-		bool IsContainsFixedWeightBlendShape(int skinnedMeshRendererIndex, int blendShapeIndex)
+		bool _IsContainsFixedWeightBlendShape(int skinnedMeshRendererIndex, int blendShapeIndex)
 		{
 			var key = new Vector2Int(skinnedMeshRendererIndex, blendShapeIndex);
-			return fixedWeightBlendShapeDict.ContainsKey(key);
+			return _fixedWeightBlendShapeDict.ContainsKey(key);
 		}
 
-		private void ResetBlendShapes(SkinnedMeshRenderer skinnedMeshRenderer, int skinnedMeshRendererIndex)
+		private void _ResetBlendShapes(SkinnedMeshRenderer skinnedMeshRenderer, int skinnedMeshRendererIndex)
 		{
 			if (skinnedMeshRenderer != null && skinnedMeshRenderer.sharedMesh != null)
 			{
@@ -142,22 +142,22 @@ namespace CsCat
 				  blendShapeIndex < skinnedMeshRenderer.sharedMesh.blendShapeCount;
 				  blendShapeIndex++)
 				{
-					if (!IsContainsFixedWeightBlendShape(skinnedMeshRendererIndex, blendShapeIndex))
+					if (!_IsContainsFixedWeightBlendShape(skinnedMeshRendererIndex, blendShapeIndex))
 						skinnedMeshRenderer.SetBlendShapeWeight(blendShapeIndex, 0);
 				}
 			}
 		}
 
-		public float GetBlendShapeWeight(int skinnedMeshRenderer_index, int blendShape_index)
+		public float GetBlendShapeWeight(int skinnedMeshRendererIndex, int blendShapeIndex)
 		{
-			if (skinnedMeshRenderer_index >= 0 && skinnedMeshRenderer_index < skinnedMeshRendererList.Count)
+			if (skinnedMeshRendererIndex >= 0 && skinnedMeshRendererIndex < skinnedMeshRendererList.Count)
 			{
-				SkinnedMeshRenderer skinnedMeshRenderer = skinnedMeshRendererList[skinnedMeshRenderer_index];
+				SkinnedMeshRenderer skinnedMeshRenderer = skinnedMeshRendererList[skinnedMeshRendererIndex];
 				if (skinnedMeshRenderer != null)
 				{
-					if (skinnedMeshRenderer.sharedMesh != null && blendShape_index >= 0 &&
-						blendShape_index < skinnedMeshRenderer.sharedMesh.blendShapeCount)
-						return skinnedMeshRenderer.GetBlendShapeWeight(blendShape_index);
+					if (skinnedMeshRenderer.sharedMesh != null && blendShapeIndex >= 0 &&
+						blendShapeIndex < skinnedMeshRenderer.sharedMesh.blendShapeCount)
+						return skinnedMeshRenderer.GetBlendShapeWeight(blendShapeIndex);
 				}
 			}
 
@@ -171,7 +171,7 @@ namespace CsCat
 			{
 				var skinnedMeshRendererSubBlendShapeInfo = skinnedMeshRendererSubBlendShapeInfoList[i];
 				UpdateBlendShape(skinnedMeshRendererSubBlendShapeInfo.skinnedMeshRendererIndex,
-				  skinnedMeshRendererSubBlendShapeInfo.blendShape_index, blendShapeWeight);
+				  skinnedMeshRendererSubBlendShapeInfo.blendShapeIndex, blendShapeWeight);
 			}
 		}
 
@@ -187,20 +187,20 @@ namespace CsCat
 			}
 		}
 
-		public void UpdateBlendShape(int skinnedMeshRendererIndex, int blendShapIndex, float weight,
+		public void UpdateBlendShape(int skinnedMeshRendererIndex, int blendShapeIndex, float weight,
 		  bool isFixedWeight = true)
 		{
-			if (!IsContainsFixedWeightBlendShape(skinnedMeshRendererIndex, blendShapIndex) || !isFixedWeight)
+			if (!_IsContainsFixedWeightBlendShape(skinnedMeshRendererIndex, blendShapeIndex) || !isFixedWeight)
 			{
 				if (skinnedMeshRendererIndex >= 0 && skinnedMeshRendererIndex < skinnedMeshRendererList.Count)
 				{
 					SkinnedMeshRenderer skinnedMeshRenderer = skinnedMeshRendererList[skinnedMeshRendererIndex];
 					if (skinnedMeshRenderer != null && skinnedMeshRenderer.sharedMesh != null)
 					{
-						if (blendShapIndex >= 0 && blendShapIndex < skinnedMeshRenderer.sharedMesh.blendShapeCount)
+						if (blendShapeIndex >= 0 && blendShapeIndex < skinnedMeshRenderer.sharedMesh.blendShapeCount)
 						{
-							if (skinnedMeshRenderer.GetBlendShapeWeight(blendShapIndex) != weight)
-								skinnedMeshRenderer.SetBlendShapeWeight(blendShapIndex, weight);
+							if (skinnedMeshRenderer.GetBlendShapeWeight(blendShapeIndex) != weight)
+								skinnedMeshRenderer.SetBlendShapeWeight(blendShapeIndex, weight);
 						}
 					}
 				}
@@ -212,7 +212,7 @@ namespace CsCat
 			UpdateBlendShape(skinnedMeshRendererIndex, blendShapeIndex, 0);
 			for (int i = 0; i < skinnedMeshRendererSubBlendShapeInfoList.Count; i++)
 				UpdateBlendShape(skinnedMeshRendererSubBlendShapeInfoList[i].skinnedMeshRendererIndex,
-				  skinnedMeshRendererSubBlendShapeInfoList[i].blendShape_index, 0);
+				  skinnedMeshRendererSubBlendShapeInfoList[i].blendShapeIndex, 0);
 		}
 	}
 }

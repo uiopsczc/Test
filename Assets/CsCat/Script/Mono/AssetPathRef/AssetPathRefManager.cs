@@ -7,8 +7,8 @@ namespace CsCat
 {
 	public class AssetPathRefManager : ISingleton
 	{
-		private Dictionary<string, AssetPathRef> dict = new Dictionary<string, AssetPathRef>(); //key是guid
-		private long refId;
+		private readonly Dictionary<string, AssetPathRef> _dict = new Dictionary<string, AssetPathRef>(); //key是guid
+		private long _refId;
 
 
 		public static AssetPathRefManager instance => SingletonFactory.instance.Get<AssetPathRefManager>();
@@ -23,8 +23,8 @@ namespace CsCat
 
 		public void ClearAll()
 		{
-			dict.Clear();
-			refId = 0;
+			_dict.Clear();
+			_refId = 0;
 			StdioUtil.RemoveFile(new FileInfo(AssetPathRefConst.SaveFilePath.WithRootPath(FilePathConst.ProjectPath)));
 		}
 
@@ -36,9 +36,9 @@ namespace CsCat
 
 		public void Load(string contentJson)
 		{
-			dict.Clear();
+			_dict.Clear();
 			Hashtable jsonDict = MiniJson.JsonDecode(contentJson) as Hashtable;
-			refId = jsonDict.Get<long>("ref_id");
+			_refId = jsonDict.Get<long>("ref_id");
 			ArrayList assetPathRefList = jsonDict.Get<ArrayList>("assetPathRef_list");
 			for (var i = 0; i < assetPathRefList.Count; i++)
 			{
@@ -46,9 +46,9 @@ namespace CsCat
 				long refId = assetPathRefDict.Get<long>("ref_id");
 				string assetPath = assetPathRefDict.Get<string>("assetPath");
 				string guid = assetPathRefDict.Get<string>("guid");
-				if (refId > this.refId)
-					this.refId = refId;
-				dict[guid] = new AssetPathRef(refId, assetPath, guid);
+				if (refId > this._refId)
+					this._refId = refId;
+				_dict[guid] = new AssetPathRef(refId, assetPath, guid);
 			}
 		}
 
@@ -56,9 +56,9 @@ namespace CsCat
 		{
 			Refresh();
 			Hashtable jsonDict = new Hashtable();
-			jsonDict["ref_id"] = refId;
+			jsonDict["ref_id"] = _refId;
 			ArrayList assetPathRefList = new ArrayList();
-			foreach (var keyValue in dict)
+			foreach (var keyValue in _dict)
 			{
 				var assetPathRef = keyValue.Value;
 				Hashtable assetPathRefDict = new Hashtable();
@@ -75,40 +75,40 @@ namespace CsCat
 
 		public void Refresh()
 		{
-			dict.RemoveByFunc<string, AssetPathRef>((key, value) => !value.Refresh());
+			_dict.RemoveByFunc<string, AssetPathRef>((key, value) => !value.Refresh());
 		}
 
 		public void Add(string guid)
 		{
-			if (dict.ContainsKey(guid))
-				dict[guid].Refresh();
+			if (_dict.ContainsKey(guid))
+				_dict[guid].Refresh();
 			else
 			{
-				refId++;
-				dict[guid] = new AssetPathRef(refId, null, guid);
+				_refId++;
+				_dict[guid] = new AssetPathRef(_refId, null, guid);
 			}
 		}
 
 		//////////////////////////////////////////////////////////////////////////
 		public bool ContainsGuid(string guid)
 		{
-			return dict.ContainsKey(guid);
+			return _dict.ContainsKey(guid);
 		}
 
 		public string GetAssetPathByGuid(string guid)
 		{
-			return dict[guid].assetPath;
+			return _dict[guid].assetPath;
 		}
 
 		public long GetRefIdByGuid(string guid)
 		{
-			return dict[guid].refId;
+			return _dict[guid].refId;
 		}
 
 		/////////////////////////////////////////////////////////////////////////
 		public string GetAssetPathByRefId(long refId)
 		{
-			foreach (var assetPathRef in dict.Values)
+			foreach (var assetPathRef in _dict.Values)
 			{
 				if (assetPathRef.refId == refId)
 					return assetPathRef.assetPath;

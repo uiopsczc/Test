@@ -127,15 +127,15 @@ namespace CsCat
 			UpdateBox();
 		}
 
-		public AABBBox(float minX, float minY, float min_z, float max_x, float max_y, float max_z)
+		public AABBBox(float minX, float minY, float minZ, float maxX, float maxY, float maxZ)
 		{
 			this._minX = minX;
 			this._minY = minY;
-			this._minZ = min_z;
+			this._minZ = minZ;
 
-			this._maxX = max_x;
-			this._maxY = max_y;
-			this._maxZ = max_z;
+			this._maxX = maxX;
+			this._maxY = maxY;
+			this._maxZ = maxZ;
 
 			UpdateBox();
 		}

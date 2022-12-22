@@ -11,7 +11,7 @@ namespace CsCat
 		public Vector2 scrollPosition;
 
 
-		public virtual void DrawGUISetting_Detail()
+		public virtual void DrawGUISettingDetail()
 		{
 		}
 
@@ -31,7 +31,7 @@ namespace CsCat
 		}
 
 
-		public virtual void DrawGUISetting_Tracks(float playTime)
+		public virtual void DrawGUISettingTracks(float playTime)
 		{
 			using (new GUILayoutBeginVerticalScope(EditorStyles.helpBox))
 			{

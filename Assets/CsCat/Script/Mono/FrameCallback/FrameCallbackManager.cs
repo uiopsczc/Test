@@ -10,13 +10,13 @@ namespace CsCat
 	///     callbackArg是传入到callback中参数
 	///     如果返回false表示下一帧不会再执行该callback
 	/// </summary>
-	public class FrameCallbackMananger
+	public class FrameCallbackManager
 	{
 		#region field
 
-		private readonly FrameCallbackList updateCallbackList = new FrameCallbackList();
-		private readonly FrameCallbackList lateUpdateCallbackList = new FrameCallbackList();
-		private readonly FrameCallbackList fixedUpdateCallbackList = new FrameCallbackList();
+		private readonly FrameCallbackList _updateCallbackList = new FrameCallbackList();
+		private readonly FrameCallbackList _lateUpdateCallbackList = new FrameCallbackList();
+		private readonly FrameCallbackList _fixedUpdateCallbackList = new FrameCallbackList();
 
 		#endregion
 
@@ -28,38 +28,36 @@ namespace CsCat
 
 		public void AddFrameUpdateCallback(Func<object, bool> callback, object callbackArg)
 		{
-			updateCallbackList.Add(callback, callbackArg);
+			_updateCallbackList.Add(callback, callbackArg);
 		}
 
 		public void AddFrameLateUpdateCallback(Func<object, bool> callback, object callbackArg)
 		{
-			lateUpdateCallbackList.Add(callback, callbackArg);
+			_lateUpdateCallbackList.Add(callback, callbackArg);
 		}
 
 		public void AddFrameFixedUpdateCallback(Func<object, bool> callback, object callbackArg)
 		{
-			fixedUpdateCallbackList.Add(callback, callbackArg);
+			_fixedUpdateCallbackList.Add(callback, callbackArg);
 		}
 
 		#endregion
 
-		#region private method
 
 		public void Update()
 		{
-			updateCallbackList.Execute();
+			_updateCallbackList.Execute();
 		}
 
 		public void LateUpdate()
 		{
-			lateUpdateCallbackList.Execute();
+			_lateUpdateCallbackList.Execute();
 		}
 
 		public void FixedUpdate()
 		{
-			fixedUpdateCallbackList.Execute();
+			_fixedUpdateCallbackList.Execute();
 		}
 
-		#endregion
 	}
 }

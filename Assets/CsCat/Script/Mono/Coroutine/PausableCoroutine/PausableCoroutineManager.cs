@@ -13,15 +13,15 @@ namespace CsCat
 	//不仅可以在运行模式下运行，还可以在Editor模式中运行
 	public class PausableCoroutineManager : MonoBehaviour, ISingleton
 	{
-		Dictionary<string, List<PausableCoroutine>> coroutine_dict = new Dictionary<string, List<PausableCoroutine>>();
-		List<List<PausableCoroutine>> temp_coroutine_list = new List<List<PausableCoroutine>>();
+		Dictionary<string, List<PausableCoroutine>> _coroutineDict = new Dictionary<string, List<PausableCoroutine>>();
+		List<List<PausableCoroutine>> _tempCoroutineList = new List<List<PausableCoroutine>>();
 
-		Dictionary<string, Dictionary<string, PausableCoroutine>> coroutine_owner_dict =
+		Dictionary<string, Dictionary<string, PausableCoroutine>> _coroutineOwnerDict =
 			new Dictionary<string, Dictionary<string, PausableCoroutine>>();
 
-		float previousTimeSinceStartup;
-		private bool is_inited = false;
-		private bool is_paused = false;
+		float _previousTimeSinceStartup;
+		private bool isInited = false;
+		private bool isPaused = false;
 
 
 		public static PausableCoroutineManager instance
@@ -40,9 +40,9 @@ namespace CsCat
 
 		void Init()
 		{
-			if (is_inited)
+			if (isInited)
 				return;
-			previousTimeSinceStartup = Time.realtimeSinceStartup;
+			_previousTimeSinceStartup = Time.realtimeSinceStartup;
 #if UNITY_EDITOR
 			EditorApplication.update -= Update;
 			if (!EditorApplication.isPlayingOrWillChangePlaymode)
@@ -50,50 +50,48 @@ namespace CsCat
 				EditorApplication.update += Update;
 			}
 #endif
-			is_inited = true;
+			isInited = true;
 		}
 
 
-		public void SetIsPaused(bool is_paused)
+		public void SetIsPaused(bool isPaused)
 		{
-			this.is_paused = is_paused;
+			this.isPaused = isPaused;
 		}
 
 		/// <summary>Starts a coroutine.</summary>
 		/// <param name="routine">The coroutine to start.</param>
-		/// <param name="this_reference">Reference to the instance of the class containing the method.</param>
-		public PausableCoroutine StartCoroutine(IEnumerator routine, object this_reference)
+		/// <param name="thisReference">Reference to the instance of the class containing the method.</param>
+		public PausableCoroutine StartCoroutine(IEnumerator routine, object thisReference)
 		{
-			return instance.GoStartCoroutine(routine, this_reference);
+			return instance.GoStartCoroutine(routine, thisReference);
 		}
 
 		/// <summary>Starts a coroutine.</summary>
-		/// <param name="method_name">The name of the coroutine method to start.</param>
-		/// <param name="this_reference">Reference to the instance of the class containing the method.</param>
-		public new PausableCoroutine StartCoroutine(string method_name, object this_reference)
+		/// <param name="methodName">The name of the coroutine method to start.</param>
+		/// <param name="thisReference">Reference to the instance of the class containing the method.</param>
+		public new PausableCoroutine StartCoroutine(string methodName, object thisReference)
 		{
-			return StartCoroutine(method_name, null, this_reference);
+			return StartCoroutine(methodName, null, thisReference);
 		}
 
 		/// <summary>Starts a coroutine.</summary>
-		/// <param name="method_name">The name of the coroutine method to start.</param>
+		/// <param name="methodName">The name of the coroutine method to start.</param>
 		/// <param name="value">The parameter to pass to the coroutine.</param>
-		/// <param name="this_reference">Reference to the instance of the class containing the method.</param>
-		public PausableCoroutine StartCoroutine(string method_name, object value, object this_reference)
+		/// <param name="thisReference">Reference to the instance of the class containing the method.</param>
+		public PausableCoroutine StartCoroutine(string methodName, object value, object thisReference)
 		{
-			MethodInfo methodInfo = this_reference.GetType()
-				.GetMethodInfo2(method_name, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
+			MethodInfo methodInfo = thisReference.GetType()
+				.GetMethodInfo2(methodName, BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.Instance);
 			if (methodInfo == null)
-				Debug.LogError("Coroutine '" + method_name + "' couldn't be started, the method doesn't exist!");
+				Debug.LogError("Coroutine '" + methodName + "' couldn't be started, the method doesn't exist!");
 
-			object returnValue;
-
-			returnValue = methodInfo.Invoke(this_reference, value == null ? null : new[] { value });
+			var returnValue = methodInfo.Invoke(thisReference, value == null ? null : new[] { value });
 
 			if (returnValue is IEnumerator enumerator)
-				return instance.GoStartCoroutine(enumerator, this_reference);
+				return instance.GoStartCoroutine(enumerator, thisReference);
 
-			Debug.LogError("Coroutine '" + method_name +
+			Debug.LogError("Coroutine '" + methodName +
 						   "' couldn't be started, the method doesn't return an IEnumerator!");
 
 			return null;
@@ -101,104 +99,104 @@ namespace CsCat
 
 		/// <summary>Stops all coroutines being the routine running on the passed instance.</summary>
 		/// <param name="routine"> The coroutine to stop.</param>
-		/// <param name="this_reference">Reference to the instance of the class containing the method.</param>
-		public void StopCoroutine(IEnumerator routine, object this_reference)
+		/// <param name="thisReference">Reference to the instance of the class containing the method.</param>
+		public void StopCoroutine(IEnumerator routine, object thisReference)
 		{
-			instance.GoStopCoroutine(routine, this_reference);
+			instance.GoStopCoroutine(routine, thisReference);
 		}
 
 		/// <summary>
 		/// Stops all coroutines named methodName running on the passed instance.</summary>
-		/// <param name="method_name"> The name of the coroutine method to stop.</param>
-		/// <param name="this_reference">Reference to the instance of the class containing the method.</param>
-		public void StopCoroutine(string method_name, object this_reference)
+		/// <param name="methodName"> The name of the coroutine method to stop.</param>
+		/// <param name="thisReference">Reference to the instance of the class containing the method.</param>
+		public void StopCoroutine(string methodName, object thisReference)
 		{
-			instance.GoStopCoroutine(method_name, this_reference);
+			instance.GoStopCoroutine(methodName, thisReference);
 		}
 
 		/// <summary>
 		/// Stops all coroutines running on the passed instance.</summary>
-		/// <param name="this_reference">Reference to the instance of the class containing the method.</param>
-		public void StopAllCoroutines(object this_reference)
+		/// <param name="thisReference">Reference to the instance of the class containing the method.</param>
+		public void StopAllCoroutines(object thisReference)
 		{
-			instance.GoStopAllCoroutines(this_reference);
+			instance.GoStopAllCoroutines(thisReference);
 		}
 
 		//////////////////////////////////////////////////////////////////////
 		// 私有方法
 		//////////////////////////////////////////////////////////////////////
-		void GoStopCoroutine(IEnumerator routine, object this_reference)
+		void GoStopCoroutine(IEnumerator routine, object thisReference)
 		{
-			GoStopActualRoutine(CreateCoroutine(routine, this_reference));
+			GoStopActualRoutine(CreateCoroutine(routine, thisReference));
 		}
 
-		void GoStopCoroutine(string methodName, object this_reference)
+		void GoStopCoroutine(string methodName, object thisReference)
 		{
-			GoStopActualRoutine(CreateCoroutineFromString(methodName, this_reference));
+			GoStopActualRoutine(CreateCoroutineFromString(methodName, thisReference));
 		}
 
 		void GoStopActualRoutine(PausableCoroutine routine)
 		{
-			if (!coroutine_dict.ContainsKey(routine.routineUniqueHash)) return;
-			coroutine_owner_dict[routine.ownerUniqueHash].Remove(routine.routineUniqueHash);
-			coroutine_dict.Remove(routine.routineUniqueHash);
+			if (!_coroutineDict.ContainsKey(routine.routineUniqueHash)) return;
+			_coroutineOwnerDict[routine.ownerUniqueHash].Remove(routine.routineUniqueHash);
+			_coroutineDict.Remove(routine.routineUniqueHash);
 		}
 
-		void GoStopAllCoroutines(object this_reference)
+		void GoStopAllCoroutines(object thisReference)
 		{
-			PausableCoroutine coroutine = CreateCoroutine(null, this_reference);
-			if (!coroutine_owner_dict.ContainsKey(coroutine.ownerUniqueHash)) return;
-			foreach (var couple in coroutine_owner_dict[coroutine.ownerUniqueHash])
-				coroutine_dict.Remove(couple.Value.routineUniqueHash);
+			PausableCoroutine coroutine = CreateCoroutine(null, thisReference);
+			if (!_coroutineOwnerDict.ContainsKey(coroutine.ownerUniqueHash)) return;
+			foreach (var couple in _coroutineOwnerDict[coroutine.ownerUniqueHash])
+				_coroutineDict.Remove(couple.Value.routineUniqueHash);
 
-			coroutine_owner_dict.Remove(coroutine.ownerUniqueHash);
+			_coroutineOwnerDict.Remove(coroutine.ownerUniqueHash);
 		}
 
-		PausableCoroutine GoStartCoroutine(IEnumerator routine, object this_reference)
+		PausableCoroutine GoStartCoroutine(IEnumerator routine, object thisReference)
 		{
 			if (routine == null)
 				Debug.LogException(new Exception("IEnumerator is null!"), null);
 
-			PausableCoroutine coroutine = CreateCoroutine(routine, this_reference);
+			PausableCoroutine coroutine = CreateCoroutine(routine, thisReference);
 			GoStartCoroutine(coroutine);
 			return coroutine;
 		}
 
 		void GoStartCoroutine(PausableCoroutine coroutine)
 		{
-			if (!coroutine_dict.ContainsKey(coroutine.routineUniqueHash))
+			if (!_coroutineDict.ContainsKey(coroutine.routineUniqueHash))
 			{
-				List<PausableCoroutine> new_coroutine_list = new List<PausableCoroutine>();
-				coroutine_dict.Add(coroutine.routineUniqueHash, new_coroutine_list);
+				List<PausableCoroutine> newCoroutineList = new List<PausableCoroutine>();
+				_coroutineDict.Add(coroutine.routineUniqueHash, newCoroutineList);
 			}
 
-			coroutine_dict[coroutine.routineUniqueHash].Add(coroutine);
+			_coroutineDict[coroutine.routineUniqueHash].Add(coroutine);
 
-			if (!coroutine_owner_dict.ContainsKey(coroutine.ownerUniqueHash))
+			if (!_coroutineOwnerDict.ContainsKey(coroutine.ownerUniqueHash))
 			{
-				Dictionary<string, PausableCoroutine> new_coroutine_dict = new Dictionary<string, PausableCoroutine>();
-				coroutine_owner_dict.Add(coroutine.ownerUniqueHash, new_coroutine_dict);
+				Dictionary<string, PausableCoroutine> newCoroutineDict = new Dictionary<string, PausableCoroutine>();
+				_coroutineOwnerDict.Add(coroutine.ownerUniqueHash, newCoroutineDict);
 			}
 
 			// If the method from the same owner has been stored before, it doesn't have to be stored anymore,
 			// One reference is enough in order for "StopAllCoroutines" to work
-			if (!coroutine_owner_dict[coroutine.ownerUniqueHash].ContainsKey(coroutine.routineUniqueHash))
+			if (!_coroutineOwnerDict[coroutine.ownerUniqueHash].ContainsKey(coroutine.routineUniqueHash))
 			{
-				coroutine_owner_dict[coroutine.ownerUniqueHash].Add(coroutine.routineUniqueHash, coroutine);
+				_coroutineOwnerDict[coroutine.ownerUniqueHash].Add(coroutine.routineUniqueHash, coroutine);
 			}
 
 			MoveNext(coroutine);
 		}
 
-		PausableCoroutine CreateCoroutine(IEnumerator routine, object this_reference)
+		PausableCoroutine CreateCoroutine(IEnumerator routine, object thisReference)
 		{
-			return new PausableCoroutine(routine, this_reference.GetHashCode(), this_reference.GetType().ToString());
+			return new PausableCoroutine(routine, thisReference.GetHashCode(), thisReference.GetType().ToString());
 		}
 
-		PausableCoroutine CreateCoroutineFromString(string method_name, object this_reference)
+		PausableCoroutine CreateCoroutineFromString(string methodName, object thisReference)
 		{
-			return new PausableCoroutine(method_name, this_reference.GetHashCode(),
-				this_reference.GetType().ToString());
+			return new PausableCoroutine(methodName, thisReference.GetHashCode(),
+				thisReference.GetType().ToString());
 		}
 
 		void Update()
@@ -208,26 +206,26 @@ namespace CsCat
 #if UNITY_EDITOR
 			if (!EditorApplication.isPlayingOrWillChangePlaymode)
 			{
-				deltaTime = Time.realtimeSinceStartup - previousTimeSinceStartup;
-				previousTimeSinceStartup = Time.realtimeSinceStartup;
+				deltaTime = Time.realtimeSinceStartup - _previousTimeSinceStartup;
+				_previousTimeSinceStartup = Time.realtimeSinceStartup;
 			}
 #endif
-			if (this.is_paused)
+			if (this.isPaused)
 				return;
 			if (deltaTime == 0f)
 				return;
-			if (coroutine_dict.Count == 0)
+			if (_coroutineDict.Count == 0)
 			{
 				return;
 			}
 
-			temp_coroutine_list.Clear();
-			foreach (var pair in coroutine_dict)
-				temp_coroutine_list.Add(pair.Value);
+			_tempCoroutineList.Clear();
+			foreach (var pair in _coroutineDict)
+				_tempCoroutineList.Add(pair.Value);
 
-			for (var i = temp_coroutine_list.Count - 1; i >= 0; i--)
+			for (var i = _tempCoroutineList.Count - 1; i >= 0; i--)
 			{
-				List<PausableCoroutine> coroutines = temp_coroutine_list[i];
+				List<PausableCoroutine> coroutines = _tempCoroutineList[i];
 
 				for (int j = coroutines.Count - 1; j >= 0; j--)
 				{
@@ -252,7 +250,7 @@ namespace CsCat
 
 					if (coroutines.Count == 0)
 					{
-						coroutine_dict.Remove(coroutine.ownerUniqueHash);
+						_coroutineDict.Remove(coroutine.ownerUniqueHash);
 					}
 				}
 			}
@@ -315,7 +313,7 @@ namespace CsCat
 
 		void OnApplicationQuit()
 		{
-			is_inited = false;
+			isInited = false;
 		}
 
 

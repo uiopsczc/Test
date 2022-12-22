@@ -6,136 +6,136 @@ namespace CsCat
 {
 	public class PhysicsManager : TickObject
 	{
-		private Camera camera;
-		private LayerMask? raycastLayerMask;
-		private bool isClickDown;
-		private bool isCanRaycast = false;
-		private Dictionary<string, Action> onPointerDownDict = new Dictionary<string, Action>();
-		private Dictionary<string, Action> onPointerUpDict = new Dictionary<string, Action>();
-		private Dictionary<string, Action> onClickDict = new Dictionary<string, Action>();
-		private int raycastId;
-		private RaycastHit? lastHit;
+		private Camera _camera;
+		private LayerMask? _raycastLayerMask;
+		private bool _isClickDown;
+		private bool _isCanRaycast = false;
+		private Dictionary<string, Action> _onPointerDownDict = new Dictionary<string, Action>();
+		private Dictionary<string, Action> _onPointerUpDict = new Dictionary<string, Action>();
+		private Dictionary<string, Action> _onClickDict = new Dictionary<string, Action>();
+		private int _raycastId;
+		private RaycastHit? _lastHit;
 
 		public void SetCamera(Camera camera)
 		{
-			this.camera = camera;
+			this._camera = camera;
 		}
 
 		public void SetRaycastLayer(params string[] layerNames)
 		{
 			if (layerNames.Length == 0)
-				this.raycastLayerMask = null;
-			this.raycastLayerMask = LayerMask.GetMask(layerNames);
+				this._raycastLayerMask = null;
+			this._raycastLayerMask = LayerMask.GetMask(layerNames);
 		}
 
-		private void SetIsCanRaycast(bool isCanRaycast)
+		private void _SetIsCanRaycast(bool isCanRaycast)
 		{
-			this.isCanRaycast = isCanRaycast;
+			this._isCanRaycast = isCanRaycast;
 		}
 
-		private void UpdateRaycastState()
+		private void _UpdateRaycastState()
 		{
-			if (onPointerDownDict.Count == 0 && onPointerUpDict.Count == 0 && onClickDict.Count == 0)
-				SetIsCanRaycast(false);
+			if (_onPointerDownDict.Count == 0 && _onPointerUpDict.Count == 0 && _onClickDict.Count == 0)
+				_SetIsCanRaycast(false);
 			else
-				SetIsCanRaycast(true);
+				_SetIsCanRaycast(true);
 		}
 
-		private string GetOrAddRaycastId(GameObject gameObject)
+		private string _GetOrAddRaycastId(GameObject gameObject)
 		{
-			string raycastId = gameObject.GetOrAddCache("raycast_id_cs", () => this.raycastId++.ToString());
+			string raycastId = gameObject.GetOrAddCache("raycastIdCs", () => this._raycastId++.ToString());
 			return raycastId;
 		}
 
-		private string GetRaycastIdByHit(RaycastHit hit)
+		private string _GetRaycastIdByHit(RaycastHit hit)
 		{
-			return GetOrAddRaycastId(hit.transform.gameObject);
+			return _GetOrAddRaycastId(hit.transform.gameObject);
 		}
 
 		public void RegisterOnPointerDown(GameObject gameObject, Action callback)
 		{
-			string raycastId = GetOrAddRaycastId(gameObject);
-			if (this.onPointerDownDict.ContainsKey(raycastId))
-				this.onPointerDownDict[raycastId] += callback;
+			string raycastId = _GetOrAddRaycastId(gameObject);
+			if (this._onPointerDownDict.ContainsKey(raycastId))
+				this._onPointerDownDict[raycastId] += callback;
 			else
-				this.onPointerDownDict[raycastId] = callback;
-			this.UpdateRaycastState();
+				this._onPointerDownDict[raycastId] = callback;
+			this._UpdateRaycastState();
 		}
 
 		public void RegisterOnPointerUp(GameObject gameObject, Action callback)
 		{
-			string raycastId = GetOrAddRaycastId(gameObject);
-			if (this.onPointerUpDict.ContainsKey(raycastId))
-				this.onPointerUpDict[raycastId] += callback;
+			string raycastId = _GetOrAddRaycastId(gameObject);
+			if (this._onPointerUpDict.ContainsKey(raycastId))
+				this._onPointerUpDict[raycastId] += callback;
 			else
-				this.onPointerUpDict[raycastId] = callback;
-			this.UpdateRaycastState();
+				this._onPointerUpDict[raycastId] = callback;
+			this._UpdateRaycastState();
 		}
 
 		public void RegisterOnClick(GameObject gameObject, Action callback)
 		{
-			string raycastId = GetOrAddRaycastId(gameObject);
-			if (this.onClickDict.ContainsKey(raycastId))
-				this.onClickDict[raycastId] += callback;
+			string raycastId = _GetOrAddRaycastId(gameObject);
+			if (this._onClickDict.ContainsKey(raycastId))
+				this._onClickDict[raycastId] += callback;
 			else
-				this.onClickDict[raycastId] = callback;
-			this.UpdateRaycastState();
+				this._onClickDict[raycastId] = callback;
+			this._UpdateRaycastState();
 		}
 
 		public void UnRegisterOnPointerDown(GameObject gameObject, Action callback = null)
 		{
-			string raycastId = GetOrAddRaycastId(gameObject);
-			if (this.onPointerDownDict.ContainsKey(raycastId))
+			string raycastId = _GetOrAddRaycastId(gameObject);
+			if (this._onPointerDownDict.ContainsKey(raycastId))
 			{
 				if (callback == null)
-					this.onPointerDownDict[raycastId] = null;
+					this._onPointerDownDict[raycastId] = null;
 				else
-					this.onPointerDownDict[raycastId] -= callback;
-				if (this.onPointerDownDict[raycastId] == null)
-					this.onPointerDownDict.Remove(raycastId);
+					this._onPointerDownDict[raycastId] -= callback;
+				if (this._onPointerDownDict[raycastId] == null)
+					this._onPointerDownDict.Remove(raycastId);
 			}
 
-			UpdateRaycastState();
+			_UpdateRaycastState();
 		}
 
 		public void UnRegisterOnPointerUp(GameObject gameObject, Action callback = null)
 		{
-			string raycastId = GetOrAddRaycastId(gameObject);
-			if (this.onPointerUpDict.ContainsKey(raycastId))
+			string raycastId = _GetOrAddRaycastId(gameObject);
+			if (this._onPointerUpDict.ContainsKey(raycastId))
 			{
 				if (callback == null)
-					this.onPointerUpDict[raycastId] = null;
+					this._onPointerUpDict[raycastId] = null;
 				else
-					this.onPointerUpDict[raycastId] -= callback;
-				if (this.onPointerUpDict[raycastId] == null)
-					this.onPointerUpDict.Remove(raycastId);
+					this._onPointerUpDict[raycastId] -= callback;
+				if (this._onPointerUpDict[raycastId] == null)
+					this._onPointerUpDict.Remove(raycastId);
 			}
 
-			UpdateRaycastState();
+			_UpdateRaycastState();
 		}
 
 		public void UnRegisterOnClick(GameObject gameObject, Action callback = null)
 		{
-			string raycastId = GetOrAddRaycastId(gameObject);
-			if (this.onClickDict.ContainsKey(raycastId))
+			string raycastId = _GetOrAddRaycastId(gameObject);
+			if (this._onClickDict.ContainsKey(raycastId))
 			{
 				if (callback == null)
-					this.onClickDict[raycastId] = null;
+					this._onClickDict[raycastId] = null;
 				else
-					this.onClickDict[raycastId] -= callback;
-				if (this.onClickDict[raycastId] == null)
-					this.onClickDict.Remove(raycastId);
+					this._onClickDict[raycastId] -= callback;
+				if (this._onClickDict[raycastId] == null)
+					this._onClickDict.Remove(raycastId);
 			}
 
-			UpdateRaycastState();
+			_UpdateRaycastState();
 		}
 
 
 		public void Raycast(Vector3 screenPosition, int? raycastLayerMask = null)
 		{
 			Camera userCamera = Camera.main;
-			if (camera != null)
-				userCamera = camera;
+			if (_camera != null)
+				userCamera = _camera;
 			var ray = userCamera.ScreenPointToRay(screenPosition); //屏幕坐标转射线
 			RaycastHit hit; //射线对象是：结构体类型（存储了相关信息）
 			bool isHit;
@@ -156,7 +156,7 @@ namespace CsCat
 		{
 			if (isHit)
 			{
-				this.lastHit = hit;
+				this._lastHit = hit;
 				this.FireEvent(null, PhysicsEventNameConst.On_Raycast, hit);
 				XLuaManager.instance.CallLuaFunction("global.client.physicsManager:OnRaycast", hit);
 			}
@@ -164,47 +164,47 @@ namespace CsCat
 
 		public override bool IsCanUpdate()
 		{
-			return isCanRaycast && base.IsCanUpdate();
+			return _isCanRaycast && base.IsCanUpdate();
 		}
 
 		protected override void _Update(float deltaTime = 0, float unscaledDeltaTime = 0)
 		{
 			base._Update(deltaTime, unscaledDeltaTime);
-			if (Input.GetMouseButtonDown(0) && !isClickDown)
+			if (Input.GetMouseButtonDown(0) && !_isClickDown)
 			{
 				if (UIUtil.IsOverUI(Input.mousePosition)) //点击在UI上的不用处理
 					return;
-				isClickDown = true;
+				_isClickDown = true;
 				Raycast(Input.mousePosition);
 				OnPointerDown();
 			}
 			else
 			{
-				isClickDown = false;
+				_isClickDown = false;
 				this.OnPointerUp();
 			}
 		}
 
 		private void OnPointerDown()
 		{
-			if (this.lastHit.HasValue)
+			if (this._lastHit.HasValue)
 			{
-				string raycastId = GetRaycastIdByHit(this.lastHit.Value);
-				if (this.onPointerDownDict.ContainsKey(raycastId))
-					this.onPointerDownDict[raycastId]();
+				string raycastId = _GetRaycastIdByHit(this._lastHit.Value);
+				if (this._onPointerDownDict.ContainsKey(raycastId))
+					this._onPointerDownDict[raycastId]();
 			}
 		}
 
 		private void OnPointerUp()
 		{
-			if (this.lastHit.HasValue)
+			if (this._lastHit.HasValue)
 			{
-				string raycastId = GetRaycastIdByHit(this.lastHit.Value);
-				if (this.onPointerUpDict.ContainsKey(raycastId))
-					this.onPointerUpDict[raycastId]();
-				if (this.onClickDict.ContainsKey(raycastId))
-					this.onClickDict[raycastId]();
-				this.lastHit = null;
+				string raycastId = _GetRaycastIdByHit(this._lastHit.Value);
+				if (this._onPointerUpDict.ContainsKey(raycastId))
+					this._onPointerUpDict[raycastId]();
+				if (this._onClickDict.ContainsKey(raycastId))
+					this._onClickDict[raycastId]();
+				this._lastHit = null;
 			}
 		}
 	}

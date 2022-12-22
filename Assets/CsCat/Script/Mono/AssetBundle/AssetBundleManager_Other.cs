@@ -11,7 +11,7 @@ namespace CsCat
 			var resourceWebRequester = PoolCatManagerUtil.Spawn<ResourceWebRequester>();
 			resourceWebRequester.Init(url, true);
 			resourceWebRequesterAllDict[url] = resourceWebRequester;
-			resourceWebRequesterWaitingQueue.Enqueue(resourceWebRequester);
+			_resourceWebRequesterWaitingQueue.Enqueue(resourceWebRequester);
 			return resourceWebRequester;
 		}
 
@@ -22,7 +22,7 @@ namespace CsCat
 			var url = downloadURL + filePath;
 			resourceWebRequester.Init(url, true);
 			resourceWebRequesterAllDict[url] = resourceWebRequester;
-			resourceWebRequesterWaitingQueue.Enqueue(resourceWebRequester);
+			_resourceWebRequesterWaitingQueue.Enqueue(resourceWebRequester);
 			return resourceWebRequester;
 		}
 

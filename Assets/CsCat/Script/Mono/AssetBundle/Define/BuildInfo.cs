@@ -10,22 +10,22 @@ namespace CsCat
 		public ResourceWebRequester manifestRequest;
 		public string resVersion;
 		public string assetPathRefContentJson;
-		private readonly string urlRoot;
+		private readonly string _urlRoot;
 
 
 		public BuildInfo(string urlRoot)
 		{
-			this.urlRoot = urlRoot;
+			this._urlRoot = urlRoot;
 		}
 
 		public string WithRootPathOfUrlRoot(string content)
 		{
-			return content.WithRootPath(urlRoot);
+			return content.WithRootPath(_urlRoot);
 		}
 
 		public IEnumerator LoadResVersion()
 		{
-			var resVersionRequestUrl = BuildConst.ResVersionFileName.WithRootPath(urlRoot);
+			var resVersionRequestUrl = BuildConst.ResVersionFileName.WithRootPath(_urlRoot);
 			var resVersionRequest = Client.instance.assetBundleManager.DownloadFileAsyncNoCache(resVersionRequestUrl);
 
 			yield return resVersionRequest;
@@ -37,7 +37,7 @@ namespace CsCat
 
 		public IEnumerator LoadAssetPathMap()
 		{
-			var assetPathMapRequestUrl = BuildConst.AssetPathMap_File_Name.WithRootPath(urlRoot);
+			var assetPathMapRequestUrl = BuildConst.AssetPathMap_File_Name.WithRootPath(_urlRoot);
 			var assetPathMapRequest = Client.instance.assetBundleManager.DownloadFileAsyncNoCache(assetPathMapRequestUrl);
 			yield return assetPathMapRequest;
 			if (assetPathMapRequest.error.IsNullOrWhiteSpace())
@@ -49,7 +49,7 @@ namespace CsCat
 
 		public IEnumerator LoadAssetBundleMap()
 		{
-			var assetBundleMapRequestURL = BuildConst.AssetBundleMap_File_Name.WithRootPath(urlRoot);
+			var assetBundleMapRequestURL = BuildConst.AssetBundleMap_File_Name.WithRootPath(_urlRoot);
 			var assetBundleMapRequest =
 			  Client.instance.assetBundleManager.DownloadFileAsyncNoCache(assetBundleMapRequestURL);
 			yield return assetBundleMapRequest;
@@ -62,7 +62,7 @@ namespace CsCat
 
 		public IEnumerator LoadManifest()
 		{
-			var manifestRequestURL = BuildConst.ManifestBundle_Path.WithRootPath(urlRoot);
+			var manifestRequestURL = BuildConst.ManifestBundle_Path.WithRootPath(_urlRoot);
 			manifestRequest = Client.instance.assetBundleManager.DownloadFileAsyncNoCache(manifestRequestURL);
 			yield return manifestRequest;
 			if (manifestRequest.error.IsNullOrWhiteSpace())
@@ -78,7 +78,7 @@ namespace CsCat
 
 		public IEnumerator LoadAssetPathRefContentJson()
 		{
-			var assetPathRefContentJsonRequestURL = AssetPathRefConst.SaveFileName.WithRootPath(urlRoot);
+			var assetPathRefContentJsonRequestURL = AssetPathRefConst.SaveFileName.WithRootPath(_urlRoot);
 			var assetPathRefContentJsonRequestURLRequest =
 			  Client.instance.assetBundleManager.DownloadFileAsyncNoCache(assetPathRefContentJsonRequestURL);
 			yield return assetPathRefContentJsonRequestURLRequest;

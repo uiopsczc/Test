@@ -57,8 +57,8 @@ namespace CsCat
 
 		public override void UpdateTime(float time)
 		{
-			curTime = time;
-			if (isPlaying)
+			_curTime = time;
+			if (_isPlaying)
 				sequence.Tick(time, this);
 			else
 				sequence.Retime(time, this);

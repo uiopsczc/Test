@@ -12,7 +12,7 @@ namespace CsCat
 		public override TimelinableTrackBase[] tracks
 		{
 			get => _tracks;
-			set { _tracks = value as MountTimelinableTrack[]; }
+			set => _tracks = value as MountTimelinableTrack[];
 		}
 	}
 }

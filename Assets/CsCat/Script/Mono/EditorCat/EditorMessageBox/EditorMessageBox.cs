@@ -12,7 +12,7 @@ namespace CsCat
 		public string content;
 
 		public string button1Text;
-		public string button2_text;
+		public string button2Text;
 
 		public Action onButton1Callback;
 		public Action onButton2Callback;
@@ -47,9 +47,9 @@ namespace CsCat
 					}
 				}
 
-				if (!string.IsNullOrEmpty(button2_text))
+				if (!string.IsNullOrEmpty(button2Text))
 				{
-					if (GUILayout.Button(button2_text, GUILayout.Width(64)))
+					if (GUILayout.Button(button2Text, GUILayout.Width(64)))
 					{
 						onButton2Callback?.Invoke();
 						onButton2Callback = null;

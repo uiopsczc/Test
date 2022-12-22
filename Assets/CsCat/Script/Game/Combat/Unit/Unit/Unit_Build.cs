@@ -220,10 +220,10 @@ namespace CsCat
 
 			if (this.animation != null)
 			{
-				var walkAnimationState = this.animation[AnimationNameConst.walk];
+				var walkAnimationState = this.animation[AnimationNameConst.Walk];
 				if (walkAnimationState != null)
 					walkAnimationState.wrapMode = WrapMode.Loop;
-				var idleAnimationState = this.animation[AnimationNameConst.idle];
+				var idleAnimationState = this.animation[AnimationNameConst.Idle];
 				if (idleAnimationState != null)
 				{
 					idleAnimationState.wrapMode = WrapMode.Loop;
@@ -231,12 +231,12 @@ namespace CsCat
 						idleAnimationState.layer = -1;
 				}
 
-				var dieAnimationState = this.animation[AnimationNameConst.die];
+				var dieAnimationState = this.animation[AnimationNameConst.Die];
 				if (dieAnimationState != null)
 					dieAnimationState.wrapMode = WrapMode.ClampForever;
 				if (!this._buildOkAnimationName.IsNullOrWhiteSpace() && this.animation[this._buildOkAnimationName])
 				{
-					this.PlayAnimation(AnimationNameConst.idle);
+					this.PlayAnimation(AnimationNameConst.Idle);
 					this.PlayAnimation(this._buildOkAnimationName);
 					var buildOkAnimationState = this.animation[_buildOkAnimationName];
 					graphicComponent.transform.position = new Vector3(0.01f, 0.01f, 0.01f);
@@ -248,7 +248,7 @@ namespace CsCat
 					}, buildOkAnimationState.length);
 				}
 				else
-					this.PlayAnimation(AnimationNameConst.idle);
+					this.PlayAnimation(AnimationNameConst.Idle);
 			}
 		}
 

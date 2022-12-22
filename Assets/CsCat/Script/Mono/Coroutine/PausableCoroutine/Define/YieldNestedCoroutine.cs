@@ -11,7 +11,7 @@ namespace CsCat
 
 		public override bool IsDone(float deltaTime)
 		{
-			if (!CheckIsStarted())
+			if (!_CheckIsStarted())
 				return false;
 
 			return coroutine.isFinished;

@@ -16,7 +16,7 @@ namespace CsCat
 		/// <summary>
 		/// 该timer的顺序
 		/// </summary>
-		internal int priority;
+		internal int _priority;
 
 		/// <summary>
 		/// 该timer的状态
@@ -115,7 +115,7 @@ namespace CsCat
 				float orgTimeScale = this._timeScale;
 				if (orgTimeScale != value) return;
 				this._timeScale = value;
-				this.OnTimeScaleChange(orgTimeScale, value);
+				this._OnTimeScaleChange(orgTimeScale, value);
 			}
 		}
 
@@ -175,7 +175,7 @@ namespace CsCat
 		{
 			this._updateFunc = updateFunc;
 			this._updateMode = updateMode;
-			this.priority = priority;
+			this._priority = priority;
 			this.interval = interval;
 			this.needRunCount = needRunCount;
 			this.delay = delay;
@@ -202,10 +202,10 @@ namespace CsCat
 			if (execTime <= 0)
 				return 0;
 			if (interval == 0)
-				return ValidCurrentNeedRunCount(curRunCount + 1);
+				return _ValidCurrentNeedRunCount(curRunCount + 1);
 			//      return 1;
 			long currentNeedRunCount = (long) Math.Floor(execTime / interval) + 1;
-			return ValidCurrentNeedRunCount(currentNeedRunCount);
+			return _ValidCurrentNeedRunCount(currentNeedRunCount);
 		}
 
 		/// <summary>
@@ -253,7 +253,7 @@ namespace CsCat
 		/// update
 		/// </summary>
 		/// <param name="deltaTime"></param>
-		internal void DoUpdate(float deltaTime, float unscaledDeltaTime)
+		internal void _DoUpdate(float deltaTime, float unscaledDeltaTime)
 		{
 			if (status != TimerStatus.Running)
 				return;
@@ -296,7 +296,7 @@ namespace CsCat
 		/// <summary>
 		/// 当TimeScale改变
 		/// </summary>
-		protected void OnTimeScaleChange(float orgTimeScale, float curTimeScale)
+		protected void _OnTimeScaleChange(float orgTimeScale, float curTimeScale)
 		{
 			onTimeScaleChanged?.Invoke(orgTimeScale, curTimeScale);
 		}
@@ -310,7 +310,7 @@ namespace CsCat
 		/// </summary>
 		/// <param name="currentNeedRunCount"></param>
 		/// <returns></returns>
-		private long ValidCurrentNeedRunCount(long currentNeedRunCount)
+		private long _ValidCurrentNeedRunCount(long currentNeedRunCount)
 		{
 			if (needRunCount > 0 && needRunCount < currentNeedRunCount)
 				return needRunCount;
@@ -322,7 +322,7 @@ namespace CsCat
 		public void Despawn()
 		{
 			_isUseUnscaledDeltaTime = false;
-			priority = 1;
+			_priority = 1;
 			_status = TimerStatus.Not_Started;
 			_timeScale = 1;
 			_updateMode = UpdateModeCat.Update;

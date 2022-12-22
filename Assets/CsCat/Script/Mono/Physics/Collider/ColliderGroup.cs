@@ -11,7 +11,7 @@ namespace CsCat
 		  new Dictionary<ColliderType, List<ColliderCat>>();
 
 		private List<ColliderType> _tmpCheckColliderTypeList1 = new List<ColliderType>();
-		private List<ColliderType> _tmpCheckColliderTypeList_2 = new List<ColliderType>();
+		private List<ColliderType> _tmpCheckColliderTypeList2 = new List<ColliderType>();
 		private List<ColliderCat> _tmpToCheckColliderList1 = new List<ColliderCat>();
 		private List<ColliderCat> _tmpToCheckColliderList2 = new List<ColliderCat>();
 
@@ -53,10 +53,10 @@ namespace CsCat
 			_tmpCheckColliderTypeList1.Clear();
 			_tmpCheckColliderTypeList1.Add(checkColliderType1);
 
-			_tmpCheckColliderTypeList_2.Clear();
-			_tmpCheckColliderTypeList_2.Add(checkColliderType2);
+			_tmpCheckColliderTypeList2.Clear();
+			_tmpCheckColliderTypeList2.Add(checkColliderType2);
 
-			return IsIntersect(colliderGroup2, _tmpCheckColliderTypeList1, _tmpCheckColliderTypeList_2);
+			return IsIntersect(colliderGroup2, _tmpCheckColliderTypeList1, _tmpCheckColliderTypeList2);
 		}
 
 		public void AddCollider(ColliderCat collider)

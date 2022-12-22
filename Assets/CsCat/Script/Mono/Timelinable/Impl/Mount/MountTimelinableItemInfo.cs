@@ -12,7 +12,7 @@ namespace CsCat
 		public int mountPointTransformFinderIndex = 0;
 		public List<MountPrefabInfo> mountPrefabInfoList = new List<MountPrefabInfo>();
 		[NonSerialized]
-		private List<GameObject> cloneList = new List<GameObject>();
+		private readonly List<GameObject> _cloneList = new List<GameObject>();
 
 		public TransformFinderBase mountPointTransformFinder => mountPointTransformFinders[mountPointTransformFinderIndex];
 
@@ -77,7 +77,7 @@ namespace CsCat
 					clone_transform.localPosition = mountPrefabInfo.localPosition;
 					clone_transform.localEulerAngles = mountPrefabInfo.localEulerAngles;
 					clone_transform.localScale = mountPrefabInfo.localScale;
-					cloneList.Add(clone);
+					_cloneList.Add(clone);
 				}
 			}
 			base.Play(args);
@@ -88,13 +88,13 @@ namespace CsCat
 			Action<GameObject, Transform> despawnCallback = SpawnUtil.Destroy2;
 			if (Application.isPlaying)
 				despawnCallback = TimelinableUtil.DespawnGameObject;
-			for (var i = 0; i < cloneList.Count; i++)
+			for (var i = 0; i < _cloneList.Count; i++)
 			{
-				var clone = cloneList[i];
+				var clone = _cloneList[i];
 				despawnCallback(clone, null);
 			}
 
-			cloneList.Clear();
+			_cloneList.Clear();
 			base.Stop(args);
 		}
 

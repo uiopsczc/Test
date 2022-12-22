@@ -12,13 +12,13 @@ namespace CsCat
 {
 	public partial class GameObjectLoader
 	{
-		private Hashtable refIdHashtable = new Hashtable();
+		private Hashtable _refIdHashtable = new Hashtable();
 #if UNITY_EDITOR
 		public void Save()
 		{
-			refIdHashtable.Clear();
+			_refIdHashtable.Clear();
 			Hashtable dict = new Hashtable();
-			dict["child_list"] = GetSave_ChildList(this.transform);
+			dict["childList"] = _GetSaveChildList(this.transform);
 			string content = MiniJson.JsonEncode(dict);
 			string filePath = textAsset.GetAssetPath().WithRootPath(FilePathConst.ProjectPath);
 			StdioUtil.WriteTextFile(filePath, content);
@@ -28,37 +28,37 @@ namespace CsCat
 		}
 
 
-		private ArrayList GetSave_ChildList(Transform parent_transform)
+		private ArrayList _GetSaveChildList(Transform parentTransform)
 		{
-			int childCount = parent_transform.childCount;
+			int childCount = parentTransform.childCount;
 			ArrayList tilemapList = new ArrayList();
 			for (int i = 0; i < childCount; i++)
 			{
-				Transform childTransform = parent_transform.GetChild(i);
-				Hashtable childHashtable = GetSave_Child(childTransform);
+				Transform childTransform = parentTransform.GetChild(i);
+				Hashtable childHashtable = _GetSaveChild(childTransform);
 				tilemapList.Add(childHashtable);
 			}
 
 			return tilemapList;
 		}
 
-		private Hashtable GetSave_Child(Transform childTransform)
+		private Hashtable _GetSaveChild(Transform childTransform)
 		{
 			Hashtable hashtable = new Hashtable();
 			hashtable["name"] = childTransform.name;
-			hashtable["Transform_hashtable"] = childTransform.GetSerializeHashtable();
+			hashtable["TransformHashtable"] = childTransform.GetSerializeHashtable();
 
-			Object prefab = EditorUtility.GetPrefabParent(childTransform.gameObject);
+			Object prefab = PrefabUtility.GetCorrespondingObjectFromSource(childTransform.gameObject);
 			bool isPrefab = prefab != null;
 			if (isPrefab)
 			{
 				long prefabRefId = AssetPathRefManager.instance.GetRefIdByGuid(prefab.GetGUID());
-				hashtable["prefab_ref_id"] = prefabRefId;
-				refIdHashtable[prefabRefId] = true;
+				hashtable["prefabRefId"] = prefabRefId;
+				_refIdHashtable[prefabRefId] = true;
 			}
 			//如果是预设则不用递归子节点
 			if (!isPrefab && childTransform.childCount > 0)
-				hashtable["child_list"] = GetSave_ChildList(childTransform);
+				hashtable["childList"] = _GetSaveChildList(childTransform);
 
 			List<Type> exceptList = new List<Type> { typeof(Transform), typeof(Tilemap) };
 			var components = childTransform.GetComponents<UnityEngine.Component>();
@@ -69,14 +69,14 @@ namespace CsCat
 				{
 					var componentHashtable = component.InvokeExtensionMethod<Hashtable>("GetSerializeHashtable") ??
 					                          new Hashtable();
-					string key = string.Format("{0}_hashtable", component.GetType().FullName);
+					string key = string.Format("{0}Hashtable", component.GetType().FullName);
 					hashtable[key] = componentHashtable;
 				}
 			}
 
 			Tilemap tilemap = childTransform.GetComponent<Tilemap>();
 			if (tilemap != null)
-				hashtable["Tilemap_hashtable"] = tilemap.GetSerializeHashtable(refIdHashtable);
+				hashtable["TilemapHashtable"] = tilemap.GetSerializeHashtable(_refIdHashtable);
 
 			return hashtable;
 		}

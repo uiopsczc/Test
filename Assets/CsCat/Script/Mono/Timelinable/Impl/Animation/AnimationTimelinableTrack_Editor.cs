@@ -26,9 +26,9 @@ namespace CsCat
 			return false;
 		}
 
-		public override void DrawGUISetting_Detail()
+		public override void DrawGUISettingDetail()
 		{
-			base.DrawGUISetting_Detail();
+			base.DrawGUISettingDetail();
 			var editorRuntimeAnimatorController = (RuntimeAnimatorController)EditorGUILayout.ObjectField(
 			  "runtimeAnimatorController", runtimeAnimatorController, typeof(RuntimeAnimatorController), false);
 			if (runtimeAnimatorController != editorRuntimeAnimatorController)
@@ -53,7 +53,7 @@ namespace CsCat
 
 
 
-		public override void DrawGUISetting_ItemInfoLibrary()
+		public override void DrawGUISettingItemInfoLibrary()
 		{
 			if (animator == null)
 				return;

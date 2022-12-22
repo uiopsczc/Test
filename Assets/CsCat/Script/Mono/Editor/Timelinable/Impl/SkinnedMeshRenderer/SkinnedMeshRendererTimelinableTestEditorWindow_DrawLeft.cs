@@ -15,12 +15,12 @@ namespace CsCat
 					TimelinableEditorWindowUtil.DrawGUISetting_Sequence(ref _sequence);
 					if (_sequence == null)
 						return;
-					_sequence.DrawGUISetting_Detail();
+					_sequence.DrawGUISettingDetail();
 				}
 
 				if (_sequence.tracks.Length <= 0)
 					return;
-				_sequence.DrawGUISetting_Tracks(_timelineRect.playTime);
+				_sequence.DrawGUISettingTracks(_timelineRect.playTime);
 			}
 		}
 	}

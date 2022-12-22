@@ -38,7 +38,7 @@ namespace CsCat
 
 		#endregion
 
-		private AssetCat __GetOrAddAssetCat(string assetPath)
+		private AssetCat _GetOrAddAssetCat(string assetPath)
 		{
 			assetCatDict.TryGetValue(assetPath, out var targetAssetCat);
 
@@ -74,12 +74,12 @@ namespace CsCat
 			return targetAssetCat;
 		}
 
-		private bool __UnLoadUnUseAsset(string assetPath)
+		private bool _UnLoadUnUseAsset(string assetPath)
 		{
-			return __UnLoadUnUseAsset(GetAssetCat(assetPath));
+			return _UnLoadUnUseAsset(GetAssetCat(assetPath));
 		}
 
-		private bool __UnLoadUnUseAsset(AssetCat assetCat)
+		private bool _UnLoadUnUseAsset(AssetCat assetCat)
 		{
 			if (assetCat == null)
 				return false;
@@ -88,7 +88,7 @@ namespace CsCat
 
 			if (assetCat.refCount == 0)
 			{
-				__RemoveAssetCat(assetCat);
+				_RemoveAssetCat(assetCat);
 				return true;
 			}
 
@@ -105,7 +105,7 @@ namespace CsCat
 				|| assetPath.Contains(FilePathConst.ResourcesFlag)
 			)
 			{
-				assetCat = __GetOrAddAssetCat(assetPath);
+				assetCat = _GetOrAddAssetCat(assetPath);
 				onLoadSuccessCallback?.Invoke(assetCat);
 				onLoadDoneCallback?.Invoke(assetCat);
 				return assetCat;
@@ -134,8 +134,8 @@ namespace CsCat
 				for (var i = 0; i < assetPathList.Count; i++)
 				{
 					var assetPath = assetPathList[i];
-					onLoadSuccessCallback?.Invoke(__GetOrAddAssetCat(assetPath));
-					onLoadDoneCallback?.Invoke(__GetOrAddAssetCat(assetPath));
+					onLoadSuccessCallback?.Invoke(_GetOrAddAssetCat(assetPath));
+					onLoadDoneCallback?.Invoke(_GetOrAddAssetCat(assetPath));
 				}
 
 				yield break;
@@ -153,7 +153,7 @@ namespace CsCat
 				for (var i = 0; i < assetPathList.Count; i++)
 				{
 					var assetPath = assetPathList[i];
-					var assetCat = __GetOrAddAssetCat(assetPath);
+					var assetCat = _GetOrAddAssetCat(assetPath);
 					if (!assetCat.IsLoadDone())
 						return false;
 				}
@@ -171,7 +171,7 @@ namespace CsCat
 				|| assetPath.Contains(FilePathConst.ResourcesFlag)
 			)
 			{
-				assetCat = __GetOrAddAssetCat(assetPath);
+				assetCat = _GetOrAddAssetCat(assetPath);
 				onLoadSuccessCallback?.Invoke(assetCat);
 				onLoadDoneCallback?.Invoke(assetCat);
 				return new EditorAssetAsyncLoader(assetCat);
@@ -203,14 +203,14 @@ namespace CsCat
 			//没有加载
 			var assetAsyncLoader = PoolCatManagerUtil.Spawn<AssetAsyncLoader>();
 			assetCat = new AssetCat(assetPath);
-			__AddAssetCat(assetPath, assetCat);
+			_AddAssetCat(assetPath, assetCat);
 			//添加对assetAsyncLoader的引用
 			assetCat.AddRefCount();
 			assetCat.AddOnLoadSuccessCallback(onLoadSuccessCallback, callbackCause);
 			assetCat.AddOnLoadFailCallback(onLoadFailCallback, callbackCause);
 			assetCat.AddOnLoadDoneCallback(onLoadDoneCallback, callbackCause);
 
-			var assetBundleLoader = __LoadAssetBundleAsync(assetBundleName);
+			var assetBundleLoader = _LoadAssetBundleAsync(assetBundleName);
 			assetAsyncLoader.Init(assetCat, assetBundleLoader);
 			//asset拥有对assetBundle的引用
 			var assetBundleCat = assetBundleLoader.assetBundleCat;
@@ -222,20 +222,20 @@ namespace CsCat
 			return assetAsyncLoader;
 		}
 
-		private void CheckAssetOfNoRefList()
+		private void _CheckAssetOfNoRefList()
 		{
-			for (var i = assetCatOfNoRefList.Count - 1; i >= 0; i--)
+			for (var i = _assetCatOfNoRefList.Count - 1; i >= 0; i--)
 			{
-				var assetCat = assetCatOfNoRefList[i];
+				var assetCat = _assetCatOfNoRefList[i];
 				if (assetCat.refCount <= 0)
 				{
-					assetCatOfNoRefList.Remove(assetCat);
-					__RemoveAssetCat(assetCat);
+					_assetCatOfNoRefList.Remove(assetCat);
+					_RemoveAssetCat(assetCat);
 				}
 			}
 		}
 
-		private void OnAssetAsyncLoaderFail(AssetAsyncLoader assetAsyncLoader)
+		private void _OnAssetAsyncLoaderFail(AssetAsyncLoader assetAsyncLoader)
 		{
 			if (!assetAsyncloaderProcessingList.Contains(assetAsyncLoader))
 				return;
@@ -244,7 +244,7 @@ namespace CsCat
 			assetAsyncLoader.assetCat.SubRefCount();
 		}
 
-		private void OnAssetAsyncLoaderDone(AssetAsyncLoader assetAsyncLoader)
+		private void _OnAssetAsyncLoaderDone(AssetAsyncLoader assetAsyncLoader)
 		{
 			if (!assetAsyncloaderProcessingList.Contains(assetAsyncLoader))
 				return;
@@ -262,13 +262,13 @@ namespace CsCat
 		{
 			if (assetCat == null)
 				return;
-			if (!assetCatOfNoRefList.Contains(assetCat) && !assetResidentDict.ContainsKey(assetCat.assetPath))
-				assetCatOfNoRefList.Add(assetCat);
+			if (!_assetCatOfNoRefList.Contains(assetCat) && !assetResidentDict.ContainsKey(assetCat.assetPath))
+				_assetCatOfNoRefList.Add(assetCat);
 		}
 
 		public bool IsAssetLoadSuccess(string assetPath)
 		{
-			return assetCatDict.ContainsKey(assetPath) && __GetOrAddAssetCat(assetPath).IsLoadSuccess();
+			return assetCatDict.ContainsKey(assetPath) && _GetOrAddAssetCat(assetPath).IsLoadSuccess();
 		}
 
 		public AssetCat GetAssetCat(string assetPath)
@@ -278,12 +278,12 @@ namespace CsCat
 		}
 
 
-		public void __RemoveAssetCat(string assetPath)
+		public void _RemoveAssetCat(string assetPath)
 		{
-			__RemoveAssetCat(this.GetAssetCat(assetPath));
+			_RemoveAssetCat(this.GetAssetCat(assetPath));
 		}
 
-		private void __RemoveAssetCat(AssetCat assetCat)
+		private void _RemoveAssetCat(AssetCat assetCat)
 		{
 			if (assetCat == null)
 				return;
@@ -299,7 +299,7 @@ namespace CsCat
 			assetBundleCat?.SubRefCount();
 		}
 
-		private void __AddAssetCat(string assetPath, AssetCat asset)
+		private void _AddAssetCat(string assetPath, AssetCat asset)
 		{
 			assetCatDict[assetPath] = asset;
 		}

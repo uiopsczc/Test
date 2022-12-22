@@ -7,8 +7,8 @@ namespace CsCat
 	[Serializable]
 	public partial class TransformFinders : ICopyable
 	{
-		[SerializeField] private TransformFinder0 _transformFinder0 = new TransformFinder0();
-		[SerializeField] private TransformFinder1 _transformFinder1 = new TransformFinder1();
+		[SerializeField] private readonly TransformFinder0 _transformFinder0 = new TransformFinder0();
+		[SerializeField] private readonly TransformFinder1 _transformFinder1 = new TransformFinder1();
 
 		public TransformFinderBase this[int index]
 		{

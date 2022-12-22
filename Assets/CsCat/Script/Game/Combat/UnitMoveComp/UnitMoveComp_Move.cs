@@ -76,7 +76,7 @@ namespace CsCat
 				if (unit.animation != null)
 					unit.StopAnimation(this._unitMoveInfo.animationName, 0.2f); //animation动画是层叠的，停掉walk自动就播放idle
 				else
-					unit.animatorComp.PlayAnimation(AnimationNameConst.idle, true);
+					unit.animatorComp.PlayAnimation(AnimationNameConst.Idle, true);
 			}
 
 			this.moveType = null;

@@ -6,18 +6,18 @@ namespace CsCat
 	{
 		public Camera camera;
 
-		private CameraOperation currentOperation;
-		private float lerpSpeed = 4;
+		private CameraOperation _currentOperation;
+		private float _lerpSpeed = 4;
 
-		private Vector3 orgPosition;
-		private Vector3 orgEulerAngles;
-		private Quaternion orgRotation;
-		private float orgFOV;
+		private Vector3 _orgPosition;
+		private Vector3 _orgEulerAngles;
+		private Quaternion _orgRotation;
+		private float _orgFOV;
 
-		private Vector3 currentPosition;
-		private Vector3 currentEulerAngles;
-		private Quaternion currentRotation;
-		private float currentFOV;
+		private Vector3 _currentPosition;
+		private Vector3 _currentEulerAngles;
+		private Quaternion _currentRotation;
+		private float _currentFOV;
 
 
 		public void Init(Camera camera, bool isNotDestroyGameObject)
@@ -26,15 +26,15 @@ namespace CsCat
 			this.camera = camera;
 			graphicComponent.SetGameObject(this.camera.gameObject, isNotDestroyGameObject);
 
-			orgPosition = graphicComponent.transform.position;
-			orgEulerAngles = graphicComponent.transform.eulerAngles;
-			orgRotation = graphicComponent.transform.rotation;
-			orgFOV = this.camera.fieldOfView;
+			_orgPosition = graphicComponent.transform.position;
+			_orgEulerAngles = graphicComponent.transform.eulerAngles;
+			_orgRotation = graphicComponent.transform.rotation;
+			_orgFOV = this.camera.fieldOfView;
 
-			currentPosition = graphicComponent.transform.position;
-			currentEulerAngles = graphicComponent.transform.eulerAngles;
-			currentRotation = graphicComponent.transform.rotation;
-			currentFOV = this.camera.fieldOfView;
+			_currentPosition = graphicComponent.transform.position;
+			_currentEulerAngles = graphicComponent.transform.eulerAngles;
+			_currentRotation = graphicComponent.transform.rotation;
+			_currentFOV = this.camera.fieldOfView;
 		}
 
 		public override bool IsCanUpdate()
@@ -45,13 +45,13 @@ namespace CsCat
 		protected override void _LateUpdate(float deltaTime, float unscaledDeltaTime)
 		{
 			base._LateUpdate(deltaTime, unscaledDeltaTime);
-			switch (this.currentOperation)
+			switch (this._currentOperation)
 			{
 				case CameraOperation.None:
-					graphicComponent.transform.position = this.currentPosition;
+					graphicComponent.transform.position = this._currentPosition;
 					break;
 				case CameraOperation.Lock_To_Target:
-					if (this.lockToTransform)
+					if (this._lockToTransform)
 						this.ApplyLockTo(deltaTime);
 					break;
 				case CameraOperation.Delta_Move:
@@ -64,9 +64,9 @@ namespace CsCat
 					break;
 			}
 
-			this.currentPosition = graphicComponent.transform.position;
-			this.currentRotation = graphicComponent.transform.rotation;
-			this.currentFOV = this.camera.fieldOfView;
+			this._currentPosition = graphicComponent.transform.position;
+			this._currentRotation = graphicComponent.transform.rotation;
+			this._currentFOV = this.camera.fieldOfView;
 
 			ApplyShakeScreen(deltaTime);
 

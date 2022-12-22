@@ -7,7 +7,7 @@ namespace CsCat
 	{
 		public ResLoadData resLoadData;
 		public Dictionary<object, bool> callbackCauseDict = new Dictionary<object, bool>();
-		private bool _isNotCheckDestroy;
+		private readonly bool _isNotCheckDestroy;
 
 		public ResLoadDataInfo(ResLoadData resLoadData, bool isNotCheckDestroy)
 		{

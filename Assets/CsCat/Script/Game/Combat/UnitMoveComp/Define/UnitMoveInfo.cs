@@ -6,7 +6,7 @@ namespace CsCat
 	public class UnitMoveInfo
 	{
 		public float animationSpeed = -1;
-		public string animationName = AnimationNameConst.walk;
+		public string animationName = AnimationNameConst.Walk;
 		public float speed = 1;
 		public float remainDuration;
 		public Vector3 targetPos;

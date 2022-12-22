@@ -7,7 +7,7 @@ namespace CsCat
 	public class ReorderableListInfo : ICopyable
 	{
 		public IList toReorderList;
-		private GUIToggleTween toggleTween = new GUIToggleTween();
+		private readonly GUIToggleTween _toggleTween = new GUIToggleTween();
 		public ReorderableList _reorderableList;
 		public ReorderableList reorderableList
 		{
@@ -30,7 +30,7 @@ namespace CsCat
 
 		public void DrawGUI(string title)
 		{
-			this.reorderableList.DrawGUI(toggleTween, title);
+			this.reorderableList.DrawGUI(_toggleTween, title);
 		}
 
 		public void CopyTo(object dest)

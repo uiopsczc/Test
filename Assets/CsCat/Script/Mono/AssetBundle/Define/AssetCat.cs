@@ -18,33 +18,33 @@ namespace CsCat
 		public ResultInfo resultInfo => _resultInfo ?? (_resultInfo = new ResultInfo(
 			() =>
 			{
-				onLoadSuccessCallback?.Invoke(this);
+				_onLoadSuccessCallback?.Invoke(this);
 				RemoveAllOnLoadSuccessCallback();
 			}, () =>
 			{
-				onLoadFailCallback?.Invoke(this);
+				_onLoadFailCallback?.Invoke(this);
 				RemoveAllOnLoadFailCallback();
 			}, () =>
 			{
-				onLoadDoneCallback?.Invoke(this);
+				_onLoadDoneCallback?.Invoke(this);
 				RemoveAllOnLoadDoneCallback();
 			}));
 
 		public int refCount { get; private set; }
 
 
-		private Action<AssetCat> onLoadSuccessCallback;
-		private Action<AssetCat> onLoadFailCallback;
-		private Action<AssetCat> onLoadDoneCallback;
+		private Action<AssetCat> _onLoadSuccessCallback;
+		private Action<AssetCat> _onLoadFailCallback;
+		private Action<AssetCat> _onLoadDoneCallback;
 
 		//用来追溯来源，就是取消下载的时候，把那些关于它自己的部分的callback删除
-		private ValueListDictionary<object, Action<AssetCat>> onLoadSuccessCallbackListDict =
+		private ValueListDictionary<object, Action<AssetCat>> _onLoadSuccessCallbackListDict =
 			new ValueListDictionary<object, Action<AssetCat>>();
 
-		private ValueListDictionary<object, Action<AssetCat>> onLoadFailCallbackListDict =
+		private ValueListDictionary<object, Action<AssetCat>> _onLoadFailCallbackListDict =
 			new ValueListDictionary<object, Action<AssetCat>>();
 
-		private ValueListDictionary<object, Action<AssetCat>> onLoadDoneCallbackListDict =
+		private ValueListDictionary<object, Action<AssetCat>> _onLoadDoneCallbackListDict =
 			new ValueListDictionary<object, Action<AssetCat>>();
 
 		public AssetCat(string assetPath)
@@ -57,10 +57,10 @@ namespace CsCat
 			if (onLoadSuccessCallback == null)
 				return;
 
-			this.onLoadSuccessCallback += onLoadSuccessCallback;
+			this._onLoadSuccessCallback += onLoadSuccessCallback;
 			if (callbackCause == null)
 				callbackCause = this;
-			onLoadSuccessCallbackListDict.Add(callbackCause, onLoadSuccessCallback);
+			_onLoadSuccessCallbackListDict.Add(callbackCause, onLoadSuccessCallback);
 		}
 
 		public void AddOnLoadFailCallback(Action<AssetCat> onLoadFailCallback, object callbackCause = null)
@@ -68,20 +68,20 @@ namespace CsCat
 			if (onLoadFailCallback == null)
 				return;
 
-			this.onLoadFailCallback += onLoadFailCallback;
+			this._onLoadFailCallback += onLoadFailCallback;
 			if (callbackCause == null)
 				callbackCause = this;
-			onLoadFailCallbackListDict.Add(callbackCause, onLoadFailCallback);
+			_onLoadFailCallbackListDict.Add(callbackCause, onLoadFailCallback);
 		}
 
 		public void AddOnLoadDoneCallback(Action<AssetCat> onLoadDoneCallback, object callbackCause = null)
 		{
 			if (onLoadDoneCallback == null)
 				return;
-			this.onLoadDoneCallback += onLoadDoneCallback;
+			this._onLoadDoneCallback += onLoadDoneCallback;
 			if (callbackCause == null)
 				callbackCause = this;
-			onLoadDoneCallbackListDict.Add(callbackCause, onLoadDoneCallback);
+			_onLoadDoneCallbackListDict.Add(callbackCause, onLoadDoneCallback);
 		}
 
 
@@ -90,10 +90,10 @@ namespace CsCat
 			if (onLoadSuccessCallback == null)
 				return;
 
-			this.onLoadSuccessCallback -= onLoadSuccessCallback;
+			this._onLoadSuccessCallback -= onLoadSuccessCallback;
 			if (callbackCause == null)
 				callbackCause = this;
-			onLoadSuccessCallbackListDict.Remove(callbackCause, onLoadSuccessCallback);
+			_onLoadSuccessCallbackListDict.Remove(callbackCause, onLoadSuccessCallback);
 		}
 
 		public void RemoveOnLoadFailCallback(Action<AssetCat> onLoadFailCallback, object callbackCause = null)
@@ -101,10 +101,10 @@ namespace CsCat
 			if (onLoadFailCallback == null)
 				return;
 
-			this.onLoadFailCallback -= onLoadFailCallback;
+			this._onLoadFailCallback -= onLoadFailCallback;
 			if (callbackCause == null)
 				callbackCause = this;
-			onLoadFailCallbackListDict.Remove(callbackCause, onLoadFailCallback);
+			_onLoadFailCallbackListDict.Remove(callbackCause, onLoadFailCallback);
 		}
 
 		public void RemoveOnLoadDoneCallback(Action<AssetCat> onLoadDoneCallback, object callbackCause = null)
@@ -112,55 +112,55 @@ namespace CsCat
 			if (onLoadDoneCallback == null)
 				return;
 
-			this.onLoadDoneCallback -= onLoadDoneCallback;
+			this._onLoadDoneCallback -= onLoadDoneCallback;
 			if (callbackCause == null)
 				callbackCause = this;
-			onLoadDoneCallbackListDict.Remove(callbackCause, onLoadDoneCallback);
+			_onLoadDoneCallbackListDict.Remove(callbackCause, onLoadDoneCallback);
 		}
 
 		public void RemoveOnLoadSuccessCallback(object callbackCause = null)
 		{
 			if (callbackCause == null)
 				callbackCause = this;
-			onLoadSuccessCallbackListDict.Foreach(callbackCause,
-				callback => { this.onLoadSuccessCallback -= callback; });
-			onLoadSuccessCallbackListDict.Remove(callbackCause);
+			_onLoadSuccessCallbackListDict.Foreach(callbackCause,
+				callback => { this._onLoadSuccessCallback -= callback; });
+			_onLoadSuccessCallbackListDict.Remove(callbackCause);
 		}
 
 		public void RemoveOnLoadFailCallback(object callbackCause = null)
 		{
 			if (callbackCause == null)
 				callbackCause = this;
-			onLoadFailCallbackListDict.Foreach(callbackCause,
-				callback => { this.onLoadFailCallback -= callback; });
-			onLoadFailCallbackListDict.Remove(callbackCause);
+			_onLoadFailCallbackListDict.Foreach(callbackCause,
+				callback => { this._onLoadFailCallback -= callback; });
+			_onLoadFailCallbackListDict.Remove(callbackCause);
 		}
 
 		public void RemoveOnLoadDoneCallback(object callbackCause = null)
 		{
 			if (callbackCause == null)
 				callbackCause = this;
-			onLoadDoneCallbackListDict.Foreach(callbackCause,
-				callback => { this.onLoadDoneCallback -= callback; });
-			onLoadDoneCallbackListDict.Remove(callbackCause);
+			_onLoadDoneCallbackListDict.Foreach(callbackCause,
+				callback => { this._onLoadDoneCallback -= callback; });
+			_onLoadDoneCallbackListDict.Remove(callbackCause);
 		}
 
 		public void RemoveAllOnLoadSuccessCallback()
 		{
-			onLoadSuccessCallbackListDict.Clear();
-			this.onLoadSuccessCallback = null;
+			_onLoadSuccessCallbackListDict.Clear();
+			this._onLoadSuccessCallback = null;
 		}
 
 		public void RemoveAllOnLoadFailCallback()
 		{
-			onLoadFailCallbackListDict.Clear();
-			this.onLoadFailCallback = null;
+			_onLoadFailCallbackListDict.Clear();
+			this._onLoadFailCallback = null;
 		}
 
 		public void RemoveAllOnLoadDoneCallback()
 		{
-			onLoadDoneCallbackListDict.Clear();
-			this.onLoadDoneCallback = null;
+			_onLoadDoneCallbackListDict.Clear();
+			this._onLoadDoneCallback = null;
 		}
 
 		public void RemoveCallback(object callbackCause = null)
@@ -236,7 +236,7 @@ namespace CsCat
 						Client.instance.assetBundleManager.AddAssetCatOfNoRef(this); //延迟删除
 				}
 				else
-					onLoadSuccessCallback += asset_cat =>
+					_onLoadSuccessCallback += asset_cat =>
 					{
 						Client.instance.assetBundleManager.AddAssetCatOfNoRef(this);
 					}; //延迟删除;
@@ -298,10 +298,10 @@ namespace CsCat
 			var renderers = go.GetComponentsInChildren<Renderer>();
 			for (var j = 0; j < renderers.Length; j++)
 			{
-				var mat = renderers[j].sharedMaterial;
-				if (mat == null)
+				var material = renderers[j].sharedMaterial;
+				if (material == null)
 					continue;
-				HandleAssetShader_Mat(ref mat);
+				HandleAssetShader_Mat(ref material);
 			}
 		}
 

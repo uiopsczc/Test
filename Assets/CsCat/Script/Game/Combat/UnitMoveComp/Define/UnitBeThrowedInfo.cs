@@ -9,7 +9,7 @@ namespace CsCat
 		public Vector3 endPos; //结束位置
 		public float height;
 		public float maxHeight;
-		public string animationName = AnimationNameConst.be_throwed;
+		public string animationName = AnimationNameConst.BeThrowed;
 		public float orgHeight;
 		public float duration;
 		public float remainDuration;

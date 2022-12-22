@@ -14,13 +14,13 @@ namespace CsCat
 		public override TimelinableItemInfoBase[] itemInfoes
 		{
 			get => _itemInfoes;
-			set { _itemInfoes = value as MountTimelinableItemInfo[]; }
+			set => _itemInfoes = value as MountTimelinableItemInfo[];
 		}
 
 		public override TimelinableItemInfoLibraryBase itemInfoLibrary
 		{
-			get { return _itemInfoLibrary; }
-			set { _itemInfoLibrary = value as MountTimelinableItemInfoLibrary; }
+			get => _itemInfoLibrary;
+			set => _itemInfoLibrary = value as MountTimelinableItemInfoLibrary;
 		}
 
 

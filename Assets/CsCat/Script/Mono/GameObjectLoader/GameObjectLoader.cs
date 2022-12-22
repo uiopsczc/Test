@@ -9,7 +9,7 @@ namespace CsCat
 		[SerializeField] public TextAsset textAsset;
 
 
-		private ResLoad resLoad = new ResLoad();
+		private readonly ResLoad _resLoad = new ResLoad();
 
 		public void SingleInit()
 		{
@@ -18,7 +18,7 @@ namespace CsCat
 		public void Clear()
 		{
 			gameObject.DestroyChildren();
-			resLoad.Destroy();
+			_resLoad.Destroy();
 		}
 	}
 }

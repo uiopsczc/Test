@@ -15,13 +15,13 @@ namespace CsCat
 		public override TimelinableItemInfoBase[] itemInfoes
 		{
 			get => _itemInfoes;
-			set { _itemInfoes = value as CameraTimelinableItemInfo[]; }
+			set => _itemInfoes = value as CameraTimelinableItemInfo[];
 		}
 
 
-		protected override void OnPauseStateChange()
+		protected override void _OnPauseStateChange()
 		{
-			base.OnPauseStateChange();
+			base._OnPauseStateChange();
 			if (animator != null)
 			{
 				if (isPaused)

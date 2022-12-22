@@ -6,14 +6,14 @@ namespace CsCat
 	public class AssetPathMap
 	{
 		//key是AssetBundlePath,value是AssetPath的list
-		protected ValueListDictionary<string, string> assetBundleName2AssetPathListDict =
+		protected ValueListDictionary<string, string> _assetBundleName2AssetPathListDict =
 		  new ValueListDictionary<string, string>();
 
 		//key是AssetPath Value是AssetBundlePath
-		protected Dictionary<string, string> assetPath2AssetBundleNameDict = new Dictionary<string, string>();
-		protected List<string> emptyList = new List<string>();
+		protected Dictionary<string, string> _assetPath2AssetBundleNameDict = new Dictionary<string, string>();
+		protected List<string> _emptyList = new List<string>();
 
-		private string fileContent;
+		private string _fileContent;
 
 		public AssetPathMap()
 		{
@@ -27,7 +27,7 @@ namespace CsCat
 		public void SaveToDisk()
 		{
 			var path = BuildConst.AssetPathMap_File_Name.WithRootPath(FilePathConst.PersistentAssetBundleRoot);
-			StdioUtil.WriteTextFile(path, fileContent);
+			StdioUtil.WriteTextFile(path, _fileContent);
 		}
 
 
@@ -39,7 +39,7 @@ namespace CsCat
 				return;
 			}
 
-			fileContent = content;
+			_fileContent = content;
 			content = content.Replace("\r\n", "\n");
 			var mapList = content.Split('\n');
 			for (var i = 0; i < mapList.Length; i++)
@@ -61,15 +61,15 @@ namespace CsCat
 				// 如：Assets/AssetsPackage/UI/Prefab/Login.prefab
 				item.assetPath = splits[1];
 
-				assetBundleName2AssetPathListDict.Add(item.assetBundleName, item.assetPath, true);
-				assetPath2AssetBundleNameDict.Add(item.assetPath, item.assetBundleName);
+				_assetBundleName2AssetPathListDict.Add(item.assetBundleName, item.assetPath, true);
+				_assetPath2AssetBundleNameDict.Add(item.assetPath, item.assetBundleName);
 			}
 		}
 
 		public List<string> GetLuaAssetBundlePathList()
 		{
 			var result = new List<string>();
-			foreach (var keyValue in assetBundleName2AssetPathListDict)
+			foreach (var keyValue in _assetBundleName2AssetPathListDict)
 			{
 				var assetBundleName = keyValue.Key;
 				if (assetBundleName.StartsWith(BuildConst.LuaBundlePrefixName))
@@ -82,13 +82,13 @@ namespace CsCat
 
 		public List<string> GetAllAssetPathList(string assetBundleName)
 		{
-			assetBundleName2AssetPathListDict.TryGetValue(assetBundleName, out var assetList);
-			return assetList ?? emptyList;
+			_assetBundleName2AssetPathListDict.TryGetValue(assetBundleName, out var assetList);
+			return assetList ?? _emptyList;
 		}
 
 		public string GetAssetBundleName(string assetPath)
 		{
-			assetPath2AssetBundleNameDict.TryGetValue(assetPath, out var assetBundleName);
+			_assetPath2AssetBundleNameDict.TryGetValue(assetPath, out var assetBundleName);
 			return assetBundleName;
 		}
 

@@ -16,11 +16,11 @@ namespace CsCat
 		public MonoBehaviourCache monoBehaviourCache =>
 			_monoBehaviourCache ?? (_monoBehaviourCache = new MonoBehaviourCache(this));
 
-		public UnityEngine.Component target_component
+		public UnityEngine.Component targetComponent
 		{
 			get
 			{
-				return monoBehaviourCache.GetOrAddDefault(" targetComponent",
+				return monoBehaviourCache.GetOrAddDefault("targetComponent",
 					() =>
 					{
 						var type = GetType().Assembly.GetType(targetTypeName);
@@ -44,7 +44,7 @@ namespace CsCat
 		{
 			var args = (List<object>) JsonSerializer.Deserialize(targetMethodArgsJsonString);
 			args = args ?? new List<object>();
-			target_component.InvokeMethod(targetMethodInfoName, false, args.ToArray());
+			targetComponent.InvokeMethod(targetMethodInfoName, false, args.ToArray());
 		}
 	}
 }

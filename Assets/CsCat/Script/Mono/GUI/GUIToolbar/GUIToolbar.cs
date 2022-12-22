@@ -8,9 +8,9 @@ namespace CsCat
 {
 	public class GUIToolbar
 	{
-		private List<GUIContent> buttonGUIContentList;
+		private readonly List<GUIContent> _buttonGUIContentList;
 		private int _selectedIndex = -1;
-		private bool[] isHighlighted;
+		private bool[] _isHighlighted;
 
 		public int selectedIndex
 		{
@@ -22,14 +22,14 @@ namespace CsCat
 
 		public GUIToolbar(List<GUIContent> buttonGUIContentList)
 		{
-			this.buttonGUIContentList = new List<GUIContent>(buttonGUIContentList);
-			isHighlighted = new bool[this.buttonGUIContentList.Count];
+			this._buttonGUIContentList = new List<GUIContent>(buttonGUIContentList);
+			_isHighlighted = new bool[this._buttonGUIContentList.Count];
 		}
 
 		public void SetHighlight(int index, bool isHighlight)
 		{
-			if (index >= 0 && index < isHighlighted.Length)
-				isHighlighted[index] = isHighlight;
+			if (index >= 0 && index < _isHighlighted.Length)
+				_isHighlighted[index] = isHighlight;
 		}
 
 		public void DrawGUI(Vector2 position, Vector2 buttonSize, Color? backgroundColor, Color? outlineColor)
@@ -38,7 +38,7 @@ namespace CsCat
 			Color outlineColorValue = outlineColor.GetValueOrDefault(Color.black);
 			using (new GUIColorScope())
 			{
-				int buttonCount = buttonGUIContentList.Count;
+				int buttonCount = _buttonGUIContentList.Count;
 				Rect toolbarRect = new Rect(position.x, position.y, buttonCount * buttonSize.y, buttonSize.y);
 				using (new GUILayoutBeginAreaScope(toolbarRect))
 				{
@@ -47,16 +47,16 @@ namespace CsCat
 						outlineColorValue);
 					using (new GUILayoutBeginHorizontalScope())
 					{
-						if (isHighlighted.Length != buttonGUIContentList.Count)
-							Array.Resize(ref isHighlighted, buttonGUIContentList.Count);
+						if (_isHighlighted.Length != _buttonGUIContentList.Count)
+							Array.Resize(ref _isHighlighted, _buttonGUIContentList.Count);
 
 						int buttonPadding = 4;
 						Rect toolButtonRect = new Rect(buttonPadding, buttonPadding,
 							toolbarRect.size.y - 2 * buttonPadding,
 							toolbarRect.size.y - 2 * buttonPadding);
-						for (int index = 0; index < buttonGUIContentList.Count; ++index)
+						for (int index = 0; index < _buttonGUIContentList.Count; ++index)
 						{
-							DrawToolbarButton(toolButtonRect, index);
+							_DrawToolbarButton(toolButtonRect, index);
 							toolButtonRect.x = toolButtonRect.xMax + 2 * buttonPadding;
 						}
 					}
@@ -71,21 +71,21 @@ namespace CsCat
 			onToolSelected?.Invoke(this, _selectedIndex, preIndex);
 		}
 
-		private void DrawToolbarButton(Rect toolButtonRect, int index)
+		private void _DrawToolbarButton(Rect toolButtonRect, int index)
 		{
 			int iconPadding = 6;
 			Rect toolIconRect = new Rect(toolButtonRect.x + iconPadding, toolButtonRect.y + iconPadding,
 				toolButtonRect.size.x - 2 * iconPadding, toolButtonRect.size.y - 2 * iconPadding);
 
-			if (isHighlighted[index])
+			if (_isHighlighted[index])
 				GUI.color = GUIToolbarConst.Highlith_Color;
 			else
 				GUI.color = _selectedIndex == index ? GUIToolbarConst.Active_Color : GUIToolbarConst.Disable_Color;
-			if (GUI.Button(toolButtonRect, buttonGUIContentList[index]))
+			if (GUI.Button(toolButtonRect, _buttonGUIContentList[index]))
 				TriggerButton(index);
 			GUI.color = Color.white;
-			if (buttonGUIContentList[index].image)
-				GUI.DrawTexture(toolIconRect, buttonGUIContentList[index].image);
+			if (_buttonGUIContentList[index].image)
+				GUI.DrawTexture(toolIconRect, _buttonGUIContentList[index].image);
 		}
 	}
 }

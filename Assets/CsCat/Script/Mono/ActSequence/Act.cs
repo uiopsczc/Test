@@ -130,10 +130,10 @@ namespace CsCat
 				parentNextAction();
 			status = Status.Exited;
 
-			Reset();
+			_Reset();
 		}
 
-		protected virtual void Reset()
+		protected virtual void _Reset()
 		{
 			status = Status.Ready;
 			isBreak = false;

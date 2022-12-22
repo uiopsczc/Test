@@ -14,7 +14,7 @@ namespace CsCat
 		public override TimelinableTrackBase[] tracks
 		{
 			get => _tracks;
-			set { _tracks = value as SkinnedMeshRendererTimelinableTrack[]; }
+			set => _tracks = value as SkinnedMeshRendererTimelinableTrack[];
 		}
 	}
 }

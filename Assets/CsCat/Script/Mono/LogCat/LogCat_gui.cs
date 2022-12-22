@@ -7,7 +7,7 @@ namespace CsCat
 	public partial class LogCat
 	{
 
-		private static List<string> guiMessageList = new List<string>();
+		private static readonly List<string> _guiMessageList = new List<string>();
 		private static GUIStyle _guiFontStyle;
 		private static GUIStyle guiFontStyle
 		{
@@ -29,9 +29,9 @@ namespace CsCat
 		public static void Flush_GUI()
 		{
 			//      GUILayout.Label(string.Format("fps:{0}",(int)(1/Time.unscaledDeltaTime)), gui_font_style);//FPS太快了，看不清的
-			for (var i = 0; i < guiMessageList.Count; i++)
+			for (var i = 0; i < _guiMessageList.Count; i++)
 			{
-				var guiMessage = guiMessageList[i];
+				var guiMessage = _guiMessageList[i];
 				GUILayout.Label(guiMessage, guiFontStyle);
 			}
 		}

@@ -7,12 +7,12 @@ namespace CsCat
 	{
 		public float length;
 		public List<CatmullRomSegment> segmentList = new List<CatmullRomSegment>();
-		private readonly CatmullRomPoint[] orgPoints;
-		private int segment_num;
+		private readonly CatmullRomPoint[] _orgPoints;
+		private int segmentNum;
 
 		public CatmullRomSpline(CatmullRomPoint[] orgPoints, int subSegmentNum)
 		{
-			segment_num = orgPoints.Length - 1;
+			segmentNum = orgPoints.Length - 1;
 			//添加头尾顺延曲线方向的两个点
 			var list = new List<CatmullRomPoint>(orgPoints);
 			var first = new CatmullRomPoint(2 * orgPoints[0].position - orgPoints[1].position,
@@ -22,13 +22,13 @@ namespace CsCat
 				orgPoints[orgPoints.Length - 1].createTime);
 			list.Insert(0, first);
 			list.Add(last);
-			this.orgPoints = list.ToArray();
+			this._orgPoints = list.ToArray();
 
 			length = 0;
-			for (var i = 1; i <= this.orgPoints.Length - 3; i++)
+			for (var i = 1; i <= this._orgPoints.Length - 3; i++)
 			{
-				segmentList.Add(new CatmullRomSegment(this.orgPoints[i - 1], this.orgPoints[i], this.orgPoints[i + 1],
-					this.orgPoints[i + 2], subSegmentNum));
+				segmentList.Add(new CatmullRomSegment(this._orgPoints[i - 1], this._orgPoints[i], this._orgPoints[i + 1],
+					this._orgPoints[i + 2], subSegmentNum));
 				length += segmentList[segmentList.Count - 1].length;
 			}
 		}

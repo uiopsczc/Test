@@ -28,7 +28,7 @@ namespace CsCat
 
 		[NonSerialized] public List<TimelinableItemInfoBase> playingItemInfoList = new List<TimelinableItemInfoBase>();
 		[NonSerialized] public List<int> toPlayItemInfoIndexList = new List<int>();
-		[NonSerialized] protected List<int> toStopItemInfoIndexList = new List<int>();
+		[NonSerialized] protected List<int> _toStopItemInfoIndexList = new List<int>();
 
 		public virtual TimelinableItemInfoLibraryBase itemInfoLibrary
 		{
@@ -120,10 +120,10 @@ namespace CsCat
 			bool preState = this.isPaused;
 			this._isPaused = isPaused;
 			if (preState != isPaused)
-				OnPauseStateChange();
+				_OnPauseStateChange();
 		}
 
-		protected virtual void OnPauseStateChange()
+		protected virtual void _OnPauseStateChange()
 		{
 			for (var i = 0; i < playingItemInfoList.Count; i++)
 			{
@@ -138,7 +138,7 @@ namespace CsCat
 			curTime = time;
 			int startIndex = 0;
 			//从0开始检查
-			HandleTime(startIndex, args);
+			_HandleTime(startIndex, args);
 		}
 
 		public virtual void Tick(float time, params object[] args)
@@ -146,10 +146,10 @@ namespace CsCat
 			curTime = time;
 			//从itemInfo_index开始检查
 			int startIndex = curTimeItemInfoIndex;
-			HandleTime(startIndex, args);
+			_HandleTime(startIndex, args);
 		}
 
-		protected virtual void HandleTime(int startIndex, params object[] args)
+		protected virtual void _HandleTime(int startIndex, params object[] args)
 		{
 			for (int i = startIndex; i < itemInfoes.Length; i++)
 			{
@@ -160,45 +160,45 @@ namespace CsCat
 				if (curTime >= itemInfo.time)
 				{
 					if (curTime < itemInfo.time + itemInfo.duration)
-						AddToToPlayItemInfoIndexList(i);
+						_AddToToPlayItemInfoIndexList(i);
 					else
-						AddToToStopItemInfoIndexList(i);
+						_AddToToStopItemInfoIndexList(i);
 					curTimeItemInfoIndex = i;
 				}
 				else
 				{
-					AddToToStopItemInfoIndexList(i);
+					_AddToToStopItemInfoIndexList(i);
 					break;
 				}
 			}
 
-			HandleToPlayAndStopItemInfoIndexList(args);
+			_HandleToPlayAndStopItemInfoIndexList(args);
 		}
 
-		protected virtual void HandleToPlayAndStopItemInfoIndexList(params object[] args)
+		protected virtual void _HandleToPlayAndStopItemInfoIndexList(params object[] args)
 		{
-			for (int i = 0; i < toStopItemInfoIndexList.Count; i++)
-				Stop(itemInfoes[toStopItemInfoIndexList[i]], args);
-			StopNotPlayingItemInfo(curTime, args);
+			for (int i = 0; i < _toStopItemInfoIndexList.Count; i++)
+				Stop(itemInfoes[_toStopItemInfoIndexList[i]], args);
+			_StopNotPlayingItemInfo(curTime, args);
 			for (int i = 0; i < toPlayItemInfoIndexList.Count; i++)
-				Play(itemInfoes[toPlayItemInfoIndexList[i]], args);
-			toStopItemInfoIndexList.Clear();
+				_Play(itemInfoes[toPlayItemInfoIndexList[i]], args);
+			_toStopItemInfoIndexList.Clear();
 			toPlayItemInfoIndexList.Clear();
 		}
 
-		protected virtual void AddToToStopItemInfoIndexList(int itemInfoIndex)
+		protected virtual void _AddToToStopItemInfoIndexList(int itemInfoIndex)
 		{
-			if (itemInfoes[itemInfoIndex].isPlaying && !toStopItemInfoIndexList.Contains(itemInfoIndex))
-				toStopItemInfoIndexList.Add(itemInfoIndex);
+			if (itemInfoes[itemInfoIndex].isPlaying && !_toStopItemInfoIndexList.Contains(itemInfoIndex))
+				_toStopItemInfoIndexList.Add(itemInfoIndex);
 		}
 
-		protected virtual void AddToToPlayItemInfoIndexList(int itemInfoIndex)
+		protected virtual void _AddToToPlayItemInfoIndexList(int itemInfoIndex)
 		{
 			if (!itemInfoes[itemInfoIndex].isPlaying && !toPlayItemInfoIndexList.Contains(itemInfoIndex))
 				toPlayItemInfoIndexList.Add(itemInfoIndex);
 		}
 
-		protected virtual void Play(TimelinableItemInfoBase itemInfo, params object[] args)
+		protected virtual void _Play(TimelinableItemInfoBase itemInfo, params object[] args)
 		{
 			itemInfo.Play(args.ToList().AddLast(this).ToArray());
 			if (!playingItemInfoList.Contains(itemInfo))
@@ -212,7 +212,7 @@ namespace CsCat
 		}
 
 
-		void StopNotPlayingItemInfo(float time, params object[] args)
+		void _StopNotPlayingItemInfo(float time, params object[] args)
 		{
 			for (int i = playingItemInfoList.Count - 1; i >= 0; i--)
 			{

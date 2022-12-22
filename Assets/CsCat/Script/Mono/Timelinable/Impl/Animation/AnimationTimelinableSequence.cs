@@ -9,7 +9,7 @@ namespace CsCat
 		public override TimelinableTrackBase[] tracks
 		{
 			get => _tracks;
-			set { _tracks = value as AnimationTimelinableTrack[]; }
+			set => _tracks = value as AnimationTimelinableTrack[];
 		}
 	}
 }

@@ -8,9 +8,11 @@ namespace CsCat
 	{
 		public void SyncAnimationWindow()
 		{
-			int i = 0;
-			foreach (var track in tracks)
+			for (var index = 0; index < tracks.Length; index++)
+			{
+				var track = tracks[index];
 				(track as AnimationTimelinableTrack).SyncAnimationWindow();
+			}
 		}
 	}
 }

@@ -15,7 +15,7 @@ namespace CsCat
 		public override TimelinableItemInfoBase[] itemInfoes
 		{
 			get => _itemInfoes;
-			set { _itemInfoes = value as AnimationTimelinableItemInfo[]; }
+			set => _itemInfoes = value as AnimationTimelinableItemInfo[];
 		}
 
 		public override void CopyTo(object dest)
@@ -34,9 +34,9 @@ namespace CsCat
 			runtimeAnimatorController = sourceAnimationTimelinableTrack.runtimeAnimatorController;
 		}
 
-		protected override void OnPauseStateChange()
+		protected override void _OnPauseStateChange()
 		{
-			base.OnPauseStateChange();
+			base._OnPauseStateChange();
 			if (animator != null)
 			{
 				if (isPaused)

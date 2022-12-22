@@ -6,12 +6,12 @@ namespace CsCat
 	public class AssetBundleMap
 	{
 		public Dictionary<string, long> dict = new Dictionary<string, long>();
-		private string fileContent;
+		private string _fileContent;
 
 		public void SaveToDisk()
 		{
 			var path = BuildConst.AssetBundleMap_File_Name.WithRootPath(FilePathConst.PersistentAssetBundleRoot);
-			StdioUtil.WriteTextFile(path, fileContent);
+			StdioUtil.WriteTextFile(path, _fileContent);
 		}
 
 		public long GetAssetBundleBytes(string assetBundleName)
@@ -28,7 +28,7 @@ namespace CsCat
 				return;
 			}
 
-			fileContent = content;
+			_fileContent = content;
 			content = content.Replace("\r\n", "\n");
 			var mapList = content.Split('\n');
 			for (var i = 0; i < mapList.Length; i++)

@@ -10,11 +10,11 @@ namespace CsCat
 		[NonSerialized]
 		private ReorderableListInfo _skinnedMeshRendererReorderableListInfo;
 		public ReorderableListInfo skinnedMeshRendererReorderableListInfo => _skinnedMeshRendererReorderableListInfo ?? (_skinnedMeshRendererReorderableListInfo =
-			                                                                     new ReorderableListInfo(skinnedMeshRendererList));
+			                                                                     new ReorderableListInfo(_skinnedMeshRendererList));
 
-		public override void DrawGUISetting_Detail()
+		public override void DrawGUISettingDetail()
 		{
-			base.DrawGUISetting_Detail();
+			base.DrawGUISettingDetail();
 
 			//draw skinnedMeshRenderer_list
 			skinnedMeshRendererReorderableListInfo.SetElementHeight(EditorConst.Single_Line_Height + 2 * ReorderableListConst.Padding);
@@ -31,7 +31,7 @@ namespace CsCat
 				  "skinnedMeshRenderer", skinnedMeshRendererReorderableListInfo.reorderableList.list[index] as SkinnedMeshRenderer, true);
 				  }
 			  };
-			skinnedMeshRendererReorderableListInfo.DrawGUI("skinnedMeshRenderer_list");
+			skinnedMeshRendererReorderableListInfo.DrawGUI("skinnedMeshRendererList");
 			SetSkinnedMeshRendererListOfItemInfoes();
 
 		}

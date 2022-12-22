@@ -6,20 +6,20 @@ namespace CsCat
 	public class AnimationTimelinableSequencePlayer : TimelinableSequencePlayerBase
 	{
 		public Animator animator;
-		private Vector3 localPosition;
-		private Vector3 localEulerAngles;
-		private Vector3 localScale;
+		private readonly Vector3 _localPosition;
+		private readonly Vector3 _localEulerAngles;
+		private readonly Vector3 _localScale;
 
-		private float speedWhenPaused; //停止时的播放速度
+		private float _speedWhenPaused; //停止时的播放速度
 		public float speed = 1;
 
 		public AnimationTimelinableSequencePlayer(Transform transform, float speed = 1) : base(transform)
 		{
 			this.speed = speed;
 			animator = transform.GetComponent<Animator>();
-			this.localPosition = transform.localPosition;
-			this.localEulerAngles = transform.localEulerAngles;
-			this.localScale = transform.localScale;
+			this._localPosition = transform.localPosition;
+			this._localEulerAngles = transform.localEulerAngles;
+			this._localScale = transform.localScale;
 		}
 
 		public override void Play()
@@ -43,9 +43,9 @@ namespace CsCat
 		public override void Reset()
 		{
 			base.Reset();
-			transform.localPosition = localPosition;
-			transform.localEulerAngles = localEulerAngles;
-			transform.localScale = localScale;
+			transform.localPosition = _localPosition;
+			transform.localEulerAngles = _localEulerAngles;
+			transform.localScale = _localScale;
 			if (animator != null)
 				animator.enabled = false;
 		}
@@ -62,7 +62,7 @@ namespace CsCat
 			base.Pause();
 			if (animator != null)
 			{
-				speedWhenPaused = animator.speed;
+				_speedWhenPaused = animator.speed;
 				animator.speed = 0;
 			}
 		}
@@ -71,13 +71,13 @@ namespace CsCat
 		{
 			base.UnPause();
 			if (animator != null)
-				animator.speed = speedWhenPaused;
+				animator.speed = _speedWhenPaused;
 		}
 
 		public override void UpdateTime(float time)
 		{
-			curTime = time;
-			if (isPlaying)
+			_curTime = time;
+			if (_isPlaying)
 				sequence.Tick(time, this);
 			else
 				sequence.Retime(time, this);

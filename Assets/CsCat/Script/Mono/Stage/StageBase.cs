@@ -111,14 +111,14 @@ namespace CsCat
 			var assetAsyncloaderProsessingList = Client.instance.assetBundleManager.assetAsyncloaderProcessingList;
 			var assetBundleAsyncLoaderProsessingList =
 				Client.instance.assetBundleManager.assetBundleAsyncLoaderProcessingList;
-			float total_loading_count =
+			float totalLoadingCount =
 				assetAsyncloaderProsessingList.Count + assetBundleAsyncLoaderProsessingList.Count;
 			float curPCT = 0;
 			float nextPCT = 0;
 			while (assetAsyncloaderProsessingList.Count > 0 || assetBundleAsyncLoaderProsessingList.Count > 0)
 			{
 				curPCT = (assetAsyncloaderProsessingList.Count + assetBundleAsyncLoaderProsessingList.Count) /
-				          total_loading_count;
+				          totalLoadingCount;
 				if (curPCT > nextPCT)
 					nextPCT = curPCT;
 				callback(curPCT);

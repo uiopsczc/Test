@@ -19,7 +19,7 @@ namespace CsCat
 			editorMessageBox.button1Text = button1Text;
 			editorMessageBox.onButton1Callback = onButton1Callback;
 
-			editorMessageBox.button2_text = button2Text;
+			editorMessageBox.button2Text = button2Text;
 			editorMessageBox.onButton2Callback = onButton2Callback;
 
 			editorMessageBox.onCancelCallback = onCancelCallback;
@@ -34,11 +34,11 @@ namespace CsCat
 			var editorMessageBox = Show(title, content, null);
 			editorMessageBox.minSize = new Vector2(EditorMessageBoxConst.Width, EditorMessageBoxConst.Height / 2);
 			editorMessageBox.maxSize = editorMessageBox.minSize;
-			PausableCoroutineManager.instance.StartCoroutine(IEFade(editorMessageBox, duration), editorMessageBox);
+			PausableCoroutineManager.instance.StartCoroutine(_IEFade(editorMessageBox, duration), editorMessageBox);
 			return editorMessageBox;
 		}
 
-		private static IEnumerator IEFade(EditorMessageBox editorMessageBox, float duration)
+		private static IEnumerator _IEFade(EditorMessageBox editorMessageBox, float duration)
 		{
 			yield return new WaitForSeconds(duration);
 			editorMessageBox.Close();

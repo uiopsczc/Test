@@ -5,35 +5,35 @@ namespace CsCat
 {
 	public class AudioManager : TickObject
 	{
-		private AudioListener audioListener;
-		private Transform audioSourceContainerTransform;
-		private AudioSource bgmAudioSource;
-		private Transform bgmContainerTransform;
+		private AudioListener _audioListener;
+		private Transform _audioSourceContainerTransform;
+		private AudioSource _bgmAudioSource;
+		private Transform _bgmContainerTransform;
 		public string lastBGMPath;
-		private readonly List<AudioSource> playingAudioSourceList = new List<AudioSource>();
+		private readonly List<AudioSource> _playingAudioSourceList = new List<AudioSource>();
 
 		public override void Init()
 		{
 			base.Init();
 			var gameObject = GameObject.Find("AudioManager");
 			graphicComponent.SetGameObject(gameObject, true);
-			audioListener = graphicComponent.transform.Find("AudioListener").GetComponent<AudioListener>();
-			audioSourceContainerTransform = graphicComponent.transform.Find("AudioSourceContainer");
-			bgmContainerTransform = graphicComponent.transform.Find("BGMContainer");
-			bgmAudioSource = bgmContainerTransform.GetComponent<AudioSource>();
-			bgmAudioSource.SetAudioMixerOutput("bgm");
+			_audioListener = graphicComponent.transform.Find("AudioListener").GetComponent<AudioListener>();
+			_audioSourceContainerTransform = graphicComponent.transform.Find("AudioSourceContainer");
+			_bgmContainerTransform = graphicComponent.transform.Find("BGMContainer");
+			_bgmAudioSource = _bgmContainerTransform.GetComponent<AudioSource>();
+			_bgmAudioSource.SetAudioMixerOutput("bgm");
 			SetGroupVolume("Master", GameData.instance.audioData.volume);
 		}
 
 		protected override void _Update(float deltaTime = 0, float unscaledDeltaTime = 0)
 		{
 			base._Update(deltaTime, unscaledDeltaTime);
-			for (var i = playingAudioSourceList.Count - 1; i >= 0; i--)
+			for (var i = _playingAudioSourceList.Count - 1; i >= 0; i--)
 			{
-				var playingAudioSource = playingAudioSourceList[i];
+				var playingAudioSource = _playingAudioSourceList[i];
 				if (!playingAudioSource.isPlaying)
 				{
-					playingAudioSourceList.RemoveAt(i);
+					_playingAudioSourceList.RemoveAt(i);
 					playingAudioSource.gameObject.Destroy();
 					return; //每次只删除一个
 				}
@@ -68,7 +68,7 @@ namespace CsCat
 
 		public void SetAudioListenerPosition(Vector3 position)
 		{
-			audioListener.transform.position = position;
+			_audioListener.transform.position = position;
 		}
 
 		public void PlaySound(string assetPath, string groupName, GameObject target, Vector3? targetLocalPosition,
@@ -78,18 +78,18 @@ namespace CsCat
 			resLoadComponent.GetOrLoadAsset(assetPath,
 				assetCat =>
 				{
-					OnSoundLoadSuccess(assetCat.Get<AudioClip>(assetPath.GetSubAssetPath()), groupName, target,
+					_OnSoundLoadSuccess(assetCat.Get<AudioClip>(assetPath.GetSubAssetPath()), groupName, target,
 						targetLocalPosition,
 						isLoop, range);
 				}, null, null, this);
 		}
 
-		private void OnSoundLoadSuccess(AudioClip audioClip, string groupName, GameObject target,
+		private void _OnSoundLoadSuccess(AudioClip audioClip, string groupName, GameObject target,
 			Vector3? targetLocalPosition,
 			bool isLoop = false, float? range = null)
 		{
 			//如果没有target，音频挂AudioMgr上
-			target = target ?? audioSourceContainerTransform.gameObject;
+			target = target ?? _audioSourceContainerTransform.gameObject;
 			// 如果有pos，生成原地音频
 			if (targetLocalPosition != null)
 			{
@@ -99,10 +99,10 @@ namespace CsCat
 				target = clone;
 			}
 
-			var audioSource = GetAudioSource(target);
+			var audioSource = _GetAudioSource(target);
 
 			if (targetLocalPosition != null)
-				playingAudioSourceList.Add(audioSource);
+				_playingAudioSourceList.Add(audioSource);
 
 			if (range != null)
 			{
@@ -122,7 +122,7 @@ namespace CsCat
 			audioSource.Play();
 		}
 
-		private AudioSource GetAudioSource(GameObject target)
+		private AudioSource _GetAudioSource(GameObject target)
 		{
 			//选择AudioSource，如果attachGmaeobj上有不在播放的AudioSource，
 			//使用其播放，没有则创建新AudioSource
@@ -147,7 +147,7 @@ namespace CsCat
 			resLoadComponent.GetOrLoadAsset(soundPath,
 				assetCat =>
 				{
-					OnBGMLoadSuccess(assetCat.Get<AudioClip>(soundPath.GetSubAssetPath()), isLoop);
+					_OnBGMLoadSuccess(assetCat.Get<AudioClip>(soundPath.GetSubAssetPath()), isLoop);
 					lastBGMPath = soundPath;
 				}, null, null, this);
 		}
@@ -155,20 +155,20 @@ namespace CsCat
 		public void PauseBGMSound(bool isPaused = true)
 		{
 			if (isPaused)
-				bgmAudioSource.Pause();
+				_bgmAudioSource.Pause();
 			else
-				bgmAudioSource.UnPause();
+				_bgmAudioSource.UnPause();
 		}
 
 		public void StopBGMSound()
 		{
-			bgmAudioSource.Stop();
+			_bgmAudioSource.Stop();
 		}
 
 
-		private void OnBGMLoadSuccess(AudioClip audioClip, bool isLoop)
+		private void _OnBGMLoadSuccess(AudioClip audioClip, bool isLoop)
 		{
-			var audioSource = bgmAudioSource;
+			var audioSource = _bgmAudioSource;
 			audioSource.clip = audioClip;
 			audioSource.loop = isLoop;
 			audioSource.playOnAwake = false;

@@ -7,9 +7,9 @@ namespace CsCat
 {
 	public partial class AnimationTimelinableItemInfo
 	{
-		public void SyncAnimationWindow(float play_time)
+		public void SyncAnimationWindow(float playTime)
 		{
-			float elaspedDuration = (play_time - time) * speed;
+			float elaspedDuration = (playTime - time) * speed;
 			int newCurrentFrame = (int) (elaspedDuration * animationClip.frameRate);
 			var animationWindowType = typeof(EditorWindow).Assembly.GetType("UnityEditor.AnimationWindow");
 			var animationWindows =
@@ -37,11 +37,11 @@ namespace CsCat
 			}
 		}
 
-		public override void DrawGUISetting_Detail()
+		public override void DrawGUISettingDetail()
 		{
-			base.DrawGUISetting_Detail();
+			base.DrawGUISettingDetail();
 			crossFadeDuration = EditorGUILayout
-				.FloatField("cross_fade_duration", crossFadeDuration)
+				.FloatField("crossFadeDuration", crossFadeDuration)
 				.Minimum(0.1f);
 
 			using (new EditorGUIDisabledGroupScope(true))

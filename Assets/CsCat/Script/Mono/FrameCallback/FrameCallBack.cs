@@ -8,8 +8,8 @@ namespace CsCat
 
 		public FrameCallback(Func<object, bool> callback, object arg)
 		{
-			callbackArg = arg;
-			this.callback = callback;
+			_callbackArg = arg;
+			this._callback = callback;
 		}
 
 		#endregion
@@ -18,7 +18,7 @@ namespace CsCat
 
 		public bool Execute()
 		{
-			return callback(callbackArg);
+			return _callback(_callbackArg);
 		}
 
 		#endregion
@@ -28,12 +28,12 @@ namespace CsCat
 		public bool isCancel;
 
 
-		private readonly object callbackArg;
+		private readonly object _callbackArg;
 
 		/// <summary>
 		///   objcet参数,bool【true:下一帧继续执行该回调，false：删除该回调】
 		/// </summary>
-		private readonly Func<object, bool> callback;
+		private readonly Func<object, bool> _callback;
 
 		#endregion
 	}

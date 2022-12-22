@@ -4,24 +4,24 @@ namespace CsCat
 {
 	public partial class CameraBase
 	{
-		private Transform moveToTargetTransform;
-		private Vector3? moveToTargetPosition;
-		private Quaternion moveToTargetRotation;
+		private Transform _moveToTargetTransform;
+		private Vector3? _moveToTargetPosition;
+		private Quaternion _moveToTargetRotation;
 
-		private Vector3 moveToTargetStartPosition;
-		private Quaternion moveToTargetStartRotation;
+		private Vector3 _moveToTargetStartPosition;
+		private Quaternion _moveToTargetStartRotation;
 
-		private float moveToTargetDuration;
-		private float moveToTargetCurrentTime;
+		private float _moveToTargetDuration;
+		private float _moveToTargetCurrentTime;
 
 
-		private bool isReachNeedStop;
+		private bool _isReachNeedStop;
 
 		public void SetMoveToTarget(Transform moveToTargetTransform, float moveToTargetDuration,
 		  Vector3 moveToTargetEulerAngles, Vector3 moveToTargetLookPosition, bool isReachNeedStop = false)
 		{
-			this.moveToTargetTransform = moveToTargetTransform;
-			SetMoveToTarget(this.moveToTargetTransform.position, moveToTargetDuration, moveToTargetEulerAngles,
+			this._moveToTargetTransform = moveToTargetTransform;
+			SetMoveToTarget(this._moveToTargetTransform.position, moveToTargetDuration, moveToTargetEulerAngles,
 			  moveToTargetLookPosition, isReachNeedStop);
 		}
 
@@ -36,42 +36,42 @@ namespace CsCat
 		  Vector3? moveToTargetEulerAngles, Vector3? moveToTargetLookPosition, bool isReachNeedStop = false)
 
 		{
-			this.moveToTargetPosition = moveToTargetPosition;
+			this._moveToTargetPosition = moveToTargetPosition;
 
-			this.moveToTargetDuration = moveToTargetDuration;
+			this._moveToTargetDuration = moveToTargetDuration;
 			if (moveToTargetEulerAngles != null)
-				this.moveToTargetRotation = Quaternion.Euler(moveToTargetEulerAngles.Value);
+				this._moveToTargetRotation = Quaternion.Euler(moveToTargetEulerAngles.Value);
 			if (moveToTargetLookPosition != null)
-				this.moveToTargetRotation =
+				this._moveToTargetRotation =
 				  Quaternion.LookRotation(moveToTargetLookPosition.Value - moveToTargetPosition);
 
-			this.isReachNeedStop = isReachNeedStop;
+			this._isReachNeedStop = isReachNeedStop;
 
-			this.moveToTargetStartPosition = this.currentPosition;
-			this.moveToTargetStartRotation = this.currentRotation;
+			this._moveToTargetStartPosition = this._currentPosition;
+			this._moveToTargetStartRotation = this._currentRotation;
 
-			moveToTargetCurrentTime = 0;
+			_moveToTargetCurrentTime = 0;
 		}
 
 		public void ApplyMoveToTarget(float deltaTime)
 		{
-			if (moveToTargetTransform != null)
-				moveToTargetPosition = moveToTargetTransform.position;
-			this.moveToTargetCurrentTime = this.moveToTargetCurrentTime + deltaTime;
+			if (_moveToTargetTransform != null)
+				_moveToTargetPosition = _moveToTargetTransform.position;
+			this._moveToTargetCurrentTime = this._moveToTargetCurrentTime + deltaTime;
 			Vector3 position;
 			Quaternion rotation;
-			if (this.moveToTargetDuration == 0 || moveToTargetCurrentTime >= this.moveToTargetDuration)
+			if (this._moveToTargetDuration == 0 || _moveToTargetCurrentTime >= this._moveToTargetDuration)
 			{
-				position = moveToTargetPosition.Value;
-				rotation = moveToTargetStartRotation;
-				if (this.isReachNeedStop)
+				position = _moveToTargetPosition.Value;
+				rotation = _moveToTargetStartRotation;
+				if (this._isReachNeedStop)
 					MoveToTargetReset();
 			}
 			else
 			{
-				float percent = moveToTargetCurrentTime.GetPercent(0, moveToTargetDuration);
-				position = Vector3.Lerp(this.moveToTargetStartPosition, moveToTargetPosition.Value, percent);
-				rotation = Quaternion.Slerp(moveToTargetStartRotation, moveToTargetStartRotation, percent);
+				float percent = _moveToTargetCurrentTime.GetPercent(0, _moveToTargetDuration);
+				position = Vector3.Lerp(this._moveToTargetStartPosition, _moveToTargetPosition.Value, percent);
+				rotation = Quaternion.Slerp(_moveToTargetStartRotation, _moveToTargetStartRotation, percent);
 			}
 
 			graphicComponent.transform.position = position;
@@ -80,10 +80,10 @@ namespace CsCat
 
 		public void MoveToTargetReset()
 		{
-			currentOperation = CameraOperation.None;
-			moveToTargetPosition = null;
-			moveToTargetTransform = null;
-			this.isReachNeedStop = false;
+			_currentOperation = CameraOperation.None;
+			_moveToTargetPosition = null;
+			_moveToTargetTransform = null;
+			this._isReachNeedStop = false;
 		}
 	}
 }

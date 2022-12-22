@@ -11,22 +11,22 @@ namespace CsCat
 		private SkinnedMeshRendererTimelinableItemInfo[] _itemInfoes = new SkinnedMeshRendererTimelinableItemInfo[0];
 
 		[SerializeField] private SkinnedMeshRendererTimelinableItemInfoLibrary _itemInfoLibrary;
-		[NonSerialized] private List<SkinnedMeshRenderer> skinnedMeshRendererList = new List<SkinnedMeshRenderer>();
+		[NonSerialized] private List<SkinnedMeshRenderer> _skinnedMeshRendererList = new List<SkinnedMeshRenderer>();
 
 		public override TimelinableItemInfoBase[] itemInfoes
 		{
 			get => _itemInfoes;
-			set { _itemInfoes = value as SkinnedMeshRendererTimelinableItemInfo[]; }
+			set => _itemInfoes = value as SkinnedMeshRendererTimelinableItemInfo[];
 		}
 
 		public override TimelinableItemInfoLibraryBase itemInfoLibrary
 		{
 			get => _itemInfoLibrary;
-			set { _itemInfoLibrary = value as SkinnedMeshRendererTimelinableItemInfoLibrary; }
+			set => _itemInfoLibrary = value as SkinnedMeshRendererTimelinableItemInfoLibrary;
 		}
 
 
-		protected override void HandleTime(int startIndex, params object[] args)
+		protected override void _HandleTime(int startIndex, params object[] args)
 		{
 			StopAllPlayingItemInfo();
 			for (int i = startIndex; i < _itemInfoes.Length; i++)
@@ -38,7 +38,7 @@ namespace CsCat
 				if (curTime >= itemInfo.time)
 				{
 					if (curTime < itemInfo.time + itemInfo.duration)
-						AddToToPlayItemInfoIndexList(i);
+						_AddToToPlayItemInfoIndexList(i);
 					curTimeItemInfoIndex = i;
 				}
 				else
@@ -47,11 +47,11 @@ namespace CsCat
 
 			//加上最后一个cur_time_itemInfo_index
 			if (curTimeItemInfoIndex >= 0)
-				AddToToPlayItemInfoIndexList(curTimeItemInfoIndex);
-			HandleToPlayAndStopItemInfoIndexList(args);
+				_AddToToPlayItemInfoIndexList(curTimeItemInfoIndex);
+			_HandleToPlayAndStopItemInfoIndexList(args);
 		}
 
-		protected override void AddToToPlayItemInfoIndexList(int itemInfoIndex)
+		protected override void _AddToToPlayItemInfoIndexList(int itemInfoIndex)
 		{
 			if (!this.toPlayItemInfoIndexList.Contains(itemInfoIndex))
 				this.toPlayItemInfoIndexList.Add(itemInfoIndex);
@@ -81,7 +81,7 @@ namespace CsCat
 			for (var i = 0; i < _itemInfoes.Length; i++)
 			{
 				var itemInfo = _itemInfoes[i];
-				itemInfo.skinnedMeshRendererList = skinnedMeshRendererList;
+				itemInfo.skinnedMeshRendererList = _skinnedMeshRendererList;
 			}
 		}
 	}

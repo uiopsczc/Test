@@ -38,10 +38,10 @@ namespace CsCat
 
 				if (this.animation != null)
 				{
-					var dieAnimationState = this.animation[AnimationNameConst.die];
+					var dieAnimationState = this.animation[AnimationNameConst.Die];
 					if (dieAnimationState != null)
 					{
-						this.PlayAnimation(AnimationNameConst.die);
+						this.PlayAnimation(AnimationNameConst.Die);
 						deadBodyDelay = dieAnimationState.length + 1;
 					}
 
@@ -57,7 +57,7 @@ namespace CsCat
 				}
 				else
 				{
-					this.animatorComp.PlayAnimation(AnimationNameConst.die, true);
+					this.animatorComp.PlayAnimation(AnimationNameConst.Die, true);
 					this.AddTimer(args =>
 					{
 						this.__OnDieOver();

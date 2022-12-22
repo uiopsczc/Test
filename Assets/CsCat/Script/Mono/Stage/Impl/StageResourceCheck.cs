@@ -13,16 +13,16 @@ namespace CsCat
 		public override void Show()
 		{
 			base.Show();
-			StartCoroutine(IEResourceCheck());
+			StartCoroutine(_IEResourceCheck());
 		}
 
-		private IEnumerator IEResourceCheck()
+		private IEnumerator _IEResourceCheck()
 		{
 			if (!EditorModeConst.IsEditorMode)
 			{
 				HideFade();
 				Client.instance.uiManager.uiLoadingPanel.SetDesc("下载资源中");
-				yield return AssetBundleCheck();
+				yield return _AssetBundleCheck();
 				Client.instance.uiManager.SetLoadingPct(1);
 				Client.instance.uiManager.uiLoadingPanel.SetDesc("加载资源中");
 				yield return Client.instance.assetBundleManager.Initialize();
@@ -36,7 +36,7 @@ namespace CsCat
 		}
 
 
-		IEnumerator AssetBundleCheck()
+		IEnumerator _AssetBundleCheck()
 		{
 			StartCoroutine(Client.instance.assetBundleUpdater.CheckUpdate());
 			yield return new WaitUntil(() =>
@@ -49,15 +49,15 @@ namespace CsCat
 						Client.instance.uiManager.SetLoadingPct(0);
 					else
 					{
-						int cur_loaded_count = 0;
+						int curLoadedCount = 0;
 						foreach (var key in Client.instance.assetBundleUpdater.needDownloadDict.Keys)
 						{
 							if (Client.instance.assetBundleUpdater.needDownloadDict[key]
-								.GetOrGetDefault2("is_finished", () => false))
-								cur_loaded_count++;
+								.GetOrGetDefault2("isFinished", () => false))
+								curLoadedCount++;
 						}
 
-						Client.instance.uiManager.SetLoadingPct(cur_loaded_count / (float) downloadingCount);
+						Client.instance.uiManager.SetLoadingPct(curLoadedCount / (float) downloadingCount);
 					}
 				}
 

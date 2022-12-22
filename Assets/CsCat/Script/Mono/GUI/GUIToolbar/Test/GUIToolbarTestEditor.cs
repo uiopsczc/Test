@@ -8,9 +8,9 @@ namespace CsCat
 	[CustomEditor(typeof(GUIToolbarTest))]
 	public class GUIToolbarTestEditor : Editor
 	{
-		private GUIToolbar guiToolbar;
+		private GUIToolbar _guiToolbar;
 
-		List<GUIContent> buttonGUIContentList = new List<GUIContent>()
+		private readonly List<GUIContent> _buttonGUIContentList = new List<GUIContent>()
 		{
 			"A".ToGUIContent(),
 			"B".ToGUIContent(),
@@ -20,15 +20,15 @@ namespace CsCat
 
 		void OnEnable()
 		{
-			guiToolbar = new GUIToolbar(buttonGUIContentList);
-			guiToolbar.onToolSelected += OnToolSelected;
-			guiToolbar.TriggerButton(1);
+			_guiToolbar = new GUIToolbar(_buttonGUIContentList);
+			_guiToolbar.onToolSelected += OnToolSelected;
+			_guiToolbar.TriggerButton(1);
 			//    guiToolbar.SetHighlight(3, true);
 		}
 
 		void OnDisable()
 		{
-			guiToolbar.onToolSelected -= OnToolSelected;
+			_guiToolbar.onToolSelected -= OnToolSelected;
 		}
 
 		public void OnToolSelected(GUIToolbar guiToolbar, int selectedIndex, int preSelectedIndex)
@@ -52,7 +52,7 @@ namespace CsCat
 
 		void OnSceneGUI()
 		{
-			guiToolbar.DrawGUI(Vector2.zero, new Vector2(40, 40), Color.white, Color.black);
+			_guiToolbar.DrawGUI(Vector2.zero, new Vector2(40, 40), Color.white, Color.black);
 		}
 	}
 }

@@ -6,8 +6,8 @@ namespace CsCat
 {
 	public class AnimEvent : MonoBehaviour
 	{
-		private static readonly AnimationEvent[] emptyEvent = new AnimationEvent[0];
-		private static readonly string onTriggerString = "OnTrigger";
+		private static readonly AnimationEvent[] _emptyEvent = new AnimationEvent[0];
+		private static readonly string _onTriggerString = "OnTrigger";
 
 		/// <summary>
 		///   每个切片上的所有事件(key:该Animator上的ClipName)
@@ -27,7 +27,7 @@ namespace CsCat
 
 		#region private method
 
-		private void OnTrigger(string eventKey)
+		private void _OnTrigger(string eventKey)
 		{
 			if (!_eventCallbackDict.ContainsKey(eventKey))
 			{
@@ -75,7 +75,7 @@ namespace CsCat
 				if (!clip.name.Equals(clipName)) continue;
 				if (hasEventCallback) continue;
 				var animationEvent = new AnimationEvent();
-				animationEvent.functionName = onTriggerString;
+				animationEvent.functionName = _onTriggerString;
 				animationEvent.messageOptions = SendMessageOptions.RequireReceiver;
 				animationEvent.time = clip.length * percentage;
 				animationEvent.stringParameter = eventKey;
@@ -120,7 +120,7 @@ namespace CsCat
 					var clip = _clips[i];
 					if (clip == null) continue;
 					if (!clip.name.Equals(clipName)) continue;
-					clip.events = emptyEvent;
+					clip.events = _emptyEvent;
 				}
 
 			List<string> eventList = null;

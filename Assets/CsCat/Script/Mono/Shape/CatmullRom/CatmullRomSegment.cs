@@ -10,11 +10,11 @@ namespace CsCat
 		public float createdTime;
 
 
-		public Knot(Vector3 position, Vector3 tangent, float created_time)
+		public Knot(Vector3 position, Vector3 tangent, float createdTime)
 		{
 			this.position = position;
 			this.tangent = tangent;
-			this.createdTime = created_time;
+			this.createdTime = createdTime;
 		}
 	}
 

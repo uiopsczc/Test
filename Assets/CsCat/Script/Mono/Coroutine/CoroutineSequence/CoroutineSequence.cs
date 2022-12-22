@@ -24,14 +24,14 @@ namespace CsCat
 	/// </example>
 	public class CoroutineSequence
 	{
-		private Queue<Action<Action>> callbackQueue;
-		private bool isCanNext;
+		private Queue<Action<Action>> _callbackQueue;
+		private bool _isCanNext;
 		private readonly MonoBehaviour owner;
 
 		private CoroutineSequence(MonoBehaviour owner)
 		{
 			this.owner = owner;
-			isCanNext = true;
+			_isCanNext = true;
 		}
 
 		public bool isFinished { get; private set; }
@@ -68,7 +68,7 @@ namespace CsCat
 
 		public CoroutineSequence Then(Action callback)
 		{
-			WaitNext(next =>
+			_WaitNext(next =>
 			{
 				callback();
 				next();
@@ -78,36 +78,36 @@ namespace CsCat
 
 		public CoroutineSequence Then(Action<Action> callback)
 		{
-			WaitNext(next => callback(next));
+			_WaitNext(next => callback(next));
 			return this;
 		}
 
 		public CoroutineSequence Then(Action<Action, Action> thenCallback)
 		{
-			WaitNext(next => { thenCallback(next, () => { LogCat.LogError("TODO: kill!"); }); });
+			_WaitNext(next => { thenCallback(next, () => { LogCat.LogError("TODO: kill!"); }); });
 			return this;
 		}
 
-		private void WaitNext(Action<Action> callback)
+		private void _WaitNext(Action<Action> callback)
 		{
-			if (!isCanNext)
+			if (!_isCanNext)
 			{
-				if (callbackQueue == null)
-					callbackQueue = new Queue<Action<Action>>();
-				callbackQueue.Enqueue(callback);
+				if (_callbackQueue == null)
+					_callbackQueue = new Queue<Action<Action>>();
+				_callbackQueue.Enqueue(callback);
 			}
 			else
 			{
-				isCanNext = false;
-				callback(Next);
+				_isCanNext = false;
+				callback(_Next);
 			}
 		}
 
-		private void Next()
+		private void _Next()
 		{
-			isCanNext = true;
-			if (callbackQueue != null && callbackQueue.Count > 0)
-				WaitNext(callbackQueue.Dequeue());
+			_isCanNext = true;
+			if (_callbackQueue != null && _callbackQueue.Count > 0)
+				_WaitNext(_callbackQueue.Dequeue());
 			else
 				isFinished = true;
 		}
@@ -121,7 +121,7 @@ namespace CsCat
 		/// <returns></returns>
 		public CoroutineSequence Coroutine(IEnumerator enumtor)
 		{
-			WaitNext(next => { owner.StartCoroutine(_IEnumerator(enumtor, next)); });
+			_WaitNext(next => { owner.StartCoroutine(_IEnumerator(enumtor, next)); });
 			return this;
 		}
 
@@ -138,7 +138,7 @@ namespace CsCat
 		/// <returns></returns>
 		public CoroutineSequence Coroutine(Coroutine co)
 		{
-			WaitNext(next => { owner.StartCoroutine(_Coroutine(co, next)); });
+			_WaitNext(next => { owner.StartCoroutine(_Coroutine(co, next)); });
 			return this;
 		}
 
@@ -155,10 +155,10 @@ namespace CsCat
 		/// <returns></returns>
 		public CoroutineSequence WaitForFrames(int frameCount)
 		{
-			return Coroutine(IEWaitForFrames(frameCount));
+			return Coroutine(_IEWaitForFrames(frameCount));
 		}
 
-		private IEnumerator IEWaitForFrames(int frameCount)
+		private IEnumerator _IEWaitForFrames(int frameCount)
 		{
 			for (var i = 0; i < frameCount; i++)
 				yield return null;
@@ -171,10 +171,10 @@ namespace CsCat
 		/// <returns></returns>
 		public CoroutineSequence WaitForSeconds(float second)
 		{
-			return Coroutine(IEWaitForSeconds(second));
+			return Coroutine(_IEWaitForSeconds(second));
 		}
 
-		private IEnumerator IEWaitForSeconds(float second)
+		private IEnumerator _IEWaitForSeconds(float second)
 		{
 			yield return new WaitForSeconds(second);
 		}
@@ -185,20 +185,20 @@ namespace CsCat
 		/// <returns></returns>
 		public CoroutineSequence WaitForEndOfFrame()
 		{
-			return Coroutine(IEWaitForEndOfFrame());
+			return Coroutine(_IEWaitForEndOfFrame());
 		}
 
-		private IEnumerator IEWaitForEndOfFrame()
+		private IEnumerator _IEWaitForEndOfFrame()
 		{
 			yield return new WaitForEndOfFrame();
 		}
 
 		public CoroutineSequence Until(Func<bool> func, float timeout = -1)
 		{
-			return Coroutine(IEUtil(func, timeout));
+			return Coroutine(_IEUtil(func, timeout));
 		}
 
-		private IEnumerator IEUtil(Func<bool> func, float timeout = -1)
+		private IEnumerator _IEUtil(Func<bool> func, float timeout = -1)
 		{
 			var time = 0f;
 			while (!func())

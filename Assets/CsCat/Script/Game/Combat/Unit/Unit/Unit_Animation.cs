@@ -28,31 +28,31 @@ namespace CsCat
 			float speedValue = speed.GetValueOrDefault(1);
 			if (this.animation != null)
 			{
-				if (AnimationNameConst.die.Equals(this.curAnimationName))
+				if (AnimationNameConst.Die.Equals(this.curAnimationName))
 					return;
 				if (this.actionManager != null)
 				{
-					if (AnimationNameConst.walk.Equals(animationName) && !this.curAnimationName.IsNullOrWhiteSpace())
+					if (AnimationNameConst.Walk.Equals(animationName) && !this.curAnimationName.IsNullOrWhiteSpace())
 					{
 						this.actionManager.Stop(this.curAnimationName);
 						this.curAnimationName = null;
 					}
 
-					if (AnimationNameConst.idle.Equals(animationName) && !this.curAnimationName.IsNullOrWhiteSpace())
+					if (AnimationNameConst.Idle.Equals(animationName) && !this.curAnimationName.IsNullOrWhiteSpace())
 						this.actionManager.Play(animationName, speedValue, -1, false);
-					else if (AnimationNameConst.walk.Equals(animationName))
+					else if (AnimationNameConst.Walk.Equals(animationName))
 						this.actionManager.Play(animationName, speedValue, 0, false);
 					else
 					{
 						this.actionManager.Play(animationName, speedValue, 0, true);
 						this.curAnimationName = animationName;
-						if (AnimationNameConst.die.Equals(animationName))
-							this.actionManager.Stop(AnimationNameConst.idle);
+						if (AnimationNameConst.Die.Equals(animationName))
+							this.actionManager.Stop(AnimationNameConst.Idle);
 					}
 				}
 				else
 				{
-					if (AnimationNameConst.walk.Equals(animationName) && !this.curAnimationName.IsNullOrWhiteSpace())
+					if (AnimationNameConst.Walk.Equals(animationName) && !this.curAnimationName.IsNullOrWhiteSpace())
 					{
 						this.animation.Blend(this.curAnimationName, 0, blendTimeValue);
 						this.curAnimationName = null;
@@ -62,7 +62,7 @@ namespace CsCat
 					if (animationState != null)
 						LogCat.LogErrorFormat("animation is no exist: {0} , {1}", animationName, this.unitId);
 					var speed_threshold = 0.5f;
-					if (AnimationNameConst.walk.Equals(animationName) && speedValue < speed_threshold)
+					if (AnimationNameConst.Walk.Equals(animationName) && speedValue < speed_threshold)
 					{
 						animationState.speed = speed_threshold;
 						this.animation.CrossFade(animationName, blendTimeValue);
@@ -74,7 +74,7 @@ namespace CsCat
 						this.animation.CrossFade(animationName, blendTimeValue);
 					}
 
-					if (!(AnimationNameConst.idle.Equals(animationName) || AnimationNameConst.walk.Equals(animationName)))
+					if (!(AnimationNameConst.Idle.Equals(animationName) || AnimationNameConst.Walk.Equals(animationName)))
 					{
 						if (this.curAnimationName.Equals(animationName))
 							this.animation[animationName].time = 0;

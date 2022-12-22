@@ -24,13 +24,13 @@ namespace CsCat
 
 		public virtual void DrawGUISetting()
 		{
-			name = EditorGUILayout.TextField("track_name", name);
-			DrawGUISetting_Detail();
-			DrawGUISetting_ItemInfoLibrary();
+			name = EditorGUILayout.TextField("trackName", name);
+			DrawGUISettingDetail();
+			DrawGUISettingItemInfoLibrary();
 			DrawGUISetting_ItemInfoes();
 		}
 
-		public virtual void DrawGUISetting_Detail()
+		public virtual void DrawGUISettingDetail()
 		{
 		}
 
@@ -54,7 +54,7 @@ namespace CsCat
 			}
 		}
 
-		public virtual void DrawGUISetting_ItemInfoLibrary()
+		public virtual void DrawGUISettingItemInfoLibrary()
 		{
 			Type itemInfoLibraryType = this.GetFieldInfo("_itemInfoLibrary").FieldType;
 			using (new GUILayoutToggleAreaScope(itemInfoLibraryToggleTween, "Library", () =>

@@ -8,7 +8,7 @@ namespace CsCat
 	{
 		private AssetBundle _assetBundle;
 		public string assetBundleName;
-		public ResultInfo _resultInfo;
+		private ResultInfo _resultInfo;
 		public List<AssetBundleCat> dependenceAssetBundleCatList = new List<AssetBundleCat>();
 		public ResourceWebRequester resourceWebRequester;
 
