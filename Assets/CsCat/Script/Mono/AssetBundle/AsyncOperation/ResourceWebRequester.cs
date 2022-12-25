@@ -1,3 +1,4 @@
+using System.IO;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -5,24 +6,24 @@ namespace CsCat
 {
 	public class ResourceWebRequester : ResourceAsyncOperation
 	{
-		protected WWW www;
+		protected UnityWebRequest _unityWebRequest;
 		public AssetBundleCat assetBundleCat;
 		private long? _needDownloadBytes;
 
 
-		public bool isNotCache { get; protected set; }
-		public string url { get; protected set; }
-		public AssetBundle assetBundle => www.assetBundle;
-		public byte[] bytes => www.bytes;
-		public string text => www.text;
-		public string error => www.error.IsNullOrWhiteSpace() ? null : www.error;
+		protected bool _isNotCache;
+		protected string _url;
+		public AssetBundle assetBundle => AssetBundle.LoadFromMemory(bytes);
+		public byte[] bytes => _unityWebRequest.downloadHandler.data;
+		public string text => _unityWebRequest.downloadHandler.text;
+		public string error => _unityWebRequest.error.IsNullOrWhiteSpace() ? null : _unityWebRequest.error;
 
 
 
 		public void Init(string url, bool isNotCache = false)
 		{
-			this.url = url.WWWURLHandle();
-			this.isNotCache = isNotCache;
+			this._url = url.WWWURLHandle();
+			this._isNotCache = isNotCache;
 		}
 
 
@@ -36,8 +37,18 @@ namespace CsCat
 		public override void Start()
 		{
 			base.Start();
-			www = new WWW(url);
+			_unityWebRequest = UnityWebRequest.Head(_url);
 			//    Debug.LogError("loading:"+url);
+		}
+
+		public bool IsNotCache()
+		{
+			return this._isNotCache;
+		}
+
+		public string GetURL()
+		{
+			return this._url;
 		}
 
 		protected override float _GetProgress()
@@ -45,12 +56,12 @@ namespace CsCat
 			if (resultInfo.isDone)
 				return 1.0f;
 
-			return www?.progress ?? 0f;
+			return _unityWebRequest?.downloadProgress ?? 0f;
 		}
 
 		public override long GetDownloadedBytes()
 		{
-			return www?.bytesDownloaded ?? 0;
+			return _unityWebRequest?.downloadHandler.data.Length ?? 0;
 		}
 
 		public override long GetNeedDownloadBytes()
@@ -63,12 +74,12 @@ namespace CsCat
 				Client.instance.assetBundleManager.assetBundleMap.dict.ContainsKey(assetBundleName))
 				return Client.instance.assetBundleManager.assetBundleMap.dict[assetBundleName];
 			//配置中没有记录该assetBundle_name的大小，且未Start
-			if (www == null)
+			if (_unityWebRequest == null)
 				return base.GetNeedDownloadBytes();
 			//配置中没有记录该assetBundle_name的大小，开始了Start
 			if (_needDownloadBytes != null)
 				return _needDownloadBytes.Value;
-			var contentLength = www.GetFieldValue<UnityWebRequest>("_uwr").GetResponseHeader("Content-Length");
+			var contentLength = _unityWebRequest.GetResponseHeader("Content-Length");
 			if (contentLength.IsNullOrEmpty()) return base.GetNeedDownloadBytes();
 			_needDownloadBytes = long.Parse(contentLength);
 			return _needDownloadBytes.Value;
@@ -76,13 +87,13 @@ namespace CsCat
 
 		public override void Update()
 		{
-			if (resultInfo.isDone || www == null)
+			if (resultInfo.isDone || _unityWebRequest == null)
 				return;
-			if (!string.IsNullOrEmpty(www.error))
+			if (!string.IsNullOrEmpty(_unityWebRequest.error))
 				resultInfo.isFail = true;
 			else
 			{
-				if (www.isDone)
+				if (_unityWebRequest.isDone)
 					resultInfo.isSuccess = true;
 			}
 		}
@@ -91,7 +102,7 @@ namespace CsCat
 		{
 			base._OnSuccess();
 			// 无缓存，不计引用计数、Creater使用后由上层回收，所以这里不需要做任何处理
-			if (assetBundleCat != null && !isNotCache)
+			if (assetBundleCat != null && !_isNotCache)
 			{
 				// AB缓存
 				// 说明：有错误也缓存下来，只不过资源为空
@@ -106,7 +117,7 @@ namespace CsCat
 		protected override void _OnFail()
 		{
 			base._OnFail();
-			LogCat.warn("服务器连接失败[未启动?]", www.url, www.error);
+			LogCat.warn("服务器连接失败[未启动?]", _unityWebRequest.url, _unityWebRequest.error);
 			FireEvent(null, AssetBundleEventNameConst.On_ResourceWebRequester_Fail, this);
 		}
 
@@ -125,10 +136,10 @@ namespace CsCat
 			base._Destroy();
 			assetBundleCat = null;
 			_needDownloadBytes = null;
-			if (www != null)
+			if (_unityWebRequest != null)
 			{
-				www.Dispose();
-				www = null;
+				_unityWebRequest.Dispose();
+				_unityWebRequest = null;
 			}
 		}
 	}

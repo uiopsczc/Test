@@ -3,9 +3,9 @@ using System.Collections;
 
 namespace CsCat
 {
-	public abstract class ResourceAsyncOperation : GameEntity, IEnumerator
+	public abstract class ResourceAsyncOperation : IDespawn, IEnumerator
 	{
-		public ResultInfo _resultInfo;
+		private ResultInfo _resultInfo;
 
 
 		public ResultInfo resultInfo
@@ -13,7 +13,7 @@ namespace CsCat
 			get
 			{
 				if (_resultInfo != null) return _resultInfo;
-				_resultInfo = PoolCatManagerUtil.Spawn<ResultInfo>();
+				_resultInfo = PoolCatManager.Default.SpawnValue<ResultInfo>(null, null);
 				_resultInfo.Init(_OnSuccess, _OnFail, _OnDone);
 				return _resultInfo;
 			}
@@ -67,19 +67,18 @@ namespace CsCat
 			return 1;
 		}
 
-		public void Reset()
+		public virtual void Reset()
 		{
 			onSuccessCallback = null;
 			onFailCallback = null;
 			onDoneCallback = null;
 			if (_resultInfo != null)
-				PoolCatManagerUtil.Despawn(_resultInfo);
+				PoolCatManager.Default.DespawnValue(_resultInfo);
 			_resultInfo = null;
 		}
 
-		public override void Despawn()
+		public void Despawn()
 		{
-			base.Despawn();
 			Reset();
 		}
 	}

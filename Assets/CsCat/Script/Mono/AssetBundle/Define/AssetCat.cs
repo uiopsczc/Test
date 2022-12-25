@@ -38,13 +38,13 @@ namespace CsCat
 		private Action<AssetCat> _onLoadDoneCallback;
 
 		//用来追溯来源，就是取消下载的时候，把那些关于它自己的部分的callback删除
-		private ValueListDictionary<object, Action<AssetCat>> _onLoadSuccessCallbackListDict =
+		private readonly ValueListDictionary<object, Action<AssetCat>> _onLoadSuccessCallbackListDict =
 			new ValueListDictionary<object, Action<AssetCat>>();
 
-		private ValueListDictionary<object, Action<AssetCat>> _onLoadFailCallbackListDict =
+		private readonly ValueListDictionary<object, Action<AssetCat>> _onLoadFailCallbackListDict =
 			new ValueListDictionary<object, Action<AssetCat>>();
 
-		private ValueListDictionary<object, Action<AssetCat>> _onLoadDoneCallbackListDict =
+		private readonly ValueListDictionary<object, Action<AssetCat>> _onLoadDoneCallbackListDict =
 			new ValueListDictionary<object, Action<AssetCat>>();
 
 		public AssetCat(string assetPath)

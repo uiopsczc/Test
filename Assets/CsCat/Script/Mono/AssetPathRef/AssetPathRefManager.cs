@@ -38,12 +38,12 @@ namespace CsCat
 		{
 			_dict.Clear();
 			Hashtable jsonDict = MiniJson.JsonDecode(contentJson) as Hashtable;
-			_refId = jsonDict.Get<long>("ref_id");
-			ArrayList assetPathRefList = jsonDict.Get<ArrayList>("assetPathRef_list");
+			_refId = jsonDict.Get<long>("refId");
+			ArrayList assetPathRefList = jsonDict.Get<ArrayList>("assetPathRefList");
 			for (var i = 0; i < assetPathRefList.Count; i++)
 			{
 				var assetPathRefDict = (Hashtable) assetPathRefList[i];
-				long refId = assetPathRefDict.Get<long>("ref_id");
+				long refId = assetPathRefDict.Get<long>("refId");
 				string assetPath = assetPathRefDict.Get<string>("assetPath");
 				string guid = assetPathRefDict.Get<string>("guid");
 				if (refId > this._refId)
@@ -56,19 +56,19 @@ namespace CsCat
 		{
 			Refresh();
 			Hashtable jsonDict = new Hashtable();
-			jsonDict["ref_id"] = _refId;
+			jsonDict["refId"] = _refId;
 			ArrayList assetPathRefList = new ArrayList();
 			foreach (var keyValue in _dict)
 			{
 				var assetPathRef = keyValue.Value;
 				Hashtable assetPathRefDict = new Hashtable();
-				assetPathRefDict["ref_id"] = assetPathRef.refId;
+				assetPathRefDict["refId"] = assetPathRef.refId;
 				assetPathRefDict["assetPath"] = assetPathRef.assetPath;
 				assetPathRefDict["guid"] = assetPathRef.guid;
 				assetPathRefList.Add(assetPathRefDict);
 			}
 
-			jsonDict["assetPathRef_list"] = assetPathRefList;
+			jsonDict["assetPathRefList"] = assetPathRefList;
 			string contentJson = MiniJson.JsonEncode(jsonDict);
 			StdioUtil.WriteTextFile(AssetPathRefConst.SaveFilePath.WithRootPath(FilePathConst.ProjectPath), contentJson);
 		}
@@ -114,7 +114,7 @@ namespace CsCat
 					return assetPathRef.assetPath;
 			}
 
-			LogCat.error(string.Format("没有找到ref_id:{0}对应的assetPath", refId));
+			LogCat.error(string.Format("没有找到refId:{0}对应的assetPath", refId));
 			return null;
 		}
 	}

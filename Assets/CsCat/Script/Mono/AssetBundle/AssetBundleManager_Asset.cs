@@ -197,11 +197,11 @@ namespace CsCat
 				assetCat.AddOnLoadFailCallback(onLoadFailCallback, callbackCause);
 				assetCat.AddOnLoadDoneCallback(onLoadDoneCallback, callbackCause);
 				return assetAsyncloaderProcessingList.Find(assetAsyncloader =>
-				  assetAsyncloader.assetCat.assetPath.Equals(assetPath));
+				  assetAsyncloader._assetCat.assetPath.Equals(assetPath));
 			}
 
 			//没有加载
-			var assetAsyncLoader = PoolCatManagerUtil.Spawn<AssetAsyncLoader>();
+			var assetAsyncLoader = PoolCatManager.Default.SpawnValue<AssetAsyncLoader>(null, null);
 			assetCat = new AssetCat(assetPath);
 			_AddAssetCat(assetPath, assetCat);
 			//添加对assetAsyncLoader的引用
@@ -213,7 +213,7 @@ namespace CsCat
 			var assetBundleLoader = _LoadAssetBundleAsync(assetBundleName);
 			assetAsyncLoader.Init(assetCat, assetBundleLoader);
 			//asset拥有对assetBundle的引用
-			var assetBundleCat = assetBundleLoader.assetBundleCat;
+			var assetBundleCat = assetBundleLoader._assetBundleCat;
 			assetBundleCat.AddRefCount();
 
 			assetCat.assetBundleCat = assetBundleCat;
@@ -241,7 +241,7 @@ namespace CsCat
 				return;
 
 			//失败的时候解除对assetCat的引用
-			assetAsyncLoader.assetCat.SubRefCount();
+			assetAsyncLoader._assetCat.SubRefCount();
 		}
 
 		private void _OnAssetAsyncLoaderDone(AssetAsyncLoader assetAsyncLoader)
@@ -250,11 +250,11 @@ namespace CsCat
 				return;
 
 			//解除对assetAsyncLoader的引用
-			assetAsyncLoader.assetCat.SubRefCount();
+			assetAsyncLoader._assetCat.SubRefCount();
 
 			assetAsyncloaderProcessingList.Remove(assetAsyncLoader);
-			assetAsyncLoader.Destroy();
-			PoolCatManagerUtil.Despawn(assetAsyncLoader);
+			assetAsyncLoader.DoDestroy();
+			PoolCatManager.Default.DespawnValue(assetAsyncLoader);
 		}
 
 		// 添加没有被引用的assetCat,延迟到下一帧删除

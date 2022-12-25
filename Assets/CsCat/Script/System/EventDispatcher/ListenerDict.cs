@@ -5,7 +5,7 @@ namespace CsCat
 {
 	public class ListenerDict
 	{
-		private Dictionary<(EventDispatchers eventDispatchers, string eventName, Delegate handler), Action> _dict =
+		private readonly Dictionary<(EventDispatchers eventDispatchers, string eventName, Delegate handler), Action> _dict =
 			new Dictionary<(EventDispatchers eventDispatchers, string eventName, Delegate handler), Action>();
 
 		public (EventDispatchers eventDispatchers, string eventName, Action handler) AddListener(EventDispatchers eventDispatchers, string eventName, Action handler)

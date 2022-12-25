@@ -4,17 +4,23 @@ namespace CsCat
 {
 	public abstract class BaseAssetAsyncLoader : ResourceAsyncOperation
 	{
-		public AssetCat assetCat { get; protected set; }
+		protected AssetCat _assetCat;
 
 		public virtual List<string> GetAssetBundlePathList()
 		{
 			return new List<string>();
 		}
 
-		protected override void _Destroy()
+		public AssetCat GetAssetCat()
 		{
-			base._Destroy();
-			assetCat = null;
+			return this._assetCat;
+		}
+
+
+		public override void Reset()
+		{
+			_assetCat = null;
+			base.Reset();
 		}
 	}
 }

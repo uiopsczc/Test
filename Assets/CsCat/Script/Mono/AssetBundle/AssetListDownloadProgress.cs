@@ -10,7 +10,7 @@ namespace CsCat
 	{
 		public List<string> assetPathList;
 		public Dictionary<string, long> assetBundleDownloadedBytesDict = new Dictionary<string, long>();
-		private long _needDownloadBytes;
+		private readonly long _needDownloadBytes;
 
 		public AssetListDownloadProgress(List<string> assetPathList)
 		{
@@ -21,7 +21,7 @@ namespace CsCat
 				var assetPath = assetPathList[i];
 				var assetAsyncloader = Client.instance.assetBundleManager.assetAsyncloaderProcessingList.Find(
 					_assetAsyncloader =>
-						_assetAsyncloader.assetCat.assetPath.Equals(assetPath));
+						_assetAsyncloader._assetCat.assetPath.Equals(assetPath));
 				if (assetAsyncloader != null && !assetAsyncloader.resultInfo.isDone)
 				{
 					if (!assetAsyncloader.GetAssetBundlePathList().IsNullOrEmpty())

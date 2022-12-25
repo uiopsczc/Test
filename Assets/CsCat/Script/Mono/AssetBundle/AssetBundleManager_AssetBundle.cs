@@ -16,7 +16,7 @@ namespace CsCat
 			assetBundleCat.AddRefCount();
 			_AddAssetBundleCat(assetBundleCat);
 
-			var resourceWebRequester = PoolCatManagerUtil.Spawn<ResourceWebRequester>();
+			var resourceWebRequester = PoolCatManager.Default.SpawnValue<ResourceWebRequester>(null, null);
 			var url = assetBundleName.WithRootPath(FilePathConst.PersistentAssetBundleRoot);
 			resourceWebRequester.Init(assetBundleCat, url);
 			resourceWebRequesterAllDict[assetBundleName] = resourceWebRequester;
@@ -31,7 +31,7 @@ namespace CsCat
 			if (Application.isEditor && EditorModeConst.IsEditorMode)
 				return new EditorAssetBundleAsyncLoader(assetBundleName);
 
-			var assetBundleAsyncLoader = PoolCatManagerUtil.Spawn<AssetBundleAsyncLoader>();
+			var assetBundleAsyncLoader = PoolCatManager.Default.SpawnValue<AssetBundleAsyncLoader>(null, null);
 			assetBundleAsyncLoaderProcessingList.Add(assetBundleAsyncLoader);
 			var dependanceNames = manifest.GetAllDependencies(assetBundleName);
 			List<AssetBundleCat> dependanceAssetBundleCatList = new List<AssetBundleCat>();
@@ -74,7 +74,7 @@ namespace CsCat
 				return;
 
 			// 解除assetBundleAsyncLoader加载器对AB持有的引用
-			assetBundleAsyncLoader.assetBundleCat.SubRefCount();
+			assetBundleAsyncLoader._assetBundleCat.SubRefCount();
 			assetBundleAsyncLoaderProcessingList.Remove(assetBundleAsyncLoader);
 		}
 

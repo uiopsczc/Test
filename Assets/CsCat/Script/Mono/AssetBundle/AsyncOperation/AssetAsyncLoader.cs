@@ -13,7 +13,7 @@ namespace CsCat
 		//通过AssetBundleLoader获取
 		public void Init(AssetCat assetCat, BaseAssetBundleAsyncLoader assetBundleLoader)
 		{
-			this.assetCat = assetCat;
+			this._assetCat = assetCat;
 			this._assetBundleLoader = assetBundleLoader;
 
 			AddListener<AssetBundleAsyncLoader>(null, AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Fail,
@@ -69,10 +69,10 @@ namespace CsCat
 		{
 			base._OnSuccess();
 
-			var assetBundleCat = this._assetBundleLoader.assetBundleCat;
+			var assetBundleCat = this._assetBundleLoader.GetAssetBundleCat();
 			var assetBundle = assetBundleCat.Get();
-			var assets = assetBundle.LoadAssetWithSubAssets(assetCat.assetPath);
-			assetCat.SetAssets(assets);
+			var assets = assetBundle.LoadAssetWithSubAssets(_assetCat.assetPath);
+			_assetCat.SetAssets(assets);
 
 			FireEvent(null, AssetBundleEventNameConst.On_AssetAsyncLoader_Success, this);
 		}
@@ -90,10 +90,10 @@ namespace CsCat
 		}
 
 		//需要手动释放
-		protected override void _Destroy()
+		public override void Reset()
 		{
-			base._Destroy();
 			_assetBundleLoader = null;
+			base.Reset();
 		}
 	}
 }

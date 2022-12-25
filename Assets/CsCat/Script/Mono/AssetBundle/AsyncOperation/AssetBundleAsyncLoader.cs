@@ -18,8 +18,8 @@ namespace CsCat
 
 		public void Init(AssetBundleCat assetBundleCat)
 		{
-			this.assetBundleName = assetBundleName;
-			this.assetBundleCat = assetBundleCat;
+			this._assetBundleName = _assetBundleName;
+			this._assetBundleCat = assetBundleCat;
 			// 只添加没有被加载过的
 			if (!assetBundleCat.IsLoadDone())
 			{
@@ -120,7 +120,7 @@ namespace CsCat
 			if (resultInfo.isDone)
 				return;
 			if (!_waitingAssetBundleCatDict.ContainsValue(resourceWebRequester.assetBundleCat) ||
-			    resourceWebRequester.isNotCache) return;
+			    resourceWebRequester._isNotCache) return;
 			_waitingAssetBundleCatDict.Remove(resourceWebRequester.assetBundleCat.assetBundleName);
 			if (_waitingAssetBundleCatDict.Count == 0)
 				resultInfo.isSuccess = true;
@@ -131,7 +131,7 @@ namespace CsCat
 			if (resultInfo.isDone)
 				return;
 			if (!_waitingAssetBundleCatDict.ContainsValue(resourceWebRequester.assetBundleCat) ||
-			    resourceWebRequester.isNotCache) return;
+			    resourceWebRequester._isNotCache) return;
 			resultInfo.isFail = true;
 			RemoveListener<ResourceWebRequester>(null, AssetBundleEventNameConst.On_ResourceWebRequester_Fail,
 				OnResourceWebRequesterFail);

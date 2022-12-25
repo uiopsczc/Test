@@ -4,20 +4,31 @@ namespace CsCat
 {
 	public abstract class BaseAssetBundleAsyncLoader : ResourceAsyncOperation
 	{
-		public string assetBundleName { get; protected set; }
+		protected string _assetBundleName;
 
-		public AssetBundleCat assetBundleCat { get; set; }
+		protected AssetBundleCat _assetBundleCat;
 
 		public virtual List<string> GetAssetBundlePathList()
 		{
 			return null;
 		}
 
-		protected override void _Destroy()
+		public string GetAssetBundleName()
 		{
-			base._Destroy();
-			assetBundleName = null;
-			assetBundleCat = null;
+			return this._assetBundleName;
+		}
+
+		public AssetBundleCat GetAssetBundleCat()
+		{
+			return this._assetBundleCat;
+		}
+
+
+		public override void Reset()
+		{
+			_assetBundleName = null;
+			_assetBundleCat = null;
+			base.Reset();
 		}
 	}
 }

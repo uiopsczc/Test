@@ -25,7 +25,7 @@ namespace CsCat
 				yield return _AssetBundleCheck();
 				Client.instance.uiManager.SetLoadingPct(1);
 				Client.instance.uiManager.uiLoadingPanel.SetDesc("加载资源中");
-				yield return Client.instance.assetBundleManager.Initialize();
+				yield return Client.instance.assetBundleManager.IEInit();
 				yield return LuaRequireLoader.LoadLuaFiles();
 			}
 

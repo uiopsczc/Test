@@ -20,7 +20,7 @@ public class LuaTest : MonoBehaviour
 	private IEnumerator InitResource()
 	{
 		yield return Client.instance.assetBundleUpdater.CheckUpdate();
-		yield return Client.instance.assetBundleManager.Initialize();
+		yield return Client.instance.assetBundleManager.IEInit();
 		yield return LuaRequireLoader.LoadLuaFiles();
 	}
 

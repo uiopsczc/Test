@@ -159,7 +159,7 @@ namespace CsCat
 			{
 				LogCat.LogError("Error when downloading file : " + resourceWebRequester._cache.Get<string>("file_path") +
 				                "\n from url : " +
-				                resourceWebRequester.url + "\n err : " + resourceWebRequester.error);
+				                resourceWebRequester._url + "\n err : " + resourceWebRequester.error);
 				_needDownloadList.Add(resourceWebRequester._cache.Get<string>("file_path"));
 			}
 			else

@@ -13,7 +13,7 @@ namespace CsCat
 		public ResourceWebRequester resourceWebRequester;
 
 
-		public int refCount { get; private set; }
+		protected int _refCount;
 		public ResultInfo resultInfo => _resultInfo ?? (_resultInfo = new ResultInfo(() => onSuccessCallback?.Invoke(this), () => onFailCallback?.Invoke(this), () => onDoneCallback?.Invoke(this)));
 		public AssetBundle assetBundle
 		{
@@ -45,6 +45,11 @@ namespace CsCat
 		public AssetBundle Get()
 		{
 			return assetBundle;
+		}
+
+		public int GetRefCount()
+		{
+			return this._refCount;
 		}
 
 		public bool IsLoadSuccess()

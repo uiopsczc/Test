@@ -6,7 +6,7 @@ namespace CsCat
 	{
 		public EditorAssetBundleAsyncLoader(string assetBundleName)
 		{
-			this.assetBundleName = assetBundleName;
+			this._assetBundleName = assetBundleName;
 			resultInfo.isSuccess = true;
 		}
 

@@ -1,10 +1,7 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Object = UnityEngine.Object;
 #if UNITY_EDITOR
-using UnityEditor;
 
 #endif
 
@@ -23,7 +20,7 @@ namespace CsCat
 	///   9、切换场景时最好预加载所有可能使用到的资源，所有加载器用完以后记得Dispose回收，清理GC时注意先释放所有Asset缓存
 	///   10、逻辑层所有Asset路径带文件类型后缀，且是AssetBundleConfig.ResourcesFolderName下的相对路径，注意：路径区分大小写
 	/// </summary>
-	public partial class AssetBundleManager : TickObject
+	public partial class AssetBundleManager : TreeNode
 	{
 		// 最大同时进行的ab创建数量
 		private const int _Max_AssetBundle_Create_Num = 20;
@@ -72,18 +69,23 @@ namespace CsCat
 
 		public string downloadURL => URLSetting.Server_Resource_URL;
 
-		public override void Init()
+		protected override void _Init()
 		{
-			base.Init();
+			base._Init();
+			this.AddChild<EventDispatchersTreeNode>(null);
+			this.AddChild<ListenerDictTreeNode>(null);
 
+			this._AddGameListeners();
+		}
+
+		protected void _AddGameListeners()
+		{
 			AddListener<ResourceWebRequester>(null, AssetBundleEventNameConst.On_ResourceWebRequester_Done,
 				_OnResourceWebRequesterDone);
-
 			AddListener<AssetBundleAsyncLoader>(null, AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Fail,
 				_OnAssetBundleAsyncLoaderFail);
 			AddListener<AssetBundleAsyncLoader>(null, AssetBundleEventNameConst.On_AssetBundleAsyncLoader_Done,
 				_OnAssetBundleAsyncLoaderDone);
-
 			AddListener<AssetAsyncLoader>(null, AssetBundleEventNameConst.On_AssetAsyncLoader_Fail,
 				_OnAssetAsyncLoaderFail);
 			AddListener<AssetAsyncLoader>(null, AssetBundleEventNameConst.On_AssetAsyncLoader_Done,
@@ -91,7 +93,7 @@ namespace CsCat
 		}
 
 
-		public IEnumerator Initialize()
+		public IEnumerator IEInit()
 		{
 			if (Application.isEditor && EditorModeConst.IsEditorMode)
 				yield break;
@@ -117,8 +119,8 @@ namespace CsCat
 				var assetBundle = manifestRequest.assetBundle;
 				manifest.LoadFromAssetBundle(assetBundle);
 				assetBundle.Unload(false);
-				manifestRequest.Destroy();
-				PoolCatManagerUtil.Despawn(manifestRequest);
+				manifestRequest.DoDestroy();
+				PoolCatManager.Default.DespawnValue(manifestRequest);
 			}
 
 
@@ -126,40 +128,42 @@ namespace CsCat
 			if (assetPathMapRequest.error.IsNullOrWhiteSpace())
 			{
 				assetPathMap.Initialize(assetPathMapRequest.text);
-				assetPathMapRequest.Destroy();
-				PoolCatManagerUtil.Despawn(assetPathMapRequest);
+				assetPathMapRequest.DoDestroy();
+				PoolCatManager.Default.DespawnValue(assetPathMapRequest);
 			}
 
 			yield return assetBundleMapRequest;
 			if (assetBundleMapRequest.error.IsNullOrWhiteSpace())
 			{
 				assetBundleMap.Initialize(assetBundleMapRequest.text);
-				assetBundleMapRequest.Destroy();
-				PoolCatManagerUtil.Despawn(assetBundleMapRequest);
+				assetBundleMapRequest.DoDestroy();
+				PoolCatManager.Default.DespawnValue(assetBundleMapRequest);
 			}
 
-			LogCat.Log("AssetMananger init finished");
+			LogCat.Log("AssetManager init finished");
 		}
 
 
-		public override void Update(float deltaTime = 0, float unscaledDeltaTime = 0)
+		protected override bool _Update(float deltaTime = 0, float unscaledDeltaTime = 0)
 		{
-			base.Update(deltaTime, unscaledDeltaTime);
+			if (!base._Update(deltaTime, unscaledDeltaTime))
+				return false;
 			_OnProcessingResourceWebRequester();
 			_OnProcessingAssetBundleAsyncLoader();
 			_OnProcessingAssetAsyncLoader();
 			_CheckAssetOfNoRefList();
+			return true;
 		}
 
 		private void _OnProcessingResourceWebRequester()
 		{
-			var slot_count = _resourceWebRequesterProcessingList.Count;
-			while (slot_count < _Max_AssetBundle_Create_Num && _resourceWebRequesterWaitingQueue.Count > 0)
+			var slotCount = _resourceWebRequesterProcessingList.Count;
+			while (slotCount < _Max_AssetBundle_Create_Num && _resourceWebRequesterWaitingQueue.Count > 0)
 			{
 				var resourceWebRequester = _resourceWebRequesterWaitingQueue.Dequeue();
 				resourceWebRequester.Start();
 				_resourceWebRequesterProcessingList.Add(resourceWebRequester);
-				slot_count++;
+				slotCount++;
 			}
 
 			for (var i = _resourceWebRequesterProcessingList.Count - 1; i >= 0; i--)
@@ -182,13 +186,13 @@ namespace CsCat
 			_resourceWebRequesterProcessingList.Remove(resourceWebRequester);
 			resourceWebRequesterAllDict.RemoveByFunc((k, v) => v == resourceWebRequester);
 			// 无缓存，不计引用计数、Creater使用后由上层回收，所以这里不需要做任何处理
-			if (!resourceWebRequester.isNotCache)
+			if (!resourceWebRequester._isNotCache)
 			{
 				var assetBundleCat = resourceWebRequester.assetBundleCat;
 				// 解除webRequester对AB持有的引用
 				assetBundleCat?.SubRefCount();
-				resourceWebRequester.Destroy();
-				PoolCatManagerUtil.Despawn(resourceWebRequester);
+				resourceWebRequester.DoDestroy();
+				PoolCatManager.Default.DespawnValue(resourceWebRequester);
 			}
 		}
 

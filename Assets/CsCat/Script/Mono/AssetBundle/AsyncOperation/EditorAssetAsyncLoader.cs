@@ -4,7 +4,7 @@ namespace CsCat
 	{
 		public EditorAssetAsyncLoader(AssetCat assetCat)
 		{
-			this.assetCat = assetCat;
+			this._assetCat = assetCat;
 			resultInfo.isSuccess = true;
 		}
 
